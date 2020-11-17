@@ -25,11 +25,13 @@ namespace StarSalvager
         [NonSerialized]
         public PointerEvents PointerEvents;
         public TMP_Text Text;
+        public TMP_Text TextBelow;
         [NonSerialized]
         public int SectorNumber = -1;
         [NonSerialized]
         public int WaveNumber = -1;
         public Image BotImage;
+        public Image ShortcutImage;
 
         public void Awake()
         {
@@ -51,13 +53,21 @@ namespace StarSalvager
             {
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                    });
                     return;
                 }
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
-                Debug.Log($"Convert Sector Wave Index {SectorNumber}, {WaveNumber} to {SectorNumber}, {PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber]}");
-                SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
+
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                });
             });
         }
 

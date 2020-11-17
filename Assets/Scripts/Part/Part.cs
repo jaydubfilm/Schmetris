@@ -144,7 +144,7 @@ namespace StarSalvager
             
             if (_damage == null)
             {
-                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
                 _damage.transform.SetParent(transform, false);
             }
 
@@ -154,7 +154,7 @@ namespace StarSalvager
         //Part Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gObj, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gObj, Vector2 worldHitPoint)
         {
 #if !UNITY_EDITOR
             //FIXME Need to find the cause of parts not despawning correctly

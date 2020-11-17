@@ -51,8 +51,8 @@ namespace StarSalvager.UI
         [SerializeField, Required] 
         private IntroScene IntroScene;
 
-        [SerializeField, Required]
-        private SpriteRenderer partSprite;
+        /*[SerializeField, Required]
+        private SpriteRenderer partSprite;*/
         
         //Main Menu Properties
         //====================================================================================================================//
@@ -151,8 +151,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-            
+            //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
             
             SetupWindows();
             SetupButtons();
@@ -463,7 +462,7 @@ namespace StarSalvager.UI
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
             {
-                Globals.DisableTestingFeatures = toggle;
+                Globals.TestingFeatures = toggle;
             });
             
             settingsBackButton.onClick.AddListener(CloseOpenWindow);
@@ -542,7 +541,11 @@ namespace StarSalvager.UI
         {
             SetupAccountMenuWindow();
             OpenWindow(WINDOW.ACCOUNT_MENU);
-            SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+            });
         }
 
         private static void Quit()

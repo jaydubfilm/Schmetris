@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
+  m_Name: SuperSquid_Default
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: -4368447452934732472, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -2964522687878929412, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: 5495717366867704668, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -75185244867476475, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -2683999161423258719, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -1052926082334258786, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -902658887830481533, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -198153233500030785, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: 7961582578449015054, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -1281382224555042589, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: 7538504362832534714, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -6802242595414903616, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  - {fileID: -1256373914210690252, guid: f710f6ca6ee533c4c83a31fa4df99fee, type: 3}
+  speed: 1
+  Loop: 1
+  PingPong: 0
+  useAnimationCurve: 0
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

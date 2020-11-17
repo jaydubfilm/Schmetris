@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace StarSalvager.Factories
 {
-    public class DamageFactory : FactoryBase
+    [System.Obsolete("Use the Effects Factory")]
+    public class DamageFactory //: FactoryBase
     {
-        private readonly GameObject damagePrefab;
+        /*private readonly GameObject damagePrefab;
         
         //============================================================================================================//
 
@@ -27,7 +28,7 @@ namespace StarSalvager.Factories
             return CreateGameObject().GetComponent<T>();
         }
         
-        //============================================================================================================//
+        //============================================================================================================//*/
     }
 }
 

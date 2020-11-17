@@ -1,0 +1,428 @@
+fileFormatVersion: 2
+guid: 26150359804fddf4f94a5699c44451b0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7061333734630648076
+    second: BallHeadEnemy_Ver1c-animation5_00
+  - first:
+      213: -4287264600349004328
+    second: BallHeadEnemy_Ver1c-animation5_12
+  - first:
+      213: 7458218480561346666
+    second: BallHeadEnemy_Ver1c-animation5_01
+  - first:
+      213: 3636554457795329000
+    second: BallHeadEnemy_Ver1c-animation5_02
+  - first:
+      213: 5213526898293741053
+    second: BallHeadEnemy_Ver1c-animation5_03
+  - first:
+      213: 3848244227196118890
+    second: BallHeadEnemy_Ver1c-animation5_04
+  - first:
+      213: -6134209643961326409
+    second: BallHeadEnemy_Ver1c-animation5_05
+  - first:
+      213: -823747599329525079
+    second: BallHeadEnemy_Ver1c-animation5_06
+  - first:
+      213: -3964568060527134975
+    second: BallHeadEnemy_Ver1c-animation5_07
+  - first:
+      213: -591890535310165594
+    second: BallHeadEnemy_Ver1c-animation5_08
+  - first:
+      213: 1784886914658955344
+    second: BallHeadEnemy_Ver1c-animation5_09
+  - first:
+      213: 2221264554009204203
+    second: BallHeadEnemy_Ver1c-animation5_10
+  - first:
+      213: 7775430528688225918
+    second: BallHeadEnemy_Ver1c-animation5_11
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 252
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f69bd2816a110e90800000000000000
+      internalID: -7061333734630648076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 252
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dd27169f839084c0800000000000000
+      internalID: -4287264600349004328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_01
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 510
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a68dc17513ae08760800000000000000
+      internalID: 7458218480561346666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_02
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ebf0471303a77230800000000000000
+      internalID: 3636554457795329000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_03
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 252
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df51ebf671b2a5840800000000000000
+      internalID: 5213526898293741053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_04
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 510
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a67e8fa5cb5b76530800000000000000
+      internalID: 3848244227196118890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_05
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 768
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b4e8e944d8eedaa0800000000000000
+      internalID: -6134209643961326409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_06
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 252
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a2026d3ce57194f0800000000000000
+      internalID: -823747599329525079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_07
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 510
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 107bb68aa560bf8c0800000000000000
+      internalID: -3964568060527134975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_08
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 768
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a9fbe0b1be29c7f0800000000000000
+      internalID: -591890535310165594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_09
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 252
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0507d70313135c810800000000000000
+      internalID: 1784886914658955344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_10
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 510
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be592e5d75483de10800000000000000
+      internalID: 2221264554009204203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BallHeadEnemy_Ver1c-animation5_11
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 768
+        width: 128
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7e703eaed0e7eb60800000000000000
+      internalID: 7775430528688225918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

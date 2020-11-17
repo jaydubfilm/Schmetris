@@ -46,6 +46,16 @@ namespace StarSalvager
             }
         }
         
+        private struct WeldData
+        {
+            public IAttachable target;
+            public IAttachable attachedTo;
+
+            public DIRECTION Direction => target == null || attachedTo == null
+                ? DIRECTION.NULL
+                : (target.Coordinate - attachedTo.Coordinate).ToDirection();
+        }
+        
         public static Action<Bot, string> OnBotDied;
 
         public Action OnCombo;
@@ -66,8 +76,8 @@ namespace StarSalvager
         //====================================================================================================================//
         [SerializeField, BoxGroup("PROTOTYPE")]
         private bool PROTO_autoRefineFuel = true;
-        [SerializeField, Range(0.5f, 10f), BoxGroup("PROTOTYPE")]
-        public float TEST_MergeSpeed = 2f;
+        [SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
+        public float TEST_MergeTime = 0.6f;
         
         [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
         public float TEST_DetachTime = 1f;
@@ -102,6 +112,8 @@ namespace StarSalvager
         private float targetRotation;
 
         private bool _needToCheckMagnet;
+
+        private List<WeldData> _weldDatas;
 
         //============================================================================================================//
 
@@ -221,13 +233,20 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!_needToCheckMagnet) 
-                return;
+            if (_needToCheckMagnet)
+            {
 
-            if(IsMagnetFull()) OnFullMagnet?.Invoke();
-            
-            AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
-            _needToCheckMagnet = false;
+                if (IsMagnetFull())
+                    OnFullMagnet?.Invoke();
+
+                AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+                _needToCheckMagnet = false;
+            }
+
+            if (!_weldDatas.IsNullOrEmpty())
+            {
+                ShouldShowEffect(ref _weldDatas);
+            }
         }
 
         private void OnEnable()
@@ -357,6 +376,8 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            _weldDatas = new List<WeldData>();
+            
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
             _isDestroyed = false;
@@ -390,6 +411,8 @@ namespace StarSalvager
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
+            _weldDatas = new List<WeldData>();
+            
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
@@ -409,11 +432,14 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
-            BotPartsLogic.UpdatePartsList();
+
             
             var camera = CameraController.Camera.GetComponent<CameraController>().CinemachineVirtualCamera;
             camera.LookAt = transform;
             camera.Follow = transform;
+
+            BotPartsLogic.PopulatePartsList();
+
         }
 
 
@@ -428,7 +454,15 @@ namespace StarSalvager
         {
             if (GameTimer.IsPaused) 
                 return;
-            
+
+
+
+            if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
+            {
+                isContinuousRotation = false;
+                return;
+            }
+
             if (previousDirection == direction && direction != 0)
             {
                 isContinuousRotation = true;
@@ -611,6 +645,8 @@ namespace StarSalvager
             if (Rotating)
                 return false;
 
+            IAttachable closestAttachable = null;
+
             switch (attachable)
             {
                 case Bit bit:
@@ -623,7 +659,7 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -662,7 +698,7 @@ namespace StarSalvager
 
                             CheckForBonusShapeMatches();
 
-                            AudioController.PlaySound(SOUND.BIT_SNAP);
+                            AudioController.PlayBitConnectSound(bit.Type);
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
                             break;
                         case BIT_TYPE.WHITE:
@@ -701,7 +737,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
@@ -744,7 +780,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
                     
                     switch (closestAttachable)
                     {
@@ -773,6 +809,15 @@ namespace StarSalvager
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
                 }
+            }
+
+            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
+            {
+                _weldDatas.Add(new WeldData
+                {
+                    target = attachable,
+                    attachedTo = closestAttachable
+                });
             }
 
             return true;
@@ -1029,8 +1074,10 @@ namespace StarSalvager
         /// </summary>
         /// <param name="hitPosition"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public bool TryBounceAt(Vector2 hitPosition)
+        public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
         {
+            destroyed = false;
+            
             if(LevelManager.Instance.EndWaveState)
                 return false;
             
@@ -1054,6 +1101,10 @@ namespace StarSalvager
             }
             
             TryHitAt(closestAttachable, Globals.AsteroidDamage);
+
+            if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
+                destroyed = true;
+            
             return true;
         }
 
@@ -1074,8 +1125,8 @@ namespace StarSalvager
                     return false;
             }
 
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = worldPosition;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = worldPosition;*/
             
             TryHitAt(closestAttachable, damage);
 
@@ -1128,6 +1179,10 @@ namespace StarSalvager
 
             if (!attachableDestroyed)
                 return;
+            
+            CreateExplosionEffect(closestAttachable.transform.position);
+            GameUi.FlashBorder();
+
 
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
@@ -1138,7 +1193,7 @@ namespace StarSalvager
                     if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
-                        BotPartsLogic.UpdatePartsList();
+                        BotPartsLogic.PopulatePartsList();
                     break;
                 default:
                     RemoveAttachable(closestAttachable);
@@ -1193,8 +1248,10 @@ namespace StarSalvager
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
             
-            var explosion = FactoryManager.Instance.GetFactory<ParticleFactory>().CreateObject<Explosion>();
-            explosion.transform.position = attachable.transform.position;
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
+            explosion.transform.position = attachable.transform.position;*/
+            
+            CreateExplosionEffect(attachable.transform.position);
 
             MissionProgressEventData missionProgressEventData;
 
@@ -1274,7 +1331,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -1302,7 +1359,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
 
                 //This can NEVER happen as Shape is not IAttachable
@@ -1343,7 +1400,7 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
             
             //We want to avoid having the same element multiple times in the list
             if(!attachedBlocks.Contains(newAttachable)) 
@@ -1370,7 +1427,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
 
@@ -1476,7 +1533,7 @@ namespace StarSalvager
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
                     break;
                 case Part _ when updatePartList:
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
             }
             
@@ -1524,14 +1581,14 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
-                case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
+                //case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
                 case PART_TYPE.REFINER when !part.Disabled:
                     break;
                 default:
                     return;
             }
             
-            BotPartsLogic.ProcessBit(bit);
+            BotPartsLogic.ProcessBit((Part)part, bit);
             CheckForDisconnects();
         }
 
@@ -1851,7 +1908,7 @@ namespace StarSalvager
                     break;
                 case Part _:
                     DestroyAttachable<Part>(attachable);
-                    BotPartsLogic.UpdatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
                 case EnemyAttachable _:
                     DestroyAttachable<EnemyAttachable>(attachable);
@@ -2073,7 +2130,7 @@ namespace StarSalvager
             bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                TEST_MergeSpeed,
+                TEST_MergeTime,
                 () =>
             {
                 //TODO May want to consider that Enemies may still attack while being shifted
@@ -2181,6 +2238,101 @@ namespace StarSalvager
         }
 
         #endregion //CheckForBonusShapeMatches
+
+        //Creating Effects
+        //====================================================================================================================//
+
+        private void ShouldShowEffect(ref List<WeldData> weldDatas)
+        {
+            bool IsBusy(IAttachable attachable)
+            {
+                switch (attachable)
+                {
+                    case ICanCombo iCanCombo when iCanCombo.IsBusy:
+                    case ICanDetach iCanDetach when iCanDetach.PendingDetach:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            var copy = new List<WeldData>(weldDatas);
+            weldDatas = new List<WeldData>();
+
+            for (int i = copy.Count - 1; i >= 0; i--)
+            {
+                var data = copy[i];
+                var direction = data.Direction;
+
+                if (direction == DIRECTION.NULL)
+                    continue;
+                
+                if(!data.target.Attached || !data.attachedTo.Attached)
+                    continue;
+
+                if (IsBusy(data.target) || IsBusy(data.attachedTo))
+                    continue;
+
+                CreateWeldEffect(data.target.Coordinate, direction);
+            }
+        }
+
+        private void CreateWeldEffect(Vector2Int coordinate, DIRECTION direction)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.WELD);
+            var effectTransform = effect.transform;
+            effectTransform.SetParent(transform);
+
+            var position = coordinate + (direction.Reflected().ToVector2() / 2f);
+            effectTransform.localPosition = transform.InverseTransformPoint(transform.position + (Vector3)position);
+
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    effectTransform.eulerAngles = Vector3.forward * 90f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+        
+        private void CreateExplosionEffect(Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
+
+            var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            
+            Destroy(explosion, time);
+        }
+
+        private void CreateMergeEffect(Transform parent, float animationTime, Color color)
+        {
+            var startColor = color;
+            startColor.a = 0f;
+            var newTime = animationTime * 2f;
+
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.MERGE);
+            var animationComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            
+            animationComponent.SetAnimationTime(newTime);
+            animationComponent.SetAllElementColors(startColor, color);
+            
+            
+            effect.transform.SetParent(parent, false);
+            
+            
+            Destroy(effect, newTime);
+        }
         
         //============================================================================================================//
 
@@ -2411,7 +2563,7 @@ namespace StarSalvager
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                TEST_MergeSpeed,
+                TEST_MergeTime,
                 () =>
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
@@ -2522,7 +2674,7 @@ namespace StarSalvager
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+        public void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
             IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {
@@ -2810,6 +2962,8 @@ namespace StarSalvager
         public void ForceDisconnectAllDetachables()
         {
             DetachBlocks(attachedBlocks.OfType<ICanDetach>(), true, true);
+            
+            ForceCheckMagnets();
         }
 
         private bool CheckHasMagnetOverage()
@@ -2854,6 +3008,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                         
                     };
@@ -2864,6 +3019,7 @@ namespace StarSalvager
                     //time = 0f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2873,6 +3029,7 @@ namespace StarSalvager
                     //time = 1f;
                     onDetach = () =>
                     {
+                        TryProcessDetachingBits(toDetach);
                         DetachBlocks(toDetach, true, true);
                     };
                     break;
@@ -2916,6 +3073,27 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             return true;
+        }
+
+        private void TryProcessDetachingBits(List<ICanDetach> toDetach)
+        {
+            if (toDetach.Count <= 0)
+                return;
+            
+            for (int i = toDetach.Count - 1; i >= 0; i--)
+            {
+                if (!(toDetach[i] is Bit bit)) 
+                    continue;
+
+                var core = attachedBlocks[0] as Part;
+
+                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
+                
+                if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
+                {
+                    toDetach.RemoveAt(i);
+                }
+            }
         }
 
         private bool IsMagnetFull()
@@ -3237,23 +3415,36 @@ namespace StarSalvager
         /// <param name="movingComboBlocks"></param>
         /// <param name="target"></param>
         /// <param name="orphans"></param>
-        /// <param name="speed"></param>
+        /// <param name="seconds"></param>
         /// <param name="onFinishedCallback"></param>
         /// <returns></returns>
         private IEnumerator MoveComboPiecesCoroutine(ICanCombo[] movingComboBlocks,
             ICanCombo target,
             IReadOnlyList<OrphanMoveData> orphans,
-            float speed,
+            float seconds,
             Action onFinishedCallback)
         {
             target.IsBusy = true;
             
             //Prepare Bits to be moved
             //--------------------------------------------------------------------------------------------------------//
+
+            var mergeColor = Color.white;
+
+            if (target is Bit bitColor)
+            {
+                mergeColor = FactoryManager.Instance.BitProfileData.GetProfile(bitColor.Type).color;
+            }
+
+
+            CreateMergeEffect(target.transform, seconds, mergeColor);
+            foreach (var movingComboBlock in movingComboBlocks)
+            {
+                CreateMergeEffect(movingComboBlock.transform, seconds, mergeColor);
+            }
             
             foreach (var canCombo in movingComboBlocks)
             {
-                
                 //We need to disable the collider otherwise they can collide while moving
                 //I'm also assuming that if we've confirmed the upgrade, and it cannot be cancelled
                 attachedBlocks.Remove(canCombo as IAttachable);
@@ -3299,8 +3490,9 @@ namespace StarSalvager
 
 
             //Move bits towards target
-            while (t <= 1f)
+            while (t / seconds <= 1f)
             {
+                var td = t / seconds;
                 //Move the main blocks related to the upgrading
                 //----------------------------------------------------------------------------------------------------//
                 
@@ -3316,7 +3508,7 @@ namespace StarSalvager
                     
                     //Lerp to destination based on the starting position NOT the current position
                     bt.localPosition =
-                        Vector2.Lerp(bitTransformPositions[i], targetTransform.localPosition, t);
+                        Vector2.Lerp(bitTransformPositions[i], targetTransform.localPosition, td);
                     
                     SSDebug.DrawArrow(bt.position,targetTransform.position, Color.green);
                 }
@@ -3331,14 +3523,14 @@ namespace StarSalvager
                     //Debug.Log($"Start {bitTransform.position} End {position}");
 
                     bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
-                        orphanTargetPositions[i], t);
+                        orphanTargetPositions[i], td);
                     
                     SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(orphanTargetPositions[i]), Color.red);
                 }
                 
                 //----------------------------------------------------------------------------------------------------//
 
-                t += Time.deltaTime * speed;
+                t += Time.deltaTime;
 
                 yield return null;
             }
@@ -3397,17 +3589,11 @@ namespace StarSalvager
         /// </summary>
         /// <param name="toMove"></param>
         /// <param name="direction"></param>
-        /// <param name="speed"></param>
+        /// <param name="seconds"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
-        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, float speed, Action OnFinishedCallback)
+        private IEnumerator ShiftInDirectionCoroutine(IReadOnlyList<ShiftData> toMove, float seconds, Action OnFinishedCallback)
         {
-            //var dir = direction.ToVector2Int();
-            /*var transforms = toMove.Select(x => x.transform).ToArray();
-            var startPositions = transforms.Select(x => x.localPosition).ToArray();
-            var targetPositions = toMove.Select(o =>
-                transform.InverseTransformPoint((Vector2) transform.position +
-                                                ((Vector2) o.Coordinate + dir)  * Constants.gridCellSize)).ToArray();*/
             var count = toMove.Count;
             
             var transforms = new Transform[count];
@@ -3445,17 +3631,19 @@ namespace StarSalvager
 
             var t = 0f;
 
-            while (t < 1f)
+            while (t / seconds < 1f)
             {
+                var td = t / seconds;
+                
                 for (var i = 0; i < transforms.Length; i++)
                 {
                     if (toMove[i].Target.Attached == false)
                         continue;
                     
-                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], t);
+                    transforms[i].localPosition = Vector2.Lerp(startPositions[i], targetPositions[i], td);
                 }
 
-                t += Time.deltaTime * speed;
+                t += Time.deltaTime;
                 
                 yield return null;
             }
@@ -3543,6 +3731,11 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
+            transform.localScale = Vector2.one;
+            isContinuousRotation = false;
+            targetRotation = 0;
+            _rotating = false;
+
             foreach (var attachable in attachedBlocks)
             {
                 switch (attachable)

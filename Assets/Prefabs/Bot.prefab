@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1775463995226503707}
   - component: {fileID: 2681746267895581254}
   - component: {fileID: 2681746267895581252}
-  - component: {fileID: 3245183090477788666}
   m_Layer: 8
   m_Name: Bot
   m_TagString: Player
@@ -51,11 +50,10 @@ MonoBehaviour:
   TEST_ParticleSystem: {fileID: 3099671416270462534}
   TEST_ParticleSystemForceField: {fileID: 1806099405544202029}
   PROTO_autoRefineFuel: 1
-  TEST_MergeSpeed: 5
+  TEST_MergeTime: 0.35
   TEST_DetachTime: 0.15
   TEST_SetDetachColor: 0
   MostRecentRotate: 0
-  CameraController: {fileID: 0}
   PROTO_GodMode: 0
 --- !u!114 &1775463995226503707
 MonoBehaviour:
@@ -181,52 +179,10 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3245183090477788666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2681746267895581272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ImpulseDefinition:
-    m_ImpulseChannel: 1
-    m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-    m_AmplitudeGain: 1
-    m_FrequencyGain: 1
-    m_RepeatMode: 0
-    m_Randomize: 1
-    m_TimeEnvelope:
-      m_AttackShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_DecayShape:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      m_AttackTime: 0
-      m_SustainTime: 0.2
-      m_DecayTime: 0.7
-      m_ScaleWithImpact: 1
-      m_HoldForever: 0
-    m_ImpactRadius: 100
-    m_DirectionMode: 0
-    m_DissipationMode: 2
-    m_DissipationDistance: 1000
-    m_PropagationSpeed: 343
 --- !u!1001 &3313087087937259267
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -50,6 +50,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 02d3c4c89735846c1bde1192765756e8, type: 2}
     - {fileID: 11400000, guid: bdc91e174659e4f438f323f1e54aabd0, type: 2}
     - {fileID: 11400000, guid: 2ff32c882c6ac4a57830def969facfe2, type: 2}
+    - {fileID: 11400000, guid: 20e73ccfc2e59483ebb4fea26b363cb9, type: 2}
     - {fileID: 11400000, guid: ac596de1af6b6c54883d5b2fd72b5140, type: 2}
   - SectorData:
     - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
@@ -70,27 +71,11 @@ MonoBehaviour:
   projectileProfile: {fileID: 11400000, guid: f9b0bb725a6579841b2c3e06b6d54333, type: 2}
   botPrefab: {fileID: 2681746267895581272, guid: d09cf0a6976caab4ea7cd798304820a8,
     type: 3}
-  shieldPrototypePrefab: {fileID: 7381917469761121646, guid: b5a0b72d2da99e9468bd4f2b9034d44f,
-    type: 3}
-  alertIconPrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
-    type: 3}
   scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,
     type: 3}
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
-  damageFactory: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,
-    type: 3}
-  explosionPrefab: {fileID: 238150696391007923, guid: 17239bb474ede86468099f6844d6a3b7,
-    type: 3}
-  labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
-    type: 3}
-  floatingTextPrefab: {fileID: 1209333815536603345, guid: 7431c86c30856054c909791de5d76629,
-    type: 3}
-  connectedSpritePrefab: {fileID: 5101111888088129152, guid: ba75da5685c6ae44b81167b34efb52d1,
-    type: 3}
-  fadeSpritePrefab: {fileID: 2815963387748468045, guid: c8cdc129b907c3c41938631740bde5cc,
-    type: 3}
-  shrinkLinePrefab: {fileID: 3714246245670551338, guid: c7ec7772b105e4745bdae2298a512216,
-    type: 3}
+  effectProfileScriptableObject: {fileID: 11400000, guid: 10c33090867e24649a511823d5b0f3f3,
+    type: 2}
   asteroidProfile: {fileID: 11400000, guid: 5b908c56fe99e9a44ac6683480de76a5, type: 2}
   asteroidRemote: {fileID: 11400000, guid: 4fb1c416745d97f4e97ed047ec893eb2, type: 2}
   asteroidPrefab: {fileID: 4611369530616709383, guid: 7553853ad3e767d4a9b50f5a6102a7d5,

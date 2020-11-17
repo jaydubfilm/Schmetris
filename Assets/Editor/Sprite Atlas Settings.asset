@@ -39,13 +39,13 @@ MonoBehaviour:
     path: Assets/Sprites/Parts/RECOVERY/v2
   BitPaths:
   - Type: 1
-    path: Assets/Sprites/Bits/BLUE/v1
+    path: Assets/Sprites/Bits/BLUE/v2
   - Type: 2
-    path: Assets/Sprites/Bits/GREEN/v1
+    path: Assets/Sprites/Bits/GREEN/v2
   - Type: 3
-    path: Assets/Sprites/Bits/GREY/v1
+    path: Assets/Sprites/Bits/GREY/v2
   - Type: 4
-    path: Assets/Sprites/Bits/RED/v1
+    path: Assets/Sprites/Bits/RED/v2
   - Type: 5
-    path: Assets/Sprites/Bits/YELLOW/v1
+    path: Assets/Sprites/Bits/YELLOW/v2
   ComponentPaths: []

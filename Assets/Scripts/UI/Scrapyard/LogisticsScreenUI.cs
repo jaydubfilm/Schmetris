@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
@@ -28,15 +29,20 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text detailsTitle;
         [SerializeField, Required, BoxGroup("Details Window")]
         private TMP_Text detailsDescription;
+
+        [SerializeField]
+        private TMP_Text patchPointsText;
+        [SerializeField]
+        private TMP_Text patchPointProgressText;
         
 
-        //TODO Need to add Resources
+        /*//TODO Need to add Resources
         [SerializeField]
         private ResourceUIElementScrollView resourceUIElementScrollView;
         
         //TODO Need to add Components
         [SerializeField]
-        private ComponentResourceUIElementScrollView componentResourceUIElementScrollView;
+        private ComponentResourceUIElementScrollView componentResourceUIElementScrollView;*/
 
         //====================================================================================================================//
 
@@ -68,6 +74,11 @@ namespace StarSalvager.UI.Scrapyard
             facilityItemUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+                
                 FACILITY_TYPE type = facilityRemoteData.type;
 
                 if (!PlayerDataManager.GetFacilityRanks().ContainsKey(type))
@@ -94,6 +105,11 @@ namespace StarSalvager.UI.Scrapyard
             facilityBlueprintUIElements.ClearElements();
             foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
             {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+
                 FACILITY_TYPE type = facilityRemoteData.type;
                 bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
                 bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
@@ -140,6 +156,11 @@ namespace StarSalvager.UI.Scrapyard
                         ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
                         (!containsFacilityKey && i == 0));
 
+                    if (!craftButtonInteractable)
+                    {
+                        continue;
+                    }
+
                     var element = facilityBlueprintUIElements.AddElement(newBlueprint);
                     element.Init(newBlueprint, PurchaseBlueprint, SetupDetailsWindow, craftButtonInteractable);
                 }
@@ -147,6 +168,8 @@ namespace StarSalvager.UI.Scrapyard
 
             /*SetupResourceScrollView();
             SetupComponentResourceScrollView();*/
+
+            UpdatePatchPoints();
         }
 
         /*private void SetupResourceScrollView()
@@ -187,6 +210,13 @@ namespace StarSalvager.UI.Scrapyard
             }
         }*/
 
+        private void UpdatePatchPoints()
+        {
+            var (current, required) = PlayerDataManager.GetPatchPointProgress();
+            patchPointsText.text = $"{PlayerDataManager.GetAvailablePatchPoints()}";
+            patchPointProgressText.text = $"Next Patch Point: {current}/{required}";
+        }
+
         //====================================================================================================================//
         
         private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
@@ -222,6 +252,33 @@ namespace StarSalvager.UI.Scrapyard
             
             detailsTitle.text = item?.name;
             detailsDescription.text = item?.description;
+
+            string prereqText = "\nPrerequisite for ";
+            int numAdded = 0;
+            for (int i = 0; i < FactoryManager.Instance.FacilityRemote.FacilityRemoteData.Count; i++)
+            {
+                FacilityRemoteData facilityRemoteData = FactoryManager.Instance.FacilityRemote.FacilityRemoteData[i];
+                for (int k = 0; k < facilityRemoteData.levels.Count; k++)
+                {
+                    if (facilityRemoteData.levels[k].facilityPrerequisites.Any(f => f.facilityType == item.facilityType && f.level == item.level))
+                    {
+                        if (numAdded > 0)
+                        {
+                            prereqText += ", ";
+                        }
+
+                        prereqText += $"{facilityRemoteData.displayName} {k + 1}";
+                        numAdded++;
+                    }
+                }
+            }
+            prereqText += ".";
+
+            if (numAdded > 0)
+            {
+                detailsDescription.text += prereqText;
+            }
+
             DisplayCost(item.patchCost);
         }
 

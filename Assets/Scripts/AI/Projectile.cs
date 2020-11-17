@@ -3,6 +3,8 @@ using StarSalvager.Factories.Data;
 using System;
 using Recycling;
 using StarSalvager.Cameras;
+using StarSalvager.Factories;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities;
 
 namespace StarSalvager.AI
@@ -19,6 +21,8 @@ namespace StarSalvager.AI
         private bool _hasRange;
         private float _lifeTime;
         private CollidableBase _target;
+
+        private TrailRenderer _trailRenderer;
 
         //============================================================================================================//
 
@@ -48,7 +52,8 @@ namespace StarSalvager.AI
             string collisionTag,
             float damage,
             float rangeBoost,
-            Vector2 direction, Vector2 velocity)
+            Vector2 direction, 
+            Vector2 velocity)
         {
             ProjectileData = profileData;
 
@@ -69,6 +74,11 @@ namespace StarSalvager.AI
                 //Calculates the time it will take to travel the distance
                 _lifeTime = ProjectileData.ProjectileRange * rangeBoost / ProjectileData.ProjectileSpeed;
             }
+
+            if (profileData.UseTrail)
+            {
+                CreateTrailEffect(ProjectileData.Color);
+            }
         }
 
         private void CheckLifeTime()
@@ -86,17 +96,14 @@ namespace StarSalvager.AI
         {
             var newPosition = transform.position;
 
-            switch (ProjectileData.AttackType)
+            switch (ProjectileData.FireType)
             {
                 //----------------------------------------------------------------------------------------------------//
 
-                case ENEMY_ATTACKTYPE.Forward:
-                case ENEMY_ATTACKTYPE.AtPlayer:
-                case ENEMY_ATTACKTYPE.AtPlayerCone:
-                case ENEMY_ATTACKTYPE.Down:
-                case ENEMY_ATTACKTYPE.Random_Spray:
-                case ENEMY_ATTACKTYPE.Spiral:
-                case ENEMY_ATTACKTYPE.Fixed_Spray:
+                case FIRE_TYPE.FORWARD:
+                case FIRE_TYPE.RANDOM_SPRAY:
+                case FIRE_TYPE.SPIRAL:
+                case FIRE_TYPE.FIXED_SPRAY:
                     newPosition +=
                         (EnemyVelocityModifier + TravelDirectionNormalized * ProjectileData.ProjectileSpeed) *
                         Time.deltaTime;
@@ -104,7 +111,7 @@ namespace StarSalvager.AI
 
                 //----------------------------------------------------------------------------------------------------//
 
-                case ENEMY_ATTACKTYPE.Heat_Seeking:
+                case FIRE_TYPE.HEAT_SEEKING:
 
                     if (_target != null)
                     {
@@ -129,7 +136,7 @@ namespace StarSalvager.AI
                 //----------------------------------------------------------------------------------------------------//
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(ProjectileData.AttackType), ProjectileData.AttackType,
+                    throw new ArgumentOutOfRangeException(nameof(ProjectileData.FireType), ProjectileData.FireType,
                         null);
             }
 
@@ -138,7 +145,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             var canBeHit = gameObject.GetComponent<ICanBeHit>();
 
@@ -164,6 +171,31 @@ namespace StarSalvager.AI
             renderer.flipY = state;
         }
 
+
+        //====================================================================================================================//
+
+        private void CreateTrailEffect(Color color)
+        {
+            var endColor = color;
+            endColor.a = 0f;
+                
+            if (!_trailRenderer)
+            {
+                _trailRenderer = FactoryManager.Instance
+                    .GetFactory<EffectFactory>()
+                    .CreateEffect(EffectFactory.EFFECT.TRAIL)
+                    .GetComponent<TrailRenderer>();
+                
+                _trailRenderer.transform.SetParent(transform, false);
+            }
+
+            _trailRenderer.startColor = color;
+            _trailRenderer.endColor = endColor;
+            _trailRenderer.widthMultiplier = ((BoxCollider2D) collider).size.x / 2f;
+
+            _trailRenderer.emitting = true;
+        }
+
         //============================================================================================================//
 
         public void CustomRecycle(params object[] args)
@@ -174,6 +206,10 @@ namespace StarSalvager.AI
             _lifeTime = 0f;
 
             renderer.flipX = renderer.flipY = false;
+
+            if (_trailRenderer)
+                _trailRenderer.emitting = false;
+
         }
     }
 }

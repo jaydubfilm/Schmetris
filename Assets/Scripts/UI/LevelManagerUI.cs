@@ -93,6 +93,8 @@ namespace StarSalvager.UI
         private LevelManager m_levelManager;
         private RectTransform m_canvasRect;
 
+        private Mission curMissionReminder = null;
+
         //====================================================================================================================//
         
         // Start is called before the first frame update
@@ -109,7 +111,7 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            pauseWindowScrapyardButton.gameObject.SetActive(!Globals.DisableTestingFeatures);
+            pauseWindowScrapyardButton.gameObject.SetActive(Globals.TestingFeatures);
             InitScrollPositions();
         }
 
@@ -136,7 +138,12 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                
+                
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                });
             });
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
@@ -145,7 +152,11 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 LevelManager.Instance.EndWaveState = false;
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
+                
             });
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
@@ -154,7 +165,10 @@ namespace StarSalvager.UI
                 m_levelManager.SavePlayerData();
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
             });
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
@@ -173,7 +187,12 @@ namespace StarSalvager.UI
                         m_levelManager.IsWaveProgressing = true;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        
+                        
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        });
                     }
                 });
             });
@@ -188,7 +207,11 @@ namespace StarSalvager.UI
             {
                 m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                });
             });
             
             resumeButton.onClick.AddListener(() =>
@@ -237,6 +260,11 @@ namespace StarSalvager.UI
                 m_isMissionReminderScrolling = false;
                 return;
             }
+
+            if (curMissionReminder != null)
+            {
+                scrollingMissionsText.text = curMissionReminder.missionName + curMissionReminder.GetMissionProgressString();
+            }
             
             _scrollPosition += Time.deltaTime * SCROLL_SPEED;
             SetPosition(_scrollPosition);
@@ -259,12 +287,14 @@ namespace StarSalvager.UI
                 Mission curMission = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
                         Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
+                curMissionReminder = curMission;
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
             }
             else
             {
                 missionReminderText = OverrideText;
+                curMissionReminder = null;
             }
 
             var multiplier = string.IsNullOrEmpty(OverrideText) ? 1f : 0.2f;
@@ -310,6 +340,11 @@ namespace StarSalvager.UI
         public void ShowSummaryScreen(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
         {
             Alert.ShowAlert(titleText, summaryText, buttonText, onConfirmedCallback);
+        }
+
+        public void ShowWaveSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        {
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, 0.5f);
         }
 
 

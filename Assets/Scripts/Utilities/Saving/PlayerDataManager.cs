@@ -124,7 +124,7 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetBlockDatas(List<BlockData> blockData)
+        public static void SetBlockData(List<BlockData> blockData)
         {
             if (Globals.IsRecoveryBot)
             {
@@ -774,7 +774,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void RemoveSaveFileData(int index)
         {
-            GameMetaData.SaveFiles.RemoveAt(index);
+            GameMetaData.SaveFiles.RemoveAll(s => s.SaveSlotIndex == index);
         }
 
         public static void ClearSaveFileData(SaveFileData data)
@@ -858,14 +858,15 @@ namespace StarSalvager.Utilities.Saving
 
             if (GetEnemiesKilled().Count > 0)
             {
-                var enemyRemoteData = FactoryManager.Instance.EnemyRemoteData;
+                var enemyProfileData = FactoryManager.Instance.EnemyProfile;
+                
                 summaryText += ("<b>Enemies Killed:</b>\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
-                    var name = enemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                    var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{name}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 

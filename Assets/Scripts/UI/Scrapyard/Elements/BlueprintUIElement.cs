@@ -61,13 +61,24 @@ namespace StarSalvager.UI.Scrapyard
 
         public override void Init(Blueprint data)
         {
-            this.data = data;
+            try
+            {
+                this.data = data;
 
-            titleText.text = data.name;
+                titleText.text = data.name;
             
-            //Only try and fill the image in the event its enabled
-            if(image.isActiveAndEnabled)
-                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(data.partType).GetSprite(data.level);
+                //Only try and fill the image in the event its enabled
+                if(image.isActiveAndEnabled)
+                    image.sprite = FactoryManager.Instance
+                        .GetFactory<PartAttachableFactory>()
+                        .GetProfileData(data.partType)
+                        .GetSprite(data.level);
+            }
+            catch (NullReferenceException)
+            {
+                Debug.LogError($"Cannot find profile or sprite for {data.partType} of level {data.level}");
+                throw;
+            }
         }
         
         //============================================================================================================//

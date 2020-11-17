@@ -17,169 +17,29 @@ MonoBehaviour:
     refinedName: Water
     bitType: 1
     levels:
-    - health: 10
-      resources: 10
-    - health: 20
-      resources: 50
-    - health: 30
-      resources: 200
-    - health: 40
-      resources: 750
-    - health: 50
-      resources: 2500
-  - name: Greenium
-    refinedName: Plasma
-    bitType: 2
-    levels:
-    - health: 10
-      resources: 10
-    - health: 20
-      resources: 50
-    - health: 30
-      resources: 200
-    - health: 40
-      resources: 750
-    - health: 50
-      resources: 2500
-  - name: Greyscale
-    refinedName: Scrap
-    bitType: 3
-    levels:
     - health: 20
       resources: 10
-    - health: 40
-      resources: 50
-    - health: 60
-      resources: 200
-    - health: 80
-      resources: 750
-    - health: 100
-      resources: 2500
-  - name: Reddite
-    refinedName: Fuel
-    bitType: 4
-    levels:
-    - health: 5
-      resources: 10
-    - health: 5
-      resources: 50
-    - health: 5
-      resources: 200
-    - health: 5
-      resources: 750
-    - health: 5
-      resources: 2500
-  - name: Yellectron
-    refinedName: Power
-    bitType: 5
-    levels:
-    - health: 10
-      resources: 10
-    - health: 15
-      resources: 50
-    - health: 20
-      resources: 200
-    - health: 25
-      resources: 750
-    - health: 30
-      resources: 2500
-  - name: Bluesalt
-    refinedName: 
-    bitType: 1
-    levels:
-    - health: 10
-      resources: 10
-    - health: 20
-      resources: 50
-    - health: 30
-      resources: 200
-    - health: 40
-      resources: 750
-    - health: 50
-      resources: 2500
-  - name: Greenium
-    refinedName: 
-    bitType: 2
-    levels:
-    - health: 10
-      resources: 10
-    - health: 20
-      resources: 50
-    - health: 30
-      resources: 200
-    - health: 40
-      resources: 750
-    - health: 50
-      resources: 2500
-  - name: Greyscale
-    refinedName: 
-    bitType: 3
-    levels:
-    - health: 20
-      resources: 10
-    - health: 40
-      resources: 50
-    - health: 60
-      resources: 200
-    - health: 80
-      resources: 750
-    - health: 100
-      resources: 2500
-  - name: Reddite
-    refinedName: Fuel
-    bitType: 4
-    levels:
-    - health: 5
-      resources: 10
-    - health: 5
-      resources: 50
-    - health: 5
-      resources: 200
-    - health: 5
-      resources: 750
-    - health: 5
-      resources: 2500
-  - name: Yellectron
-    refinedName: 
-    bitType: 5
-    levels:
-    - health: 10
-      resources: 10
-    - health: 15
-      resources: 50
-    - health: 20
-      resources: 200
-    - health: 25
-      resources: 750
-    - health: 30
-      resources: 2500
-  - name: Bluesalt
-    refinedName: Water
-    bitType: 1
-    levels:
-    - health: 10
-      resources: 10
-    - health: 20
+    - health: 35
       resources: 30
-    - health: 30
-      resources: 90
-    - health: 40
-      resources: 270
     - health: 50
+      resources: 90
+    - health: 65
+      resources: 270
+    - health: 80
       resources: 810
   - name: Greenium
     refinedName: Plasma
     bitType: 2
     levels:
-    - health: 10
-      resources: 10
     - health: 20
+      resources: 10
+    - health: 35
       resources: 30
-    - health: 30
-      resources: 90
-    - health: 40
-      resources: 270
     - health: 50
+      resources: 90
+    - health: 65
+      resources: 270
+    - health: 80
       resources: 810
   - name: Greyscale
     refinedName: Scrap
@@ -187,25 +47,39 @@ MonoBehaviour:
     levels:
     - health: 20
       resources: 10
-    - health: 40
+    - health: 35
       resources: 30
-    - health: 60
+    - health: 50
       resources: 90
-    - health: 80
+    - health: 65
       resources: 270
-    - health: 100
+    - health: 80
+      resources: 810
+  - name: Reddite
+    refinedName: Fuel
+    bitType: 4
+    levels:
+    - health: 20
+      resources: 10
+    - health: 35
+      resources: 30
+    - health: 50
+      resources: 90
+    - health: 65
+      resources: 270
+    - health: 80
       resources: 810
   - name: Yellectron
     refinedName: Power
     bitType: 5
     levels:
-    - health: 10
-      resources: 10
-    - health: 15
-      resources: 30
     - health: 20
+      resources: 10
+    - health: 35
+      resources: 30
+    - health: 50
       resources: 90
-    - health: 25
+    - health: 65
       resources: 270
-    - health: 30
+    - health: 80
       resources: 810

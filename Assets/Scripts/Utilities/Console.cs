@@ -64,7 +64,7 @@ namespace StarSalvager.Utilities
             string.Concat("print ", "components").ToUpper(),
             "\n",
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
-            string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
+            //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
@@ -83,7 +83,7 @@ namespace StarSalvager.Utilities
             string.Concat("spawn ", "bit ", "[BIT_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "part ", "[PART_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "component ", "[COMPONENT_TYPE] ",  "(x,y)").ToUpper(),
-            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]").ToUpper(),
+            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]", "[uint]").ToUpper(),
             "\n",
             string.Concat("unlock ", "sectorwave ", "[sector : int] ", "[wave : int]").ToUpper(),
             "\n",
@@ -356,7 +356,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             PlayerDataManager.GetResource(_bitType).AddLiquid(floatAmount, false);
@@ -644,7 +644,7 @@ namespace StarSalvager.Utilities
                 {
                     switch (split[2].ToLower())
                     {
-                        case "magnet":
+                        /*case "magnet":
                             if (!int.TryParse(split[3], out var magnet))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
@@ -663,7 +663,7 @@ namespace StarSalvager.Utilities
                     
                             //PlayerPersistentData.PlayerData.liquidResource[bit] = amount;
                     
-                            break;
+                            break;*/
                         case "heat":
                             if (!float.TryParse(split[3], out var heat))
                             {
@@ -732,7 +732,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             PlayerDataManager.GetResource(_bitType).SetResource(intAmount, false);
@@ -818,7 +818,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE)
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             //TODO Alex B: This used to update both recovery and regular bot, now only does the current one
@@ -889,7 +889,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    Globals.DisableTestingFeatures = state;
+                    Globals.TestingFeatures = state;
                     break;
                 case "timescale":
                     if (!float.TryParse(split[2], out var scale))

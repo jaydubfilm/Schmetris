@@ -30,6 +30,11 @@ namespace StarSalvager.Tutorial
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject window;
         [SerializeField, BoxGroup("Tutorial UI")]
+        private FadeUIImage glowImage;
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private RectTransform glowBar;
+        
+        [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
          [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
         private Image fillImage;
@@ -63,6 +68,8 @@ namespace StarSalvager.Tutorial
         private bool _isReady;
         private MonoBehaviour mono;
 
+        private float _playerStartFuel;
+
         //Unity Functions
         //====================================================================================================================//
 
@@ -79,12 +86,16 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
+            glowImage.gameObject.SetActive(false);
             //SetDialogWindowActive(false);
             pauseImage.SetActive(false);
             InitPositions();
             
             mono = LevelManager.Instance;
             InitInput();
+
+            _playerStartFuel = PlayerDataManager.GetResource(BIT_TYPE.RED).liquid;
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(30);
             
             _tutorialStepCoroutines = new List<IEnumerator>
             {
@@ -157,9 +168,13 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator MoveStepCoroutine()
         {
+            
             //TODO Need to have the bot fly in
 
             LevelManager.Instance.SetBotEnterScreen(true);
+            
+            var bot = LevelManager.Instance.BotObject;
+            bot.PROTO_GodMode = true;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
@@ -270,19 +285,32 @@ namespace StarSalvager.Tutorial
 
             yield return new WaitUntil(() => magnet);
             
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+            SetMagnetGlow();
+            
             bot.OnFullMagnet -= SetMagnet;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[7], true));
             
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
             yield return new WaitForSeconds(0.5f);
+            
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            glowImage.gameObject.SetActive(false);
         }
         private IEnumerator MagnetFirstCoroutine()
         {
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+            SetMagnetGlow();
+            
             //tutorialSteps[5]
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[5], true));
             
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            glowImage.gameObject.SetActive(false);
+            
             yield return new WaitForSeconds(0.5f);
             
             SetText(tutorialRemoteData[8], true, true);
@@ -376,12 +404,15 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            LevelManager.Instance.EndWaveState = true;
+            
             yield return new WaitForSeconds(5f);
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
             
+            
             //TODO Bot needs to fly away
-            LevelManager.Instance.SetBotZoomOffScreen(true);
+            LevelManager.Instance.SetBotExitScreen(true);
             
             yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
@@ -401,12 +432,19 @@ namespace StarSalvager.Tutorial
             yield return new WaitForSeconds(1f);
 
             Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotZoomOffScreen(false);
+            LevelManager.Instance.SetBotExitScreen(false);
             LevelManager.Instance.BotObject.PROTO_GodMode = false;
+            LevelManager.Instance.EndWaveState = false;
 
-            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
 
-            fadeImage.color = Color.clear;
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+            
+            
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+            });
         }
         
         //Generic Tutorial Steps
@@ -488,6 +526,23 @@ namespace StarSalvager.Tutorial
 
         //IInput Functions
         //====================================================================================================================//
+
+        private void SetMagnetGlow()
+        {
+            glowImage.gameObject.SetActive(true);
+            
+            glowImage.transform.SetParent(glowBar);
+
+            var glowRectTransform = (RectTransform) glowImage.transform;
+            glowRectTransform.anchorMin = Vector2.zero;
+            glowRectTransform.anchorMax = Vector2.one;
+            
+            glowRectTransform.sizeDelta = new Vector2(20f, 20f);
+            glowRectTransform.localPosition = Vector3.zero;
+
+            glowImage.SetActive(true);
+
+        }
         
         //TODO Need to setup AnyKey
         
@@ -500,8 +555,9 @@ namespace StarSalvager.Tutorial
 
 
             //Found: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionBindings.html?_ga=2.228834015.217367981.1603324316-246071923.1589462724#showing-current-bindings
-            var key = Input.Actions.Default.Continue.GetBindingDisplayString();
-            pressAnyKeyText.text = $"{key} to continue...";
+            /*var key = Input.Actions.Default.Continue.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontUseShortDisplayNames | InputBinding.DisplayStringOptions.DontOmitDevice);
+            pressAnyKeyText.text = $"{key} to continue...";*/
+            pressAnyKeyText.text = "Press Space to continue...";
         }
 
         public void DeInitInput()

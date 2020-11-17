@@ -1,0 +1,428 @@
+fileFormatVersion: 2
+guid: f710f6ca6ee533c4c83a31fa4df99fee
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4368447452934732472
+    second: Squid_Enemy_ver1-animation3_00
+  - first:
+      213: -2964522687878929412
+    second: Squid_Enemy_ver1-animation3_01
+  - first:
+      213: 5495717366867704668
+    second: Squid_Enemy_ver1-animation3_02
+  - first:
+      213: -75185244867476475
+    second: Squid_Enemy_ver1-animation3_03
+  - first:
+      213: -2683999161423258719
+    second: Squid_Enemy_ver1-animation3_04
+  - first:
+      213: -1052926082334258786
+    second: Squid_Enemy_ver1-animation3_05
+  - first:
+      213: -902658887830481533
+    second: Squid_Enemy_ver1-animation3_06
+  - first:
+      213: -198153233500030785
+    second: Squid_Enemy_ver1-animation3_07
+  - first:
+      213: 7961582578449015054
+    second: Squid_Enemy_ver1-animation3_08
+  - first:
+      213: -1281382224555042589
+    second: Squid_Enemy_ver1-animation3_09
+  - first:
+      213: 7538504362832534714
+    second: Squid_Enemy_ver1-animation3_10
+  - first:
+      213: -6802242595414903616
+    second: Squid_Enemy_ver1-animation3_11
+  - first:
+      213: -1256373914210690252
+    second: Squid_Enemy_ver1-animation3_12
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8458dd3cf282063c0800000000000000
+      internalID: -4368447452934732472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_01
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf3e3647256ebd6d0800000000000000
+      internalID: -2964522687878929412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_02
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5b381ed3d5b44c40800000000000000
+      internalID: 5495717366867704668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_03
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 504c25b0b63e4fef0800000000000000
+      internalID: -75185244867476475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_04
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ab9bedabf480cad0800000000000000
+      internalID: -2683999161423258719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_05
+      rect:
+        serializedVersion: 2
+        x: 1290
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9909b78e414361f0800000000000000
+      internalID: -1052926082334258786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_06
+      rect:
+        serializedVersion: 2
+        x: 1548
+        y: 244
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 385d385268c1973f0800000000000000
+      internalID: -902658887830481533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_07
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb8b22a1fa4004df0800000000000000
+      internalID: -198153233500030785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_08
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e01646e3c293d7e60800000000000000
+      internalID: 7961582578449015054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_09
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e895e3e7ad973ee0800000000000000
+      internalID: -1281382224555042589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_10
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abc9d5cf6c52e9860800000000000000
+      internalID: 7538504362832534714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_11
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c4734836649991a0800000000000000
+      internalID: -6802242595414903616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Squid_Enemy_ver1-animation3_12
+      rect:
+        serializedVersion: 2
+        x: 1290
+        y: 502
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43b9762e496709ee0800000000000000
+      internalID: -1256373914210690252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

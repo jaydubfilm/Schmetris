@@ -31,7 +31,7 @@ namespace StarSalvager.Missions
         public List<MissionUnlockCheckScriptable> MissionUnlockParameters;
 
         private bool LevelTypeMission => MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS || MissionType == MISSION_EVENT_TYPE.CHAIN_WAVES;
-        private bool HideAmountNeeded => LevelTypeMission || MissionType == MISSION_EVENT_TYPE.PLAYER_LEVEL || MissionType == MISSION_EVENT_TYPE.FACILITY_UPGRADE || MissionType == MISSION_EVENT_TYPE.FLIGHT_LENGTH || MissionType == MISSION_EVENT_TYPE.CHAIN_WAVES || MissionType == MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES;
+        private bool HideAmountNeeded => LevelTypeMission || MissionType == MISSION_EVENT_TYPE.PLAYER_LEVEL || MissionType == MISSION_EVENT_TYPE.SECTORS_COMPLETED || MissionType == MISSION_EVENT_TYPE.FACILITY_UPGRADE || MissionType == MISSION_EVENT_TYPE.FLIGHT_LENGTH || MissionType == MISSION_EVENT_TYPE.CHAIN_WAVES || MissionType == MISSION_EVENT_TYPE.CHAIN_BONUS_SHAPES;
         [SerializeField, FoldoutGroup("$MissionName"), HideIf("HideAmountNeeded")]
         public int AmountNeeded;
 
@@ -63,7 +63,8 @@ namespace StarSalvager.Missions
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("ShowEnemyType"), ValueDropdown("GetEnemyTypes")]
         public string EnemyType;
 
-        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("MissionType", MISSION_EVENT_TYPE.LEVEL_PROGRESS)]
+        private bool showSectorNumber => MissionType == MISSION_EVENT_TYPE.LEVEL_PROGRESS || MissionType == MISSION_EVENT_TYPE.SECTORS_COMPLETED;
+        [SerializeField, FoldoutGroup("$MissionName"), ShowIf("showSectorNumber")]
         public int SectorNumber;
 
         [SerializeField, FoldoutGroup("$MissionName"), ShowIf("LevelTypeMission")]
@@ -148,10 +149,10 @@ namespace StarSalvager.Missions
                 switch (missionUnlockParameters.MissionUnlockType)
                 {
                     case "Level Complete":
-                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber, missionUnlockParameters.WaveUnlockNumber));
+                        missionUnlockData.Add(new LevelCompleteUnlockCheck(missionUnlockParameters.SectorUnlockNumber));
                         break;
                     case "Mission Complete":
-                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.MissionUnlockName));
+                        missionUnlockData.Add(new MissionCompleteUnlockCheck(missionUnlockParameters.GetMissionName()));
                         break;
                 }
             }

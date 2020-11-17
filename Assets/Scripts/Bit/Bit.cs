@@ -130,7 +130,7 @@ namespace StarSalvager
             
             if (_damage == null)
             {
-                _damage = FactoryManager.Instance.GetFactory<DamageFactory>().CreateObject<Damage>();
+                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
                 _damage.transform.SetParent(transform, false);
             }
                 
@@ -150,7 +150,7 @@ namespace StarSalvager
         //Bit Functions
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 hitPoint)
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             //Debug.Break();
             
@@ -159,12 +159,12 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                this.Bounce(hitPoint, bot.MostRecentRotate);
+                this.Bounce(worldHitPoint, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
 
-            var dir = (hitPoint - (Vector2)transform.position).ToVector2Int();
+            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
             var direction = dir.ToDirection();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
@@ -241,6 +241,7 @@ namespace StarSalvager
         {
             SetAttached(false);
             transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
             SetRotating(false);
 
             SetSortingLayer(DEFAULT_LAYER);

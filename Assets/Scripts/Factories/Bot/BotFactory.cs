@@ -7,24 +7,24 @@ namespace StarSalvager.Factories
     public class BotFactory : FactoryBase
     {
         private readonly GameObject prefab;
-        private readonly GameObject shieldPrototypePrefab;
-        private readonly GameObject alertIconPrefab;
+        /*private readonly GameObject shieldPrototypePrefab;
+        private readonly GameObject alertIconPrefab;*/
         private readonly GameObject scrapyardPrefab;
         
         //============================================================================================================//
 
-        public BotFactory(GameObject prefab, GameObject scrapyardPrefab, GameObject shieldPrototypePrefab, GameObject alertIconPrefab)
+        public BotFactory(GameObject prefab, GameObject scrapyardPrefab/*, GameObject shieldPrototypePrefab, GameObject alertIconPrefab*/)
         {
             this.prefab = prefab;
             this.scrapyardPrefab = scrapyardPrefab;
 
-            this.shieldPrototypePrefab = shieldPrototypePrefab;
-            this.alertIconPrefab = alertIconPrefab;
+            /*this.shieldPrototypePrefab = shieldPrototypePrefab;
+            this.alertIconPrefab = alertIconPrefab;*/
         }
         
         //============================================================================================================//
 
-        public Shield CreateShield()
+        /*public Shield CreateShield()
         {
             var outData = !Recycler.TryGrab<Shield>(out Shield shield) ? Object.Instantiate(shieldPrototypePrefab).GetComponent<Shield>() : shield;
             return outData;
@@ -34,7 +34,7 @@ namespace StarSalvager.Factories
         {
             var outData = !Recycler.TryGrab<FlashSprite>(out FlashSprite flashSprite) ? Object.Instantiate(alertIconPrefab).GetComponent<FlashSprite>() : flashSprite;
             return outData;
-        }
+        }*/
         
         //============================================================================================================//
         

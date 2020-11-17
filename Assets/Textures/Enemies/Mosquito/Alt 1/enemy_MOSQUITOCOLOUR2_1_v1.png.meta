@@ -1,0 +1,524 @@
+fileFormatVersion: 2
+guid: 204b2bdf6b7738a4bb55d910e30e5677
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8242381499147173548
+    second: mosquito_Parts_ver1-animation_00
+  - first:
+      213: 1127994506959413371
+    second: mosquito_Parts_ver1-animation_16
+  - first:
+      213: -4098268654080842164
+    second: mosquito_Parts_ver1-animation_01
+  - first:
+      213: -3397143160300107991
+    second: mosquito_Parts_ver1-animation_02
+  - first:
+      213: 8842409155607602371
+    second: mosquito_Parts_ver1-animation_03
+  - first:
+      213: 6460923249404420225
+    second: mosquito_Parts_ver1-animation_04
+  - first:
+      213: 5234195443159470539
+    second: mosquito_Parts_ver1-animation_05
+  - first:
+      213: -2340637857922169619
+    second: mosquito_Parts_ver1-animation_06
+  - first:
+      213: 3718684629625302136
+    second: mosquito_Parts_ver1-animation_07
+  - first:
+      213: 569890398637795649
+    second: mosquito_Parts_ver1-animation_08
+  - first:
+      213: -5345445646528771017
+    second: mosquito_Parts_ver1-animation_09
+  - first:
+      213: 2500486299956301539
+    second: mosquito_Parts_ver1-animation_10
+  - first:
+      213: 1835354649429177873
+    second: mosquito_Parts_ver1-animation_11
+  - first:
+      213: 6581482644100984028
+    second: mosquito_Parts_ver1-animation_12
+  - first:
+      213: 2374178988040729157
+    second: mosquito_Parts_ver1-animation_13
+  - first:
+      213: -2832871381488009258
+    second: mosquito_Parts_ver1-animation_14
+  - first:
+      213: -6547772702902051423
+    second: mosquito_Parts_ver1-animation_15
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 128
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 451c41052bd2d9d80800000000000000
+      internalID: -8242381499147173548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7068e7170177af00800000000000000
+      internalID: 1127994506959413371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_01
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c46a4676f560027c0800000000000000
+      internalID: -4098268654080842164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_02
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9270a276b4cead0d0800000000000000
+      internalID: -3397143160300107991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_03
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c427a6274c86ba70800000000000000
+      internalID: 8842409155607602371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_04
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18020d1c67fc9a950800000000000000
+      internalID: 6460923249404420225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_05
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 78
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc11d7a060993a840800000000000000
+      internalID: 5234195443159470539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_06
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de4c7baf442648fd0800000000000000
+      internalID: -2340637857922169619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_07
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87c658cd7fb6b9330800000000000000
+      internalID: 3718684629625302136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_08
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14926b35c48a8e700800000000000000
+      internalID: 569890398637795649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_09
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73c8e70818921d5b0800000000000000
+      internalID: -5345445646528771017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_10
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ee40aaaa0383b220800000000000000
+      internalID: 2500486299956301539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_11
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 235
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 116761c545d787910800000000000000
+      internalID: 1835354649429177873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 392
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdca909389f165b50800000000000000
+      internalID: 6581482644100984028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_13
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 392
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5423d5fe537c2f020800000000000000
+      internalID: 2374178988040729157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_14
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 392
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6df790cdc7e9fa8d0800000000000000
+      internalID: -2832871381488009258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mosquito_Parts_ver1-animation_15
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 392
+        width: 156
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ad16851b63a125a0800000000000000
+      internalID: -6547772702902051423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

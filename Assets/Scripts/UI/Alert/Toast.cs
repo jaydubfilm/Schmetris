@@ -61,8 +61,8 @@ public class Toast : Singleton<Toast>
     
     //================================================================================================================//
 
-    public static void AddToast(string text, Sprite sprite = null, float time = 1f, Layout verticalLayout = Layout.End,
-        Layout horizontalLayout = Layout.Start)
+    public static void AddToast(string text, Sprite sprite = null, float time = 2f, Layout verticalLayout = Layout.End,
+        Layout horizontalLayout = Layout.Middle)
     {
         Instance?.Add(new ToastData
         {
@@ -88,6 +88,7 @@ public class Toast : Singleton<Toast>
 
     //================================================================================================================//
 
+    private const bool USE_SLIDER = false;
     private IEnumerator ShowToastsCoroutine()
     {
         if(showingToast)
@@ -99,11 +100,13 @@ public class Toast : Singleton<Toast>
         {
             var toast = pendingToasts.Dequeue();
             toastGameObject.SetActive(true);
+            timeSlider.gameObject.SetActive(USE_SLIDER);
+            
             canvasGroup.alpha = 1f;
             Image.sprite = toast.sprite;
             Text.text = toast.Text;
             SetPosition(toastTransform, toast);
-
+            
             Image.gameObject.SetActive(toast.sprite != null);
             
             var t = 0f;
@@ -111,7 +114,9 @@ public class Toast : Singleton<Toast>
             while (t < toast.time)
             {
                 t += Time.deltaTime;
-                timeSlider.value = 1f - t / toast.time;
+                
+                if(USE_SLIDER)
+                    timeSlider.value = 1f - t / toast.time;
                 yield return null;
             }
             

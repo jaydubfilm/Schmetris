@@ -1135,6 +1135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2835911641826685085}
   - component: {fileID: 2153722230073794470}
+  - component: {fileID: 6635082722733146379}
   - component: {fileID: 7654145164560536635}
   m_Layer: 0
   m_Name: ScrollingMissionsText
@@ -1170,6 +1171,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8250838378850607614}
   m_CullTransparentMesh: 0
+--- !u!114 &6635082722733146379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250838378850607614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25353e05f01a703418c44465b9d95d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  underlayColor: {r: 0, g: 0, b: 0, a: 1}
+  underlayOffset: 0.06
 --- !u!114 &7654145164560536635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1184,22 +1199,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 101133d00cd1e5b4ca9a92b7c941684d, type: 2}
+  m_sharedMaterial: {fileID: -8304808927669992072, guid: 101133d00cd1e5b4ca9a92b7c941684d,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4290772736
+  m_fontColor: {r: 0, g: 1, b: 0.7490196, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1224,7 +1240,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 4097
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -1239,10 +1255,10 @@ MonoBehaviour:
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
   m_enableKerning: 1
-  m_enableExtraPadding: 0
+  m_enableExtraPadding: 1
   checkPaddingRequired: 0
-  m_isRichText: 1
-  m_parseCtrlCharacters: 1
+  m_isRichText: 0
+  m_parseCtrlCharacters: 0
   m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_ignoreRectMaskCulling: 0
@@ -1253,7 +1269,7 @@ MonoBehaviour:
   m_geometrySortingOrder: 0
   m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
-  m_useMaxVisibleDescender: 1
+  m_useMaxVisibleDescender: 0
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
@@ -2898,6 +2914,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7390728147854016330, guid: 21b2889a6c02f424bba5ec70d0fec7d2,
+        type: 3}
+      propertyPath: glowBar
+      value: 
+      objectReference: {fileID: 3441867029086317275}
     - target: {fileID: 9183844435454261098, guid: 21b2889a6c02f424bba5ec70d0fec7d2,
         type: 3}
       propertyPath: m_Name
@@ -2938,6 +2959,16 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 800483479070117056, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 800483479070117056, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1539132317272696789, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -2961,6 +2992,11 @@ PrefabInstance:
     - target: {fileID: 2135118524008759028, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550111484930708501, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_padding
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2746342000328353351, guid: a64db1f8fd3dedd4ea281013c4fcb681,
@@ -3067,6 +3103,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5479078062292385900, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 327.60083
+      objectReference: {fileID: 0}
+    - target: {fileID: 5479078062292385900, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.019165039
       objectReference: {fileID: 0}
     - target: {fileID: 5520738522362336192, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}
@@ -3328,8 +3374,34 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8973601882894454294, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9103446019988628527, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9103446019988628527, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9103446019988628527, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a64db1f8fd3dedd4ea281013c4fcb681, type: 3}
+--- !u!224 &3441867029086317275 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 9096113608998851118, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+    type: 3}
+  m_PrefabInstance: {fileID: 5906493939101776117}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4501475712764945301 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8034528104595561312, guid: a64db1f8fd3dedd4ea281013c4fcb681,

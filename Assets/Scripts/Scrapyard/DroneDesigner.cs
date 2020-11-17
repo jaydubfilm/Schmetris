@@ -101,8 +101,6 @@ namespace StarSalvager
 
         private void OnDestroy()
         {
-            Camera.onPostRender -= DrawGL;
-
             DeInitInput();
         }
 
@@ -139,47 +137,8 @@ namespace StarSalvager
         public void Activate()
         {
             GameTimer.SetPaused(true);
-            Camera.onPostRender += DrawGL;
 
-            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
-
-            var currentBlockData = PlayerDataManager.GetBlockDatas();
-            //Checks to make sure there is a core on the bot
-            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
-            {
-                _scrapyardBot.InitBot();
-            }
-            else
-            {
-                var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData);
-            }
-
-            bool outOfWaterOnReturn = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0;
             SellBits();
-            //TODO Need to decide if this should happen at arrival or at launch
-            //TryFillBotResources();
-
-            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
-            {
-                Alert.ShowAlert("Game Over", "Your crew has died of thirst - Game Over. thx!", "Main Menu", () =>
-                {
-                    PlayerDataManager.ResetPlayerRunData();
-                    PlayerDataManager.ClearCurrentSaveFile();
-                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
-                });
-            }
-            else if (outOfWaterOnReturn)
-            {
-                Alert.ShowAlert("Water Restored", "You have resuscitated your thirsty crew.", "Phew!", null);
-            }*/
-
-            if (_dismantleBin == null)
-            {
-                _dismantleBin = Instantiate(dismantleBinPrefab);
-                _dismantleBin.transform.position = new Vector2(10, 10);
-                _dismantleBin.transform.parent = transform;
-            }
 
             UpdateFloatingMarkers(false);
             
@@ -200,14 +159,10 @@ namespace StarSalvager
             SelectedPartRemoveFromStorage = false;
             SelectedPartReturnToStorageIfNotPlaced = false;
 
-            Camera.onPostRender -= DrawGL;
+            //Camera.onPostRender -= DrawGL;
             Globals.IsRecoveryBot = false;
 
-            if (_scrapyardBot != null)
-            {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
-                _scrapyardBot = null;
-            }
+            RecycleDrone();
         }
 
         #endregion //IReset Functions
@@ -292,7 +247,7 @@ namespace StarSalvager
                     {
                         var blockData = SelectedBrick.Value;
                         
-                        Toast.AddToast("Dismantle part", verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                        Toast.AddToast("Dismantle part");
 
 
                         PlayerDataManager.AddPartResources(SelectedBrick.Value, true);
@@ -646,7 +601,7 @@ namespace StarSalvager
             Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
@@ -691,7 +646,7 @@ namespace StarSalvager
             _currentLayout = tempLayout;
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
-                if (_bitType == BIT_TYPE.WHITE)
+                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
@@ -727,7 +682,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockDatas(_scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 
@@ -738,6 +693,39 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Other
+
+        public void SetupDrone()
+        {
+            if (_scrapyardBot != null)
+            {
+                return;
+            }
+
+            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
+
+            var currentBlockData = PlayerDataManager.GetBlockDatas();
+            //Checks to make sure there is a core on the bot
+            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+            {
+                _scrapyardBot.InitBot();
+            }
+            else
+            {
+                var importedData = currentBlockData.ImportBlockDatas(true);
+                _scrapyardBot.InitBot(importedData);
+            }
+        }
+
+        public void RecycleDrone()
+        {
+            if (_scrapyardBot == null)
+            {
+                return;
+            }
+
+            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+            _scrapyardBot = null;
+        }
 
         public void ToggleDrones()
         {
@@ -768,6 +756,29 @@ namespace StarSalvager
             UpdateFloatingMarkers(false);
         }
 
+        public void SetupDismantleBin()
+        {
+            if (_dismantleBin != null)
+            {
+                return;
+            }
+
+            _dismantleBin = Instantiate(dismantleBinPrefab);
+            _dismantleBin.transform.position = new Vector2(10, 8);
+            _dismantleBin.transform.parent = transform;
+        }
+
+        public void RecycleDismantleBin()
+        {
+            if (_dismantleBin == null)
+            {
+                return;
+            }
+
+            GameObject.Destroy(_dismantleBin);
+            _dismantleBin = null;
+        }
+
         //Sell Bits & Components
         //============================================================================================================//
 
@@ -775,9 +786,6 @@ namespace StarSalvager
 
         private void SellBits()
         {
-            if (_scrapyardBot == null)
-                return;
-
             var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
             //Obtain the block data from both the Recovery Drone & Drone
@@ -786,13 +794,13 @@ namespace StarSalvager
             Globals.IsRecoveryBot = true;
             //Get the Recovery Drone data & clean it
             var recoveryDroneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
-            PlayerDataManager.SetBlockDatas(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            PlayerDataManager.SetBlockData(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             Globals.IsRecoveryBot = false;
             
             //Get the active Drone Data & clean it
             var droneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
-            PlayerDataManager.SetBlockDatas(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part))).ToList());
+            PlayerDataManager.SetBlockData(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -857,7 +865,7 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                 }
             }
-
+            
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
             DroneDesignUi.UpdateBotResourceElements();
@@ -918,6 +926,9 @@ namespace StarSalvager
 
         private static void ShowAlertInfo(IEnumerable<BlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
         {
+            if (processedResources.IsNullOrEmpty() || wastedResources.IsNullOrEmpty())
+                return;
+            
             var bits = botBlockDatas
                 .Where(x => x.ClassType.Equals(nameof(Bit)) || x.ClassType.Equals(nameof(ScrapyardBit))).ToArray();
             
@@ -963,7 +974,12 @@ namespace StarSalvager
                 resourcesWasted += $"{resource.Value} {materialIcon} jettisoned due to lack of storage\n";
             }
 
-            Alert.ShowAlert("Resources Refined", $"{resourcesGained}{resourcesWasted}", "Okay", null);
+            var body = $"{resourcesGained}{resourcesWasted}";
+
+            if (string.IsNullOrEmpty(body))
+                return;
+
+            Alert.ShowAlert("Resources Refined", body, "Okay", null);
             Alert.SetLineHeight(90f);
         }
         
