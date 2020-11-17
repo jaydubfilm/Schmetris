@@ -30,6 +30,11 @@ namespace StarSalvager.Tutorial
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject window;
         [SerializeField, BoxGroup("Tutorial UI")]
+        private FadeUIImage glowImage;
+        [SerializeField, BoxGroup("Tutorial UI")]
+        private RectTransform glowBar;
+        
+        [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
          [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
         private Image fillImage;
@@ -81,6 +86,7 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
+            glowImage.gameObject.SetActive(false);
             //SetDialogWindowActive(false);
             pauseImage.SetActive(false);
             InitPositions();
@@ -162,9 +168,13 @@ namespace StarSalvager.Tutorial
         }
         private IEnumerator MoveStepCoroutine()
         {
+            
             //TODO Need to have the bot fly in
 
             LevelManager.Instance.SetBotEnterScreen(true);
+            
+            var bot = LevelManager.Instance.BotObject;
+            bot.PROTO_GodMode = true;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
@@ -275,19 +285,32 @@ namespace StarSalvager.Tutorial
 
             yield return new WaitUntil(() => magnet);
             
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+            SetMagnetGlow();
+            
             bot.OnFullMagnet -= SetMagnet;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[7], true));
             
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
             yield return new WaitForSeconds(0.5f);
+            
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            glowImage.gameObject.SetActive(false);
         }
         private IEnumerator MagnetFirstCoroutine()
         {
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+            SetMagnetGlow();
+            
             //tutorialSteps[5]
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[5], true));
             
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            glowImage.gameObject.SetActive(false);
+            
             yield return new WaitForSeconds(0.5f);
             
             SetText(tutorialRemoteData[8], true, true);
@@ -416,9 +439,12 @@ namespace StarSalvager.Tutorial
 
             PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
             
-            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-
-            fadeImage.color = Color.clear;
+            
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+            });
         }
         
         //Generic Tutorial Steps
@@ -500,6 +526,23 @@ namespace StarSalvager.Tutorial
 
         //IInput Functions
         //====================================================================================================================//
+
+        private void SetMagnetGlow()
+        {
+            glowImage.gameObject.SetActive(true);
+            
+            glowImage.transform.SetParent(glowBar);
+
+            var glowRectTransform = (RectTransform) glowImage.transform;
+            glowRectTransform.anchorMin = Vector2.zero;
+            glowRectTransform.anchorMax = Vector2.one;
+            
+            glowRectTransform.sizeDelta = new Vector2(20f, 20f);
+            glowRectTransform.localPosition = Vector3.zero;
+
+            glowImage.SetActive(true);
+
+        }
         
         //TODO Need to setup AnyKey
         

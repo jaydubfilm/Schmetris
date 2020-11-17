@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4c2553e2dd5d74a9907606f4b3247c, type: 3}
   m_Name: Facility Remote
   m_EditorClassIdentifier: 
-  PatchSprite: {fileID: 21300000, guid: 3c51b9d2ec252614d84a0f362709b2ed, type: 3}
+  PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
   FacilityRemoteData:
   - type: 0
     displayName: Freezer
@@ -218,15 +218,15 @@ MonoBehaviour:
     hideInFacilityMenu: 0
     levels:
     - level: 0
-      increaseAmount: 50
+      increaseAmount: 5
       patchCost: 1
       facilityPrerequisites: []
     - level: 1
-      increaseAmount: 100
+      increaseAmount: 10
       patchCost: 2
       facilityPrerequisites: []
     - level: 2
-      increaseAmount: 150
+      increaseAmount: 15
       patchCost: 3
       facilityPrerequisites: []
   - type: 10

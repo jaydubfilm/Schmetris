@@ -293,11 +293,11 @@ namespace StarSalvager.UI
 
                     //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 }
-                else
+                /*else
                 {
                     Toast.AddToast("No empty save slots! Load an existing game or delete a save file to proceed.",
-                        time: 3.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
-                }
+                        time: 3.0f);
+                }*/
             });
 
             tutorialButton.onClick.AddListener(() =>

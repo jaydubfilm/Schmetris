@@ -345,6 +345,13 @@ namespace StarSalvager
             if (GameTimer.IsPaused) 
                 return;
 
+
+            if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
+            {
+                isContinuousRotation = false;
+                return;
+            }
+
             if (previousDirection == direction && direction != 0)
             {
                 isContinuousRotation = true;
@@ -2556,7 +2563,7 @@ namespace StarSalvager
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        private void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+        public void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
             IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {
@@ -2844,6 +2851,8 @@ namespace StarSalvager
         public void ForceDisconnectAllDetachables()
         {
             DetachBlocks(attachedBlocks.OfType<ICanDetach>(), true, true);
+            
+            ForceCheckMagnets();
         }
 
         private bool CheckHasMagnetOverage()
@@ -2966,8 +2975,10 @@ namespace StarSalvager
                     continue;
 
                 var core = attachedBlocks[0] as Part;
+
+                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
                 
-                if (_botPartsLogic.ProcessBit(core, bit) > 0)
+                if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {
                     toDetach.RemoveAt(i);
                 }
@@ -3610,7 +3621,10 @@ namespace StarSalvager
         public void CustomRecycle(params object[] args)
         {
             transform.localScale = Vector2.one;
-            
+            isContinuousRotation = false;
+            targetRotation = 0;
+            _rotating = false;
+
             foreach (var attachable in attachedBlocks)
             {
                 switch (attachable)

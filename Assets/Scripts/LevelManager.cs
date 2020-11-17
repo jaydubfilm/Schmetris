@@ -38,8 +38,8 @@ namespace StarSalvager
 
         #region Properties
 
-        private List<Bot> m_bots;
-        public Bot BotObject => m_bots[0];
+        private List<Bot> m_bots = new List<Bot>();
+        public Bot BotObject => m_bots.Count > 0 ? m_bots[0] : null;
 
         [SerializeField, Space(10f)]
         private CameraController m_cameraController;
@@ -224,6 +224,11 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             foreach (var bot in m_bots)
             {
                 var pos = bot.transform.position;
@@ -237,6 +242,7 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
+                    BotObject.PROTO_GodMode = Globals.UsingTutorial;
                     
                     _t = 0f;
                     _startY = 0f;
@@ -328,6 +334,11 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -348,7 +359,11 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
                     });
             }
             else if (EndSectorState)
@@ -361,12 +376,33 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                        });
                     });
             }
             else
             {
-                //Turn wave end summary data into string, post in alert, and clear wave end summary data
+                m_levelManagerUI.ShowWaveSummaryWindow(
+                    WaveEndSummaryData.WaveEndTitle,
+                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                    () => 
+                {
+                    Globals.IsBetweenWavesInUniverseMap = true;
+                    IsWaveProgressing = true;
+                    ProcessScrapyardUsageBeginAnalytics();
+                    EndWaveState = false;
+                    
+                    
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                    });
+                });
+                
+                /*//Turn wave end summary data into string, post in alert, and clear wave end summary data
                 m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
@@ -377,7 +413,7 @@ namespace StarSalvager
                         EndWaveState = false;
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     },
-                    "Continue");
+                    "Continue");*/
             }
 
 
@@ -543,6 +579,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             InputManager.Instance.InitInput();
+            InputManager.Instance.LockRotation = true;
 
             WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
 
@@ -681,6 +718,11 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+            
             SavePlayerData();
 
             //Unlock loot for completing wave
@@ -709,7 +751,7 @@ namespace StarSalvager
 
             endWaveMessage = "Wave Complete!";
 
-            Toast.AddToast(endWaveMessage, time: 1.0f, verticalLayout: Toast.Layout.Middle, horizontalLayout: Toast.Layout.Middle);
+            Toast.AddToast(endWaveMessage);
             if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
             {
                 /*CurrentWaveData.ConfigureLootTable();
@@ -825,14 +867,25 @@ namespace StarSalvager
         {
             m_botEnterScreen = value;
 
-            if(value)
+            if (value)
+            {
                 CreateThrustEffect(BotObject);
-            else if(_effect)
+                BotObject.PROTO_GodMode = true;
+            }
+            else if (_effect)
+            {
+                InputManager.Instance.LockRotation = false;
                 Destroy(_effect);
+            }
         }
 
         public void SetBotExitScreen(bool value)
         {
+            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            {
+                return;
+            }
+
             m_botZoomOffScreen = value;
 
             if (!value)
@@ -894,7 +947,7 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<BlockData>();
 
-                PlayerDataManager.SetBlockDatas(blockData);
+                PlayerDataManager.SetBlockData(blockData);
             }
         }
 
@@ -903,7 +956,12 @@ namespace StarSalvager
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
             GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
-            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
+
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
+            });
+            
         }
 
         private void OnBotDied(Bot _, string deathMethod)
@@ -920,6 +978,7 @@ namespace StarSalvager
             }
 
             InputManager.Instance.CancelMove();
+            InputManager.Instance.LockRotation = true;
 
             if (!Globals.IsRecoveryBot)
             {

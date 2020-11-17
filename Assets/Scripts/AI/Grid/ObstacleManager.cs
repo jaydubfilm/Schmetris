@@ -589,6 +589,11 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
+            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            {
+                return;
+            }
+
             if (stageNumber > 0)
                 m_previousStageData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber - 1);
 
@@ -636,6 +641,12 @@ namespace StarSalvager
         public void Move(float direction)
         {
             if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            if (direction != 0 && LevelManager.Instance.BotDead)
             {
                 m_currentInput = 0f;
                 return;

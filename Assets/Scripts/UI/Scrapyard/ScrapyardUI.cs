@@ -192,7 +192,11 @@ namespace StarSalvager.UI.Scrapyard
 
                         if (!quit)
                         {
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                            ScreenFade.Fade(() =>
+                            {
+                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                            });
+                            
                             return;
                         }
 #if UNITY_EDITOR
@@ -259,7 +263,12 @@ namespace StarSalvager.UI.Scrapyard
                 Globals.SectorComplete = false;
             }
             
-            SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+            
+            
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+            });
         }
         
         

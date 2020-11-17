@@ -123,7 +123,10 @@ namespace StarSalvager
 
             if (bot != null)
             {
-                
+                if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+                {
+                    return;
+                }
 
                 if (bot.Rotating)
                 {

@@ -12,6 +12,7 @@ using StarSalvager.Prototype;
 using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -243,6 +244,18 @@ namespace StarSalvager
 
                 if(levelData.powerDraw > 0f && !usedResourceTypes.Contains(BIT_TYPE.YELLOW))
                     usedResourceTypes.Add(BIT_TYPE.YELLOW);
+
+                if (part.Type == PART_TYPE.REFINER)
+                {
+                    if(!usedResourceTypes.Contains(BIT_TYPE.BLUE))
+                        usedResourceTypes.Add(BIT_TYPE.BLUE);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.GREY))
+                        usedResourceTypes.Add(BIT_TYPE.GREY);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.GREEN))
+                        usedResourceTypes.Add(BIT_TYPE.GREEN);
+                    if(!usedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                        usedResourceTypes.Add(BIT_TYPE.YELLOW);
+                }
 
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Destroyed || part.Disabled)
@@ -664,6 +677,7 @@ namespace StarSalvager
             }
 
             TryRemoveResources(powerValue, powerToRemove, deltaTime);
+            LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
 
             UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
             UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
@@ -673,6 +687,7 @@ namespace StarSalvager
         {
             if (bot.PROTO_GodMode) 
                 return;
+            
             powerValue -= powerToRemove;
             if (powerValue < 0)
                 powerValue = 0f;
@@ -826,6 +841,13 @@ namespace StarSalvager
             //Increase the health of this part depending on the current level of the repairer
             toRepair.ChangeHealth(repairAmount * deltaTime);
             PlayerDataManager.AddRepairsDone(repairAmount * deltaTime);
+
+            
+            //Update the UI if the thing we're repairing is the core
+            if (partToRepair && partToRepair.Type == PART_TYPE.CORE)
+            {
+                GameUI.SetHealthValue(partToRepair.CurrentHealth / partToRepair.BoostedHealth);
+            }
 
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);
@@ -1395,6 +1417,22 @@ namespace StarSalvager
 
         #region Process Bit
 
+        
+        /// <summary>
+        /// Checks to see if the current liquid is less than or equal to valueToCheck
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="targetBit"></param>
+        /// <param name="valueToCheck"></param>
+        /// <returns></returns>
+        public int ProcessBit(in Part part, Bit targetBit, float valueToCheck)
+        {
+            PlayerResource playerResource = PlayerDataManager.GetResource(targetBit.Type);
+            var current = playerResource.liquid;
+
+            return current > valueToCheck ? 0 : ProcessBit(part, targetBit);
+        }
+
         public int ProcessBit(in Part part, Bit targetBit)
         {
             if (targetBit is ICanCombo iCanCombo && iCanCombo.IsBusy)
@@ -1418,6 +1456,16 @@ namespace StarSalvager
             if (current == capacity)
                 return 0;
 
+            //Get a list of orphans that may need move when we are moving our bits
+            var orphans = new List<OrphanMoveData>();
+            bot.CheckForOrphans(new[]
+                {
+                    //Bit that's being processed
+                    targetBit as IAttachable,
+                },
+                bot.attachedBlocks[0],
+                ref orphans);
+
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
             targetBit.IsBusy = true;
 
@@ -1427,6 +1475,7 @@ namespace StarSalvager
             //TODO May want to play around with the order of operations here
             StartCoroutine(RefineBitCoroutine(targetBit,
                 part.transform,
+                orphans,
                 1.6f,
                 () =>
                 {
@@ -1809,6 +1858,8 @@ namespace StarSalvager
                     
                     Destroy(turret.gameObject);
                 }
+                
+                _turrets = new Dictionary<Part, Transform>();
             }
 
             if (!_repairEffects.IsNullOrEmpty())
@@ -1819,6 +1870,7 @@ namespace StarSalvager
                 {
                     Destroy(repair);
                 }
+                _repairEffects = new Dictionary<Part, GameObject>();
             }
             
             if (!_boostEffects.IsNullOrEmpty())
@@ -1829,6 +1881,8 @@ namespace StarSalvager
                 {
                     Destroy(boost);
                 }
+                
+                _boostEffects = new Dictionary<Part, GameObject>();
             }
 
         }
@@ -1853,7 +1907,7 @@ namespace StarSalvager
         //Coroutines
         //============================================================================================================//
 
-        private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, float speed, Action onFinishedCallback)
+        private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, IReadOnlyList<OrphanMoveData> orphans, float speed, Action onFinishedCallback)
         {
             var bitStartPosition = bit.transform.position;
             var endPosition = processToTranform.position;
@@ -1863,6 +1917,25 @@ namespace StarSalvager
             bit.Coordinate = Vector2Int.zero;
             bit.renderer.sortingOrder = 10000;
 
+            foreach (var omd in orphans)
+            {
+                omd.attachableBase.Coordinate = omd.intendedCoordinates;
+                (omd.attachableBase as Bit)?.SetColliderActive(false);
+
+                if (omd.attachableBase is ICanCombo iCanCombo)
+                    iCanCombo.IsBusy = true;
+            }
+
+            //Same as above but for Orphans
+            //--------------------------------------------------------------------------------------------------------//
+
+            /*var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
+            var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
+            var orphanTargetPositions = orphans.Select(o =>
+                transform.InverseTransformPoint((Vector2)transform.position +
+                                                (Vector2)o.intendedCoordinates * Constants.gridCellSize)).ToArray();*/
+            //--------------------------------------------------------------------------------------------------------//
+
             while (t < 1f)
             {
                 bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
@@ -1870,10 +1943,39 @@ namespace StarSalvager
                 //TODO Need to adjust the scale here
                 bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
 
+
+                //Move the orphans into their new positions
+                //----------------------------------------------------------------------------------------------------//
+
+                /*for (var i = 0; i < orphans.Count; i++)
+                {
+                    var bitTransform = orphanTransforms[i];
+
+                    //Debug.Log($"Start {bitTransform.position} End {position}");
+
+                    bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
+                        orphanTargetPositions[i], t);
+
+                    SSDebug.DrawArrow(bitTransform.position, transform.TransformPoint(orphanTargetPositions[i]), Color.red);
+                }*/
+
                 t += Time.deltaTime * speed * moveSpeedCurve.Evaluate(t);
 
                 yield return null;
             }
+
+            //Re-enable the colliders on our orphans, and ensure they're in the correct position
+            /*for (var i = 0; i < orphans.Count; i++)
+            {
+                var attachable = orphans[i].attachableBase;
+                orphanTransforms[i].localPosition = orphanTargetPositions[i];
+
+                if (attachable is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(true);
+
+                if (attachable is ICanCombo canCombo)
+                    canCombo.IsBusy = false;
+            }*/
 
             onFinishedCallback?.Invoke();
             bit.transform.localScale = Vector3.one;

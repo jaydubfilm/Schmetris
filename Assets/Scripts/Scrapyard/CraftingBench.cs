@@ -25,7 +25,7 @@ namespace StarSalvager
                 || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1))
             {
                 if (!Toast.Instance.showingToast)
-                    Toast.AddToast("Not enough resources to craft", time: 1.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
+                    Toast.AddToast("Not enough resources to craft");
                 return;
             }
             

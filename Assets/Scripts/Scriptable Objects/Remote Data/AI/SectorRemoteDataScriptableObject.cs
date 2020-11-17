@@ -22,6 +22,11 @@ namespace StarSalvager.ScriptableObjects
 
         public WaveRemoteDataScriptableObject GetIndexConvertedRemoteData(int sectorNumber, int waveNumber)
         {
+            if (Globals.TestingFeatures)
+            {
+                return GetRemoteData(waveNumber);
+            }
+            
             if (!PlayerDataManager.HasPlayerRunData() || PlayerDataManager.SectorWaveIndexConverter == null)
             {
                 return GetRemoteData(waveNumber);
