@@ -46,6 +46,9 @@ namespace StarSalvager
             }
         }
 
+        public List<BIT_TYPE> CurrentlyUsedBitTypes => _currentlyUsedBitTypes;
+        private List<BIT_TYPE> _currentlyUsedBitTypes = new List<BIT_TYPE>();
+
         //==============================================================================================================//
 
         public Bot bot;
@@ -442,6 +445,7 @@ namespace StarSalvager
 
 
             bot.ForceCheckMagnets();
+            _currentlyUsedBitTypes = usedResourceTypes;
             GameUI.ShowLiquidSliders(usedResourceTypes);
         }
         

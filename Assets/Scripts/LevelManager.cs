@@ -1073,22 +1073,8 @@ namespace StarSalvager
 
                 IsWaveProgressing = false;
                 //GameTimer.SetPaused(false);
+
                 OutroScene.gameObject.SetActive(true);
-                
-                /*m_levelManagerUI.ShowSummaryScreen("GAME OVER",
-                    "You failed to recover your bot. Click to return to main menu.",
-                    () =>
-                    {
-                        Alert.ShowDancers(false);
-                        Globals.IsRecoveryBot = false;
-                        GameUi.ShowRecoveryBanner(false);
-                        Globals.CurrentWave = 0;
-                        GameTimer.SetPaused(false);
-                        PlayerDataManager.ResetPlayerRunData();
-                        PlayerDataManager.SavePlayerAccountData();
-                        PlayerDataManager.ClearCurrentSaveFile();
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
-                    });*/
             }
         }
 

@@ -3085,6 +3085,9 @@ namespace StarSalvager
                 if (!(toDetach[i] is Bit bit)) 
                     continue;
 
+                if (!_botPartsLogic.CurrentlyUsedBitTypes.Contains(bit.Type))
+                    continue;
+
                 var core = attachedBlocks[0] as Part;
 
                 float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
