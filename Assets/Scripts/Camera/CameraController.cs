@@ -350,6 +350,10 @@ namespace StarSalvager.Cameras
             {
                 transform.position += Vector3.up * (camera.orthographicSize / 2);
             }
+            else
+            {
+                transform.position += Vector3.down * 2;
+            }
 
             UpdateRect();
         }

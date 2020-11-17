@@ -137,7 +137,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private bool _scrollViewsSetup;
 
-        float cameraScaleOnEnter;
+        float cameraScaleOnEnter = 71;
 
         //Unity Functions
         //============================================================================================================//
@@ -163,7 +163,7 @@ namespace StarSalvager.UI.Scrapyard
             _droneDesigner.SetupDrone();
             _droneDesigner.SetupDismantleBin();
 
-            cameraScaleOnEnter = m_cameraZoomScaler.value;
+            m_cameraZoomScaler.value = cameraScaleOnEnter;
 
             if (_scrollViewsSetup)
                 RefreshScrollViews();
@@ -174,6 +174,8 @@ namespace StarSalvager.UI.Scrapyard
             //TODO May want to setup some sort of Init function to merge these two setups
             //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
+
+            ScaleCamera(m_cameraZoomScaler.value);
         }
 
         private void OnDisable()
@@ -182,7 +184,7 @@ namespace StarSalvager.UI.Scrapyard
             _droneDesigner.RecycleDrone();
             _droneDesigner.RecycleDismantleBin();
 
-            m_cameraZoomScaler.value = cameraScaleOnEnter;
+            cameraScaleOnEnter = m_cameraZoomScaler.value;
 
             DroneDesigner?.ClearUndoRedoStacks();
 
@@ -192,6 +194,8 @@ namespace StarSalvager.UI.Scrapyard
             
             //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
             repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
+
+            Globals.ScaleCamera(Globals.CameraScaleSize);
         }
 
         #endregion //Unity Functions
@@ -348,7 +352,6 @@ namespace StarSalvager.UI.Scrapyard
             });
 
             m_cameraZoomScaler.onValueChanged.AddListener(ScaleCamera);
-
         }
 
         private void ScaleCamera(float value)
@@ -485,7 +488,9 @@ namespace StarSalvager.UI.Scrapyard
                 powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss") + "s";
 
             flightDataText.text = $"Flight Data:\nParts: {partCapacity}\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}";
-            
+
+            //Temporarily remove flight data from screen
+            flightDataText.gameObject.SetActive(false);
         }
 
         #endregion //Flight Data UI
