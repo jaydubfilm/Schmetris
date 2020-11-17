@@ -414,7 +414,7 @@ namespace StarSalvager.Utilities.Inputs
             if (_moveOnInput == null)
                 return;
 
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (value != 0 && (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed)))
                 return;
 
             if (value != 0 && LevelManager.Instance.EndWaveState)
