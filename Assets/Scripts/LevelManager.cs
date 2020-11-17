@@ -260,6 +260,8 @@ namespace StarSalvager
                 bot.transform.localScale = Vector3.one * scale;
 
                 _t += Time.deltaTime;
+                
+                m_cameraController.SetTrackedOffset(y: (5 * Constants.gridCellSize) - newY);
             }
 
             if (m_botZoomOffScreen)
@@ -447,16 +449,22 @@ namespace StarSalvager
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
                     });
             }*/
+            
+            ProjectileManager.CleanProjectiles();
 
             MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
                 new MissionProgressEventData());
 
-            ProjectileManager.UpdateForces();
+            //ProjectileManager.UpdateForces();
+
             Globals.IsRecoveryBot = false;
         }
 
+        //FIXME This will need to be cleaned up
         private void MoveBotOffScreen()
         {
+            const float offset = Constants.gridCellSize * 5;
+            
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
             if (botMoveOffScreenSpeed < 20)
             {
@@ -474,7 +482,7 @@ namespace StarSalvager
             {
                 bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
                 float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
-                    (bot.transform.position.y - (Constants.gridCellSize * 5)) / (yPos - (Constants.gridCellSize * 5)));
+                    (bot.transform.position.y - offset) / (yPos - offset));
                 bot.transform.localScale = new Vector2(scale, scale);
 
 
@@ -492,6 +500,8 @@ namespace StarSalvager
                     UpdateTowLineRenderer(bot.transform.position,
                         ObstacleManager.RecoveredBotFalling.transform.position);
                 }
+                
+                m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
             }
         }
 
@@ -857,18 +867,20 @@ namespace StarSalvager
 
         public void SetBotBelowScreen()
         {
+            //Debug.LogError("ERROR: This needs to be fixed to support new movement system");
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].transform.position = Vector3.down * 5;
             }
+            
+            _startY = -5f; 
 
-            _startY = -5f;
         }
 
         public void SetBotEnterScreen(bool value)
         {
             m_botEnterScreen = value;
-
+            
             if (value)
             {
                 CreateThrustEffect(BotObject);
@@ -889,14 +901,16 @@ namespace StarSalvager
             }
 
             m_botZoomOffScreen = value;
-
+            
             if (!value)
             {
                 botMoveOffScreenSpeed = 1.0f;
             }
-            
-            if(value)
+
+            if (value)
+            {
                 CreateThrustEffect(BotObject);
+            }
             else if(_effect)
                 Destroy(_effect);
         }

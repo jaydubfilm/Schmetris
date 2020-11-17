@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cinemachine;
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras.Data;
@@ -24,6 +25,9 @@ namespace StarSalvager.Cameras
         
         
         #region Properties
+        
+        [Required]
+        public CinemachineVirtualCamera CinemachineVirtualCamera;
 
         private Vector3 _startPos;
         private Vector3 _beginningLerpPos;
@@ -104,7 +108,7 @@ namespace StarSalvager.Cameras
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (InputManager.Instance.MostRecentSideMovement != 0)
+            /*if (InputManager.Instance.MostRecentSideMovement != 0)
             {
                 CurrentState = _atBounds ? STATE.MOTION : STATE.NONE;
             }
@@ -152,7 +156,7 @@ namespace StarSalvager.Cameras
                 _last = _current = Vector2.zero;
             }
 
-            tempPosition = transform.position;
+            tempPosition = transform.position;*/
 
 
         }
@@ -287,10 +291,9 @@ namespace StarSalvager.Cameras
 
         #endregion //Camera Rect
 
-
         //================================================================================================================//
 
-        [Obsolete("This should not move using the ObstacleManager")]
+        /*[Obsolete("This should not move using the ObstacleManager")]
         public void MoveCameraWithObstacles(Vector3 toMoveCamera)
         {
             if (!Globals.CameraUseInputMotion)
@@ -319,7 +322,7 @@ namespace StarSalvager.Cameras
             transform.position = newPosition;
 
             _cameraXOffset = newPosition.x;
-        }
+        }*/
 
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
@@ -334,6 +337,8 @@ namespace StarSalvager.Cameras
             //horzExtent = orthographicSize * Screen.width / Screen.height / 2;
 
             UpdateRect();
+
+            SetOrthoSize(orthographicSize);
         }
 
         public void CameraOffset(Vector3 pos, bool useHorizontalOffset)
@@ -378,6 +383,52 @@ namespace StarSalvager.Cameras
             return clamped;
         }
 
+
+        //Virtual Camera
+        //====================================================================================================================//
+
+        public void SetLookAtFollow(Transform target)
+        {
+            CinemachineVirtualCamera.LookAt = target;
+            CinemachineVirtualCamera.Follow = target;
+
+        }
+
+        /*public void SetDeadzone(float width = 0.1f, float height = 0f)
+        {
+            var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            
+            framingTransposer.m_DeadZoneWidth = width;
+            framingTransposer.m_DeadZoneHeight = height;
+
+            framingTransposer.m_SoftZoneHeight = Mathf.Max(height, 0.8f);
+        }*/
+
+        public void SetTrackedOffset(float x = 0f, float y = 0f, float z = 0f)
+        {
+            var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+
+            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);
+            
+            framingTransposer.m_TrackedObjectOffset = newPos;
+        }
+
+        public void SetOrthoSize(float size)
+        {
+            if (!CinemachineVirtualCamera)
+                return;
+
+            CinemachineVirtualCamera.m_Lens.OrthographicSize = size;
+        }
+
+        public void ResetCameraPosition()
+        {
+            SetTrackedOffset();
+            CinemachineVirtualCamera.transform.position = new Vector3(0f, 13.39f, -10f);
+        }
+        
+
         //IMoveOnInput functions
         //================================================================================================================//
 
@@ -390,14 +441,14 @@ namespace StarSalvager.Cameras
             
         public void Move(float direction)
         {
-            if (!Globals.CameraUseInputMotion)
+            /*if (!Globals.CameraUseInputMotion)
                 return;
 
             if (direction == 0) 
                 return;
             
             _beginningLerpPos = _startPos;
-            _lerpValue = 0.0f;
+            _lerpValue = 0.0f;*/
         }
 
         #endregion //IMoveOnInput

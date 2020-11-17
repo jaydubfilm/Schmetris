@@ -12,6 +12,7 @@ using StarSalvager.Values;
 using StarSalvager.Factories.Data;
 using System.Linq;
 using StarSalvager.Prototype;
+
 using StarSalvager.UI;
 
 namespace StarSalvager
@@ -123,10 +124,14 @@ namespace StarSalvager
 
             if (bot != null)
             {
+
+                bot.SendImpulse();
+
                 if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
                 {
                     return;
                 }
+
 
                 if (bot.Rotating)
                 {

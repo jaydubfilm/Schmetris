@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -25,11 +27,12 @@ using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.Inputs;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput
     {
         private readonly struct ShiftData
         {
@@ -87,8 +90,10 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
         private List<IAttachable> _attachedBlocks;
-        
-        /*private List<Part> _parts;*/
+
+        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
+        private float m_currentInput;
+        private float m_distanceHorizontal = 0.0f;
 
         //============================================================================================================//
 
@@ -148,6 +153,30 @@ namespace StarSalvager
             }
         }
         private Rigidbody2D _rigidbody;
+        
+        public new Transform transform
+        {
+            get
+            {
+                if (_transform == null)
+                    _transform = gameObject.transform;
+                
+                return _transform;
+            }
+        }
+        private Transform _transform;
+
+        public CinemachineImpulseSource cinemachineImpulseSource
+        {
+            get
+            {
+                if (_cinemachineImpulseSource == null)
+                    _cinemachineImpulseSource = gameObject.GetComponent<CinemachineImpulseSource>();
+
+                return _cinemachineImpulseSource;
+            }
+        }
+        private CinemachineImpulseSource _cinemachineImpulseSource;
 
         private GameUI GameUi => GameUI.Instance;
 
@@ -161,12 +190,15 @@ namespace StarSalvager
         private void Start()
         {
             RegisterPausable();
+            RegisterMoveOnInput();
         }
+        
 
         private void Update()
         {
             if (isPaused)
                 return;
+
             
             SetParticles();
             
@@ -178,13 +210,25 @@ namespace StarSalvager
             if (Destroyed)
                 return;
             
+            TryMovement();
+
+            if (Rotating)
+            {
+                RotateBot();
+            }
+            
             //TODO Once all done testing, remove this
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
             {
                 Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
             }
             
             BotPartsLogic.PartsUpdateLoop();
+
+            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            {
+                Move(m_currentInput);
+            }
         }
 
         private void LateUpdate()
@@ -205,20 +249,6 @@ namespace StarSalvager
             }
         }
 
-        private void FixedUpdate()
-        {
-            if(Destroyed)
-                return;
-
-            /*if (Moving)
-                MoveBot();*/
-
-            if (Rotating)
-            {
-                RotateBot();
-            }
-        }
-
         private void OnEnable()
         {
             CompositeCollider2D.GenerateGeometry();
@@ -226,9 +256,78 @@ namespace StarSalvager
 
         #endregion //Unity Functions
 
+        //IMoveOnInput
+        //============================================================================================================//
+
+        private void TryMovement()
+        {
+            var xPos = transform.position.x;
+
+            var distHorizontal = Mathf.Abs(m_distanceHorizontal);
+            DIRECTION direction;
+
+
+            bool canMove;
+            if (m_distanceHorizontal < 0)
+            {
+                direction = DIRECTION.LEFT;
+                canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+            }
+            else if (m_distanceHorizontal > 0)
+            {
+                direction = DIRECTION.RIGHT;
+                canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+            }
+            else
+            {
+                canMove = false;
+                distHorizontal = 0f;
+                direction = DIRECTION.NULL;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+
+            Globals.MovingDirection = distHorizontal <= 0.2f
+                ? DIRECTION.NULL
+                : direction;
+
+            if (!canMove)
+                return;
+            
+            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+
+            var moveDirection = direction.ToVector2();
+
+            m_distanceHorizontal -= toMove * moveDirection.x;
+            transform.position += (Vector3)moveDirection * toMove;
+
+            //--------------------------------------------------------------------------------------------------------//
+
+        }
+
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+
+        public void Move(float direction)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            m_currentInput = direction;
+
+            m_distanceHorizontal += direction * Constants.gridCellSize;
+        }
+
+
         //Particle Tests
         //====================================================================================================================//
-        
+
         private void SetParticles()
         {
             if (Destroyed)
@@ -304,6 +403,10 @@ namespace StarSalvager
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
             
             GameUi.SetHealthValue(1f);
+
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -329,7 +432,14 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
+
+            
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
+
             BotPartsLogic.PopulatePartsList();
+
         }
 
 
@@ -344,6 +454,7 @@ namespace StarSalvager
         {
             if (GameTimer.IsPaused) 
                 return;
+
 
 
             if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
@@ -394,7 +505,7 @@ namespace StarSalvager
             {
                 targetRotation = rigidbody.rotation + toRotate;
             }
-
+            
             targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
@@ -431,7 +542,7 @@ namespace StarSalvager
 
         private void RotateBot()
         {
-            var rotation = rigidbody.rotation;
+            var rotation = transform.eulerAngles.z;
 
             //Rotates towards the target rotation.
             float rotationAmount;
@@ -443,8 +554,8 @@ namespace StarSalvager
             {
                 rotationAmount = Globals.BotRotationSpeed;
             }
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
-            rigidbody.rotation = rotation;
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(0,0,rotation);
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
@@ -468,7 +579,7 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            rigidbody.rotation = targetRotation;
+            transform.rotation = Quaternion.Euler(0,0,targetRotation);
             targetRotation = 0f;
             
             
@@ -3822,6 +3933,13 @@ namespace StarSalvager
 #endif
 
         #endregion //UNITY EDITOR
+
+        //====================================================================================================================//
+
+        public void SendImpulse()
+        {
+            cinemachineImpulseSource.GenerateImpulse(10);
+        }
 
         //====================================================================================================================//
 
