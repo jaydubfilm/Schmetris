@@ -103,7 +103,7 @@ namespace StarSalvager.Audio
         //Static functions
         //============================================================================================================//
 
-        public static void PlayBitConnectSound(BIT_TYPE bitType, float volume = 1f, float pitch = 1f)
+        public static void PlayBitConnectSound(BIT_TYPE bitType, float pitch = 1f)
         {
             SOUND sound;
             switch (bitType)
@@ -127,19 +127,18 @@ namespace StarSalvager.Audio
                     throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
             }
 
-            PlaySound(sound, volume, pitch);
+            PlaySound(sound, pitch);
         }
 
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
         /// </summary>
         /// <param name="volume"></param>
-        public static void PlaySound(SOUND sound, float volume = 1f, float pitch = 1f)
+        public static void PlaySound(SOUND sound, float pitch = 1f)
         {
             if (Instance == null)
                 return;
 
-            volume = Mathf.Clamp01(volume);
             pitch = Mathf.Clamp(pitch, 0.01f, 3f);
 
 
@@ -155,7 +154,7 @@ namespace StarSalvager.Audio
             if(pitch != 1f)
                 Instance.PlaySoundPitched(sound, pitch);
             else
-                Instance.PlayOneShot(sound, volume);
+                Instance.PlayOneShot(sound);
         }
         
         public static void StopSound(SOUND sound)
@@ -322,12 +321,12 @@ namespace StarSalvager.Audio
         //SFX Functions
         //============================================================================================================//
 
-        private void PlayOneShot(SOUND sound, float volume)
+        private void PlayOneShot(SOUND sound)
         {
-            if (!TryGetSoundClip(sound, out AudioClip clip))
+            if (!TryGetSound(sound, out var soundClip))
                 return;
 
-            PlayOneShot(clip, volume);
+            PlayOneShot(soundClip.clip, soundClip.Volume);
         }
 
         private void PlaySoundPitched(SOUND sound, float pitch)
@@ -535,6 +534,10 @@ namespace StarSalvager.Audio
         {
             return TryGetClip(soundClips, sound, out clip);
         }
+        private bool TryGetSound(SOUND sound, out SoundClip baseSound)
+        {
+            return TryGetSound(soundClips, sound, out baseSound);
+        }
 
         //============================================================================================================//
         
@@ -542,6 +545,12 @@ namespace StarSalvager.Audio
         {
             clip = list.FirstOrDefault(s => Equals(s.sound, sound))?.clip;
             return clip != null;
+        }
+        
+        private static bool TryGetSound<T>(IEnumerable<BaseSound<T>> list, T sound, out SoundClip baseSound) where T : Enum
+        {
+            baseSound = list.FirstOrDefault(s => Equals(s.sound, sound)) as SoundClip;
+            return baseSound != null;
         }
 
         #endregion

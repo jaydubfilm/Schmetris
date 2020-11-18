@@ -11,7 +11,7 @@ namespace StarSalvager.Audio.Data
         public abstract E sound { get; set; }
         public abstract AudioClip clip { get; set; }
 
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
 
         private string playButtonText => playingSound ? "Stop" : "Play";
         private bool playingSound;
@@ -57,6 +57,6 @@ namespace StarSalvager.Audio.Data
             return clip == null;
         }
 
-#endif
+#endif*/
     }
 }

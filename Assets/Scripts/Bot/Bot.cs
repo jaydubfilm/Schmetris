@@ -661,7 +661,8 @@ namespace StarSalvager
 
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+                    legalDirection = true;
+                    //legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //------------------------------------------------------------------------------------------------//
 
