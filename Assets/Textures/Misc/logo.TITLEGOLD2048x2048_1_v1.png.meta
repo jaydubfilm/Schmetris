@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: 156c5b2bc4f90af4d87c0e5553785272
+guid: 454c9c5cd7fcb83468ce37b9e8b985e6
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -7041551057408696451
+    second: logo.TITLEGOLD2048x2048_1_v1_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -40,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 0
   spriteMeshType: 0
   alignment: 0
@@ -97,11 +100,32 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: logo.TITLEGOLD2048x2048_1_v1_0
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 574
+        width: 1983
+        height: 901
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7fd06bfe92674e90800000000000000
+      internalID: -7041551057408696451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 25b38266a68b0874bb096ba56c4e9354
     internalID: 0
     vertices: []
     indices: 
