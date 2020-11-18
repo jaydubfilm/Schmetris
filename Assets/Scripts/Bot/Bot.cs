@@ -2232,6 +2232,22 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
                     continue;
                 
+                //Bonus Shape Effects
+                //----------------------------------------------------------------------------------------------------//
+                
+                foreach (var attachable in shape.AttachedBits)
+                {
+                    CreateBonusShapeEffect(attachable.transform.position);
+                }
+                
+                foreach (var coordinate in upgrading)
+                {
+                    var block = attachedBlocks.FirstOrDefault(x => x.Coordinate == coordinate);
+                    CreateBonusShapeEffect(block.transform);
+                }
+                
+                //----------------------------------------------------------------------------------------------------//
+                
                 AudioController.PlaySound(SOUND.BONUS_SHAPE_MATCH);
                 
                 AudioController.PlaySound(SOUND.BONUS_SHAPE_UPG);
@@ -2255,6 +2271,8 @@ namespace StarSalvager
                 }
 
                 var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
+
+                
                 
                 //Remove the Shape
                 PlayerDataManager.ChangeGears(gears);
@@ -2374,6 +2392,27 @@ namespace StarSalvager
             
             
             Destroy(effect, newTime);
+        }
+
+        private void CreateBonusShapeEffect(Vector3 worldPosition)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
+            
+            effect.transform.position = worldPosition;
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+        private void CreateBonusShapeEffect(Transform parent)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
+            
+            effect.transform.SetParent(parent, false);
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
         }
         
         //============================================================================================================//
