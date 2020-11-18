@@ -331,6 +331,9 @@ namespace StarSalvager.Values
             Toast.AddToast($"Unlocked {(difference > 1 ? $"{difference} Patch Points!" : "New Patch Point!")}");
                 
             AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
+            
+            LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
+            
         }
 
         public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
