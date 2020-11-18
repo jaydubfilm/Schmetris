@@ -8371,10 +8371,10 @@ MonoBehaviour:
   moveTargetTransform: {fileID: 1019469002935514796}
   imagePrefab: {fileID: 100507466034444654, guid: 23e0d2c765a295448aadbc976b4a9294,
     type: 3}
-  effectRadius: 6
+  effectRadius: 3
   effectCount: 3
   rotationSpeed: 250
-  spawnTime: 0.3
+  spawnTime: 0.45
   spawnCurve:
     serializedVersion: 2
     m_Curve:
@@ -8399,7 +8399,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  moveTime: 0.75
+  moveTime: 0.9
   moveCurve:
     serializedVersion: 2
     m_Curve:
