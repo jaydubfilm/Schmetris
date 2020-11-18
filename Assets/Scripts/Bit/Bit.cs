@@ -200,6 +200,8 @@ namespace StarSalvager
             var inDirection = (-rayDirection).ToDirection();
             bot.TryAddNewAttachable(this, inDirection, hit.point);
         }
+        
+        private void FindClosestCollision
 
         //ICanCombo Functions
         //====================================================================================================================//
