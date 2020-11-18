@@ -25,6 +25,9 @@ namespace StarSalvager.Audio
         private const string SFX_PITCH ="SFX_Pitch";
 
         private const int MAX_CHANNELS = 2;
+
+        private static float _sfxVolume = 1f;
+        private static float _musicVolume = 1f;
         
         //Audio Sources
         //============================================================================================================//
@@ -193,6 +196,22 @@ namespace StarSalvager.Audio
             Instance.PlayWaveMusic(index, forceChange);
         }
 
+        public static void FadeInMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicIn();
+        }
+        
+        public static void FadeOutMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicOut();
+        }
+
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
         /// </summary>
@@ -215,8 +234,8 @@ namespace StarSalvager.Audio
             if (Instance == null)
                 return;
             
-            volume = Mathf.Clamp01(volume);
-            Instance.SetVolume(SFX_VOLUME, volume);
+            _sfxVolume = Mathf.Clamp01(volume);
+            Instance.SetVolume(SFX_VOLUME, _sfxVolume);
         }
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
@@ -227,11 +246,9 @@ namespace StarSalvager.Audio
             if (Instance == null)
                 return;
             
-            volume = Mathf.Clamp01(volume);
-            Instance.SetVolume(MUSIC_VOLUME, volume);
+            _musicVolume = Mathf.Clamp01(volume);
+            Instance.SetVolume(MUSIC_VOLUME, _musicVolume);
         }
-        
-        #endregion //Static Functions
         
         //============================================================================================================//
 
@@ -255,6 +272,15 @@ namespace StarSalvager.Audio
             
             Instance?.StopMoveSound(enemyId);
         }
+        //============================================================================================================//
+
+        #endregion //Static Functions
+        
+
+        //============================================================================================================//
+
+
+        #region Instance Functions
 
         //============================================================================================================//
 
@@ -291,14 +317,6 @@ namespace StarSalvager.Audio
         }
         
         //============================================================================================================//
-
-        
-        
-        //============================================================================================================//
-
-        #region Instance Functions
-
-
         
 
         //SFX Functions
@@ -527,6 +545,44 @@ namespace StarSalvager.Audio
         }
 
         #endregion
+
+        #region Coroutines
+
+        private bool _musicFading;
+        private void FadeMusicIn()
+        {
+            if (_musicFading)
+                return;
+
+            StartCoroutine(FadeMusicCoroutine(0f, _musicVolume));
+        }
+
+        private void FadeMusicOut()
+        {
+            if (_musicFading)
+                return;
+            
+            StartCoroutine(FadeMusicCoroutine(_musicVolume, 0f));
+        }
+
+        private IEnumerator FadeMusicCoroutine(float startVolume, float endVolume, float time = 1f)
+        {
+            _musicFading = true;
+            float t = 0f;
+
+            while (t / time <= 1f)
+            {
+                var volume = Mathf.Lerp(startVolume, endVolume, t / time);
+                SetVolume(MUSIC_VOLUME, volume);
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            _musicFading = false;
+        }
+
+        #endregion //Coroutines
         
         //============================================================================================================//
 
