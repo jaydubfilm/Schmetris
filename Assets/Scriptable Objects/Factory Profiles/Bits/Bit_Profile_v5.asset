@@ -18,22 +18,6 @@ MonoBehaviour:
   ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
     type: 3}
   profiles:
-  - _name: Asteroid
-    bitType: 0
-    _animation: {fileID: 0}
-    refinedSprite: {fileID: 0}
-    color: {r: 0, g: 0, b: 0, a: 0}
-    _sprites:
-    - {fileID: 1468034565532178442, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 5802500342819700109, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 2578734193110144143, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -7153818161905235260, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 3557526766217802622, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -762405936695349884, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 1439068305256464893, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 6363487636963010956, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -4645151511609175889, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -1245124940241270974, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
   - _name: Bluesalt
     bitType: 1
     _animation: {fileID: 0}
