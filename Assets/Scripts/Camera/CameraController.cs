@@ -103,9 +103,13 @@ namespace StarSalvager.Cameras
         //Smooth camera to center over bot
         private void Update()
         {
+            UpdateRect();
+            
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
 
+            
+            
             //--------------------------------------------------------------------------------------------------------//
 
             /*if (InputManager.Instance.MostRecentSideMovement != 0)
@@ -194,7 +198,7 @@ namespace StarSalvager.Cameras
         
         public static bool IsPointInCameraRect(Vector2 position, float xTotal)
         {
-            if (checkRects == null)
+            /*if (checkRects == null)
                 checkRects = new Dictionary<float, Rect>();
 
 
@@ -209,7 +213,13 @@ namespace StarSalvager.Cameras
                 rect.x += (_cameraRect.width * (1f - xTotal)) / 2f;
                 
                 checkRects.Add(xTotal, rect);
-            }
+            }*/
+            
+            var rect = _cameraRect;
+            rect.width *= xTotal;
+
+            //Offset by the remaining area
+            rect.x += (_cameraRect.width * (1f - xTotal)) / 2f;
             
             
             var tempRect = rect;
@@ -227,7 +237,7 @@ namespace StarSalvager.Cameras
             var height = 2f * orthographicSize;
 
             
-            pos = transform.position;
+            pos = camera.transform.position;
             center = -new Vector2(width / 2f, height / 2f) + pos;
 
             

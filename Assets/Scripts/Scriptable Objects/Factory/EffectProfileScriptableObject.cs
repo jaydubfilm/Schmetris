@@ -43,6 +43,9 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Effects")]
         public GameObject trailRendererPrefab;
+        
+        [SerializeField, Required, BoxGroup("Effects")]
+        public GameObject bonusShapeEffectPrefab;
 
         //Part Effects
         //====================================================================================================================//

@@ -125,8 +125,6 @@ namespace StarSalvager
             if (bot != null)
             {
 
-                bot.SendImpulse();
-
                 if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
                 {
                     return;

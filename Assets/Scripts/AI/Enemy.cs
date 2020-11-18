@@ -168,19 +168,19 @@ namespace StarSalvager.AI
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
             
-            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+            Vector2 playerLocation = LevelManager.Instance.BotObject != null
                 ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
-            Vector2 targetLocation;
+            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
             
-            switch (m_enemyData.FireType)
+            /*switch (m_enemyData.FireType)
             {
                 case FIRE_TYPE.SPIRAL:
                     targetLocation = Vector2.down;
                     break;
                 case FIRE_TYPE.FORWARD:
-                    targetLocation = Vector2.down;
+                    ;
                     break;
                 case FIRE_TYPE.RANDOM_SPRAY:
                 case FIRE_TYPE.FIXED_SPRAY:
@@ -188,7 +188,7 @@ namespace StarSalvager.AI
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(m_enemyData.FireType), m_enemyData.FireType, null);
-            }
+            }*/
 
             Vector2 shootDirection = m_enemyData.FireAtTarget
                 ? (targetLocation - (Vector2) transform.position).normalized

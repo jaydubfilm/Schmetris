@@ -54,8 +54,8 @@ namespace StarSalvager.Utilities
             string.Concat("destroy ", "enemies").ToUpper(),
             string.Concat("destroy ", "bot").ToUpper(),
             "\n",
-            string.Concat("hide ", "bot").ToUpper(),
-            string.Concat("hide ", "ui").ToUpper(),
+            string.Concat("hide ", "bot ", "[bool]").ToUpper(),
+            string.Concat("hide ", "ui ", "[bool]").ToUpper(),
             "\n",
             string.Concat("print ", "liquid").ToUpper(),
             string.Concat("print ", "currency").ToUpper(),
@@ -585,8 +585,13 @@ namespace StarSalvager.Utilities
                     }
 
                     var bot = FindObjectOfType<Bot>();
-                    bot.enabled = state;
-                    
+                    bot.gameObject.SetActive(!state);
+                    /*var renderers = bot.GetComponentsInChildren<SpriteRenderer>();
+
+                    foreach (var spriteRenderer in renderers)
+                    {
+                        spriteRenderer.enabled = !state;
+                    }*/
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);

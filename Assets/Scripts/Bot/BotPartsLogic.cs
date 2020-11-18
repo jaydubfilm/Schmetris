@@ -710,7 +710,6 @@ namespace StarSalvager
         //Individual Part Functions
         //====================================================================================================================//
         
-        
         #region Parts
 
         private void CoreUpdate(in Part part, in PartLevelData partLevelData, ref float resourceValue,
@@ -1117,8 +1116,6 @@ namespace StarSalvager
         }
 
         #endregion //Parts
-        
-        
 
         //====================================================================================================================//
 
@@ -1913,8 +1910,8 @@ namespace StarSalvager
 
         private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, IReadOnlyList<OrphanMoveData> orphans, float speed, Action onFinishedCallback)
         {
-            var bitStartPosition = bit.transform.position;
-            var endPosition = processToTranform.position;
+            var bitStartPosition = bit.transform.localPosition;
+            var endPosition = processToTranform.localPosition;
             var t = 0f;
 
             bit.SetColliderActive(false);
@@ -1942,7 +1939,7 @@ namespace StarSalvager
 
             while (t < 1f)
             {
-                bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
+                bit.transform.localPosition = Vector3.Lerp(bitStartPosition, endPosition, t);
 
                 //TODO Need to adjust the scale here
                 bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));
