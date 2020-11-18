@@ -1181,16 +1181,17 @@ namespace StarSalvager
             if (!attachableDestroyed)
                 return;
             
-            CreateExplosionEffect(closestAttachable.transform.position);
-            GameUi.FlashBorder();
-
-
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
 
             switch (closestAttachable)
             {
                 case Part core:
+                    CreateExplosionEffect(closestAttachable.transform.position);
+
+                    cinemachineImpulseSource.GenerateImpulse(5);
+                    GameUi.FlashBorder();
+                    
                     if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
@@ -1252,7 +1253,7 @@ namespace StarSalvager
             /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             explosion.transform.position = attachable.transform.position;*/
             
-            CreateExplosionEffect(attachable.transform.position);
+            //CreateExplosionEffect(attachable.transform.position);
 
             MissionProgressEventData missionProgressEventData;
 
@@ -3979,11 +3980,6 @@ namespace StarSalvager
         #endregion //UNITY EDITOR
 
         //====================================================================================================================//
-
-        public void SendImpulse()
-        {
-            cinemachineImpulseSource.GenerateImpulse(10);
-        }
 
         //====================================================================================================================//
 
