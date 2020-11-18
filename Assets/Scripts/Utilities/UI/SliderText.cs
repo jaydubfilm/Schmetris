@@ -27,21 +27,33 @@ namespace StarSalvager.Utilities.UI
         {
             get => _slider.value;
 
-            set => _slider.value = value;
+            set
+            {
+                _slider.value = value;
+                
+                if (_ignoreChanges)
+                    return;
+                sliderText.text = FormattedSliderText(format, value);
+            }
         }
 
-        public bool showMax;
+        
+        private bool _showMax;
+        private bool _hasFormat;
+        private bool _ignoreChanges;
 
         public void Init(bool showMaxValue = false, bool ignoreChanges = false)
         {
-            showMax = showMaxValue;
-            //Ensure that we have a nice clean slate
+            _hasFormat = !string.IsNullOrEmpty(format);
+            _showMax = showMaxValue;
+            _ignoreChanges = ignoreChanges;
+            /*//Ensure that we have a nice clean slate
             _slider.onValueChanged.RemoveAllListeners();
             
             if(!ignoreChanges)
-                _slider.onValueChanged.AddListener(ValueChanged);
-            
-            sliderText.text = FormattedSliderText(format, _slider.value);
+                _slider.onValueChanged.AddListener(ValueChanged);*/
+
+
         }
 
         public void SetBounds(float min, float max)
@@ -50,18 +62,27 @@ namespace StarSalvager.Utilities.UI
             _slider.maxValue = max;
         }
 
-        private void ValueChanged(float data)
+        /*private void ValueChanged(float data)
         {
             sliderText.text = FormattedSliderText(format, data);
         }
         private void ValueChanged(int data)
         {
             sliderText.text = FormattedSliderText(format, data);
-        }
+        }*/
 
         private string FormattedSliderText(string format, float data)
         {
-            return string.IsNullOrEmpty(format) ? $"{data}{(showMax ? "/" + Slider.maxValue :"")}" : string.Format(format, data, Slider.maxValue);
+            if (_hasFormat)
+                return string.Format(format, data, Slider.maxValue);
+
+            if (_showMax)
+                return $"{data} / {Slider.maxValue}";
+
+            return $"{data}";
+            
+            
+            //return string.IsNullOrEmpty(format) ? $"{data}{(_showMax ? "/" + Slider.maxValue :"")}" : ;
         }
     }
 }
