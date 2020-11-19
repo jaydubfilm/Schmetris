@@ -268,20 +268,10 @@ namespace StarSalvager.UI
         [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Color vignetteMaxColor;
 
-        //Other
-        //============================================================================================================//
-        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
-        private Vector2 flashTimeRange;
-        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
-        private Image borderGlow;
-        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
-        private Image border;
-        [SerializeField, FoldoutGroup("Extras/Neon Border")]
-        private AnimationCurve flashCurve;
-        private bool _flashingBorder;
-
-
-        #endregion //Properties
+        //Patch Point Effect
+        //====================================================================================================================//
+        
+        #region Patch Point Effect
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform effectArea;
@@ -306,6 +296,25 @@ namespace StarSalvager.UI
         private float moveTime;
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve moveCurve;
+
+        #endregion //Patch Point Effect
+        
+        //Other
+        //============================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Extras")] 
+        private FadeUIImage magnetFlash;
+        
+        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
+        private Vector2 flashTimeRange;
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
+        private Image borderGlow;
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
+        private Image border;
+        [SerializeField, FoldoutGroup("Extras/Neon Border")]
+        private AnimationCurve flashCurve;
+        private bool _flashingBorder;
+
+        #endregion //Properties
 
         //====================================================================================================================//
         
@@ -418,6 +427,8 @@ namespace StarSalvager.UI
 
             ShowRecoveryBanner(false);
             ShowLiquidSliders(null);
+
+            OutlineMagnet(false);
         }
 
         private void InitSliderText()
@@ -477,6 +488,13 @@ namespace StarSalvager.UI
         {
             carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
+
+            OutlineMagnet(value >= 1f);
+        }
+        
+        public void OutlineMagnet(bool state)
+        {
+            magnetFlash.SetActive(state);
         }
         
         //============================================================================================================//
@@ -667,7 +685,6 @@ namespace StarSalvager.UI
             
             StartCoroutine(BorderFlashingCoroutine(time));
         }
-
 
         private IEnumerator BorderFlashingCoroutine(float time)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories;
@@ -30,6 +31,9 @@ namespace StarSalvager
             }
         }
         private Collider2D _collider;
+        
+        private Collider2D _waitCollider;
+        
 
         //Unity Functions
         //====================================================================================================================//
@@ -81,14 +85,14 @@ namespace StarSalvager
             if (other.collider != _waitCollider)
                 return;
 
-            _useCollision = true;
-            _waitCollider = null;
-
+            //FIXME I'd like to find a better solution to this, as the coroutine seems cumbersome 
+            //Only reset these properties x sec after exit. This prevents checking collisions again too early
+            StartCoroutine(WaitForCollisionResetCoroutine(this, 0.1f));
+            
         }
 
         //============================================================================================================//
 
-        private Collider2D _waitCollider;
         public void DisableColliderTillLeaves(Collider2D waitCollider)
         {
             if (waitCollider == collider)
@@ -154,6 +158,14 @@ namespace StarSalvager
             //}
 
             return point;
+        }
+
+        private static IEnumerator WaitForCollisionResetCoroutine(CollidableBase collidableBase, float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
+            
+            collidableBase._useCollision = true;
+            collidableBase._waitCollider = null;
         }
         
         //============================================================================================================//
