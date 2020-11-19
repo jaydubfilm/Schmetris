@@ -214,7 +214,10 @@ namespace StarSalvager.Utilities.FileIO
 
             var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
 
-            loaded.PlayerRunData.SetupMap();
+            if (loaded.PlayerRunData.PlaythroughID != "")
+            {
+                loaded.PlayerRunData.SetupMap();
+            }
 
             return loaded;
         }

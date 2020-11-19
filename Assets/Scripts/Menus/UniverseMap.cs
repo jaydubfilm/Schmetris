@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.JsonDataTypes;
+using Recycling;
 
 namespace StarSalvager.UI
 {
@@ -65,6 +67,11 @@ namespace StarSalvager.UI
         private Image dottedLineImage;
 
         private List<Image> connectionLines = new List<Image>();
+
+        [SerializeField]
+        private Image botDisplayRoot;
+
+        private List<GameObject> botDisplayObjects = new List<GameObject>();
 
         #endregion //Properties
 
@@ -259,6 +266,40 @@ namespace StarSalvager.UI
 
             universeMapButtons[0].Button.interactable = true;
 
+            List<BlockData> botBlockData = PlayerDataManager.GetBlockDatas();
+            for (int i = 0; i < botBlockData.Count; i++)
+            {
+                if (!Recycler.TryGrab(typeof(Image), out GameObject gameObject))
+                {
+                    gameObject = new GameObject();
+                    gameObject.AddComponent<Image>();
+                }
+
+                gameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                RectTransform rect = gameObject.GetComponent<RectTransform>();
+                Image image = gameObject.GetComponent<Image>();
+
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
+                rect.sizeDelta = new Vector2(50, 50);
+
+                switch(botBlockData[i].ClassType)
+                {
+                    case "Part":
+                    case "ScrapyardPart":
+                        image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        break;
+                    case "Bit":
+                        image.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        break;
+                    case "Component":
+                        image.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                       break;
+                }
+
+                botDisplayObjects.Add(gameObject);
+            }
         }
 
         public void Reset()
@@ -268,6 +309,15 @@ namespace StarSalvager.UI
                 Destroy(connectionLines[i].gameObject);
             }
             connectionLines.Clear();
+
+            if (botDisplayObjects.Count > 0)
+            {
+                for (int i = botDisplayObjects.Count - 1; i >= 0; i--)
+                {
+                    Recycler.Recycle(typeof(Image), botDisplayObjects[i]);
+                }
+                botDisplayObjects.Clear();
+            }
         }
 
         //============================================================================================================//

@@ -676,7 +676,7 @@ namespace StarSalvager.Utilities.Saving
             }
             else
             {
-                PlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+                PlayerAccountData = tryImportPlayerAccountData;
                 MissionManager.LoadMissionData();
             }
             SavePlayerAccountData();
