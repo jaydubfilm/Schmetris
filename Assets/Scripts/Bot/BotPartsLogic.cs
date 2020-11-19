@@ -673,21 +673,23 @@ namespace StarSalvager
                 if (!shouldUpdateResource)
                     continue;
                 
-                UpdateUI(partRemoteData.burnType, resourceValue);
-                PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue);
+                //UpdateUI(partRemoteData.burnType, resourceValue);
+                PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue, false);
 
                 if(resourcesConsumed > 0)
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resourcesConsumed);
             }
 
-            TryRemoveResources(powerValue, powerToRemove, deltaTime);
+            TryRemovePowerResource(powerValue, powerToRemove, deltaTime);
             LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
 
-            UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+            //UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
+            //UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+
+            UpdateAllUI();
         }
 
-        private void TryRemoveResources(float powerValue, float powerToRemove, in float deltaTime)
+        private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
         {
             if (bot.PROTO_GodMode) 
                 return;
@@ -696,7 +698,7 @@ namespace StarSalvager
             if (powerValue < 0)
                 powerValue = 0f;
 
-            PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue);
+            PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue, false);
 
 
             _waterDrainTimer += deltaTime * Constants.waterDrainRate;
@@ -709,7 +711,6 @@ namespace StarSalvager
 
         //Individual Part Functions
         //====================================================================================================================//
-        
         
         #region Parts
 
@@ -1117,8 +1118,6 @@ namespace StarSalvager
         }
 
         #endregion //Parts
-        
-        
 
         //====================================================================================================================//
 
@@ -1375,7 +1374,9 @@ namespace StarSalvager
             if (GameUI == null)
                 return;
 
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            UpdateAllUI();
+
+            /*foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
@@ -1384,9 +1385,26 @@ namespace StarSalvager
             }
 
             //UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.li[BIT_TYPE.YELLOW]);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);*/
         }
 
+        private void UpdateAllUI()
+        {
+            var resources = PlayerDataManager.GetResources();
+
+            foreach (var resource in resources)
+            {
+                if(!CurrentlyUsedBitTypes.Contains(resource.BitType))
+                    continue;
+
+                if (resource.BitType == BIT_TYPE.BLUE)
+                    UpdateUI(resource.BitType, resource.resource);
+                else
+                    UpdateUI(resource.BitType, resource.liquid);
+            }
+            
+        }
+        
         private static void UpdateUI(BIT_TYPE type, float value)
         {
             if (!GameUI)
@@ -1913,8 +1931,8 @@ namespace StarSalvager
 
         private IEnumerator RefineBitCoroutine(Bit bit, Transform processToTranform, IReadOnlyList<OrphanMoveData> orphans, float speed, Action onFinishedCallback)
         {
-            var bitStartPosition = bit.transform.position;
-            var endPosition = processToTranform.position;
+            var bitStartPosition = bit.transform.localPosition;
+            var endPosition = processToTranform.localPosition;
             var t = 0f;
 
             bit.SetColliderActive(false);
@@ -1942,7 +1960,7 @@ namespace StarSalvager
 
             while (t < 1f)
             {
-                bit.transform.position = Vector3.Lerp(bitStartPosition, endPosition, t);
+                bit.transform.localPosition = Vector3.Lerp(bitStartPosition, endPosition, t);
 
                 //TODO Need to adjust the scale here
                 bit.transform.localScale = Vector3.LerpUnclamped(Vector3.zero, Vector3.one, refineScaleCurve.Evaluate(t));

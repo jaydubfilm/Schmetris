@@ -172,33 +172,79 @@ namespace StarSalvager
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
             
-            //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
-
             if (dir != rayDirection && dir != Vector2Int.zero)
                 return;
 
-            //Long ray compensates for the players high speed
-            var rayLength = Constants.gridCellSize * 3f;
-            var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
-
-
-            //Checking ray against player layer mask
-            var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
-
-            //If nothing was hit, ray failed, thus no reason to continue
-            if (hit.collider == null)
-            {
-                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
+            if (!TryFindClosestCollision(rayDirection.ToDirection(), out var point))
                 return;
-            }
-
-            Debug.DrawRay(hit.point, Vector2.up, Color.red);
-            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
-            bot.TryAddNewAttachable(this, inDirection, hit.point);
+            bot.TryAddNewAttachable(this, inDirection, point);
+        }
+
+        private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
+        {
+            const float rayLength = Constants.gridCellSize * 3f;
+            
+            point = Vector2.zero;
+            
+            var currentPosition = (Vector2)transform.position;
+            var vectorDirection = direction.ToVector2();
+            var startOffset = -vectorDirection * (rayLength / 2f);
+            Vector2 positionOffset;
+            
+            switch (direction)
+            {
+                case DIRECTION.RIGHT:
+                case DIRECTION.LEFT:
+                    positionOffset = Vector2.up * 0.33f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    positionOffset = Vector2.right * 0.33f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+            
+            var startPositions = new[]
+            {
+                currentPosition + startOffset,
+                (currentPosition - positionOffset) + startOffset,
+                (currentPosition + positionOffset) + startOffset,
+            };
+
+            var shortestDis = 999f;
+            RaycastHit2D? shortestHit = null;
+            foreach (var rayStartPosition in startPositions)
+            {
+                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
+
+                //If nothing was hit, ray failed, thus no reason to continue
+                if (hit.collider == null)
+                {
+                    //Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.yellow, 1f);
+                    SSDebug.DrawArrowRay(rayStartPosition, vectorDirection * rayLength, Color.yellow);
+                    continue;
+                }
+
+                Debug.DrawRay(hit.point, Vector2.up, Color.red);
+                Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
+
+                if (hit.distance >= shortestDis)
+                    continue;
+                
+                shortestDis = hit.distance;
+                shortestHit = hit;
+            }
+
+            if (!shortestHit.HasValue)
+                return false;
+
+            point = shortestHit.Value.point;
+            
+            return true;
         }
 
         //ICanCombo Functions

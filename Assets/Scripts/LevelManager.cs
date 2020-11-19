@@ -387,19 +387,22 @@ namespace StarSalvager
             }
             else
             {
+                
+                
                 m_levelManagerUI.ShowWaveSummaryWindow(
                     WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
                 {
+                    
                     Globals.IsBetweenWavesInUniverseMap = true;
                     IsWaveProgressing = true;
                     ProcessScrapyardUsageBeginAnalytics();
                     EndWaveState = false;
                     
-                    
                     ScreenFade.Fade(() =>
                     {
+                        AudioController.FadeInMusic();
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
                 });
@@ -913,6 +916,7 @@ namespace StarSalvager
 
             if (value && !_effect)
             {
+                AudioController.FadeOutMusic();
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
             }
