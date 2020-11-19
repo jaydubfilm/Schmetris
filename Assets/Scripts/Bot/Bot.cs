@@ -593,6 +593,11 @@ namespace StarSalvager
             CheckForBonusShapeMatches();
         }
 
+        public void ForceCompleteRotation()
+        {
+            transform.rotation = Quaternion.Euler(0, 0, targetRotation);
+        }
+
         private void TryRotateBits()
         {
             if (rotate) 
