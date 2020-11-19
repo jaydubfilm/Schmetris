@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -214,7 +215,7 @@ namespace StarSalvager.UI.Scrapyard
         
         private void TryLaunch()
         {
-            if (!_droneDesigner.IsFullyConnected())
+            if (PlayerDataManager.GetBlockDatas().CheckHasDisconnects())
             {
                 Alert.ShowAlert("Alert!",
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
