@@ -595,7 +595,24 @@ namespace StarSalvager
 
         public void ForceCompleteRotation()
         {
-            transform.rotation = Quaternion.Euler(0, 0, targetRotation);
+            var rotation = transform.eulerAngles.z;
+            var remainingDegrees = Mathf.DeltaAngle(rotation, targetRotation);
+
+            if (Mathf.Abs(remainingDegrees) < 75)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, targetRotation);
+            }
+            else
+            {
+                if (remainingDegrees > 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, targetRotation - 90);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, targetRotation + 90);
+                }
+            }
         }
 
         private void TryRotateBits()
