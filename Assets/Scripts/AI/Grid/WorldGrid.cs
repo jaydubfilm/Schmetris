@@ -218,32 +218,32 @@ namespace StarSalvager
 
         public void SetObstacleInGridSquare(GridSquare gridSquare, int radius, bool occupied)
         {
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtLocalPosition(Vector2 obstaclePosition, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtLocalPosition(obstaclePosition);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtCoordinates(Vector2Int gridPosition, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtCoordinates(gridPosition.x, gridPosition.y);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtCoordiantes(int x, int y, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtCoordinates(x, y);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInSquaresAroundCoordinates(int x, int y, int radiusAround, bool occupied)
@@ -260,7 +260,7 @@ namespace StarSalvager
             {
                 for (int k = kMin; k <= kMax; k++)
                 {
-                    GetGridSquareAtCoordinates(i, k).SetObstacleInSquare(occupied);
+                    GetGridSquareAtCoordinates(i, k).ObstacleInSquare = occupied;
                 }
             }
         }

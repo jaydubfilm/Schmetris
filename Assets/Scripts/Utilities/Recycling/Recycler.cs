@@ -211,8 +211,8 @@ namespace Recycling
 		{
 			if (_recycled == null) _recycled = new Stack<GameObject>();
 			
-			if(_recycled.Contains(gameObject))
-				throw new Exception($"{gameObject.name} has already been recycled. Ensure you add IRecycled to prevent this error");
+			/*if(_recycled.Contains(gameObject))
+				throw new Exception($"{gameObject.name} has already been recycled. Ensure you add IRecycled to prevent this error");*/
 
 			gameObject.SetActive(false);
 			_recycled.Push(gameObject);
