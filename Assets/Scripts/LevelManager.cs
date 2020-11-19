@@ -850,6 +850,11 @@ namespace StarSalvager
         {
             if (_effect != null)
                 return;
+
+            if (bot.Rotating)
+            {
+                bot.ForceCompleteRotation();
+            }
             
             var lowestCoordinate =
                 bot.attachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
@@ -918,7 +923,6 @@ namespace StarSalvager
             {
                 AudioController.FadeOutMusic();
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
-                BotObject.transform.rotation = Quaternion.identity;
                 CreateThrustEffect(BotObject);
             }
             else if (!value && _effect)
