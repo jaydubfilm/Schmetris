@@ -719,8 +719,7 @@ namespace StarSalvager
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
                             SessionDataProcessor.Instance.HitBumper();
                             
-                            if(shift)
-                                OnBitShift?.Invoke();
+                            if(shift) OnBitShift?.Invoke();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -2193,6 +2192,8 @@ namespace StarSalvager
                 }
 
                 CheckForBonusShapeMatches();
+                ForceCheckMagnets();
+
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     intAmount = toShift.Count,
@@ -2200,9 +2201,7 @@ namespace StarSalvager
                     bumperOrphanedBits = hasDetached,
                     bumperCausedCombos = hasCombos
                 };
-
                 MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
-
             }));
 
 
