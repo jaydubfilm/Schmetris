@@ -729,6 +729,18 @@ namespace StarSalvager
 
         public void ToggleDrones()
         {
+            if (!IsFullyConnected())
+            {
+                Alert.ShowAlert("Alert!",
+                    "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
+                    () =>
+                    {
+                        /*ShowMenu(MENU.DESIGN);*/
+                    });
+
+                return;
+            }
+
             SaveBlockData();
 
             if (_scrapyardBot != null)

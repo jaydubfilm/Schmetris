@@ -3817,6 +3817,7 @@ namespace StarSalvager
         {
             transform.localScale = Vector2.one;
             isContinuousRotation = false;
+            m_distanceHorizontal = 0;
             targetRotation = 0;
             _rotating = false;
 
