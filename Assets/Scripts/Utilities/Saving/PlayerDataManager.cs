@@ -737,6 +737,12 @@ namespace StarSalvager.Utilities.Saving
                 return;
             }
 
+            if (PlayerAccountData.PlayerRunData.PlaythroughID == "")
+            {
+                Debug.LogError("Saving empty player run data");
+                Debug.Break();
+            }
+
             Files.ExportPlayerSaveAccountData(PlayerAccountData, CurrentSaveSlotIndex);
 
             GameMetaData.SaveFiles.RemoveAll(s => s.SaveSlotIndex == CurrentSaveSlotIndex);
