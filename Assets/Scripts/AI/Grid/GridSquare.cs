@@ -6,11 +6,11 @@ namespace StarSalvager
 {
     public class GridSquare
     {
-        public bool ObstacleInSquare { get; private set; } = false;
+        public bool ObstacleInSquare { get; set; } = false;
 
-        public int RadiusMarkAround { get; private set; } = 0;
+        public int RadiusMarkAround { get; set; } = 0;
 
-        public void SetObstacleInSquare (bool occupied)
+        /*public void SetObstacleInSquare (bool occupied)
         {
             ObstacleInSquare = occupied;
         }
@@ -18,6 +18,6 @@ namespace StarSalvager
         public void SetRadiusMarkAround (int radiusAround)
         {
             RadiusMarkAround = radiusAround;
-        }
+        }*/
     }
 }
