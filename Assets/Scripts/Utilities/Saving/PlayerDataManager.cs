@@ -712,6 +712,7 @@ namespace StarSalvager.Utilities.Saving
             }
 
             MissionManager.LoadMissionData();
+            SavePlayerAccountData();
         }
 
         public static void ResetGameMetaData()
@@ -801,6 +802,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
+            //if (LevelManager.Instance.)
             SavePlayerAccountData();
         }
 
