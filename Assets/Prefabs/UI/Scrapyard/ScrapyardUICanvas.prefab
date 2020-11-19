@@ -1946,7 +1946,6 @@ MonoBehaviour:
     sliderText: {fileID: 929756932775222742}
     _slider: {fileID: 4892320993272701360}
     format: 
-    showMax: 0
   CameraController: {fileID: 0}
   screenBlackImage: {fileID: 2467265504768982576}
   _droneDesigner: {fileID: 0}
@@ -5042,7 +5041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3029926029801726288
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10223,7 +10222,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 246.17896, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2941869098092947876
@@ -10647,7 +10646,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 222.8479, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 445.6958, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5379183553774148121
@@ -17333,7 +17332,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 293568756267335494}
   m_HandleRect: {fileID: 721652340515547965}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
