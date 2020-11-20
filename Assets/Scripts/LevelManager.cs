@@ -1042,8 +1042,7 @@ namespace StarSalvager
                     IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
                     if (attachable is Part core)
                     {
-
-                        core.SetupHealthValues(core.StartingHealth, core.StartingHealth / 2);
+                        core.SetupHealthValuesWithoutChangingSprite(core.StartingHealth, core.StartingHealth / 2);
                     }
                 }
             }
