@@ -350,6 +350,8 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
 
+            PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
+
             if (Globals.IsRecoveryBot)
             {
                 m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
