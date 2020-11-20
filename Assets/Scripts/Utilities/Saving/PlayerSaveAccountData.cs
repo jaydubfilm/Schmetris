@@ -16,6 +16,8 @@ namespace StarSalvager.Values
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
 
+        public PlayerNewAlertData PlayerNewAlertData = new PlayerNewAlertData();
+
         public Version Version = Constants.VERSION;
 
         //TEMP

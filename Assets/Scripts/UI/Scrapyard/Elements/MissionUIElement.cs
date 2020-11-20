@@ -25,7 +25,12 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Button favouriteButton;
 
+        [SerializeField, Required]
+        private Image stickerImage;
+
         private Action<Mission, bool> _onHoverCallback;
+
+        private bool _canShowSticker;
 
         //Unity Functions
         //====================================================================================================================//
@@ -33,11 +38,13 @@ namespace StarSalvager.UI.Scrapyard
         public void OnEnable()
         {
             MissionsUI.CheckMissionUITrackingToggles += OnCheckMissionUITrackingToggles;
+            MissionsUI.CheckMissionNewAlertUpdate += OnCheckMissionNewAlertUpdate;
         }
 
         public void OnDisable()
         {
             MissionsUI.CheckMissionUITrackingToggles -= OnCheckMissionUITrackingToggles;
+            MissionsUI.CheckMissionNewAlertUpdate -= OnCheckMissionNewAlertUpdate;
         }
 
         //====================================================================================================================//
@@ -56,18 +63,25 @@ namespace StarSalvager.UI.Scrapyard
             favouriteButton.interactable = true;
         }
 
+        private void OnCheckMissionNewAlertUpdate()
+        {
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
+        }
+
         //Init Functions
         //====================================================================================================================//
 
-        public void Init(Mission data, Action<Mission, bool> onHoverCallback, Action<Mission> onTrackPressedCallback)
+        public void Init(Mission data, Action<Mission, bool> onHoverCallback, Action<Mission> onTrackPressedCallback, bool canShowSticker = true)
         {
             Init(data);
 
             _onHoverCallback = onHoverCallback;
+            _canShowSticker = canShowSticker;
 
             var shouldTrack = onTrackPressedCallback != null;
             
             favouriteButton.gameObject.SetActive(shouldTrack);
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
 
             if (!shouldTrack)
                 return;
