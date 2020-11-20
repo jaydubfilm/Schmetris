@@ -30,6 +30,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private Action<Mission, bool> _onHoverCallback;
 
+        private bool _canShowSticker;
+
         //Unity Functions
         //====================================================================================================================//
         
@@ -63,7 +65,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnCheckMissionNewAlertUpdate()
         {
-            stickerImage.gameObject.SetActive(PlayerDataManager.CheckHasMissionAlert(data));
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
         }
 
         //Init Functions
@@ -74,11 +76,12 @@ namespace StarSalvager.UI.Scrapyard
             Init(data);
 
             _onHoverCallback = onHoverCallback;
+            _canShowSticker = canShowSticker;
 
             var shouldTrack = onTrackPressedCallback != null;
             
             favouriteButton.gameObject.SetActive(shouldTrack);
-            stickerImage.gameObject.SetActive(canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
 
             if (!shouldTrack)
                 return;
