@@ -780,6 +780,42 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 5553311264832995490}
+    ActiveGameObject: {fileID: 5553311264832995490}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 5553311264832995490}
+    ActiveGameObject: {fileID: 5553311264832995490}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 0}
+    ActiveGameObject: {fileID: 0}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
     GUIDsList: []
@@ -998,42 +1034,6 @@ MonoBehaviour:
     list:
     - {fileID: 0}
     ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 0}
-    ActiveGameObject: {fileID: 0}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 5553311264832995490}
-    ActiveGameObject: {fileID: 5553311264832995490}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 5553311264832995491}
-    ActiveGameObject: {fileID: 5553311264832995491}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
@@ -1483,12 +1483,6 @@ PrefabInstance:
 --- !u!1 &5553311264832995490 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5553311265099259239, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 5553311264832995489}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5553311264832995491 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1470390023291791664, guid: 5fa5efeeb6e73504aadc932fc08af0eb,
     type: 3}
   m_PrefabInstance: {fileID: 5553311264832995489}
   m_PrefabAsset: {fileID: 0}

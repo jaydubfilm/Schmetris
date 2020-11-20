@@ -14,6 +14,7 @@ using System.Linq;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
+using StarSalvager.ScriptableObjects;
 
 namespace StarSalvager.UI
 {
@@ -71,6 +72,9 @@ namespace StarSalvager.UI
         [SerializeField]
         private Image botDisplayRoot;
 
+        [SerializeField]
+        private DamageProfileScriptableObject damageProfileScriptable;
+        
         private List<GameObject> botDisplayObjects = new List<GameObject>();
 
         #endregion //Properties
@@ -267,38 +271,97 @@ namespace StarSalvager.UI
             universeMapButtons[0].Button.interactable = true;
 
             List<BlockData> botBlockData = PlayerDataManager.GetBlockDatas();
+
             for (int i = 0; i < botBlockData.Count; i++)
             {
-                if (!Recycler.TryGrab(typeof(Image), out GameObject gameObject))
+                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
                 {
-                    gameObject = new GameObject();
-                    gameObject.AddComponent<Image>();
+                    newGameObject = new GameObject();
+                    newGameObject.AddComponent<Image>();
                 }
 
-                gameObject.transform.parent = botDisplayRoot.gameObject.transform;
+                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
 
-                RectTransform rect = gameObject.GetComponent<RectTransform>();
-                Image image = gameObject.GetComponent<Image>();
+                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                Image image = newGameObject.GetComponent<Image>();
 
                 rect.pivot = new Vector2(0.5f, 0.5f);
                 rect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
                 rect.sizeDelta = new Vector2(50, 50);
 
-                switch(botBlockData[i].ClassType)
+                float startingHealth = 0;
+
+                switch (botBlockData[i].ClassType)
                 {
                     case "Part":
                     case "ScrapyardPart":
-                        image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        startingHealth = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
+                        if (botBlockData[i].Health <= 0)
+                        {
+                            image.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(botBlockData[i].Level);
+                        }
+                        else
+                        {
+                            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        }
                         break;
                     case "Bit":
                         image.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        startingHealth = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData((BIT_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
                         break;
                     case "Component":
                         image.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
-                       break;
+                        startingHealth = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentRemoteData((COMPONENT_TYPE)botBlockData[i].Type).health;
+                        break;
                 }
 
-                botDisplayObjects.Add(gameObject);
+                botDisplayObjects.Add(newGameObject);
+                float healthPercentage = botBlockData[i].Health / startingHealth;
+
+                if (healthPercentage > 0 && healthPercentage <= 0.75)
+                {
+                    if (!Recycler.TryGrab(typeof(Image), out GameObject damageImageGameObject))
+                    {
+                        damageImageGameObject = new GameObject();
+                        damageImageGameObject.AddComponent<Image>();
+                    }
+
+                    damageImageGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                    RectTransform damageRect = damageImageGameObject.GetComponent<RectTransform>();
+                    Image damageImage = damageImageGameObject.GetComponent<Image>();
+
+                    damageRect.pivot = new Vector2(0.5f, 0.5f);
+                    damageRect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
+                    damageRect.sizeDelta = new Vector2(50, 50);
+
+                    damageImage.sprite = damageProfileScriptable.GetDetailSprite(healthPercentage);
+
+                    botDisplayObjects.Add(damageImageGameObject);
+                }
+            }
+
+
+            if (botBlockData.Count == 0)
+            {
+                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
+                {
+                    newGameObject = new GameObject();
+                    newGameObject.AddComponent<Image>();
+                }
+
+                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                Image image = newGameObject.GetComponent<Image>();
+
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = Vector2Int.zero;
+                rect.sizeDelta = new Vector2(50, 50);
+
+                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
+
+                botDisplayObjects.Add(newGameObject);
             }
         }
 
