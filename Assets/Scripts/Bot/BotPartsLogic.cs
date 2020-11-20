@@ -1480,13 +1480,15 @@ namespace StarSalvager
 
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
-            bot.CheckForOrphans(new[]
-                {
-                    //Bit that's being processed
-                    targetBit as IAttachable,
-                },
-                bot.attachedBlocks[0],
+            bot.attachedBlocks.CheckForOrphansFromProcessing(
+                targetBit,
                 ref orphans);
+            
+            if(!orphans.IsNullOrEmpty())
+                bot.MoveOrphanPieces(orphans, () =>
+                {
+                    bot.CheckAllForCombos();
+                });
 
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
             targetBit.IsBusy = true;
