@@ -111,13 +111,16 @@ namespace StarSalvager.Prototype
         //OutroScene Functions
         //====================================================================================================================//
 
-        private static void ShowFinalScreen()
+        private void ShowFinalScreen()
         {
             Alert.ShowDancers(true);
             AudioController.PlayMusic(MUSIC.GAME_OVER, true);
-            Alert.ShowAlert("GAME OVER",
+            
+            gameObject.SetActive(false);
+            
+            LevelManager.Instance.GameUi.ShowWaveSummaryWindow(true,
+                "Game Over",
                 PlayerDataManager.GetRunSummaryString(),
-                "Finish",
                 () =>
                 {
                     Alert.ShowDancers(false);
@@ -136,8 +139,15 @@ namespace StarSalvager.Prototype
                     });
                     
                     
-                });
-            Alert.SetLineHeight(90f);
+                },
+                true,
+                0.5f);
+            
+            /*Alert.ShowAlert("GAME OVER",
+                PlayerDataManager.GetRunSummaryString(),
+                "Finish",
+                );
+            Alert.SetLineHeight(90f);*/
         }
         
 
