@@ -3726,44 +3726,28 @@ namespace StarSalvager
                     ClassType = nameof(Bit),
                     Coordinate = new Vector2Int(1, 0),
                     Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Type = (int) BIT_TYPE.RED
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
                     Coordinate = new Vector2Int(2, 0),
                     Level = 0,
-                    Type = (int) BIT_TYPE.BLUE
+                    Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3, 0),
+                    Coordinate = new Vector2Int(1, -1),
                     Level = 0,
-                    Type = (int) BIT_TYPE.RED
+                    Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(4, 0),
+                    Coordinate = new Vector2Int(1, -2),
                     Level = 0,
-                    Type = (int) BIT_TYPE.BLUE
-                },
-
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.BLUE
-                },
-
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3, -1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.BLUE
+                    Type = (int) BIT_TYPE.GREY
                 },
             };
 
