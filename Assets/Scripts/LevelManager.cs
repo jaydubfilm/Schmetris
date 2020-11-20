@@ -80,6 +80,8 @@ namespace StarSalvager
         public WorldGrid WorldGrid => m_worldGrid ?? (m_worldGrid = new WorldGrid());
         private WorldGrid m_worldGrid;
 
+        private bool m_runLostState = false;
+
         public AIObstacleAvoidance AIObstacleAvoidance
         {
             get
@@ -682,6 +684,7 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
+            m_runLostState = false;
             
             if(_towLineRenderer)
                 Destroy(_towLineRenderer.gameObject);
@@ -1090,6 +1093,7 @@ namespace StarSalvager
                 //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
 
                 IsWaveProgressing = false;
+                m_runLostState = true;
                 //GameTimer.SetPaused(false);
 
                 OutroScene.gameObject.SetActive(true);
@@ -1193,6 +1197,15 @@ namespace StarSalvager
         #endregion //Unity Editor
 
         //====================================================================================================================//
-        
+
+        public void OnApplicationQuit()
+        {
+            if (m_runLostState)
+            {
+                PlayerDataManager.ResetPlayerRunData();
+                PlayerDataManager.SavePlayerAccountData();
+            }
+        }
+
     }
 }
