@@ -345,7 +345,7 @@ namespace StarSalvager.Utilities.Extensions
             if (blocks.Count == 1)
                 return blocks[0];
 
-            var checkPosition = attachable.Coordinate;
+            //var checkPosition = attachable.Coordinate;
 
             IAttachable selected = null;
 
@@ -358,7 +358,7 @@ namespace StarSalvager.Utilities.Extensions
 
                 //attached.SetColor(Color.white);
 
-                var dist = Vector2.Distance(attached.transform.position, checkPosition);
+                var dist = Vector2.Distance(attached.transform.position, attachable.transform.position);
                 if (dist > smallestDist)
                     continue;
 
