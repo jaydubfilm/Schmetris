@@ -482,6 +482,9 @@ namespace StarSalvager
             
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
+
+        [SerializeField]
+        private float rotationTarget;
         
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
@@ -505,7 +508,10 @@ namespace StarSalvager
             {
                 targetRotation = rigidbody.rotation + toRotate;
             }
-            
+
+            rotationTarget += toRotate;
+            rotationTarget = MathS.ClampAngle(targetRotation);
+
             targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
@@ -514,9 +520,6 @@ namespace StarSalvager
             }
 
             _rotating = true;
-
-            
-
         }
 
         public void TrySelfDestruct()
@@ -538,28 +541,19 @@ namespace StarSalvager
 
         #region Rotation
 
-        private bool rotate;
-
         private void RotateBot()
         {
             var rotation = transform.eulerAngles.z;
 
             //Rotates towards the target rotation.
-            float rotationAmount;
-            if (isContinuousRotation)
-            {
-                rotationAmount = Globals.BotContinuousRotationSpeed;
-            }
-            else
-            {
-                rotationAmount = Globals.BotRotationSpeed;
-            }
+            var rotationAmount = isContinuousRotation ? Globals.BotContinuousRotationSpeed : Globals.BotRotationSpeed;
+            
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
             transform.rotation = Quaternion.Euler(0,0,rotation);
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
-            
+
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
             
@@ -568,7 +562,7 @@ namespace StarSalvager
             if (remainingDegrees > 10f)
                 return;
 
-            TryRotateBits();
+            RotateAttachableSprites();
             
             
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
@@ -579,12 +573,11 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            transform.rotation = Quaternion.Euler(0,0,targetRotation);
+            transform.rotation = Quaternion.Euler(0,0,rotationTarget);
             targetRotation = 0f;
             
             
-            TryRotateBits();
-            rotate = false;
+            RotateAttachableSprites();
             _rotating = false;
             
             //--------------------------------------------------------------------------------------------------------//
@@ -604,52 +597,43 @@ namespace StarSalvager
             }
             else
             {
-                if (remainingDegrees > 0)
-                {
-                    transform.rotation = Quaternion.Euler(0, 0, targetRotation - 90);
-                }
-                else
-                {
-                    transform.rotation = Quaternion.Euler(0, 0, targetRotation + 90);
-                }
+                transform.rotation = remainingDegrees > 0
+                    ? Quaternion.Euler(0, 0, targetRotation - 90)
+                    : Quaternion.Euler(0, 0, targetRotation + 90);
             }
         }
 
-        private void TryRotateBits()
+        private void RotateAttachableSprites()
         {
-            if (rotate) 
-                return;
+            //Try and remove any potential floating point issues
+            var check = (int) rotationTarget;
             
-            var check = (int) targetRotation;
-            float deg;
+            
+            Quaternion counterRotation;
             if (check == 180)
             {
-                deg = 180;
+                counterRotation = Quaternion.Euler(0,0, 180);
             }
             else if (check == 0f || check == 360)
             {
-                deg = 0;
+                counterRotation = Quaternion.identity;
             }
             else
             {
-                deg = targetRotation + 180;
+                counterRotation = Quaternion.Euler(0,0, MathS.ClampAngle(rotationTarget + 180));
             }
 
-            var rot = Quaternion.Euler(0, 0, deg);
-                
             foreach (var attachedBlock in attachedBlocks)
             {
                 if (attachedBlock is ICustomRotate customRotate)
                 {
-                    customRotate.CustomRotate(rot);
+                    customRotate.CustomRotate(counterRotation);
                     continue;
                 }
                 
-                //attachedBlock.RotateSprite(MostRecentRotate);
-                attachedBlock.transform.localRotation = rot;
+                attachedBlock.transform.localRotation = counterRotation;
             }
 
-            rotate = true;
         }
 
 
