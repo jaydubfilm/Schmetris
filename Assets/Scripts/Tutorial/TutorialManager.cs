@@ -48,8 +48,8 @@ namespace StarSalvager.Tutorial
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject characterObject;
         
-        [SerializeField, BoxGroup("Tutorial UI")]
-        private Image fadeImage;
+        //[SerializeField, BoxGroup("Tutorial UI")]
+        //private Image fadeImage;
 
         [SerializeField, BoxGroup("Tutorial UI")]
         private AnimationCurve slideCurve;
@@ -420,7 +420,7 @@ namespace StarSalvager.Tutorial
 
             yield return new WaitForSeconds(4f);
 
-            float t = 0f;
+            /*float t = 0f;
             while (t < 1f)
             {
                 fadeImage.color = Color.Lerp(Color.clear, Color.black, t);
@@ -428,22 +428,20 @@ namespace StarSalvager.Tutorial
                 t += Time.deltaTime;
                 
                 yield return null;
-            }
+            }*/
             
-            yield return new WaitForSeconds(1f);
+            //yield return new WaitForSeconds(1f);
 
-            Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotExitScreen(false);
-            LevelManager.Instance.BotObject.PROTO_GodMode = false;
-            LevelManager.Instance.EndWaveState = false;
-
-
-            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
-            
-            
-            
             ScreenFade.Fade(() =>
             {
+                Globals.UsingTutorial = false;
+                LevelManager.Instance.SetBotExitScreen(false);
+                LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                LevelManager.Instance.EndWaveState = false;
+
+
+                PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+                
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
             });
         }
