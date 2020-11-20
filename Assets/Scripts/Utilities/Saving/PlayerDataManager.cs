@@ -666,6 +666,32 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+        public static bool CheckHasMissionAlert(Mission mission)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasMissionAlert(mission);
+        }
+
+        public static bool CheckHasAnyMissionAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyMissionAlerts();
+        }
+
+        public static void AddNewMissionAlert(Mission mission)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
+        }
+        public static void ClearNewMissionAlert(Mission mission)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
+        }
+
+        public static void ClearAllMissionAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
+        }
+
+        //====================================================================================================================//
+
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
             CurrentSaveSlotIndex = saveSlotIndex;
