@@ -849,18 +849,18 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetGearsThisRun()}\n";
-            summaryText += $"Total Core Deaths: {GetCoreDeathsThisRun()}\n";
-            summaryText += $"Total Repairs Done: {GetRepairsDoneThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetGearsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 
 
             if (GetBitConnections().Count > 0)
             {
-                summaryText += ("<b>Bits Connected:</b>\n");
+                summaryText += ($"{GetAsTitle("Bits Connected")}\n");
 
                 foreach (var keyValuePair in GetBitConnections())
                 {
-                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)}: {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -868,13 +868,13 @@ namespace StarSalvager.Utilities.Saving
             {
                 var enemyProfileData = FactoryManager.Instance.EnemyProfile;
                 
-                summaryText += ("<b>Enemies Killed:</b>\n");
+                summaryText += ($"{GetAsTitle("Enemies Killed")}\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
                     var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -884,6 +884,11 @@ namespace StarSalvager.Utilities.Saving
         public static void DestroyAccountData()
         {
             PlayerAccountData = null;
+        }
+
+        private static string GetAsTitle(in string value)
+        {
+            return $"<b><color=white>{value}</color></b>";
         }
     }
 }

@@ -235,16 +235,31 @@ namespace StarSalvager.UI
 
         //Wave Summary Window
         //====================================================================================================================//
-
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryText;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
 
+        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image backgroundImage;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image crossbarImage;
+        
+        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite normalBackgroundSprite;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite normalCrossbarSprite;
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite altBackgroundSprite;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite altCrossbarSprite;
+        
         //Health Cracks
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
@@ -789,7 +804,7 @@ namespace StarSalvager.UI
         #region Wave Summary Window
 
         private bool _movingSummaryWindow;
-        public void ShowWaveSummaryWindow(bool show,in string title, in string text, Action onConfirmCallback, float moveTime = 1f, bool instantMove = false)
+        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback, bool useAlt = false, float moveTime = 1f, bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
@@ -805,6 +820,10 @@ namespace StarSalvager.UI
                     ShowWaveSummaryWindow(false,string.Empty, string.Empty, null, instantMove:true);
                     onConfirmCallback?.Invoke();
                 });
+
+
+                backgroundImage.sprite = useAlt ? altBackgroundSprite : normalBackgroundSprite;
+                crossbarImage.sprite = useAlt ? altCrossbarSprite : normalCrossbarSprite;
             }
             else
             {

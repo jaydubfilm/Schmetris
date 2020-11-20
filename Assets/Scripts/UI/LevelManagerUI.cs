@@ -344,7 +344,12 @@ namespace StarSalvager.UI
 
         public void ShowWaveSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
         {
-            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, 0.5f);
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, moveTime: 0.5f);
+        }
+        
+        public void ShowGameSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        {
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, useAlt:true, moveTime: 0.5f);
         }
 
 

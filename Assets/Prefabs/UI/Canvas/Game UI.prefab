@@ -8379,6 +8379,15 @@ MonoBehaviour:
   waveSummaryTitle: {fileID: 6623200072655010401}
   waveSummaryText: {fileID: 8905202203111754997}
   confirmButton: {fileID: 5129019382979589122}
+  backgroundImage: {fileID: 443545918742627845}
+  crossbarImage: {fileID: 2894633014673963165}
+  normalBackgroundSprite: {fileID: -8667936711674311183, guid: eedae858e3908f241a937a3fa16b0504,
+    type: 3}
+  normalCrossbarSprite: {fileID: 1409828168726802091, guid: eedae858e3908f241a937a3fa16b0504,
+    type: 3}
+  altBackgroundSprite: {fileID: 21300000, guid: c9c3f9787dcdfdb4fb8653f3a7be1657,
+    type: 3}
+  altCrossbarSprite: {fileID: 21300000, guid: 4f39305f550f91a4dbd5be09fe8067d1, type: 3}
   cracksCanvasGroup: {fileID: 4580379723225853274}
   crackImages:
   - {fileID: 7111399166301503047}
@@ -9017,11 +9026,11 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 16
   m_textAlignment: 257
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 90
+  m_lineSpacing: 190
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -10606,7 +10615,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 16
   m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
