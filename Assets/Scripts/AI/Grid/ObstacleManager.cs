@@ -20,7 +20,7 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
-    public class ObstacleManager : MonoBehaviour, IReset, IPausable, IMoveOnInput
+    public class ObstacleManager : MonoBehaviour, IReset, IPausable
     {
 
         public static Action NewShapeOnScreen;
@@ -40,7 +40,7 @@ namespace StarSalvager
         public List<Asteroid> Asteroids { get; private set; }
 
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
-        private float m_currentInput;
+        //private float m_currentInput;
 
         //Variables to spawn obstacles throughout a stage
         private StageRemoteData m_currentStageData;
@@ -48,7 +48,7 @@ namespace StarSalvager
         private float m_blendTimer;
         private int m_nextStageToSpawn;
 
-        private float m_distanceHorizontal;
+        //private float m_distanceHorizontal;
 
         public Transform WorldElementsRoot => m_worldElementsRoot;
         private Transform m_worldElementsRoot;
@@ -63,7 +63,7 @@ namespace StarSalvager
                                                     Constants.VISIBLE_GAME_AREA));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, Constants.VISIBLE_GAME_AREA));
+            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, 0.95f * Constants.VISIBLE_GAME_AREA));
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -100,7 +100,7 @@ namespace StarSalvager
 
             SetupStage(0);
 
-            RegisterMoveOnInput();
+            //RegisterMoveOnInput();
         }
 
 
@@ -142,9 +142,9 @@ namespace StarSalvager
 
             //Set the movement direction
             //THIS IS ESSENTIAL FOR THE BOT TO KNOW WHAT DIRECTION THE WORLD IS MOVING
-            Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f
+            /*Globals.MovingDirection = Mathf.Abs(m_distanceHorizontal) <= 0.2f
                 ? DIRECTION.NULL
-                : m_distanceHorizontal.GetHorizontalDirection();
+                : m_distanceHorizontal.GetHorizontalDirection();*/
         }
 
         //====================================================================================================================//
@@ -188,6 +188,8 @@ namespace StarSalvager
                         {
                             recycleBits = false
                         });
+                        break;
+                    case MoveWithObstacles _:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -297,7 +299,7 @@ namespace StarSalvager
                 amountShift *= 3;
             }
 
-            TryMoveElements();
+            //TryMoveElements();
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
@@ -482,16 +484,16 @@ namespace StarSalvager
                 RecoveredBotFalling.transform.localPosition = pos;
             }
 
-            if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
+            /*if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
                 return;
 
             if (m_currentInput != 0f)
             {
                 Move(m_currentInput);
-            }
+            }*/
         }
 
-        private void TryMoveElements()
+        /*private void TryMoveElements()
         {
             var xPos = m_worldElementsRoot.position.x;
 
@@ -542,7 +544,7 @@ namespace StarSalvager
 
             //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
-        }
+        }*/
 
         public void IncreaseSpeedAllOffGridMoving(float speedModifier)
         {
@@ -633,7 +635,7 @@ namespace StarSalvager
         //IMoveOnInput functions
         //================================================================================================================//
 
-        public void RegisterMoveOnInput()
+        /*public void RegisterMoveOnInput()
         {
             InputManager.RegisterMoveOnInput(this);
         }
@@ -655,7 +657,7 @@ namespace StarSalvager
             m_currentInput = direction;
 
             m_distanceHorizontal += direction * Constants.gridCellSize;
-        }
+        }*/
 
         //================================================================================================================//
 
@@ -1248,7 +1250,7 @@ namespace StarSalvager
 
             float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.35f;
             //float height = Camera.main.orthographicSize * 0.5f;
-            float height = Constants.gridCellSize * Random.Range(8.0f, 12.0f);
+            float height = Constants.gridCellSize * Random.Range(6.0f, 8.0f);
 
             Vector3 startingPosition = new Vector3(screenOffset * tryFlipSides, height, 11);
             Vector3 endPosition = new Vector3(screenOffset * -tryFlipSides, height, 11);

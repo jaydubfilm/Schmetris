@@ -95,6 +95,12 @@ namespace StarSalvager
                 UpdateDamage();
         }
 
+        public void SetupHealthValuesWithoutChangingSprite(float startingHealth, float currentHealth)
+        {
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
+        }
+
         public void ChangeHealth(float amount)
         {
             if (Destroyed)

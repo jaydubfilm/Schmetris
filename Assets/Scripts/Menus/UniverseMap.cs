@@ -12,6 +12,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.JsonDataTypes;
+using Recycling;
+using StarSalvager.ScriptableObjects;
 
 namespace StarSalvager.UI
 {
@@ -66,6 +69,14 @@ namespace StarSalvager.UI
 
         private List<Image> connectionLines = new List<Image>();
 
+        [SerializeField]
+        private Image botDisplayRoot;
+
+        [SerializeField]
+        private DamageProfileScriptableObject damageProfileScriptable;
+        
+        private List<GameObject> botDisplayObjects = new List<GameObject>();
+
         #endregion //Properties
 
         //Unity Functions
@@ -108,6 +119,7 @@ namespace StarSalvager.UI
                 universeMapButtons[i].Button.image.color = Color.white;
                 universeMapButtons[i].BotImage.gameObject.SetActive(false);
                 universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
+                universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null && PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 && !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
             }
 
             if (Globals.IsBetweenWavesInUniverseMap)
@@ -194,6 +206,15 @@ namespace StarSalvager.UI
 
                     List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
+                    for (int k = 0; k < childNodesAccessible.Count; k++)
+                    {
+                        bool isChildShortcut = PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex);
+                        if (isChildShortcut)
+                        {
+                            universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                        }
+                    }
+
                     bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
 
                     if (childNodesAccessible.Count == 0)
@@ -249,6 +270,99 @@ namespace StarSalvager.UI
 
             universeMapButtons[0].Button.interactable = true;
 
+            List<BlockData> botBlockData = PlayerDataManager.GetBlockDatas();
+
+            for (int i = 0; i < botBlockData.Count; i++)
+            {
+                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
+                {
+                    newGameObject = new GameObject();
+                    newGameObject.AddComponent<Image>();
+                }
+
+                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                Image image = newGameObject.GetComponent<Image>();
+
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
+                rect.sizeDelta = new Vector2(50, 50);
+
+                float startingHealth = 0;
+
+                switch (botBlockData[i].ClassType)
+                {
+                    case "Part":
+                    case "ScrapyardPart":
+                        startingHealth = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
+                        if (botBlockData[i].Health <= 0)
+                        {
+                            image.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(botBlockData[i].Level);
+                        }
+                        else
+                        {
+                            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        }
+                        break;
+                    case "Bit":
+                        image.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        startingHealth = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData((BIT_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
+                        break;
+                    case "Component":
+                        image.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        startingHealth = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentRemoteData((COMPONENT_TYPE)botBlockData[i].Type).health;
+                        break;
+                }
+
+                botDisplayObjects.Add(newGameObject);
+                float healthPercentage = botBlockData[i].Health / startingHealth;
+
+                if (healthPercentage > 0 && healthPercentage <= 0.75)
+                {
+                    if (!Recycler.TryGrab(typeof(Image), out GameObject damageImageGameObject))
+                    {
+                        damageImageGameObject = new GameObject();
+                        damageImageGameObject.AddComponent<Image>();
+                    }
+
+                    damageImageGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                    RectTransform damageRect = damageImageGameObject.GetComponent<RectTransform>();
+                    Image damageImage = damageImageGameObject.GetComponent<Image>();
+
+                    damageRect.pivot = new Vector2(0.5f, 0.5f);
+                    damageRect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
+                    damageRect.sizeDelta = new Vector2(50, 50);
+
+                    damageImage.sprite = damageProfileScriptable.GetDetailSprite(healthPercentage);
+
+                    botDisplayObjects.Add(damageImageGameObject);
+                }
+            }
+
+
+            if (botBlockData.Count == 0)
+            {
+                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
+                {
+                    newGameObject = new GameObject();
+                    newGameObject.AddComponent<Image>();
+                }
+
+                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+
+                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                Image image = newGameObject.GetComponent<Image>();
+
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = Vector2Int.zero;
+                rect.sizeDelta = new Vector2(50, 50);
+
+                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
+
+                botDisplayObjects.Add(newGameObject);
+            }
         }
 
         public void Reset()
@@ -258,6 +372,15 @@ namespace StarSalvager.UI
                 Destroy(connectionLines[i].gameObject);
             }
             connectionLines.Clear();
+
+            if (botDisplayObjects.Count > 0)
+            {
+                for (int i = botDisplayObjects.Count - 1; i >= 0; i--)
+                {
+                    Recycler.Recycle(typeof(Image), botDisplayObjects[i]);
+                }
+                botDisplayObjects.Clear();
+            }
         }
 
         //============================================================================================================//

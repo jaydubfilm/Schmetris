@@ -25,6 +25,9 @@ namespace StarSalvager.Audio
         private const string SFX_PITCH ="SFX_Pitch";
 
         private const int MAX_CHANNELS = 2;
+
+        private static float _sfxVolume = 1f;
+        private static float _musicVolume = 1f;
         
         //Audio Sources
         //============================================================================================================//
@@ -100,7 +103,7 @@ namespace StarSalvager.Audio
         //Static functions
         //============================================================================================================//
 
-        public static void PlayBitConnectSound(BIT_TYPE bitType, float volume = 1f, float pitch = 1f)
+        public static void PlayBitConnectSound(BIT_TYPE bitType, float pitch = 1f)
         {
             SOUND sound;
             switch (bitType)
@@ -124,19 +127,18 @@ namespace StarSalvager.Audio
                     throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
             }
 
-            PlaySound(sound, volume, pitch);
+            PlaySound(sound, pitch);
         }
 
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
         /// </summary>
         /// <param name="volume"></param>
-        public static void PlaySound(SOUND sound, float volume = 1f, float pitch = 1f)
+        public static void PlaySound(SOUND sound, float pitch = 1f)
         {
             if (Instance == null)
                 return;
 
-            volume = Mathf.Clamp01(volume);
             pitch = Mathf.Clamp(pitch, 0.01f, 3f);
 
 
@@ -152,7 +154,7 @@ namespace StarSalvager.Audio
             if(pitch != 1f)
                 Instance.PlaySoundPitched(sound, pitch);
             else
-                Instance.PlayOneShot(sound, volume);
+                Instance.PlayOneShot(sound);
         }
         
         public static void StopSound(SOUND sound)
@@ -193,6 +195,22 @@ namespace StarSalvager.Audio
             Instance.PlayWaveMusic(index, forceChange);
         }
 
+        public static void FadeInMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicIn();
+        }
+        
+        public static void FadeOutMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicOut();
+        }
+
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
         /// </summary>
@@ -215,8 +233,8 @@ namespace StarSalvager.Audio
             if (Instance == null)
                 return;
             
-            volume = Mathf.Clamp01(volume);
-            Instance.SetVolume(SFX_VOLUME, volume);
+            _sfxVolume = Mathf.Clamp01(volume);
+            Instance.SetVolume(SFX_VOLUME, _sfxVolume);
         }
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
@@ -227,11 +245,9 @@ namespace StarSalvager.Audio
             if (Instance == null)
                 return;
             
-            volume = Mathf.Clamp01(volume);
-            Instance.SetVolume(MUSIC_VOLUME, volume);
+            _musicVolume = Mathf.Clamp01(volume);
+            Instance.SetVolume(MUSIC_VOLUME, _musicVolume);
         }
-        
-        #endregion //Static Functions
         
         //============================================================================================================//
 
@@ -255,6 +271,15 @@ namespace StarSalvager.Audio
             
             Instance?.StopMoveSound(enemyId);
         }
+        //============================================================================================================//
+
+        #endregion //Static Functions
+        
+
+        //============================================================================================================//
+
+
+        #region Instance Functions
 
         //============================================================================================================//
 
@@ -291,25 +316,17 @@ namespace StarSalvager.Audio
         }
         
         //============================================================================================================//
-
-        
-        
-        //============================================================================================================//
-
-        #region Instance Functions
-
-
         
 
         //SFX Functions
         //============================================================================================================//
 
-        private void PlayOneShot(SOUND sound, float volume)
+        private void PlayOneShot(SOUND sound)
         {
-            if (!TryGetSoundClip(sound, out AudioClip clip))
+            if (!TryGetSound(sound, out var soundClip))
                 return;
 
-            PlayOneShot(clip, volume);
+            PlayOneShot(soundClip.clip, soundClip.Volume);
         }
 
         private void PlaySoundPitched(SOUND sound, float pitch)
@@ -517,6 +534,10 @@ namespace StarSalvager.Audio
         {
             return TryGetClip(soundClips, sound, out clip);
         }
+        private bool TryGetSound(SOUND sound, out SoundClip baseSound)
+        {
+            return TryGetSound(soundClips, sound, out baseSound);
+        }
 
         //============================================================================================================//
         
@@ -525,8 +546,52 @@ namespace StarSalvager.Audio
             clip = list.FirstOrDefault(s => Equals(s.sound, sound))?.clip;
             return clip != null;
         }
+        
+        private static bool TryGetSound<T>(IEnumerable<BaseSound<T>> list, T sound, out SoundClip baseSound) where T : Enum
+        {
+            baseSound = list.FirstOrDefault(s => Equals(s.sound, sound)) as SoundClip;
+            return baseSound != null;
+        }
 
         #endregion
+
+        #region Coroutines
+
+        private bool _musicFading;
+        private void FadeMusicIn()
+        {
+            if (_musicFading)
+                return;
+
+            StartCoroutine(FadeMusicCoroutine(0f, _musicVolume));
+        }
+
+        private void FadeMusicOut()
+        {
+            if (_musicFading)
+                return;
+            
+            StartCoroutine(FadeMusicCoroutine(_musicVolume, 0f));
+        }
+
+        private IEnumerator FadeMusicCoroutine(float startVolume, float endVolume, float time = 1f)
+        {
+            _musicFading = true;
+            float t = 0f;
+
+            while (t / time <= 1f)
+            {
+                var volume = Mathf.Lerp(startVolume, endVolume, t / time);
+                SetVolume(MUSIC_VOLUME, volume);
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            _musicFading = false;
+        }
+
+        #endregion //Coroutines
         
         //============================================================================================================//
 

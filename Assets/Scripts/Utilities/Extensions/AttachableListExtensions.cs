@@ -19,8 +19,8 @@ namespace StarSalvager.Utilities.Extensions
             return attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
         }
 
+        //Path to Core
         //============================================================================================================//
-
 
         #region Path to Core Checks
 
@@ -197,7 +197,10 @@ namespace StarSalvager.Utilities.Extensions
 
         #endregion //Path to Core Checks
 
+        //Get Block Data
         //============================================================================================================//
+
+        #region Get Block Data
 
         public static List<BlockData> GetBlockDatas<T>(this IEnumerable<T> attachables) where T : IAttachable
         {
@@ -208,6 +211,13 @@ namespace StarSalvager.Utilities.Extensions
         {
             return saveables.Select(x => x.ToBlockData()).ToList();
         }
+
+        #endregion //Get Block Data
+
+        //Find Unoccupied Coordinate
+        //====================================================================================================================//
+
+        #region Find Unoccupied Coordinate
 
         public static bool FindUnoccupiedCoordinate<T>(this List<T> attachedBlocks, DIRECTION direction,
             ref Vector2Int coordinate) where T : IAttachable
@@ -240,51 +250,12 @@ namespace StarSalvager.Utilities.Extensions
             return orphanMoveDatas.FindUnoccupiedCoordinate(direction, omd, ref coordinate);
         }
 
+        #endregion //Find Unoccupied Coordinate
+
+        //Get Center Attachable/Coordinate
         //============================================================================================================//
 
-        /*public static void SolveCoordinateOverlap(this List<IAttachable> blocks, DIRECTION fromDirection, ref Vector2Int coordinate)
-        {
-            switch (fromDirection)
-            {
-                case DIRECTION.LEFT:
-                    blocks.CoordinateOccupied(DIRECTION.RIGHT, ref coordinate);
-                    break;
-                case DIRECTION.UP:
-                    blocks.CoordinateOccupied(DIRECTION.DOWN, ref coordinate);
-                    break;
-                case DIRECTION.RIGHT:
-                    blocks.CoordinateOccupied(DIRECTION.LEFT, ref coordinate);
-                    break;
-                case DIRECTION.DOWN:
-                    blocks.CoordinateOccupied(DIRECTION.UP, ref coordinate);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(fromDirection), fromDirection, null);
-            }
-        }
-        
-        public static void SolveCoordinateOverlap(this List<OrphanMoveData> orphanMoveData, DIRECTION moveDirection, OrphanMoveData omd, ref Vector2Int coordinate)
-        {
-            switch (moveDirection)
-            {
-                case DIRECTION.LEFT:
-                    orphanMoveData.CoordinateOccupied(DIRECTION.RIGHT, omd, ref coordinate);
-                    break;
-                case DIRECTION.UP:
-                    orphanMoveData.CoordinateOccupied(DIRECTION.DOWN, omd, ref coordinate);
-                    break;
-                case DIRECTION.RIGHT:
-                    orphanMoveData.CoordinateOccupied(DIRECTION.LEFT, omd, ref coordinate);
-                    break;
-                case DIRECTION.DOWN:
-                    orphanMoveData.CoordinateOccupied(DIRECTION.UP, omd, ref coordinate);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(moveDirection), moveDirection, null);
-            }
-        }*/
-
-        //============================================================================================================//
+        #region Get Collection Center
 
         /// <summary>
         /// Finds the closest attachable based on the average center of the collection, and returns its coordinate
@@ -334,6 +305,13 @@ namespace StarSalvager.Utilities.Extensions
             return closest;
         }
 
+        #endregion //Get Collection Center
+
+        //Get Closest Attachable
+        //====================================================================================================================//
+
+        #region Get Closest Attachable
+
         public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool ignoreDestroyed = false) where T : IAttachable
         {
             if (blocks.Count == 1)
@@ -367,7 +345,7 @@ namespace StarSalvager.Utilities.Extensions
             if (blocks.Count == 1)
                 return blocks[0];
 
-            var checkPosition = attachable.Coordinate;
+            //var checkPosition = attachable.Coordinate;
 
             IAttachable selected = null;
 
@@ -380,7 +358,7 @@ namespace StarSalvager.Utilities.Extensions
 
                 //attached.SetColor(Color.white);
 
-                var dist = Vector2.Distance(attached.transform.position, checkPosition);
+                var dist = Vector2.Distance(attached.transform.position, attachable.transform.position);
                 if (dist > smallestDist)
                     continue;
 
@@ -393,6 +371,11 @@ namespace StarSalvager.Utilities.Extensions
             return (T) selected;
         }
 
+        #endregion //Get Closest Attachable
+
+        //Get Furthest Attachable
+        //====================================================================================================================//
+        
         public static T GetFurthestAttachable<T>(this IEnumerable<T> blocks, Vector2Int coordinate)
             where T : IAttachable
         {
@@ -430,7 +413,11 @@ namespace StarSalvager.Utilities.Extensions
                 .ToArray();
         }
 
+        //Get Attachables Around
         //============================================================================================================//
+
+        #region Get Attachables Around
+
         /// <summary>
         /// Returns a list of all AttachableBase types around the from block
         /// </summary>
@@ -580,7 +567,12 @@ namespace StarSalvager.Utilities.Extensions
 
         }
 
+        #endregion //Get Attachables Around
+
+        //Get Attachable in Direction
         //============================================================================================================//
+
+        #region Get Attachable in Direction
 
         public static IAttachable GetAttachableInDirection(this IEnumerable<IAttachable> attachables,
             Vector2Int coordinate, DIRECTION direction)
@@ -626,8 +618,12 @@ namespace StarSalvager.Utilities.Extensions
             return attachable;
         }
 
+        #endregion //Get Attachable in Direction
+
+        //Get Attachable Next to
         //============================================================================================================//
 
+        #region Get Attachable Next To
 
         /// <summary>
         /// Returns an AttachableBase in the specified direction from the target Attachable
@@ -670,6 +666,8 @@ namespace StarSalvager.Utilities.Extensions
 
             return attachables.FirstOrDefault(a => a.Coordinate == coord);
         }
+
+        #endregion //Get Attachable Next To
         //============================================================================================================//
 
         public static void GetAllAttachedBits(this List<IAttachable> attachables, IAttachable current,
@@ -696,6 +694,27 @@ namespace StarSalvager.Utilities.Extensions
                 attachables.GetAllAttachedBits(attachable, toIgnore, ref outAttachables);
             }
 
+        }
+        
+
+        //Get All Connected Detachables
+        //====================================================================================================================//
+
+        #region Get All Connected Detachables
+
+        public static void GetAllConnectedDetachables<T>(this IEnumerable<T> attachables,
+            ICanDetach current,
+            ICanDetach[] toIgnore,
+            ref List<T> outDetachables) where T : IAttachable
+        {
+            attachables.ToList().GetAllConnectedDetachables(current, toIgnore, ref outDetachables);
+        }
+        public static void GetAllConnectedDetachables(this IEnumerable<IAttachable> attachables,
+            ICanDetach current,
+            IEnumerable<ICanDetach> toIgnore,
+            ref List<ICanDetach> outDetachables)
+        {
+            attachables.ToList().GetAllConnectedDetachables(current, toIgnore.ToArray(), ref outDetachables);
         }
 
         public static void GetAllConnectedDetachables<T>(this List<T> attachables,
@@ -741,9 +760,10 @@ namespace StarSalvager.Utilities.Extensions
             }
         }
 
+        #endregion //Get All Connected Detachables
 
+        //Combo Count
         //============================================================================================================//
-
 
         /// <summary>
         /// Algorithm function that fills the BitList with every Bit in the specified direction that matches the level
@@ -784,7 +804,10 @@ namespace StarSalvager.Utilities.Extensions
             return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
         }
 
+        //Attachable List Matching
         //============================================================================================================//
+
+        #region Attachable List Matching
 
         /// <summary>
         /// Checks to see if the list contains the list of IAttachables/ISaveables.
@@ -935,9 +958,414 @@ namespace StarSalvager.Utilities.Extensions
             }
         }
 
+        #endregion //Attachable List Matching
+
+        //Checking for Orphans
         //============================================================================================================//
 
+        #region Combo Orphan Checks
 
+        public static void CheckForOrphansFromCombo(
+            this IEnumerable<IAttachable> attachables,
+            IEnumerable<IAttachable> movingAttachables,
+            IAttachable targetAttachable,
+            ref List<OrphanMoveData> orphanMoveData)
+        {
+            var attachedBlocks = attachables.ToArray();
+            var movingBlocks = movingAttachables.ToArray();
+
+            //Check against all the bits that will be moving
+            //--------------------------------------------------------------------------------------------------------//
+
+            foreach (var movingBit in movingBlocks)
+            {
+                //Get the basic data about the current movingBit
+                //----------------------------------------------------------------------------------------------------//
+
+                var dif = targetAttachable.Coordinate - movingBit.Coordinate;
+                var travelDirection = dif.ToDirection();
+                var travelDistance = dif.magnitude;
+
+                //Debug.Log($"Travel Direction: {travelDirection} distance {travelDistance}");
+
+                if (travelDirection == DIRECTION.NULL)
+                    continue;
+
+
+
+                //Check around moving bits (Making sure to exclude the one that doesn't move)
+                //----------------------------------------------------------------------------------------------------//
+
+                //Get all the attachableBases around the specified attachable
+                var attachablesAround = attachedBlocks.GetAttachablesAround(movingBit);
+
+                //Don't want to bother checking the block that we know will not move
+                if (attachablesAround.Contains(targetAttachable))
+                    attachablesAround.Remove(targetAttachable);
+
+                //Double check that the neighbors are connected to the core
+                //----------------------------------------------------------------------------------------------------//
+
+                foreach (var attachable in attachablesAround)
+                {
+                    //Ignore the ones that we know are good
+                    //------------------------------------------------------------------------------------------------//
+                    if (attachable == null)
+                        continue;
+
+                    if (attachable == targetAttachable)
+                        continue;
+
+                    if (!(attachable is ICanDetach canDetach))
+                        continue;
+
+                    if (movingBlocks.Contains(attachable))
+                        continue;
+
+                    //Make sure that we haven't already determined this element to be moved
+                    if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == attachable))
+                        continue;
+
+                    //Check that we're connected to the core
+                    //------------------------------------------------------------------------------------------------//
+
+                    var hasPathToCore = attachedBlocks.HasPathToCore(attachable,
+                        movingBlocks
+                            .Select(b => b.Coordinate)
+                            .ToList());
+
+                    if (hasPathToCore)
+                        continue;
+
+                    var travelDistInt = (int) travelDistance;
+
+                    //We've got an orphan, record all of the necessary data
+                    //------------------------------------------------------------------------------------------------//
+
+                    if (orphanMoveData == null)
+                        orphanMoveData = new List<OrphanMoveData>();
+                    
+
+                    var newOrphanCoordinate =
+                        attachable.Coordinate + travelDirection.ToVector2Int() * travelDistInt;
+
+                    var attachedToOrphan = new List<ICanDetach>();
+                    attachedBlocks.GetAllConnectedDetachables(
+                        canDetach, 
+                        movingBlocks
+                            .OfType<ICanDetach>()
+                            .ToArray(),
+                        ref attachedToOrphan);
+
+                    //If someone is already planning to move to the target position, just choose one spot back
+                    if (orphanMoveData.Count > 0 &&
+                        orphanMoveData.Any(x => x.intendedCoordinates == newOrphanCoordinate))
+                    {
+                        newOrphanCoordinate += travelDirection.Reflected().ToVector2Int();
+                        travelDistInt--;
+                    }
+
+
+                    //------------------------------------------------------------------------------------------------//
+
+                    attachedBlocks.SolveOrphanGroupPositionChange(attachable,
+                        attachedToOrphan.OfType<IAttachable>().ToList(),
+                        newOrphanCoordinate,
+                        travelDirection,
+                        travelDistInt,
+                        movingBlocks,
+                        ref orphanMoveData);
+                }
+
+            }
+        }
+        
+        /// <summary>
+        /// Solve the position change required for a single orphan. If moving a group ensure you use SolveOrphanGroupPositionChange
+        /// </summary>
+        /// <param name="orphanedBit"></param>
+        /// <param name="targetCoordinate"></param>
+        /// <param name="travelDirection"></param>
+        /// <param name="travelDistance"></param>
+        /// <param name="movingBits"></param>
+        /// <param name="orphanMoveData"></param>
+        /// <param name="lastLocation"></param>
+        private static void SolveOrphanPositionChange(this IEnumerable<IAttachable> attachables, IAttachable orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
+            int travelDistance, IReadOnlyCollection<IAttachable> movingBits, ref List<OrphanMoveData> orphanMoveData)
+        {
+            //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
+
+            //Check only the Bits on the Bot that wont be moving
+            var stayingBlocks = new List<IAttachable>(attachables);
+            foreach (var attachableBase in movingBits)
+            {
+                stayingBlocks.Remove(attachableBase);
+            }
+
+            //Checks to see if this orphan can travel unimpeded to the destination
+            //If it cannot, set the destination to the block beside that which is blocking it.
+            var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphanedBit.Coordinate,
+                travelDirection, targetCoordinate, out var clearCoordinate);
+
+            //If there's no clear solution, then we will try and solve the overlap here
+            if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+            {
+                //Debug.LogError("Orphan has no clear path to intended Position");
+                throw new Exception("NEED TO LOOK AT WHAT IS HAPPENING HERE");
+
+                //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
+                //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
+            }
+            else if (!hasClearPath)
+            {
+                //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
+                targetCoordinate = clearCoordinate;
+            }
+            
+            //lastPosition = targetCoordinate;
+
+            orphanMoveData.Add(new OrphanMoveData
+            {
+                attachableBase = orphanedBit,
+                moveDirection = travelDirection,
+                distance = travelDistance,
+                intendedCoordinates = targetCoordinate
+            });
+        }
+
+
+        private static void SolveOrphanGroupPositionChange(this IEnumerable<IAttachable> attachables,
+            IAttachable mainOrphan,
+            IReadOnlyList<IAttachable> orphanGroup, 
+            Vector2Int targetCoordinate,
+            DIRECTION travelDirection,
+            int travelDistance, 
+            IReadOnlyCollection<IAttachable> movingBits,
+            ref List<OrphanMoveData> orphanMoveData)
+        {
+
+            if (orphanGroup.Count == 1)
+            {
+                attachables.SolveOrphanPositionChange(mainOrphan, targetCoordinate, travelDirection, travelDistance, movingBits,
+                    ref orphanMoveData);
+                return;
+            }
+            
+            
+            //Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
+
+            //var lastLocation = Vector2Int.zero;
+
+            var distances = new float[orphanGroup.Count];
+
+            var index = -1;
+            var shortestDistance = 999f;
+            
+            
+            for (var i = 0; i < orphanGroup.Count; i++)
+            {
+                var orphan = orphanGroup[i];
+                var relative = orphan.Coordinate - mainOrphan.Coordinate;
+                var desiredLocation = targetCoordinate + relative;
+
+                var stayingBlocks = new List<IAttachable>(attachables);
+                if (!movingBits.IsNullOrEmpty())
+                {
+                    //Check only the Bits on the Bot that wont be moving
+                    foreach (var attachableBase in movingBits)
+                    {
+                        stayingBlocks.Remove(attachableBase);
+                    } 
+                }
+                
+
+                //Checks to see if this orphan can travel unimpeded to the destination
+                //If it cannot, set the destination to the block beside that which is blocking it.
+                var hasClearPath = IsPathClear(stayingBlocks, 
+                    movingBits, 
+                    travelDistance, 
+                    orphan.Coordinate,
+                    travelDirection, 
+                    desiredLocation, 
+                    out var clearCoordinate);
+
+                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
+                    distances[i] = 999f;
+                else if (!hasClearPath)
+                    distances[i] = Vector2Int.Distance(orphan.Coordinate, clearCoordinate);
+                else
+                    distances[i] = Vector2Int.Distance(orphan.Coordinate, desiredLocation);
+
+                if (distances[i] > shortestDistance)
+                    continue;
+
+                //index = i;
+                shortestDistance = distances[i];
+            }
+            
+            //Debug.LogError($"Shortest to move {orphanGroup[index].gameObject.name}, Distance: {shortestDistance}");
+            //Debug.Break();
+
+            foreach (var orphan in orphanGroup)
+            {
+                //var relative = orphan.Coordinate - mainOrphan.Coordinate;
+                //var desiredLocation = targetCoordinate + relative;
+
+                var newCoordinate = orphan.Coordinate + travelDirection.ToVector2Int() * (int) shortestDistance;
+                
+                orphanMoveData.Add(new OrphanMoveData
+                {
+                    attachableBase = orphan,
+                    moveDirection = travelDirection,
+                    distance = shortestDistance,
+                    intendedCoordinates = newCoordinate
+                });
+            }
+        }
+
+        private static bool IsPathClear(IReadOnlyCollection<IAttachable> stayingBlocks,
+            IEnumerable<IAttachable> toIgnore, 
+            int distance, 
+            Vector2Int currentCoordinate, 
+            DIRECTION moveDirection,
+            Vector2Int targetCoordinate, 
+            out Vector2Int clearCoordinate)
+        {
+            //var distance = (int) orphanMoveData.distance;
+            var coordinate = currentCoordinate;
+
+            //If the distance starts at zero, its already at the TargetCoordinate
+            clearCoordinate = distance == 0 ? targetCoordinate : Vector2Int.zero;
+
+            while (distance > 0)
+            {
+                coordinate += moveDirection.ToVector2Int();
+                var occupied = stayingBlocks
+                    .Where(x => !toIgnore.Contains(x))
+                    .FirstOrDefault(x => x.Coordinate == coordinate);
+
+                if (occupied == null)
+                    clearCoordinate = coordinate;
+
+                distance--;
+            }
+
+            return targetCoordinate == clearCoordinate;
+        }
+
+        #endregion //Combo Orphan Checks
+
+        public static void CheckForOrphansFromProcessing(
+            this IEnumerable<IAttachable> attachables,
+            IAttachable targetAttachable,
+            ref List<OrphanMoveData> orphanMoveData)
+        {
+            var attachedBlocks = attachables.ToArray();
+            
+            //Check around moving bits (Making sure to exclude the one that doesn't move)
+            //----------------------------------------------------------------------------------------------------//
+
+            //Get all the attachableBases around the specified attachable
+            var attachablesAround = attachedBlocks.GetAttachablesAround(targetAttachable);
+
+            //Don't want to bother checking the block that we know will not move
+            if (attachablesAround.Contains(targetAttachable))
+                attachablesAround.Remove(targetAttachable);
+            
+            var coordinatesToIgnore = new List<Vector2Int>
+            {
+                targetAttachable.Coordinate
+            };
+            var iCanDetachToIgnore = new List<ICanDetach>
+            {
+                targetAttachable as ICanDetach
+            };
+
+            //Double check that the neighbors are connected to the core
+            //----------------------------------------------------------------------------------------------------//
+
+            foreach (var attachable in attachablesAround)
+            {
+                
+                //Ignore the ones that we know are good
+                //------------------------------------------------------------------------------------------------//
+                if (attachable == null)
+                    continue;
+
+                if (attachable == targetAttachable)
+                    continue;
+
+                if (!(attachable is ICanDetach canDetach))
+                    continue;
+
+                //Make sure that we haven't already determined this element to be moved
+                if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == attachable))
+                    continue;
+
+                var omdGroup = new List<OrphanMoveData>();
+
+                //Check that we're connected to the core
+                //------------------------------------------------------------------------------------------------//
+
+                var hasPathToCore = attachedBlocks.HasPathToCore(attachable, coordinatesToIgnore);
+
+                if (hasPathToCore)
+                    continue;
+                
+                var attachedToOrphan = new List<ICanDetach>();
+                attachedBlocks.GetAllConnectedDetachables(
+                    canDetach,
+                    iCanDetachToIgnore,
+                    ref attachedToOrphan);
+                
+                //Get the basic data about the current movingBit
+                //----------------------------------------------------------------------------------------------------//
+                var closest = attachedToOrphan.OfType<IAttachable>().ToList().GetClosestAttachable(targetAttachable);
+
+                var dif = targetAttachable.Coordinate - closest.Coordinate;
+                var travelDirection = dif.ToDirection();
+                var travelDistance = dif.magnitude;
+
+
+                if (travelDirection == DIRECTION.NULL)
+                    throw new Exception();
+
+                var travelDistInt = (int) travelDistance;
+
+                //We've got an orphan, record all of the necessary data
+                //------------------------------------------------------------------------------------------------//
+
+                if (orphanMoveData == null)
+                    orphanMoveData = new List<OrphanMoveData>();
+
+
+                var newOrphanCoordinate =
+                    attachable.Coordinate + travelDirection.ToVector2Int() * travelDistInt;
+
+                //If someone is already planning to move to the target position, just choose one spot back
+                if (orphanMoveData.Count > 0 &&
+                    orphanMoveData.Any(x => x.intendedCoordinates == newOrphanCoordinate))
+                {
+                    newOrphanCoordinate += travelDirection.Reflected().ToVector2Int();
+                    travelDistInt--;
+                }
+                
+                attachedBlocks.SolveOrphanGroupPositionChange(attachable,
+                    attachedToOrphan.OfType<IAttachable>().ToList(),
+                    newOrphanCoordinate,
+                    travelDirection,
+                    travelDistInt,
+                    new List<IAttachable>
+                    {
+                        targetAttachable
+                    }, 
+                    ref omdGroup);
+                
+                orphanMoveData.AddRange(omdGroup);
+            }
+        }
+        //====================================================================================================================//
+        
 
     }
 }

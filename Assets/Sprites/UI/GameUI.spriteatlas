@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 4253825
+    totalSpriteSurfaceArea: 4271297
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 38790c43e756b534ea0311293c03a641, type: 3}
   - {fileID: 21300000, guid: 5c5b7c93d749b454681c16805bbc892b, type: 3}
   - {fileID: 21300000, guid: a970f1d3628f3cd418e3e3df3f5af8ff, type: 3}
+  - {fileID: 21300000, guid: 137c10e33f20f864796c9e98dcdccded, type: 3}
   - {fileID: 21300000, guid: 610b9564c3087af4c8fc28295d5f8c88, type: 3}
   - {fileID: 21300000, guid: d7559a741aee3984194cfc3f8dbe910e, type: 3}
   - {fileID: 21300000, guid: 82eb1c55932253840aac56b9a0ab0a39, type: 3}
@@ -63,22 +64,23 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 27c990e54a2b8ed4ea9ab3510f218e73, type: 3}
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
   - {fileID: 21300000, guid: b78008d6fca3a2f469050019e5184fbc, type: 3}
-  - {fileID: 21300000, guid: be21c127dd51d6c48925f1ef44da8e8e, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
   - {fileID: 21300000, guid: 73854258c30d1424a9638199b57ad440, type: 3}
   - {fileID: 21300000, guid: d19cc858df36a5747baa5b7f65d82098, type: 3}
   - {fileID: 21300000, guid: 006d7f586ee6e7f4ba086bb4c444dc70, type: 3}
+  - {fileID: 21300000, guid: c9c3f9787dcdfdb4fb8653f3a7be1657, type: 3}
+  - {fileID: 21300000, guid: f95757399fd3fa044b8d40691bb6a3b1, type: 3}
   - {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
-  - {fileID: 21300000, guid: 7aa79e2aba8b339409796118b29a2e37, type: 3}
+  - {fileID: 21300000, guid: a97b6deafe7ba7e48a083aee2360d6ac, type: 3}
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
-  - {fileID: 21300000, guid: 156c5b2bc4f90af4d87c0e5553785272, type: 3}
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
   - {fileID: 255877476622243558, guid: d0bb13fb193bf014e986d0073c625415, type: 3}
   - {fileID: 21300000, guid: 1deb860dba383cc428528a2e5170c255, type: 3}
   - {fileID: 21300000, guid: be4a1d4d6da96a04d8d62c7ab6358717, type: 3}
-  - {fileID: 21300000, guid: 21e48fdd15c73e84999ff9bc8acf3704, type: 3}
+  - {fileID: 21300000, guid: 957aa46eb0be329478ce49384c8a9760, type: 3}
   - {fileID: 21300000, guid: b596599e27c9172498c4390f67d5d714, type: 3}
   - {fileID: 8082984663549090972, guid: 8b72dfce31d7074489b652f2ac8cf74a, type: 3}
+  - {fileID: 21300000, guid: 4f39305f550f91a4dbd5be09fe8067d1, type: 3}
   - {fileID: 21300000, guid: cbbb0d6f845acc845b8d55609f1dfd7f, type: 3}
   - {fileID: 21300000, guid: 8229bfaf823042541adcdcaa639c1bb2, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -91,6 +93,7 @@ SpriteAtlas:
   - ui_MANETISMICON_0_v1
   - ui_ACTIVEFREEZE_0_v1
   - ui_ABILITYBUTTON_0_v3
+  - ui_CRACKS4_0_v3
   - screen_BORDERWHITEGLOW_1_v2
   - ui_LEVELPROGRESSFILLBAR_0_v1
   - ui_TEMPICON_0_v1
@@ -98,22 +101,23 @@ SpriteAtlas:
   - wavesummary_WIRE_0_v1
   - ui_TEMPBACK_0_v1
   - screen_BORDER_1_v2
-  - ui_CRACKS2_0_v2
   - ui_TEMPGAUGE_0_v1
   - ui_STICKER_0_v1
   - ui_BUTTONEXPOSED_0_v1
   - ui_RECOVERYBACK_0_v1
+  - ui_ORANGESCREEN_0_v1
+  - ui_CRACKS2_0_v3
   - ui_GPATCHPOINT_0_v4
-  - ui_CRACKS1_0_v2
+  - ui_CRACKS3_0_v3
   - ui_MATERIALCOVER_0_v1
-  - ui_CRACKS3_0_v2
   - ui_LEVELPROGRESS_0_v1
   - whiteSquare_0
   - ui_BACKARTRIGHT_0_v4
   - ui_GPATCHPOINT_0_v5
-  - ui_CRACKS4_0_v2
+  - ui_CRACKS1_0_v3
   - ui_ACTIVEBOMB_0_v1
   - undo_0
+  - ui_ORANGEBAR_0_v1
   - UI-popupicon-NO-V1
   - ui_MAGNETISMGAUGE_0_v1
   m_Tag: GameUI

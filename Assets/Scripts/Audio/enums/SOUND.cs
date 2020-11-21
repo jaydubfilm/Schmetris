@@ -46,6 +46,23 @@
         BIT_SNAP_GREY,
         BIT_SNAP_RED,
         BIT_SNAP_YELLOW,
+        
+        REFINE_BLUE,
+        REFINE_GREEN,
+        REFINE_GREY,
+        REFINE_RED,
+        REFINE_YELLOW,
+
+        BONUS_SHAPE,
+        BONUS_SHAPE_MATCH,
+        BONUS_SHAPE_UPG,
+        
+        BOT_ARRIVES,
+        BOT_DEPARTS,
+        RECOVERY_TOW,
+        END_WAVE,
+        
+        UNLOCK_PATCH_POINT,
     }
 }
 

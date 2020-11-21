@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
@@ -234,16 +235,31 @@ namespace StarSalvager.UI
 
         //Wave Summary Window
         //====================================================================================================================//
-
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryText;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
 
+        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image backgroundImage;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image crossbarImage;
+        
+        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite normalBackgroundSprite;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite normalCrossbarSprite;
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite altBackgroundSprite;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Sprite altCrossbarSprite;
+        
         //Health Cracks
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
@@ -267,8 +283,42 @@ namespace StarSalvager.UI
         [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Color vignetteMaxColor;
 
+        //Patch Point Effect
+        //====================================================================================================================//
+        
+        #region Patch Point Effect
+
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
+        private RectTransform effectArea;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
+        private RectTransform moveTargetTransform;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
+        private Image imagePrefab;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.1f, 20f)]
+        private float effectRadius;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
+        private int effectCount;
+        
+        [SerializeField, FoldoutGroup("Patch Point Effect")]
+        private float rotationSpeed;
+
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
+        private float spawnTime;
+        [SerializeField, FoldoutGroup("Patch Point Effect")]
+        private AnimationCurve spawnCurve;
+        
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
+        private float moveTime;
+        [SerializeField, FoldoutGroup("Patch Point Effect")]
+        private AnimationCurve moveCurve;
+
+        #endregion //Patch Point Effect
+        
         //Other
         //============================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Extras")] 
+        private FadeUIImage magnetFlash;
+        
         [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
         private Vector2 flashTimeRange;
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
@@ -279,9 +329,10 @@ namespace StarSalvager.UI
         private AnimationCurve flashCurve;
         private bool _flashingBorder;
 
-
         #endregion //Properties
 
+        //====================================================================================================================//
+        
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -391,6 +442,8 @@ namespace StarSalvager.UI
 
             ShowRecoveryBanner(false);
             ShowLiquidSliders(null);
+
+            OutlineMagnet(false);
         }
 
         private void InitSliderText()
@@ -450,6 +503,13 @@ namespace StarSalvager.UI
         {
             carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
+
+            OutlineMagnet(value >= 1f);
+        }
+        
+        public void OutlineMagnet(bool state)
+        {
+            magnetFlash.SetActive(state);
         }
         
         //============================================================================================================//
@@ -641,7 +701,6 @@ namespace StarSalvager.UI
             StartCoroutine(BorderFlashingCoroutine(time));
         }
 
-
         private IEnumerator BorderFlashingCoroutine(float time)
         {
             float t = 0f;
@@ -745,7 +804,7 @@ namespace StarSalvager.UI
         #region Wave Summary Window
 
         private bool _movingSummaryWindow;
-        public void ShowWaveSummaryWindow(bool show,in string title, in string text, Action onConfirmCallback, float moveTime = 1f, bool instantMove = false)
+        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback, bool useAlt = false, float moveTime = 1f, bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
@@ -761,6 +820,10 @@ namespace StarSalvager.UI
                     ShowWaveSummaryWindow(false,string.Empty, string.Empty, null, instantMove:true);
                     onConfirmCallback?.Invoke();
                 });
+
+
+                backgroundImage.sprite = useAlt ? altBackgroundSprite : normalBackgroundSprite;
+                crossbarImage.sprite = useAlt ? altCrossbarSprite : normalCrossbarSprite;
             }
             else
             {
@@ -850,7 +913,103 @@ namespace StarSalvager.UI
             glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
         }
 
+        //Patch point Effect
         //====================================================================================================================//
+
+        [Button, DisableInEditorMode]
+        public void CreatePatchPointEffect()
+        {
+            CreatePatchPointEffect(effectCount);
+        }
+
+        public void CreatePatchPointEffect(int count)
+        {
+            var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
+
+            
+            var botWorldPosition = LevelManager.Instance.BotObject.transform.position;
+            
+            /*var viewportPoint = CameraController.Camera.WorldToViewportPoint(botWorldPosition);
+            var canvasPoint = effectArea.sizeDelta * viewportPoint;*/
+            var targetPosition = RectTransformUtility.WorldToScreenPoint(CameraController.Camera, botWorldPosition);
+
+            StartCoroutine(PatchPointEffectCoroutine(targetPosition, patchSprite, count));
+        }
+
+        private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)
+        {
+            var transforms = new RectTransform[count];
+            var spawnPositions = new Vector2[count];
+            var rotateDirection = new bool[count];
+
+            for (var i = 0; i < count; i++)
+            {
+                var image = Instantiate(imagePrefab);
+                image.sprite = sprite;
+                
+                var trans = (RectTransform)image.transform;
+                trans.SetParent(effectArea, false);
+                trans.localScale = Vector3.zero;
+                trans.anchoredPosition = startPosition;
+                transforms[i] = trans;
+
+                spawnPositions[i] = startPosition +
+                                    new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * (effectRadius * 10f);
+                rotateDirection[i] = Random.value > 0.5f;
+            }
+
+            var t = 0f;
+
+            while (t / spawnTime <= 1f)
+            {
+                var deltaTime = Time.deltaTime;
+                var td = spawnCurve.Evaluate(t / spawnTime);
+
+                for (int i = 0; i < count; i++)
+                {
+                    transforms[i].anchoredPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
+                    transforms[i].localScale = Vector3.Lerp(Vector3.zero, Vector3.one, td);
+                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                }
+
+                t += deltaTime;
+                yield return null;
+            }
+            
+            for (int i = 0; i < count; i++)
+            {
+                spawnPositions[i] = transforms[i].localPosition;
+            }
+            
+            t = 0f;
+            var targetPosition = effectArea.transform.InverseTransformPoint(moveTargetTransform.position);
+
+            while (t / moveTime <= 1f)
+            {
+                var deltaTime = Time.deltaTime;
+                var td = moveCurve.Evaluate(t / moveTime);
+
+                for (var i = 0; i < count; i++)
+                {
+                    transforms[i].localPosition = Vector2.Lerp(spawnPositions[i], targetPosition, td);
+                    transforms[i].localScale = Vector3.Lerp(Vector3.one, Vector3.zero, spawnCurve.Evaluate(t/moveTime));
+                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                }
+
+                t += deltaTime;
+                yield return null;
+            }
+            
+            for (int i = 0; i < count; i++)
+            {
+                Destroy(transforms[i].gameObject);
+            }
+
+        }
+
+
+        //====================================================================================================================//
+        
 
     }
 }

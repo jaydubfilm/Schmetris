@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-
+using Recycling;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -120,6 +123,103 @@ namespace StarSalvager.Utilities.Extensions
             {
                 collidableBase.SetColliderActive(state);
             }
+        }
+
+
+        //====================================================================================================================//
+
+        public static void MoveOrphanPieces(this Bot bot,IReadOnlyList<OrphanMoveData> orphans, Action onFinishedCallback)
+        {
+            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, bot.TEST_MergeTime, onFinishedCallback));
+        }
+        
+        private static IEnumerator MoveOrphanPiecesCoroutine(Bot bot,
+            IReadOnlyList<OrphanMoveData> orphans,
+            float seconds,
+            Action onFinishedCallback)
+        {
+            var compositeCollider2D = (CompositeCollider2D) bot.Collider;
+            var transform = bot.transform;
+            
+            //Prepare Bits to be moved
+            //--------------------------------------------------------------------------------------------------------//
+
+            foreach (var omd in orphans)
+            {
+                omd.attachableBase.Coordinate = omd.intendedCoordinates;
+                (omd.attachableBase as Bit)?.SetColliderActive(false);
+                
+                if (omd.attachableBase is ICanCombo iCanCombo)
+                    iCanCombo.IsBusy = true;
+            }
+            
+            //We're going to want to regenerate the shape while things are moving
+            compositeCollider2D.GenerateGeometry();
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            var t = 0f;
+            
+
+            //Same as above but for Orphans
+            //--------------------------------------------------------------------------------------------------------//
+
+            var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
+            var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
+            var orphanTargetPositions = orphans.Select(o =>
+                transform.InverseTransformPoint((Vector2) transform.position +
+                                                (Vector2) o.intendedCoordinates * Constants.gridCellSize)).ToArray();
+            //--------------------------------------------------------------------------------------------------------//
+
+
+            //Move bits towards target
+            while (t / seconds <= 1f)
+            {
+                var td = t / seconds;
+
+                //Move the orphans into their new positions
+                //----------------------------------------------------------------------------------------------------//
+                
+                for (var i = 0; i < orphans.Count; i++)
+                {
+                    var bitTransform = orphanTransforms[i];
+                   
+                    //Debug.Log($"Start {bitTransform.position} End {position}");
+
+                    bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
+                        orphanTargetPositions[i], td);
+                    
+                    SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(orphanTargetPositions[i]), Color.red);
+                }
+                
+                //----------------------------------------------------------------------------------------------------//
+
+                t += Time.deltaTime;
+
+                yield return null;
+            }
+
+            //Re-enable the colliders on our orphans, and ensure they're in the correct position
+            for (var i = 0; i < orphans.Count; i++)
+            {
+                var attachable = orphans[i].attachableBase;
+                orphanTransforms[i].localPosition = orphanTargetPositions[i];
+                
+                if(attachable is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(true);
+
+                if (attachable is ICanCombo canCombo)
+                    canCombo.IsBusy = false;
+            }
+            
+            //Now that everyone is where they need to be, wrap things up
+            //--------------------------------------------------------------------------------------------------------//
+
+            compositeCollider2D.GenerateGeometry();
+
+            onFinishedCallback?.Invoke();
+            
+            //--------------------------------------------------------------------------------------------------------//
         }
 
     }

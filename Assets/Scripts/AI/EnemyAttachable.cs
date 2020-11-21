@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach
+    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -494,5 +494,9 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
 
+        public Type GetOverrideType()
+        {
+            return typeof(EnemyAttachable);
+        }
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.Backgrounds
 {
+    //https://gamedev.stackexchange.com/a/207
     public class BackgroundController : MonoBehaviour, IPausable, IMoveOnInput
     {
         private static bool IgnoreInput => false;//Globals.CameraUseInputMotion;

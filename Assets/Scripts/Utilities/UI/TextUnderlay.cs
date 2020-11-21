@@ -73,12 +73,15 @@ namespace StarSalvager.Utilities.UI
             if (!_targetText)
                 return;
             
+            
             _targetText.text = _mainText.text;
             _targetText.fontSize = _mainText.fontSize;
 
             _mainText.color = underlayColor;
             
             _targetTransform.anchoredPosition = Vector2.up * (_mainText.fontSize * underlayOffset);
+            _targetTransform.SetAsLastSibling();
+
 
             _currentText = _mainText.text;
             _currentFontSize = _mainText.fontSize;

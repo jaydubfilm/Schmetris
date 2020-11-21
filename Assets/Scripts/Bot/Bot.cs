@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -25,11 +27,12 @@ using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.Inputs;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput
     {
         private readonly struct ShiftData
         {
@@ -87,8 +90,10 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
         private List<IAttachable> _attachedBlocks;
-        
-        /*private List<Part> _parts;*/
+
+        //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
+        private float m_currentInput;
+        private float m_distanceHorizontal = 0.0f;
 
         //============================================================================================================//
 
@@ -148,6 +153,30 @@ namespace StarSalvager
             }
         }
         private Rigidbody2D _rigidbody;
+        
+        public new Transform transform
+        {
+            get
+            {
+                if (_transform == null)
+                    _transform = gameObject.transform;
+                
+                return _transform;
+            }
+        }
+        private Transform _transform;
+
+        public CinemachineImpulseSource cinemachineImpulseSource
+        {
+            get
+            {
+                if (_cinemachineImpulseSource == null)
+                    _cinemachineImpulseSource = gameObject.GetComponent<CinemachineImpulseSource>();
+
+                return _cinemachineImpulseSource;
+            }
+        }
+        private CinemachineImpulseSource _cinemachineImpulseSource;
 
         private GameUI GameUi => GameUI.Instance;
 
@@ -161,12 +190,15 @@ namespace StarSalvager
         private void Start()
         {
             RegisterPausable();
+            RegisterMoveOnInput();
         }
+        
 
         private void Update()
         {
             if (isPaused)
                 return;
+
             
             SetParticles();
             
@@ -178,13 +210,25 @@ namespace StarSalvager
             if (Destroyed)
                 return;
             
+            TryMovement();
+
+            if (Rotating)
+            {
+                RotateBot();
+            }
+            
             //TODO Once all done testing, remove this
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
             {
                 Time.timeScale = Time.timeScale == 0.1f ? 1f : 0.1f;
             }
             
             BotPartsLogic.PartsUpdateLoop();
+
+            if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
+            {
+                Move(m_currentInput);
+            }
         }
 
         private void LateUpdate()
@@ -205,20 +249,6 @@ namespace StarSalvager
             }
         }
 
-        private void FixedUpdate()
-        {
-            if(Destroyed)
-                return;
-
-            /*if (Moving)
-                MoveBot();*/
-
-            if (Rotating)
-            {
-                RotateBot();
-            }
-        }
-
         private void OnEnable()
         {
             CompositeCollider2D.GenerateGeometry();
@@ -226,9 +256,78 @@ namespace StarSalvager
 
         #endregion //Unity Functions
 
+        //IMoveOnInput
+        //============================================================================================================//
+
+        private void TryMovement()
+        {
+            var xPos = transform.position.x;
+
+            var distHorizontal = Mathf.Abs(m_distanceHorizontal);
+            DIRECTION direction;
+
+
+            bool canMove;
+            if (m_distanceHorizontal < 0)
+            {
+                direction = DIRECTION.LEFT;
+                canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+            }
+            else if (m_distanceHorizontal > 0)
+            {
+                direction = DIRECTION.RIGHT;
+                canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+            }
+            else
+            {
+                canMove = false;
+                distHorizontal = 0f;
+                direction = DIRECTION.NULL;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+
+            Globals.MovingDirection = distHorizontal <= 0.2f
+                ? DIRECTION.NULL
+                : direction;
+
+            if (!canMove)
+                return;
+            
+            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+
+            var moveDirection = direction.ToVector2();
+
+            m_distanceHorizontal -= toMove * moveDirection.x;
+            transform.position += (Vector3)moveDirection * toMove;
+
+            //--------------------------------------------------------------------------------------------------------//
+
+        }
+
+        public void RegisterMoveOnInput()
+        {
+            InputManager.RegisterMoveOnInput(this);
+        }
+
+        public void Move(float direction)
+        {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            {
+                m_currentInput = 0f;
+                return;
+            }
+
+            m_currentInput = direction;
+
+            m_distanceHorizontal += direction * Constants.gridCellSize;
+        }
+
+
         //Particle Tests
         //====================================================================================================================//
-        
+
         private void SetParticles()
         {
             if (Destroyed)
@@ -304,6 +403,10 @@ namespace StarSalvager
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
             
             GameUi.SetHealthValue(1f);
+
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -329,7 +432,14 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
             
+
+            
+            var camera = CameraController.Camera.GetComponent<CameraController>();
+            camera.SetLookAtFollow(transform);
+            camera.ResetCameraPosition();
+
             BotPartsLogic.PopulatePartsList();
+
         }
 
 
@@ -344,6 +454,7 @@ namespace StarSalvager
         {
             if (GameTimer.IsPaused) 
                 return;
+
 
 
             if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
@@ -371,6 +482,9 @@ namespace StarSalvager
             
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
+
+        [SerializeField]
+        private float rotationTarget;
         
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
@@ -395,6 +509,9 @@ namespace StarSalvager
                 targetRotation = rigidbody.rotation + toRotate;
             }
 
+            rotationTarget += toRotate;
+            rotationTarget = MathS.ClampAngle(targetRotation);
+
             targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
@@ -403,9 +520,6 @@ namespace StarSalvager
             }
 
             _rotating = true;
-
-            
-
         }
 
         public void TrySelfDestruct()
@@ -427,28 +541,19 @@ namespace StarSalvager
 
         #region Rotation
 
-        private bool rotate;
-
         private void RotateBot()
         {
-            var rotation = rigidbody.rotation;
+            var rotation = transform.eulerAngles.z;
 
             //Rotates towards the target rotation.
-            float rotationAmount;
-            if (isContinuousRotation)
-            {
-                rotationAmount = Globals.BotContinuousRotationSpeed;
-            }
-            else
-            {
-                rotationAmount = Globals.BotRotationSpeed;
-            }
-            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.fixedDeltaTime);
-            rigidbody.rotation = rotation;
+            var rotationAmount = isContinuousRotation ? Globals.BotContinuousRotationSpeed : Globals.BotRotationSpeed;
+            
+            rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(0,0,rotation);
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
-            
+
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
             
@@ -457,7 +562,7 @@ namespace StarSalvager
             if (remainingDegrees > 10f)
                 return;
 
-            TryRotateBits();
+            RotateAttachableSprites();
             
             
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
@@ -468,12 +573,11 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            rigidbody.rotation = targetRotation;
+            transform.rotation = Quaternion.Euler(0,0,rotationTarget);
             targetRotation = 0f;
             
             
-            TryRotateBits();
-            rotate = false;
+            RotateAttachableSprites();
             _rotating = false;
             
             //--------------------------------------------------------------------------------------------------------//
@@ -482,41 +586,54 @@ namespace StarSalvager
             CheckForBonusShapeMatches();
         }
 
-        private void TryRotateBits()
+        public void ForceCompleteRotation()
         {
-            if (rotate) 
-                return;
-            
-            var check = (int) targetRotation;
-            float deg;
-            if (check == 180)
+            var rotation = transform.eulerAngles.z;
+            var remainingDegrees = Mathf.DeltaAngle(rotation, targetRotation);
+
+            if (Mathf.Abs(remainingDegrees) < 75)
             {
-                deg = 180;
-            }
-            else if (check == 0f || check == 360)
-            {
-                deg = 0;
+                transform.rotation = Quaternion.Euler(0, 0, targetRotation);
             }
             else
             {
-                deg = targetRotation + 180;
+                transform.rotation = remainingDegrees > 0
+                    ? Quaternion.Euler(0, 0, targetRotation - 90)
+                    : Quaternion.Euler(0, 0, targetRotation + 90);
+            }
+        }
+
+        private void RotateAttachableSprites()
+        {
+            //Try and remove any potential floating point issues
+            var check = (int) rotationTarget;
+            
+            
+            Quaternion counterRotation;
+            if (check == 180)
+            {
+                counterRotation = Quaternion.Euler(0,0, 180);
+            }
+            else if (check == 0f || check == 360)
+            {
+                counterRotation = Quaternion.identity;
+            }
+            else
+            {
+                counterRotation = Quaternion.Euler(0,0, MathS.ClampAngle(rotationTarget + 180));
             }
 
-            var rot = Quaternion.Euler(0, 0, deg);
-                
             foreach (var attachedBlock in attachedBlocks)
             {
                 if (attachedBlock is ICustomRotate customRotate)
                 {
-                    customRotate.CustomRotate(rot);
+                    customRotate.CustomRotate(counterRotation);
                     continue;
                 }
                 
-                //attachedBlock.RotateSprite(MostRecentRotate);
-                attachedBlock.transform.localRotation = rot;
+                attachedBlock.transform.localRotation = counterRotation;
             }
 
-            rotate = true;
         }
 
 
@@ -550,7 +667,8 @@ namespace StarSalvager
 
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+                    legalDirection = true;
+                    //legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //------------------------------------------------------------------------------------------------//
 
@@ -607,8 +725,7 @@ namespace StarSalvager
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
                             SessionDataProcessor.Instance.HitBumper();
                             
-                            if(shift)
-                                OnBitShift?.Invoke();
+                            if(shift) OnBitShift?.Invoke();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -1069,16 +1186,17 @@ namespace StarSalvager
             if (!attachableDestroyed)
                 return;
             
-            CreateExplosionEffect(closestAttachable.transform.position);
-            GameUi.FlashBorder();
-
-
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
 
             switch (closestAttachable)
             {
                 case Part core:
+                    CreateExplosionEffect(closestAttachable.transform.position);
+
+                    cinemachineImpulseSource.GenerateImpulse(5);
+                    GameUi.FlashBorder();
+                    
                     if (core.Type == PART_TYPE.CORE)
                         Destroy("Core Destroyed");
                     else
@@ -1140,7 +1258,7 @@ namespace StarSalvager
             /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
             explosion.transform.position = attachable.transform.position;*/
             
-            CreateExplosionEffect(attachable.transform.position);
+            //CreateExplosionEffect(attachable.transform.position);
 
             MissionProgressEventData missionProgressEventData;
 
@@ -1472,13 +1590,46 @@ namespace StarSalvager
             {
                 //case PART_TYPE.CORE when PROTO_autoRefineFuel && bit.Type == BIT_TYPE.RED:
                 case PART_TYPE.REFINER when !part.Disabled:
+                    
                     break;
                 default:
                     return;
             }
             
-            BotPartsLogic.ProcessBit((Part)part, bit);
+            var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
+            
+            if(hasProcessed && part.Type == PART_TYPE.REFINER)
+                PlayRefineSound(bit.Type);
+            
             CheckForDisconnects();
+        }
+
+        private void PlayRefineSound(BIT_TYPE bitType)
+        {
+            SOUND sound;
+
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    sound = SOUND.REFINE_BLUE;
+                    break;
+                case BIT_TYPE.GREEN:
+                    sound = SOUND.REFINE_GREEN;
+                    break;
+                case BIT_TYPE.GREY:
+                    sound = SOUND.REFINE_GREY;
+                    break;
+                case BIT_TYPE.RED:
+                    sound = SOUND.REFINE_RED;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    sound = SOUND.REFINE_YELLOW;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+            AudioController.PlaySound(sound);
+
         }
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
@@ -2047,6 +2198,8 @@ namespace StarSalvager
                 }
 
                 CheckForBonusShapeMatches();
+                ForceCheckMagnets();
+
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     intAmount = toShift.Count,
@@ -2054,9 +2207,7 @@ namespace StarSalvager
                     bumperOrphanedBits = hasDetached,
                     bumperCausedCombos = hasCombos
                 };
-
                 MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
-
             }));
 
 
@@ -2086,12 +2237,33 @@ namespace StarSalvager
                 if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
                     continue;
                 
+                //Bonus Shape Effects
+                //----------------------------------------------------------------------------------------------------//
+                
+                foreach (var attachable in shape.AttachedBits)
+                {
+                    CreateBonusShapeEffect(attachable.transform.position);
+                }
+                
+                foreach (var coordinate in upgrading)
+                {
+                    var block = attachedBlocks.FirstOrDefault(x => x.Coordinate == coordinate);
+                    CreateBonusShapeEffect(block.transform);
+                }
+                
+                //----------------------------------------------------------------------------------------------------//
+                
+                AudioController.PlaySound(SOUND.BONUS_SHAPE_MATCH);
+                
+                AudioController.PlaySound(SOUND.BONUS_SHAPE_UPG);
                 //Upgrade the pieces matched
                 foreach (var coordinate in upgrading)
                 {
                     var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
 
                     toUpgrade?.IncreaseLevel();
+                    
+                    
                 }
 
                 List<BIT_TYPE> numTypes = new List<BIT_TYPE>();
@@ -2104,10 +2276,14 @@ namespace StarSalvager
                 }
 
                 var gears = Globals.GetBonusShapeGearRewards(shape.AttachedBits.Count, numTypes.Count);
+
+                
                 
                 //Remove the Shape
                 PlayerDataManager.ChangeGears(gears);
                 obstacleManager.MatchBonusShape(shape);
+                
+                
                 
                 //FIXME We'll need to double check the position here
                 FloatingText.Create($"+{gears}",
@@ -2130,6 +2306,8 @@ namespace StarSalvager
 
         //Creating Effects
         //====================================================================================================================//
+
+        #region Creating Effects
 
         private void ShouldShowEffect(ref List<WeldData> weldDatas)
         {
@@ -2222,12 +2400,40 @@ namespace StarSalvager
             
             Destroy(effect, newTime);
         }
+
+        private void CreateBonusShapeEffect(Vector3 worldPosition)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
+            
+            effect.transform.position = worldPosition;
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+        private void CreateBonusShapeEffect(Transform parent)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
+            
+            effect.transform.SetParent(parent, false);
+            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+
+        #endregion //Creating Effects
         
         //============================================================================================================//
 
         #region Puzzle Checks
 
         #region Check for Combos from List
+        public void CheckAllForCombos()
+        {
+            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+        }
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
         {
@@ -2309,6 +2515,8 @@ namespace StarSalvager
         //====================================================================================================================//
 
         #region Check for Combos Around Single
+
+        
 
         private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
         {
@@ -2417,7 +2625,12 @@ namespace StarSalvager
 
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
-            CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
+            //CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
+
+            attachedBlocks.CheckForOrphansFromCombo(
+                movingBits.OfType<IAttachable>(),
+                closestToCore.iAttachable,
+                ref orphans);
 
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
@@ -2556,14 +2769,15 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        /// <summary>
+        /*/// <summary>
         /// Get any Bit/Bits that will be orphaned by the bits which will be moving
         /// </summary>
         /// <param name="movingBlocks"></param>
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        public void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+        public void CheckForOrphans(
+            IEnumerable<IAttachable> movingBlocks,
             IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {
@@ -2670,172 +2884,9 @@ namespace StarSalvager
                 }
 
             }
-        }
-
-        /// <summary>
-        /// Solve the position change required for a single orphan. If moving a group ensure you use SolveOrphanGroupPositionChange
-        /// </summary>
-        /// <param name="orphanedBit"></param>
-        /// <param name="targetCoordinate"></param>
-        /// <param name="travelDirection"></param>
-        /// <param name="travelDistance"></param>
-        /// <param name="movingBits"></param>
-        /// <param name="orphanMoveData"></param>
-        /// <param name="lastLocation"></param>
-        private void SolveOrphanPositionChange(IAttachable orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
-            int travelDistance, IReadOnlyCollection<IAttachable> movingBits, ref List<OrphanMoveData> orphanMoveData)
-        {
-            //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
-
-            //Check only the Bits on the Bot that wont be moving
-            var stayingBlocks = new List<IAttachable>(attachedBlocks);
-            foreach (var attachableBase in movingBits)
-            {
-                stayingBlocks.Remove(attachableBase);
-            }
-
-            //Checks to see if this orphan can travel unimpeded to the destination
-            //If it cannot, set the destination to the block beside that which is blocking it.
-            var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphanedBit.Coordinate,
-                travelDirection, targetCoordinate, out var clearCoordinate);
-
-            //If there's no clear solution, then we will try and solve the overlap here
-            if (!hasClearPath && clearCoordinate == Vector2Int.zero)
-            {
-                //Debug.LogError("Orphan has no clear path to intended Position");
-                throw new Exception("NEED TO LOOK AT WHAT IS HAPPENING HERE");
-
-                //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
-                //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
-            }
-            else if (!hasClearPath)
-            {
-                //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
-                targetCoordinate = clearCoordinate;
-            }
-            
-            //lastPosition = targetCoordinate;
-
-            orphanMoveData.Add(new OrphanMoveData
-            {
-                attachableBase = orphanedBit,
-                moveDirection = travelDirection,
-                distance = travelDistance,
-                intendedCoordinates = targetCoordinate
-            });
-        }
+        }*/
 
 
-        private void SolveOrphanGroupPositionChange(IAttachable mainOrphan,
-            IReadOnlyList<IAttachable> orphanGroup, Vector2Int targetCoordinate,
-            DIRECTION travelDirection, int travelDistance, IReadOnlyCollection<IAttachable> movingBits,
-            ref List<OrphanMoveData> orphanMoveData)
-        {
-
-            if (orphanGroup.Count == 1)
-            {
-                SolveOrphanPositionChange(mainOrphan, targetCoordinate, travelDirection, travelDistance, movingBits,
-                    ref orphanMoveData);
-                return;
-            }
-            
-            
-            //Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
-
-            //var lastLocation = Vector2Int.zero;
-
-            var distances = new float[orphanGroup.Count];
-
-            var index = -1;
-            var shortestDistance = 999f;
-            
-            
-            for (var i = 0; i < orphanGroup.Count; i++)
-            {
-                var orphan = orphanGroup[i];
-                var relative = orphan.Coordinate - mainOrphan.Coordinate;
-                var desiredLocation = targetCoordinate + relative;
-
-                //Check only the Bits on the Bot that wont be moving
-                var stayingBlocks = new List<IAttachable>(attachedBlocks);
-                foreach (var attachableBase in movingBits)
-                {
-                    stayingBlocks.Remove(attachableBase);
-                }
-
-                //Checks to see if this orphan can travel unimpeded to the destination
-                //If it cannot, set the destination to the block beside that which is blocking it.
-                var hasClearPath = IsPathClear(stayingBlocks, 
-                    movingBits, 
-                    travelDistance, 
-                    orphan.Coordinate,
-                    travelDirection, 
-                    desiredLocation, 
-                    out var clearCoordinate);
-
-                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
-                    distances[i] = 999f;
-                else if (!hasClearPath)
-                    distances[i] = Vector2Int.Distance(orphan.Coordinate, clearCoordinate);
-                else
-                    distances[i] = Vector2Int.Distance(orphan.Coordinate, desiredLocation);
-
-                if (distances[i] > shortestDistance)
-                    continue;
-
-                //index = i;
-                shortestDistance = distances[i];
-            }
-            
-            //Debug.LogError($"Shortest to move {orphanGroup[index].gameObject.name}, Distance: {shortestDistance}");
-            //Debug.Break();
-
-            foreach (var orphan in orphanGroup)
-            {
-                //var relative = orphan.Coordinate - mainOrphan.Coordinate;
-                //var desiredLocation = targetCoordinate + relative;
-
-                var newCoordinate = orphan.Coordinate + travelDirection.ToVector2Int() * (int) shortestDistance;
-                
-                orphanMoveData.Add(new OrphanMoveData
-                {
-                    attachableBase = orphan,
-                    moveDirection = travelDirection,
-                    distance = shortestDistance,
-                    intendedCoordinates = newCoordinate
-                });
-            }
-        }
-        
-        private bool IsPathClear(List<IAttachable> stayingBlocks, IEnumerable<IAttachable> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
-        {
-            //var distance = (int) orphanMoveData.distance;
-            var coordinate = currentCoordinate;
-            
-            //If the distance starts at zero, its already at the TargetCoordinate
-            clearCoordinate = distance == 0 ? targetCoordinate : Vector2Int.zero;
-            
-            while (distance > 0)
-            {
-                coordinate += moveDirection.ToVector2Int();
-                var occupied = stayingBlocks
-                    .Where(x => !toIgnore.Contains(x))
-                    .FirstOrDefault(x => x.Coordinate == coordinate);
-
-                //Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
-                
-                if (occupied == null)
-                    clearCoordinate = coordinate;
-                
-                //if(occupied != null)
-                //    Debug.LogError($"{occupied.gameObject.name} is at {coordinate}", occupied);
-                
-
-                distance--;
-            }
-
-            return targetCoordinate == clearCoordinate;
-        }
 
         #endregion //Puzzle Checks
 
@@ -2972,6 +3023,9 @@ namespace StarSalvager
             for (int i = toDetach.Count - 1; i >= 0; i--)
             {
                 if (!(toDetach[i] is Bit bit)) 
+                    continue;
+
+                if (!_botPartsLogic.CurrentlyUsedBitTypes.Contains(bit.Type))
                     continue;
 
                 var core = attachedBlocks[0] as Part;
@@ -3622,6 +3676,7 @@ namespace StarSalvager
         {
             transform.localScale = Vector2.one;
             isContinuousRotation = false;
+            m_distanceHorizontal = 0;
             targetRotation = 0;
             _rotating = false;
 
@@ -3669,40 +3724,31 @@ namespace StarSalvager
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1, 1),
+                    Coordinate = new Vector2Int(1, 0),
                     Level = 0,
-                    Type = (int) BIT_TYPE.GREY
-                },
-
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(0, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Type = (int) BIT_TYPE.RED
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 1),
+                    Coordinate = new Vector2Int(2, 0),
                     Level = 0,
                     Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1, 2),
+                    Coordinate = new Vector2Int(1, -1),
                     Level = 0,
                     Type = (int) BIT_TYPE.GREY
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 2),
+                    Coordinate = new Vector2Int(1, -2),
                     Level = 0,
-                    Type = (int) BIT_TYPE.YELLOW
+                    Type = (int) BIT_TYPE.GREY
                 },
-
             };
 
             AddMorePieces(blocks, false);

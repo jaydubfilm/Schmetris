@@ -41,7 +41,7 @@ namespace StarSalvager.UI
 
             amountSliderText.value = data.amount;
             amountSliderText.SetBounds(0f, data.capacity);
-            amountSliderText.Init(showMaxValue, true);
+            amountSliderText.Init(showMaxValue);
 
             previewSlider.minValue = 0f;
             previewSlider.maxValue = data.capacity;

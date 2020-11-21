@@ -30,7 +30,7 @@ namespace StarSalvager.Utilities.Saving
 
 
         //TEMP
-        public static Dictionary<int, int> NumTimesBeatNewWaveInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
+        public static Dictionary<int, int> NumTimesGottenLootTableInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
         public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
 
         //====================================================================================================================//
@@ -666,6 +666,32 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+        public static bool CheckHasMissionAlert(Mission mission)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasMissionAlert(mission);
+        }
+
+        public static bool CheckHasAnyMissionAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyMissionAlerts();
+        }
+
+        public static void AddNewMissionAlert(Mission mission)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
+        }
+        public static void ClearNewMissionAlert(Mission mission)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
+        }
+
+        public static void ClearAllMissionAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
+        }
+
+        //====================================================================================================================//
+
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
             CurrentSaveSlotIndex = saveSlotIndex;
@@ -676,7 +702,7 @@ namespace StarSalvager.Utilities.Saving
             }
             else
             {
-                PlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+                PlayerAccountData = tryImportPlayerAccountData;
                 MissionManager.LoadMissionData();
             }
             SavePlayerAccountData();
@@ -712,6 +738,7 @@ namespace StarSalvager.Utilities.Saving
             }
 
             MissionManager.LoadMissionData();
+            SavePlayerAccountData();
         }
 
         public static void ResetGameMetaData()
@@ -734,6 +761,12 @@ namespace StarSalvager.Utilities.Saving
             if (PlayerAccountData == null)
             {
                 return;
+            }
+
+            if (PlayerAccountData.PlayerRunData.PlaythroughID == "")
+            {
+                Debug.LogError("Saving empty player run data");
+                Debug.Break();
             }
 
             Files.ExportPlayerSaveAccountData(PlayerAccountData, CurrentSaveSlotIndex);
@@ -801,6 +834,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
+            //if (LevelManager.Instance.)
             SavePlayerAccountData();
         }
 
@@ -841,18 +875,18 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetGearsThisRun()}\n";
-            summaryText += $"Total Core Deaths: {GetCoreDeathsThisRun()}\n";
-            summaryText += $"Total Repairs Done: {GetRepairsDoneThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetGearsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 
 
             if (GetBitConnections().Count > 0)
             {
-                summaryText += ("<b>Bits Connected:</b>\n");
+                summaryText += ($"{GetAsTitle("Bits Connected")}\n");
 
                 foreach (var keyValuePair in GetBitConnections())
                 {
-                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)}: {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -860,13 +894,13 @@ namespace StarSalvager.Utilities.Saving
             {
                 var enemyProfileData = FactoryManager.Instance.EnemyProfile;
                 
-                summaryText += ("<b>Enemies Killed:</b>\n");
+                summaryText += ($"{GetAsTitle("Enemies Killed")}\n");
 
                 foreach (var keyValuePair in GetEnemiesKilled())
                 {
                     var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)}: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -876,6 +910,11 @@ namespace StarSalvager.Utilities.Saving
         public static void DestroyAccountData()
         {
             PlayerAccountData = null;
+        }
+
+        private static string GetAsTitle(in string value)
+        {
+            return $"<b><color=white>{value}</color></b>";
         }
     }
 }

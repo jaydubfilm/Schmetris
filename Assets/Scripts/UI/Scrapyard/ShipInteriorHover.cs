@@ -19,6 +19,13 @@ namespace StarSalvager.UI.Scrapyard
 
         private bool _trackingMouse;
 
+        private RectTransform _parentCanvasTransform;
+
+        private void Start()
+        {
+            _parentCanvasTransform = (RectTransform)GetComponentInParent<Canvas>().transform;
+        }
+
         //Unity Functions
         //====================================================================================================================//
 
@@ -27,10 +34,20 @@ namespace StarSalvager.UI.Scrapyard
             if (!_trackingMouse)
                 return;
 
-            var bounds = new Vector2(Screen.width / 2f, Screen.height / 2f);
+            var parentTrans = (RectTransform)hoverWindowRectTransform.parent;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentTrans,
+                Input.mousePosition,
+                null,
+                out var newPosition);
+
+            var canvasSize = _parentCanvasTransform.sizeDelta;
+            var bounds = canvasSize / 2f;
 
             //TODO Need to clamp to screen bounds
-            var newPosition = Input.mousePosition - (Vector3) bounds + (Vector3) offset;
+
+            newPosition += offset;
 
             //--------------------------------------------------------------------------------------------------------//
 

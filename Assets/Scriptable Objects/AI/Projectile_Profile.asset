@@ -62,7 +62,7 @@ MonoBehaviour:
     m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Fly Needle
-    useTrail: 0
+    useTrail: 1
     color: {r: 1, g: 0.3921569, b: 0.039215688, a: 1}
     m_projectileSpeed: 14
     m_projectileRange: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
     m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
     m_projectileType: Gun Bullet
-    useTrail: 0
+    useTrail: 1
     color: {r: 0.76470596, g: 0.75294125, b: 0.7490196, a: 1}
     m_projectileSpeed: 12
     m_projectileRange: 12

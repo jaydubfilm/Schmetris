@@ -18,22 +18,6 @@ MonoBehaviour:
   ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
     type: 3}
   profiles:
-  - _name: Asteroid
-    bitType: 0
-    _animation: {fileID: 0}
-    refinedSprite: {fileID: 0}
-    color: {r: 0, g: 0, b: 0, a: 0}
-    _sprites:
-    - {fileID: 1468034565532178442, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 5802500342819700109, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 2578734193110144143, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -7153818161905235260, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 3557526766217802622, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -762405936695349884, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 1439068305256464893, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: 6363487636963010956, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -4645151511609175889, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
-    - {fileID: -1245124940241270974, guid: 7e261f177340553458567ae0f9a66b41, type: 3}
   - _name: Bluesalt
     bitType: 1
     _animation: {fileID: 0}
@@ -41,11 +25,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: c4a3d9caee9032746a76564f3187177a, type: 3}
-    - {fileID: 21300000, guid: 3f5986137542cac469ae34d9a478d747, type: 3}
-    - {fileID: 21300000, guid: b85abcf2b9ebbd14d92e783dd8475f15, type: 3}
-    - {fileID: 21300000, guid: d40fe484bc153234e847953e0536c767, type: 3}
-    - {fileID: 21300000, guid: e877333d0db32bb49886c85979d2f0af, type: 3}
+    - {fileID: 21300000, guid: b77e70718f5c5c342804c24908e00ed3, type: 3}
+    - {fileID: 21300000, guid: 05d3187b66f7e1d47b82d21a816026fa, type: 3}
+    - {fileID: 21300000, guid: 50d1987925689994ab89bd811ba59660, type: 3}
+    - {fileID: 21300000, guid: d02f8eb5ba3f9f74080c34ac74574d88, type: 3}
+    - {fileID: 21300000, guid: 792651bc83bb6994f9b3d5a00f425616, type: 3}
   - _name: Greenium
     bitType: 2
     _animation: {fileID: 0}
@@ -63,7 +47,7 @@ MonoBehaviour:
     _animation: {fileID: 0}
     refinedSprite: {fileID: 7233997685665345691, guid: ffa335490a9178749986f7b4906ca268,
       type: 3}
-    color: {r: 0.8871865, g: 0, b: 1, a: 1}
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
     _sprites:
     - {fileID: 21300000, guid: feec083b284be6c409baa70c4b0f5a27, type: 3}
     - {fileID: 21300000, guid: 671df82411da48c42b674eb0332b0489, type: 3}

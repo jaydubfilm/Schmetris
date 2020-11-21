@@ -42,10 +42,12 @@ namespace StarSalvager.AI
         
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
         private float m_horizontalMovementYLevel;
+        private float m_horizontalMovementYLevelOrigin;
         private float m_oscillationTimer;
 
         private float horizontalFarLeftX;
         private float horizontalFarRightX;
+        private float verticalLowestAllowed;
 
         protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
@@ -90,6 +92,8 @@ namespace StarSalvager.AI
         public void SetHorizontalMovementYLevel()
         {
             m_horizontalMovementYLevel = transform.position.y;
+            m_horizontalMovementYLevelOrigin = m_horizontalMovementYLevel;
+            verticalLowestAllowed = m_horizontalMovementYLevel / 2;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
         }
@@ -164,19 +168,19 @@ namespace StarSalvager.AI
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
             
-            Vector3 playerLocation = LevelManager.Instance.BotObject != null
+            Vector2 playerLocation = LevelManager.Instance.BotObject != null
                 ? LevelManager.Instance.BotObject.transform.position
                 : Vector3.right * 50;
 
-            Vector2 targetLocation;
+            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
             
-            switch (m_enemyData.FireType)
+            /*switch (m_enemyData.FireType)
             {
                 case FIRE_TYPE.SPIRAL:
                     targetLocation = Vector2.down;
                     break;
                 case FIRE_TYPE.FORWARD:
-                    targetLocation = Vector2.down;
+                    ;
                     break;
                 case FIRE_TYPE.RANDOM_SPRAY:
                 case FIRE_TYPE.FIXED_SPRAY:
@@ -184,7 +188,7 @@ namespace StarSalvager.AI
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(m_enemyData.FireType), m_enemyData.FireType, null);
-            }
+            }*/
 
             Vector2 shootDirection = m_enemyData.FireAtTarget
                 ? (targetLocation - (Vector2) transform.position).normalized
@@ -291,10 +295,9 @@ namespace StarSalvager.AI
         
         public Vector3 GetDestination()
         {
-            //Movement styles are based on the player location. For now, hardcode this
             Vector3 playerLocation = LevelManager.Instance.BotObject != null
                 ? LevelManager.Instance.BotObject.transform.position
-                : Vector3.right * 50;
+                 : Vector3.zero;
 
             switch (m_enemyData.MovementType)
             {
@@ -306,7 +309,7 @@ namespace StarSalvager.AI
                         GetAngleInOscillation());
                 case ENEMY_MOVETYPE.OscillateHorizontal:
                     //Find destination by determining whether to move left or right and then oscillating at the angle output by the oscillate function
-                    return GetDestinationForRotatePositionAroundPivot(transform.position + SetHorizontalDirection(),
+                    return GetDestinationForRotatePositionAroundPivot(transform.position + SetHorizontalDirection(playerLocation),
                         transform.position, GetAngleInOscillation());
                 case ENEMY_MOVETYPE.Orbit:
                     //If outside the orbit radius, move towards the player location. If inside it, get the destination along the edge of the circle to move clockwise around it
@@ -321,9 +324,9 @@ namespace StarSalvager.AI
                             Vector3.forward * -5, m_enemyData.OrbitRadius);
                     }
                 case ENEMY_MOVETYPE.Horizontal:
-                    return transform.position + SetHorizontalDirection();
+                    return transform.position + SetHorizontalDirection(playerLocation);
                 case ENEMY_MOVETYPE.HorizontalDescend:
-                    return transform.position + SetHorizontalDirection(true);
+                    return transform.position + SetHorizontalDirection(playerLocation, true);
                 case ENEMY_MOVETYPE.Down:
                     return transform.position + Vector3.down;
 
@@ -333,23 +336,30 @@ namespace StarSalvager.AI
         }
         
         //Determine whether this horizontal mover is going left or right
-        public Vector3 SetHorizontalDirection(bool isDescending = false)
+        public Vector3 SetHorizontalDirection(Vector3 playerLocation, bool isDescending = false)
         {
-            if (transform.position.x <= horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
+            if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
             {
                 m_currentHorizontalMovementDirection = Vector3.right;
                 if (isDescending)
                 {
                     m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
+                    if (m_horizontalMovementYLevel <= verticalLowestAllowed)
+                    {
+                        m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
+                    }
                 }
             }
-            else if (transform.position.x >= horizontalFarRightX &&
-                     m_currentHorizontalMovementDirection != Vector3.left)
+            else if (transform.position.x >= playerLocation.x + horizontalFarRightX && m_currentHorizontalMovementDirection != Vector3.left)
             {
                 m_currentHorizontalMovementDirection = Vector3.left;
                 if (isDescending)
                 {
                     m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
+                    if (m_horizontalMovementYLevel <= verticalLowestAllowed)
+                    {
+                        m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
+                    }
                 }
             }
 

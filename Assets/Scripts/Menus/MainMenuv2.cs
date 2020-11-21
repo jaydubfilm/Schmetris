@@ -375,7 +375,8 @@ namespace StarSalvager.UI
             accountMenuQuitButton.onClick.AddListener(Quit);
             newRunButton.onClick.AddListener(() =>
             {
-                OpenWindow(WINDOW.RUN);
+                //OpenWindow(WINDOW.RUN);
+                StartSelectedGameType(GAME_TYPE.CLASSIC);
             });
             continueRunButton.onClick.AddListener(() =>
             {
@@ -428,20 +429,7 @@ namespace StarSalvager.UI
             });
             startRunButton.onClick.AddListener(() =>
             {
-                switch (_selectedGameType)
-                {
-                    case GAME_TYPE.CLASSIC:
-                        
-                        PlayerDataManager.SetRunStarted();
-                        OpenWindow(WINDOW.ACCOUNT_MENU);
-                        IntroScene.gameObject.SetActive(true);
-                        gameObject.SetActive(false);
-                        break;
-                    case GAME_TYPE.HARDCORE:
-                        throw new NotImplementedException();
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(_selectedGameType), _selectedGameType, null);
-                }
+                StartSelectedGameType(_selectedGameType);
 
             });
 
@@ -451,6 +439,24 @@ namespace StarSalvager.UI
                 CloseOpenWindow();
             });
 
+        }
+
+        private void StartSelectedGameType(GAME_TYPE gameType)
+        {
+            switch (gameType)
+            {
+                case GAME_TYPE.CLASSIC:
+                        
+                    PlayerDataManager.SetRunStarted();
+                    OpenWindow(WINDOW.ACCOUNT_MENU);
+                    IntroScene.gameObject.SetActive(true);
+                    gameObject.SetActive(false);
+                    break;
+                case GAME_TYPE.HARDCORE:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameType), gameType, null);
+            }
         }
 
         //Setup Settings Buttons

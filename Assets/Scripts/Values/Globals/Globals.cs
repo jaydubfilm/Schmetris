@@ -31,6 +31,7 @@ namespace StarSalvager.Values
         public static int GridSizeY;
         public static bool IsBetweenWavesInUniverseMap = false;
         public static bool IsRecoveryBot = false;
+        public static int CameraScaleSize = 51;
 
 
         private static GameSettingsScriptableObject m_gameSettings = null;

@@ -218,32 +218,32 @@ namespace StarSalvager
 
         public void SetObstacleInGridSquare(GridSquare gridSquare, int radius, bool occupied)
         {
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtLocalPosition(Vector2 obstaclePosition, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtLocalPosition(obstaclePosition);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtCoordinates(Vector2Int gridPosition, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtCoordinates(gridPosition.x, gridPosition.y);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInGridSquareAtCoordiantes(int x, int y, int radius, bool occupied)
         {
             GridSquare gridSquare = GetGridSquareAtCoordinates(x, y);
 
-            gridSquare.SetObstacleInSquare(occupied);
-            gridSquare.SetRadiusMarkAround(radius);
+            gridSquare.ObstacleInSquare = occupied;
+            gridSquare.RadiusMarkAround = radius;
         }
 
         public void SetObstacleInSquaresAroundCoordinates(int x, int y, int radiusAround, bool occupied)
@@ -260,7 +260,7 @@ namespace StarSalvager
             {
                 for (int k = kMin; k <= kMax; k++)
                 {
-                    GetGridSquareAtCoordinates(i, k).SetObstacleInSquare(occupied);
+                    GetGridSquareAtCoordinates(i, k).ObstacleInSquare = occupied;
                 }
             }
         }
@@ -292,7 +292,7 @@ namespace StarSalvager
         {
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(
                 m_botGridPosition.x + ((UnityEngine.Random.Range(0, 2) * 2 - 1) * UnityEngine.Random.Range(m_screenGridCellRange.x / 2, m_screenGridCellRange.x)), 
-                UnityEngine.Random.Range(m_screenGridCellRange.y - 2, m_screenGridCellRange.y));
+                UnityEngine.Random.Range(m_screenGridCellRange.y - 4, m_screenGridCellRange.y - 1));
         }
 
         //TODO: When the screen size and camera size and grid cell size systems all start working in a scaling fashion, this will need to adjust

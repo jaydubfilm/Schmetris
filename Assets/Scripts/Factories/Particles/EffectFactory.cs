@@ -20,7 +20,8 @@ namespace StarSalvager.Factories
             EXPLOSION,
             MERGE,
             LINE,
-            TRAIL
+            TRAIL,
+            BONUS_SHAPE
         }
 
         public enum PART_EFFECT
@@ -136,6 +137,9 @@ namespace StarSalvager.Factories
                     break;
                 case EFFECT.TRAIL:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.trailRendererPrefab);
+                    break;
+                case EFFECT.BONUS_SHAPE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.bonusShapeEffectPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
