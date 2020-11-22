@@ -58,12 +58,15 @@ namespace StarSalvager
 
         public bool HasActiveBonusShapes => m_bonusShapes != null &&
                                             m_bonusShapes.Count > 0 &&
-                                            m_bonusShapes.Any(x =>
-                                                CameraController.IsPointInCameraRect(x.transform.position,
-                                                    Constants.VISIBLE_GAME_AREA));
+                                            m_bonusShapes.Any(x => ShapeInCameraRect(x));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => CameraController.IsPointInCameraRect(x.transform.position, 0.95f * Constants.VISIBLE_GAME_AREA));
+            .Where(x => ShapeInCameraRect(x));
+
+        public bool ShapeInCameraRect(Shape shape)
+        {
+            return CameraController.IsPointInCameraRect(shape.transform.position, 0.75f * Constants.VISIBLE_GAME_AREA);
+        }
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -388,7 +391,7 @@ namespace StarSalvager
                     m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (CameraController.IsPointInCameraRect(checkShape.transform.position, Constants.VISIBLE_GAME_AREA))
+                    if (ShapeInCameraRect(checkShape))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
