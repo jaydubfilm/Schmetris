@@ -183,7 +183,8 @@ namespace StarSalvager.UI
                             LevelManager.Instance.BotObject.PROTO_GodMode = false;
                         }
 
-
+                        GameUI.Instance.ShowRecoveryBanner(false);
+                        Globals.IsRecoveryBot = false;
                         m_levelManager.IsWaveProgressing = true;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();

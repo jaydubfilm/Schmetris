@@ -16,7 +16,7 @@ MonoBehaviour:
   - MissionID: 42d75534-6254-42b0-8740-597da26037cb
     MissionType: 9
     MissionName: Complete any wave
-    MissionDescription: Completet any wave!
+    MissionDescription: Complete any wave!
     MissionUnlockParameters: []
     AmountNeeded: 0
     AnyResourceType: 0
