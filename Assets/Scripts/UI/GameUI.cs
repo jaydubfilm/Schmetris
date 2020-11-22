@@ -924,6 +924,11 @@ namespace StarSalvager.UI
 
         public void CreatePatchPointEffect(int count)
         {
+            if (LevelManager.Instance.BotObject == null)
+            {
+                return;
+            }
+            
             var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
 
             
