@@ -42,7 +42,7 @@ PlayerSettings:
   m_SplashScreenLogos:
   - logo: {fileID: 21300000, guid: a9692eb97f3dda940bcffaad318f1cb8, type: 3}
     duration: 2
-  - logo: {fileID: 21300000, guid: c234e4c62dff1654f958fb412e34c7c6, type: 3}
+  - logo: {fileID: 21300000, guid: 155883a532ba6e04fab7ddfb08388f0a, type: 3}
     duration: 2
   - logo: {fileID: -7041551057408696451, guid: 454c9c5cd7fcb83468ce37b9e8b985e6, type: 3}
     duration: 3
@@ -129,7 +129,7 @@ PlayerSettings:
     16:10: 0
     16:9: 1
     Others: 0
-  bundleVersion: 0.2.10.0
+  bundleVersion: 0.2.10.3
   preloadedAssets:
   - {fileID: 11400000, guid: bf0c805c5e0627a4998d083738cc59b3, type: 2}
   metroInputSource: 0
