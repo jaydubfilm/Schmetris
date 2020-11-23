@@ -221,7 +221,9 @@ namespace StarSalvager.UI.Scrapyard
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
                     () =>
                     {
-                        /*ShowMenu(MENU.DESIGN);*/
+                        backButton.gameObject.SetActive(true);
+
+                        SetWindowActive(Window.Workbench);
                     });
                 
                 return;

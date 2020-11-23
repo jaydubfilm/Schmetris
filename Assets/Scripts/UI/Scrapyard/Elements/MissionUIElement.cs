@@ -11,7 +11,7 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class MissionUIElement : UIElement<Mission>, IPointerEnterHandler, IPointerExitHandler
+    public class MissionUIElement : UIElement<Mission>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField, Required]
         private Image elementImage;
@@ -32,9 +32,36 @@ namespace StarSalvager.UI.Scrapyard
 
         private bool _canShowSticker;
 
+        private bool _isHovered;
+        private float _hoverTimer = 0;
+
         //Unity Functions
         //====================================================================================================================//
-        
+
+        public void Update()
+        {
+            if (_isHovered)
+            {
+                _hoverTimer += Time.deltaTime;
+            }
+            else
+            {
+                _hoverTimer = 0;
+            }
+
+            if (_hoverTimer >= 1)
+            {
+                if (data != null)
+                {
+                    if (PlayerDataManager.CheckHasMissionAlert(data))
+                    {
+                        PlayerDataManager.ClearNewMissionAlert(data);
+                        MissionsUI.CheckMissionNewAlertUpdate?.Invoke();
+                    }
+                }
+            }
+        }
+
         public void OnEnable()
         {
             MissionsUI.CheckMissionUITrackingToggles += OnCheckMissionUITrackingToggles;
@@ -111,12 +138,28 @@ namespace StarSalvager.UI.Scrapyard
         
         public void OnPointerEnter(PointerEventData eventData)
         {
+            _isHovered = true;
+
             _onHoverCallback?.Invoke(data, true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            _isHovered = false;
+
             _onHoverCallback?.Invoke(null, false);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (data != null)
+            {
+                if (PlayerDataManager.CheckHasMissionAlert(data))
+                {
+                    PlayerDataManager.ClearNewMissionAlert(data);
+                    MissionsUI.CheckMissionNewAlertUpdate?.Invoke();
+                }
+            }
         }
 
         //====================================================================================================================//

@@ -926,6 +926,7 @@ namespace StarSalvager.UI
         {
             if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
                 return;
+
             
             var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
 
