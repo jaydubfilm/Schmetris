@@ -365,6 +365,7 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
+                        ResetLevelTimer();
 
                         ScreenFade.Fade(() =>
                         {
@@ -382,6 +383,7 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
+                        ResetLevelTimer();
 
                         ScreenFade.Fade(() =>
                         {
@@ -572,7 +574,6 @@ namespace StarSalvager
             BotDead = false;
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
-            NumWavesInRow = 0;
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
@@ -693,6 +694,7 @@ namespace StarSalvager
         public void ResetLevelTimer()
         {
             m_levelTimer = 0;
+            NumWavesInRow = 0;
         }
 
         private void SetupLevelAnalytics()
