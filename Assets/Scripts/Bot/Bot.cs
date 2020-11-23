@@ -1493,12 +1493,23 @@ namespace StarSalvager
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
                     newAttachable.gameObject);
 
-                //I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
+                AttachToClosestAvailableCoordinate(coordinate, 
+                    newAttachable, 
+                    direction,
+                    checkForCombo, 
+                    updateColliderGeometry, 
+                    updateMissions);
+                
+                /*//I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
                 if (newAttachable is EnemyAttachable)
-                    AttachToClosestAvailableCoordinate(coordinate, newAttachable, direction,
-                        checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachToClosestAvailableCoordinate(coordinate, 
+                        newAttachable, 
+                        direction,
+                        checkForCombo, 
+                        updateColliderGeometry, 
+                        updateMissions);
                 else
-                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);
+                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);*/
 
                 return;
             }
