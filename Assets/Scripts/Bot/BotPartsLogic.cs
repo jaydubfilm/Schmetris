@@ -946,8 +946,11 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             var target = _gunTargets[part];
-            
-            if (target && target.IsRecycled == false && _turrets.TryGetValue(part, out var turretTransform))
+
+            if (target && 
+                target.IsRecycled == false && 
+                !_turrets.IsNullOrEmpty() &&
+                _turrets.TryGetValue(part, out var turretTransform))
             {
                 var targetTransform = target.transform;
                 var normDirection = (targetTransform.position - part.transform.position).normalized;
