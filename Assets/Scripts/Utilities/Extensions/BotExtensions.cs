@@ -166,9 +166,11 @@ namespace StarSalvager.Utilities.Extensions
 
             var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
             var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
-            var orphanTargetPositions = orphans.Select(o =>
+            /*var orphanTargetPositions = orphans.Select(o =>
                 transform.InverseTransformPoint((Vector2) transform.position +
-                                                (Vector2) o.intendedCoordinates * Constants.gridCellSize)).ToArray();
+                                                (Vector2) o.intendedCoordinates * Constants.gridCellSize)).ToArray();*/
+            var orphanTargetPositions = orphans.Select(o =>
+                (Vector2) o.intendedCoordinates * Constants.gridCellSize).ToArray();
             //--------------------------------------------------------------------------------------------------------//
 
 
