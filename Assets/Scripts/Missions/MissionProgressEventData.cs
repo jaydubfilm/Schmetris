@@ -1,4 +1,5 @@
 ﻿using StarSalvager.AI;
+using StarSalvager.Utilities.Puzzle.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace StarSalvager.Missions
         public int waveNumber;
 
         public bool bitDroppedFromEnemyLoot;
-        public bool comboIsAdvancedCombo;
+        public COMBO comboType;
         public bool bumperShiftedThroughPart;
         public bool bumperOrphanedBits;
         public bool bumperCausedCombos;

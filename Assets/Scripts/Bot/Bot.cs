@@ -2505,13 +2505,12 @@ namespace StarSalvager
             {
                 if (pendingCombo.ToMove[0] is Bit bit)
                 {
-                    bool isAdvancedCombo = pendingCombo.ComboData.type == COMBO.TEE || pendingCombo.ComboData.type == COMBO.ANGLE;
                     MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                     {
                         bitType = bit.Type,
                         intAmount = 1,
                         level = bit.level,
-                        comboIsAdvancedCombo = isAdvancedCombo
+                        comboType = pendingCombo.ComboData.type
                     };
                     MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
                 }
@@ -2558,13 +2557,12 @@ namespace StarSalvager
 
             if (iCanCombo is Bit bit)
             {
-                bool isAdvancedCombo = data.comboData.type == COMBO.TEE || data.comboData.type == COMBO.ANGLE;
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     bitType = bit.Type,
                     intAmount = 1,
                     level = iCanCombo.level + 1,
-                    comboIsAdvancedCombo = isAdvancedCombo
+                    comboType = data.comboData.type
                 };
                 MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
             }
