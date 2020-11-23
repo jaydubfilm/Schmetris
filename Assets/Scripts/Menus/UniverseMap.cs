@@ -280,21 +280,19 @@ namespace StarSalvager.UI
                     newGameObject.AddComponent<Image>();
                 }
 
-                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+                newGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
 
-                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                RectTransform rect = (RectTransform)newGameObject.transform;
                 Image image = newGameObject.GetComponent<Image>();
 
-                rect.pivot = new Vector2(0.5f, 0.5f);
-                rect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
-                rect.sizeDelta = new Vector2(50, 50);
+                BotDisplaySetPosition(rect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
 
                 float startingHealth = 0;
 
                 switch (botBlockData[i].ClassType)
                 {
-                    case "Part":
-                    case "ScrapyardPart":
+                    case nameof(Part):
+                    case nameof(ScrapyardPart):
                         startingHealth = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
                         if (botBlockData[i].Health <= 0)
                         {
@@ -305,11 +303,11 @@ namespace StarSalvager.UI
                             image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         }
                         break;
-                    case "Bit":
+                    case nameof(Bit):
                         image.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         startingHealth = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData((BIT_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
                         break;
-                    case "Component":
+                    case nameof(Component):
                         image.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         startingHealth = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentRemoteData((COMPONENT_TYPE)botBlockData[i].Type).health;
                         break;
@@ -326,14 +324,12 @@ namespace StarSalvager.UI
                         damageImageGameObject.AddComponent<Image>();
                     }
 
-                    damageImageGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+                    damageImageGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
 
-                    RectTransform damageRect = damageImageGameObject.GetComponent<RectTransform>();
+                    RectTransform damageRect = (RectTransform)newGameObject.transform;
                     Image damageImage = damageImageGameObject.GetComponent<Image>();
 
-                    damageRect.pivot = new Vector2(0.5f, 0.5f);
-                    damageRect.anchoredPosition = new Vector2Int(botBlockData[i].Coordinate.x * 50, botBlockData[i].Coordinate.y * 50);
-                    damageRect.sizeDelta = new Vector2(50, 50);
+                    BotDisplaySetPosition(damageRect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
 
                     damageImage.sprite = damageProfileScriptable.GetDetailSprite(healthPercentage);
 
@@ -350,19 +346,24 @@ namespace StarSalvager.UI
                     newGameObject.AddComponent<Image>();
                 }
 
-                newGameObject.transform.parent = botDisplayRoot.gameObject.transform;
+                newGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
 
-                RectTransform rect = newGameObject.GetComponent<RectTransform>();
+                RectTransform rect = (RectTransform)newGameObject.transform;
                 Image image = newGameObject.GetComponent<Image>();
 
-                rect.pivot = new Vector2(0.5f, 0.5f);
-                rect.anchoredPosition = Vector2Int.zero;
-                rect.sizeDelta = new Vector2(50, 50);
+                BotDisplaySetPosition(rect, 0, 0);
 
                 image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
 
                 botDisplayObjects.Add(newGameObject);
             }
+        }
+
+        private void BotDisplaySetPosition(RectTransform rect, int xOffset, int yOffset)
+        {
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
+            rect.sizeDelta = new Vector2(50, 50);
         }
 
         public void Reset()
