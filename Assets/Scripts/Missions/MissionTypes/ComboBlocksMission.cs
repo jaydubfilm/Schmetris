@@ -38,7 +38,7 @@ namespace StarSalvager.Missions
             BIT_TYPE bitType = missionProgressEventData.bitType.Value;
             int amount = missionProgressEventData.intAmount;
             int level = missionProgressEventData.level;
-            bool isAdvancedCombo = missionProgressEventData.comboIsAdvancedCombo;
+            bool isAdvancedCombo = missionProgressEventData.comboType != Utilities.Puzzle.Data.COMBO.THREE;
 
             if (!isAdvancedCombo && m_isAdvancedCombo)
             {
