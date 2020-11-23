@@ -57,19 +57,23 @@ namespace StarSalvager.UI.Scrapyard
             
             storageUiElementScrollView.ClearElements();
             
-            foreach (var storageBlockData in PlayerDataManager.GetCurrentPartsInStorage())
+            for (int i = 0; i < PlayerDataManager.GetCurrentPartsInStorage().Count; i++)
             {
+                var storageBlockData = PlayerDataManager.GetCurrentPartsInStorage()[i];
+
+                int tempInt = i;
                 TEST_Storage testStorage = new TEST_Storage
                 {
                     name = (PART_TYPE)storageBlockData.Type + " " + storageBlockData.Level,
                     sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).GetSprite(storageBlockData.Level),
-                    blockData = storageBlockData
+                    blockData = storageBlockData,
+                    storageIndex = tempInt
                 };
 
                 var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                 temp.Init(testStorage, data =>
                 {
-                    DroneDesigner.SelectPartFromStorage(data.blockData);
+                    DroneDesigner.SelectPartFromStorage(data.blockData, tempInt);
                 });
             }
             

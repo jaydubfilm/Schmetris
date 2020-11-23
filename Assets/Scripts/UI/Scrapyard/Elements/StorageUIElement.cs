@@ -110,12 +110,13 @@ namespace StarSalvager.UI.Scrapyard
         public string name;
         public Sprite sprite;
         public BlockData blockData;
+        public int storageIndex;
 
         public bool Equals(TEST_Storage other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return name == other.name && blockData.Equals(other.blockData);
+            return name == other.name && blockData.Equals(other.blockData) && storageIndex == other.storageIndex;
         }
 
         public override bool Equals(object obj)

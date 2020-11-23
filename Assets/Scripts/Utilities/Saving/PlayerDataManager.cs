@@ -209,7 +209,7 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.AddComponent(type, amount);
 
-            if(updateValuesChanged)
+            if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
 
@@ -427,6 +427,13 @@ namespace StarSalvager.Utilities.Saving
         public static void RemovePartFromStorage(BlockData blockData)
         {
             PlayerRunData.RemovePartFromStorage(blockData);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void RemovePartFromStorageAtIndex(int index)
+        {
+            PlayerRunData.RemovePartFromStorageAtIndex(index);
 
             OnValuesChanged?.Invoke();
         }

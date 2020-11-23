@@ -22,6 +22,7 @@ namespace StarSalvager
 
         [NonSerialized]
         public BlockData? SelectedBrick;
+        public int SelectedIndex;
         
         [NonSerialized]
         public Vector3? SelectedPartClickPosition;
@@ -34,9 +35,10 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void SelectPartFromStorage(BlockData? blockData, bool returnIfNotPlaced = false)
+        public void SelectPartFromStorage(BlockData? blockData, int index, bool returnIfNotPlaced = false)
         {
             SelectedBrick = blockData;
+            SelectedIndex = index;
             SelectedPartRemoveFromStorage = blockData.HasValue;
             SelectedPartReturnToStorageIfNotPlaced = returnIfNotPlaced;
         }
