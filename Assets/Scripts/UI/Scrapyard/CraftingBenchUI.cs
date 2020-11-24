@@ -204,7 +204,6 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateCostUI()
         {
-
             costView.ClearElements();
 
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
@@ -216,7 +215,7 @@ namespace StarSalvager.UI.Scrapyard
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(lastBlueprint.partType);
 
-            itemNameText.text = partRemoteData.name;
+            itemNameText.text = $"{partRemoteData.name} {lastBlueprint.level + 1}";
             itemDescriptionText.text = partRemoteData.description;
 
             var powerDraw = partRemoteData.levels[lastBlueprint.level].powerDraw;
