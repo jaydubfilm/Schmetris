@@ -8402,6 +8402,7 @@ MonoBehaviour:
   moveTargetTransform: {fileID: 1019469002935514796}
   imagePrefab: {fileID: 100507466034444654, guid: 23e0d2c765a295448aadbc976b4a9294,
     type: 3}
+  imageSize: 100
   effectRadius: 3
   effectCount: 3
   rotationSpeed: 250
