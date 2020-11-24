@@ -506,12 +506,16 @@ namespace StarSalvager.UI
             carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
 
-            OutlineMagnet(value >= 1f);
         }
         
         public void OutlineMagnet(bool state)
         {
             magnetFlash.SetActive(state);
+        }
+
+        public void FlashMagnet()
+        {
+            magnetFlash.FlashOnce();
         }
         
         //============================================================================================================//

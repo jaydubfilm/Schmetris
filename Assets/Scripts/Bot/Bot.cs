@@ -3022,6 +3022,8 @@ namespace StarSalvager
             else
                 this.DelayedCall(TEST_DetachTime, onDetach);*/
             //--------------------------------------------------------------------------------------------------------//
+            
+            GameUi.FlashMagnet();
 
             return true;
         }
