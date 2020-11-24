@@ -40,8 +40,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.32389647
-      m_spawnsPerScreenWidthPerMinute: 40
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -85,10 +85,8 @@ MonoBehaviour:
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: e90054ce-9f64-4b84-9aab-5c6808cf3c67
-      m_enemyCount: 3
-    - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
-      m_enemyCount: 4
+    - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+      m_enemyCount: 6
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -98,8 +96,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 1
-      m_density: 0.32389647
-      m_spawnsPerScreenWidthPerMinute: 40
+      m_density: 0.29583564
+      m_spawnsPerScreenWidthPerMinute: 30
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0

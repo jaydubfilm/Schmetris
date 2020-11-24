@@ -1493,12 +1493,23 @@ namespace StarSalvager
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
                     newAttachable.gameObject);
 
-                //I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
+                AttachToClosestAvailableCoordinate(coordinate, 
+                    newAttachable, 
+                    direction,
+                    checkForCombo, 
+                    updateColliderGeometry, 
+                    updateMissions);
+                
+                /*//I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
                 if (newAttachable is EnemyAttachable)
-                    AttachToClosestAvailableCoordinate(coordinate, newAttachable, direction,
-                        checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachToClosestAvailableCoordinate(coordinate, 
+                        newAttachable, 
+                        direction,
+                        checkForCombo, 
+                        updateColliderGeometry, 
+                        updateMissions);
                 else
-                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);
+                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);*/
 
                 return;
             }
@@ -2183,10 +2194,12 @@ namespace StarSalvager
                 //Checks for floaters
                 hasDetached = CheckForDisconnects();
 
-                var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
-                    .OfType<ICanCombo>();
+                /*var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
+                    .OfType<ICanCombo>().ToArray();*/
                 
-                switch (attachable)
+                CheckAllForCombos();
+                
+                /*switch (attachable)
                 {
                     case Bit _:
                         hasCombos = CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
@@ -2195,7 +2208,7 @@ namespace StarSalvager
                         hasCombos = CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
 
                         break;
-                }
+                }*/
 
                 CheckForBonusShapeMatches();
                 ForceCheckMagnets();
@@ -2492,13 +2505,12 @@ namespace StarSalvager
             {
                 if (pendingCombo.ToMove[0] is Bit bit)
                 {
-                    bool isAdvancedCombo = pendingCombo.ComboData.type == COMBO.TEE || pendingCombo.ComboData.type == COMBO.ANGLE;
                     MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                     {
                         bitType = bit.Type,
                         intAmount = 1,
                         level = bit.level,
-                        comboIsAdvancedCombo = isAdvancedCombo
+                        comboType = pendingCombo.ComboData.type
                     };
                     MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
                 }
@@ -2545,13 +2557,12 @@ namespace StarSalvager
 
             if (iCanCombo is Bit bit)
             {
-                bool isAdvancedCombo = data.comboData.type == COMBO.TEE || data.comboData.type == COMBO.ANGLE;
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     bitType = bit.Type,
                     intAmount = 1,
                     level = iCanCombo.level + 1,
-                    comboIsAdvancedCombo = isAdvancedCombo
+                    comboType = data.comboData.type
                 };
                 MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
             }
@@ -3723,31 +3734,40 @@ namespace StarSalvager
             {
                 new BlockData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 0),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.RED
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(0,-1),
+                    Level =0,
+                    Type = (int)PART_TYPE.STORERED,
+                    Health = 50
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(-1,0),
+                    Level =0,
+                    Type = (int)PART_TYPE.MAGNET,
+                    Health = 50
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2, 0),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Coordinate = new Vector2Int(0,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, -1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Coordinate = new Vector2Int(1,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, -2),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Coordinate = new Vector2Int(-1,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
                 },
             };
 
@@ -3755,43 +3775,50 @@ namespace StarSalvager
             CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
         }
 
-        [Button]
+        /*[Button]
         private void AddComboTestPieces()
         {
             var blocks = new List<BlockData>
             {
                 new BlockData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,1),
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(0,-1),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)PART_TYPE.STORERED
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(-1,0),
+                    Level =0,
+                    Type = (int)PART_TYPE.MAGNET
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,2),
+                    Coordinate = new Vector2Int(0,-2),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,1),
+                    Coordinate = new Vector2Int(1,-2),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,2),
+                    Coordinate = new Vector2Int(-1,-1),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
             };
             
             AddMorePieces(blocks, true);
-        }
+        }*/
         
         private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
         {

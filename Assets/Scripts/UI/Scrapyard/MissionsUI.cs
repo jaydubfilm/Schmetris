@@ -88,15 +88,6 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnHoveredChange([CanBeNull] Mission mission, bool isHovered)
         {
-            if (mission != null)
-            {
-                if (PlayerDataManager.CheckHasMissionAlert(mission))
-                {
-                    PlayerDataManager.ClearNewMissionAlert(mission);
-                    CheckMissionNewAlertUpdate?.Invoke();
-                }
-            }
-
             detailsTitleText.text = isHovered ? $"Details - {mission.missionName}" : "Details";
             detailsText.text = isHovered
                 ? $"{mission.missionDescription} {mission.GetMissionProgressString()}\n{mission.GetMissionRewardsString()}"

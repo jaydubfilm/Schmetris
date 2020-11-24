@@ -492,7 +492,7 @@ namespace StarSalvager
         /// <returns></returns>
         private bool TryUpdatePowerUsage(Part part,
             in PartLevelData partLevelData,
-            in float powerValue,
+            ref float powerValue,
             ref float powerToRemove,
             in float deltaTime)
         {
@@ -507,9 +507,19 @@ namespace StarSalvager
             //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
             else if (powerValue == 0f && partLevelData.powerDraw > 0)
             {
-                part.Disabled = true;
-                InitPartData();
-                return false;
+                var targetBit = GetFurthestBitToBurn(partLevelData, BIT_TYPE.YELLOW);
+
+                if (targetBit != null)
+                {
+                    powerValue = ProcessBit(part, targetBit);
+                }
+
+                if (powerValue == 0)
+                {
+                    part.Disabled = true;
+                    InitPartData();
+                    return false;
+                }
             }
 
             if(partLevelData.powerDraw > 0f)
@@ -563,13 +573,6 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
-            (PartRemoteData partRemoteData, PartLevelData partLevelData) GetPartData(in Part part)
-            {
-                var partRemoteData = _partAttachableFactory.GetRemoteData(part.Type);
-                var partLevelData = partRemoteData.levels[part.level];
-
-                return (partRemoteData, partLevelData);
-            }
 
             var deltaTime = Time.deltaTime;
 
@@ -584,7 +587,7 @@ namespace StarSalvager
                 
                 var (partRemoteData, levelData) = GetPartData(part);
 
-                if(!TryUpdatePowerUsage(part, levelData, powerValue, ref powerToRemove, deltaTime))
+                if(!TryUpdatePowerUsage(part, levelData, ref powerValue, ref powerToRemove, deltaTime))
                     continue;
 
                 var shouldUpdateResource =
@@ -687,6 +690,14 @@ namespace StarSalvager
             //UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
 
             UpdateAllUI();
+        }
+
+        private (PartRemoteData partRemoteData, PartLevelData partLevelData) GetPartData(in Part part)
+        {
+            var partRemoteData = _partAttachableFactory.GetRemoteData(part.Type);
+            var partLevelData = partRemoteData.levels[part.level];
+
+            return (partRemoteData, partLevelData);
         }
 
         private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
@@ -946,8 +957,11 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             var target = _gunTargets[part];
-            
-            if (target && target.IsRecycled == false && _turrets.TryGetValue(part, out var turretTransform))
+
+            if (target && 
+                target.IsRecycled == false && 
+                !_turrets.IsNullOrEmpty() &&
+                _turrets.TryGetValue(part, out var turretTransform))
             {
                 var targetTransform = target.transform;
                 var normDirection = (targetTransform.position - part.transform.position).normalized;

@@ -54,6 +54,11 @@ namespace StarSalvager
             {
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
+                    LevelManager.Instance.IsWaveProgressing = true;
+                    LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
+                    LevelManager.Instance.EndWaveState = false;
+                    LevelManager.Instance.ResetLevelTimer();
+
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
@@ -63,7 +68,7 @@ namespace StarSalvager
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
-                Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
+                //Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
 
                 ScreenFade.Fade(() =>
                 {

@@ -18,7 +18,7 @@ namespace StarSalvager.UI
         private static PartAttachableFactory _partAttachableFactory;
         private static BitAttachableFactory _bitAttachableFactory;
 
-        private int _level ;
+        private int _level;
 
         //============================================================================================================//
 
