@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Sirenix.OdinInspector;
-
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -21,51 +21,7 @@ namespace StarSalvager.Audio.ScriptableObjects
 
         [Title("$TrackName"), ListDrawerSettings(Expanded = true)]
         public StemData[] stems;
-        
-        //TODO Generate Mixer
-        //TODO Add Mixer groups
-        
-        #if UNITY_EDITOR
-        
-        [Button]
-        public void CreateMyAsset()
-        {
-            const string fileType = "mixer";
-            const string path = "Assets/Audio/Mixer/";
-            //var path = AssetDatabase.GetAssetPath(masterMixer);
-            
-            //TODO Should check to see if the file already exists
 
-            var masterMixerPath = Path.Combine(path, $"MasterMixer.{fileType}");
-            var newMixerPath = Path.Combine(path, $"{TrackName}.{fileType}");
-
-            var success = AssetDatabase.CopyAsset(masterMixerPath, newMixerPath);
-
-            
-            
-            AssetDatabase.SaveAssets();
-
-            EditorUtility.FocusProjectWindow();
-            
-            
-            var newMixer = AssetDatabase.LoadAssetAtPath(newMixerPath, typeof(AudioMixer)) as AudioMixer;
-            Selection.activeObject = newMixer;
-
-            
-            var test = newMixer.FindMatchingGroups(string.Empty);
-            foreach (var mixerGroup in test)
-            {
-                if (mixerGroup.name.Equals("Master"))
-                    continue;
-                
-                //Debug.Log(mixerGroup.name);
-                DestroyImmediate(mixerGroup, true);
-            }
-            //DestroyImmediate(, true);
-            //Debug.Log($"Success: {success} Name: {newMixer?.name}\nmasterMixerPath: {masterMixerPath}\nnewMixerPath: {newMixerPath}");
-        }
-        
-        #endif
     }
 
     [Serializable]

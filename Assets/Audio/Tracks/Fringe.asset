@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9dd32c1e34ead74fb8086c22b79df2b, type: 3}
-  m_Name: AnotherTest
+  m_Name: Fringe
   m_EditorClassIdentifier: 
   masterMixer: {fileID: 24100000, guid: a2e153dc1c5ab37498cbd00d93cc5ddd, type: 2}
   stems:
