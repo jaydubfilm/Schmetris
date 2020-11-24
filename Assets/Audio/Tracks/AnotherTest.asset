@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9dd32c1e34ead74fb8086c22b79df2b, type: 3}
+  m_Name: AnotherTest
+  m_EditorClassIdentifier: 
+  masterMixer: {fileID: 24100000, guid: a2e153dc1c5ab37498cbd00d93cc5ddd, type: 2}
+  stems:
+  - name: Test 1
+    clip: {fileID: 0}
+    fadeIn:
+      startDelay: 0
+      time: 0
+      curve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    fadeOut:
+      startDelay: 0
+      time: 0
+      curve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    maxLevel: 0
