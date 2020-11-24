@@ -524,6 +524,20 @@ namespace StarSalvager.Audio
             masterMixer.SetFloat(parameterName, Mathf.Log(volume) * 13);
         }
         
+        private float InverseVolume(float volume)
+        {
+            //volume = Mathf.Clamp(volume, 0.001f, 1f);
+
+            volume = Mathf.Exp(volume / 13);
+            volume = Mathf.Clamp(volume, 0.001f, 1f);
+
+            //Mathf.Log(volume) * 13
+
+            //masterMixer.SetFloat(parameterName, );
+
+            return volume;
+        }
+        
         //============================================================================================================//
 
         private bool TryGetMusicClip(MUSIC music, out AudioClip clip)
@@ -562,8 +576,9 @@ namespace StarSalvager.Audio
         {
             if (_musicFading)
                 return;
+            masterMixer.GetFloat(MUSIC_VOLUME, out var currentVolume);
 
-            StartCoroutine(FadeMusicCoroutine(0f, _musicVolume));
+            StartCoroutine(FadeMusicCoroutine(InverseVolume(currentVolume), _musicVolume));
         }
 
         private void FadeMusicOut()
@@ -571,7 +586,9 @@ namespace StarSalvager.Audio
             if (_musicFading)
                 return;
             
-            StartCoroutine(FadeMusicCoroutine(_musicVolume, 0f));
+            masterMixer.GetFloat(MUSIC_VOLUME, out var currentVolume);
+            
+            StartCoroutine(FadeMusicCoroutine(InverseVolume(currentVolume), 0f));
         }
 
         private IEnumerator FadeMusicCoroutine(float startVolume, float endVolume, float time = 1f)
