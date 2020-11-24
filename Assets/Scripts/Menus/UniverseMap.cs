@@ -71,12 +71,12 @@ namespace StarSalvager.UI
         private List<Image> connectionLines = new List<Image>();
 
         [SerializeField]
-        private Image botDisplayRoot;
+        private RectTransform botDisplayRectTransform;
 
         [SerializeField]
         private DamageProfileScriptableObject damageProfileScriptable;
-        
-        private List<GameObject> botDisplayObjects = new List<GameObject>();
+
+        private List<Image> _botDisplayObjects;
 
         #endregion //Properties
 
@@ -86,7 +86,7 @@ namespace StarSalvager.UI
         private void Start()
         {
             InitButtons();
-
+            _botDisplayObjects = new List<Image>();
             waveDataWindow.SetActive(false);
         }
 
@@ -275,16 +275,13 @@ namespace StarSalvager.UI
 
             for (int i = 0; i < botBlockData.Count; i++)
             {
-                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
+                if (!Recycler.TryGrab(out Image imageObject))
                 {
-                    newGameObject = new GameObject();
-                    newGameObject.AddComponent<Image>();
+                    var temp = new GameObject($"{botBlockData[i].ClassType}_{botBlockData[i].Type}");
+                    imageObject = temp.AddComponent<Image>();
                 }
-
-                newGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
-
-                RectTransform rect = (RectTransform)newGameObject.transform;
-                Image image = newGameObject.GetComponent<Image>();
+                RectTransform rect = (RectTransform)imageObject.transform;
+                rect.SetParent(botDisplayRectTransform, false);
 
                 BotDisplaySetPosition(rect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
 
@@ -297,66 +294,64 @@ namespace StarSalvager.UI
                         startingHealth = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
                         if (botBlockData[i].Health <= 0)
                         {
-                            image.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(botBlockData[i].Level);
+                            imageObject.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(botBlockData[i].Level);
                         }
                         else
                         {
-                            image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                            imageObject.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         }
                         break;
                     case nameof(Bit):
-                        image.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        imageObject.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         startingHealth = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData((BIT_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
                         break;
                     case nameof(Component):
-                        image.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
+                        imageObject.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
                         startingHealth = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentRemoteData((COMPONENT_TYPE)botBlockData[i].Type).health;
                         break;
                 }
 
-                botDisplayObjects.Add(newGameObject);
+                _botDisplayObjects.Add(imageObject);
                 float healthPercentage = botBlockData[i].Health / startingHealth;
 
                 if (healthPercentage > 0 && healthPercentage <= 0.75)
                 {
-                    if (!Recycler.TryGrab(typeof(Image), out GameObject damageImageGameObject))
+                    if (!Recycler.TryGrab(out Image damageImage))
                     {
-                        damageImageGameObject = new GameObject();
-                        damageImageGameObject.AddComponent<Image>();
+                        var temp = new GameObject($"{botBlockData[i].ClassType}_{botBlockData[i].Type}_Damage");
+                        damageImage = temp.AddComponent<Image>();
                     }
+                    
+                    RectTransform damageRect = (RectTransform)imageObject.transform;
 
-                    damageImageGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
+                    damageRect.SetParent(botDisplayRectTransform, false);
 
-                    RectTransform damageRect = (RectTransform)newGameObject.transform;
-                    Image damageImage = damageImageGameObject.GetComponent<Image>();
-
+                    
                     BotDisplaySetPosition(damageRect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
 
                     damageImage.sprite = damageProfileScriptable.GetDetailSprite(healthPercentage);
 
-                    botDisplayObjects.Add(damageImageGameObject);
+                    _botDisplayObjects.Add(damageImage);
                 }
             }
 
 
             if (botBlockData.Count == 0)
             {
-                if (!Recycler.TryGrab(typeof(Image), out GameObject newGameObject))
+                if (!Recycler.TryGrab(out Image imageObject))
                 {
-                    newGameObject = new GameObject();
-                    newGameObject.AddComponent<Image>();
+                    var temp = new GameObject("CORE");
+                    imageObject = temp.AddComponent<Image>();
                 }
+                RectTransform rect = (RectTransform)imageObject.transform;
 
-                newGameObject.transform.SetParent(botDisplayRoot.gameObject.transform, false);
-
-                RectTransform rect = (RectTransform)newGameObject.transform;
-                Image image = newGameObject.GetComponent<Image>();
+                rect.SetParent(botDisplayRectTransform, false);
 
                 BotDisplaySetPosition(rect, 0, 0);
 
-                image.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
+                imageObject.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
 
-                botDisplayObjects.Add(newGameObject);
+                _botDisplayObjects.Add(imageObject);
             }
         }
 
@@ -375,13 +370,13 @@ namespace StarSalvager.UI
             }
             connectionLines.Clear();
 
-            if (botDisplayObjects.Count > 0)
+            if (_botDisplayObjects.Count > 0)
             {
-                for (int i = botDisplayObjects.Count - 1; i >= 0; i--)
+                for (int i = _botDisplayObjects.Count - 1; i >= 0; i--)
                 {
-                    Recycler.Recycle(typeof(Image), botDisplayObjects[i]);
+                    Recycler.Recycle(typeof(Image), _botDisplayObjects[i].gameObject);
                 }
-                botDisplayObjects.Clear();
+                _botDisplayObjects.Clear();
             }
         }
 
@@ -610,34 +605,6 @@ namespace StarSalvager.UI
             //Display
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
-
-        /*private List<SpriteTitle> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
-        {
-            var outList = new List<SpriteTitle>();
-            var enemyProfile = FactoryManager.Instance.EnemyProfile;
-
-            var bitProfile = FactoryManager.Instance.BitProfileData;
-
-            foreach (var kvp in Enemies)
-            {
-                outList.Add(new SpriteTitle
-                {
-                    Sprite = enemyProfile.GetEnemyProfileData(kvp.Key).Sprite,
-                    Title = $"{kvp.Value}"
-                });
-            }
-
-            foreach (var kvp in Bits)
-            {
-                outList.Add(new SpriteTitle
-                {
-                    Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(0),
-                    Title = $"{Mathf.RoundToInt(kvp.Value * 100f)}%"
-                });
-            }
-
-            return outList;
-        }*/
 
         private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
         {
