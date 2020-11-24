@@ -483,9 +483,9 @@ namespace StarSalvager
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
 
-        [SerializeField]
-        private float rotationTarget;
-        
+        [ShowInInspector, ReadOnly] 
+        public float rotationTarget { get; private set; }
+
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
         /// the target rotation.
@@ -3727,6 +3727,26 @@ namespace StarSalvager
         #region UNITY EDITOR
 
 #if UNITY_EDITOR
+
+        [Button]
+        private void TestSpaceChange()
+        {
+            var target = new Vector2Int(-1, 3);
+
+            var z = transform.rotation.eulerAngles.z;
+            //var dif = z % rotationTarget;
+            
+            //var rotation = Quaternion.Inverse(Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z % 90));
+            var rotation = Quaternion.Euler(0, 0, z);
+            var newPosition = rotation * (Vector2)target;
+            
+            Debug.Log($"z: {z}");
+            
+            //SSDebug.DrawArrowRay(transform.position, newPosition, Color.yellow);
+            Debug.DrawLine(transform.position, transform.position + newPosition, Color.yellow, 2f);
+
+        }
+        
         [Button]
         private void SetupTest()
         {
@@ -3907,6 +3927,8 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+
         
         
     }
