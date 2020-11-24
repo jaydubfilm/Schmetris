@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
@@ -270,6 +271,7 @@ namespace StarSalvager.UI.Scrapyard
             
             ScreenFade.Fade(() =>
             {
+                AudioController.FadeOutMusic();
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
         }

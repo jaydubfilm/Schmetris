@@ -1,4 +1,5 @@
-﻿using StarSalvager.Utilities;
+﻿using StarSalvager.Audio;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -64,6 +65,7 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
+                        AudioController.FadeOutMusic();
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                     });
                 }
@@ -79,6 +81,7 @@ namespace StarSalvager.Prototype
                 introSceneStage = 0;
                 ScreenFade.Fade(() =>
                 {
+                    AudioController.FadeOutMusic();
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 });
             }

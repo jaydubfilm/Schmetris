@@ -14,6 +14,7 @@ using System.Linq;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
 
 namespace StarSalvager.UI
@@ -450,6 +451,7 @@ namespace StarSalvager.UI
                 
                 ScreenFade.Fade(() =>
                 {
+                    AudioController.FadeInMusic();
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
                 });
             });
