@@ -102,7 +102,7 @@ namespace StarSalvager.Audio.ScriptableObjects
         }
         
         
-        public string VOLUME => $"{name}_Volume";
+        private string VOLUME => $"{name}_Volume";
         
         [FoldoutGroup("$name"), DisplayAsString]
         public string name;

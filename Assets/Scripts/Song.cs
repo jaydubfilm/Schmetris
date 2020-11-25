@@ -10,26 +10,17 @@ namespace StarSalvager.Audio
 {
     public class Song : MonoBehaviour
     {
+        public MUSIC Music;
+        
         [ShowInInspector, ReadOnly]
         public bool IsPlaying { get; private set; }
 
         [SerializeField, Required]
         private SongScriptableObject song;
 
-        [SerializeField] private bool startMuted = true;
+        /*[SerializeField] private bool startMuted = true;*/
 
         private bool _fading;
-
-        //Unity Functions
-        //====================================================================================================================//
-
-        private void Start()
-        {
-            if (startMuted)
-                Mute();
-            else
-                SetFullVolume();
-        }
 
         //Volume Functions
         //====================================================================================================================//
@@ -115,7 +106,7 @@ namespace StarSalvager.Audio
             }
             
             var level = stemData.maxLevel;
-            var fadeVolume = stemData.VOLUME;
+            //var fadeVolume = stemData.VOLUME;
             
             if(fadeData.startDelay > 0)
                 yield return new WaitForSecondsRealtime(fadeData.startDelay);
@@ -128,7 +119,7 @@ namespace StarSalvager.Audio
 
                 var vol = Mathf.Lerp(0f, level, td);
 
-                stemData.MixerGroup.audioMixer.SetVolume(fadeVolume, vol);
+                stemData.SetVolume(vol);
 
                 t += Time.unscaledDeltaTime;
                 

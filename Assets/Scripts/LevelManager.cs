@@ -408,7 +408,6 @@ namespace StarSalvager
                     
                     ScreenFade.Fade(() =>
                     {
-                        AudioController.FadeOutMusic();
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
                 });
@@ -928,7 +927,6 @@ namespace StarSalvager
 
             if (value && !_effect)
             {
-                AudioController.FadeOutMusic();
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
             }

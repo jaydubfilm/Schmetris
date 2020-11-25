@@ -65,7 +65,6 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
-                        AudioController.FadeOutMusic();
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                     });
                 }
@@ -81,7 +80,6 @@ namespace StarSalvager.Prototype
                 introSceneStage = 0;
                 ScreenFade.Fade(() =>
                 {
-                    AudioController.FadeOutMusic();
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
                 });
             }

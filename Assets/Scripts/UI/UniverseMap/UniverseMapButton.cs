@@ -62,7 +62,6 @@ namespace StarSalvager
 
                     ScreenFade.Fade(() =>
                     {
-                        AudioController.FadeInMusic();
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
                     });
                     return;
@@ -74,7 +73,6 @@ namespace StarSalvager
 
                 ScreenFade.Fade(() =>
                 {
-                    AudioController.FadeInMusic();
                     SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
                 });
             });

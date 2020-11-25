@@ -446,7 +446,6 @@ namespace StarSalvager.UI
                 
                 ScreenFade.Fade(() =>
                 {
-                    AudioController.FadeInMusic();
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
                 });
             });

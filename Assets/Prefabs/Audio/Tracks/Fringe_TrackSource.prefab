@@ -174,8 +174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edcf58d469e86849a283e1b0cddca78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Music: 2
   song: {fileID: 11400000, guid: 81926460dbb4ed54a97715b47e80b843, type: 2}
-  startMuted: 1
 --- !u!1 &2084165454324430877
 GameObject:
   m_ObjectHideFlags: 0
