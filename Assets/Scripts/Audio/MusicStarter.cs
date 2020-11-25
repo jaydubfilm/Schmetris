@@ -1,11 +1,13 @@
-﻿using StarSalvager.Utilities;
+﻿using System;
+using StarSalvager.Utilities;
 using UnityEngine;
 
 namespace StarSalvager.Audio
 {
-    public class MusicStarter : MonoBehaviour, IReset
+    [Obsolete]
+    public class MusicStarter : MonoBehaviour/*, IReset*/
     {
-        [SerializeField]
+        /*[SerializeField]
         private MUSIC music;
     
         // Start is called before the first frame update
@@ -21,7 +23,7 @@ namespace StarSalvager.Audio
 
         public void Reset()
         {
-        }
+        }*/
     }
 }
 

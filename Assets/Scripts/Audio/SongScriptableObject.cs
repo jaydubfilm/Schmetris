@@ -135,45 +135,12 @@ namespace StarSalvager.Audio.ScriptableObjects
         }
         public void SetVolume(float volume)
         {
-            MixerGroup.audioMixer.SetVolume(VOLUME, Mathf.Lerp(0f, maxLevel, volume));
+            MixerGroup.audioMixer.SetVolume(
+                string.IsNullOrEmpty(name) ? "Volume" : VOLUME,
+                Mathf.Lerp(0f, maxLevel, volume));
         }
         
-        public IEnumerator FadeStem(FADE fade)
-        {
-            FadeData fadeData;
-            switch (fade)
-            {
-                case FADE.IN:
-                    fadeData = fadeIn;
-                    break;
-                case FADE.OUT:
-                    fadeData = fadeOut;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(fade), fade, null);
-            }
-            
-            var level = maxLevel;
-            var fadeVolume = VOLUME;
-            
-            if(fadeData.startDelay > 0)
-                yield return new WaitForSecondsRealtime(fadeData.startDelay);
 
-            float t = 0;
-            float time = fadeData.time;
-            while (t / time >= 1)
-            {
-                var td = fadeData.curve.Evaluate(t / time);
-
-                var vol = Mathf.Lerp(0f, level, td);
-
-                MixerGroup.audioMixer.SetVolume(fadeVolume, vol);
-
-                t += Time.unscaledDeltaTime;
-                yield return null;
-            }
-
-        }
 
         
     }

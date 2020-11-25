@@ -5,9 +5,10 @@ using UnityEngine;
 namespace StarSalvager.Audio.Data
 {
     [Serializable]
-    public class MusicClip : BaseSound<MUSIC>
+    [Obsolete]
+    public class MusicClip /*: BaseSound<MUSIC>*/
     {
-        public override MUSIC sound
+        /*public override MUSIC sound
         {
             get => Music;
             set => Music = value;
@@ -22,7 +23,7 @@ namespace StarSalvager.Audio.Data
             set => _clip = value; 
         }
         [SerializeField, AssetSelector(Paths = "Assets/Audio/Music")]
-        private AudioClip _clip;
+        private AudioClip _clip;*/
     }
 
 }

@@ -114,7 +114,7 @@ namespace StarSalvager.Prototype
         private void ShowFinalScreen()
         {
             Alert.ShowDancers(true);
-            AudioController.PlayMusic(MUSIC.GAME_OVER, true);
+            /*AudioController.PlayMusic(MUSIC.GAME_OVER, true);*/
             
             gameObject.SetActive(false);
             

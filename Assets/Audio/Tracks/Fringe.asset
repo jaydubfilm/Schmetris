@@ -19,7 +19,7 @@ MonoBehaviour:
       type: 2}
     clip: {fileID: 8300000, guid: 84cc2987b90494140a1d6a3676bc24de, type: 3}
     fadeIn:
-      startDelay: 0
+      startDelay: 2
       time: 2
       curve:
         serializedVersion: 2
@@ -78,7 +78,7 @@ MonoBehaviour:
       type: 2}
     clip: {fileID: 8300000, guid: e4cc23403da2bc2418b56b2fd9a416d9, type: 3}
     fadeIn:
-      startDelay: 0
+      startDelay: 1
       time: 2
       curve:
         serializedVersion: 2

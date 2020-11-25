@@ -565,7 +565,7 @@ namespace StarSalvager
 
         private void InitLevel()
         {
-            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
+            /*AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);*/
             
             //--------------------------------------------------------------------------------------------------------//
             

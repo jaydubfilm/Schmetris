@@ -36,20 +36,20 @@ namespace StarSalvager.Audio
         private AudioSource sfxAudioSource;
         //[SerializeField, Required, FoldoutGroup("Audio Sources")]
         //private AudioSource sfxAudioSourcePitched;
-        [FormerlySerializedAs("musicAudioSource")] [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource menuMusicAudioSource;
-        [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource gameMusicAudioSource;
-        [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource scrapMusicAudioSource;
+        /*[FormerlySerializedAs("musicAudioSource")] [SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource menuMusicAudioSource;*/
+        /*[SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource gameMusicAudioSource;*/
+        /*[SerializeField, Required, FoldoutGroup("Audio Sources")]
+        private AudioSource scrapMusicAudioSource;*/
         
         //Audio Mixers
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Audio Mixers")]
         private AudioMixer masterMixer;
-        [SerializeField, Required, FoldoutGroup("Audio Mixers")]
-        private AudioMixer musicMixer;
+        /*[SerializeField, Required, FoldoutGroup("Audio Mixers")]
+        private AudioMixer musicMixer;*/
         
         //Sound Lists
         //============================================================================================================//
@@ -67,7 +67,7 @@ namespace StarSalvager.Audio
         //Music Properties
         //============================================================================================================//
         
-        [FormerlySerializedAs("musicSnapshots")] 
+        /*[FormerlySerializedAs("musicSnapshots")] 
         [SerializeField, FoldoutGroup("Music")]
         private AudioMixerSnapshot[] musicMixerSnapshots;
 
@@ -79,7 +79,7 @@ namespace StarSalvager.Audio
         
         [SerializeField, FoldoutGroup("Music"), PropertySpace(SpaceBefore = 10f)]
         [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
-        private List<MusicClip> musicClips;
+        private List<MusicClip> musicClips;*/
         
         //============================================================================================================//
 
@@ -171,7 +171,7 @@ namespace StarSalvager.Audio
             }
         }
         
-        public static void PlayMusic(MUSIC music, float fadeSpeed = 1f)
+        /*public static void PlayMusic(MUSIC music, float fadeSpeed = 1f)
         {
             if (Instance == null)
                 return;
@@ -193,7 +193,7 @@ namespace StarSalvager.Audio
                 return;
 
             Instance.PlayWaveMusic(index, forceChange);
-        }
+        }*/
 
         public static void FadeInMusic()
         {
@@ -352,7 +352,7 @@ namespace StarSalvager.Audio
         //Music Functions
         //============================================================================================================//
 
-        private void PlayMusicLoop(MUSIC music, float fadeSpeed)
+        /*private void PlayMusicLoop(MUSIC music, float fadeSpeed)
         {
             if (!TryGetMusicClip(music, out AudioClip clip))
                 return;
@@ -434,7 +434,7 @@ namespace StarSalvager.Audio
                 t += Time.deltaTime;
                 yield return null;
             }
-        }
+        }*/
         
         //Looping Sounds
         //============================================================================================================//
@@ -540,10 +540,10 @@ namespace StarSalvager.Audio
         
         //============================================================================================================//
 
-        private bool TryGetMusicClip(MUSIC music, out AudioClip clip)
+        /*private bool TryGetMusicClip(MUSIC music, out AudioClip clip)
         {
             return TryGetClip(musicClips, music, out clip);
-        }
+        }*/
         private bool TryGetSoundClip(SOUND sound, out AudioClip clip)
         {
             return TryGetClip(soundClips, sound, out clip);
@@ -660,7 +660,7 @@ namespace StarSalvager.Audio
         private void PopulateValues()
         {
             var sfx = Enum.GetValues(typeof(SOUND));
-            var music = Enum.GetValues(typeof(MUSIC));
+            /*var music = Enum.GetValues(typeof(MUSIC));*/
 
             //TODO Check to make sure all sounds exists in list
             foreach (SOUND sound in sfx)
@@ -675,7 +675,7 @@ namespace StarSalvager.Audio
                 });
             }            
             
-            //TODO Check to make sure all music exists in list
+            /*//TODO Check to make sure all music exists in list
             foreach (MUSIC m in music)
             {
                 if (musicClips.Any(s => s.sound == m))
@@ -686,7 +686,7 @@ namespace StarSalvager.Audio
                     sound = m,
                     clip = null
                 });
-            }  
+            }  */
             
             foreach (var (_, enemyID) in FindObjectOfType<FactoryManager>().EnemyProfile.GetAllEnemyNamesIds())
             {
