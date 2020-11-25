@@ -369,7 +369,7 @@ namespace StarSalvager
 
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     });
             }
@@ -387,13 +387,14 @@ namespace StarSalvager
 
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     });
             }
             else
             {
                 
+                AudioController.CrossFadeTrack(MUSIC.NONE);
                 
                 m_levelManagerUI.ShowWaveSummaryWindow(
                     WaveEndSummaryData.WaveEndTitle,
@@ -564,7 +565,7 @@ namespace StarSalvager
 
         private void InitLevel()
         {
-            /*AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);*/
+            AudioController.CrossFadeTrack(MUSIC.FRINGE);
             
             //--------------------------------------------------------------------------------------------------------//
             
@@ -1089,7 +1090,7 @@ namespace StarSalvager
             else
             {
                 //Alert.ShowDancers(true);
-                //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
+                AudioController.CrossFadeTrack(MUSIC.GAME_OVER);
 
                 IsWaveProgressing = false;
                 m_runLostState = true;

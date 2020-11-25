@@ -135,7 +135,7 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                     });
                     
                     

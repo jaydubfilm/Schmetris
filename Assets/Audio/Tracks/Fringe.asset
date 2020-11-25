@@ -46,7 +46,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     fadeOut:
-      startDelay: 0
+      startDelay: 2
       time: 2
       curve:
         serializedVersion: 2
@@ -105,7 +105,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     fadeOut:
-      startDelay: 0
+      startDelay: 1
       time: 2
       curve:
         serializedVersion: 2
@@ -165,7 +165,7 @@ MonoBehaviour:
         m_RotationOrder: 4
     fadeOut:
       startDelay: 0
-      time: 2
+      time: 1
       curve:
         serializedVersion: 2
         m_Curve:

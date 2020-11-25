@@ -4,6 +4,7 @@ using StarSalvager.Utilities.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Audio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -101,6 +102,13 @@ namespace StarSalvager.Utilities.SceneManagement
             SetSceneObjectsActive(sceneNameToDeload, false);
             
             return SetSceneObjectsActive(sceneName, true);
+        }
+        
+        public static bool ActivateScene(string sceneName, string sceneNameToDeload, MUSIC musicToPlay, bool updateJsonData = false)
+        {
+            AudioController.CrossFadeTrack(musicToPlay);
+
+            return ActivateScene(sceneName, sceneNameToDeload, updateJsonData);
         }
 
         public static bool ResetCurrentScene()

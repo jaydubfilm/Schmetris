@@ -199,6 +199,13 @@ namespace StarSalvager.Audio
             
             Instance.CrossFadeMusic(trackTarget);
         }
+        public static void CrossFadePreviousTrack()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.CrossFadeMusic(Instance._previousMusic);
+        }
         
         /*public static void FadeInMusic()
         {
