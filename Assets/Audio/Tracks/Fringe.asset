@@ -12,26 +12,183 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9dd32c1e34ead74fb8086c22b79df2b, type: 3}
   m_Name: Fringe
   m_EditorClassIdentifier: 
-  masterMixer: {fileID: 24100000, guid: a2e153dc1c5ab37498cbd00d93cc5ddd, type: 2}
+  mixer: {fileID: 24100000, guid: 521bf1509f40b74429610f2350d6d253, type: 2}
   stems:
-  - name: Test 1
-    clip: {fileID: 0}
+  - name: Pads
+    MixerGroup: {fileID: 6224275172580809803, guid: 521bf1509f40b74429610f2350d6d253,
+      type: 2}
+    clip: {fileID: 8300000, guid: 84cc2987b90494140a1d6a3676bc24de, type: 3}
     fadeIn:
       startDelay: 0
-      time: 0
+      time: 2
       curve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
     fadeOut:
       startDelay: 0
-      time: 0
+      time: 2
       curve:
         serializedVersion: 2
-        m_Curve: []
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -2.7866626
+          outSlope: -2.7866626
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.05488068
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: -0.008389637
+          outSlope: -0.008389637
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.12404212
+          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    maxLevel: 0
+    maxLevel: 1
+  - name: Bass
+    MixerGroup: {fileID: 2436780323494514453, guid: 521bf1509f40b74429610f2350d6d253,
+      type: 2}
+    clip: {fileID: 8300000, guid: e4cc23403da2bc2418b56b2fd9a416d9, type: 3}
+    fadeIn:
+      startDelay: 0
+      time: 2
+      curve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    fadeOut:
+      startDelay: 0
+      time: 2
+      curve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -2.7866626
+          outSlope: -2.7866626
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.05488068
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: -0.008389637
+          outSlope: -0.008389637
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.12404212
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    maxLevel: 1
+  - name: Drums
+    MixerGroup: {fileID: 3556108265888441982, guid: 521bf1509f40b74429610f2350d6d253,
+      type: 2}
+    clip: {fileID: 8300000, guid: 31985dcbe844b1748b99e666ac3ccdb7, type: 3}
+    fadeIn:
+      startDelay: 0
+      time: 2
+      curve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    fadeOut:
+      startDelay: 0
+      time: 2
+      curve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -2.7866626
+          outSlope: -2.7866626
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.05488068
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: -0.008389637
+          outSlope: -0.008389637
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0.12404212
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    maxLevel: 1
+  setup: 1
