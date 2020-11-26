@@ -343,6 +343,8 @@ namespace StarSalvager
                 return;
             }
 
+            BotObject.PROTO_GodMode = false;
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -747,6 +749,8 @@ namespace StarSalvager
             {
                 return;
             }
+
+            BotObject.PROTO_GodMode = true;
 
             if (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles)
             {
