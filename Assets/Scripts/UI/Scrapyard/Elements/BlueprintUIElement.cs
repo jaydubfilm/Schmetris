@@ -45,7 +45,7 @@ namespace StarSalvager.UI.Scrapyard
             hoverCallback = OnHover;
             //craftButtonImage = craftButton.GetComponent<Image>();
 
-            craftButton.interactable = data.CanAfford;
+            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
             
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
@@ -85,7 +85,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateUI()
         {
-            craftButton.interactable = data.CanAfford;
+            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else
