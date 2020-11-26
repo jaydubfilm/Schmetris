@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -25,7 +24,7 @@ namespace StarSalvager.Audio.ScriptableObjects
         
         public string TrackName => name;
         
-        [OnValueChanged(nameof(CreateStems)), Required, PropertyOrder(-1000)]
+        [OnValueChanged("CreateStems"), Required, PropertyOrder(-1000)]
         public AudioMixer mixer;
 
         [Title("$TrackName"), ListDrawerSettings(Expanded = true)]
