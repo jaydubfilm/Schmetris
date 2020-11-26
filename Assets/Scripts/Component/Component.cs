@@ -130,7 +130,7 @@ namespace StarSalvager
         
         public void IncreaseLevel(int amount = 1)
         {
-            level = Mathf.Clamp(level + amount, 0, 4);
+            level = Mathf.Clamp(level + amount, 0, 1);
             renderer.sortingOrder = level;
             
             //Sets the gameObject info (Sprite)
