@@ -380,7 +380,7 @@ namespace StarSalvager.UI
             });
             continueRunButton.onClick.AddListener(() =>
             {
-
+                AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
                 PlayerDataManager.SetRunStarted();
                 LeaveMenu(SceneLoader.SCRAPYARD);

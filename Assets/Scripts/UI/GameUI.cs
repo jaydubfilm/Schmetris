@@ -294,6 +294,8 @@ namespace StarSalvager.UI
         private RectTransform moveTargetTransform;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private Image imagePrefab;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
+        private float imageSize = 50;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.1f, 20f)]
         private float effectRadius;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
@@ -504,12 +506,16 @@ namespace StarSalvager.UI
             carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
 
-            OutlineMagnet(value >= 1f);
         }
         
         public void OutlineMagnet(bool state)
         {
             magnetFlash.SetActive(state);
+        }
+
+        public void FlashMagnet()
+        {
+            magnetFlash.FlashOnce();
         }
         
         //============================================================================================================//
@@ -952,6 +958,7 @@ namespace StarSalvager.UI
                 image.sprite = sprite;
                 
                 var trans = (RectTransform)image.transform;
+                trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
                 trans.anchoredPosition = startPosition;

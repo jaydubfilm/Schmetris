@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.UI
@@ -74,5 +75,43 @@ namespace StarSalvager.Utilities.UI
         }
 
         //====================================================================================================================//
+
+        public void FlashOnce()
+        {
+            if (Image.enabled)
+                return;
+            
+            StartCoroutine(FlashOnceCoroutine());
+        }
+
+        private IEnumerator FlashOnceCoroutine()
+        {
+            var t = 0f;
+            Image.enabled = true;
+
+
+            while (t / cycleTime <= 1f)
+            {
+                
+                Image.color = Color.Lerp(_clearColor, _color, t / cycleTime);
+                
+                t += Time.deltaTime;
+                
+                yield return null;
+            }
+            
+            while (t / cycleTime > 0f)
+            {
+                
+                Image.color = Color.Lerp(_clearColor, _color, t / cycleTime);
+                
+                t -= Time.deltaTime;
+                
+                yield return null;
+            }
+            
+            Image.enabled = false;
+
+        }
     }
 }

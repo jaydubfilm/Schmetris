@@ -1129,6 +1129,7 @@ namespace StarSalvager.Utilities.Extensions
                 attachableBase = orphanedBit,
                 moveDirection = travelDirection,
                 distance = travelDistance,
+                startingCoordinates = orphanedBit.Coordinate,
                 intendedCoordinates = targetCoordinate
             });
         }
@@ -1218,6 +1219,7 @@ namespace StarSalvager.Utilities.Extensions
                     attachableBase = orphan,
                     moveDirection = travelDirection,
                     distance = shortestDistance,
+                    startingCoordinates = orphan.Coordinate,
                     intendedCoordinates = newCoordinate
                 });
             }

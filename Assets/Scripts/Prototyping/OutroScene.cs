@@ -114,7 +114,7 @@ namespace StarSalvager.Prototype
         private void ShowFinalScreen()
         {
             Alert.ShowDancers(true);
-            AudioController.PlayMusic(MUSIC.GAME_OVER, true);
+            /*AudioController.PlayMusic(MUSIC.GAME_OVER, true);*/
             
             gameObject.SetActive(false);
             
@@ -135,7 +135,7 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                     });
                     
                     

@@ -3,17 +3,70 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Recycling;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.JsonDataTypes;
-using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
 {
     public static class BotExtensions
     {
+        /// <summary>
+        /// Convert world grid space to local space
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="gridPosition"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static Vector2 InverseTransformGridPoint(this Bot bot, Vector2Int gridPosition)
+        {
+            switch (bot.rotationTarget)
+            {
+                case 0:
+                    return gridPosition;
+                case 90:
+                    return new Vector2(gridPosition.y, -gridPosition.x);
+                case 180:
+                    return new Vector2(-gridPosition.x, -gridPosition.y);
+                case 270:
+                    return new Vector2(-gridPosition.y, gridPosition.x);
+                default: 
+                    throw new ArgumentOutOfRangeException(nameof(bot.rotationTarget), bot.rotationTarget, null);
+            }
+        }
+
+        /// <summary>
+        /// Convert local space to world grid space
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="localPosition"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static Vector2Int TransformPoint(this Bot bot, Vector2 localPosition)
+        {
+            Vector2 outValue;
+            switch (bot.rotationTarget)
+            {
+                case 0:
+                    outValue = localPosition.ToVector2Int();
+                    break;
+                case 90:
+                    outValue = new Vector2(localPosition.y, -localPosition.x);
+                    break;
+                case 180:
+                    outValue = new Vector2(-localPosition.x, -localPosition.y);
+                    break;
+                case 270:
+                    outValue = new Vector2(-localPosition.y, localPosition.x);
+                    break;
+                default: 
+                    throw new ArgumentOutOfRangeException(nameof(bot.rotationTarget), bot.rotationTarget, null);
+            }
+
+            return outValue.ToVector2Int();
+        }
+        
         //============================================================================================================//
         
         #region Import/Export
@@ -166,11 +219,9 @@ namespace StarSalvager.Utilities.Extensions
 
             var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
             var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
-            /*var orphanTargetPositions = orphans.Select(o =>
-                transform.InverseTransformPoint((Vector2) transform.position +
-                                                (Vector2) o.intendedCoordinates * Constants.gridCellSize)).ToArray();*/
             var orphanTargetPositions = orphans.Select(o =>
-                (Vector2) o.intendedCoordinates * Constants.gridCellSize).ToArray();
+                (Vector2)bot.TransformPoint(o.intendedCoordinates)).ToArray();
+            
             //--------------------------------------------------------------------------------------------------------//
 
 
