@@ -747,6 +747,12 @@ namespace StarSalvager
             {
                 return;
             }
+
+            if (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles)
+            {
+                m_currentStage--;
+                return;
+            }
             
             SavePlayerData();
 

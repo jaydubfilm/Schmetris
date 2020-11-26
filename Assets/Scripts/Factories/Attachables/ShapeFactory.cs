@@ -81,13 +81,36 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
     
-        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null)
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null, List<BIT_TYPE> allowedBitTypes = null)
         {
             Shape shape;
             //FIXME
             if (selectionType == SELECTION_TYPE.CATEGORY)
             {
                 EditorShapeGeneratorData shapeData = GetRandomInCategory(identifier, exclusionList);
+
+                if (allowedBitTypes != null)
+                {
+                    for (int i = 0; i < 50; i++)
+                    {
+                        bool isAllowed = true;
+                        for (int k = 0; k < shapeData.BlockData.Count; k++)
+                        {
+                            if (!allowedBitTypes.Contains((BIT_TYPE)shapeData.BlockData[k].Type))
+                            {
+                                //This is excluded from being allowed
+                                isAllowed = false;
+                                break;
+                            }
+                        }
+
+                        if (isAllowed)
+                        {
+                            break;
+                        }
+                        shapeData = GetRandomInCategory(identifier, exclusionList);
+                    }
+                }
 
                 int totalBits = shapeData.BlockData.Count;
 

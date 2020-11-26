@@ -2257,12 +2257,15 @@ namespace StarSalvager
                 {
                     CreateBonusShapeEffect(attachable.transform.position);
                 }
+
+                var blocks = attachedBlocks.Where(x => upgrading.Contains(x.Coordinate));
+                CreateBonusShapeEffect(blocks);
                 
-                foreach (var coordinate in upgrading)
+                /*foreach (var coordinate in upgrading)
                 {
-                    var block = attachedBlocks.FirstOrDefault(x => x.Coordinate == coordinate);
+                    
                     CreateBonusShapeEffect(block.transform);
-                }
+                }*/
                 
                 //----------------------------------------------------------------------------------------------------//
                 
@@ -2424,6 +2427,20 @@ namespace StarSalvager
             
             Destroy(effect, time);
         }
+        private void CreateBonusShapeEffect(IEnumerable<IAttachable> actors)
+        {
+            foreach (var actor2DBase in actors)
+            {
+                var position = actor2DBase.transform.position;
+
+                CreateBonusShapeEffect(position);
+            }
+
+            var center = actors.GetCollectionCenterPosition();
+
+            CreateBonusShapeParticleEffect(center);
+
+        }
         private void CreateBonusShapeEffect(Transform parent)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2431,6 +2448,17 @@ namespace StarSalvager
             
             effect.transform.SetParent(parent, false);
             var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+        private void CreateBonusShapeParticleEffect(Vector3 position)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE_PARTICLE);
+            
+            //effect.transform.SetParent(parent, false);
+            effect.transform.position = position;
+            var time = effect.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
             
             Destroy(effect, time);
         }

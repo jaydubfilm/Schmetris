@@ -19,7 +19,8 @@ MonoBehaviour:
   m_enemyDecoy: {fileID: 2872490251766154883, guid: 418c04d3512abf54eb0379640ed526b8,
     type: 3}
   m_enemyProfileData:
-  - m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: Fly
+    m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     m_movementType: 5
@@ -32,7 +33,8 @@ MonoBehaviour:
     m_orbitRadius: 0
     m_numberCellsDescend: 4
     m_ignoreObstacleAvoidance: 1
-  - m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: Parasite
+    m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 4eeac5cf-1c0c-492d-82a1-86108b574464
     m_movementType: 0
@@ -45,7 +47,8 @@ MonoBehaviour:
     m_orbitRadius: 15
     m_numberCellsDescend: 2
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: Ball Head
+    m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
     m_movementType: 0
@@ -58,7 +61,8 @@ MonoBehaviour:
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: Mosquito
+    m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     m_movementType: 3
@@ -71,7 +75,8 @@ MonoBehaviour:
     m_orbitRadius: 12
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: Squid
+    m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 71b8347a-1d17-4ade-81d4-85930af8210e
     m_movementType: 1
@@ -84,7 +89,8 @@ MonoBehaviour:
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 1
-  - m_sprite: {fileID: 3787744228566037905, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: SuperFly
+    m_sprite: {fileID: 3787744228566037905, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 29b4a36e-47f7-47a4-8922-f7de5f531383
     m_movementType: 5
@@ -97,20 +103,22 @@ MonoBehaviour:
     m_orbitRadius: 0
     m_numberCellsDescend: 4
     m_ignoreObstacleAvoidance: 1
-  - m_sprite: {fileID: -3508925452205065965, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: SuperParasite
+    m_sprite: {fileID: -3508925452205065965, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 599761cf-c12a-45b0-bbab-918008384f28
     m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 3903fc5d3dbeb7b49bc057538dc5a108,
       type: 2}
-    m_projectileType: 
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: 1891743719956422442, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: SuperBallHead
+    m_sprite: {fileID: 1891743719956422442, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 842a2d03-61be-4bc2-8391-ae25826a30af
     m_movementType: 0
@@ -123,7 +131,8 @@ MonoBehaviour:
     m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: SuperMosquito
+    m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: e90054ce-9f64-4b84-9aab-5c6808cf3c67
     m_movementType: 3
@@ -136,7 +145,8 @@ MonoBehaviour:
     m_orbitRadius: 12
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
-  - m_sprite: {fileID: 8003291971850495877, guid: 44ac14a3eed46b34db93362775527939,
+  - EnemyName: SuperSquid
+    m_sprite: {fileID: 8003291971850495877, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 1f78cb36-17d7-48d7-8e1c-a44536df7949
     m_movementType: 1

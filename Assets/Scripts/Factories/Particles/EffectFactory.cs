@@ -21,7 +21,8 @@ namespace StarSalvager.Factories
             MERGE,
             LINE,
             TRAIL,
-            BONUS_SHAPE
+            BONUS_SHAPE,
+            BONUS_SHAPE_PARTICLE
         }
 
         public enum PART_EFFECT
@@ -141,6 +142,9 @@ namespace StarSalvager.Factories
                 case EFFECT.BONUS_SHAPE:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.bonusShapeEffectPrefab);
                     break;
+                case EFFECT.BONUS_SHAPE_PARTICLE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.bonusShapeParticlesPrefab);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);
             }
@@ -172,6 +176,8 @@ namespace StarSalvager.Factories
                         _effectProfileScriptableObject.tripleTurretSprite;
                     break;
                 case PART_EFFECT.BOMB:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.bombShockwaveEffectPrefab);
+                    break;
                 case PART_EFFECT.FREEZE:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.shockwaveEffectPrefab);
                     break;

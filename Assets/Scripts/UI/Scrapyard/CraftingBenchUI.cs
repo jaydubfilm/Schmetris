@@ -226,6 +226,10 @@ namespace StarSalvager.UI.Scrapyard
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 
+            if (Globals.TestingFeatures)
+            {
+                resources.Clear();
+            }
 
             var hasIssue = CheckIfMissingFacility(resources, out var missingText);
 

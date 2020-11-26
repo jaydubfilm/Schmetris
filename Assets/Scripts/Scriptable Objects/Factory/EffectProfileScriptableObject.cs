@@ -46,6 +46,9 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Effects")]
         public GameObject bonusShapeEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Effects")]
+        public GameObject bonusShapeParticlesPrefab;
 
         //Part Effects
         //====================================================================================================================//
@@ -61,6 +64,8 @@ namespace StarSalvager.ScriptableObjects
         public GameObject gunEffectPrefab;
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject shockwaveEffectPrefab;
+        [SerializeField, Required, BoxGroup("Part Effects")]
+        public GameObject bombShockwaveEffectPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//
