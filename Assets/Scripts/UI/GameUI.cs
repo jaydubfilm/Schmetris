@@ -546,18 +546,19 @@ namespace StarSalvager.UI
 
             abortButton.gameObject.SetActive(true);
             
-            abortButton.onClick.AddListener(() =>
-            {
-                LevelManager.Instance.BotObject.TrySelfDestruct();
-                
-                //If the bot was able to be killed, hide this window
-                if(LevelManager.Instance.BotObject.Destroyed)
-                    ShowAbortWindow(false);
-
-            });
+            abortButton.onClick.AddListener(AbortPressed);
         }
 
         //============================================================================================================//
+
+        public void AbortPressed()
+        {
+            LevelManager.Instance.BotObject.TrySelfDestruct();
+                
+            //If the bot was able to be killed, hide this window
+            if(LevelManager.Instance.BotObject.Destroyed)
+                ShowAbortWindow(false);
+        }
 
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
