@@ -143,8 +143,6 @@ namespace StarSalvager.UI
                 
                 ScreenFade.Fade(() =>
                 {
-                    AudioController.FadeOutMusic();
-
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                 });
             });
@@ -157,7 +155,7 @@ namespace StarSalvager.UI
                 LevelManager.Instance.EndWaveState = false;
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
                 
             });
@@ -170,7 +168,7 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
             });
 
@@ -195,7 +193,7 @@ namespace StarSalvager.UI
                         
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                         });
                     }
                 });
@@ -214,7 +212,7 @@ namespace StarSalvager.UI
 
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
             });
             

@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
@@ -133,7 +134,7 @@ namespace StarSalvager.UI.Scrapyard
                 CloseMenu();
 
                 FactoryManager.Instance.currentModularDataIndex = 0;
-                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU);
+                SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
             }
         }
 

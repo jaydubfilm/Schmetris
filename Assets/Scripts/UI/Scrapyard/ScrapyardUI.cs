@@ -196,7 +196,7 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             ScreenFade.Fade(() =>
                             {
-                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
                             
                             return;
@@ -271,7 +271,6 @@ namespace StarSalvager.UI.Scrapyard
             
             ScreenFade.Fade(() =>
             {
-                AudioController.FadeOutMusic();
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
         }

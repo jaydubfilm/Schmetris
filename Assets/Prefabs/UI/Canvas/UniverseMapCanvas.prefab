@@ -772,7 +772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 246.17896, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &4274683018231727588
@@ -1207,7 +1207,7 @@ MonoBehaviour:
   - {fileID: 6257532169648489074}
   dottedLineImage: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,
     type: 3}
-  botDisplayRoot: {fileID: 4154430160222109678}
+  botDisplayRectTransform: {fileID: 5059624597965075289}
   damageProfileScriptable: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe,
     type: 2}
 --- !u!223 &5553311265099259240

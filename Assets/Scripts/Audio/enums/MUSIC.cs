@@ -2,10 +2,14 @@
 {
     public enum MUSIC
     {
+        NONE = -1,
         MAIN_MENU,
-        GAMEPLAY,
         SCRAPYARD,
+        
+        FRINGE,
+        
         ENEMY,
+        
         GAME_OVER,
     }
 }

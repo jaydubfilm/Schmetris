@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Tutorial.Data;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
@@ -441,8 +442,7 @@ namespace StarSalvager.Tutorial
 
 
                 PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
-                
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
             });
         }
         
