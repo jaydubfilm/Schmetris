@@ -34,6 +34,8 @@ MonoBehaviour:
     type: 3}
   bonusShapeEffectPrefab: {fileID: 4689532550525301132, guid: a6565bd2460cabd4dbb19ecdb6b809b0,
     type: 3}
+  bonusShapeParticlesPrefab: {fileID: 3491330463318522395, guid: 89b40eef1501c19438f7978e5bb4ec6c,
+    type: 3}
   tripleTurretSprite: {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
   repairEffectPrefab: {fileID: 1166414769957300450, guid: 1155e00c8911b4a4489e6d0f41f7f7f5,
     type: 3}
@@ -44,6 +46,8 @@ MonoBehaviour:
   gunEffectPrefab: {fileID: 5867005859306974768, guid: c5057bf223f798c44afaafa78f87e25f,
     type: 3}
   shockwaveEffectPrefab: {fileID: 2720145993455503049, guid: 3771c2b4c34de2a46b4a811f4cff2532,
+    type: 3}
+  bombShockwaveEffectPrefab: {fileID: 8983489692315965813, guid: fe1611459a1a8074392e3ac9454ea520,
     type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}
