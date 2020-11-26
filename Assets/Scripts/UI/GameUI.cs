@@ -111,6 +111,29 @@ namespace StarSalvager.UI
             }
         }
         
+        [Serializable]
+        public struct WindowSpriteSet
+        {
+            public enum TYPE
+            {
+                DEFAULT,
+                ORANGE,
+                RED
+            }
+
+            [FoldoutGroup("$type")]
+            public TYPE type;
+            [FoldoutGroup("$type")]
+            public Sprite backgroundImage;
+            [FoldoutGroup("$type")]
+            public Sprite crossbarImage;
+            [FoldoutGroup("$type")]
+            public Sprite verticalBarImage;
+
+            [FoldoutGroup("$type")] public Color titleColor;
+            [FoldoutGroup("$type")] public Color textColor;
+        }
+        
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
@@ -249,8 +272,10 @@ namespace StarSalvager.UI
         private Image backgroundImage;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image crossbarImage;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image[] verticalBarImages;
         
-        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        /*[Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
         private Sprite normalBackgroundSprite;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Sprite normalCrossbarSprite;
@@ -258,7 +283,10 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Sprite altBackgroundSprite;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite altCrossbarSprite;
+        private Sprite altCrossbarSprite;*/
+
+        [SerializeField, FoldoutGroup("Summary Window")]
+        private WindowSpriteSet[] spriteSets;
         
         //Health Cracks
         //====================================================================================================================//
@@ -811,26 +839,38 @@ namespace StarSalvager.UI
         #region Wave Summary Window
 
         private bool _movingSummaryWindow;
-        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback, bool useAlt = false, float moveTime = 1f, bool instantMove = false)
+
+        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback,
+            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, float moveTime = 1f, bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
-            
+
             float targetY;
             if (show)
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
-                
+
                 confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(() =>
                 {
-                    ShowWaveSummaryWindow(false,string.Empty, string.Empty, null, instantMove:true);
+                    ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
                     onConfirmCallback?.Invoke();
                 });
 
+                var spriteSet = spriteSets.FirstOrDefault(ss => ss.type == type);
 
-                backgroundImage.sprite = useAlt ? altBackgroundSprite : normalBackgroundSprite;
-                crossbarImage.sprite = useAlt ? altCrossbarSprite : normalCrossbarSprite;
+                backgroundImage.sprite = spriteSet.backgroundImage;
+                crossbarImage.sprite = spriteSet.crossbarImage;
+
+                foreach (var verticalBarImage in verticalBarImages)
+                {
+                    verticalBarImage.sprite = spriteSet.verticalBarImage;
+                }
+
+                waveSummaryTitle.color = spriteSet.titleColor;
+                waveSummaryText.color = spriteSet.textColor;
+
             }
             else
             {
@@ -839,9 +879,9 @@ namespace StarSalvager.UI
 
             waveSummaryTitle.text = title;
             waveSummaryText.text = text;
-            
 
-            
+
+
             if (instantMove)
             {
                 var newPos = waveSummaryWindow.anchoredPosition;

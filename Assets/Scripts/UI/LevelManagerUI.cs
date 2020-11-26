@@ -339,19 +339,20 @@ namespace StarSalvager.UI
             deathText.text = description;
         }
 
-        public void ShowSummaryScreen(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
+        public void ShowAlertWindow(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
         {
             Alert.ShowAlert(titleText, summaryText, buttonText, onConfirmedCallback);
         }
 
-        public void ShowWaveSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        public void ShowSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback, GameUI.WindowSpriteSet.TYPE type = GameUI.WindowSpriteSet.TYPE.DEFAULT)
         {
-            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, moveTime: 0.5f);
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, moveTime: 0.5f, type: type);
         }
         
         public void ShowGameSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
         {
-            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, useAlt:true, moveTime: 0.5f);
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback,
+                GameUI.WindowSpriteSet.TYPE.ORANGE, moveTime: 0.5f);
         }
 
 

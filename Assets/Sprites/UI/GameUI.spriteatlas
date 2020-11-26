@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 4375289
+    totalSpriteSurfaceArea: 4376189
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -78,6 +78,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
   - {fileID: 255877476622243558, guid: d0bb13fb193bf014e986d0073c625415, type: 3}
   - {fileID: 21300000, guid: bdb1805cf7ab994409c410d71435e4e4, type: 3}
+  - {fileID: 21300000, guid: 2ad32f6c3ebb0444eb74a3dcac92528a, type: 3}
   - {fileID: 21300000, guid: 1deb860dba383cc428528a2e5170c255, type: 3}
   - {fileID: 21300000, guid: be4a1d4d6da96a04d8d62c7ab6358717, type: 3}
   - {fileID: 21300000, guid: 957aa46eb0be329478ce49384c8a9760, type: 3}
@@ -119,6 +120,7 @@ SpriteAtlas:
   - ui_LEVELPROGRESS_0_v1
   - whiteSquare_0
   - ui_REDBAR_0_v1
+  - wavesummary_ORANGEPOLE_0_v1
   - ui_BACKARTRIGHT_0_v4
   - ui_GPATCHPOINT_0_v5
   - ui_CRACKS1_0_v3

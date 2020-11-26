@@ -8544,13 +8544,30 @@ MonoBehaviour:
   confirmButton: {fileID: 5129019382979589122}
   backgroundImage: {fileID: 443545918742627845}
   crossbarImage: {fileID: 2894633014673963165}
-  normalBackgroundSprite: {fileID: -8667936711674311183, guid: eedae858e3908f241a937a3fa16b0504,
-    type: 3}
-  normalCrossbarSprite: {fileID: 1409828168726802091, guid: eedae858e3908f241a937a3fa16b0504,
-    type: 3}
-  altBackgroundSprite: {fileID: 21300000, guid: c9c3f9787dcdfdb4fb8653f3a7be1657,
-    type: 3}
-  altCrossbarSprite: {fileID: 21300000, guid: 4f39305f550f91a4dbd5be09fe8067d1, type: 3}
+  verticalBarImages:
+  - {fileID: 7912151944354471777}
+  - {fileID: 1641052088307172697}
+  spriteSets:
+  - type: 0
+    backgroundImage: {fileID: -4163660134072619855, guid: eedae858e3908f241a937a3fa16b0504,
+      type: 3}
+    crossbarImage: {fileID: 1409828168726802091, guid: eedae858e3908f241a937a3fa16b0504,
+      type: 3}
+    verticalBarImage: {fileID: 21300000, guid: a74d1e14bb8791a41966e7bee187a901, type: 3}
+    titleColor: {r: 0, g: 1, b: 0.7490196, a: 1}
+    textColor: {r: 1, g: 0.68235296, b: 0, a: 1}
+  - type: 1
+    backgroundImage: {fileID: 21300000, guid: f96fecb3080db654793cdbcdb70be8c9, type: 3}
+    crossbarImage: {fileID: 21300000, guid: 4f39305f550f91a4dbd5be09fe8067d1, type: 3}
+    verticalBarImage: {fileID: 21300000, guid: 2ad32f6c3ebb0444eb74a3dcac92528a, type: 3}
+    titleColor: {r: 1, g: 0.68235296, b: 0, a: 1}
+    textColor: {r: 1, g: 0.68235296, b: 0, a: 1}
+  - type: 2
+    backgroundImage: {fileID: 21300000, guid: 71078829fd57283469f49a96bc8d5421, type: 3}
+    crossbarImage: {fileID: 21300000, guid: bdb1805cf7ab994409c410d71435e4e4, type: 3}
+    verticalBarImage: {fileID: 21300000, guid: a74d1e14bb8791a41966e7bee187a901, type: 3}
+    titleColor: {r: 1, g: 1, b: 1, a: 1}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
   cracksCanvasGroup: {fileID: 4580379723225853274}
   crackImages:
   - {fileID: 7111399166301503047}
