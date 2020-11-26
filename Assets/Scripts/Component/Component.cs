@@ -130,7 +130,7 @@ namespace StarSalvager
         
         public void IncreaseLevel(int amount = 1)
         {
-            level += amount;
+            level = Mathf.Clamp(level + amount, 0, 4);
             renderer.sortingOrder = level;
             
             //Sets the gameObject info (Sprite)
@@ -208,6 +208,7 @@ namespace StarSalvager
                 ClassType = nameof(Component),
                 Coordinate = Coordinate,
                 Type = (int)Type,
+                Level = level,
             };
         }
 
@@ -215,6 +216,7 @@ namespace StarSalvager
         {
             Coordinate = blockData.Coordinate;
             Type = (COMPONENT_TYPE)blockData.Type;
+            level = blockData.Level;
         }
 
         //ICustomRecycle Functions
