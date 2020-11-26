@@ -37,6 +37,11 @@ namespace StarSalvager.ScriptableObjects
 
         public StageRemoteData GetRemoteData(int waveNumber)
         {
+            if (waveNumber >= StageRemoteData.Count)
+            {
+                return StageRemoteData[StageRemoteData.Count - 1];
+            }
+            
             return StageRemoteData[waveNumber];
         }
 

@@ -573,7 +573,10 @@ namespace StarSalvager
             m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
             
             var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-            
+
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+                return;
+
             SpawnBonusShape(
                 bonusObstacleShapeData.SelectionType,
                 bonusObstacleShapeData.ShapeName,
@@ -684,8 +687,7 @@ namespace StarSalvager
                 return;
 
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
-            if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <=
-                LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             switch (m_currentStageData.StageType)
