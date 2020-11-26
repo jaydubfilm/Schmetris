@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 4271297
+    totalSpriteSurfaceArea: 4358905
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -65,6 +65,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
   - {fileID: 21300000, guid: b78008d6fca3a2f469050019e5184fbc, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
+  - {fileID: 21300000, guid: 00129fd765c363b45b10597dd4de122f, type: 3}
   - {fileID: 21300000, guid: 73854258c30d1424a9638199b57ad440, type: 3}
   - {fileID: 21300000, guid: d19cc858df36a5747baa5b7f65d82098, type: 3}
   - {fileID: 21300000, guid: 006d7f586ee6e7f4ba086bb4c444dc70, type: 3}
@@ -75,6 +76,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
   - {fileID: 255877476622243558, guid: d0bb13fb193bf014e986d0073c625415, type: 3}
+  - {fileID: 21300000, guid: bdb1805cf7ab994409c410d71435e4e4, type: 3}
   - {fileID: 21300000, guid: 1deb860dba383cc428528a2e5170c255, type: 3}
   - {fileID: 21300000, guid: be4a1d4d6da96a04d8d62c7ab6358717, type: 3}
   - {fileID: 21300000, guid: 957aa46eb0be329478ce49384c8a9760, type: 3}
@@ -83,6 +85,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4f39305f550f91a4dbd5be09fe8067d1, type: 3}
   - {fileID: 21300000, guid: cbbb0d6f845acc845b8d55609f1dfd7f, type: 3}
   - {fileID: 21300000, guid: 8229bfaf823042541adcdcaa639c1bb2, type: 3}
+  - {fileID: 21300000, guid: 04f053ff2de8dc946842b2463faeaddb, type: 3}
   m_PackedSpriteNamesToIndex:
   - screen_BORDERGLOW_1_v2
   - ui_BUTTONCOVER_0_v1
@@ -102,6 +105,7 @@ SpriteAtlas:
   - ui_TEMPBACK_0_v1
   - screen_BORDER_1_v2
   - ui_TEMPGAUGE_0_v1
+  - ui_OUTOFFUELBUTTON_0_v4
   - ui_STICKER_0_v1
   - ui_BUTTONEXPOSED_0_v1
   - ui_RECOVERYBACK_0_v1
@@ -112,6 +116,7 @@ SpriteAtlas:
   - ui_MATERIALCOVER_0_v1
   - ui_LEVELPROGRESS_0_v1
   - whiteSquare_0
+  - ui_REDBAR_0_v1
   - ui_BACKARTRIGHT_0_v4
   - ui_GPATCHPOINT_0_v5
   - ui_CRACKS1_0_v3
@@ -120,5 +125,6 @@ SpriteAtlas:
   - ui_ORANGEBAR_0_v1
   - UI-popupicon-NO-V1
   - ui_MAGNETISMGAUGE_0_v1
+  - ui_OUTOFFUELBUTTONPRESSED_0_v4
   m_Tag: GameUI
   m_IsVariant: 0

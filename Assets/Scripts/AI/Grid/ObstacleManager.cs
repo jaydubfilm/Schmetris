@@ -573,7 +573,10 @@ namespace StarSalvager
             m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
             
             var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
-            
+
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+                return;
+
             SpawnBonusShape(
                 bonusObstacleShapeData.SelectionType,
                 bonusObstacleShapeData.ShapeName,
@@ -684,8 +687,7 @@ namespace StarSalvager
                 return;
 
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
-            if (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <=
-                LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod)
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             switch (m_currentStageData.StageType)
@@ -1216,12 +1218,12 @@ namespace StarSalvager
             {
                 case SELECTION_TYPE.CATEGORY:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel);
+                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
                     break;
 
                 case SELECTION_TYPE.SHAPE:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations);
+                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations, null, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
                     break;
 
                 default:

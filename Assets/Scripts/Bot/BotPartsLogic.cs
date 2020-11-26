@@ -990,8 +990,11 @@ namespace StarSalvager
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
 
-            var range = _gunRanges[part];
-
+            if (!_gunRanges.TryGetValue(part, out var range))
+            {
+                range = 150f;
+            }
+            
             var enemy = EnemyManager.GetClosestEnemy(part.transform.position, range);
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (enemy == null)
@@ -1211,7 +1214,7 @@ namespace StarSalvager
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
-            return projectileData.FireAtTarget;
+            return !(projectileData is null) && projectileData.FireAtTarget;
         }
 
         #endregion //Weapons
