@@ -1216,12 +1216,12 @@ namespace StarSalvager
             {
                 case SELECTION_TYPE.CATEGORY:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel);
+                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
                     break;
 
                 case SELECTION_TYPE.SHAPE:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations);
+                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations, null, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
                     break;
 
                 default:
