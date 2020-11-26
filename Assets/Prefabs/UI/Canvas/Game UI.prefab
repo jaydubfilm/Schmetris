@@ -1425,14 +1425,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.45882353, g: 1, b: 0, a: 1}
+  m_Material: {fileID: 2100000, guid: 07dcdf6564f0acb449e839a22429599b, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1184619066167997644, guid: eedae858e3908f241a937a3fa16b0504,
+  m_Sprite: {fileID: 2457040198828746671, guid: eedae858e3908f241a937a3fa16b0504,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -8402,6 +8402,7 @@ MonoBehaviour:
   moveTargetTransform: {fileID: 1019469002935514796}
   imagePrefab: {fileID: 100507466034444654, guid: 23e0d2c765a295448aadbc976b4a9294,
     type: 3}
+  imageSize: 100
   effectRadius: 3
   effectCount: 3
   rotationSpeed: 250

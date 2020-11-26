@@ -75,12 +75,14 @@ namespace StarSalvager
             if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
             {
                 _hasActiveEnemies = true;
-                AudioController.PlayMusic(MUSIC.ENEMY);
+                AudioController.CrossFadeTrack(MUSIC.ENEMY);
             }
             else if (_hasActiveEnemies && (m_enemies.Count == 0 || LevelManager.Instance.EndWaveState))
             {
                 _hasActiveEnemies = false;
-                AudioController.PlayMusic(MUSIC.GAMEPLAY, 2f);
+                
+                if(m_enemies.Count == 0 && !LevelManager.Instance.EndWaveState)
+                    AudioController.CrossFadePreviousTrack();
             }
         }
 

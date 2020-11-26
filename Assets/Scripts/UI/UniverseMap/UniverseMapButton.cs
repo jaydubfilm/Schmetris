@@ -6,6 +6,7 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using TMPro;
@@ -61,7 +62,7 @@ namespace StarSalvager
 
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                     });
                     return;
                 }
