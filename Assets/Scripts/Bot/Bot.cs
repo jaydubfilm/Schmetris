@@ -458,7 +458,7 @@ namespace StarSalvager
 
 
 
-            if (direction != 0 && (LevelManager.Instance.BotDead || _isDestroyed))
+            if (direction != 0 && GameManager.Instance.IsLevelBotDead())
             {
                 isContinuousRotation = false;
                 return;

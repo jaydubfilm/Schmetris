@@ -197,7 +197,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }

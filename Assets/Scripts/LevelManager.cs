@@ -148,7 +148,6 @@ namespace StarSalvager
         public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
         public List<string> MissionsCompletedDuringThisFlight = new List<string>();
-        public bool BotDead = false;
 
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
@@ -176,14 +175,15 @@ namespace StarSalvager
 
         private void Update()
         {
-            /*if (UnityEngine.Input.GetKeyDown(KeyCode.Y))
-            {
-                WorldGrid.DrawDebugMarkedGridPoints();
-                Debug.Break();
-            }*/
-
             if (isPaused)
+            {
                 return;
+            }
+
+            if (!GameManager.Instance.IsLevel())
+            {
+                return;
+            }
 
             CheckBotPositions();
 
@@ -223,7 +223,7 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
-            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }
@@ -335,7 +335,7 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
-            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }
@@ -537,7 +537,6 @@ namespace StarSalvager
             
             MissionsCompletedDuringThisFlight.Clear();
             
-            BotDead = false;
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
             
@@ -637,7 +636,6 @@ namespace StarSalvager
             ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
 
             m_waveEndSummaryData = null;
-            BotDead = false;
             m_waveTimer = 0;
 
             if (!GameManager.Instance.IsUniverseMapBetweenWaves())
@@ -710,7 +708,7 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
-            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }
@@ -892,7 +890,7 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
-            if (BotDead || (BotObject != null && BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }
