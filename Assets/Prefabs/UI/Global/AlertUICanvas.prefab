@@ -3450,7 +3450,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 32.5
   m_Viewport: {fileID: 4383222642495370453}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 1966178236476425294}
@@ -4013,9 +4013,6 @@ MonoBehaviour:
   positiveButton: {fileID: 5569929847353871087}
   negativeButton: {fileID: 5569929847367231091}
   neutralButton: {fileID: 5569929846153243693}
-  Dancers:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &5373061802715333152
 MonoBehaviour:
   m_ObjectHideFlags: 0
