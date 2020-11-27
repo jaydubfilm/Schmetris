@@ -235,6 +235,34 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
         }
 
+        public void InsertEnemySpawn(string enemyName, float timeDelay)
+        {
+            StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+        }
+
+        private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
+        {
+            float timer = 0.0f;
+            string enemyType = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+
+            while (timer < timeDelay)
+            {
+                if (!LevelManager.Instance.gameObject.activeSelf)
+                {
+                    yield break;
+                }
+                
+                while (isPaused)
+                {
+                    yield return null;
+                }
+
+                timer += Time.deltaTime;
+            }
+
+            SpawnEnemy(enemyType);
+        }
+
         private void CheckSpawns()
         {
             if (m_timesToSpawn.Count == 0)
