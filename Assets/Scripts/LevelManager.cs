@@ -1101,13 +1101,14 @@ namespace StarSalvager
             else
             {
                 //Alert.ShowDancers(true);
-                AudioController.CrossFadeTrack(MUSIC.GAME_OVER);
+                AudioController.CrossFadeTrack(MUSIC.NONE);
 
                 IsWaveProgressing = false;
                 m_runLostState = true;
                 //GameTimer.SetPaused(false);
 
                 OutroScene.gameObject.SetActive(true);
+                GameUI.Instance.FadeBackground(true);
             }
         }
 

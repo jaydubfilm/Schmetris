@@ -65,7 +65,7 @@ namespace StarSalvager
 
         public bool ShapeInCameraRect(Shape shape)
         {
-            return CameraController.IsPointInCameraRect(shape.transform.position, 0.75f * Constants.VISIBLE_GAME_AREA);
+            return CameraController.IsPointInCameraRect(shape.transform.position, Constants.VISIBLE_GAME_AREA);
         }
 
         public bool isPaused => GameTimer.IsPaused;
