@@ -598,10 +598,15 @@ namespace StarSalvager
             }
             else
             {
+                if (remainingDegrees > 0) rotationTarget -= 90;
+                else if (remainingDegrees < 0) targetRotation += 90;
+                
                 transform.rotation = remainingDegrees > 0
                     ? Quaternion.Euler(0, 0, targetRotation - 90)
                     : Quaternion.Euler(0, 0, targetRotation + 90);
             }
+
+            RotateAttachableSprites();
         }
 
         private void RotateAttachableSprites()
