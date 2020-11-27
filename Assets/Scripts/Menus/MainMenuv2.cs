@@ -227,6 +227,7 @@ namespace StarSalvager.UI
                     PlayerDataManager.SetCurrentSaveSlotIndex(index);
                     SetupAccountMenuWindow();
                     OpenWindow(WINDOW.ACCOUNT_MENU);
+                    GameManager.Instance.IsSaveFileLoaded = true;
                 });
 
                 var hasAccount = Files.TryGetPlayerSaveData(i, out var accountData);
