@@ -255,7 +255,7 @@ namespace StarSalvager
                         //Dismantle part from storage
                         if (SelectedPartRemoveFromStorage)
                         {
-                            PlayerDataManager.RemovePartFromStorage(blockData);
+                            PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
 
                             _toUndoStack.Push(new ScrapyardEditData
                             {
@@ -277,6 +277,7 @@ namespace StarSalvager
                         }
 
                         SelectedBrick = null;
+                        SelectedIndex = 0;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
                         SelectedPartReturnToStorageIfNotPlaced = false;
@@ -291,13 +292,14 @@ namespace StarSalvager
                         //TODO Should be checking if the player does in-fact have the part in their storage
                         if (SelectedPartRemoveFromStorage)
                         {
-                            PlayerDataManager.RemovePartFromStorage(attachable.ToBlockData());
+                            PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                         }
 
                         _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
                         DroneDesignUi.RefreshScrollViews();
 
                         SelectedBrick = null;
+                        SelectedIndex = 0;
                         SelectedPartClickPosition = null;
                         SelectedPartPreviousGridPosition = null;
                         SelectedPartRemoveFromStorage = false;
@@ -327,8 +329,8 @@ namespace StarSalvager
                 if (SelectedPartRemoveFromStorage)
                 {
                     blockData.Coordinate = mouseGridCoordinate;
-                    
-                    PlayerDataManager.RemovePartFromStorage(blockData);
+
+                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
 
                     _toUndoStack.Push(new ScrapyardEditData
                     {
@@ -354,6 +356,7 @@ namespace StarSalvager
                 DroneDesignUi.RefreshScrollViews();
 
                 SelectedBrick = null;
+                SelectedIndex = 0;
                 SelectedPartClickPosition = null;
                 SelectedPartPreviousGridPosition = null;
                 SelectedPartRemoveFromStorage = false;
@@ -370,7 +373,7 @@ namespace StarSalvager
                 //TODO Should be checking if the player does in-fact have the part in their storage
                 if (SelectedPartRemoveFromStorage)
                 {
-                    PlayerDataManager.RemovePartFromStorage(attachable.ToBlockData());
+                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                 }
 
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
@@ -379,6 +382,7 @@ namespace StarSalvager
 
 
                 SelectedBrick = null;
+                SelectedIndex = 0;
                 SelectedPartPreviousGridPosition = null;
                 SelectedPartRemoveFromStorage = false;
                 SelectedPartReturnToStorageIfNotPlaced = false;
@@ -419,7 +423,6 @@ namespace StarSalvager
 
                 
                 PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
-                DroneDesignUi.AddToPartScrollView(scrapPart.ToBlockData());
                 _toUndoStack.Push(new ScrapyardEditData
                 {
                     EventType = SCRAPYARD_ACTION.UNEQUIP,
@@ -465,7 +468,7 @@ namespace StarSalvager
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
                     attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
-                    PlayerDataManager.RemovePartFromStorage(attachable.ToBlockData());
+                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
@@ -514,7 +517,7 @@ namespace StarSalvager
             {
                 case SCRAPYARD_ACTION.EQUIP:
                     attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, redoBlockData.Level);
-                    PlayerDataManager.RemovePartFromStorage(attachable.ToBlockData());
+                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(redoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
@@ -529,7 +532,7 @@ namespace StarSalvager
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
                     PlayerDataManager.AddPartResources(partType, redoBlockData.Level, true);
-                    PlayerDataManager.RemovePartFromStorage(redoBlockData);
+                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
                     PlayerDataManager.AddPartResources(partType, redoBlockData.Level, true);
@@ -729,6 +732,18 @@ namespace StarSalvager
 
         public void ToggleDrones()
         {
+            if (!IsFullyConnected())
+            {
+                Alert.ShowAlert("Alert!",
+                    "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
+                    () =>
+                    {
+                        /*ShowMenu(MENU.DESIGN);*/
+                    });
+
+                return;
+            }
+
             SaveBlockData();
 
             if (_scrapyardBot != null)

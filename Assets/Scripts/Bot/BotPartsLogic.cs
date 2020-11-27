@@ -492,7 +492,7 @@ namespace StarSalvager
         /// <returns></returns>
         private bool TryUpdatePowerUsage(Part part,
             in PartLevelData partLevelData,
-            in float powerValue,
+            ref float powerValue,
             ref float powerToRemove,
             in float deltaTime)
         {
@@ -507,9 +507,19 @@ namespace StarSalvager
             //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
             else if (powerValue == 0f && partLevelData.powerDraw > 0)
             {
-                part.Disabled = true;
-                InitPartData();
-                return false;
+                var targetBit = GetFurthestBitToBurn(partLevelData, BIT_TYPE.YELLOW);
+
+                if (targetBit != null)
+                {
+                    powerValue = ProcessBit(part, targetBit);
+                }
+
+                if (powerValue == 0)
+                {
+                    part.Disabled = true;
+                    InitPartData();
+                    return false;
+                }
             }
 
             if(partLevelData.powerDraw > 0f)
@@ -563,13 +573,6 @@ namespace StarSalvager
         /// </summary>
         public void PartsUpdateLoop()
         {
-            (PartRemoteData partRemoteData, PartLevelData partLevelData) GetPartData(in Part part)
-            {
-                var partRemoteData = _partAttachableFactory.GetRemoteData(part.Type);
-                var partLevelData = partRemoteData.levels[part.level];
-
-                return (partRemoteData, partLevelData);
-            }
 
             var deltaTime = Time.deltaTime;
 
@@ -584,7 +587,7 @@ namespace StarSalvager
                 
                 var (partRemoteData, levelData) = GetPartData(part);
 
-                if(!TryUpdatePowerUsage(part, levelData, powerValue, ref powerToRemove, deltaTime))
+                if(!TryUpdatePowerUsage(part, levelData, ref powerValue, ref powerToRemove, deltaTime))
                     continue;
 
                 var shouldUpdateResource =
@@ -673,21 +676,31 @@ namespace StarSalvager
                 if (!shouldUpdateResource)
                     continue;
                 
-                UpdateUI(partRemoteData.burnType, resourceValue);
-                PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue);
+                //UpdateUI(partRemoteData.burnType, resourceValue);
+                PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue, false);
 
                 if(resourcesConsumed > 0)
                     LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resourcesConsumed);
             }
 
-            TryRemoveResources(powerValue, powerToRemove, deltaTime);
+            TryRemovePowerResource(powerValue, powerToRemove, deltaTime);
             LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
 
-            UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+            //UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
+            //UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+
+            UpdateAllUI();
         }
 
-        private void TryRemoveResources(float powerValue, float powerToRemove, in float deltaTime)
+        private (PartRemoteData partRemoteData, PartLevelData partLevelData) GetPartData(in Part part)
+        {
+            var partRemoteData = _partAttachableFactory.GetRemoteData(part.Type);
+            var partLevelData = partRemoteData.levels[part.level];
+
+            return (partRemoteData, partLevelData);
+        }
+
+        private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
         {
             if (bot.PROTO_GodMode) 
                 return;
@@ -696,7 +709,7 @@ namespace StarSalvager
             if (powerValue < 0)
                 powerValue = 0f;
 
-            PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue);
+            PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue, false);
 
 
             _waterDrainTimer += deltaTime * Constants.waterDrainRate;
@@ -944,8 +957,11 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             var target = _gunTargets[part];
-            
-            if (target && target.IsRecycled == false && _turrets.TryGetValue(part, out var turretTransform))
+
+            if (target && 
+                target.IsRecycled == false && 
+                !_turrets.IsNullOrEmpty() &&
+                _turrets.TryGetValue(part, out var turretTransform))
             {
                 var targetTransform = target.transform;
                 var normDirection = (targetTransform.position - part.transform.position).normalized;
@@ -974,8 +990,11 @@ namespace StarSalvager
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
 
-            var range = _gunRanges[part];
-
+            if (!_gunRanges.TryGetValue(part, out var range))
+            {
+                range = 150f;
+            }
+            
             var enemy = EnemyManager.GetClosestEnemy(part.transform.position, range);
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (enemy == null)
@@ -1195,7 +1214,7 @@ namespace StarSalvager
             var projectileId = levelData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
-            return projectileData.FireAtTarget;
+            return !(projectileData is null) && projectileData.FireAtTarget;
         }
 
         #endregion //Weapons
@@ -1372,7 +1391,9 @@ namespace StarSalvager
             if (GameUI == null)
                 return;
 
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            UpdateAllUI();
+
+            /*foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
@@ -1381,9 +1402,26 @@ namespace StarSalvager
             }
 
             //UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.li[BIT_TYPE.YELLOW]);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
+            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);*/
         }
 
+        private void UpdateAllUI()
+        {
+            var resources = PlayerDataManager.GetResources();
+
+            foreach (var resource in resources)
+            {
+                if(!CurrentlyUsedBitTypes.Contains(resource.BitType))
+                    continue;
+
+                if (resource.BitType == BIT_TYPE.BLUE)
+                    UpdateUI(resource.BitType, resource.resource);
+                else
+                    UpdateUI(resource.BitType, resource.liquid);
+            }
+            
+        }
+        
         private static void UpdateUI(BIT_TYPE type, float value)
         {
             if (!GameUI)
@@ -1459,13 +1497,15 @@ namespace StarSalvager
 
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
-            bot.CheckForOrphans(new[]
-                {
-                    //Bit that's being processed
-                    targetBit as IAttachable,
-                },
-                bot.attachedBlocks[0],
+            bot.attachedBlocks.CheckForOrphansFromProcessing(
+                targetBit,
                 ref orphans);
+            
+            if(!orphans.IsNullOrEmpty())
+                bot.MoveOrphanPieces(orphans, () =>
+                {
+                    bot.CheckAllForCombos();
+                });
 
             PlayerDataManager.GetResource(targetBit.Type).AddLiquid(amountProcessed);
             targetBit.IsBusy = true;
@@ -1790,10 +1830,10 @@ namespace StarSalvager
 
             effect.transform.position = part.transform.position;
             
-            var effectAnimationComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
             
-            effectAnimationComponent.SetAllElementColors(startColor, endColor);
-            effectAnimationComponent.SetAllElementScales(Vector2.one * 0.2f, Vector2.one * range);
+            //effectAnimationComponent.SetAllElementColors(startColor, endColor);
+            effectAnimationComponent.SetSimulationSize(range);
             
             Destroy(effect, effectAnimationComponent.AnimationTime);
         }

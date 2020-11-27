@@ -35,8 +35,6 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject partsWindow;
         [SerializeField, Required, BoxGroup("Part UI")]
         private RemotePartProfileScriptableObject remotePartProfileScriptable;
-        [SerializeField, BoxGroup("Part UI")]
-        private PartUIElementScrollView partsScrollView;
 
         //============================================================================================================//
 
@@ -148,7 +146,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             InitButtons();
 
-            InitUiScrollView();
             UpdateBotResourceElements();
             _scrollViewsSetup = true;
 
@@ -366,29 +363,8 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Scroll Views
 
-        private void InitUiScrollView()
-        {
-            foreach (var blockData in PlayerDataManager.GetCurrentPartsInStorage())
-            {
-                var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
-
-                var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
-                element.Init(partRemoteData, BrickElementPressed, blockData.Level);
-            }
-        }
-
-        public void AddToPartScrollView(BlockData blockData)
-        {
-            var partRemoteData = remotePartProfileScriptable.GetRemoteData((PART_TYPE)blockData.Type);
-
-            var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_UIElement", allowDuplicate: true);
-            element.Init(partRemoteData, BrickElementPressed, blockData.Level);
-        }
-
         public void RefreshScrollViews()
         {
-            partsScrollView.ClearElements();
-            InitUiScrollView();
             UpdateBotResourceElements();
         }
 
@@ -749,35 +725,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             Alert.ShowAlert("Alert!",
                 "You do not have enough resources to purchase this part!", "Okay", null);
-        }
-
-        private void BrickElementPressed((Enum remoteDataType, int level) tuple)
-        {
-            var (remoteDataType, level) = tuple;
-
-            string classType;
-            int type;
-            float health;
-            
-            switch (remoteDataType)
-            {
-                case PART_TYPE partType:
-                    classType = nameof(Part);
-                    type = (int) partType;
-                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
-            }
-            
-            var blockData = new BlockData
-            {
-                ClassType = classType,
-                Type = type,
-                Health = health
-            };
-            
-            DroneDesigner.SelectPartFromStorage(blockData);
         }
 
         private void LayoutPressed(ScrapyardLayout botData)

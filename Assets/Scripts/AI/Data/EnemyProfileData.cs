@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using StarSalvager.Utilities.Animations;
+using Unity.Collections;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
@@ -13,6 +14,9 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class EnemyProfileData
     {
+        [Sirenix.OdinInspector.ReadOnly, FoldoutGroup("$GetEnemyType")]
+        public string EnemyName;
+        
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$GetEnemyType/row2", 65), VerticalGroup("$GetEnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
@@ -49,21 +53,8 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$GetEnemyType")]
         private bool m_ignoreObstacleAvoidance;
 
-
-
-        public string EnemyName
-        {
-            get
-            {
-#if UNITY_EDITOR
-                
-                return GetEnemyType();
-#else
-                return string.Empty;
-
-#endif
-            }
-        }
+        //====================================================================================================================//
+               
 
         public string EnemyID => m_enemyTypeID;
 
@@ -108,10 +99,10 @@ namespace StarSalvager.Factories.Data
             }
             return projectileTypes;
         }
-
         private string GetEnemyType()
         {
-            return UnityEngine.Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyName(EnemyID);
+            EnemyName = UnityEngine.Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyName(EnemyID);
+            return EnemyName;
         }
 
         private static IEnumerable GetEnemyTypes()

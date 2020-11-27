@@ -111,6 +111,29 @@ namespace StarSalvager.UI
             }
         }
         
+        [Serializable]
+        public struct WindowSpriteSet
+        {
+            public enum TYPE
+            {
+                DEFAULT,
+                ORANGE,
+                RED
+            }
+
+            [FoldoutGroup("$type")]
+            public TYPE type;
+            [FoldoutGroup("$type")]
+            public Sprite backgroundImage;
+            [FoldoutGroup("$type")]
+            public Sprite crossbarImage;
+            [FoldoutGroup("$type")]
+            public Sprite verticalBarImage;
+
+            [FoldoutGroup("$type")] public Color titleColor;
+            [FoldoutGroup("$type")] public Color textColor;
+        }
+        
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
@@ -135,9 +158,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image yellowSliderGlow;
 
-        /*[SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image heatSliderGlow;*/
-
         //Top Left Window
         //============================================================================================================//
 
@@ -148,15 +168,6 @@ namespace StarSalvager.UI
         private Slider gearsSlider;
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text patchPointsText;
-        
-        /*[SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text sectorText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text timeText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Image clockImage;*/
 
         //Top Right Window
         //====================================================================================================================//
@@ -180,11 +191,8 @@ namespace StarSalvager.UI
         //Bottom Left Window
         //============================================================================================================//
 
-        /*[SerializeField, Required, FoldoutGroup("BL Window")]
-        private TMP_Text levelText;*/
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderCover[] sliderCovers;
-        
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -207,14 +215,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         private SmartWeaponIcon[] SmartWeaponIcons;
-        
-        /*[SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite normalSprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite readySprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite disabledSprite;*/
-       
+
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         //private SmartWeapon[] SmartWeaponsUI;
         private SmartWeaponV2[] SmartWeaponsUI;
@@ -235,16 +236,35 @@ namespace StarSalvager.UI
 
         //Wave Summary Window
         //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image fadeImage;
 
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private float fadeTime = 1f;
+
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private GameObject dancersObject;
+        
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryText;
-        [SerializeField, Required, FoldoutGroup("Wave Summary Window")]
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
 
+        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image backgroundImage;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image crossbarImage;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image[] verticalBarImages;
+
+        [SerializeField, FoldoutGroup("Summary Window")]
+        private WindowSpriteSet[] spriteSets;
+        
         //Health Cracks
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
@@ -268,20 +288,10 @@ namespace StarSalvager.UI
         [SerializeField, Required, ToggleGroup("Extras/useVignette")]
         private Color vignetteMaxColor;
 
-        //Other
-        //============================================================================================================//
-        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
-        private Vector2 flashTimeRange;
-        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
-        private Image borderGlow;
-        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
-        private Image border;
-        [SerializeField, FoldoutGroup("Extras/Neon Border")]
-        private AnimationCurve flashCurve;
-        private bool _flashingBorder;
-
-
-        #endregion //Properties
+        //Patch Point Effect
+        //====================================================================================================================//
+        
+        #region Patch Point Effect
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform effectArea;
@@ -289,6 +299,8 @@ namespace StarSalvager.UI
         private RectTransform moveTargetTransform;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private Image imagePrefab;
+        [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
+        private float imageSize = 50;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.1f, 20f)]
         private float effectRadius;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
@@ -306,6 +318,25 @@ namespace StarSalvager.UI
         private float moveTime;
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve moveCurve;
+
+        #endregion //Patch Point Effect
+        
+        //Other
+        //============================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Extras")] 
+        private FadeUIImage magnetFlash;
+        
+        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
+        private Vector2 flashTimeRange;
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
+        private Image borderGlow;
+        [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
+        private Image border;
+        [SerializeField, FoldoutGroup("Extras/Neon Border")]
+        private AnimationCurve flashCurve;
+        private bool _flashingBorder;
+
+        #endregion //Properties
 
         //====================================================================================================================//
         
@@ -418,6 +449,11 @@ namespace StarSalvager.UI
 
             ShowRecoveryBanner(false);
             ShowLiquidSliders(null);
+
+            OutlineMagnet(false);
+
+            SetDancersActive(false);
+            FadeBackground(false, true);
         }
 
         private void InitSliderText()
@@ -477,6 +513,17 @@ namespace StarSalvager.UI
         {
             carryCapacityFillImage.pixelsPerUnitMultiplier = max * MAGNET_FILL_VALUE;
             carryCapacitySlider.value = value;
+
+        }
+        
+        public void OutlineMagnet(bool state)
+        {
+            magnetFlash.SetActive(state);
+        }
+
+        public void FlashMagnet()
+        {
+            magnetFlash.FlashOnce();
         }
         
         //============================================================================================================//
@@ -507,18 +554,19 @@ namespace StarSalvager.UI
 
             abortButton.gameObject.SetActive(true);
             
-            abortButton.onClick.AddListener(() =>
-            {
-                LevelManager.Instance.BotObject.TrySelfDestruct();
-                
-                //If the bot was able to be killed, hide this window
-                if(LevelManager.Instance.BotObject.Destroyed)
-                    ShowAbortWindow(false);
-
-            });
+            abortButton.onClick.AddListener(AbortPressed);
         }
 
         //============================================================================================================//
+
+        public void AbortPressed()
+        {
+            LevelManager.Instance.BotObject.TrySelfDestruct();
+                
+            //If the bot was able to be killed, hide this window
+            if(LevelManager.Instance.BotObject.Destroyed)
+                ShowAbortWindow(false);
+        }
 
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
@@ -668,7 +716,6 @@ namespace StarSalvager.UI
             StartCoroutine(BorderFlashingCoroutine(time));
         }
 
-
         private IEnumerator BorderFlashingCoroutine(float time)
         {
             float t = 0f;
@@ -772,22 +819,38 @@ namespace StarSalvager.UI
         #region Wave Summary Window
 
         private bool _movingSummaryWindow;
-        public void ShowWaveSummaryWindow(bool show,in string title, in string text, Action onConfirmCallback, float moveTime = 1f, bool instantMove = false)
+
+        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback,
+            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, float moveTime = 1f, bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
-            
+
             float targetY;
             if (show)
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
-                
+
                 confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(() =>
                 {
-                    ShowWaveSummaryWindow(false,string.Empty, string.Empty, null, instantMove:true);
+                    ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
                     onConfirmCallback?.Invoke();
                 });
+
+                var spriteSet = spriteSets.FirstOrDefault(ss => ss.type == type);
+
+                backgroundImage.sprite = spriteSet.backgroundImage;
+                crossbarImage.sprite = spriteSet.crossbarImage;
+
+                foreach (var verticalBarImage in verticalBarImages)
+                {
+                    verticalBarImage.sprite = spriteSet.verticalBarImage;
+                }
+
+                waveSummaryTitle.color = spriteSet.titleColor;
+                waveSummaryText.color = spriteSet.textColor;
+
             }
             else
             {
@@ -796,9 +859,9 @@ namespace StarSalvager.UI
 
             waveSummaryTitle.text = title;
             waveSummaryText.text = text;
-            
 
-            
+
+
             if (instantMove)
             {
                 var newPos = waveSummaryWindow.anchoredPosition;
@@ -835,6 +898,58 @@ namespace StarSalvager.UI
         }
 
         #endregion //Wave Summary Window
+        
+        #region Dancers
+
+        public void SetDancersActive(bool state)
+        {
+            dancersObject.SetActive(state);
+        }
+        
+        #endregion
+
+        public void FadeBackground(bool fadeIn, bool instant = false)
+        {
+
+
+            var startColor = fadeIn ? Color.clear : Color.black;
+            var endColor = fadeIn ? Color.black : Color.clear;
+
+            if (instant)
+            {
+                fadeImage.color = endColor;
+                return;
+            }
+            
+            if (_fading)
+                return;
+
+            StartCoroutine(FadeBackground(fadeTime, startColor, endColor));
+        }
+
+        private bool _fading;
+        private IEnumerator FadeBackground(float time, Color startColor, Color endColor)
+        {
+            _fading = true;
+            float t = 0;
+
+            fadeImage.color = startColor;
+            
+            while (t / time <= 1f)
+            {
+                fadeImage.color = Color.Lerp(startColor, endColor, t / time);
+                
+                
+                t += Time.deltaTime;
+                
+                yield return null;
+            }
+
+
+            fadeImage.color = endColor;
+
+            _fading = false;
+        }
         
 
 
@@ -888,6 +1003,10 @@ namespace StarSalvager.UI
 
         public void CreatePatchPointEffect(int count)
         {
+            if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
+                return;
+
+            
             var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
 
             
@@ -912,6 +1031,7 @@ namespace StarSalvager.UI
                 image.sprite = sprite;
                 
                 var trans = (RectTransform)image.transform;
+                trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
                 trans.anchoredPosition = startPosition;

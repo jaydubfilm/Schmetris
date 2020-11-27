@@ -34,23 +34,13 @@ namespace StarSalvager.Audio
 
         [SerializeField, Required, FoldoutGroup("Audio Sources")]
         private AudioSource sfxAudioSource;
-        //[SerializeField, Required, FoldoutGroup("Audio Sources")]
-        //private AudioSource sfxAudioSourcePitched;
-        [FormerlySerializedAs("musicAudioSource")] [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource menuMusicAudioSource;
-        [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource gameMusicAudioSource;
-        [SerializeField, Required, FoldoutGroup("Audio Sources")]
-        private AudioSource scrapMusicAudioSource;
-        
+
         //Audio Mixers
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Audio Mixers")]
         private AudioMixer masterMixer;
-        [SerializeField, Required, FoldoutGroup("Audio Mixers")]
-        private AudioMixer musicMixer;
-        
+
         //Sound Lists
         //============================================================================================================//
         
@@ -66,20 +56,11 @@ namespace StarSalvager.Audio
 
         //Music Properties
         //============================================================================================================//
+        [SerializeField]
+        private MUSIC startingMusic;
         
-        [FormerlySerializedAs("musicSnapshots")] 
-        [SerializeField, FoldoutGroup("Music")]
-        private AudioMixerSnapshot[] musicMixerSnapshots;
-
-        [SerializeField, FoldoutGroup("Music")]
-        private float musicFadeTime;
-        
-        [SerializeField, FoldoutGroup("Music")]
-        private AudioClip[] TEST_waveMusic;
-        
-        [SerializeField, FoldoutGroup("Music"), PropertySpace(SpaceBefore = 10f)]
-        [TableList(DrawScrollView = true, MaxScrollViewHeight = 300, AlwaysExpanded = true, HideToolbar = true)]
-        private List<MusicClip> musicClips;
+        [SerializeField]
+        private List<Song> Songs;
         
         //============================================================================================================//
 
@@ -170,46 +151,8 @@ namespace StarSalvager.Audio
                     return;
             }
         }
-        
-        public static void PlayMusic(MUSIC music, float fadeSpeed = 1f)
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.PlayMusicLoop(music, fadeSpeed);
-        }
 
-        public static void PlayMusic(MUSIC music, bool forceChange)
-        {
-            if (Instance == null)
-                return;
 
-            Instance.PlaySpecificMusic(music, forceChange);
-        }
-
-        public static void PlayTESTWaveMusic(int index, bool forceChange = false)
-        {
-            if (Instance == null)
-                return;
-
-            Instance.PlayWaveMusic(index, forceChange);
-        }
-
-        public static void FadeInMusic()
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.FadeMusicIn();
-        }
-        
-        public static void FadeOutMusic()
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.FadeMusicOut();
-        }
 
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
@@ -248,6 +191,37 @@ namespace StarSalvager.Audio
             _musicVolume = Mathf.Clamp01(volume);
             Instance.SetVolume(MUSIC_VOLUME, _musicVolume);
         }
+
+        public static void CrossFadeTrack(MUSIC trackTarget)
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.CrossFadeMusic(trackTarget);
+        }
+        public static void CrossFadePreviousTrack()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.CrossFadeMusic(Instance._previousMusic);
+        }
+        
+        /*public static void FadeInMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicIn();
+        }
+        
+        public static void FadeOutMusic()
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.FadeMusicOut();
+        }*/
         
         //============================================================================================================//
 
@@ -280,6 +254,19 @@ namespace StarSalvager.Audio
 
 
         #region Instance Functions
+
+        //Unity Function
+        //====================================================================================================================//
+
+        private void Start()
+        {
+            foreach (var song in Songs)
+            {
+                song.Mute();
+            }
+            
+            CrossFadeMusic(startingMusic);
+        }
 
         //============================================================================================================//
 
@@ -352,89 +339,37 @@ namespace StarSalvager.Audio
         //Music Functions
         //============================================================================================================//
 
-        private void PlayMusicLoop(MUSIC music, float fadeSpeed)
+        private MUSIC _playingMusic = MUSIC.NONE;
+        private MUSIC _previousMusic = MUSIC.NONE;
+
+        private void CrossFadeMusic(MUSIC target)
         {
-            if (!TryGetMusicClip(music, out AudioClip clip))
+            if (target == _playingMusic)
                 return;
+            
+            FadeOutMusic(_playingMusic);
+            FadeInMusic(target);
 
-            var weights = new float[Enum.GetValues(typeof(MUSIC)).Length];
-            
-            for (int i = 0; i < musicMixerSnapshots.Length; i++)
-            {
-                weights[i] = i == (int) music ? 1f : 0f;
-            }
-            
-            musicMixer.TransitionToSnapshots(musicMixerSnapshots, weights, musicFadeTime * fadeSpeed);
-            
-
-            //TODO Set Pitch here
-            //musicAudioSource.clip = clip;
-            //musicAudioSource.loop = true;
-            //musicAudioSource.Play();
+            _previousMusic = _playingMusic;
+            _playingMusic = target;
         }
 
-        private void PlayWaveMusic(int index, bool forceChange)
+        private void FadeInMusic(MUSIC music)
         {
-            void Play()
-            {
-                gameMusicAudioSource.Stop();
-                gameMusicAudioSource.clip = TEST_waveMusic[index];
-                gameMusicAudioSource.Play();
-            }
-            
-            if (forceChange)
-            {
-                Play();
+            if (music == MUSIC.NONE)
                 return;
-            }
             
-            StartCoroutine(TEST_MusicFadeCoroutine(1f, Play));
+            Songs.FirstOrDefault(m => m.Music == music)?.FadeInTrack();
+        }
+
+        private void FadeOutMusic(MUSIC music)
+        {
+            if (music == MUSIC.NONE)
+                return;
+            
+            Songs.FirstOrDefault(m => m.Music == music)?.FadeOutTrack();
         }
         
-        private void PlaySpecificMusic(MUSIC music, bool forceChange)
-        {
-            if (!TryGetMusicClip(music, out AudioClip clip))
-                return;
-            
-            void Play()
-            {
-                gameMusicAudioSource.Stop();
-                gameMusicAudioSource.clip = clip;
-                gameMusicAudioSource.Play();
-            }
-            
-            if (forceChange)
-            {
-                Play();
-                return;
-            }
-            
-            StartCoroutine(TEST_MusicFadeCoroutine(1f, Play));
-        }
-
-        private IEnumerator TEST_MusicFadeCoroutine(float fadeTime, Action onMutedCallback)
-        {
-            var t = 0f;
-            var startVolume = gameMusicAudioSource.volume;
-            
-
-            while (t / fadeTime < 1f)
-            {
-                gameMusicAudioSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeTime);
-                t += Time.deltaTime;
-                yield return null;
-            }
-            
-            onMutedCallback?.Invoke();
-            t = 0f;
-            
-            while (t / fadeTime < 1f)
-            {
-                gameMusicAudioSource.volume = Mathf.Lerp(0f, startVolume, t / fadeTime);
-                t += Time.deltaTime;
-                yield return null;
-            }
-        }
         
         //Looping Sounds
         //============================================================================================================//
@@ -524,12 +459,22 @@ namespace StarSalvager.Audio
             masterMixer.SetFloat(parameterName, Mathf.Log(volume) * 13);
         }
         
+        private float InverseVolume(float volume)
+        {
+            //volume = Mathf.Clamp(volume, 0.001f, 1f);
+
+            volume = Mathf.Exp(volume / 13);
+            volume = Mathf.Clamp(volume, 0.001f, 1f);
+
+            //Mathf.Log(volume) * 13
+
+            //masterMixer.SetFloat(parameterName, );
+
+            return volume;
+        }
+        
         //============================================================================================================//
 
-        private bool TryGetMusicClip(MUSIC music, out AudioClip clip)
-        {
-            return TryGetClip(musicClips, music, out clip);
-        }
         private bool TryGetSoundClip(SOUND sound, out AudioClip clip)
         {
             return TryGetClip(soundClips, sound, out clip);
@@ -555,44 +500,6 @@ namespace StarSalvager.Audio
 
         #endregion
 
-        #region Coroutines
-
-        private bool _musicFading;
-        private void FadeMusicIn()
-        {
-            if (_musicFading)
-                return;
-
-            StartCoroutine(FadeMusicCoroutine(0f, _musicVolume));
-        }
-
-        private void FadeMusicOut()
-        {
-            if (_musicFading)
-                return;
-            
-            StartCoroutine(FadeMusicCoroutine(_musicVolume, 0f));
-        }
-
-        private IEnumerator FadeMusicCoroutine(float startVolume, float endVolume, float time = 1f)
-        {
-            _musicFading = true;
-            float t = 0f;
-
-            while (t / time <= 1f)
-            {
-                var volume = Mathf.Lerp(startVolume, endVolume, t / time);
-                SetVolume(MUSIC_VOLUME, volume);
-
-                t += Time.deltaTime;
-                yield return null;
-            }
-
-            _musicFading = false;
-        }
-
-        #endregion //Coroutines
-        
         //============================================================================================================//
 
 #if UNITY_EDITOR
@@ -643,7 +550,7 @@ namespace StarSalvager.Audio
         private void PopulateValues()
         {
             var sfx = Enum.GetValues(typeof(SOUND));
-            var music = Enum.GetValues(typeof(MUSIC));
+            /*var music = Enum.GetValues(typeof(MUSIC));*/
 
             //TODO Check to make sure all sounds exists in list
             foreach (SOUND sound in sfx)
@@ -658,7 +565,7 @@ namespace StarSalvager.Audio
                 });
             }            
             
-            //TODO Check to make sure all music exists in list
+            /*//TODO Check to make sure all music exists in list
             foreach (MUSIC m in music)
             {
                 if (musicClips.Any(s => s.sound == m))
@@ -669,7 +576,7 @@ namespace StarSalvager.Audio
                     sound = m,
                     clip = null
                 });
-            }  
+            }  */
             
             foreach (var (_, enemyID) in FindObjectOfType<FactoryManager>().EnemyProfile.GetAllEnemyNamesIds())
             {

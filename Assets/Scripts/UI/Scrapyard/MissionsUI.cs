@@ -22,6 +22,7 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField] private TMP_Text detailsText;
 
         public static Action CheckMissionUITrackingToggles;
+        public static Action CheckMissionNewAlertUpdate;
 
         //============================================================================================================//
 
@@ -78,7 +79,8 @@ namespace StarSalvager.UI.Scrapyard
 
                 temp.Init(completedMission,
                     OnHoveredChange,
-                    null);
+                    null,
+                    false);
             }
 
             CheckMissionUITrackingToggles?.Invoke();

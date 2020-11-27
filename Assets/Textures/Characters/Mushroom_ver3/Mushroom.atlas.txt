@@ -1,0 +1,279 @@
+
+Mushroom.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: true
+  xy: 2, 8
+  size: 153, 182
+  orig: 163, 191
+  offset: 1, 3
+  index: -1
+BodyBack
+  rotate: false
+  xy: 992, 312
+  size: 83, 65
+  orig: 85, 67
+  offset: 1, 1
+  index: -1
+BodyRoots
+  rotate: true
+  xy: 223, 175
+  size: 90, 106
+  orig: 90, 106
+  offset: 0, 0
+  index: -1
+Boobs
+  rotate: true
+  xy: 627, 177
+  size: 123, 56
+  orig: 123, 56
+  offset: 0, 0
+  index: -1
+Eyes
+  rotate: true
+  xy: 864, 394
+  size: 115, 68
+  orig: 117, 69
+  offset: 1, 0
+  index: -1
+Finger1
+  rotate: true
+  xy: 459, 275
+  size: 25, 57
+  orig: 25, 57
+  offset: 0, 0
+  index: -1
+Finger1 copy
+  rotate: true
+  xy: 864, 367
+  size: 25, 57
+  orig: 25, 57
+  offset: 0, 0
+  index: -1
+Finger1 copy 2
+  rotate: true
+  xy: 708, 305
+  size: 20, 50
+  orig: 20, 50
+  offset: 0, 0
+  index: -1
+Finger1 copy 3
+  rotate: true
+  xy: 653, 303
+  size: 21, 53
+  orig: 21, 53
+  offset: 0, 0
+  index: -1
+Finger2
+  rotate: false
+  xy: 1049, 382
+  size: 24, 50
+  orig: 24, 50
+  offset: 0, 0
+  index: -1
+Finger3
+  rotate: true
+  xy: 606, 302
+  size: 22, 45
+  orig: 22, 45
+  offset: 0, 0
+  index: -1
+FrontHeadPart
+  rotate: false
+  xy: 422, 269
+  size: 35, 26
+  orig: 37, 27
+  offset: 1, 1
+  index: -1
+Head
+  rotate: true
+  xy: 743, 187
+  size: 116, 170
+  orig: 116, 171
+  offset: 0, 0
+  index: -1
+Head copy
+  rotate: true
+  xy: 2, 163
+  size: 346, 219
+  orig: 348, 221
+  offset: 1, 1
+  index: -1
+Hips
+  rotate: true
+  xy: 519, 176
+  size: 124, 106
+  orig: 124, 106
+  offset: 0, 0
+  index: -1
+LeftArmRoots
+  rotate: false
+  xy: 378, 268
+  size: 42, 27
+  orig: 42, 27
+  offset: 0, 0
+  index: -1
+LeftArmTop
+  rotate: false
+  xy: 527, 310
+  size: 77, 199
+  orig: 78, 202
+  offset: 1, 2
+  index: -1
+LeftFoot
+  rotate: false
+  xy: 186, 19
+  size: 131, 142
+  orig: 131, 142
+  offset: 0, 0
+  index: -1
+LeftForearm
+  rotate: true
+  xy: 806, 308
+  size: 57, 138
+  orig: 60, 140
+  offset: 1, 1
+  index: -1
+LeftHand
+  rotate: false
+  xy: 946, 313
+  size: 44, 52
+  orig: 46, 55
+  offset: 1, 2
+  index: -1
+LeftHipRoots
+  rotate: false
+  xy: 1007, 380
+  size: 40, 52
+  orig: 40, 52
+  offset: 0, 0
+  index: -1
+LeftKnee
+  rotate: false
+  xy: 998, 434
+  size: 73, 75
+  orig: 75, 77
+  offset: 1, 1
+  index: -1
+LeftLeg_Top
+  rotate: false
+  xy: 606, 326
+  size: 81, 183
+  orig: 81, 185
+  offset: 0, 1
+  index: -1
+LeftLowerLeg
+  rotate: false
+  xy: 450, 302
+  size: 75, 207
+  orig: 75, 207
+  offset: 0, 0
+  index: -1
+LeftTumb
+  rotate: true
+  xy: 923, 367
+  size: 25, 40
+  orig: 25, 40
+  offset: 0, 0
+  index: -1
+LeftTumb copy
+  rotate: true
+  xy: 965, 379
+  size: 25, 40
+  orig: 26, 40
+  offset: 0, 0
+  index: -1
+Mouth
+  rotate: false
+  xy: 1075, 397
+  size: 38, 39
+  orig: 38, 39
+  offset: 0, 0
+  index: -1
+Neck
+  rotate: false
+  xy: 915, 190
+  size: 79, 116
+  orig: 84, 116
+  offset: 0, 0
+  index: -1
+RightArmBot
+  rotate: false
+  xy: 685, 181
+  size: 56, 120
+  orig: 60, 124
+  offset: 3, 1
+  index: -1
+RightArmTop
+  rotate: false
+  xy: 689, 327
+  size: 68, 182
+  orig: 70, 184
+  offset: 1, 1
+  index: -1
+RightFoot
+  rotate: true
+  xy: 759, 367
+  size: 142, 103
+  orig: 142, 103
+  offset: 0, 0
+  index: -1
+RightHand
+  rotate: true
+  xy: 759, 327
+  size: 38, 45
+  orig: 40, 46
+  offset: 1, 0
+  index: -1
+RightKnee
+  rotate: true
+  xy: 1073, 438
+  size: 71, 70
+  orig: 73, 72
+  offset: 1, 1
+  index: -1
+RightLegTop
+  rotate: true
+  xy: 331, 177
+  size: 88, 186
+  orig: 89, 186
+  offset: 0, 0
+  index: -1
+RightLegTopRoots
+  rotate: false
+  xy: 934, 406
+  size: 62, 103
+  orig: 62, 103
+  offset: 0, 0
+  index: -1
+RightLowerLeg
+  rotate: false
+  xy: 223, 267
+  size: 114, 242
+  orig: 115, 242
+  offset: 0, 0
+  index: -1
+Shadow2_FullBlack
+  rotate: false
+  xy: 319, 2
+  size: 843, 171
+  orig: 859, 185
+  offset: 8, 7
+  index: -1
+Tenticle
+  rotate: false
+  xy: 339, 268
+  size: 37, 241
+  orig: 38, 241
+  offset: 1, 0
+  index: -1
+Tenticle2
+  rotate: false
+  xy: 378, 297
+  size: 70, 212
+  orig: 70, 212
+  offset: 0, 0
+  index: -1

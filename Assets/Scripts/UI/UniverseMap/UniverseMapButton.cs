@@ -6,6 +6,7 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using TMPro;
@@ -54,16 +55,21 @@ namespace StarSalvager
             {
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
+                    LevelManager.Instance.IsWaveProgressing = true;
+                    LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
+                    LevelManager.Instance.EndWaveState = false;
+                    LevelManager.Instance.ResetLevelTimer();
+
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                     });
                     return;
                 }
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
-                Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
+                //Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
 
                 ScreenFade.Fade(() =>
                 {

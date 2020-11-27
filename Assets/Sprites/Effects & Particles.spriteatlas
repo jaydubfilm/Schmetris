@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 93c8087663718784c984c9fb3415ef4f, type: 3}
-    totalSpriteSurfaceArea: 2230811
+    totalSpriteSurfaceArea: 3558815
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -55,21 +55,28 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5e3a49924a96fdd4ebb64106715f5940, type: 3}
   - {fileID: 21300000, guid: 517ce7732660441498de20bdf0725cc9, type: 3}
   - {fileID: 21300000, guid: ed53eec33717891429b3df770dc7a04c, type: 3}
+  - {fileID: 21300000, guid: 9d9ae9a5c6d789e498b2476afa9e694f, type: 3}
   - {fileID: 21300000, guid: 4643bb163c32bc34a9aac87cd7f9f2af, type: 3}
   - {fileID: 21300000, guid: 3db761e60741f4240a142722c30652da, type: 3}
+  - {fileID: 21300000, guid: 0c0f6797510f3f84e8f74f2b04b3f59b, type: 3}
   - {fileID: 21300000, guid: b3029fb78363a2e4d9d827ba2cc5a0d1, type: 3}
+  - {fileID: 21300000, guid: 4e4cbf68f625b9744be933535b421d01, type: 3}
   - {fileID: 21300000, guid: eddc1998f99251e4ab1eec7eeac18932, type: 3}
   - {fileID: 21300000, guid: 8154d079cc2403549bfb12d8a8a35d50, type: 3}
   - {fileID: 21300000, guid: 7de87ea994b0c3345938c4e40f2af905, type: 3}
   - {fileID: 21300000, guid: 97feaef954399054390736aca33a0c10, type: 3}
+  - {fileID: 21300000, guid: fe861f5a432542545b002c0e8724998b, type: 3}
   - {fileID: 21300000, guid: 9d27b5ca62096534d94ba81a39aa756a, type: 3}
   - {fileID: 21300000, guid: b6c61bca04b522d4880da81558c3a4da, type: 3}
   - {fileID: 21300000, guid: 2652e6ea0e5d2d449bed280d92ead795, type: 3}
   - {fileID: 21300000, guid: 6dd9dc6b90b817f4692117d493ed6cab, type: 3}
   - {fileID: 21300000, guid: c4c90dcbfaffa7d4f8b099879ce817ea, type: 3}
+  - {fileID: 21300000, guid: 7950d35c309e7ff4d80330019e81c3d7, type: 3}
+  - {fileID: 21300000, guid: 43282d5c192db754490a5cfddb23dcb8, type: 3}
   - {fileID: 21300000, guid: 0bc85bdcc4daba840ba90bde4f3b51d6, type: 3}
   - {fileID: 4726295210043589906, guid: 1702a96d81214c14eba789dd802ab866, type: 3}
   - {fileID: 21300000, guid: ec71837d5dc3d1e4287ce139f2fe6a77, type: 3}
+  - {fileID: 21300000, guid: 4022e87d7f462fd478b395efd15c05fa, type: 3}
   - {fileID: 21300000, guid: 5139289d34af8a94ab6eae02b317f896, type: 3}
   - {fileID: 21300000, guid: 8e32f0cdcce908d46b526635bb438533, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -81,21 +88,28 @@ SpriteAtlas:
   - effect_EXPLODOVERGLOW_1_v1
   - juicyparts_RATEBOOSTGLOW_1_v1
   - effect_IMPACTTOPADD_1_v1
+  - effect_SPECIALSHAPESPARK_1_v1
   - effect_WELDPards_2_v2
   - effect_WELDPards_3_v1
+  - effect_SHOCKWAVEOVERGLOW_0_v1
   - juicypart_BOOSTRATEWHITE_1_v1
+  - effect_SHOCKWAVEHARDEDGE_0_v1
   - juicyparts_AUTOREFINEGLOW_1_v1
   - effect_WELDPards_1_v1
   - effect_EXPLODECLOUD_1_v1
   - juicyparts_REPAIRERGLOW_1_v1
+  - effect_SHOCKWAVESOFTCIRCLE_0_v1
   - effect_MERGECOMBO_1_v1
   - effect_WELDPards_1_v2
   - effect_EXPLODESPARK_1_v1
   - effect_IMPACTBOT_1_v1
   - effect_EXPLODECLOUD_2_v1.png
+  - effect_SHOCKWAVERIMGLOW_0_v1
+  - effect_SHOCKWAVESOFTENED_0_v1
   - effect_WELDPards_3_v2
   - effect_THRUSTERFRONTADD_1_v1_0
   - effect_EXPLODOVERWHITEGLOW_1_v1
+  - effect_SPECIALSHAPERADIALGRAD_1_v1
   - effect_EXPLODESPIKE_1_v1
   - juicyparts_GUN_1_v1
   m_Tag: Effects & Particles

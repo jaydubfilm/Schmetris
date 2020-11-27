@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Tutorial.Data;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
@@ -29,10 +30,10 @@ namespace StarSalvager.Tutorial
         
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject window;
-        [SerializeField, BoxGroup("Tutorial UI")]
-        private FadeUIImage glowImage;
-        [SerializeField, BoxGroup("Tutorial UI")]
-        private RectTransform glowBar;
+        /*[SerializeField, BoxGroup("Tutorial UI")]
+        private FadeUIImage glowImage;*/
+        /*[SerializeField, BoxGroup("Tutorial UI")]
+        private RectTransform glowBar;*/
         
         [SerializeField, BoxGroup("Tutorial UI")]
         private TMP_Text text;
@@ -48,8 +49,8 @@ namespace StarSalvager.Tutorial
         [SerializeField, BoxGroup("Tutorial UI")]
         private GameObject characterObject;
         
-        [SerializeField, BoxGroup("Tutorial UI")]
-        private Image fadeImage;
+        //[SerializeField, BoxGroup("Tutorial UI")]
+        //private Image fadeImage;
 
         [SerializeField, BoxGroup("Tutorial UI")]
         private AnimationCurve slideCurve;
@@ -86,7 +87,7 @@ namespace StarSalvager.Tutorial
 
         public void SetupTutorial()
         {
-            glowImage.gameObject.SetActive(false);
+            //glowImage.gameObject.SetActive(false);
             //SetDialogWindowActive(false);
             pauseImage.SetActive(false);
             InitPositions();
@@ -286,7 +287,7 @@ namespace StarSalvager.Tutorial
             yield return new WaitUntil(() => magnet);
             
             yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
-            SetMagnetGlow();
+            SetMagnetGlow(true);
             
             bot.OnFullMagnet -= SetMagnet;
             
@@ -296,12 +297,13 @@ namespace StarSalvager.Tutorial
             yield return new WaitForSeconds(0.5f);
             
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
-            glowImage.gameObject.SetActive(false);
+            //glowImage.gameObject.SetActive(false);
+            SetMagnetGlow(false);
         }
         private IEnumerator MagnetFirstCoroutine()
         {
             yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
-            SetMagnetGlow();
+            SetMagnetGlow(true);
             
             //tutorialSteps[5]
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[5], true));
@@ -309,7 +311,7 @@ namespace StarSalvager.Tutorial
             LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
             
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
-            glowImage.gameObject.SetActive(false);
+            SetMagnetGlow(false);
             
             yield return new WaitForSeconds(0.5f);
             
@@ -419,7 +421,7 @@ namespace StarSalvager.Tutorial
 
             yield return new WaitForSeconds(4f);
 
-            float t = 0f;
+            /*float t = 0f;
             while (t < 1f)
             {
                 fadeImage.color = Color.Lerp(Color.clear, Color.black, t);
@@ -427,23 +429,20 @@ namespace StarSalvager.Tutorial
                 t += Time.deltaTime;
                 
                 yield return null;
-            }
+            }*/
             
-            yield return new WaitForSeconds(1f);
+            //yield return new WaitForSeconds(1f);
 
-            Globals.UsingTutorial = false;
-            LevelManager.Instance.SetBotExitScreen(false);
-            LevelManager.Instance.BotObject.PROTO_GodMode = false;
-            LevelManager.Instance.EndWaveState = false;
-
-
-            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
-            
-            
-            
             ScreenFade.Fade(() =>
             {
-                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                Globals.UsingTutorial = false;
+                LevelManager.Instance.SetBotExitScreen(false);
+                LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                LevelManager.Instance.EndWaveState = false;
+
+
+                PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
             });
         }
         
@@ -527,11 +526,12 @@ namespace StarSalvager.Tutorial
         //IInput Functions
         //====================================================================================================================//
 
-        private void SetMagnetGlow()
+        private void SetMagnetGlow(bool state)
         {
-            glowImage.gameObject.SetActive(true);
+            GameUI.Instance.OutlineMagnet(state);
+            /*glowImage.gameObject.SetActive(true);
             
-            glowImage.transform.SetParent(glowBar);
+            //glowImage.transform.SetParent(glowBar);
 
             var glowRectTransform = (RectTransform) glowImage.transform;
             glowRectTransform.anchorMin = Vector2.zero;
@@ -540,7 +540,7 @@ namespace StarSalvager.Tutorial
             glowRectTransform.sizeDelta = new Vector2(20f, 20f);
             glowRectTransform.localPosition = Vector3.zero;
 
-            glowImage.SetActive(true);
+            glowImage.SetActive(true);*/
 
         }
         

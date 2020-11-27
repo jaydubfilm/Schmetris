@@ -482,7 +482,10 @@ namespace StarSalvager
             
             AudioController.PlaySound(SOUND.BOT_ROTATE);
         }
-        
+
+        [ShowInInspector, ReadOnly] 
+        public float rotationTarget { get; private set; }
+
         /// <summary>
         /// Triggers a rotation 90deg in the specified direction. If the player is already rotating, it adds 90deg onto
         /// the target rotation.
@@ -505,7 +508,10 @@ namespace StarSalvager
             {
                 targetRotation = rigidbody.rotation + toRotate;
             }
-            
+
+            rotationTarget += toRotate;
+            rotationTarget = MathS.ClampAngle(targetRotation);
+
             targetRotation = MathS.ClampAngle(targetRotation);
 
             foreach (var attachedBlock in attachedBlocks)
@@ -514,9 +520,6 @@ namespace StarSalvager
             }
 
             _rotating = true;
-
-            
-
         }
 
         public void TrySelfDestruct()
@@ -538,28 +541,19 @@ namespace StarSalvager
 
         #region Rotation
 
-        private bool rotate;
-
         private void RotateBot()
         {
             var rotation = transform.eulerAngles.z;
 
             //Rotates towards the target rotation.
-            float rotationAmount;
-            if (isContinuousRotation)
-            {
-                rotationAmount = Globals.BotContinuousRotationSpeed;
-            }
-            else
-            {
-                rotationAmount = Globals.BotRotationSpeed;
-            }
+            var rotationAmount = isContinuousRotation ? Globals.BotContinuousRotationSpeed : Globals.BotRotationSpeed;
+            
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
             transform.rotation = Quaternion.Euler(0,0,rotation);
             
             //FIXME Remove this when ready
             TEST_ParticleSystem.transform.rotation = Quaternion.identity;
-            
+
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
             
@@ -568,7 +562,7 @@ namespace StarSalvager
             if (remainingDegrees > 10f)
                 return;
 
-            TryRotateBits();
+            RotateAttachableSprites();
             
             
             //If we're within 1deg we will count it as complete, otherwise continue to rotate.
@@ -579,12 +573,11 @@ namespace StarSalvager
             //NOTE: This is a strict order-of-operations as changing will cause rotations to be incorrect
             //--------------------------------------------------------------------------------------------------------//
             //Force set the rotation to the target, in case the bot is not exactly on target
-            transform.rotation = Quaternion.Euler(0,0,targetRotation);
+            transform.rotation = Quaternion.Euler(0,0,rotationTarget);
             targetRotation = 0f;
             
             
-            TryRotateBits();
-            rotate = false;
+            RotateAttachableSprites();
             _rotating = false;
             
             //--------------------------------------------------------------------------------------------------------//
@@ -593,41 +586,54 @@ namespace StarSalvager
             CheckForBonusShapeMatches();
         }
 
-        private void TryRotateBits()
+        public void ForceCompleteRotation()
         {
-            if (rotate) 
-                return;
-            
-            var check = (int) targetRotation;
-            float deg;
-            if (check == 180)
+            var rotation = transform.eulerAngles.z;
+            var remainingDegrees = Mathf.DeltaAngle(rotation, targetRotation);
+
+            if (Mathf.Abs(remainingDegrees) < 75)
             {
-                deg = 180;
-            }
-            else if (check == 0f || check == 360)
-            {
-                deg = 0;
+                transform.rotation = Quaternion.Euler(0, 0, targetRotation);
             }
             else
             {
-                deg = targetRotation + 180;
+                transform.rotation = remainingDegrees > 0
+                    ? Quaternion.Euler(0, 0, targetRotation - 90)
+                    : Quaternion.Euler(0, 0, targetRotation + 90);
+            }
+        }
+
+        private void RotateAttachableSprites()
+        {
+            //Try and remove any potential floating point issues
+            var check = (int) rotationTarget;
+            
+            
+            Quaternion counterRotation;
+            if (check == 180)
+            {
+                counterRotation = Quaternion.Euler(0,0, 180);
+            }
+            else if (check == 0f || check == 360)
+            {
+                counterRotation = Quaternion.identity;
+            }
+            else
+            {
+                counterRotation = Quaternion.Euler(0,0, MathS.ClampAngle(rotationTarget + 180));
             }
 
-            var rot = Quaternion.Euler(0, 0, deg);
-                
             foreach (var attachedBlock in attachedBlocks)
             {
                 if (attachedBlock is ICustomRotate customRotate)
                 {
-                    customRotate.CustomRotate(rot);
+                    customRotate.CustomRotate(counterRotation);
                     continue;
                 }
                 
-                //attachedBlock.RotateSprite(MostRecentRotate);
-                attachedBlock.transform.localRotation = rot;
+                attachedBlock.transform.localRotation = counterRotation;
             }
 
-            rotate = true;
         }
 
 
@@ -719,8 +725,7 @@ namespace StarSalvager
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
                             SessionDataProcessor.Instance.HitBumper();
                             
-                            if(shift)
-                                OnBitShift?.Invoke();
+                            if(shift) OnBitShift?.Invoke();
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bit.Type), bit.Type, null);
@@ -1488,12 +1493,23 @@ namespace StarSalvager
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
                     newAttachable.gameObject);
 
-                //I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
+                AttachToClosestAvailableCoordinate(coordinate, 
+                    newAttachable, 
+                    direction,
+                    checkForCombo, 
+                    updateColliderGeometry, 
+                    updateMissions);
+                
+                /*//I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
                 if (newAttachable is EnemyAttachable)
-                    AttachToClosestAvailableCoordinate(coordinate, newAttachable, direction,
-                        checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachToClosestAvailableCoordinate(coordinate, 
+                        newAttachable, 
+                        direction,
+                        checkForCombo, 
+                        updateColliderGeometry, 
+                        updateMissions);
                 else
-                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);
+                    PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);*/
 
                 return;
             }
@@ -2178,10 +2194,12 @@ namespace StarSalvager
                 //Checks for floaters
                 hasDetached = CheckForDisconnects();
 
-                var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
-                    .OfType<ICanCombo>();
+                /*var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
+                    .OfType<ICanCombo>().ToArray();*/
                 
-                switch (attachable)
+                CheckAllForCombos();
+                
+                /*switch (attachable)
                 {
                     case Bit _:
                         hasCombos = CheckForCombosAround<BIT_TYPE>(comboCheckGroup);
@@ -2190,9 +2208,11 @@ namespace StarSalvager
                         hasCombos = CheckForCombosAround<COMPONENT_TYPE>(comboCheckGroup);
 
                         break;
-                }
+                }*/
 
                 CheckForBonusShapeMatches();
+                ForceCheckMagnets();
+
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     intAmount = toShift.Count,
@@ -2200,9 +2220,7 @@ namespace StarSalvager
                     bumperOrphanedBits = hasDetached,
                     bumperCausedCombos = hasCombos
                 };
-
                 MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
-
             }));
 
 
@@ -2239,12 +2257,15 @@ namespace StarSalvager
                 {
                     CreateBonusShapeEffect(attachable.transform.position);
                 }
+
+                var blocks = attachedBlocks.Where(x => upgrading.Contains(x.Coordinate));
+                CreateBonusShapeEffect(blocks);
                 
-                foreach (var coordinate in upgrading)
+                /*foreach (var coordinate in upgrading)
                 {
-                    var block = attachedBlocks.FirstOrDefault(x => x.Coordinate == coordinate);
+                    
                     CreateBonusShapeEffect(block.transform);
-                }
+                }*/
                 
                 //----------------------------------------------------------------------------------------------------//
                 
@@ -2301,6 +2322,8 @@ namespace StarSalvager
 
         //Creating Effects
         //====================================================================================================================//
+
+        #region Creating Effects
 
         private void ShouldShowEffect(ref List<WeldData> weldDatas)
         {
@@ -2404,6 +2427,20 @@ namespace StarSalvager
             
             Destroy(effect, time);
         }
+        private void CreateBonusShapeEffect(IEnumerable<IAttachable> actors)
+        {
+            foreach (var actor2DBase in actors)
+            {
+                var position = actor2DBase.transform.position;
+
+                CreateBonusShapeEffect(position);
+            }
+
+            var center = actors.GetCollectionCenterPosition();
+
+            CreateBonusShapeParticleEffect(center);
+
+        }
         private void CreateBonusShapeEffect(Transform parent)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2414,12 +2451,30 @@ namespace StarSalvager
             
             Destroy(effect, time);
         }
+        private void CreateBonusShapeParticleEffect(Vector3 position)
+        {
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE_PARTICLE);
+            
+            //effect.transform.SetParent(parent, false);
+            effect.transform.position = position;
+            var time = effect.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            
+            Destroy(effect, time);
+        }
+
+        #endregion //Creating Effects
         
         //============================================================================================================//
 
         #region Puzzle Checks
 
         #region Check for Combos from List
+        public void CheckAllForCombos()
+        {
+            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+        }
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
         {
@@ -2478,13 +2533,12 @@ namespace StarSalvager
             {
                 if (pendingCombo.ToMove[0] is Bit bit)
                 {
-                    bool isAdvancedCombo = pendingCombo.ComboData.type == COMBO.TEE || pendingCombo.ComboData.type == COMBO.ANGLE;
                     MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                     {
                         bitType = bit.Type,
                         intAmount = 1,
                         level = bit.level,
-                        comboIsAdvancedCombo = isAdvancedCombo
+                        comboType = pendingCombo.ComboData.type
                     };
                     MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
                 }
@@ -2501,6 +2555,8 @@ namespace StarSalvager
         //====================================================================================================================//
 
         #region Check for Combos Around Single
+
+        
 
         private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
         {
@@ -2529,13 +2585,12 @@ namespace StarSalvager
 
             if (iCanCombo is Bit bit)
             {
-                bool isAdvancedCombo = data.comboData.type == COMBO.TEE || data.comboData.type == COMBO.ANGLE;
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     bitType = bit.Type,
                     intAmount = 1,
                     level = iCanCombo.level + 1,
-                    comboIsAdvancedCombo = isAdvancedCombo
+                    comboType = data.comboData.type
                 };
                 MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
             }
@@ -2609,7 +2664,12 @@ namespace StarSalvager
 
             //Get a list of orphans that may need move when we are moving our bits
             var orphans = new List<OrphanMoveData>();
-            CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
+            //CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
+
+            attachedBlocks.CheckForOrphansFromCombo(
+                movingBits.OfType<IAttachable>(),
+                closestToCore.iAttachable,
+                ref orphans);
 
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
@@ -2748,14 +2808,15 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        /// <summary>
+        /*/// <summary>
         /// Get any Bit/Bits that will be orphaned by the bits which will be moving
         /// </summary>
         /// <param name="movingBlocks"></param>
         /// <param name="bitToUpgrade"></param>
         /// <param name="orphanMoveData"></param>
         /// <returns></returns>
-        public void CheckForOrphans(IEnumerable<IAttachable> movingBlocks,
+        public void CheckForOrphans(
+            IEnumerable<IAttachable> movingBlocks,
             IAttachable bitToUpgrade,
             ref List<OrphanMoveData> orphanMoveData)
         {
@@ -2862,172 +2923,9 @@ namespace StarSalvager
                 }
 
             }
-        }
-
-        /// <summary>
-        /// Solve the position change required for a single orphan. If moving a group ensure you use SolveOrphanGroupPositionChange
-        /// </summary>
-        /// <param name="orphanedBit"></param>
-        /// <param name="targetCoordinate"></param>
-        /// <param name="travelDirection"></param>
-        /// <param name="travelDistance"></param>
-        /// <param name="movingBits"></param>
-        /// <param name="orphanMoveData"></param>
-        /// <param name="lastLocation"></param>
-        private void SolveOrphanPositionChange(IAttachable orphanedBit, Vector2Int targetCoordinate, DIRECTION travelDirection,
-            int travelDistance, IReadOnlyCollection<IAttachable> movingBits, ref List<OrphanMoveData> orphanMoveData)
-        {
-            //Loop ensures that the orphaned blocks which intend on moving, are able to reach their destination without any issues.
-
-            //Check only the Bits on the Bot that wont be moving
-            var stayingBlocks = new List<IAttachable>(attachedBlocks);
-            foreach (var attachableBase in movingBits)
-            {
-                stayingBlocks.Remove(attachableBase);
-            }
-
-            //Checks to see if this orphan can travel unimpeded to the destination
-            //If it cannot, set the destination to the block beside that which is blocking it.
-            var hasClearPath = IsPathClear(stayingBlocks, movingBits, travelDistance, orphanedBit.Coordinate,
-                travelDirection, targetCoordinate, out var clearCoordinate);
-
-            //If there's no clear solution, then we will try and solve the overlap here
-            if (!hasClearPath && clearCoordinate == Vector2Int.zero)
-            {
-                //Debug.LogError("Orphan has no clear path to intended Position");
-                throw new Exception("NEED TO LOOK AT WHAT IS HAPPENING HERE");
-
-                //Make sure that there's no overlap between orphans new potential positions & existing staying Bits
-                //stayingBlocks.SolveCoordinateOverlap(travelDirection, ref desiredLocation);
-            }
-            else if (!hasClearPath)
-            {
-                //Debug.LogError($"Path wasn't clear. Setting designed location to {clearCoordinate} instead of {desiredLocation}");
-                targetCoordinate = clearCoordinate;
-            }
-            
-            //lastPosition = targetCoordinate;
-
-            orphanMoveData.Add(new OrphanMoveData
-            {
-                attachableBase = orphanedBit,
-                moveDirection = travelDirection,
-                distance = travelDistance,
-                intendedCoordinates = targetCoordinate
-            });
-        }
+        }*/
 
 
-        private void SolveOrphanGroupPositionChange(IAttachable mainOrphan,
-            IReadOnlyList<IAttachable> orphanGroup, Vector2Int targetCoordinate,
-            DIRECTION travelDirection, int travelDistance, IReadOnlyCollection<IAttachable> movingBits,
-            ref List<OrphanMoveData> orphanMoveData)
-        {
-
-            if (orphanGroup.Count == 1)
-            {
-                SolveOrphanPositionChange(mainOrphan, targetCoordinate, travelDirection, travelDistance, movingBits,
-                    ref orphanMoveData);
-                return;
-            }
-            
-            
-            //Debug.LogError($"Moving Orphan group, Count: {orphanGroup.Count}");
-
-            //var lastLocation = Vector2Int.zero;
-
-            var distances = new float[orphanGroup.Count];
-
-            var index = -1;
-            var shortestDistance = 999f;
-            
-            
-            for (var i = 0; i < orphanGroup.Count; i++)
-            {
-                var orphan = orphanGroup[i];
-                var relative = orphan.Coordinate - mainOrphan.Coordinate;
-                var desiredLocation = targetCoordinate + relative;
-
-                //Check only the Bits on the Bot that wont be moving
-                var stayingBlocks = new List<IAttachable>(attachedBlocks);
-                foreach (var attachableBase in movingBits)
-                {
-                    stayingBlocks.Remove(attachableBase);
-                }
-
-                //Checks to see if this orphan can travel unimpeded to the destination
-                //If it cannot, set the destination to the block beside that which is blocking it.
-                var hasClearPath = IsPathClear(stayingBlocks, 
-                    movingBits, 
-                    travelDistance, 
-                    orphan.Coordinate,
-                    travelDirection, 
-                    desiredLocation, 
-                    out var clearCoordinate);
-
-                if (!hasClearPath && clearCoordinate == Vector2Int.zero)
-                    distances[i] = 999f;
-                else if (!hasClearPath)
-                    distances[i] = Vector2Int.Distance(orphan.Coordinate, clearCoordinate);
-                else
-                    distances[i] = Vector2Int.Distance(orphan.Coordinate, desiredLocation);
-
-                if (distances[i] > shortestDistance)
-                    continue;
-
-                //index = i;
-                shortestDistance = distances[i];
-            }
-            
-            //Debug.LogError($"Shortest to move {orphanGroup[index].gameObject.name}, Distance: {shortestDistance}");
-            //Debug.Break();
-
-            foreach (var orphan in orphanGroup)
-            {
-                //var relative = orphan.Coordinate - mainOrphan.Coordinate;
-                //var desiredLocation = targetCoordinate + relative;
-
-                var newCoordinate = orphan.Coordinate + travelDirection.ToVector2Int() * (int) shortestDistance;
-                
-                orphanMoveData.Add(new OrphanMoveData
-                {
-                    attachableBase = orphan,
-                    moveDirection = travelDirection,
-                    distance = shortestDistance,
-                    intendedCoordinates = newCoordinate
-                });
-            }
-        }
-        
-        private bool IsPathClear(List<IAttachable> stayingBlocks, IEnumerable<IAttachable> toIgnore, int distance, Vector2Int currentCoordinate, DIRECTION moveDirection, Vector2Int targetCoordinate, out Vector2Int clearCoordinate)
-        {
-            //var distance = (int) orphanMoveData.distance;
-            var coordinate = currentCoordinate;
-            
-            //If the distance starts at zero, its already at the TargetCoordinate
-            clearCoordinate = distance == 0 ? targetCoordinate : Vector2Int.zero;
-            
-            while (distance > 0)
-            {
-                coordinate += moveDirection.ToVector2Int();
-                var occupied = stayingBlocks
-                    .Where(x => !toIgnore.Contains(x))
-                    .FirstOrDefault(x => x.Coordinate == coordinate);
-
-                //Debug.LogError($"Occupied: {occupied == null} at {coordinate} distance {distance}");
-                
-                if (occupied == null)
-                    clearCoordinate = coordinate;
-                
-                //if(occupied != null)
-                //    Debug.LogError($"{occupied.gameObject.name} is at {coordinate}", occupied);
-                
-
-                distance--;
-            }
-
-            return targetCoordinate == clearCoordinate;
-        }
 
         #endregion //Puzzle Checks
 
@@ -3152,6 +3050,8 @@ namespace StarSalvager
             else
                 this.DelayedCall(TEST_DetachTime, onDetach);*/
             //--------------------------------------------------------------------------------------------------------//
+            
+            GameUi.FlashMagnet();
 
             return true;
         }
@@ -3817,6 +3717,7 @@ namespace StarSalvager
         {
             transform.localScale = Vector2.one;
             isContinuousRotation = false;
+            m_distanceHorizontal = 0;
             targetRotation = 0;
             _rotating = false;
 
@@ -3856,6 +3757,26 @@ namespace StarSalvager
         #region UNITY EDITOR
 
 #if UNITY_EDITOR
+
+        [Button]
+        private void TestSpaceChange()
+        {
+            var target = new Vector2Int(-1, 3);
+
+            var z = transform.rotation.eulerAngles.z;
+            //var dif = z % rotationTarget;
+            
+            //var rotation = Quaternion.Inverse(Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z % 90));
+            var rotation = Quaternion.Euler(0, 0, z);
+            var newPosition = rotation * (Vector2)target;
+            
+            Debug.Log($"z: {z}");
+            
+            //SSDebug.DrawArrowRay(transform.position, newPosition, Color.yellow);
+            Debug.DrawLine(transform.position, transform.position + newPosition, Color.yellow, 2f);
+
+        }
+        
         [Button]
         private void SetupTest()
         {
@@ -3863,84 +3784,91 @@ namespace StarSalvager
             {
                 new BlockData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
-                },
-
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(0, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(0,-1),
+                    Level =0,
+                    Type = (int)PART_TYPE.STORERED,
+                    Health = 50
                 },
                 new BlockData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(-1,0),
+                    Level =0,
+                    Type = (int)PART_TYPE.MAGNET,
+                    Health = 50
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1, 2),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY
+                    Coordinate = new Vector2Int(0,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 2),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.YELLOW
+                    Coordinate = new Vector2Int(1,-2),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
                 },
-
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(-1,-1),
+                    Level =0,
+                    Type = (int)BIT_TYPE.YELLOW
+                },
             };
 
             AddMorePieces(blocks, false);
             CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
         }
 
-        [Button]
+        /*[Button]
         private void AddComboTestPieces()
         {
             var blocks = new List<BlockData>
             {
                 new BlockData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,1),
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(0,-1),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)PART_TYPE.STORERED
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Part),
+                    Coordinate = new Vector2Int(-1,0),
+                    Level =0,
+                    Type = (int)PART_TYPE.MAGNET
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,2),
+                    Coordinate = new Vector2Int(0,-2),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,1),
+                    Coordinate = new Vector2Int(1,-2),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3,2),
+                    Coordinate = new Vector2Int(-1,-1),
                     Level =0,
-                    Type = (int)BIT_TYPE.GREEN
+                    Type = (int)BIT_TYPE.YELLOW
                 },
             };
             
             AddMorePieces(blocks, true);
-        }
+        }*/
         
         private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
         {
@@ -4020,8 +3948,6 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        //====================================================================================================================//
-
         public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
         {
             foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
@@ -4031,6 +3957,8 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+
         
         
     }

@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8527d1e30bccb904d9ae7b787ca4f88a, type: 3}
-    totalSpriteSurfaceArea: 1917851
+    totalSpriteSurfaceArea: 1934843
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -40,10 +40,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c89c83d2dd50b444d80390178836009c, type: 3}
   - {fileID: 21300000, guid: c84e7203ebb33e54184dd8bf1a4f5435, type: 3}
   - {fileID: 21300000, guid: e91be98413be7384c9f19a81fc96f9fd, type: 3}
+  - {fileID: 21300000, guid: 216fdb45cb4d7904081cc09a69f92286, type: 3}
   - {fileID: 21300000, guid: f8e51428220e2dd43908f8ec0ce54ef8, type: 3}
   - {fileID: 21300000, guid: 28bef479433f01046a4ed84f4964cd9c, type: 3}
   - {fileID: 21300000, guid: 19075ad9e157dea4aada53c053602607, type: 3}
   - {fileID: 21300000, guid: 92e898abde55d1e4ab3792ed1a36a187, type: 3}
+  - {fileID: 21300000, guid: f87a17eb63b7331459ada83475967611, type: 3}
   - {fileID: 21300000, guid: edfdf39c2f7e0d249ae6b0a725e35ea7, type: 3}
   m_PackedSpriteNamesToIndex:
   - homescreen_SHIP_1_v3
@@ -51,10 +53,12 @@ SpriteAtlas:
   - homescreen_SMALLASTROID_2_v1
   - homescreen_SMALLASTROID_5_v1
   - homescreen_BIGASTROID_3_v1
+  - ui_HOMEBUTTONBACKGLOW_0_v1
   - homescreen_BIGASTROID_2_v1
   - homescreen_SMALLASTROID_4_v1
   - homescreen_SMALLASTROID_3_v1
   - homescreen_BIGASTROID_4_v1
+  - ui_HOMEBUTTON_0_v1
   - homescreen_SMALLASTROID_1_v1
   m_Tag: MainMenu
   m_IsVariant: 0

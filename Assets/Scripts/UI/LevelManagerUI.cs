@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Saving;
@@ -115,6 +116,14 @@ namespace StarSalvager.UI
             InitScrollPositions();
         }
 
+        private void OnDisable()
+        {
+            SetPosition(_scrollPosition = 0f);
+            m_missionReminderTimer = 0;
+            m_isMissionReminderScrolling = false;
+            scrollingMissionsText.text = "";
+        }
+
         private void Update()
         {
             if (isPaused)
@@ -154,7 +163,7 @@ namespace StarSalvager.UI
                 LevelManager.Instance.EndWaveState = false;
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
                 
             });
@@ -167,7 +176,7 @@ namespace StarSalvager.UI
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
             });
 
@@ -183,7 +192,8 @@ namespace StarSalvager.UI
                             LevelManager.Instance.BotObject.PROTO_GodMode = false;
                         }
 
-
+                        GameUI.Instance.ShowRecoveryBanner(false);
+                        Globals.IsRecoveryBot = false;
                         m_levelManager.IsWaveProgressing = true;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
@@ -191,7 +201,7 @@ namespace StarSalvager.UI
                         
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                         });
                     }
                 });
@@ -210,7 +220,7 @@ namespace StarSalvager.UI
 
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
             });
             
@@ -337,14 +347,20 @@ namespace StarSalvager.UI
             deathText.text = description;
         }
 
-        public void ShowSummaryScreen(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
+        public void ShowAlertWindow(string titleText, string summaryText, Action onConfirmedCallback, string buttonText = "Ok")
         {
             Alert.ShowAlert(titleText, summaryText, buttonText, onConfirmedCallback);
         }
 
-        public void ShowWaveSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        public void ShowSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback, GameUI.WindowSpriteSet.TYPE type = GameUI.WindowSpriteSet.TYPE.DEFAULT)
         {
-            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, 0.5f);
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback, moveTime: 0.5f, type: type);
+        }
+        
+        public void ShowGameSummaryWindow(string titleText, string summaryText, Action onConfirmedCallback)
+        {
+            GameUI.Instance.ShowWaveSummaryWindow(true, titleText, summaryText, onConfirmedCallback,
+                GameUI.WindowSpriteSet.TYPE.ORANGE, moveTime: 0.5f);
         }
 
 

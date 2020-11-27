@@ -332,6 +332,14 @@ namespace StarSalvager.Utilities.Saving
             partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
         }
 
+        public void RemovePartFromStorageAtIndex(int index)
+        {
+            if (partsInStorageBlockData.Count > index)
+            {
+                partsInStorageBlockData.RemoveAt(index);
+            }
+        }
+
         public void SaveData()
         {
             //LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();

@@ -39,6 +39,11 @@ namespace StarSalvager.ScriptableObjects
             return GetEnemyRemoteData(id)?.Name;
         }
 
+        public string GetEnemyId(string name)
+        {
+            return GetEnemyRemoteDataByName(name)?.EnemyID;
+        }
+
         public IEnumerable GetEnemyTypes()
         {
             ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();

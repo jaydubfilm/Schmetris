@@ -80,6 +80,8 @@ namespace StarSalvager
         public WorldGrid WorldGrid => m_worldGrid ?? (m_worldGrid = new WorldGrid());
         private WorldGrid m_worldGrid;
 
+        private bool m_runLostState = false;
+
         public AIObstacleAvoidance AIObstacleAvoidance
         {
             get
@@ -157,6 +159,8 @@ namespace StarSalvager
         public bool m_botZoomOffScreen { get; private set; } = false;
 
         private float botMoveOffScreenSpeed = 1.0f;
+
+        private bool m_endLevelOverride = false;
 
         #endregion //Properties
 
@@ -341,6 +345,8 @@ namespace StarSalvager
                 return;
             }
 
+            BotObject.PROTO_GodMode = false;
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -350,10 +356,13 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
 
+            PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
+
             if (Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
-                    "You have recovered your wrecked bot. Return to base!", () =>
+                m_levelManagerUI.ShowSummaryWindow("Bot Recovered",
+                    "You have recovered your wrecked bot. Return to base!", 
+                    () =>
                     {
                         GameUi.ShowRecoveryBanner(false);
                         GameTimer.SetPaused(false);
@@ -361,16 +370,17 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
+                        ResetLevelTimer();
 
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     });
             }
             else if (EndSectorState)
             {
-                m_levelManagerUI.ShowSummaryScreen("Sector Completed",
+                m_levelManagerUI.ShowSummaryWindow("Sector Completed",
                     "You beat the last wave of the sector. Return to base!", () =>
                     {
                         GameTimer.SetPaused(false);
@@ -378,18 +388,20 @@ namespace StarSalvager
                         EndSectorState = false;
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
+                        ResetLevelTimer();
 
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     });
             }
             else
             {
                 
+                AudioController.CrossFadeTrack(MUSIC.NONE);
                 
-                m_levelManagerUI.ShowWaveSummaryWindow(
+                m_levelManagerUI.ShowSummaryWindow(
                     WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
@@ -402,7 +414,6 @@ namespace StarSalvager
                     
                     ScreenFade.Fade(() =>
                     {
-                        AudioController.FadeInMusic();
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
                 });
@@ -559,7 +570,7 @@ namespace StarSalvager
 
         private void InitLevel()
         {
-            AudioController.PlayTESTWaveMusic(Globals.CurrentWave, true);
+            AudioController.CrossFadeTrack(MUSIC.FRINGE);
             
             //--------------------------------------------------------------------------------------------------------//
             
@@ -568,7 +579,6 @@ namespace StarSalvager
             BotDead = false;
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
-            NumWavesInRow = 0;
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
@@ -680,14 +690,18 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
-            
-            if(_towLineRenderer)
+            m_runLostState = false;
+            m_endLevelOverride = false;
+
+
+            if (_towLineRenderer)
                 Destroy(_towLineRenderer.gameObject);
         }
 
         public void ResetLevelTimer()
         {
             m_levelTimer = 0;
+            NumWavesInRow = 0;
         }
 
         private void SetupLevelAnalytics()
@@ -724,9 +738,10 @@ namespace StarSalvager
                 return;
             
             GameTimer.SetPaused(true);
-            m_levelManagerUI.ShowSummaryScreen("Almost out of water",
+            m_levelManagerUI.ShowSummaryWindow("Almost out of water",
                 "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                () => { GameTimer.SetPaused(false); }
+                () => { GameTimer.SetPaused(false); },
+                GameUI.WindowSpriteSet.TYPE.RED
             );
         }
         
@@ -736,6 +751,14 @@ namespace StarSalvager
         {
             if (BotDead || (BotObject != null && BotObject.Destroyed))
             {
+                return;
+            }
+
+            BotObject.PROTO_GodMode = true;
+
+            if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
+            {
+                m_currentStage--;
                 return;
             }
             
@@ -850,6 +873,11 @@ namespace StarSalvager
         {
             if (_effect != null)
                 return;
+
+            if (bot.Rotating)
+            {
+                bot.ForceCompleteRotation();
+            }
             
             var lowestCoordinate =
                 bot.attachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
@@ -916,7 +944,6 @@ namespace StarSalvager
 
             if (value && !_effect)
             {
-                AudioController.FadeOutMusic();
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotObject);
             }
@@ -1032,8 +1059,7 @@ namespace StarSalvager
                     IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
                     if (attachable is Part core)
                     {
-
-                        core.SetupHealthValues(core.StartingHealth, core.StartingHealth / 2);
+                        core.SetupHealthValuesWithoutChangingSprite(core.StartingHealth, core.StartingHealth / 2);
                     }
                 }
             }
@@ -1065,27 +1091,28 @@ namespace StarSalvager
             if (!Globals.IsRecoveryBot)
             {
                 IsWaveProgressing = false;
-
-                Alert.ShowAlert("Bot wrecked",
+                m_levelManagerUI.ShowSummaryWindow("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
-                    "Deploy",
+                    /*"Deploy",*/
                     () =>
                     {
                         IsWaveProgressing = true;
                         RestartLevel();
-                    });
+                    }, GameUI.WindowSpriteSet.TYPE.RED);
 
                 //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
             }
             else
             {
                 //Alert.ShowDancers(true);
-                //AudioController.PlayMusic(MUSIC.GAME_OVER, true);
+                AudioController.CrossFadeTrack(MUSIC.NONE);
 
                 IsWaveProgressing = false;
+                m_runLostState = true;
                 //GameTimer.SetPaused(false);
 
                 OutroScene.gameObject.SetActive(true);
+                GameUI.Instance.FadeBackground(true);
             }
         }
 
@@ -1162,6 +1189,12 @@ namespace StarSalvager
             m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
         }
 
+        public void CompleteWave()
+        {
+            m_endLevelOverride = true;
+            TransitionToEndWaveState();
+        }
+
         //Unity Editor
         //====================================================================================================================//
 
@@ -1186,6 +1219,15 @@ namespace StarSalvager
         #endregion //Unity Editor
 
         //====================================================================================================================//
-        
+
+        public void OnApplicationQuit()
+        {
+            if (m_runLostState)
+            {
+                PlayerDataManager.ResetPlayerRunData();
+                PlayerDataManager.SavePlayerAccountData();
+            }
+        }
+
     }
 }

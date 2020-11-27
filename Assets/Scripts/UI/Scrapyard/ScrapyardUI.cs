@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -194,7 +196,7 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             ScreenFade.Fade(() =>
                             {
-                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD);
+                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
                             
                             return;
@@ -214,13 +216,15 @@ namespace StarSalvager.UI.Scrapyard
         
         private void TryLaunch()
         {
-            if (!_droneDesigner.IsFullyConnected())
+            if (PlayerDataManager.GetBlockDatas().CheckHasDisconnects())
             {
                 Alert.ShowAlert("Alert!",
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
                     () =>
                     {
-                        /*ShowMenu(MENU.DESIGN);*/
+                        backButton.gameObject.SetActive(true);
+
+                        SetWindowActive(Window.Workbench);
                     });
                 
                 return;

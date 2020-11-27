@@ -75,12 +75,14 @@ namespace StarSalvager
             if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
             {
                 _hasActiveEnemies = true;
-                AudioController.PlayMusic(MUSIC.ENEMY);
+                AudioController.CrossFadeTrack(MUSIC.ENEMY);
             }
             else if (_hasActiveEnemies && (m_enemies.Count == 0 || LevelManager.Instance.EndWaveState))
             {
                 _hasActiveEnemies = false;
-                AudioController.PlayMusic(MUSIC.GAMEPLAY, 2f);
+                
+                if(m_enemies.Count == 0 && !LevelManager.Instance.EndWaveState)
+                    AudioController.CrossFadePreviousTrack();
             }
         }
 
@@ -231,6 +233,44 @@ namespace StarSalvager
 
             m_spawnTimer = 0;
             m_nextStageToSpawn = stageNumber + 1;
+        }
+
+        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
+        {
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+        }
+
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                yield return StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+            }
+        }
+
+        private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
+        {
+            float timer = 0.0f;
+
+            while (timer < timeDelay)
+            {
+                if (!LevelManager.Instance.gameObject.activeSelf)
+                {
+                    yield break;
+                }
+                
+                while (isPaused)
+                {
+                    yield return null;
+                }
+
+                timer += Time.deltaTime;
+                
+                yield return null;
+            }
+
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+            SpawnEnemy(enemyId);
         }
 
         private void CheckSpawns()

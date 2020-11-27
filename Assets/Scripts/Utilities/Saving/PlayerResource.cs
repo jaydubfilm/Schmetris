@@ -12,6 +12,7 @@ namespace StarSalvager.Utilities.Saving
     [Serializable]
     public class PlayerResource
     {
+        [JsonIgnore] public BIT_TYPE BitType => bitType;
         [JsonProperty]
         private BIT_TYPE bitType;
 

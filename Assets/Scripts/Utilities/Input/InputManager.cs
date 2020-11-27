@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Missions;
+using StarSalvager.UI;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
@@ -263,6 +264,9 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.RightClick, RightClick
                 },
+                {
+                    Input.Actions.Default.SelfDestruct, SelfDestruct
+                }
                 //{
                 //    Input.Actions.Default.SelfDestruct, SelfDestruct
                 //}
@@ -320,6 +324,17 @@ namespace StarSalvager.Utilities.Inputs
             
             //FIXME Need to ensure that I map appropriate inputs to associated bots
             _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);
+        }
+
+        private void SelfDestruct(InputAction.CallbackContext ctx)
+        {
+            if (Console.Open)
+                return;
+            
+            if (ctx.ReadValue<float>() != 1f)
+                return;
+            
+            GameUI.Instance?.AbortPressed();
         }
         
         //Movement
@@ -546,7 +561,6 @@ namespace StarSalvager.Utilities.Inputs
         }
 
         #endregion //Rotation
-
 
         //====================================================================================================================//
         

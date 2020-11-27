@@ -61,6 +61,7 @@ namespace StarSalvager.Prototype
             panel2.SetActive(true);
 
             panelText2.text = dialogueLines[0].Item2;
+            
         }
 
 
@@ -111,16 +112,21 @@ namespace StarSalvager.Prototype
         //OutroScene Functions
         //====================================================================================================================//
 
-        private static void ShowFinalScreen()
+        private void ShowFinalScreen()
         {
-            Alert.ShowDancers(true);
-            AudioController.PlayMusic(MUSIC.GAME_OVER, true);
-            Alert.ShowAlert("GAME OVER",
+            GameUI.Instance.SetDancersActive(true);
+            AudioController.CrossFadeTrack(MUSIC.GAME_OVER);
+            /*AudioController.PlayMusic(MUSIC.GAME_OVER, true);*/
+            
+            gameObject.SetActive(false);
+            
+            LevelManager.Instance.GameUi.ShowWaveSummaryWindow(true,
+                "Game Over",
                 PlayerDataManager.GetRunSummaryString(),
-                "Finish",
                 () =>
                 {
-                    Alert.ShowDancers(false);
+                    
+                    //Alert.ShowDancers(false);
                     Globals.IsRecoveryBot = false;
                     GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
@@ -132,12 +138,21 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL);
+                        GameUI.Instance.SetDancersActive(false);
+                        GameUI.Instance.FadeBackground(false, true);
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                     });
                     
                     
-                });
-            Alert.SetLineHeight(90f);
+                },
+                GameUI.WindowSpriteSet.TYPE.ORANGE,
+                0.5f);
+            
+            /*Alert.ShowAlert("GAME OVER",
+                PlayerDataManager.GetRunSummaryString(),
+                "Finish",
+                );
+            Alert.SetLineHeight(90f);*/
         }
         
 

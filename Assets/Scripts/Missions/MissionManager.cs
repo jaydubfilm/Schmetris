@@ -155,6 +155,8 @@ namespace StarSalvager.Missions
                     {
                         LevelManager.Instance.WaveEndSummaryData.AddUnlockedMission(mission.missionName);
                     }
+
+                    PlayerDataManager.AddNewMissionAlert(mission);
                 }
             }
         }

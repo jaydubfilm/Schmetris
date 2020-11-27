@@ -7,6 +7,8 @@ namespace StarSalvager
         public IAttachable attachableBase;
         public DIRECTION moveDirection;
         public float distance;
+        
+        public Vector2Int startingCoordinates;
         public Vector2Int intendedCoordinates;
     }
 }

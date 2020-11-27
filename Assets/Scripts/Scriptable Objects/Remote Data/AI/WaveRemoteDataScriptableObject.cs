@@ -37,6 +37,11 @@ namespace StarSalvager.ScriptableObjects
 
         public StageRemoteData GetRemoteData(int waveNumber)
         {
+            if (waveNumber >= StageRemoteData.Count)
+            {
+                return StageRemoteData[StageRemoteData.Count - 1];
+            }
+            
             return StageRemoteData[waveNumber];
         }
 
@@ -153,6 +158,55 @@ namespace StarSalvager.ScriptableObjects
             return (enemies, bits);
         }
 
+        public List<BIT_TYPE> GetBitTypesInWave()
+        {
+            List<BIT_TYPE> bitTypes = new List<BIT_TYPE>();
+
+            foreach (var stageRemoteData in StageRemoteData)
+            {
+                foreach (var obstacleData in stageRemoteData.StageObstacleData)
+                {
+                    //TODO Need to get the shape data here, to determine what is in the wave
+                    switch (obstacleData.SelectionType)
+                    {
+                        case SELECTION_TYPE.ASTEROID:
+                        case SELECTION_TYPE.BUMPER:
+                            continue;
+                        case SELECTION_TYPE.SHAPE:
+                            List<BlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
+                            foreach (var blockData in shapeBlockData)
+                            {
+                                BIT_TYPE bitType = (BIT_TYPE)blockData.Type;
+                                if (!bitTypes.Contains(bitType))
+                                {
+                                    bitTypes.Add(bitType);
+                                }
+                            }
+
+                            break;
+                        case SELECTION_TYPE.CATEGORY:
+                            List<EditorShapeGeneratorData> shapesInCategory = FactoryManager.Instance.GetFactory<ShapeFactory>().GetCategoryData(obstacleData.Category);
+                            int numShapesInCategory = shapesInCategory.Count;
+                            foreach (var shapeInCategory in shapesInCategory)
+                            {
+                                foreach (var blockData in shapeInCategory.BlockData)
+                                {
+                                    BIT_TYPE bitType = (BIT_TYPE)blockData.Type;
+                                    if (!bitTypes.Contains(bitType))
+                                    {
+                                        bitTypes.Add(bitType);
+                                    }
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            return bitTypes;
+        }
+
 
 #if UNITY_EDITOR
 
@@ -167,7 +221,7 @@ namespace StarSalvager.ScriptableObjects
                 }
             }
         }*/
-        
+
         public void OnValidate()
         {
             for (int i = 0; i < StageRemoteData.Count; i++)

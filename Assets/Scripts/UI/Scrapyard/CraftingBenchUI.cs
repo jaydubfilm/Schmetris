@@ -170,6 +170,8 @@ namespace StarSalvager.UI.Scrapyard
 
             yield return new WaitForEndOfFrame();
 
+            var canvasSize = ((RectTransform)costWindowObject.GetComponentInParent<Canvas>().transform).sizeDelta;
+
             var windowTransform = (RectTransform) costWindowObject.transform;
             windowTransform.position = buttonTransform.position;
 
@@ -177,8 +179,10 @@ namespace StarSalvager.UI.Scrapyard
 
             var pos = windowTransform.localPosition;
             var sizeDelta = windowTransform.sizeDelta;
-            var yDelta = sizeDelta.y / 2;
-            var yBoundAbs = Screen.height / 2;
+            var yDelta = sizeDelta.y / 2f;
+            
+            
+            var yBoundAbs = canvasSize.y / 2f;
 
             if (pos.y + yDelta > yBoundAbs)
             {
@@ -200,7 +204,6 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateCostUI()
         {
-
             costView.ClearElements();
 
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
@@ -212,7 +215,7 @@ namespace StarSalvager.UI.Scrapyard
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(lastBlueprint.partType);
 
-            itemNameText.text = partRemoteData.name;
+            itemNameText.text = $"{partRemoteData.name} {lastBlueprint.level + 1}";
             itemDescriptionText.text = partRemoteData.description;
 
             var powerDraw = partRemoteData.levels[lastBlueprint.level].powerDraw;
@@ -222,7 +225,6 @@ namespace StarSalvager.UI.Scrapyard
                 itemPowerUsage.text = $"Power: {powerDraw} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.YELLOW]}/s";
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
-
 
             var hasIssue = CheckIfMissingFacility(resources, out var missingText);
 

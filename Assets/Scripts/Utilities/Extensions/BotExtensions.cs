@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -11,6 +12,61 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class BotExtensions
     {
+        /// <summary>
+        /// Convert world grid space to local space
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="gridPosition"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static Vector2 InverseTransformGridPoint(this Bot bot, Vector2Int gridPosition)
+        {
+            switch (bot.rotationTarget)
+            {
+                case 0:
+                    return gridPosition;
+                case 90:
+                    return new Vector2(gridPosition.y, -gridPosition.x);
+                case 180:
+                    return new Vector2(-gridPosition.x, -gridPosition.y);
+                case 270:
+                    return new Vector2(-gridPosition.y, gridPosition.x);
+                default: 
+                    throw new ArgumentOutOfRangeException(nameof(bot.rotationTarget), bot.rotationTarget, null);
+            }
+        }
+
+        /// <summary>
+        /// Convert local space to world grid space
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="localPosition"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static Vector2Int TransformPoint(this Bot bot, Vector2 localPosition)
+        {
+            Vector2 outValue;
+            switch (bot.rotationTarget)
+            {
+                case 0:
+                    outValue = localPosition.ToVector2Int();
+                    break;
+                case 90:
+                    outValue = new Vector2(localPosition.y, -localPosition.x);
+                    break;
+                case 180:
+                    outValue = new Vector2(-localPosition.x, -localPosition.y);
+                    break;
+                case 270:
+                    outValue = new Vector2(-localPosition.y, localPosition.x);
+                    break;
+                default: 
+                    throw new ArgumentOutOfRangeException(nameof(bot.rotationTarget), bot.rotationTarget, null);
+            }
+
+            return outValue.ToVector2Int();
+        }
+        
         //============================================================================================================//
         
         #region Import/Export
@@ -120,6 +176,103 @@ namespace StarSalvager.Utilities.Extensions
             {
                 collidableBase.SetColliderActive(state);
             }
+        }
+
+
+        //====================================================================================================================//
+
+        public static void MoveOrphanPieces(this Bot bot,IReadOnlyList<OrphanMoveData> orphans, Action onFinishedCallback)
+        {
+            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, bot.TEST_MergeTime, onFinishedCallback));
+        }
+        
+        private static IEnumerator MoveOrphanPiecesCoroutine(Bot bot,
+            IReadOnlyList<OrphanMoveData> orphans,
+            float seconds,
+            Action onFinishedCallback)
+        {
+            var compositeCollider2D = (CompositeCollider2D) bot.Collider;
+            var transform = bot.transform;
+            
+            //Prepare Bits to be moved
+            //--------------------------------------------------------------------------------------------------------//
+
+            foreach (var omd in orphans)
+            {
+                omd.attachableBase.Coordinate = omd.intendedCoordinates;
+                (omd.attachableBase as Bit)?.SetColliderActive(false);
+                
+                if (omd.attachableBase is ICanCombo iCanCombo)
+                    iCanCombo.IsBusy = true;
+            }
+            
+            //We're going to want to regenerate the shape while things are moving
+            compositeCollider2D.GenerateGeometry();
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            var t = 0f;
+            
+
+            //Same as above but for Orphans
+            //--------------------------------------------------------------------------------------------------------//
+
+            var orphanTransforms = orphans.Select(bt => bt.attachableBase.transform).ToArray();
+            var orphanTransformPositions = orphanTransforms.Select(bt => bt.localPosition).ToArray();
+            var orphanTargetPositions = orphans.Select(o =>
+                (Vector2)bot.TransformPoint(o.intendedCoordinates)).ToArray();
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+
+            //Move bits towards target
+            while (t / seconds <= 1f)
+            {
+                var td = t / seconds;
+
+                //Move the orphans into their new positions
+                //----------------------------------------------------------------------------------------------------//
+                
+                for (var i = 0; i < orphans.Count; i++)
+                {
+                    var bitTransform = orphanTransforms[i];
+                   
+                    //Debug.Log($"Start {bitTransform.position} End {position}");
+
+                    bitTransform.localPosition = Vector2.Lerp(orphanTransformPositions[i],
+                        orphanTargetPositions[i], td);
+                    
+                    SSDebug.DrawArrow(bitTransform.position,transform.TransformPoint(orphanTargetPositions[i]), Color.red);
+                }
+                
+                //----------------------------------------------------------------------------------------------------//
+
+                t += Time.deltaTime;
+
+                yield return null;
+            }
+
+            //Re-enable the colliders on our orphans, and ensure they're in the correct position
+            for (var i = 0; i < orphans.Count; i++)
+            {
+                var attachable = orphans[i].attachableBase;
+                orphanTransforms[i].localPosition = orphanTargetPositions[i];
+                
+                if(attachable is CollidableBase collidableBase)
+                    collidableBase.SetColliderActive(true);
+
+                if (attachable is ICanCombo canCombo)
+                    canCombo.IsBusy = false;
+            }
+            
+            //Now that everyone is where they need to be, wrap things up
+            //--------------------------------------------------------------------------------------------------------//
+
+            compositeCollider2D.GenerateGeometry();
+
+            onFinishedCallback?.Invoke();
+            
+            //--------------------------------------------------------------------------------------------------------//
         }
 
     }

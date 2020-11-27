@@ -11,7 +11,7 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class MissionUIElement : UIElement<Mission>, IPointerEnterHandler, IPointerExitHandler
+    public class MissionUIElement : UIElement<Mission>, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField, Required]
         private Image elementImage;
@@ -25,19 +25,53 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Button favouriteButton;
 
+        [SerializeField, Required]
+        private Image stickerImage;
+
         private Action<Mission, bool> _onHoverCallback;
+
+        private bool _canShowSticker;
+
+        private bool _isHovered;
+        private float _hoverTimer = 0;
 
         //Unity Functions
         //====================================================================================================================//
-        
+
+        public void Update()
+        {
+            if (_isHovered)
+            {
+                _hoverTimer += Time.deltaTime;
+            }
+            else
+            {
+                _hoverTimer = 0;
+            }
+
+            if (_hoverTimer >= 1)
+            {
+                if (data != null)
+                {
+                    if (PlayerDataManager.CheckHasMissionAlert(data))
+                    {
+                        PlayerDataManager.ClearNewMissionAlert(data);
+                        MissionsUI.CheckMissionNewAlertUpdate?.Invoke();
+                    }
+                }
+            }
+        }
+
         public void OnEnable()
         {
             MissionsUI.CheckMissionUITrackingToggles += OnCheckMissionUITrackingToggles;
+            MissionsUI.CheckMissionNewAlertUpdate += OnCheckMissionNewAlertUpdate;
         }
 
         public void OnDisable()
         {
             MissionsUI.CheckMissionUITrackingToggles -= OnCheckMissionUITrackingToggles;
+            MissionsUI.CheckMissionNewAlertUpdate -= OnCheckMissionNewAlertUpdate;
         }
 
         //====================================================================================================================//
@@ -56,18 +90,25 @@ namespace StarSalvager.UI.Scrapyard
             favouriteButton.interactable = true;
         }
 
+        private void OnCheckMissionNewAlertUpdate()
+        {
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
+        }
+
         //Init Functions
         //====================================================================================================================//
 
-        public void Init(Mission data, Action<Mission, bool> onHoverCallback, Action<Mission> onTrackPressedCallback)
+        public void Init(Mission data, Action<Mission, bool> onHoverCallback, Action<Mission> onTrackPressedCallback, bool canShowSticker = true)
         {
             Init(data);
 
             _onHoverCallback = onHoverCallback;
+            _canShowSticker = canShowSticker;
 
             var shouldTrack = onTrackPressedCallback != null;
             
             favouriteButton.gameObject.SetActive(shouldTrack);
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasMissionAlert(data));
 
             if (!shouldTrack)
                 return;
@@ -97,12 +138,28 @@ namespace StarSalvager.UI.Scrapyard
         
         public void OnPointerEnter(PointerEventData eventData)
         {
+            _isHovered = true;
+
             _onHoverCallback?.Invoke(data, true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            _isHovered = false;
+
             _onHoverCallback?.Invoke(null, false);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (data != null)
+            {
+                if (PlayerDataManager.CheckHasMissionAlert(data))
+                {
+                    PlayerDataManager.ClearNewMissionAlert(data);
+                    MissionsUI.CheckMissionNewAlertUpdate?.Invoke();
+                }
+            }
         }
 
         //====================================================================================================================//
