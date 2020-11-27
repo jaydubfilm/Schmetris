@@ -119,7 +119,7 @@ namespace StarSalvager
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles, m_currentStageData);
-                if (!LevelManager.Instance.EndWaveState)
+                if (GameManager.Instance.IsLevelActive())
                 {
                     SpawnNewRowOfObstacles();
                     TryMarkNewShapesOnGrid();
@@ -131,14 +131,14 @@ namespace StarSalvager
                 m_blendTimer += Time.deltaTime;
             }
 
-            if (!LevelManager.Instance.EndWaveState && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            if (GameManager.Instance.IsLevelActive() && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
             }
 
             HandleObstacleMovement();
 
-            if (!LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelActive())
             {
                 TrySpawnBonusShape();
             }
@@ -296,11 +296,6 @@ namespace StarSalvager
         {
             Vector3 amountShift = Vector3.up *
                                   ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-
-            if (LevelManager.Instance.EndWaveState)
-            {
-                amountShift *= 3;
-            }
 
             //TryMoveElements();
 

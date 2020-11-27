@@ -55,33 +55,35 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!LevelManager.Instance.EndWaveState)
+            if (!GameManager.Instance.IsLevelActive())
             {
-                if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
-                {
-                    SetupStage(m_nextStageToSpawn);
-                }
-                CheckSpawns();
+                return;
             }
+
+            if (LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            {
+                SetupStage(m_nextStageToSpawn);
+            }
+            CheckSpawns();
 
             HandleEnemyMovement();
         }
 
         private void LateUpdate()
         {
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (!GameManager.Instance.IsLevel() || GameManager.Instance.IsLevelBotDead())
                 return;
             
-            if (!_hasActiveEnemies && m_enemies.Count > 0 && !LevelManager.Instance.EndWaveState)
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.Instance.IsLevelActive())
             {
                 _hasActiveEnemies = true;
                 AudioController.CrossFadeTrack(MUSIC.ENEMY);
             }
-            else if (_hasActiveEnemies && (m_enemies.Count == 0 || LevelManager.Instance.EndWaveState))
+            else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.Instance.IsLevelEndWave()))
             {
                 _hasActiveEnemies = false;
                 
-                if(m_enemies.Count == 0 && !LevelManager.Instance.EndWaveState)
+                if(m_enemies.Count == 0 && GameManager.Instance.IsLevelActive())
                     AudioController.CrossFadePreviousTrack();
             }
         }
@@ -149,7 +151,7 @@ namespace StarSalvager
                     continue;
                 }
 
-                if (m_enemies[i].Frozen && !LevelManager.Instance.EndWaveState)
+                if (m_enemies[i].Frozen)
                 {
                     continue;
                 }

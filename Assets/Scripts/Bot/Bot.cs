@@ -205,7 +205,7 @@ namespace StarSalvager
             
             //See if the bot has completed the current wave
             //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
             
             if (Destroyed)
@@ -525,7 +525,7 @@ namespace StarSalvager
 
         public void TrySelfDestruct()
         {
-            if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
             {
                 return;
             }
@@ -1085,7 +1085,7 @@ namespace StarSalvager
         {
             destroyed = false;
             
-            if(LevelManager.Instance.EndWaveState)
+            if(!GameManager.Instance.IsLevelActive())
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
@@ -1119,7 +1119,7 @@ namespace StarSalvager
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
             
-            if(LevelManager.Instance.EndWaveState)
+            if(!GameManager.Instance.IsLevelActive())
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(worldPosition);
@@ -1238,7 +1238,7 @@ namespace StarSalvager
         
         public bool TryAsteroidDamageAt(Vector2 collisionPoint)
         {
-            if(LevelManager.Instance.EndWaveState)
+            if(!GameManager.Instance.IsLevelActive())
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);

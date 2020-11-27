@@ -55,9 +55,7 @@ namespace StarSalvager
             {
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
-                    LevelManager.Instance.IsWaveProgressing = true;
                     LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
-                    LevelManager.Instance.EndWaveState = false;
                     LevelManager.Instance.ResetLevelTimer();
 
                     ScreenFade.Fade(() =>

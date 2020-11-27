@@ -60,8 +60,6 @@ namespace StarSalvager
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
 
-        public bool IsWaveProgressing = true;
-
         private float m_levelTimer = 0;
         public float LevelTimer => m_levelTimer + m_waveTimer;
 
@@ -69,9 +67,6 @@ namespace StarSalvager
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
-
-        public bool EndWaveState = false;
-        public bool EndSectorState = false;
 
         private LevelManagerUI m_levelManagerUI;
 
@@ -197,7 +192,7 @@ namespace StarSalvager
                 return;
             }
 
-            if (!EndWaveState)
+            if (GameManager.Instance.IsLevelActive())
             {
                 ProgressStage();
             }
@@ -213,7 +208,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (EndWaveState) 
+            if (GameManager.Instance.IsLevelEndWave()) 
                 return;
             
             UpdateUIClock();
@@ -278,7 +273,7 @@ namespace StarSalvager
         
         private void ProgressStage()
         {
-            if (IsWaveProgressing)
+            if (GameManager.Instance.IsLevelActive())
             {
                 m_waveTimer += Time.deltaTime;
                 m_checkFlightLengthMissionTimer += Time.deltaTime;
@@ -366,8 +361,7 @@ namespace StarSalvager
                     {
                         GameUi.ShowRecoveryBanner(false);
                         GameTimer.SetPaused(false);
-                        EndWaveState = false;
-                        EndSectorState = false;
+                        GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
                         ResetLevelTimer();
@@ -378,14 +372,13 @@ namespace StarSalvager
                         });
                     });
             }
-            else if (EndSectorState)
+            /*else if (EndSectorState)
             {
                 m_levelManagerUI.ShowSummaryWindow("Sector Completed",
                     "You beat the last wave of the sector. Return to base!", () =>
                     {
                         GameTimer.SetPaused(false);
-                        EndWaveState = false;
-                        EndSectorState = false;
+                        GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
                         ResetLevelTimer();
@@ -395,10 +388,9 @@ namespace StarSalvager
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     });
-            }
+            }*/
             else
             {
-                
                 AudioController.CrossFadeTrack(MUSIC.NONE);
                 
                 m_levelManagerUI.ShowSummaryWindow(
@@ -407,29 +399,14 @@ namespace StarSalvager
                     () => 
                 {
 
-                    GameManager.Instance.SetCurrentGameState(GameState.UniverseMapDuringFlight);
-                    IsWaveProgressing = true;
+                    GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                     ProcessScrapyardUsageBeginAnalytics();
-                    EndWaveState = false;
-                    
+
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
                 });
-                
-                /*//Turn wave end summary data into string, post in alert, and clear wave end summary data
-                m_levelManagerUI.ShowSummaryScreen(WaveEndSummaryData.WaveEndTitle,
-                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                    () => 
-                    {
-                        Globals.IsBetweenWavesInUniverseMap = true;
-                        IsWaveProgressing = true;
-                        ProcessScrapyardUsageBeginAnalytics();
-                        EndWaveState = false;
-                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
-                    },
-                    "Continue");*/
             }
 
 
@@ -449,27 +426,11 @@ namespace StarSalvager
 
             EnemiesKilledInWave.Clear();
             MissionManager.ProcessWaveComplete();
-
-            /*if (PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource <= 0)
-            {
-                m_levelManagerUI.ShowSummaryScreen("Out of water",
-                    "Your scrapyard is out of water. You must return now.", () =>
-                    {
-                        IsWaveProgressing = true;
-                        EndWaveState = false;
-                        SavePlayerData();
-                        m_levelManagerUI.ToggleBetweenWavesUIActive(false);
-                        ProcessScrapyardUsageBeginAnalytics();
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL);
-                    });
-            }*/
             
             ProjectileManager.CleanProjectiles();
 
             MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
                 new MissionProgressEventData());
-
-            //ProjectileManager.UpdateForces();
 
             Globals.IsRecoveryBot = false;
         }
@@ -679,7 +640,7 @@ namespace StarSalvager
             BotDead = false;
             m_waveTimer = 0;
 
-            if (!GameManager.Instance.IsBetweenWavesUniverseMap())
+            if (!GameManager.Instance.IsUniverseMapBetweenWaves())
             {
                 m_levelTimer = 0;
             }
@@ -761,7 +722,9 @@ namespace StarSalvager
                 m_currentStage--;
                 return;
             }
-            
+
+            GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
+
             SavePlayerData();
 
             //Unlock loot for completing wave
@@ -792,7 +755,6 @@ namespace StarSalvager
 
             Toast.AddToast(endWaveMessage);
 
-            EndWaveState = true;
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
@@ -986,7 +948,7 @@ namespace StarSalvager
                     }
                     case RDSValue<BlockData> rdsValueBlockData:
                     {
-                        if (EndWaveState)
+                        if (!GameManager.Instance.IsLevelActive())
                         {
                             switch (rdsValueBlockData.rdsValue.ClassType)
                             {
@@ -1065,7 +1027,7 @@ namespace StarSalvager
             }
 
             SavePlayerData();
-            BotDead = true;
+            GameManager.Instance.SetCurrentGameState(GameState.LevelBotDead);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
@@ -1090,13 +1052,11 @@ namespace StarSalvager
 
             if (!Globals.IsRecoveryBot)
             {
-                IsWaveProgressing = false;
                 m_levelManagerUI.ShowSummaryWindow("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
                     /*"Deploy",*/
                     () =>
                     {
-                        IsWaveProgressing = true;
                         RestartLevel();
                     }, GameUI.WindowSpriteSet.TYPE.RED);
 
@@ -1107,7 +1067,6 @@ namespace StarSalvager
                 //Alert.ShowDancers(true);
                 AudioController.CrossFadeTrack(MUSIC.NONE);
 
-                IsWaveProgressing = false;
                 m_runLostState = true;
                 //GameTimer.SetPaused(false);
 
@@ -1123,6 +1082,8 @@ namespace StarSalvager
 
         public void Activate()
         {
+            GameManager.Instance.SetCurrentGameState(GameState.LevelActive);
+            
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
             
             InitLevel();

@@ -141,13 +141,9 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapDuringFlight);
-
-                m_levelManager.IsWaveProgressing = true;
+                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
-                LevelManager.Instance.EndWaveState = false;
-                
                 
                 ScreenFade.Fade(() =>
                 {
@@ -157,10 +153,10 @@ namespace StarSalvager.UI
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
+                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
-                LevelManager.Instance.EndWaveState = false;
+                
                 ScreenFade.Fade(() =>
                 {
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
@@ -170,10 +166,10 @@ namespace StarSalvager.UI
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
-                m_levelManager.SavePlayerData();
+                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
+
                 ScreenFade.Fade(() =>
                 {
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
@@ -194,7 +190,6 @@ namespace StarSalvager.UI
 
                         GameUI.Instance.ShowRecoveryBanner(false);
                         Globals.IsRecoveryBot = false;
-                        m_levelManager.IsWaveProgressing = true;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
                         
@@ -209,13 +204,11 @@ namespace StarSalvager.UI
 
             deathWindowRetryButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
                 m_levelManager.RestartLevel();
             });
 
             deathWindowScrapyrdButton.onClick.AddListener(() =>
             {
-                m_levelManager.IsWaveProgressing = true;
                 GameTimer.SetPaused(false);
 
                 ScreenFade.Fade(() =>
@@ -227,7 +220,6 @@ namespace StarSalvager.UI
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                m_levelManager.IsWaveProgressing = true;
             });
             
             ToggleBetweenWavesUIActive(false);
@@ -384,11 +376,10 @@ namespace StarSalvager.UI
                 return;
             
             
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
             
             pauseWindow.SetActive(true);
-            //pauseText.gameObject.SetActive(false);
         }
     }
 }

@@ -125,7 +125,7 @@ namespace StarSalvager
             if (bot != null)
             {
 
-                if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+                if (!GameManager.Instance.IsLevelActive())
                 {
                     return;
                 }

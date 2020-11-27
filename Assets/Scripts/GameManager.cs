@@ -14,9 +14,10 @@ namespace StarSalvager
         AccountMenu,
         Scrapyard,
         UniverseMapBeforeFlight,
-        UniverseMapDuringFlight,
-        LevelAlive,
-        LevelLost
+        UniverseMapBetweenWaves,
+        LevelActive,
+        LevelEndWave,
+        LevelBotDead
     }
     
     [DefaultExecutionOrder(-10000)]
@@ -50,14 +51,29 @@ namespace StarSalvager
             m_currentGameState = newGameState;
         }
 
-        public bool IsInLevel()
+        public bool IsLevel()
         {
-            return m_currentGameState == GameState.LevelAlive || m_currentGameState == GameState.LevelLost;
+            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
         }
 
-        public bool IsBetweenWavesUniverseMap()
+        public bool IsLevelActive()
         {
-            return m_currentGameState == GameState.UniverseMapDuringFlight;
+            return m_currentGameState == GameState.LevelActive;
+        }
+
+        public bool IsLevelEndWave()
+        {
+            return m_currentGameState == GameState.LevelEndWave;
+        }
+
+        public bool IsLevelBotDead()
+        {
+            return m_currentGameState == GameState.LevelBotDead;
+        }
+
+        public bool IsUniverseMapBetweenWaves()
+        {
+            return m_currentGameState == GameState.UniverseMapBetweenWaves;
         }
     }
 }
