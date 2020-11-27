@@ -8,10 +8,21 @@ using UnityEngine;
 
 namespace StarSalvager
 {
+    public enum GameState
+    {
+        MainMenu,
+        AccountMenu,
+        Scrapyard,
+        UniverseMapBeforeFlight,
+        UniverseMapDuringFlight,
+        LevelAlive,
+        LevelLost
+    }
+    
     [DefaultExecutionOrder(-10000)]
     public class GameManager : Singleton<GameManager>
     {
-        public bool IsSaveFileLoaded = false;
+        private GameState m_currentGameState = GameState.MainMenu;
         
         [SerializeField, Required]
         private GameSettingsScriptableObject m_gameSettings;
@@ -27,6 +38,26 @@ namespace StarSalvager
         public void Start()
         {
             m_gameSettings.SetupGameSettings();
+        }
+
+        public GameState GetCurrentGameState()
+        {
+            return m_currentGameState;
+        }
+
+        public void SetCurrentGameState(GameState newGameState)
+        {
+            m_currentGameState = newGameState;
+        }
+
+        public bool IsInLevel()
+        {
+            return m_currentGameState == GameState.LevelAlive || m_currentGameState == GameState.LevelLost;
+        }
+
+        public bool IsBetweenWavesUniverseMap()
+        {
+            return m_currentGameState == GameState.UniverseMapDuringFlight;
         }
     }
 }
