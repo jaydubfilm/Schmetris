@@ -1321,7 +1321,7 @@ namespace StarSalvager
             }
 
             //Need to pass the diameter not the radius
-            CreateBombEffect(part, radius * 2f);
+            CreateFreezeEffect(part, radius * 2f);
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
@@ -1808,23 +1808,7 @@ namespace StarSalvager
 
         private void CreateBombEffect(in Part part, in float range)
         {
-            Color startColor;
-
-            switch (part.Type)
-            {
-                case PART_TYPE.BOMB:
-                    startColor = Color.red;
-                    break;
-                case PART_TYPE.FREEZE:
-                    startColor = Color.cyan;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(part.Type), part.Type, null);
-            }
-
-            var endColor = startColor;
-            endColor.a = 0f;
-            
+           
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreatePartEffect(EffectFactory.PART_EFFECT.BOMB);
 
@@ -1832,7 +1816,21 @@ namespace StarSalvager
             
             var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
             
-            //effectAnimationComponent.SetAllElementColors(startColor, endColor);
+            effectAnimationComponent.SetSimulationSize(range);
+            
+            Destroy(effect, effectAnimationComponent.AnimationTime);
+        }
+        
+        private void CreateFreezeEffect(in Part part, in float range)
+        {
+           
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.FREEZE);
+
+            effect.transform.position = part.transform.position;
+            
+            var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
+            
             effectAnimationComponent.SetSimulationSize(range);
             
             Destroy(effect, effectAnimationComponent.AnimationTime);

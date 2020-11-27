@@ -45,7 +45,7 @@ MonoBehaviour:
     type: 3}
   gunEffectPrefab: {fileID: 5867005859306974768, guid: c5057bf223f798c44afaafa78f87e25f,
     type: 3}
-  shockwaveEffectPrefab: {fileID: 2720145993455503049, guid: 3771c2b4c34de2a46b4a811f4cff2532,
+  freezeShockwaveEffectPrefab: {fileID: 6011450431445295622, guid: d3cd62f3df4f65644b28833cd394f055,
     type: 3}
   bombShockwaveEffectPrefab: {fileID: 8983489692315965813, guid: fe1611459a1a8074392e3ac9454ea520,
     type: 3}
