@@ -344,6 +344,9 @@ namespace StarSalvager.Audio
 
         private void CrossFadeMusic(MUSIC target)
         {
+            if (target == _playingMusic)
+                return;
+            
             FadeOutMusic(_playingMusic);
             FadeInMusic(target);
 

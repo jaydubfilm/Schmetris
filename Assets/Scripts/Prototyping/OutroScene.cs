@@ -61,6 +61,7 @@ namespace StarSalvager.Prototype
             panel2.SetActive(true);
 
             panelText2.text = dialogueLines[0].Item2;
+            
         }
 
 
@@ -113,7 +114,8 @@ namespace StarSalvager.Prototype
 
         private void ShowFinalScreen()
         {
-            Alert.ShowDancers(true);
+            GameUI.Instance.SetDancersActive(true);
+            AudioController.CrossFadeTrack(MUSIC.GAME_OVER);
             /*AudioController.PlayMusic(MUSIC.GAME_OVER, true);*/
             
             gameObject.SetActive(false);
@@ -123,7 +125,8 @@ namespace StarSalvager.Prototype
                 PlayerDataManager.GetRunSummaryString(),
                 () =>
                 {
-                    Alert.ShowDancers(false);
+                    
+                    //Alert.ShowDancers(false);
                     Globals.IsRecoveryBot = false;
                     GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
@@ -135,6 +138,8 @@ namespace StarSalvager.Prototype
                     
                     ScreenFade.Fade(() =>
                     {
+                        GameUI.Instance.SetDancersActive(false);
+                        GameUI.Instance.FadeBackground(false, true);
                         SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                     });
                     
