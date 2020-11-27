@@ -235,15 +235,22 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
         }
 
-        public void InsertEnemySpawn(string enemyName, float timeDelay)
+        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
         {
-            StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+        }
+
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                yield return StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+            }
         }
 
         private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
         {
             float timer = 0.0f;
-            string enemyType = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
 
             while (timer < timeDelay)
             {
@@ -258,9 +265,12 @@ namespace StarSalvager
                 }
 
                 timer += Time.deltaTime;
+                
+                yield return null;
             }
 
-            SpawnEnemy(enemyType);
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+            SpawnEnemy(enemyId);
         }
 
         private void CheckSpawns()

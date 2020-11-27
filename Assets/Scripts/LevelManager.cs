@@ -1185,6 +1185,11 @@ namespace StarSalvager
             m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
         }
 
+        public void CompleteWave()
+        {
+            throw new NotImplementedException();
+        }
+
         //Unity Editor
         //====================================================================================================================//
 
