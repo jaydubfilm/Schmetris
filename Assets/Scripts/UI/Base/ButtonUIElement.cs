@@ -18,6 +18,7 @@ namespace StarSalvager.UI
             }
         }
 
+        [SerializeField]
         private Button _button;
 
         public abstract void Init(T data, Action OnPressed);
