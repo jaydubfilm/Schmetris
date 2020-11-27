@@ -259,10 +259,10 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - m_enemyType: 599761cf-c12a-45b0-bbab-918008384f28
     m_name: SuperParasite
-    m_health: 0
-    m_movementSpeed: 0
-    m_attackDamage: 0
-    m_rateOfFire: 0
+    m_health: 100
+    m_movementSpeed: 6
+    m_attackDamage: 2
+    m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 5
     m_rdsEnemyData:
@@ -318,10 +318,10 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - m_enemyType: 842a2d03-61be-4bc2-8391-ae25826a30af
     m_name: SuperBallHead
-    m_health: 0
-    m_movementSpeed: 0
-    m_attackDamage: 0
-    m_rateOfFire: 0
+    m_health: 125
+    m_movementSpeed: 3
+    m_attackDamage: 25
+    m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
     m_maxDrops: 7
     m_rdsEnemyData:
@@ -377,10 +377,10 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - m_enemyType: e90054ce-9f64-4b84-9aab-5c6808cf3c67
     m_name: SuperMosquito
-    m_health: 0
-    m_movementSpeed: 0
-    m_attackDamage: 0
-    m_rateOfFire: 0
+    m_health: 125
+    m_movementSpeed: 4
+    m_attackDamage: 15
+    m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 8
     m_rdsEnemyData:
@@ -436,10 +436,10 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - m_enemyType: 1f78cb36-17d7-48d7-8e1c-a44536df7949
     m_name: SuperSquid
-    m_health: 0
-    m_movementSpeed: 0
-    m_attackDamage: 0
-    m_rateOfFire: 0
+    m_health: 200
+    m_movementSpeed: 7
+    m_attackDamage: 35
+    m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
     m_maxDrops: 8
     m_rdsEnemyData:

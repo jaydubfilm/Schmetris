@@ -140,7 +140,7 @@ namespace StarSalvager.Prototype
                     
                     
                 },
-                true,
+                GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
             
             /*Alert.ShowAlert("GAME OVER",

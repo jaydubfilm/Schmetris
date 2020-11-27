@@ -21,8 +21,8 @@ namespace StarSalvager
 
         public void CraftBlueprint(Blueprint blueprint)
         {
-            if (!PlayerDataManager.CanAffordPart(blueprint.partType, blueprint.level)
-                || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1))
+            if (!Globals.TestingFeatures && (!PlayerDataManager.CanAffordPart(blueprint.partType, blueprint.level)
+                || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1)))
             {
                 if (!Toast.Instance.showingToast)
                     Toast.AddToast("Not enough resources to craft");
@@ -46,7 +46,10 @@ namespace StarSalvager
                 Health = startingHealth
             };
 
-            PlayerDataManager.SubtractPartCosts(blueprint.partType, blueprint.level, false);
+            if (!Globals.TestingFeatures)
+            {
+                PlayerDataManager.SubtractPartCosts(blueprint.partType, blueprint.level, false);
+            }
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
             {

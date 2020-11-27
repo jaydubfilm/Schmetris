@@ -343,6 +343,8 @@ namespace StarSalvager
                 return;
             }
 
+            BotObject.PROTO_GodMode = false;
+
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
@@ -356,8 +358,9 @@ namespace StarSalvager
 
             if (Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryScreen("Bot Recovered",
-                    "You have recovered your wrecked bot. Return to base!", () =>
+                m_levelManagerUI.ShowSummaryWindow("Bot Recovered",
+                    "You have recovered your wrecked bot. Return to base!", 
+                    () =>
                     {
                         GameUi.ShowRecoveryBanner(false);
                         GameTimer.SetPaused(false);
@@ -375,7 +378,7 @@ namespace StarSalvager
             }
             else if (EndSectorState)
             {
-                m_levelManagerUI.ShowSummaryScreen("Sector Completed",
+                m_levelManagerUI.ShowSummaryWindow("Sector Completed",
                     "You beat the last wave of the sector. Return to base!", () =>
                     {
                         GameTimer.SetPaused(false);
@@ -396,7 +399,7 @@ namespace StarSalvager
                 
                 AudioController.CrossFadeTrack(MUSIC.NONE);
                 
-                m_levelManagerUI.ShowWaveSummaryWindow(
+                m_levelManagerUI.ShowSummaryWindow(
                     WaveEndSummaryData.WaveEndTitle,
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
@@ -731,9 +734,10 @@ namespace StarSalvager
                 return;
             
             GameTimer.SetPaused(true);
-            m_levelManagerUI.ShowSummaryScreen("Almost out of water",
+            m_levelManagerUI.ShowSummaryWindow("Almost out of water",
                 "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                () => { GameTimer.SetPaused(false); }
+                () => { GameTimer.SetPaused(false); },
+                GameUI.WindowSpriteSet.TYPE.RED
             );
         }
         
@@ -745,6 +749,8 @@ namespace StarSalvager
             {
                 return;
             }
+
+            BotObject.PROTO_GodMode = true;
 
             if (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles)
             {
@@ -1081,15 +1087,14 @@ namespace StarSalvager
             if (!Globals.IsRecoveryBot)
             {
                 IsWaveProgressing = false;
-
-                Alert.ShowAlert("Bot wrecked",
+                m_levelManagerUI.ShowSummaryWindow("Bot wrecked",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
-                    "Deploy",
+                    /*"Deploy",*/
                     () =>
                     {
                         IsWaveProgressing = true;
                         RestartLevel();
-                    });
+                    }, GameUI.WindowSpriteSet.TYPE.RED);
 
                 //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
             }

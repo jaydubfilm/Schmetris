@@ -1830,10 +1830,10 @@ namespace StarSalvager
 
             effect.transform.position = part.transform.position;
             
-            var effectAnimationComponent = effect.GetComponent<ScaleColorSpriteAnimation>();
+            var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
             
-            effectAnimationComponent.SetAllElementColors(startColor, endColor);
-            effectAnimationComponent.SetAllElementScales(Vector2.one * 0.2f, Vector2.one * range);
+            //effectAnimationComponent.SetAllElementColors(startColor, endColor);
+            effectAnimationComponent.SetSimulationSize(range);
             
             Destroy(effect, effectAnimationComponent.AnimationTime);
         }
