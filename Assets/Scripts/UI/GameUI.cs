@@ -158,9 +158,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image yellowSliderGlow;
 
-        /*[SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image heatSliderGlow;*/
-
         //Top Left Window
         //============================================================================================================//
 
@@ -171,15 +168,6 @@ namespace StarSalvager.UI
         private Slider gearsSlider;
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text patchPointsText;
-        
-        /*[SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text sectorText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text timeText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Image clockImage;*/
 
         //Top Right Window
         //====================================================================================================================//
@@ -203,11 +191,8 @@ namespace StarSalvager.UI
         //Bottom Left Window
         //============================================================================================================//
 
-        /*[SerializeField, Required, FoldoutGroup("BL Window")]
-        private TMP_Text levelText;*/
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderCover[] sliderCovers;
-        
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -230,14 +215,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         private SmartWeaponIcon[] SmartWeaponIcons;
-        
-        /*[SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite normalSprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite readySprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite disabledSprite;*/
-       
+
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         //private SmartWeapon[] SmartWeaponsUI;
         private SmartWeaponV2[] SmartWeaponsUI;
@@ -258,6 +236,15 @@ namespace StarSalvager.UI
 
         //Wave Summary Window
         //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image fadeImage;
+
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private float fadeTime = 1f;
+
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private GameObject dancersObject;
+        
         
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
@@ -274,16 +261,6 @@ namespace StarSalvager.UI
         private Image crossbarImage;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image[] verticalBarImages;
-        
-        /*[Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite normalBackgroundSprite;
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite normalCrossbarSprite;
-        
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite altBackgroundSprite;
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite altCrossbarSprite;*/
 
         [SerializeField, FoldoutGroup("Summary Window")]
         private WindowSpriteSet[] spriteSets;
@@ -474,6 +451,9 @@ namespace StarSalvager.UI
             ShowLiquidSliders(null);
 
             OutlineMagnet(false);
+
+            SetDancersActive(false);
+            FadeBackground(false, true);
         }
 
         private void InitSliderText()
@@ -918,6 +898,58 @@ namespace StarSalvager.UI
         }
 
         #endregion //Wave Summary Window
+        
+        #region Dancers
+
+        public void SetDancersActive(bool state)
+        {
+            dancersObject.SetActive(state);
+        }
+        
+        #endregion
+
+        public void FadeBackground(bool fadeIn, bool instant = false)
+        {
+
+
+            var startColor = fadeIn ? Color.clear : Color.black;
+            var endColor = fadeIn ? Color.black : Color.clear;
+
+            if (instant)
+            {
+                fadeImage.color = endColor;
+                return;
+            }
+            
+            if (_fading)
+                return;
+
+            StartCoroutine(FadeBackground(fadeTime, startColor, endColor));
+        }
+
+        private bool _fading;
+        private IEnumerator FadeBackground(float time, Color startColor, Color endColor)
+        {
+            _fading = true;
+            float t = 0;
+
+            fadeImage.color = startColor;
+            
+            while (t / time <= 1f)
+            {
+                fadeImage.color = Color.Lerp(startColor, endColor, t / time);
+                
+                
+                t += Time.deltaTime;
+                
+                yield return null;
+            }
+
+
+            fadeImage.color = endColor;
+
+            _fading = false;
+        }
         
 
 
