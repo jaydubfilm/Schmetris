@@ -65,6 +65,9 @@ public class Toast : Singleton<Toast>
     public static void SetToastArea(in RectTransform newArea)
     {
         var toastArea = Instance.toastArea;
+
+        if (!toastArea)
+            return;
         
         toastArea.anchorMin = newArea.anchorMin;
         toastArea.anchorMax = newArea.anchorMax;

@@ -396,6 +396,8 @@ namespace StarSalvager.UI
 
         private void OnDisable()
         {
+            Toast.SetToastArea(transform as RectTransform);
+            
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
         }
@@ -1015,9 +1017,15 @@ namespace StarSalvager.UI
             
             /*var viewportPoint = CameraController.Camera.WorldToViewportPoint(botWorldPosition);
             var canvasPoint = effectArea.sizeDelta * viewportPoint;*/
-            var targetPosition = RectTransformUtility.WorldToScreenPoint(CameraController.Camera, botWorldPosition);
+            var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
+            
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                effectArea,
+                screenPoint,
+                null,
+                out var newPosition);
 
-            StartCoroutine(PatchPointEffectCoroutine(targetPosition, patchSprite, count));
+            StartCoroutine(PatchPointEffectCoroutine(newPosition, patchSprite, count));
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)
@@ -1035,7 +1043,7 @@ namespace StarSalvager.UI
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
-                trans.anchoredPosition = startPosition;
+                trans.localPosition = startPosition;
                 transforms[i] = trans;
 
                 spawnPositions[i] = startPosition +
@@ -1052,7 +1060,7 @@ namespace StarSalvager.UI
 
                 for (int i = 0; i < count; i++)
                 {
-                    transforms[i].anchoredPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
+                    transforms[i].localPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
                     transforms[i].localScale = Vector3.Lerp(Vector3.zero, Vector3.one, td);
                     transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }
