@@ -160,6 +160,8 @@ namespace StarSalvager
 
         private float botMoveOffScreenSpeed = 1.0f;
 
+        private bool m_endLevelOverride = false;
+
         #endregion //Properties
 
         //Unity Functions
@@ -689,8 +691,10 @@ namespace StarSalvager
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
             m_runLostState = false;
-            
-            if(_towLineRenderer)
+            m_endLevelOverride = false;
+
+
+            if (_towLineRenderer)
                 Destroy(_towLineRenderer.gameObject);
         }
 
@@ -752,7 +756,7 @@ namespace StarSalvager
 
             BotObject.PROTO_GodMode = true;
 
-            if (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles)
+            if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
             {
                 m_currentStage--;
                 return;
@@ -1187,7 +1191,8 @@ namespace StarSalvager
 
         public void CompleteWave()
         {
-            throw new NotImplementedException();
+            m_endLevelOverride = true;
+            TransitionToEndWaveState();
         }
 
         //Unity Editor
