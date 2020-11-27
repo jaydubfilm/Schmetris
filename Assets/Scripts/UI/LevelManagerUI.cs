@@ -141,7 +141,7 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                Globals.IsBetweenWavesInUniverseMap = true;
+                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapDuringFlight);
 
                 m_levelManager.IsWaveProgressing = true;
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();

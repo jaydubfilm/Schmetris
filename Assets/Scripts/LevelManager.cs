@@ -406,8 +406,8 @@ namespace StarSalvager
                     m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                     () => 
                 {
-                    
-                    Globals.IsBetweenWavesInUniverseMap = true;
+
+                    GameManager.Instance.SetCurrentGameState(GameState.UniverseMapDuringFlight);
                     IsWaveProgressing = true;
                     ProcessScrapyardUsageBeginAnalytics();
                     EndWaveState = false;
@@ -679,7 +679,7 @@ namespace StarSalvager
             BotDead = false;
             m_waveTimer = 0;
 
-            if (!Globals.IsBetweenWavesInUniverseMap)
+            if (!GameManager.Instance.IsBetweenWavesUniverseMap())
             {
                 m_levelTimer = 0;
             }

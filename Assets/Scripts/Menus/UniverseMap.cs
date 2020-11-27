@@ -92,8 +92,13 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            backButton.gameObject.SetActive(!Globals.IsBetweenWavesInUniverseMap);
-            betweenWavesScrapyardButton.gameObject.SetActive(Globals.IsBetweenWavesInUniverseMap);
+            if (GameManager.Instance.GetCurrentGameState() != GameState.UniverseMapDuringFlight)
+            {
+                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
+            }
+            
+            backButton.gameObject.SetActive(!GameManager.Instance.IsBetweenWavesUniverseMap());
+            betweenWavesScrapyardButton.gameObject.SetActive(GameManager.Instance.IsBetweenWavesUniverseMap());
 
             if (PROTO_useSum)
             {
@@ -123,7 +128,7 @@ namespace StarSalvager.UI
                 universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null && PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 && !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
             }
 
-            if (Globals.IsBetweenWavesInUniverseMap)
+            if (GameManager.Instance.IsBetweenWavesUniverseMap())
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
                 CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
@@ -189,8 +194,6 @@ namespace StarSalvager.UI
                         universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }
-
-                Globals.IsBetweenWavesInUniverseMap = false;
             }
             else
             {
