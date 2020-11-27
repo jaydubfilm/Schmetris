@@ -339,7 +339,7 @@ namespace StarSalvager.UI
         #endregion //Properties
 
         //====================================================================================================================//
-        
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -369,6 +369,7 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
+            Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;

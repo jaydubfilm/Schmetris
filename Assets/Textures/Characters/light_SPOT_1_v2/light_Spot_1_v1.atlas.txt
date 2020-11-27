@@ -1,0 +1,20 @@
+
+light_Spot_1_v1.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+spotlight_BOTTOM_1_v1
+  rotate: true
+  xy: 344, 193
+  size: 797, 193
+  orig: 797, 193
+  offset: 0, 0
+  index: -1
+spotlight_TOP_1_v1
+  rotate: false
+  xy: 0, 0
+  size: 342, 990
+  orig: 342, 990
+  offset: 0, 0
+  index: -1

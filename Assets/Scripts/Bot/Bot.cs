@@ -28,6 +28,7 @@ using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -1182,25 +1183,36 @@ namespace StarSalvager
                     AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
                     break;
             }
+            
+            if(withSound && !attachableDestroyed)
+                AudioController.PlaySound(SOUND.PART_DAMAGE);
 
             if (!attachableDestroyed)
                 return;
+            
+            if(withSound)
+                AudioController.PlaySound(SOUND.PART_EXPLODE);
             
             //Things to do if the attachable is destroyed
             //--------------------------------------------------------------------------------------------------------//
 
             switch (closestAttachable)
             {
-                case Part core:
+                case Part deadPart when deadPart.Type == PART_TYPE.CORE:
+                    CreateCoreDeathEffect();
+
+                    cinemachineImpulseSource.GenerateImpulse(5);
+                    GameUi.FlashBorder();
+                    
+                    Destroy("Core Destroyed");
+                    break;
+                case Part _:
                     CreateExplosionEffect(closestAttachable.transform.position);
 
                     cinemachineImpulseSource.GenerateImpulse(5);
                     GameUi.FlashBorder();
                     
-                    if (core.Type == PART_TYPE.CORE)
-                        Destroy("Core Destroyed");
-                    else
-                        BotPartsLogic.PopulatePartsList();
+                    BotPartsLogic.PopulatePartsList();
                     break;
                 default:
                     RemoveAttachable(closestAttachable);
@@ -2386,14 +2398,18 @@ namespace StarSalvager
             Destroy(effect, time);
         }
         
-        private void CreateExplosionEffect(Vector2 worldPosition)
+        private void CreateExplosionEffect(Vector2 worldPosition, float scale = 1f)
         {
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.EXPLOSION);
             LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
             explosion.transform.position = worldPosition;
 
-            var time = explosion.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
+            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
+            var time = particleScaling.AnimationTime;
+            
+            if(scale != 1f)
+                particleScaling.SetSimulationSize(scale);
             
             Destroy(explosion, time);
         }
@@ -2441,7 +2457,7 @@ namespace StarSalvager
             CreateBonusShapeParticleEffect(center);
 
         }
-        private void CreateBonusShapeEffect(Transform parent)
+        /*private void CreateBonusShapeEffect(Transform parent)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
@@ -2450,7 +2466,7 @@ namespace StarSalvager
             var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
             
             Destroy(effect, time);
-        }
+        }*/
         private void CreateBonusShapeParticleEffect(Vector3 position)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2461,6 +2477,45 @@ namespace StarSalvager
             var time = effect.GetComponent<ParticleSystemGroupScaling>().AnimationTime;
             
             Destroy(effect, time);
+        }
+        
+        private void CreateBombEffect(in Vector2 worldPosition, in float range)
+        {
+           
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.BOMB);
+
+            effect.transform.position = worldPosition;
+            
+            var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
+            
+            effectAnimationComponent.SetSimulationSize(range);
+            
+            Destroy(effect, effectAnimationComponent.AnimationTime);
+        }
+
+        private void CreateCoreDeathEffect()
+        {
+            StartCoroutine(CoreDeathEffectCoroutine());
+        }
+
+        private IEnumerator CoreDeathEffectCoroutine()
+        {
+            //TODO Create main shockwave
+            CreateBombEffect(transform.position, 20f);
+            
+            //TODO Create 3-5 explosions around core
+            var count = Random.Range(3, 6);
+            for (int i = 0; i < count; i++)
+            {
+                var corePosition = (Vector2)transform.position;
+                var offset = Random.insideUnitCircle * 2f;
+                CreateExplosionEffect(corePosition + offset, Random.Range(3f,10f));
+                AudioController.PlaySound(SOUND.PART_EXPLODE);
+                
+                yield return new WaitForSeconds(Random.Range(0.1f, 1f));
+            }
+            
         }
 
         #endregion //Creating Effects
