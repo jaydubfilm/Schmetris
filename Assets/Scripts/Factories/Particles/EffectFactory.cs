@@ -179,7 +179,7 @@ namespace StarSalvager.Factories
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.bombShockwaveEffectPrefab);
                     break;
                 case PART_EFFECT.FREEZE:
-                    gameObject = Object.Instantiate(_effectProfileScriptableObject.shockwaveEffectPrefab);
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.freezeShockwaveEffectPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partEffect), partEffect, null);
