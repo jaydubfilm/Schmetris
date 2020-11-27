@@ -29,6 +29,7 @@ public class Toast : Singleton<Toast>
     }
     
     //================================================================================================================//
+    [SerializeField, Required] private RectTransform toastArea;
     
     [SerializeField, Required]
     private GameObject toastGameObject;
@@ -61,8 +62,19 @@ public class Toast : Singleton<Toast>
     
     //================================================================================================================//
 
+    public static void SetToastArea(in RectTransform newArea)
+    {
+        var toastArea = Instance.toastArea;
+        
+        toastArea.anchorMin = newArea.anchorMin;
+        toastArea.anchorMax = newArea.anchorMax;
+
+        toastArea.sizeDelta = newArea.sizeDelta;
+        toastArea.anchoredPosition = newArea.anchoredPosition;
+    }
+
     public static void AddToast(string text, Sprite sprite = null, float time = 2f, Layout verticalLayout = Layout.End,
-        Layout horizontalLayout = Layout.Middle)
+        Layout horizontalLayout = Layout.End)
     {
         Instance?.Add(new ToastData
         {
