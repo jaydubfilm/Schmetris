@@ -158,9 +158,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image yellowSliderGlow;
 
-        /*[SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image heatSliderGlow;*/
-
         //Top Left Window
         //============================================================================================================//
 
@@ -171,15 +168,6 @@ namespace StarSalvager.UI
         private Slider gearsSlider;
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text patchPointsText;
-        
-        /*[SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text sectorText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text timeText;
-
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Image clockImage;*/
 
         //Top Right Window
         //====================================================================================================================//
@@ -203,11 +191,8 @@ namespace StarSalvager.UI
         //Bottom Left Window
         //============================================================================================================//
 
-        /*[SerializeField, Required, FoldoutGroup("BL Window")]
-        private TMP_Text levelText;*/
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderCover[] sliderCovers;
-        
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText fuelSlider;
@@ -230,14 +215,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         private SmartWeaponIcon[] SmartWeaponIcons;
-        
-        /*[SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite normalSprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite readySprite;
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private Sprite disabledSprite;*/
-       
+
         [SerializeField, Required, FoldoutGroup("Smart Weapons")]
         //private SmartWeapon[] SmartWeaponsUI;
         private SmartWeaponV2[] SmartWeaponsUI;
@@ -258,6 +236,15 @@ namespace StarSalvager.UI
 
         //Wave Summary Window
         //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private Image fadeImage;
+
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private float fadeTime = 1f;
+
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private GameObject dancersObject;
+        
         
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
@@ -274,16 +261,6 @@ namespace StarSalvager.UI
         private Image crossbarImage;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image[] verticalBarImages;
-        
-        /*[Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite normalBackgroundSprite;
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite normalCrossbarSprite;
-        
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite altBackgroundSprite;
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Sprite altCrossbarSprite;*/
 
         [SerializeField, FoldoutGroup("Summary Window")]
         private WindowSpriteSet[] spriteSets;
@@ -362,7 +339,7 @@ namespace StarSalvager.UI
         #endregion //Properties
 
         //====================================================================================================================//
-        
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -392,6 +369,7 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
+            Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
@@ -418,6 +396,8 @@ namespace StarSalvager.UI
 
         private void OnDisable()
         {
+            Toast.SetToastArea(transform as RectTransform);
+            
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
         }
@@ -474,6 +454,9 @@ namespace StarSalvager.UI
             ShowLiquidSliders(null);
 
             OutlineMagnet(false);
+
+            SetDancersActive(false);
+            FadeBackground(false, true);
         }
 
         private void InitSliderText()
@@ -919,6 +902,58 @@ namespace StarSalvager.UI
 
         #endregion //Wave Summary Window
         
+        #region Dancers
+
+        public void SetDancersActive(bool state)
+        {
+            dancersObject.SetActive(state);
+        }
+        
+        #endregion
+
+        public void FadeBackground(bool fadeIn, bool instant = false)
+        {
+
+
+            var startColor = fadeIn ? Color.clear : Color.black;
+            var endColor = fadeIn ? Color.black : Color.clear;
+
+            if (instant)
+            {
+                fadeImage.color = endColor;
+                return;
+            }
+            
+            if (_fading)
+                return;
+
+            StartCoroutine(FadeBackground(fadeTime, startColor, endColor));
+        }
+
+        private bool _fading;
+        private IEnumerator FadeBackground(float time, Color startColor, Color endColor)
+        {
+            _fading = true;
+            float t = 0;
+
+            fadeImage.color = startColor;
+            
+            while (t / time <= 1f)
+            {
+                fadeImage.color = Color.Lerp(startColor, endColor, t / time);
+                
+                
+                t += Time.deltaTime;
+                
+                yield return null;
+            }
+
+
+            fadeImage.color = endColor;
+
+            _fading = false;
+        }
+        
 
 
         /// <summary>
@@ -982,9 +1017,15 @@ namespace StarSalvager.UI
             
             /*var viewportPoint = CameraController.Camera.WorldToViewportPoint(botWorldPosition);
             var canvasPoint = effectArea.sizeDelta * viewportPoint;*/
-            var targetPosition = RectTransformUtility.WorldToScreenPoint(CameraController.Camera, botWorldPosition);
+            var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
+            
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                effectArea,
+                screenPoint,
+                null,
+                out var newPosition);
 
-            StartCoroutine(PatchPointEffectCoroutine(targetPosition, patchSprite, count));
+            StartCoroutine(PatchPointEffectCoroutine(newPosition, patchSprite, count));
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)
@@ -1002,7 +1043,7 @@ namespace StarSalvager.UI
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
-                trans.anchoredPosition = startPosition;
+                trans.localPosition = startPosition;
                 transforms[i] = trans;
 
                 spawnPositions[i] = startPosition +
@@ -1019,7 +1060,7 @@ namespace StarSalvager.UI
 
                 for (int i = 0; i < count; i++)
                 {
-                    transforms[i].anchoredPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
+                    transforms[i].localPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
                     transforms[i].localScale = Vector3.Lerp(Vector3.zero, Vector3.one, td);
                     transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }

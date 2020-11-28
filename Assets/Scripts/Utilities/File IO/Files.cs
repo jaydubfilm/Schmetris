@@ -147,6 +147,7 @@ namespace StarSalvager.Utilities.FileIO
 
             return File.Exists(PlayerAccountSavePaths[index]);
         }
+
         public static bool TryGetPlayerSaveData(int index, out PlayerSaveAccountData accountData)
         {
             accountData = null;

@@ -24,7 +24,11 @@ namespace StarSalvager.ScriptableObjects
                 .FirstOrDefault(p => p.Name.Equals(enemyName));
         }
 
-
+        public string GetEnemyId(string name)
+        {
+            return GetEnemyRemoteDataByName(name)?.EnemyID;
+        }
+        
 #if UNITY_EDITOR
 
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
@@ -38,6 +42,8 @@ namespace StarSalvager.ScriptableObjects
         {
             return GetEnemyRemoteData(id)?.Name;
         }
+
+        
 
         public IEnumerable GetEnemyTypes()
         {

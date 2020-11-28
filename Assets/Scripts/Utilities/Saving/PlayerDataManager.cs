@@ -841,8 +841,10 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
-            //if (LevelManager.Instance.)
-            SavePlayerAccountData();
+            if (GameManager.Instance.IsSaveFileLoaded)
+            {
+                SavePlayerAccountData();
+            }
         }
 
         //====================================================================================================================//

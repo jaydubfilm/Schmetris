@@ -63,7 +63,7 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject gunEffectPrefab;
         [SerializeField, Required, BoxGroup("Part Effects")]
-        public GameObject shockwaveEffectPrefab;
+        public GameObject freezeShockwaveEffectPrefab;
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject bombShockwaveEffectPrefab;
 

@@ -1,0 +1,223 @@
+
+Beauregard.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BackBody
+  rotate: true
+  xy: 1007, 730
+  size: 292, 193
+  orig: 294, 194
+  offset: 1, 1
+  index: -1
+BackHair
+  rotate: true
+  xy: 1158, 223
+  size: 86, 120
+  orig: 86, 120
+  offset: 0, 0
+  index: -1
+BottomLip
+  rotate: false
+  xy: 633, 539
+  size: 50, 26
+  orig: 52, 27
+  offset: 1, 1
+  index: -1
+Breath
+  rotate: true
+  xy: 2, 2
+  size: 175, 149
+  orig: 175, 149
+  offset: 0, 0
+  index: -1
+FrontBoday
+  rotate: false
+  xy: 716, 217
+  size: 312, 351
+  orig: 312, 356
+  offset: 0, 0
+  index: -1
+FrontHair
+  rotate: true
+  xy: 526, 3
+  size: 206, 194
+  orig: 206, 194
+  offset: 0, 0
+  index: -1
+Head
+  rotate: false
+  xy: 1168, 424
+  size: 124, 164
+  orig: 126, 167
+  offset: 1, 1
+  index: -1
+Healm
+  rotate: true
+  xy: 175, 196
+  size: 330, 284
+  orig: 331, 284
+  offset: 0, 0
+  index: -1
+Hips
+  rotate: false
+  xy: 303, 4
+  size: 221, 190
+  orig: 223, 192
+  offset: 1, 1
+  index: -1
+LeftArmBot
+  rotate: true
+  xy: 153, 3
+  size: 174, 148
+  orig: 175, 151
+  offset: 1, 2
+  index: -1
+LeftFlap
+  rotate: false
+  xy: 1120, 590
+  size: 132, 138
+  orig: 132, 138
+  offset: 0, 0
+  index: -1
+LeftFoot
+  rotate: false
+  xy: 1286, 320
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+LeftHand
+  rotate: true
+  xy: 1345, 102
+  size: 132, 97
+  orig: 132, 97
+  offset: 0, 0
+  index: -1
+LeftLeg
+  rotate: false
+  xy: 311, 535
+  size: 221, 487
+  orig: 225, 488
+  offset: 4, 1
+  index: -1
+LeftNeckPiece
+  rotate: true
+  xy: 1280, 236
+  size: 82, 99
+  orig: 85, 101
+  offset: 2, 1
+  index: -1
+LeftShoulder
+  rotate: true
+  xy: 962, 14
+  size: 201, 183
+  orig: 206, 187
+  offset: 3, 2
+  index: -1
+LeftTopArm
+  rotate: false
+  xy: 1147, 21
+  size: 196, 200
+  orig: 198, 202
+  offset: 1, 1
+  index: -1
+MouthBack
+  rotate: false
+  xy: 586, 537
+  size: 45, 28
+  orig: 45, 28
+  offset: 0, 0
+  index: -1
+Mushtash
+  rotate: false
+  xy: 1381, 275
+  size: 124, 43
+  orig: 124, 47
+  offset: 0, 3
+  index: -1
+Neck
+  rotate: false
+  xy: 1007, 579
+  size: 111, 149
+  orig: 111, 149
+  offset: 0, 0
+  index: -1
+RightArmBot
+  rotate: false
+  xy: 805, 11
+  size: 155, 204
+  orig: 156, 205
+  offset: 0, 1
+  index: -1
+RightArmTop
+  rotate: false
+  xy: 1030, 311
+  size: 136, 266
+  orig: 138, 268
+  offset: 1, 1
+  index: -1
+RightFlap
+  rotate: true
+  xy: 1030, 223
+  size: 86, 126
+  orig: 86, 126
+  offset: 0, 0
+  index: -1
+RightFooT
+  rotate: true
+  xy: 722, 2
+  size: 213, 81
+  orig: 213, 81
+  offset: 0, 0
+  index: -1
+RightHand2
+  rotate: true
+  xy: 1168, 320
+  size: 102, 116
+  orig: 102, 116
+  offset: 0, 0
+  index: -1
+RightHand3
+  rotate: false
+  xy: 175, 528
+  size: 134, 494
+  orig: 290, 870
+  offset: 116, 0
+  index: -1
+RightHand3_back
+  rotate: false
+  xy: 716, 570
+  size: 289, 452
+  orig: 290, 870
+  offset: 1, 418
+  index: -1
+RightLeg
+  rotate: false
+  xy: 534, 567
+  size: 180, 455
+  orig: 180, 455
+  offset: 0, 0
+  index: -1
+Shadow2_FullBlack
+  rotate: true
+  xy: 2, 179
+  size: 843, 171
+  orig: 859, 185
+  offset: 8, 7
+  index: -1
+TopLip
+  rotate: false
+  xy: 534, 537
+  size: 50, 28
+  orig: 51, 29
+  offset: 1, 1
+  index: -1
+Wrench
+  rotate: false
+  xy: 461, 211
+  size: 253, 322
+  orig: 254, 335
+  offset: 0, 10
+  index: -1

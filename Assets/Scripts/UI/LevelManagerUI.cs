@@ -116,6 +116,14 @@ namespace StarSalvager.UI
             InitScrollPositions();
         }
 
+        private void OnDisable()
+        {
+            SetPosition(_scrollPosition = 0f);
+            m_missionReminderTimer = 0;
+            m_isMissionReminderScrolling = false;
+            scrollingMissionsText.text = "";
+        }
+
         private void Update()
         {
             if (isPaused)

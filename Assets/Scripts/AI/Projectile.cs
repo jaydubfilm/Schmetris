@@ -208,7 +208,7 @@ namespace StarSalvager.AI
             renderer.flipX = renderer.flipY = false;
 
             if (_trailRenderer)
-                _trailRenderer.emitting = false;
+                Destroy(_trailRenderer);
 
         }
     }

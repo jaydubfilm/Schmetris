@@ -160,6 +160,8 @@ namespace StarSalvager
 
         private float botMoveOffScreenSpeed = 1.0f;
 
+        private bool m_endLevelOverride = false;
+
         #endregion //Properties
 
         //Unity Functions
@@ -689,8 +691,10 @@ namespace StarSalvager
             ProjectileManager.Reset();
             MissionsCompletedDuringThisFlight.Clear();
             m_runLostState = false;
-            
-            if(_towLineRenderer)
+            m_endLevelOverride = false;
+
+
+            if (_towLineRenderer)
                 Destroy(_towLineRenderer.gameObject);
         }
 
@@ -752,7 +756,7 @@ namespace StarSalvager
 
             BotObject.PROTO_GodMode = true;
 
-            if (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles)
+            if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
             {
                 m_currentStage--;
                 return;
@@ -1101,13 +1105,14 @@ namespace StarSalvager
             else
             {
                 //Alert.ShowDancers(true);
-                AudioController.CrossFadeTrack(MUSIC.GAME_OVER);
+                AudioController.CrossFadeTrack(MUSIC.NONE);
 
                 IsWaveProgressing = false;
                 m_runLostState = true;
                 //GameTimer.SetPaused(false);
 
                 OutroScene.gameObject.SetActive(true);
+                GameUI.Instance.FadeBackground(true);
             }
         }
 
@@ -1182,6 +1187,12 @@ namespace StarSalvager
         public void ForceSetTimeRemaining(float timeLeft)
         {
             m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
+        }
+
+        public void CompleteWave()
+        {
+            m_endLevelOverride = true;
+            TransitionToEndWaveState();
         }
 
         //Unity Editor

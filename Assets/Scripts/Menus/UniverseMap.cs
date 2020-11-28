@@ -360,6 +360,7 @@ namespace StarSalvager.UI
             rect.pivot = new Vector2(0.5f, 0.5f);
             rect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
             rect.sizeDelta = new Vector2(50, 50);
+            rect.localScale = Vector3.one;
         }
 
         public void Reset()

@@ -235,6 +235,61 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
         }
 
+        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
+        {
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+        }
+
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        {
+            if(timeDelay > 0)
+                yield return new WaitForSeconds(timeDelay);
+            
+            if(isPaused)
+                yield return new WaitUntil(() => !isPaused);
+            
+            if(!LevelManager.Instance.gameObject.activeSelf)
+                yield break;
+
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+
+            for (int i = 0; i < count; i++)
+            {
+                SpawnEnemy(enemyId);
+            }
+            
+            
+            /*for (int i = 0; i < count; i++)
+            {
+                yield return StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+            }*/
+        }
+
+        /*private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
+        {
+            float timer = 0.0f;
+
+            while (timer < timeDelay)
+            {
+                if (!LevelManager.Instance.gameObject.activeSelf)
+                {
+                    yield break;
+                }
+                
+                while (isPaused)
+                {
+                    yield return null;
+                }
+
+                timer += Time.deltaTime;
+                
+                yield return null;
+            }
+
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+            SpawnEnemy(enemyId);
+        }*/
+
         private void CheckSpawns()
         {
             if (m_timesToSpawn.Count == 0)

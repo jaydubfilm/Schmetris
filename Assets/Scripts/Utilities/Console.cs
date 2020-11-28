@@ -78,12 +78,13 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "testing ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
             string.Concat("set ", "timeleft ", "[float]").ToUpper(),
-            string.Concat("set ", "volume ", "[0.0 - 1.0]").ToUpper(),
+            string.Concat("set ", "volume ", "[0.0 - 1.0]").ToUpper(),//wavecomplete
+            string.Concat("set ", "wavecomplete").ToUpper(),
             "\n",
             string.Concat("spawn ", "bit ", "[BIT_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "part ", "[PART_TYPE] ",  "(x,y) ", "[uint]").ToUpper(),
             string.Concat("spawn ", "component ", "[COMPONENT_TYPE] ",  "(x,y)").ToUpper(),
-            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]", "[uint]").ToUpper(),
+            string.Concat("spawn ", "enemy ", "[enemy_name : use _ instead of space]", "[amount: uint] ", "[delay: float]").ToUpper(),
             "\n",
             string.Concat("unlock ", "sectorwave ", "[sector : int] ", "[wave : int]").ToUpper(),
             "\n",
@@ -915,6 +916,9 @@ namespace StarSalvager.Utilities
                     AudioController.SetVolume(volume);
                     
                     break;
+                case "wavecomplete":
+                    LevelManager.Instance.CompleteWave();
+                    break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
@@ -1027,11 +1031,18 @@ namespace StarSalvager.Utilities
                     bot.AttachNewBlock(coord, newComponent, true, true, false);
                     break;
                 case "enemy":
+                    float delay = 0f;
                     var type = split[2].Replace('_', ' ');
 
                     if (!int.TryParse(split[3], out var count))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+
+                    if (split.Length == 5 && !float.TryParse(split[4], out delay))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[4]);
                         break;
                     }
                     
@@ -1041,12 +1052,15 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += NoActiveObject(typeof(EnemyManager));
                         return;
                     }
-
-                    for (var i = 0; i < count; i++)
+                    
+                    manager.InsertEnemySpawn(type, count, delay);
+                    
+                    
+                    /*for (var i = 0; i < count; i++)
                     {
                         var enemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObjectName<Enemy>(type);
                         manager.AddEnemy(enemy);
-                    }
+                    }*/
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
