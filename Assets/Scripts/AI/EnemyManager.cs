@@ -244,13 +244,30 @@ namespace StarSalvager
 
         private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
         {
+            if(timeDelay > 0)
+                yield return new WaitForSeconds(timeDelay);
+            
+            if(isPaused)
+                yield return new WaitUntil(() => !isPaused);
+            
+            if(!LevelManager.Instance.gameObject.activeSelf)
+                yield break;
+
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+
             for (int i = 0; i < count; i++)
             {
-                yield return StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+                SpawnEnemy(enemyId);
             }
+            
+            
+            /*for (int i = 0; i < count; i++)
+            {
+                yield return StartCoroutine(InsertEnemySpawnCoroutine(enemyName, timeDelay));
+            }*/
         }
 
-        private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
+        /*private IEnumerator InsertEnemySpawnCoroutine(string enemyName, float timeDelay)
         {
             float timer = 0.0f;
 
@@ -273,7 +290,7 @@ namespace StarSalvager
 
             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
             SpawnEnemy(enemyId);
-        }
+        }*/
 
         private void CheckSpawns()
         {
