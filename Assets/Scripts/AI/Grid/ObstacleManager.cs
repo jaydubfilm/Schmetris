@@ -58,14 +58,14 @@ namespace StarSalvager
 
         public bool HasActiveBonusShapes => m_bonusShapes != null &&
                                             m_bonusShapes.Count > 0 &&
-                                            m_bonusShapes.Any(x => ShapeInCameraRect(x));
+                                            m_bonusShapes.Any(x => ObstacleInCameraRect(x));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => ShapeInCameraRect(x));
+            .Where(x => ObstacleInCameraRect(x));
 
-        public bool ShapeInCameraRect(Shape shape)
+        public bool ObstacleInCameraRect(IObstacle obstacle)
         {
-            return CameraController.IsPointInCameraRect(shape.transform.position, Constants.VISIBLE_GAME_AREA);
+            return CameraController.IsPointInCameraRect(obstacle.transform.position, Constants.VISIBLE_GAME_AREA);
         }
 
         public bool isPaused => GameTimer.IsPaused;
@@ -77,7 +77,7 @@ namespace StarSalvager
                 if (m_obstacles == null || m_offGridMovingObstacles == null)
                     return false;
 
-                return !m_obstacles.Any(o => o != null && o.CanMove) && m_offGridMovingObstacles.Count == 0;
+                return !m_obstacles.Any(o => o != null && o.CanMove && ObstacleInCameraRect(o));
             }
         }
 
@@ -386,7 +386,7 @@ namespace StarSalvager
                     m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (ShapeInCameraRect(checkShape))
+                    if (ObstacleInCameraRect(checkShape))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
@@ -569,7 +569,7 @@ namespace StarSalvager
             
             var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
 
-            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             SpawnBonusShape(
@@ -682,7 +682,7 @@ namespace StarSalvager
                 return;
 
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
-            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             switch (m_currentStageData.StageType)
