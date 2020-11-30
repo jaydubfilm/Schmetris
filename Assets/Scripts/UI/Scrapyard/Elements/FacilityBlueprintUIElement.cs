@@ -50,17 +50,26 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text nameText;
         [SerializeField, Required]
         private Button craftButton;
-        
+
+        [SerializeField, Required]
+        private Image stickerImage;
+
+        private bool _canShowSticker;
+
+        private bool _isHovered;
+        private float _hoverTimer = 0;
+
         private Action<TEST_FacilityBlueprint, bool> _onHoverCallback;
 
         public void Init(TEST_FacilityBlueprint data,
             Action<TEST_FacilityBlueprint> onCraftPressed,
-            Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable)
+            Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable, bool canShowSticker = true)
         {
             Init(data);
+            _canShowSticker = canShowSticker;
 
-            craftButton.interactable = craftButtonInteractable && 
-                                       PlayerDataManager.CanAffordFacilityBlueprint(data);
+            craftButton.interactable = craftButtonInteractable && PlayerDataManager.CanAffordFacilityBlueprint(data);
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
 
             _onHoverCallback = onHoverCallback;
 

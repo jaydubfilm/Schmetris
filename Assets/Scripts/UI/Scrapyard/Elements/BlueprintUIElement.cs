@@ -22,31 +22,67 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required]
         private Button craftButton;
 
+        [SerializeField, Required]
+        private Image stickerImage;
+
+        private bool _canShowSticker;
+
+        private bool _isHovered;
+        private float _hoverTimer = 0;
+
         private Action<Blueprint, bool, RectTransform> hoverCallback;
-        
+
         //============================================================================================================//
+
+        public void Update()
+        {
+            if (_isHovered)
+            {
+                _hoverTimer += Time.deltaTime;
+            }
+            else
+            {
+                _hoverTimer = 0;
+            }
+
+            if (_hoverTimer >= 1)
+            {
+                if (data != null)
+                {
+                    if (PlayerDataManager.CheckHasBlueprintAlert(data))
+                    {
+                        PlayerDataManager.CheckHasBlueprintAlert(data);
+                        MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
+                    }
+                }
+            }
+        }
 
         private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += UpdateUI;
+            MissionsUI.CheckBlueprintNewAlertUpdate += OnCheckBlueprintNewAlertUpdate;
         }
 
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= UpdateUI;
+            MissionsUI.CheckBlueprintNewAlertUpdate -= OnCheckBlueprintNewAlertUpdate;
         }
 
         //============================================================================================================//
 
-        public void Init(Blueprint data, Action<Blueprint> OnCraftPressed, Action<Blueprint, bool, RectTransform> OnHover)
+        public void Init(Blueprint data, Action<Blueprint> OnCraftPressed, Action<Blueprint, bool, RectTransform> OnHover, bool canShowSticker = true)
         {
             Init(data);
 
             hoverCallback = OnHover;
+            _canShowSticker = canShowSticker;
             //craftButtonImage = craftButton.GetComponent<Image>();
 
             craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
-            
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
+
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else
@@ -80,7 +116,12 @@ namespace StarSalvager.UI.Scrapyard
                 throw;
             }
         }
-        
+
+        private void OnCheckBlueprintNewAlertUpdate()
+        {
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
+        }
+
         //============================================================================================================//
 
         private void UpdateUI()
@@ -96,14 +137,30 @@ namespace StarSalvager.UI.Scrapyard
         
         public void OnPointerEnter(PointerEventData eventData)
         {
+            _isHovered = true;
+
             hoverCallback?.Invoke(data, true, transform);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            _isHovered = false;
+
             hoverCallback?.Invoke(null, false, transform);
         }
-        
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (data != null)
+            {
+                if (PlayerDataManager.CheckHasBlueprintAlert(data))
+                {
+                    PlayerDataManager.CheckHasBlueprintAlert(data);
+                    MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
+                }
+            }
+        }
+
         //============================================================================================================//
     }
 }

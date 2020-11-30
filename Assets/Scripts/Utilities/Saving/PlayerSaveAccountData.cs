@@ -434,6 +434,8 @@ namespace StarSalvager.Values
                 {
                     LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
                 }
+
+                PlayerDataManager.AddNewBlueprintAlert(blueprint);
             }
         }
 

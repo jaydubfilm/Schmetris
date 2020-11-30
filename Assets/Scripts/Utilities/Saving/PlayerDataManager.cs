@@ -687,6 +687,7 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
         }
+
         public static void ClearNewMissionAlert(Mission mission)
         {
             PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
@@ -695,6 +696,60 @@ namespace StarSalvager.Utilities.Saving
         public static void ClearAllMissionAlerts()
         {
             PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
+        }
+
+        //============================================================================================================//
+
+        public static bool CheckHasBlueprintAlert(Blueprint blueprint)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
+        }
+
+        public static bool CheckHasAnyBlueprintAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyBlueprintAlerts();
+        }
+
+        public static void AddNewBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearNewBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearAllBlueprintAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
+        }
+
+        //============================================================================================================//
+
+        public static bool CheckHasFacilityBlueprintAlert(Blueprint blueprint)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
+        }
+
+        public static bool CheckHasAnyFacilityBlueprintAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyBlueprintAlerts();
+        }
+
+        public static void AddNewFacilityBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearNewFacilityBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearAllFacilityBlueprintAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
         }
 
         //====================================================================================================================//
