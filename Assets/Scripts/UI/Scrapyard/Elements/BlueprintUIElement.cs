@@ -52,7 +52,7 @@ namespace StarSalvager.UI.Scrapyard
                     if (PlayerDataManager.CheckHasBlueprintAlert(data))
                     {
                         PlayerDataManager.ClearNewBlueprintAlert(data);
-                        MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
+                        DroneDesignUI.CheckBlueprintNewAlertUpdate?.Invoke();
                     }
                 }
             }
@@ -61,13 +61,13 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += UpdateUI;
-            MissionsUI.CheckBlueprintNewAlertUpdate += OnCheckBlueprintNewAlertUpdate;
+            DroneDesignUI.CheckBlueprintNewAlertUpdate += OnCheckBlueprintNewAlertUpdate;
         }
 
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= UpdateUI;
-            MissionsUI.CheckBlueprintNewAlertUpdate -= OnCheckBlueprintNewAlertUpdate;
+            DroneDesignUI.CheckBlueprintNewAlertUpdate -= OnCheckBlueprintNewAlertUpdate;
         }
 
         //============================================================================================================//
@@ -156,7 +156,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (PlayerDataManager.CheckHasBlueprintAlert(data))
                 {
                     PlayerDataManager.ClearNewBlueprintAlert(data);
-                    MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
+                    DroneDesignUI.CheckBlueprintNewAlertUpdate?.Invoke();
                 }
             }
         }

@@ -113,6 +113,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, BoxGroup("UI Visuals")]
         private Image screenBlackImage;
 
+        public static Action CheckBlueprintNewAlertUpdate;
+
         //============================================================================================================//
 
         private DroneDesigner DroneDesigner

@@ -29,7 +29,41 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public void Update()
+        {
+            if (_isHovered)
+            {
+                _hoverTimer += Time.deltaTime;
+            }
+            else
+            {
+                _hoverTimer = 0;
+            }
 
+            if (_hoverTimer >= 1)
+            {
+                if (data != null)
+                {
+                    if (PlayerDataManager.CheckHasFacilityBlueprintAlert(data))
+                    {
+                        PlayerDataManager.ClearNewFacilityBlueprintAlert(data);
+                        LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate?.Invoke();
+                    }
+                }
+            }
+        }
+
+        //============================================================================================================//
+
+        private void OnEnable()
+        {
+            LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate += OnCheckFacilityBlueprintNewAlertUpdate;
+        }
+
+        private void OnDisable()
+        {
+            LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate -= OnCheckFacilityBlueprintNewAlertUpdate;
+        }
 
         //============================================================================================================//
 
@@ -41,7 +75,7 @@ namespace StarSalvager.UI.Scrapyard
             _canShowSticker = canShowSticker;
 
             craftButton.interactable = craftButtonInteractable && PlayerDataManager.CanAffordFacilityBlueprint(data);
-            //stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
 
             _onHoverCallback = onHoverCallback;
 
@@ -54,6 +88,11 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             nameText.text = data.name;
+        }
+
+        private void OnCheckFacilityBlueprintNewAlertUpdate()
+        {
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
         }
 
         //============================================================================================================//
@@ -79,7 +118,7 @@ namespace StarSalvager.UI.Scrapyard
                 if (PlayerDataManager.CheckHasFacilityBlueprintAlert(data))
                 {
                     PlayerDataManager.ClearNewFacilityBlueprintAlert(data);
-                    MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
+                    LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate?.Invoke();
                 }
             }
         }

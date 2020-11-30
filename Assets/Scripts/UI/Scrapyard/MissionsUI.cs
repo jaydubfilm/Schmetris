@@ -23,8 +23,6 @@ namespace StarSalvager.UI.Scrapyard
 
         public static Action CheckMissionUITrackingToggles;
         public static Action CheckMissionNewAlertUpdate;
-        public static Action CheckBlueprintNewAlertUpdate;
-        public static Action CheckFacilityBlueprintNewAlertUpdate;
 
         //============================================================================================================//
 
