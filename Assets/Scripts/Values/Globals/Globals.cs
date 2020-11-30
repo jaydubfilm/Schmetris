@@ -29,7 +29,6 @@ namespace StarSalvager.Values
         public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
-        public static bool IsBetweenWavesInUniverseMap = false;
         public static bool IsRecoveryBot = false;
         public static int CameraScaleSize = 51;
 

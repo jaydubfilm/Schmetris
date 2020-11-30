@@ -122,7 +122,7 @@ namespace StarSalvager.Missions
 
         public static void ProcessMissionComplete(string missionName)
         {
-            Toast.AddToast(missionName + " Successful!!!!", time: 3.0f);
+            Toast.AddToast(/*missionName + " Successful!!!!"*/"MISSION COMPLETED", time: 3.0f);
             LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
             RecentCompletedMissionName = missionName;
             if (LevelManager.Instance.WaveEndSummaryData != null)
@@ -148,7 +148,7 @@ namespace StarSalvager.Missions
                     MissionsCurrentData.AddMission(mission);
                     if (showToast)
                     {
-                        Toast.AddToast("Unlock " + mission.missionName + " mission!");
+                        Toast.AddToast("MISSION UNLOCKED"/*"Unlock " + mission.missionName + " mission!"*/);
                     }
 
                     if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)

@@ -62,8 +62,15 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image blueprintsNewSticker;
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image missionsNewSticker;
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image facilitiesNewSticker;
+
         //====================================================================================================================//
-        
+
         [SerializeField]
         private CameraController CameraController;
         
@@ -99,6 +106,13 @@ namespace StarSalvager.UI.Scrapyard
             
             InitButtons();
             InitSettingsButtons();
+        }
+
+        private void Update()
+        {
+            missionsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyMissionAlerts());
+            blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
+            facilitiesNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyFacilityBlueprintAlerts());
         }
 
         private void OnEnable()

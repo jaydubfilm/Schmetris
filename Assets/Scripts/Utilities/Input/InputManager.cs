@@ -356,7 +356,7 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
             MostRecentSideMovement = moveDirection;
@@ -429,10 +429,7 @@ namespace StarSalvager.Utilities.Inputs
             if (_moveOnInput == null)
                 return;
 
-            if (value != 0 && (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed)))
-                return;
-
-            if (value != 0 && LevelManager.Instance.EndWaveState)
+            if (value != 0 && !GameManager.Instance.IsLevelActive())
                 return;
 
             //_currentMovement = value;
@@ -473,10 +470,10 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
-            if (rotateDirection != 0 && LevelManager.Instance.EndWaveState)
+            if (rotateDirection != 0 && GameManager.Instance.IsLevelEndWave())
                 return;
 
             MostRecentRotateMovement = rotateDirection;
@@ -544,7 +541,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Rotate(float value)
         {
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
             foreach (var bot in _bots)
@@ -586,7 +583,7 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
             
             if(ctx.ReadValue<float>() == 1f)
