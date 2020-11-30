@@ -752,8 +752,6 @@ namespace StarSalvager
                 return;
             }
             
-            Debug.Log("Test Location 2");
-
             GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
