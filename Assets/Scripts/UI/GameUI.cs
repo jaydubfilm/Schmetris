@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -621,10 +622,20 @@ namespace StarSalvager.UI
             }
         }
 
+
+        private bool _fuel;
         public void SetFuelValue(float value)
         {
             fuelSlider.value = value;
-            CheckActivateGlow(fuelSlider, redSliderGlow);
+            var state = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+            //If we're glowing and we weren't before, play resource warning sound
+            if (state && _fuel == false)
+            {
+                AudioController.PlaySound(SOUND.RESOURCE_WARNING);
+            }
+
+            _fuel = state;
         }
 
         public void SetRepairValue(float value)
@@ -989,21 +1000,24 @@ namespace StarSalvager.UI
         
 
 
-        private static void CheckActivateGlow(SliderText slider, Behaviour glowSlider)
+        private static bool CheckActivateGlow(SliderText slider, Behaviour glowSlider)
         {
-            CheckActivateGlow(slider.Slider, glowSlider);
+            return CheckActivateGlow(slider.Slider, glowSlider);
         }
 
-        private static void CheckActivateGlow(Slider slider, Behaviour glowSlider)
+        private static bool CheckActivateGlow(Slider slider, Behaviour glowSlider)
         {
             var value = slider.value / slider.maxValue;
-            glowSlider.enabled = value <= Globals.GameUIResourceThreshold;
+            var glowing = value <= Globals.GameUIResourceThreshold;
+            glowSlider.enabled = glowing;
+
+            return glowing;
         }
 
-        private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
+        /*private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
         {
             glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
-        }
+        }*/
 
         //Patch point Effect
         //====================================================================================================================//

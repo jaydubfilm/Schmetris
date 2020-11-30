@@ -60,9 +60,12 @@
         BOT_ARRIVES,
         BOT_DEPARTS,
         RECOVERY_TOW,
-        END_WAVE,
+        END_WAVE_ZOOM,
         
         UNLOCK_PATCH_POINT,
+        END_WAVE_COUNT,
+        END_WAVE,
+        RESOURCE_WARNING,
     }
 }
 
