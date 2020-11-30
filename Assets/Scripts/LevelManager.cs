@@ -347,7 +347,6 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetProgressValue(1f);
-            //GameUi.SetTimeString(0);
             SavePlayerData();
             GameTimer.SetPaused(true);
 
@@ -355,8 +354,8 @@ namespace StarSalvager
 
             if (Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryWindow("Bot Recovered",
-                    "You have recovered your wrecked bot. Return to base!", 
+                m_levelManagerUI.ShowSummaryWindow("DRONE RECOVERED",
+                    "Congratulations, Captain, you have recovered your drone!\nReturn to base and repair its damaged parts.", 
                     () =>
                     {
                         GameUi.ShowRecoveryBanner(false);
@@ -371,7 +370,7 @@ namespace StarSalvager
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
                     },
-                    "Return Home");
+                    "Return");
             }
             /*else if (EndSectorState)
             {
