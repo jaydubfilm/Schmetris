@@ -51,7 +51,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     if (PlayerDataManager.CheckHasBlueprintAlert(data))
                     {
-                        PlayerDataManager.CheckHasBlueprintAlert(data);
+                        PlayerDataManager.ClearNewBlueprintAlert(data);
                         MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
                     }
                 }
@@ -155,7 +155,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 if (PlayerDataManager.CheckHasBlueprintAlert(data))
                 {
-                    PlayerDataManager.CheckHasBlueprintAlert(data);
+                    PlayerDataManager.ClearNewBlueprintAlert(data);
                     MissionsUI.CheckBlueprintNewAlertUpdate?.Invoke();
                 }
             }

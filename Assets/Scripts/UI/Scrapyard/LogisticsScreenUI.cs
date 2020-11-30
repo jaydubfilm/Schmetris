@@ -130,7 +130,7 @@ namespace StarSalvager.UI.Scrapyard
                     string description = facilityRemoteData.displayDescription;
                     description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
 
-                    TEST_FacilityBlueprint newBlueprint = new TEST_FacilityBlueprint
+                    FacilityBlueprint newBlueprint = new FacilityBlueprint
                     {
                         name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
                         description = description,
@@ -219,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
+        private void PurchaseBlueprint([CanBeNull] FacilityBlueprint item)
         {
             if (!PlayerDataManager.CanAffordFacilityBlueprint(item))
             {
@@ -242,7 +242,7 @@ namespace StarSalvager.UI.Scrapyard
             detailsDescription.text = item?.description;
         }
         
-        private void SetupDetailsWindow([CanBeNull] TEST_FacilityBlueprint item, bool active)
+        private void SetupDetailsWindow([CanBeNull] FacilityBlueprint item, bool active)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(active);
@@ -317,7 +317,7 @@ namespace StarSalvager.UI.Scrapyard
 
     [Serializable]
     public class FacilityBlueprintUIElementScrollView : UIElementContentScrollView<FacilityBlueprintUIElement,
-            TEST_FacilityBlueprint>
+            FacilityBlueprint>
     {
     }
 }

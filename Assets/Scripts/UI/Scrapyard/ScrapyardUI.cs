@@ -110,7 +110,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Update()
         {
-            missionsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyMissionAlerts());  
+            missionsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyMissionAlerts());
+            blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
+            facilitiesNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyFacilityBlueprintAlerts());
         }
 
         private void OnEnable()

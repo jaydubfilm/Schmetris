@@ -318,7 +318,7 @@ namespace StarSalvager.Utilities.Saving
             return hasResources && hasComponents && hasParts;
         }
 
-        public static bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
+        public static bool CanAffordFacilityBlueprint(FacilityBlueprint facilityBlueprint)
         {
             return PlayerAccountData.GetAvailablePatchPoints() >= facilityBlueprint.patchCost;
         }
@@ -727,29 +727,29 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public static bool CheckHasFacilityBlueprintAlert(Blueprint blueprint)
+        public static bool CheckHasFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
         {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
+            return PlayerAccountData.PlayerNewAlertData.CheckHasFacilityBlueprintAlert(facilityBlueprint);
         }
 
         public static bool CheckHasAnyFacilityBlueprintAlerts()
         {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyBlueprintAlerts();
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyFacilityBlueprintAlerts();
         }
 
-        public static void AddNewFacilityBlueprintAlert(Blueprint blueprint)
+        public static void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
         {
-            PlayerAccountData.PlayerNewAlertData.AddNewBlueprintAlert(blueprint);
+            PlayerAccountData.PlayerNewAlertData.AddNewFacilityBlueprintAlert(facilityBlueprint);
         }
 
-        public static void ClearNewFacilityBlueprintAlert(Blueprint blueprint)
+        public static void ClearNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
         {
-            PlayerAccountData.PlayerNewAlertData.ClearNewBlueprintAlert(blueprint);
+            PlayerAccountData.PlayerNewAlertData.ClearNewFacilityBlueprintAlert(facilityBlueprint);
         }
 
         public static void ClearAllFacilityBlueprintAlerts()
         {
-            PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
+            PlayerAccountData.PlayerNewAlertData.ClearAllFacilityBlueprintAlerts();
         }
 
         //====================================================================================================================//

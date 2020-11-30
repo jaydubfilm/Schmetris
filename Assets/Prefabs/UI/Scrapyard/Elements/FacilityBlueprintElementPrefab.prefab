@@ -249,6 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 4137506912790933374}
   craftButton: {fileID: 4323022459873785115}
+  stickerImage: {fileID: 8627926916960081634}
 --- !u!222 &1067815581105722056
 CanvasRenderer:
   m_ObjectHideFlags: 0
