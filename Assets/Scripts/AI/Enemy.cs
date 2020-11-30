@@ -22,7 +22,18 @@ namespace StarSalvager.AI
     {
         public bool IsAttachable => m_enemyData.IsAttachable;
         public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
-        public ENEMY_MOVETYPE MovementType => m_enemyData.MovementType;
+        public ENEMY_MOVETYPE MovementType
+        {
+            get
+            {
+                if (m_enemyMovetypeOverride != null)
+                {
+                    return m_enemyMovetypeOverride.Value;
+                }
+
+                return m_enemyData.MovementType;
+            }
+        }
         public string EnemyName => m_enemyData.Name;
 
         //ICanBeSeen Properties
@@ -34,6 +45,8 @@ namespace StarSalvager.AI
         //============================================================================================================//
         
         protected EnemyData m_enemyData;
+
+        private ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
 
         protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
@@ -299,7 +312,7 @@ namespace StarSalvager.AI
                 ? LevelManager.Instance.BotObject.transform.position
                  : Vector3.zero;
 
-            switch (m_enemyData.MovementType)
+            switch (MovementType)
             {
                 case ENEMY_MOVETYPE.Standard:
                     return playerLocation;
@@ -346,7 +359,8 @@ namespace StarSalvager.AI
                     m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
                     if (m_horizontalMovementYLevel <= verticalLowestAllowed)
                     {
-                        m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
+                        m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
+                        //m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
                     }
                 }
             }
@@ -358,7 +372,8 @@ namespace StarSalvager.AI
                     m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
                     if (m_horizontalMovementYLevel <= verticalLowestAllowed)
                     {
-                        m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
+                        m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
+                        //m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
                     }
                 }
             }
