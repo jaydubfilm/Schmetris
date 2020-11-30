@@ -123,7 +123,7 @@ namespace StarSalvager.AI
                 return;
             }
             
-            if(GameTimer.IsPaused || GameManager.Instance.IsLevelActive() || Disabled)
+            if(GameTimer.IsPaused || !GameManager.Instance.IsLevelActive() || Disabled)
                 return;
             
             m_fireTimer += Time.deltaTime;
