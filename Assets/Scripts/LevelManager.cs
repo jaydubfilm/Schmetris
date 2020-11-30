@@ -370,7 +370,8 @@ namespace StarSalvager
                         {
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
-                    });
+                    },
+                    "Return Home");
             }
             /*else if (EndSectorState)
             {
@@ -406,7 +407,8 @@ namespace StarSalvager
                     {
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
-                });
+                },
+                    "Continue");
             }
 
 
@@ -700,6 +702,7 @@ namespace StarSalvager
             m_levelManagerUI.ShowSummaryWindow("Almost out of water",
                 "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
                 () => { GameTimer.SetPaused(false); },
+                "Return",
                 GameUI.WindowSpriteSet.TYPE.RED
             );
         }
@@ -1050,13 +1053,14 @@ namespace StarSalvager
 
             if (!Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryWindow("Bot wrecked",
+                m_levelManagerUI.ShowSummaryWindow("Drone Disabled",
                     "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
-                    /*"Deploy",*/
                     () =>
                     {
                         RestartLevel();
-                    }, GameUI.WindowSpriteSet.TYPE.RED);
+                    },
+                    "Deploy",
+                    GameUI.WindowSpriteSet.TYPE.RED);
 
                 //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
             }

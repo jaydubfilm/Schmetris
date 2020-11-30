@@ -254,6 +254,8 @@ namespace StarSalvager.UI
         private TMP_Text waveSummaryText;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private TMP_Text confirmButtonText;
 
         [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image backgroundImage;
@@ -823,8 +825,14 @@ namespace StarSalvager.UI
 
         private bool _movingSummaryWindow;
 
-        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback,
-            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, float moveTime = 1f, bool instantMove = false)
+        public void ShowWaveSummaryWindow(bool show, 
+            in string title, 
+            in string text, 
+            Action onConfirmCallback,
+            string buttonText = "Continue",
+            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, 
+            float moveTime = 1f,
+            bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
@@ -834,6 +842,8 @@ namespace StarSalvager.UI
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
 
+                confirmButtonText.text = buttonText;
+                
                 confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(() =>
                 {

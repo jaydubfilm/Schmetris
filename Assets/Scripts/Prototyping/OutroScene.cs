@@ -144,6 +144,7 @@ namespace StarSalvager.Prototype
                     
                     
                 },
+                "Main Menu",
                 GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
             
