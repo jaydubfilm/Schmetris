@@ -347,7 +347,6 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetProgressValue(1f);
-            //GameUi.SetTimeString(0);
             SavePlayerData();
             GameTimer.SetPaused(true);
 
@@ -355,8 +354,8 @@ namespace StarSalvager
 
             if (Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryWindow("Bot Recovered",
-                    "You have recovered your wrecked bot. Return to base!", 
+                m_levelManagerUI.ShowSummaryWindow("DRONE RECOVERED",
+                    "Congratulations, Captain, you have recovered your drone!\nReturn to base and repair its damaged parts.", 
                     () =>
                     {
                         GameUi.ShowRecoveryBanner(false);
@@ -370,7 +369,8 @@ namespace StarSalvager
                         {
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                         });
-                    });
+                    },
+                    "Return");
             }
             /*else if (EndSectorState)
             {
@@ -406,7 +406,8 @@ namespace StarSalvager
                     {
                         SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
                     });
-                });
+                },
+                    "Continue");
             }
 
 
@@ -700,6 +701,7 @@ namespace StarSalvager
             m_levelManagerUI.ShowSummaryWindow("Almost out of water",
                 "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
                 () => { GameTimer.SetPaused(false); },
+                "Return",
                 GameUI.WindowSpriteSet.TYPE.RED
             );
         }
@@ -1050,13 +1052,14 @@ namespace StarSalvager
 
             if (!Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryWindow("Bot wrecked",
-                    "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
-                    /*"Deploy",*/
+                m_levelManagerUI.ShowSummaryWindow("DRONE DISABLED",
+                    "You have lost communication with your main drone.\nDeploy your recovery drone to attempt a rescue.",
                     () =>
                     {
                         RestartLevel();
-                    }, GameUI.WindowSpriteSet.TYPE.RED);
+                    },
+                    "Deploy",
+                    GameUI.WindowSpriteSet.TYPE.RED);
 
                 //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
             }

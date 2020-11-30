@@ -28,25 +28,25 @@ namespace StarSalvager.Tutorial
         [SerializeField]
         private bool debug;
         
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject window;
         /*[SerializeField, BoxGroup("Tutorial UI")]
         private FadeUIImage glowImage;*/
         /*[SerializeField, BoxGroup("Tutorial UI")]
         private RectTransform glowBar;*/
         
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private TMP_Text text;
-         [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
+         [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI"), Required]
         private Image fillImage;
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject pauseImage;
         
 
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private TMP_Text pressAnyKeyText;
 
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject characterObject;
         
         //[SerializeField, BoxGroup("Tutorial UI")]
