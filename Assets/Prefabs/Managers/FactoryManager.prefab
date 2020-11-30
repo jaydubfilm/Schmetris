@@ -57,6 +57,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
     - {fileID: 11400000, guid: a717bd6db04690d488c33a7ed054e8f2, type: 2}
   currentModularDataIndex: 0
+  damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}
   bitProfile: {fileID: 11400000, guid: 30d05195f0c0d17489f40a71c8b0f9c2, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
   componentProfile: {fileID: 11400000, guid: 0162e5c6fcd936548b93c28b633aa41e, type: 2}
