@@ -546,6 +546,7 @@ namespace StarSalvager.AI
 
             //m_mostRecentMovementDirection = Vector3.zero;
 
+            m_enemyMovetypeOverride = null;
             FreezeTime = 0f;
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
