@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using StarSalvager.Cameras;
+using StarSalvager.Factories;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +17,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField] private Image itemImage;
         private RectTransform _canvasTr;
         private RectTransform partDragImageTransform;
+
+        private Image _damageImage;
         
         //============================================================================================================//
         
@@ -28,13 +31,17 @@ namespace StarSalvager.UI.Scrapyard
 
             itemImage.sprite = data.sprite;
 
+            var isPart = data.blockData.ClassType == nameof(Part) ||
+                         data.blockData.ClassType == nameof(ScrapyardPart);
+
             //Only want to be able to select parts
-            button.interactable =
-                (data.blockData.ClassType == nameof(Part) || data.blockData.ClassType == nameof(ScrapyardPart)) &&
-                !_scrapyardBot.AtPartCapacity;
+            button.interactable = isPart && !_scrapyardBot.AtPartCapacity;
             
             if (!button.interactable)
                 return;
+
+            if (isPart)
+                SetupDamageSprite();
             
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
@@ -44,6 +51,34 @@ namespace StarSalvager.UI.Scrapyard
         }
         
         //============================================================================================================//
+
+        private void SetupDamageSprite()
+        {
+            var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
+                .levels[data.blockData.Level].health;
+            //Add Damage Overlay
+            var healthValue = data.blockData.Health / maxHealth;
+
+            if (healthValue == 0f)
+            {
+                itemImage.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(data.blockData.Level);
+                return;
+            }
+
+            var sprite = FactoryManager.Instance.DamageProfile.GetDetailSprite(healthValue);
+
+            if (sprite == null)
+                return;
+
+            var temp = Instantiate(itemImage, itemImage.transform, false);
+            ((RectTransform) temp.transform).sizeDelta = Vector2.zero;
+
+            _damageImage = temp;
+            _damageImage.sprite = sprite;
+        }
+        
+        //====================================================================================================================//
+        
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -102,6 +137,9 @@ namespace StarSalvager.UI.Scrapyard
         {
             if (partDragImageTransform != null && partDragImageTransform.gameObject != null)
                 GameObject.Destroy(partDragImageTransform.gameObject);
+            
+            if(_damageImage)
+                Destroy(_damageImage.gameObject);
         }
     }
     
