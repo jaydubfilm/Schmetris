@@ -1052,8 +1052,8 @@ namespace StarSalvager
 
             if (!Globals.IsRecoveryBot)
             {
-                m_levelManagerUI.ShowSummaryWindow("Drone Disabled",
-                    "Your bot has been wrecked. Deploy your recovery bot to rescue it.",
+                m_levelManagerUI.ShowSummaryWindow("DRONE DISABLED",
+                    "You have lost communication with your main drone.\nDeploy your recovery drone to attempt a rescue.",
                     () =>
                     {
                         RestartLevel();
