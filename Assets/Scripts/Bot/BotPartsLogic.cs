@@ -1762,6 +1762,8 @@ namespace StarSalvager
         //Effects
         //====================================================================================================================//
 
+        #region Effects
+
         private Dictionary<Part, GameObject> _boostEffects;
         private Dictionary<Part, GameObject> _repairEffects;
         private Dictionary<Part, Part> _repairTarget;
@@ -1942,6 +1944,8 @@ namespace StarSalvager
                 Destroy(data.gameObject);
             });
         }
+
+        #endregion //Effects
 
         //Coroutines
         //============================================================================================================//
