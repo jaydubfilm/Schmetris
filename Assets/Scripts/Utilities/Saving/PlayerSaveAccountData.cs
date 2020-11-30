@@ -335,7 +335,13 @@ namespace StarSalvager.Values
             AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
             
             LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
-            
+
+            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+            {
+                level = newTotalPatchPoints
+            };
+
+            MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
         }
 
         public void AddGearsToGetPatchPoints(int numPatchPointsToGet)

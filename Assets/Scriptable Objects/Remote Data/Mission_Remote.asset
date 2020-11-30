@@ -859,8 +859,8 @@ MonoBehaviour:
       isAlwaysSpawn: 0
   - MissionID: 059e9fd0-6921-43c9-bc00-48dabdaacf49
     MissionType: 14
-    MissionName: Reach Player Level 10
-    MissionDescription: Reach Player Level 10 by gaining 'gears'.
+    MissionName: Unlock 10 Patch Points
+    MissionDescription: Unlock 10 Patch Points by gaining 'gears'.
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 2
