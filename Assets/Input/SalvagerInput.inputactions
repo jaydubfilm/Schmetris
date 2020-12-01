@@ -329,21 +329,53 @@
             ]
         },
         {
-            "name": "Vertical",
-            "id": "f342ac19-3f25-4955-a23e-02c5bf0dba50",
+            "name": "Menu Controls",
+            "id": "6fecb893-0e53-4cb0-bf3a-8f41b8cca48e",
             "actions": [
                 {
-                    "name": "Side Movement",
+                    "name": "Navigate",
                     "type": "Value",
-                    "id": "60c346d3-2c88-4a84-a63f-5c480748ee96",
-                    "expectedControlType": "Digital",
+                    "id": "b8fdaf2b-3ddd-4a13-aeb4-6573d99a2c2f",
+                    "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Press(behavior=2)"
+                    "interactions": ""
                 },
                 {
-                    "name": "Rotate",
+                    "name": "Left Click",
                     "type": "Button",
-                    "id": "58c12c71-9109-41c4-a079-4fb561b969f7",
+                    "id": "957b3a89-8a62-453d-bfbf-a23955633829",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Point",
+                    "type": "Value",
+                    "id": "60a7a036-e38f-4c29-9c97-2203dc8215c2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Submit",
+                    "type": "Button",
+                    "id": "22d31fb4-3dd6-49a7-b269-2807962c8e11",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "9da05bd6-0a21-49a6-88d9-cdf7ed83efbd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "26a07a3d-ead1-40d5-a33f-2a5d02aadfc8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -351,423 +383,202 @@
             ],
             "bindings": [
                 {
-                    "name": "AD",
-                    "id": "0d2c1af1-a44d-4e4d-98b8-a13f368646d9",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "ad0de1ae-2860-449a-b8de-c6a40992847e",
+                    "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Side Movement",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD Keys",
+                    "id": "d6b51d93-d112-4c7c-a1f2-1cf4dc9869ca",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Navigate",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "13841640-5496-4c87-9f92-291bad8f6701",
+                    "name": "up",
+                    "id": "1f5bf865-3f18-49de-8f80-663938e81d50",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Side Movement",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "positive",
-                    "id": "6c1d74e5-404f-4674-8dec-8a327cb730e3",
+                    "name": "down",
+                    "id": "78951841-613a-4a07-b727-0c363bb3b373",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Side Movement",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Arrows",
-                    "id": "0b096ea3-daec-4ef9-8509-4c8cfc254f9d",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Side Movement",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "73aaf782-c3cb-4d6c-8714-75d37400a276",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Side Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "84680666-0d07-44a7-b53c-1085b93b481d",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Side Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "WS",
-                    "id": "821b71a1-dee2-43f2-bbfb-1b5c777005a4",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "b6f28271-a78a-4d4a-8efb-79ba89af8ec6",
+                    "name": "left",
+                    "id": "76e07777-6f44-412c-9ba3-000dcbdd741a",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Rotate",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "positive",
-                    "id": "68b00b5a-f59a-483f-b46c-45de2bab5336",
+                    "name": "right",
+                    "id": "b2371b0b-142d-4886-9f4f-ce89b60468c6",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Rotate",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Arrows",
-                    "id": "7b7de9c6-bd20-4b61-8823-c23575cb3481",
-                    "path": "1DAxis",
+                    "name": "Arrow Keys",
+                    "id": "f6cbd85a-5165-4c6b-bb99-0d43290c804f",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Rotate",
+                    "action": "Navigate",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "dd44964c-7cad-45be-8623-cd991cc5d4cc",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "c83bb1e2-0f94-42a4-a0ad-c988dbce3c8f",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "QE",
-                    "id": "e247cd25-1e4b-4cb1-b0ba-71df9c795f9a",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "3d5cabb3-e37d-41d8-ac80-a81d7741b07c",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "a8ff038d-9854-4b2f-8de0-3b60fe027223",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Rotate",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                }
-            ]
-        },
-        {
-            "name": "Prototyping",
-            "id": "3d672be6-1e0f-4c73-94c3-1a6d0e584ea5",
-            "actions": [
-                {
-                    "name": "Left",
-                    "type": "Button",
-                    "id": "fb9224f0-4fcf-42c4-9957-5d74cdc6329e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Right",
-                    "type": "Button",
-                    "id": "d6c8bc59-17c9-466e-9928-e34192fba159",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Up",
-                    "type": "Button",
-                    "id": "99300332-5dbe-4b3b-b0be-3e695547a95c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Down",
-                    "type": "Button",
-                    "id": "bcfadd7c-e759-491c-ae43-d84dbd09e4ff",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Import",
-                    "type": "Button",
-                    "id": "12710870-f5dd-4691-9db9-e12f61213aef",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "Export",
-                    "type": "Button",
-                    "id": "8012499f-2889-404d-bb39-c9de4f63afad",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "Button With One Modifier",
-                    "id": "a89f2350-70f9-4e7a-9ab4-70fb22b65299",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Left",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "f1eeb715-a6c0-44bc-a63a-04fceca99e27",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Left",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "ccee3d84-0f96-4a5b-8bae-41c49d689e94",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Left",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button With One Modifier",
-                    "id": "f6125263-be48-4ac7-a6ae-bb2b90af5527",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Right",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "5938f9c7-ea23-44d7-a2df-ab2450c8f90b",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Right",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "d31b49a0-776b-4894-a329-66076e3059e2",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Right",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button With One Modifier",
-                    "id": "a9938cdc-ed4b-49dd-ab14-18d627f0a4c8",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Up",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "94f798df-5d60-48b2-8349-47adcdd7e0c2",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Up",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "bf0bf2d5-f0ad-42fb-b6d3-92a3fd205374",
+                    "name": "up",
+                    "id": "8207a6a3-61af-458e-a8c5-6093bbd8d8ac",
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Up",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Button With One Modifier",
-                    "id": "a57d0e9e-8a05-4457-bb53-c8774a0de7eb",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Down",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "4aabd0aa-a688-471c-9096-41e08e9dc2ab",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Down",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "9d702096-be1c-4dfd-9a3e-4db9d790def0",
+                    "name": "down",
+                    "id": "a091a228-65c7-4f07-85eb-95a037f4b9d3",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Down",
+                    "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Button With One Modifier",
-                    "id": "c5c6dbcb-3ff8-4c7f-83ff-1d1789818c94",
-                    "path": "ButtonWithOneModifier",
+                    "name": "left",
+                    "id": "9cf16ae5-19b6-438d-8659-ac9519c2d0af",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Import",
-                    "isComposite": true,
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "ccd6801e-4088-487b-9a98-fd4efe358ff1",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "31fefdc1-88a3-4fff-b273-f95b568f75b4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Click",
+                    "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "modifier",
-                    "id": "2bd820fb-5375-4243-85dc-0a70e8003520",
-                    "path": "<Keyboard>/leftAlt",
+                    "name": "",
+                    "id": "955e5e09-1a9d-4539-aa87-03e1329181ad",
+                    "path": "<Touchscreen>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Import",
+                    "action": "Left Click",
                     "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "15838e5b-02eb-406c-9875-527c1b2ec346",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Import",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button With One Modifier",
-                    "id": "0f12f8ef-225e-4dc7-ba03-3504f5eadd1b",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Export",
-                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "modifier",
-                    "id": "3feb0394-c865-4915-8c37-e4566e6f88bc",
-                    "path": "<Keyboard>/leftAlt",
+                    "name": "",
+                    "id": "3b11559c-3dc2-41cd-a3bd-5804c6ad7c22",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Export",
+                    "action": "Point",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 },
                 {
-                    "name": "button",
-                    "id": "14c6ae52-8454-43cb-a71d-4a77240122eb",
-                    "path": "<Keyboard>/e",
+                    "name": "",
+                    "id": "e0193ffa-6ae5-4703-ac15-14b252216e97",
+                    "path": "<Touchscreen>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Export",
+                    "action": "Point",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "621e8caa-173b-4505-be32-59fc0d985bb8",
+                    "path": "*/{Submit}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Submit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ca4f60e-ba11-4bdf-b080-e9d315691738",
+                    "path": "*/{Cancel}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "160e9409-2c47-4c39-ace1-f90c28aefef9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

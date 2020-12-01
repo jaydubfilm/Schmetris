@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -173,6 +174,10 @@ namespace StarSalvager.Utilities.SceneManagement
             if (SCENES.ContainsKey(sceneName) && SCENES[sceneName] != null)
             {
                 SCENES[sceneName].SetSceneObjectsActive(active);
+                
+                //We want to ensure that no matter which menu the player is in the controls are ready
+                if(active) SetControlMap(sceneName);
+
                 return true;
             }
 
@@ -180,6 +185,30 @@ namespace StarSalvager.Utilities.SceneManagement
                 $"Attempted to set {sceneName} scene {(active ? "active" : "inactive")} that is not loaded");
 
             return false;
+        }
+        
+        private static void SetControlMap(string sceneName)
+        {
+            const string DEFAULT = "Default";
+            const string MENU = "Menu Controls";
+
+            string target;
+            
+            switch (sceneName)
+            {
+                case MAIN_MENU:
+                case UNIVERSE_MAP:
+                case SCRAPYARD:
+                    target = MENU;
+                    break;
+                case LEVEL:
+                    target = DEFAULT;
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+
+            InputManager.SwitchCurrentActionMap(target);
         }
 
     }

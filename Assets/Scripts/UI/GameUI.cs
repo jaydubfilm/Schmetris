@@ -14,8 +14,10 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -847,7 +849,10 @@ namespace StarSalvager.UI
         {
             if (_movingSummaryWindow)
                 return;
-
+            
+            InputManager.SwitchCurrentActionMap(show ? "Menu Controls" : "Default");
+            
+            
             float targetY;
             if (show)
             {
@@ -874,6 +879,8 @@ namespace StarSalvager.UI
 
                 waveSummaryTitle.color = spriteSet.titleColor;
                 waveSummaryText.color = spriteSet.textColor;
+                
+                
 
             }
             else
@@ -883,8 +890,6 @@ namespace StarSalvager.UI
 
             waveSummaryTitle.text = title;
             waveSummaryText.text = text;
-
-
 
             if (instantMove)
             {
@@ -896,6 +901,7 @@ namespace StarSalvager.UI
             }
 
             StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
+            
         }
 
         private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
@@ -919,6 +925,9 @@ namespace StarSalvager.UI
 
             _movingSummaryWindow = false;
             confirmButton.interactable = true;
+            
+            EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
+
         }
 
         #endregion //Wave Summary Window

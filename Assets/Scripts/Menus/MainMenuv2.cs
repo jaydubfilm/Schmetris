@@ -10,6 +10,7 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -165,8 +166,12 @@ namespace StarSalvager.UI
             switch (window)
             {
                 case WINDOW.NONE:
+                    break;
                 case WINDOW.MAIN_MENU:
+                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+                    break;
                 case WINDOW.SETTINGS:
+                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
                     break;
                 case WINDOW.ACCOUNT:
                     if (CheckVersionConflict())
@@ -185,8 +190,31 @@ namespace StarSalvager.UI
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
                     break;
-                case WINDOW.RUN:
+                /*case WINDOW.RUN:
                     SetupRunMenuWindow();
+                    break;*/
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(window), window, null);
+            }
+        }
+        private void SetSelectedElement(WINDOW window)
+        {
+            switch (window)
+            {
+                case WINDOW.NONE:
+                    break;
+                case WINDOW.MAIN_MENU:
+                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+                    break;
+                case WINDOW.SETTINGS:
+                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
+                    break;
+                case WINDOW.ACCOUNT:
+                    EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
+                    break;
+                case WINDOW.ACCOUNT_MENU:
+                    bool hasRun = PlayerDataManager.GetHasRunStarted();
+                    EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
@@ -239,6 +267,7 @@ namespace StarSalvager.UI
                     ? "Create new Account"
                     : $"Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
             }
+            
         }
         
         //Setup Account Menu Window
@@ -252,6 +281,8 @@ namespace StarSalvager.UI
             newRunButton.gameObject.SetActive(!hasRun);
             continueRunButton.gameObject.SetActive(hasRun);
             abandonRunButton.gameObject.SetActive(hasRun);
+            
+            EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
             
         }
         
@@ -333,6 +364,7 @@ namespace StarSalvager.UI
                 {
                     //TODO Load account data
                     OpenWindow(WINDOW.ACCOUNT_MENU);
+                    //EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
                 });
             }
 
@@ -367,6 +399,7 @@ namespace StarSalvager.UI
             changeAccountButton.onClick.AddListener(() =>
             {
                 OpenWindow(WINDOW.ACCOUNT);
+                
             });
             
             accountMenuSettingsButton.onClick.AddListener(() =>
@@ -522,6 +555,8 @@ namespace StarSalvager.UI
 
             _previousWindow = _currentWindow;
             _currentWindow = openWindow;
+
+            SetSelectedElement(openWindow);
         }
 
         private void CloseOpenWindow()
