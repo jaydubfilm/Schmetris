@@ -16,24 +16,26 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.UI;
 
 namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset
     {
-        internal enum ICON_TYPE
+        private enum ICON_TYPE
         {
             WAVE,
             RING_SUM,
             RING_MAX
         }
-        
+
+        #region Properties
+                
         [SerializeField, ReadOnly, BoxGroup("Map Stats Icon Prototyping")]
         private bool PROTO_useSum = true;
         [SerializeField, BoxGroup("Map Stats Icon Prototyping")]
         private ICON_TYPE IconType = ICON_TYPE.RING_MAX;
-
-        #region Properties
+        
 
         [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
 
@@ -47,38 +49,41 @@ namespace StarSalvager.UI
         [SerializeField, Required]
         private Button betweenWavesScrapyardButton;
 
-
+        //====================================================================================================================//
+        
         [SerializeField, FoldoutGroup("Hover Window")]
         private GameObject waveDataWindow;
         [SerializeField, FoldoutGroup("Hover Window")]
         private GameObject missingDataObject;
 
-
         [SerializeField, FoldoutGroup("Hover Window")]
         private TMP_Text windowTitle;
-        /*[SerializeField, FoldoutGroup("Hover Window")]
-        private SpriteTitleContentScrolView waveDataScrollView;*/
 
         [SerializeField, FoldoutGroup("Hover Window")]
         private SpriteScaleContentScrollView waveDataScrollView;
+        
+        private Dictionary<BIT_TYPE, float> _collectableBits;
 
+        //====================================================================================================================//
+        
         [SerializeField]
         private List<UniverseMapButton> universeMapButtons;
 
         [SerializeField]
         private Image dottedLineImage;
 
-        private List<Image> connectionLines = new List<Image>();
+        private List<Image> _connectionLines;
 
+        //====================================================================================================================//
+        
         [SerializeField]
         private RectTransform botDisplayRectTransform;
-
-        [SerializeField]
-        private DamageProfileScriptableObject damageProfileScriptable;
-
         private List<Image> _botDisplayObjects;
 
         #endregion //Properties
+
+        [SerializeField]
+        private TMP_Text resourceText;
 
         //Unity Functions
         //============================================================================================================//
@@ -87,9 +92,13 @@ namespace StarSalvager.UI
         {
             InitButtons();
             _botDisplayObjects = new List<Image>();
+            _connectionLines = new List<Image>();
             waveDataWindow.SetActive(false);
         }
 
+        //IReset Functions
+        //====================================================================================================================//
+        
         public void Activate()
         {
             if (GameManager.Instance.GetCurrentGameState() != GameState.UniverseMapBetweenWaves)
@@ -120,259 +129,21 @@ namespace StarSalvager.UI
                 }
                 
             }
-            for (int i = 0; i < universeMapButtons.Count; i++)
-            {
-                universeMapButtons[i].Button.image.color = Color.white;
-                universeMapButtons[i].BotImage.gameObject.SetActive(false);
-                universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
-                universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null && PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 && !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
-            }
 
-            if (GameManager.Instance.IsUniverseMapBetweenWaves())
-            {
-                int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-                CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
+            DrawMap();
 
-                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
-                {
-                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
+            CreateBotPreview();
 
-                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
-
-                    if (nodeIndex == curIndex)
-                    {
-                        for (int k = 0; k < childNodesAccessible.Count; k++)
-                        {
-                            bool isChildShortcut = PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex);
-                            if (isChildShortcut)
-                            {
-                                universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                            }
-                        }
-
-                        universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
-                        if (childNodesAccessible.Count == 0)
-                        {
-                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                            Alert.ShowAlert("Dead End", "You've reached a dead end. Return to base.", "Ok", null);
-                        }
-
-                        for (int k = 0; k < universeMapButtons.Count; k++)
-                        {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                            {
-                                universeMapButtons[k].Button.interactable = true;
-                                DrawConnection(curIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                            }
-                            else
-                            {
-                                universeMapButtons[k].Button.interactable = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (childNodesAccessible.Count == 0)
-                        {
-                            //universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                        }
-                        else
-                        {
-                            for (int k = 0; k < universeMapButtons.Count; k++)
-                            {
-                                if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                                {
-                                    DrawConnection(nodeIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                                }
-                            }
-                        }
-                    }
-
-                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
-                    if (isShortcut)
-                    {
-                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                    }
-                }
-            }
-            else
-            {
-                CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
-                universeMapButtons[0].BotImage.gameObject.SetActive(true);
-                for (int i = 0; i < universeMapButtons.Count; i++)
-                {
-                    universeMapButtons[i].Button.interactable = Globals.TestingFeatures;
-                }
-
-                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
-                {
-                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
-
-                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
-
-                    for (int k = 0; k < childNodesAccessible.Count; k++)
-                    {
-                        bool isChildShortcut = PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex);
-                        if (isChildShortcut)
-                        {
-                            universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                        }
-                    }
-
-                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
-
-                    if (childNodesAccessible.Count == 0)
-                    {
-                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                    }
-                    else
-                    {
-                        if (!Globals.ShortcutJumpToAfter)
-                        {
-                            for (int k = 0; k < childNodesAccessible.Count; k++)
-                            {
-                                if (PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex))
-                                {
-                                    int index = childNodesAccessible[k].nodeIndex;
-                                    universeMapButtons[index].Button.interactable = true;
-                                    universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
-                                    DrawConnection(0, index, false, true);
-                                }
-                            }
-                        }
-                        
-                        for (int k = 0; k < universeMapButtons.Count; k++)
-                        {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                            {
-                                if (nodeIndex == 0)
-                                {
-                                    universeMapButtons[k].Button.interactable = true;
-                                }
-                                DrawConnection(nodeIndex, k, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                            }
-                        }
-                    }
-
-                    if (isShortcut)
-                    {
-                        if (Globals.ShortcutJumpToAfter)
-                        {
-                            for (int k = 0; k < childNodesAccessible.Count; k++)
-                            {
-                                int index = childNodesAccessible[k].nodeIndex;
-                                universeMapButtons[index].Button.interactable = true;
-                                //universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
-                                //DrawConnection(0, index, false, true);
-                            }
-                        }
-                        //universeMapButtons[nodeIndex].Button.interactable = true;
-                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                    }
-                }
-            }
-
-            universeMapButtons[0].Button.interactable = true;
-
-            List<BlockData> botBlockData = PlayerDataManager.GetBlockDatas();
-
-            for (int i = 0; i < botBlockData.Count; i++)
-            {
-                if (!Recycler.TryGrab(out Image imageObject))
-                {
-                    var temp = new GameObject($"{botBlockData[i].ClassType}_{botBlockData[i].Type}");
-                    imageObject = temp.AddComponent<Image>();
-                }
-                RectTransform rect = (RectTransform)imageObject.transform;
-                rect.SetParent(botDisplayRectTransform, false);
-
-                BotDisplaySetPosition(rect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
-
-                float startingHealth = 0;
-
-                switch (botBlockData[i].ClassType)
-                {
-                    case nameof(Part):
-                    case nameof(ScrapyardPart):
-                        startingHealth = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
-                        if (botBlockData[i].Health <= 0)
-                        {
-                            imageObject.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(botBlockData[i].Level);
-                        }
-                        else
-                        {
-                            imageObject.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
-                        }
-                        break;
-                    case nameof(Bit):
-                        imageObject.sprite = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile((BIT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
-                        startingHealth = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData((BIT_TYPE)botBlockData[i].Type).levels[botBlockData[i].Level].health;
-                        break;
-                    case nameof(Component):
-                        imageObject.sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile((COMPONENT_TYPE)botBlockData[i].Type).Sprites[botBlockData[i].Level];
-                        startingHealth = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentRemoteData((COMPONENT_TYPE)botBlockData[i].Type).health;
-                        break;
-                }
-
-                _botDisplayObjects.Add(imageObject);
-                float healthPercentage = botBlockData[i].Health / startingHealth;
-
-                if (healthPercentage > 0 && healthPercentage <= 0.75)
-                {
-                    if (!Recycler.TryGrab(out Image damageImage))
-                    {
-                        var temp = new GameObject($"{botBlockData[i].ClassType}_{botBlockData[i].Type}_Damage");
-                        damageImage = temp.AddComponent<Image>();
-                    }
-                    
-                    RectTransform damageRect = (RectTransform)imageObject.transform;
-
-                    damageRect.SetParent(botDisplayRectTransform, false);
-
-                    
-                    BotDisplaySetPosition(damageRect, botBlockData[i].Coordinate.x, botBlockData[i].Coordinate.y);
-
-                    damageImage.sprite = damageProfileScriptable.GetDetailSprite(healthPercentage);
-
-                    _botDisplayObjects.Add(damageImage);
-                }
-            }
-
-
-            if (botBlockData.Count == 0)
-            {
-                if (!Recycler.TryGrab(out Image imageObject))
-                {
-                    var temp = new GameObject("CORE");
-                    imageObject = temp.AddComponent<Image>();
-                }
-                RectTransform rect = (RectTransform)imageObject.transform;
-
-                rect.SetParent(botDisplayRectTransform, false);
-
-                BotDisplaySetPosition(rect, 0, 0);
-
-                imageObject.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(PART_TYPE.CORE).Sprites[0];
-
-                _botDisplayObjects.Add(imageObject);
-            }
-        }
-
-        private void BotDisplaySetPosition(RectTransform rect, int xOffset, int yOffset)
-        {
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
-            rect.sizeDelta = new Vector2(50, 50);
-            rect.localScale = Vector3.one;
+            resourceText.text = GetPreviewResources(PlayerDataManager.GetBlockDatas());
         }
 
         public void Reset()
         {
-            for (int i = connectionLines.Count - 1; i >= 0; i--)
+            for (int i = _connectionLines.Count - 1; i >= 0; i--)
             {
-                Destroy(connectionLines[i].gameObject);
+                Destroy(_connectionLines[i].gameObject);
             }
-            connectionLines.Clear();
+            _connectionLines.Clear();
 
             if (_botDisplayObjects.Count > 0)
             {
@@ -384,46 +155,9 @@ namespace StarSalvager.UI
             }
         }
 
-        //============================================================================================================//
-
-        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)
-        {
-            GameObject newLine;
-
-            if (dottedLine)
-            {
-                newLine = Instantiate(dottedLineImage).gameObject;
-            }
-            else
-            {
-                newLine = new GameObject();
-            }
-
-            newLine.transform.parent = m_scrollRectArea.transform;
-            newLine.transform.SetAsFirstSibling();
-
-            if (!dottedLine)
-            {
-                newLine.AddComponent<Image>();
-            }
-
-            Image newLineImage = newLine.GetComponent<Image>();
-
-            newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
-
-            if (colourCyan)
-            {
-                newLineImage.color = Color.cyan;
-            }
-
-            RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
-            newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
-
-            newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
-
-            connectionLines.Add(newLineImage);
-        }
-
+        //UniverseMap Functions
+        //====================================================================================================================//
+        
         private void InitButtons()
         {
             /*swapUniverseButton.onClick.AddListener(() =>
@@ -486,11 +220,223 @@ namespace StarSalvager.UI
                 }
             }
         }
+        
+        //============================================================================================================//
+
+        private void DrawMap()
+        {
+            for (int i = 0; i < universeMapButtons.Count; i++)
+            {
+                universeMapButtons[i].Button.image.color = Color.white;
+                universeMapButtons[i].BotImage.gameObject.SetActive(false);
+                universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
+                universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(
+                    PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null &&
+                    PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 &&
+                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
+            }
+
+            if (GameManager.Instance.IsUniverseMapBetweenWaves())
+            {
+                int curIndex = PlayerDataManager.GetLevelRingNodeTree()
+                    .ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+                CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
+
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
+                {
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
+
+                    List<LevelRingNode> childNodesAccessible =
+                        PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
+
+                    if (nodeIndex == curIndex)
+                    {
+                        for (int k = 0; k < childNodesAccessible.Count; k++)
+                        {
+                            bool isChildShortcut = PlayerDataManager.GetShortcutNodes()
+                                .Contains(childNodesAccessible[k].nodeIndex);
+                            if (isChildShortcut)
+                            {
+                                universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject
+                                    .SetActive(true);
+                            }
+                        }
+
+                        universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
+                        if (childNodesAccessible.Count == 0)
+                        {
+                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                            Alert.ShowAlert("Dead End", "You've reached a dead end. Return to base.", "Ok", null);
+                        }
+
+                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        {
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            {
+                                universeMapButtons[k].Button.interactable = true;
+                                DrawConnection(curIndex, k,
+                                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
+                            }
+                            else
+                            {
+                                universeMapButtons[k].Button.interactable = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (childNodesAccessible.Count == 0)
+                        {
+                            //universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                        }
+                        else
+                        {
+                            for (int k = 0; k < universeMapButtons.Count; k++)
+                            {
+                                if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                                {
+                                    DrawConnection(nodeIndex, k,
+                                        !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
+                                }
+                            }
+                        }
+                    }
+
+                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
+                    if (isShortcut)
+                    {
+                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                    }
+                }
+            }
+            else
+            {
+                CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
+                universeMapButtons[0].BotImage.gameObject.SetActive(true);
+                for (int i = 0; i < universeMapButtons.Count; i++)
+                {
+                    universeMapButtons[i].Button.interactable = Globals.TestingFeatures;
+                }
+
+                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
+                {
+                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
+
+                    List<LevelRingNode> childNodesAccessible =
+                        PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
+
+                    for (int k = 0; k < childNodesAccessible.Count; k++)
+                    {
+                        bool isChildShortcut = PlayerDataManager.GetShortcutNodes()
+                            .Contains(childNodesAccessible[k].nodeIndex);
+                        if (isChildShortcut)
+                        {
+                            universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject
+                                .SetActive(true);
+                        }
+                    }
+
+                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
+
+                    if (childNodesAccessible.Count == 0)
+                    {
+                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
+                    }
+                    else
+                    {
+                        if (!Globals.ShortcutJumpToAfter)
+                        {
+                            for (int k = 0; k < childNodesAccessible.Count; k++)
+                            {
+                                if (PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex))
+                                {
+                                    int index = childNodesAccessible[k].nodeIndex;
+                                    universeMapButtons[index].Button.interactable = true;
+                                    universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
+                                    DrawConnection(0, index, false, true);
+                                }
+                            }
+                        }
+
+                        for (int k = 0; k < universeMapButtons.Count; k++)
+                        {
+                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                            {
+                                if (nodeIndex == 0)
+                                {
+                                    universeMapButtons[k].Button.interactable = true;
+                                }
+
+                                DrawConnection(nodeIndex, k,
+                                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
+                            }
+                        }
+                    }
+
+                    if (isShortcut)
+                    {
+                        if (Globals.ShortcutJumpToAfter)
+                        {
+                            for (int k = 0; k < childNodesAccessible.Count; k++)
+                            {
+                                int index = childNodesAccessible[k].nodeIndex;
+                                universeMapButtons[index].Button.interactable = true;
+                                //universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
+                                //DrawConnection(0, index, false, true);
+                            }
+                        }
+
+                        //universeMapButtons[nodeIndex].Button.interactable = true;
+                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                    }
+                }
+            }
+
+            universeMapButtons[0].Button.interactable = true;
+        }
+
+        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)
+        {
+            GameObject newLine;
+
+            if (dottedLine)
+            {
+                newLine = Instantiate(dottedLineImage).gameObject;
+            }
+            else
+            {
+                newLine = new GameObject();
+            }
+
+            newLine.transform.parent = m_scrollRectArea.transform;
+            newLine.transform.SetAsFirstSibling();
+
+            if (!dottedLine)
+            {
+                newLine.AddComponent<Image>();
+            }
+
+            Image newLineImage = newLine.GetComponent<Image>();
+
+            newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
+
+            if (colourCyan)
+            {
+                newLineImage.color = Color.cyan;
+            }
+
+            RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
+            newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
+
+            newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
+
+            _connectionLines.Add(newLineImage);
+        }
 
         //============================================================================================================//
 
         //TODO: ashulman, figure out if/why this works
-        public void CenterToItem(RectTransform obj)
+        private void CenterToItem(RectTransform obj)
         {
             float normalizePositionX = ((m_scrollRectArea.rect.width / 2) + (obj.anchoredPosition.x * 2));
             float normalizePositionY = ((m_scrollRectArea.rect.height / 2) + (obj.anchoredPosition.y * 2));
@@ -499,12 +445,14 @@ namespace StarSalvager.UI
             m_scrollRect.verticalNormalizedPosition = normalizePositionY / m_scrollRectArea.rect.height;
         }
 
+        //Ring Sums
         //============================================================================================================//
 
-        private Dictionary<BIT_TYPE, float> _collectables;
+        #region Ring Sums
+        
         private void CalculateRingSum()
         {
-            _collectables = new Dictionary<BIT_TYPE, float>();
+            _collectableBits = new Dictionary<BIT_TYPE, float>();
 
             var sectors = FactoryManager.Instance.SectorRemoteData;
 
@@ -519,16 +467,16 @@ namespace StarSalvager.UI
                     {
                         var bitType = bit.Key;
 
-                        if(!_collectables.ContainsKey(bitType))
-                            _collectables.Add(bitType, 0f);
+                        if(!_collectableBits.ContainsKey(bitType))
+                            _collectableBits.Add(bitType, 0f);
 
-                        _collectables[bitType] += bit.Value;
+                        _collectableBits[bitType] += bit.Value;
                     }
                 }
             }
 
 
-            foreach (var collectable in _collectables)
+            foreach (var collectable in _collectableBits)
             {
                 Debug.Log($"[{collectable.Key}] = {collectable.Value}");
             }
@@ -536,7 +484,7 @@ namespace StarSalvager.UI
         
         private void CalculateRingMax()
         {
-            _collectables = new Dictionary<BIT_TYPE, float>();
+            _collectableBits = new Dictionary<BIT_TYPE, float>();
 
             var sectors = FactoryManager.Instance.SectorRemoteData;
 
@@ -551,24 +499,28 @@ namespace StarSalvager.UI
                     {
                         var bitType = bit.Key;
 
-                        if(!_collectables.ContainsKey(bitType))
-                            _collectables.Add(bitType, 0f);
+                        if(!_collectableBits.ContainsKey(bitType))
+                            _collectableBits.Add(bitType, 0f);
 
 
-                        _collectables[bitType] = Mathf.Max(_collectables[bitType], bit.Value);
+                        _collectableBits[bitType] = Mathf.Max(_collectableBits[bitType], bit.Value);
                     }
                 }
             }
 
 
-            foreach (var collectable in _collectables)
+            foreach (var collectable in _collectableBits)
             {
                 Debug.Log($"[{collectable.Key}] = {collectable.Value}");
             }
         }
 
+        #endregion //Ring Sums
+
+        //Hover Preview UI
         //====================================================================================================================//
 
+        #region Hover Preview UI
 
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
@@ -608,7 +560,7 @@ namespace StarSalvager.UI
             StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
         }
 
-        private List<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> Enemies, Dictionary<BIT_TYPE, float> Bits)
+        private IEnumerable<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> enemies, Dictionary<BIT_TYPE, float> bits)
         {
             const int SPRITE_LEVEL = 2;
 
@@ -617,7 +569,7 @@ namespace StarSalvager.UI
 
             var bitProfile = FactoryManager.Instance.BitProfileData;
 
-            foreach (var kvp in Enemies)
+            foreach (var kvp in enemies)
             {
                 outList.Add(new TEST_SpriteScale
                 {
@@ -626,13 +578,13 @@ namespace StarSalvager.UI
                 });
             }
 
-            foreach (var kvp in Bits)
+            foreach (var kvp in bits)
             {
                 //Debug.Log($"[{kvp.Key}] = {kvp.Value}");
                 outList.Add(new TEST_SpriteScale
                 {
                     Sprite = bitProfile.GetProfile(kvp.Key).GetSprite(SPRITE_LEVEL),
-                    value = kvp.Value / (PROTO_useSum ? _collectables[kvp.Key] : 1f)
+                    value = kvp.Value / (PROTO_useSum ? _collectableBits[kvp.Key] : 1f)
                 });
             }
 
@@ -675,7 +627,169 @@ namespace StarSalvager.UI
             windowTransform.anchoredPosition += Vector2.right * 10f;
         }
 
+        #endregion //Hover Preview UI
+
+        //Bot Preview
         //====================================================================================================================//
+
+        #region Bot Preview
+
+        private void CreateBotPreview()
+        {
+            Image CreateImageObject(object className, object typeName, object extra = null)
+            {
+                var temp = new GameObject($"{className}_{typeName}{(extra != null ? $"_{extra}" : string.Empty)}");
+                return temp.AddComponent<Image>();
+            }
+            
+            Image imageObject;
+            RectTransform rect;
+            
+            var botBlockData = PlayerDataManager.GetBlockDatas();
+
+            var damageProfile = FactoryManager.Instance.DamageProfile;
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+            var componentFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
+            
+            
+            foreach (var blockData in botBlockData)
+            {
+                if (!Recycler.TryGrab(out imageObject))
+                {
+                    imageObject = CreateImageObject(blockData.ClassType, blockData.Type);
+                }
+
+                rect = (RectTransform) imageObject.transform;
+                rect.SetParent(botDisplayRectTransform, false);
+
+                BotDisplaySetPosition(rect, blockData.Coordinate.x, blockData.Coordinate.y);
+
+                float startingHealth = 0;
+
+                switch (blockData.ClassType)
+                {
+                    case nameof(Part):
+                    case nameof(ScrapyardPart):
+                        startingHealth = partFactory.GetRemoteData((PART_TYPE) blockData.Type).levels[blockData.Level]
+                            .health;
+
+                        imageObject.sprite = blockData.Health <= 0
+                            ? FactoryManager.Instance.PartsProfileData.GetDamageSprite(blockData.Level)
+                            : partFactory.GetProfileData((PART_TYPE) blockData.Type).Sprites[blockData.Level];
+
+                        break;
+                    case nameof(Bit):
+                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE) blockData.Type).Sprites[blockData.Level];
+                        startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE) blockData.Type).levels[blockData.Level].health;
+                        break;
+                    case nameof(Component):
+                        imageObject.sprite = componentFactory.GetComponentProfile((COMPONENT_TYPE) blockData.Type).Sprites[blockData.Level];
+                        startingHealth = componentFactory.GetComponentRemoteData((COMPONENT_TYPE) blockData.Type).health;
+                        break;
+                }
+
+                _botDisplayObjects.Add(imageObject);
+                float healthPercentage = blockData.Health / startingHealth;
+                
+                var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
+
+                if (damageSprite == null || blockData.Health <= 0)
+                    continue;
+
+                if (!Recycler.TryGrab(out Image damageImage))
+                {
+                    damageImage = CreateImageObject(blockData.ClassType, blockData.Type, "Damage");
+                }
+
+                var damageRect = (RectTransform) imageObject.transform;
+
+                damageRect.SetParent(botDisplayRectTransform, false);
+                BotDisplaySetPosition(damageRect, blockData.Coordinate.x, blockData.Coordinate.y);
+
+                damageImage.sprite = damageSprite;
+
+                _botDisplayObjects.Add(damageImage);
+            }
+
+            if (botBlockData.Count > 0)
+                return;
+
+            if (!Recycler.TryGrab(out imageObject))
+            {
+                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
+            }
+
+            rect = (RectTransform) imageObject.transform;
+            rect.SetParent(botDisplayRectTransform, false);
+
+            BotDisplaySetPosition(rect, 0, 0);
+
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
+
+            _botDisplayObjects.Add(imageObject);
+        }
+
+        #endregion //Bot Preview
+
+        private static string GetPreviewResources(List<BlockData> blockDatas)
+        {
+            var resources = CountResources(blockDatas);
+
+            if (resources == null)
+                return string.Empty;
+
+            var outString = "Carried Resources:\n";
+
+            foreach (var resource in resources)
+            {
+                var sprite = TMP_SpriteMap.MaterialIcons[resource.Key];
+                outString += $"\t{sprite} = {resource.Value}\n";
+            }
+
+
+            return outString;
+        }
+
+        //====================================================================================================================//
+
+        private static Dictionary<BIT_TYPE, int> CountResources(List<BlockData> blockDatas)
+        {
+            if (blockDatas.IsNullOrEmpty())
+                return null;
+            
+            var outValue = new Dictionary<BIT_TYPE, int>();
+            var remoteProfile = FactoryManager.Instance.BitsRemoteData;
+            
+            var refineryMultiplier = PlayerDataManager.GetRefineryMultiplier();
+            
+            
+            foreach (var bit in blockDatas.Where(x => x.ClassType.Equals(nameof(Bit))))
+            {
+                var bitType = (BIT_TYPE)bit.Type;
+                var facilityRefiningMultiplier = PlayerDataManager.GetFacilityMultiplier(bitType);
+
+                var remoteData = remoteProfile.GetRemoteData(bitType);
+                
+                if(!outValue.ContainsKey(bitType))
+                    outValue.Add(bitType, 0);
+
+                outValue[bitType] += (int) (remoteData.levels[bit.Level].resources * 
+                                            refineryMultiplier *
+                                            facilityRefiningMultiplier);
+            }
+
+
+            return outValue;
+        }
+        
+        private static void BotDisplaySetPosition(RectTransform rect, int xOffset, int yOffset)
+        {
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
+            rect.sizeDelta = new Vector2(50, 50);
+            rect.localScale = Vector3.one;
+        }
         
     }
 }
