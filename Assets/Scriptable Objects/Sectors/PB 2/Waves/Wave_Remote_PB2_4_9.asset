@@ -164,7 +164,7 @@ MonoBehaviour:
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
-      m_shapeName: BlueSingle
+      m_shapeName: GreySingle
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
