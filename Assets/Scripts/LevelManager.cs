@@ -196,7 +196,11 @@ namespace StarSalvager
                 return;
             }
 
-            if (GameManager.Instance.IsLevelActive())
+            if (GameManager.Instance.IsLevelActiveEndSequence())
+            {
+                TryBeginWaveEndSequence();
+            }
+            else if (GameManager.Instance.IsLevelActive())
             {
                 ProgressStage();
             }
@@ -736,28 +740,24 @@ namespace StarSalvager
                 return;
             }
 
-            //WHen we hit this mark, we'll play sound Hopefully just once
-            //FIXME I don't like depending on the player state, this function should only be called once
-            if (BotObject.PROTO_GodMode == false)
-            {
-                AudioController.PlaySound(SOUND.END_WAVE);
-                
-                BotObject.PROTO_GodMode = true;
-            }
+            BotObject.PROTO_GodMode = true;
+            GameManager.Instance.SetCurrentGameState(GameState.LevelActiveEndSequence);
+            EnemyManager.SetEnemiesInert(true);
+        }
 
-
+        private void TryBeginWaveEndSequence()
+        {
             if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
             {
-                m_currentStage--;
                 return;
             }
-            
+
+            AudioController.PlaySound(SOUND.END_WAVE);
             GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
 
-            //Unlock loot for completing wave
-            ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
+            //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
@@ -789,10 +789,9 @@ namespace StarSalvager
             m_waveTimer = 0;
             GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
-            EnemyManager.SetEnemiesInert(true);
-            
+
             BotObject.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 10000);
-            
+
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);

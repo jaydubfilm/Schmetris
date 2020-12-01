@@ -16,6 +16,7 @@ namespace StarSalvager
         UniverseMapBeforeFlight,
         UniverseMapBetweenWaves,
         LevelActive,
+        LevelActiveEndSequence,
         LevelEndWave,
         LevelBotDead
     }
@@ -53,12 +54,17 @@ namespace StarSalvager
 
         public bool IsLevel()
         {
-            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
+            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
         }
 
         public bool IsLevelActive()
         {
-            return m_currentGameState == GameState.LevelActive;
+            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence;
+        }
+
+        public bool IsLevelActiveEndSequence()
+        {
+            return m_currentGameState == GameState.LevelActiveEndSequence;
         }
 
         public bool IsLevelEndWave()
