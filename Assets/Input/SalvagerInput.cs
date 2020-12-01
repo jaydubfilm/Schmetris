@@ -394,6 +394,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""ad18de5f-5d0c-46ea-a7e6-978097cb036f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -594,6 +602,17 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45880ac0-7840-4400-9135-910251c4c870"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -621,6 +640,7 @@ namespace StarSalvager.Utilities.Inputs
             m_MenuControls_Submit = m_MenuControls.FindAction("Submit", throwIfNotFound: true);
             m_MenuControls_Cancel = m_MenuControls.FindAction("Cancel", throwIfNotFound: true);
             m_MenuControls_Pause = m_MenuControls.FindAction("Pause", throwIfNotFound: true);
+            m_MenuControls_Scroll = m_MenuControls.FindAction("Scroll", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -789,6 +809,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_MenuControls_Submit;
         private readonly InputAction m_MenuControls_Cancel;
         private readonly InputAction m_MenuControls_Pause;
+        private readonly InputAction m_MenuControls_Scroll;
         public struct MenuControlsActions
         {
             private @SalvagerInput m_Wrapper;
@@ -799,6 +820,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @Submit => m_Wrapper.m_MenuControls_Submit;
             public InputAction @Cancel => m_Wrapper.m_MenuControls_Cancel;
             public InputAction @Pause => m_Wrapper.m_MenuControls_Pause;
+            public InputAction @Scroll => m_Wrapper.m_MenuControls_Scroll;
             public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -826,6 +848,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Pause.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnPause;
                     @Pause.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnPause;
                     @Pause.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnPause;
+                    @Scroll.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
+                    @Scroll.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
+                    @Scroll.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
                 }
                 m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
                 if (instance != null)
@@ -848,6 +873,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Pause.started += instance.OnPause;
                     @Pause.performed += instance.OnPause;
                     @Pause.canceled += instance.OnPause;
+                    @Scroll.started += instance.OnScroll;
+                    @Scroll.performed += instance.OnScroll;
+                    @Scroll.canceled += instance.OnScroll;
                 }
             }
         }
@@ -874,6 +902,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSubmit(InputAction.CallbackContext context);
             void OnCancel(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
+            void OnScroll(InputAction.CallbackContext context);
         }
     }
 }
