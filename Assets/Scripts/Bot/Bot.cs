@@ -106,9 +106,6 @@ namespace StarSalvager
         private Vector2 targetPosition;
         private float _currentInput;
 
-        public bool CanAttach => _canAttach;
-        private bool _canAttach;
-        
         public bool Rotating => _rotating;
         public ROTATION MostRecentRotate;
 
@@ -459,8 +456,6 @@ namespace StarSalvager
             if (GameTimer.IsPaused) 
                 return;
 
-
-
             if (direction != 0 && GameManager.Instance.IsLevelBotDead())
             {
                 isContinuousRotation = false;
@@ -480,7 +475,6 @@ namespace StarSalvager
                 Rotate(ROTATION.CW);
             else
             {
-                _canAttach = true;
                 isContinuousRotation = false;
                 return;
             }
@@ -499,7 +493,6 @@ namespace StarSalvager
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void Rotate(ROTATION rotation)
         {
-            _canAttach = false;
             float toRotate = rotation.ToAngle();
             MostRecentRotate = rotation;
             
