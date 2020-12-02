@@ -162,7 +162,20 @@ namespace StarSalvager.Utilities.Inputs
 
         public static void SwitchCurrentActionMap(in string actionMapName)
         {
+            switch (actionMapName)
+            {
+                case "Default":
+                    Input.Actions.Default.Enable();
+                    Input.Actions.MenuControls.Disable();
+                    break;
+                case "Menu Controls":
+                    Input.Actions.Default.Disable();
+                    Input.Actions.MenuControls.Enable();
+                    break;
+            }
+            
             Instance.playerInput.SwitchCurrentActionMap(actionMapName);
+            
         }
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
@@ -250,10 +263,10 @@ namespace StarSalvager.Utilities.Inputs
         {
             var actionMap = playerInput.currentActionMap.actions;
 
-            foreach (var action in actionMap)
+            /*foreach (var action in actionMap)
             {
                 Debug.Log(action.name);
-            }
+            }*/
             
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
