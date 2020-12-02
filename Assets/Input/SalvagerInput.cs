@@ -361,7 +361,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""id"": ""957b3a89-8a62-453d-bfbf-a23955633829"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press(behavior=2)""
                 },
                 {
                     ""name"": ""Point"",
@@ -400,6 +400,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""type"": ""Value"",
                     ""id"": ""ad18de5f-5d0c-46ea-a7e6-978097cb036f"",
                     ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Right Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""bf427530-d7d9-4cde-aa01-5e95d4450558"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
                 }
@@ -613,6 +621,17 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""Scroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41928269-e262-4d2c-aede-d62b0a50c16e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Right Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -641,6 +660,7 @@ namespace StarSalvager.Utilities.Inputs
             m_MenuControls_Cancel = m_MenuControls.FindAction("Cancel", throwIfNotFound: true);
             m_MenuControls_Pause = m_MenuControls.FindAction("Pause", throwIfNotFound: true);
             m_MenuControls_Scroll = m_MenuControls.FindAction("Scroll", throwIfNotFound: true);
+            m_MenuControls_RightClick = m_MenuControls.FindAction("Right Click", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -810,6 +830,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_MenuControls_Cancel;
         private readonly InputAction m_MenuControls_Pause;
         private readonly InputAction m_MenuControls_Scroll;
+        private readonly InputAction m_MenuControls_RightClick;
         public struct MenuControlsActions
         {
             private @SalvagerInput m_Wrapper;
@@ -821,6 +842,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @Cancel => m_Wrapper.m_MenuControls_Cancel;
             public InputAction @Pause => m_Wrapper.m_MenuControls_Pause;
             public InputAction @Scroll => m_Wrapper.m_MenuControls_Scroll;
+            public InputAction @RightClick => m_Wrapper.m_MenuControls_RightClick;
             public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -851,6 +873,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Scroll.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
                     @Scroll.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
                     @Scroll.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnScroll;
+                    @RightClick.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
+                    @RightClick.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
+                    @RightClick.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnRightClick;
                 }
                 m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
                 if (instance != null)
@@ -876,6 +901,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Scroll.started += instance.OnScroll;
                     @Scroll.performed += instance.OnScroll;
                     @Scroll.canceled += instance.OnScroll;
+                    @RightClick.started += instance.OnRightClick;
+                    @RightClick.performed += instance.OnRightClick;
+                    @RightClick.canceled += instance.OnRightClick;
                 }
             }
         }
@@ -903,6 +931,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnCancel(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
             void OnScroll(InputAction.CallbackContext context);
+            void OnRightClick(InputAction.CallbackContext context);
         }
     }
 }

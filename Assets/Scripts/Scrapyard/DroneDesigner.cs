@@ -112,20 +112,20 @@ namespace StarSalvager
 
         public void InitInput()
         {
-            Input.Actions.Default.LeftClick.Enable();
-            Input.Actions.Default.LeftClick.performed += OnLeftMouseButton;
+            //Input.Actions.Default.LeftClick.Enable();
+            Input.Actions.MenuControls.LeftClick.performed += OnLeftMouseButton;
 
-            Input.Actions.Default.RightClick.Enable();
-            Input.Actions.Default.RightClick.performed += OnRightMouseButton;
+            //Input.Actions.Default.RightClick.Enable();
+            Input.Actions.MenuControls.RightClick.performed += OnRightMouseButton;
         }
 
         public void DeInitInput()
         {
-            Input.Actions.Default.LeftClick.Disable();
-            Input.Actions.Default.LeftClick.performed -= OnLeftMouseButton;
+            //Input.Actions.Default.LeftClick.Disable();
+            Input.Actions.MenuControls.LeftClick.performed -= OnLeftMouseButton;
 
-            Input.Actions.Default.RightClick.Disable();
-            Input.Actions.Default.RightClick.performed -= OnRightMouseButton;
+            //Input.Actions.Default.RightClick.Disable();
+            Input.Actions.MenuControls.RightClick.performed -= OnRightMouseButton;
         }
 
         #endregion
@@ -175,7 +175,7 @@ namespace StarSalvager
 
         private void OnLeftMouseButton(InputAction.CallbackContext ctx)
         {
-            if (ctx.ReadValue<float>() == 1f)
+            if (ctx.control.IsPressed())
                 OnLeftMouseButtonDown();
             else
                 OnLeftMouseButtonUp();
@@ -405,7 +405,7 @@ namespace StarSalvager
 
         private void OnRightMouseButton(InputAction.CallbackContext ctx)
         {
-            if (ctx.ReadValue<float>() == 1f)
+            if (ctx.control.IsPressed())
                 OnRightMouseButtonDown();
             else
                 OnRightMouseButtonUp();
