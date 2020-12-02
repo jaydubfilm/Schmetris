@@ -106,6 +106,9 @@ namespace StarSalvager.Values
         
         public static void ScaleCamera(float cameraZoomScalerValue)
         {
+            if (!CameraController.Camera)
+                return;
+            
             ColumnsOnScreen = (int)cameraZoomScalerValue;
             if (ColumnsOnScreen % 2 == 0)
                 ColumnsOnScreen += 1;

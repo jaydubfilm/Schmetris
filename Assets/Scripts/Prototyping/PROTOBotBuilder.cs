@@ -95,7 +95,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
 
     public void InitInput()
     {
-        Input.Actions.Prototyping.Left.Enable();
+        /*Input.Actions.Prototyping.Left.Enable();
         Input.Actions.Prototyping.Left.performed += Left;
         Input.Actions.Prototyping.Right.Enable();
         Input.Actions.Prototyping.Right.performed += Right;
@@ -107,12 +107,12 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         Input.Actions.Prototyping.Export.Enable();
         Input.Actions.Prototyping.Export.performed += Export;
         Input.Actions.Prototyping.Import.Enable();
-        Input.Actions.Prototyping.Import.performed += Import;
+        Input.Actions.Prototyping.Import.performed += Import;*/
     }
 
     public void DeInitInput()
     {
-        Input.Actions.Prototyping.Left.Disable();
+        /*Input.Actions.Prototyping.Left.Disable();
         Input.Actions.Prototyping.Left.performed -= Left;
         Input.Actions.Prototyping.Right.Disable();
         Input.Actions.Prototyping.Right.performed -= Right;
@@ -124,7 +124,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
         Input.Actions.Prototyping.Export.Disable();
         Input.Actions.Prototyping.Export.performed -= Export;
         Input.Actions.Prototyping.Import.Disable();
-        Input.Actions.Prototyping.Import.performed -= Import;
+        Input.Actions.Prototyping.Import.performed -= Import;*/
     }
 
     private void Left(InputAction.CallbackContext ctx)

@@ -980,5 +980,55 @@ namespace StarSalvager.Utilities.Saving
         {
             return $"<b><color=white>{value}</color></b>";
         }
+        
+        public static float GetRefineryMultiplier()
+        {
+            float refineryMultiplier = 1.0f;
+            if (!GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY)) 
+                return refineryMultiplier;
+            
+            int refineryRank = GetFacilityRanks()[FACILITY_TYPE.REFINERY];
+            float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
+                .levels[refineryRank].increaseAmount;
+            
+            refineryMultiplier = 1 + increaseAmount / 100;
+            
+            Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
+
+            return refineryMultiplier;
+        }
+        
+        public static float GetFacilityMultiplier(BIT_TYPE bitType)
+        {
+            FACILITY_TYPE facilityType;
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    facilityType = FACILITY_TYPE.EVAPORATOR;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    facilityType = FACILITY_TYPE.ALTERNATOR;
+                    break;
+                case BIT_TYPE.RED:
+                    facilityType = FACILITY_TYPE.SEPARATOR;
+                    break;
+                case BIT_TYPE.GREEN:
+                    facilityType = FACILITY_TYPE.CENTRIFUGE;
+                    break;
+                case BIT_TYPE.GREY:
+                    facilityType = FACILITY_TYPE.SMELTER;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+            
+            if (TryGetFacilityValue(facilityType, out var facilityValue))
+            {
+                return 1 + (float) FactoryManager.Instance.FacilityRemote
+                    .GetRemoteData(facilityType).levels[facilityValue].increaseAmount / 100;
+            }
+
+            return 1f;
+        }
     }
 }

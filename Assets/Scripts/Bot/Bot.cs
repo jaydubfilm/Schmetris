@@ -2597,7 +2597,7 @@ namespace StarSalvager
                     {
                         bitType = bit.Type,
                         intAmount = 1,
-                        level = bit.level,
+                        level = bit.level + 1,
                         comboType = pendingCombo.ComboData.type
                     };
                     MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);

@@ -123,7 +123,7 @@ namespace StarSalvager.AI
                 return;
             }
             
-            if(GameTimer.IsPaused || !GameManager.Instance.IsLevelActive() || Disabled)
+            if(GameTimer.IsPaused || !GameManager.Instance.IsLevelActive() || GameManager.Instance.IsLevelActiveEndSequence() || Disabled)
                 return;
             
             m_fireTimer += Time.deltaTime;
@@ -546,6 +546,7 @@ namespace StarSalvager.AI
 
             //m_mostRecentMovementDirection = Vector3.zero;
 
+            m_enemyMovetypeOverride = null;
             FreezeTime = 0f;
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);

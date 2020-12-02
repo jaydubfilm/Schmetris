@@ -158,6 +158,10 @@ namespace StarSalvager
 
         #endregion //Properties
 
+        private const int WARNING_COUNT = 4;
+        private int _audioCountDown = WARNING_COUNT;
+
+
         //Unity Functions
         //====================================================================================================================//
         
@@ -192,7 +196,11 @@ namespace StarSalvager
                 return;
             }
 
-            if (GameManager.Instance.IsLevelActive())
+            if (GameManager.Instance.IsLevelActiveEndSequence())
+            {
+                TryBeginWaveEndSequence();
+            }
+            else if (GameManager.Instance.IsLevelActive())
             {
                 ProgressStage();
             }
@@ -212,6 +220,7 @@ namespace StarSalvager
                 return;
             
             UpdateUIClock();
+            CheckPlayWarningSound();
         }
 
         //LevelManager Update Functions
@@ -349,6 +358,8 @@ namespace StarSalvager
             GameUi.SetProgressValue(1f);
             SavePlayerData();
             GameTimer.SetPaused(true);
+            
+            
 
             PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
 
@@ -517,7 +528,19 @@ namespace StarSalvager
             var timeLeft = duration - m_waveTimer;
             
             GameUi.SetProgressValue(1f - timeLeft / duration);
-            //GameUi.SetTimeString((int) timeLeft);
+
+        }
+
+        private void CheckPlayWarningSound()
+        {
+            var duration = CurrentWaveData.GetWaveDuration();
+            var timeLeft = duration - m_waveTimer;
+
+            if (_audioCountDown < 1 || timeLeft >= _audioCountDown) 
+                return;
+            
+            _audioCountDown--;
+            AudioController.PlaySound(SOUND.END_WAVE_COUNT);
         }
 
         private bool BotIsInPosition()
@@ -639,6 +662,8 @@ namespace StarSalvager
             m_waveEndSummaryData = null;
             m_waveTimer = 0;
 
+            _audioCountDown = WARNING_COUNT;
+
             if (!GameManager.Instance.IsUniverseMapBetweenWaves())
             {
                 m_levelTimer = 0;
@@ -716,19 +741,23 @@ namespace StarSalvager
             }
 
             BotObject.PROTO_GodMode = true;
+            GameManager.Instance.SetCurrentGameState(GameState.LevelActiveEndSequence);
+            EnemyManager.SetEnemiesInert(true);
+        }
 
+        private void TryBeginWaveEndSequence()
+        {
             if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
             {
-                m_currentStage--;
                 return;
             }
 
+            AudioController.PlaySound(SOUND.END_WAVE);
             GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
 
-            //Unlock loot for completing wave
-            ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
+            //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
 
             MissionProgressEventData missionProgressEventData = new MissionProgressEventData
@@ -760,9 +789,9 @@ namespace StarSalvager
             m_waveTimer = 0;
             GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
-            EnemyManager.SetEnemiesInert(true);
-            
+
             BotObject.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 10000);
+
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
