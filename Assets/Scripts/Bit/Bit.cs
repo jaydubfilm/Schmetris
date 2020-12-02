@@ -157,7 +157,7 @@ namespace StarSalvager
             
             var bot = gameObject.GetComponent<Bot>();
 
-            if (bot.Rotating)
+            if (bot.CanAttach == false)
             {
                 this.Bounce(worldHitPoint, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
