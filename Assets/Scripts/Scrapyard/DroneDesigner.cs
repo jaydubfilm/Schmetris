@@ -417,8 +417,12 @@ namespace StarSalvager
             
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
-            if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart scrapPart)
+            if (attachableAtCoordinates is ScrapyardPart scrapPart)
             {
+                //Don't want to be able to remove the core
+                if (scrapPart.Type == PART_TYPE.CORE)
+                    return;
+                
                 var blockData = scrapPart.ToBlockData();
                 blockData.Coordinate = mouseCoordinate;
                 _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
