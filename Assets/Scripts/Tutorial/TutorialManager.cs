@@ -28,25 +28,25 @@ namespace StarSalvager.Tutorial
         [SerializeField]
         private bool debug;
         
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject window;
         /*[SerializeField, BoxGroup("Tutorial UI")]
         private FadeUIImage glowImage;*/
         /*[SerializeField, BoxGroup("Tutorial UI")]
         private RectTransform glowBar;*/
         
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private TMP_Text text;
-         [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI")]
+         [FormerlySerializedAs("image")] [SerializeField, BoxGroup("Tutorial UI"), Required]
         private Image fillImage;
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject pauseImage;
         
 
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private TMP_Text pressAnyKeyText;
 
-        [SerializeField, BoxGroup("Tutorial UI")]
+        [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject characterObject;
         
         //[SerializeField, BoxGroup("Tutorial UI")]
@@ -406,8 +406,8 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
-            LevelManager.Instance.EndWaveState = true;
-            
+            GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
+
             yield return new WaitForSeconds(5f);
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
@@ -435,10 +435,10 @@ namespace StarSalvager.Tutorial
 
             ScreenFade.Fade(() =>
             {
+                GameManager.Instance.SetCurrentGameState(GameState.AccountMenu);
                 Globals.UsingTutorial = false;
                 LevelManager.Instance.SetBotExitScreen(false);
                 LevelManager.Instance.BotObject.PROTO_GodMode = false;
-                LevelManager.Instance.EndWaveState = false;
 
 
                 PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);

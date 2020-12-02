@@ -75,7 +75,7 @@ namespace StarSalvager.AI
             if (Disabled)
                 return;
 
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
             {
                 _target = null;
                 _attachedBot.ForceDetach(this);
@@ -145,7 +145,7 @@ namespace StarSalvager.AI
             if (Disabled)
                 return;
             
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
             
             if(Attached)

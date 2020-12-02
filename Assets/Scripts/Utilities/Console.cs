@@ -57,11 +57,13 @@ namespace StarSalvager.Utilities
             string.Concat("hide ", "bot ", "[bool]").ToUpper(),
             string.Concat("hide ", "ui ", "[bool]").ToUpper(),
             "\n",
-            string.Concat("print ", "liquid").ToUpper(),
-            string.Concat("print ", "currency").ToUpper(),
             string.Concat("print ", "bits").ToUpper(),
-            string.Concat("print ", "parts").ToUpper(),
             string.Concat("print ", "components").ToUpper(),
+            string.Concat("print ", "currency").ToUpper(),
+            string.Concat("print ", "enemies").ToUpper(),
+            string.Concat("print ", "liquid").ToUpper(),
+            string.Concat("print ", "parts").ToUpper(),
+            
             "\n",
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
@@ -620,6 +622,9 @@ namespace StarSalvager.Utilities
                 case "components":
                     _consoleDisplay += $"\n{GetEnumsAsString<COMPONENT_TYPE>()}";
                     break;
+                case "enemies":
+                    _consoleDisplay += $"\n{GetEnemyNameList()}";
+                    break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
@@ -1098,7 +1103,16 @@ namespace StarSalvager.Utilities
             return COMMANDS.Aggregate("\n\nThese are commands:\n=================================\n",
                 (current, s) => current + $"{s}\n");
         }
-        
+
+        //Enemy List
+        //====================================================================================================================//
+
+        private static string GetEnemyNameList()
+        {
+            var names = FactoryManager.Instance.EnemyRemoteData.m_enemyRemoteData.Select(x => x.Name);
+
+            return string.Join(", ", names);
+        }
 
         //============================================================================================================//
 

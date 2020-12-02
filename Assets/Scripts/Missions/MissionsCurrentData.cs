@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StarSalvager.Factories;
+using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -104,6 +105,12 @@ namespace StarSalvager.Missions
                 {
                     CurrentTrackedMissions.RemoveAll(m => m.missionName == mission.missionName);
                     CurrentTrackedMissionData.RemoveAll(m => m.MissionName == mission.missionName);
+                }
+
+                if (PlayerDataManager.CheckHasMissionAlert(mission))
+                {
+                    PlayerDataManager.ClearNewMissionAlert(mission);
+                    MissionsUI.CheckMissionNewAlertUpdate?.Invoke();
                 }
             }
         }

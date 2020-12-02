@@ -131,7 +131,6 @@ namespace StarSalvager.Prototype
                     GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
-                    LevelManager.Instance.IsWaveProgressing = true;
                     
                     PlayerDataManager.ResetPlayerRunData();
                     PlayerDataManager.SavePlayerAccountData();
@@ -145,6 +144,7 @@ namespace StarSalvager.Prototype
                     
                     
                 },
+                "Main Menu",
                 GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
             

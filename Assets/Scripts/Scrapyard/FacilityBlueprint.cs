@@ -8,9 +8,11 @@ namespace StarSalvager
     public class FacilityBlueprint : IEquatable<FacilityBlueprint>
     {
         public string name;
+        public string description;
         public FACILITY_TYPE facilityType;
         public int level;
 
+        public int patchCost;
 
         #region IEquatable
 

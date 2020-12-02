@@ -34,18 +34,34 @@ namespace StarSalvager.UI.Scrapyard
         /*[SerializeField, Required]
         private GameObject saveGameWindow;*/
 
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        //====================================================================================================================//
+        
+        [SerializeField, Required, FoldoutGroup("Menu Window")]
         private GameObject settingsWindow;
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        [SerializeField, Required, FoldoutGroup("Menu Window")]
         private Button resumeGameButton;
         /*[SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button saveGameButton;
         [SerializeField, Required, FoldoutGroup("Settings Menu")]
         private Button loadGameButton;*/
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        [SerializeField, Required, FoldoutGroup("Menu Window")]
         private Button settingsButton;
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
+        [SerializeField, Required, FoldoutGroup("Menu Window")]
         private Button quitGameButton;
+
+        //====================================================================================================================//
+        
+        [SerializeField, Required, FoldoutGroup("Settings Window")]
+        private GameObject settingsWindowObject;
+        [SerializeField, Required, FoldoutGroup("Settings Window")]
+        private Button settingsBackButton;
+        [SerializeField, Required, FoldoutGroup("Settings Window")]
+        private Slider musicVolumeSlider;
+        [SerializeField, Required, FoldoutGroup("Settings Window")]
+        private Slider sfxVolumeSlider;
+        [SerializeField, Required, FoldoutGroup("Settings Window")]
+        private Toggle testingFeaturesToggle;
+        
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
@@ -62,8 +78,15 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image blueprintsNewSticker;
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image missionsNewSticker;
+        [SerializeField, Required, FoldoutGroup("New Stickers")]
+        private Image facilitiesNewSticker;
+
         //====================================================================================================================//
-        
+
         [SerializeField]
         private CameraController CameraController;
         
@@ -98,7 +121,21 @@ namespace StarSalvager.UI.Scrapyard
             };
             
             InitButtons();
-            InitSettingsButtons();
+            InitMenuButtons();
+            InitSettings();
+            
+            SetWindowActive(Window.ShipInterior);
+        }
+
+        private void Update()
+        {
+            //FIXME This should occur only when required, this is expensive and unnecessary 
+            missionsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyMissionAlerts());
+            blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
+            facilitiesNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyFacilityBlueprintAlerts());
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+                EscPressed();
         }
 
         private void OnEnable()
@@ -159,7 +196,7 @@ namespace StarSalvager.UI.Scrapyard
 
         }
 
-        private void InitSettingsButtons()
+        private void InitMenuButtons()
         {
             resumeGameButton.onClick.AddListener(() =>
             {
@@ -177,7 +214,7 @@ namespace StarSalvager.UI.Scrapyard
             });*/
             settingsButton.onClick.AddListener(() =>
             {
-                throw new NotImplementedException();
+                settingsWindowObject.SetActive(true);
             });
             
             quitGameButton.onClick.AddListener(() =>
@@ -208,6 +245,23 @@ namespace StarSalvager.UI.Scrapyard
 #endif
                     },
                     null);
+            });
+        }
+
+        private void InitSettings()
+        {
+            musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
+            
+            sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
+            
+            testingFeaturesToggle.onValueChanged.AddListener(toggle =>
+            {
+                Globals.TestingFeatures = toggle;
+            });
+            
+            settingsBackButton.onClick.AddListener(() =>
+            {
+                settingsWindowObject.SetActive(false);
             });
         }
 
@@ -339,10 +393,36 @@ namespace StarSalvager.UI.Scrapyard
                 PlayerDataManager.GetResource(bitType).AddLiquid(movingAmount);
             }
         }
-        
+
+        private void EscPressed()
+        {
+            switch (_currentWindow)
+            {
+                case Window.ShipInterior:
+                    _windows[(int)Window.Settings].SetActive(true);
+                    _currentWindow = Window.Settings;
+                    break;
+                case Window.Workbench:
+                case Window.Logistics:
+                case Window.Missions:
+                    SetWindowActive(Window.ShipInterior);
+                    break;
+                case Window.Settings:
+                    _windows[(int)Window.Settings].SetActive(false);
+                    _currentWindow = Window.ShipInterior;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         //============================================================================================================//
+
+        private Window _currentWindow;
+        
         private void SetWindowActive(Window window)
         {
+            _currentWindow = window;
             SetWindowActive((int)window);
         }
 

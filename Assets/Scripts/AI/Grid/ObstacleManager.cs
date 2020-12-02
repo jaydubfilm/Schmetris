@@ -58,14 +58,14 @@ namespace StarSalvager
 
         public bool HasActiveBonusShapes => m_bonusShapes != null &&
                                             m_bonusShapes.Count > 0 &&
-                                            m_bonusShapes.Any(x => ShapeInCameraRect(x));
+                                            m_bonusShapes.Any(x => ObstacleInCameraRect(x));
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => ShapeInCameraRect(x));
+            .Where(x => ObstacleInCameraRect(x));
 
-        public bool ShapeInCameraRect(Shape shape)
+        public bool ObstacleInCameraRect(IObstacle obstacle)
         {
-            return CameraController.IsPointInCameraRect(shape.transform.position, Constants.VISIBLE_GAME_AREA);
+            return CameraController.IsPointInCameraRect(obstacle.transform.position, Constants.VISIBLE_GAME_AREA);
         }
 
         public bool isPaused => GameTimer.IsPaused;
@@ -77,7 +77,7 @@ namespace StarSalvager
                 if (m_obstacles == null || m_offGridMovingObstacles == null)
                     return false;
 
-                return !m_obstacles.Any(o => o != null && o.CanMove) && m_offGridMovingObstacles.Count == 0;
+                return !m_obstacles.Any(o => o != null && o.CanMove && ObstacleInCameraRect(o));
             }
         }
 
@@ -119,7 +119,7 @@ namespace StarSalvager
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles, m_currentStageData);
-                if (!LevelManager.Instance.EndWaveState)
+                if (GameManager.Instance.IsLevelActive())
                 {
                     SpawnNewRowOfObstacles();
                     TryMarkNewShapesOnGrid();
@@ -131,14 +131,14 @@ namespace StarSalvager
                 m_blendTimer += Time.deltaTime;
             }
 
-            if (!LevelManager.Instance.EndWaveState && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            if (GameManager.Instance.IsLevelActive() && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
             }
 
             HandleObstacleMovement();
 
-            if (!LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelActive())
             {
                 TrySpawnBonusShape();
             }
@@ -297,11 +297,6 @@ namespace StarSalvager
             Vector3 amountShift = Vector3.up *
                                   ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
 
-            if (LevelManager.Instance.EndWaveState)
-            {
-                amountShift *= 3;
-            }
-
             //TryMoveElements();
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
@@ -391,7 +386,7 @@ namespace StarSalvager
                     m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
                     m_bonusShapes.Contains(checkShape))
                 {
-                    if (ShapeInCameraRect(checkShape))
+                    if (ObstacleInCameraRect(checkShape))
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
@@ -574,7 +569,7 @@ namespace StarSalvager
             
             var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
 
-            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             SpawnBonusShape(
@@ -597,7 +592,7 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
             {
                 return;
             }
@@ -687,7 +682,7 @@ namespace StarSalvager
                 return;
 
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
-            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() - 8 <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
+            if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
 
             switch (m_currentStageData.StageType)

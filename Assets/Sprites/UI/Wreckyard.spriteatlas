@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 40d8c0230b206e145acb25667dbca9dc, type: 3}
-    totalSpriteSurfaceArea: 3451814
+    totalSpriteSurfaceArea: 3533412
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -40,6 +40,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d766e7e75f3f56c4a98f307c0038e0ef, type: 3}
   - {fileID: 21300000, guid: 2e571489ff3c73042b5593ddcee0de02, type: 3}
   - {fileID: 21300000, guid: 20e354e90286cc84aa2dde15866855d7, type: 3}
+  - {fileID: 21300000, guid: 2c67b61ce1934944fb198f70f1370cb8, type: 3}
+  - {fileID: 21300000, guid: 91b36f2c75f9aab458b071d5483ed4c6, type: 3}
   - {fileID: 21300000, guid: 3f9cfeaf18523054bad2fb8b8637e20a, type: 3}
   m_PackedSpriteNamesToIndex:
   - Wreckyard_DRONEYARD_v2
@@ -47,6 +49,8 @@ SpriteAtlas:
   - Wreckyard_MISSSIONS_v2
   - Wreckyard_BACKGROUND_v2
   - Wreckyard_TECHTREE_v2
+  - ui_SETTINGSBACK_1_v1
+  - ui_SETTINGS_1_v1
   - Wreckyard_ARCADE_v2
   m_Tag: Wreckyard
   m_IsVariant: 0

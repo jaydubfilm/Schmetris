@@ -318,7 +318,7 @@ namespace StarSalvager.Utilities.Saving
             return hasResources && hasComponents && hasParts;
         }
 
-        public static bool CanAffordFacilityBlueprint(TEST_FacilityBlueprint facilityBlueprint)
+        public static bool CanAffordFacilityBlueprint(FacilityBlueprint facilityBlueprint)
         {
             return PlayerAccountData.GetAvailablePatchPoints() >= facilityBlueprint.patchCost;
         }
@@ -687,6 +687,7 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
         }
+
         public static void ClearNewMissionAlert(Mission mission)
         {
             PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
@@ -695,6 +696,60 @@ namespace StarSalvager.Utilities.Saving
         public static void ClearAllMissionAlerts()
         {
             PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
+        }
+
+        //============================================================================================================//
+
+        public static bool CheckHasBlueprintAlert(Blueprint blueprint)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
+        }
+
+        public static bool CheckHasAnyBlueprintAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyBlueprintAlerts();
+        }
+
+        public static void AddNewBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearNewBlueprintAlert(Blueprint blueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewBlueprintAlert(blueprint);
+        }
+
+        public static void ClearAllBlueprintAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
+        }
+
+        //============================================================================================================//
+
+        public static bool CheckHasFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasFacilityBlueprintAlert(facilityBlueprint);
+        }
+
+        public static bool CheckHasAnyFacilityBlueprintAlerts()
+        {
+            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyFacilityBlueprintAlerts();
+        }
+
+        public static void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.AddNewFacilityBlueprintAlert(facilityBlueprint);
+        }
+
+        public static void ClearNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearNewFacilityBlueprintAlert(facilityBlueprint);
+        }
+
+        public static void ClearAllFacilityBlueprintAlerts()
+        {
+            PlayerAccountData.PlayerNewAlertData.ClearAllFacilityBlueprintAlerts();
         }
 
         //====================================================================================================================//
@@ -841,7 +896,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
-            if (GameManager.Instance.IsSaveFileLoaded)
+            if (GameManager.Instance.GetCurrentGameState() != GameState.MainMenu)
             {
                 SavePlayerAccountData();
             }
@@ -924,6 +979,56 @@ namespace StarSalvager.Utilities.Saving
         private static string GetAsTitle(in string value)
         {
             return $"<b><color=white>{value}</color></b>";
+        }
+        
+        public static float GetRefineryMultiplier()
+        {
+            float refineryMultiplier = 1.0f;
+            if (!GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY)) 
+                return refineryMultiplier;
+            
+            int refineryRank = GetFacilityRanks()[FACILITY_TYPE.REFINERY];
+            float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
+                .levels[refineryRank].increaseAmount;
+            
+            refineryMultiplier = 1 + increaseAmount / 100;
+            
+            Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
+
+            return refineryMultiplier;
+        }
+        
+        public static float GetFacilityMultiplier(BIT_TYPE bitType)
+        {
+            FACILITY_TYPE facilityType;
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                    facilityType = FACILITY_TYPE.EVAPORATOR;
+                    break;
+                case BIT_TYPE.YELLOW:
+                    facilityType = FACILITY_TYPE.ALTERNATOR;
+                    break;
+                case BIT_TYPE.RED:
+                    facilityType = FACILITY_TYPE.SEPARATOR;
+                    break;
+                case BIT_TYPE.GREEN:
+                    facilityType = FACILITY_TYPE.CENTRIFUGE;
+                    break;
+                case BIT_TYPE.GREY:
+                    facilityType = FACILITY_TYPE.SMELTER;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+            }
+            
+            if (TryGetFacilityValue(facilityType, out var facilityValue))
+            {
+                return 1 + (float) FactoryManager.Instance.FacilityRemote
+                    .GetRemoteData(facilityType).levels[facilityValue].increaseAmount / 100;
+            }
+
+            return 1f;
         }
     }
 }

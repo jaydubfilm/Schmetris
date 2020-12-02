@@ -1,4 +1,6 @@
-﻿using Recycling;
+﻿using System;
+using System.Collections.Generic;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Utilities.Extensions;
@@ -125,7 +127,7 @@ namespace StarSalvager
             if (bot != null)
             {
 
-                if (LevelManager.Instance != null && LevelManager.Instance.EndWaveState)
+                if (!GameManager.Instance.IsLevelActive())
                 {
                     return;
                 }
@@ -188,6 +190,8 @@ namespace StarSalvager
             base.SetSprite(sprite);
 
             SpriteMask.sprite = sprite;
+
+            UpdatePhysicsShape(sprite);
         }
 
         //Asteroid Functions
@@ -196,6 +200,25 @@ namespace StarSalvager
         public void SetRadius(float radius)
         {
             Radius = radius;
+        }
+
+
+        private void UpdatePhysicsShape(in Sprite sprite)
+        {
+            if (!(collider is PolygonCollider2D polygonCollider))
+                throw new Exception();
+
+            
+            
+            polygonCollider.pathCount = sprite.GetPhysicsShapeCount();
+
+            var path = new List<Vector2>();
+            for (var i = 0; i < polygonCollider.pathCount; i++)
+            {
+                path.Clear();
+                sprite.GetPhysicsShape(i, path);
+                polygonCollider.SetPath(i, path.ToArray());
+            }
         }
 
         private void CreateImpactEffect(Vector2 worldPosition)
@@ -214,6 +237,7 @@ namespace StarSalvager
             
             Destroy(effect, time);
         }
+        
         
         //ICustomRecycle Function
         //====================================================================================================================//

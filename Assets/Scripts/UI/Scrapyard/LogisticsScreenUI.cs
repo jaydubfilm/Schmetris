@@ -34,7 +34,8 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text patchPointsText;
         [SerializeField]
         private TMP_Text patchPointProgressText;
-        
+
+        public static Action CheckFacilityBlueprintNewAlertUpdate;
 
         /*//TODO Need to add Resources
         [SerializeField]
@@ -127,10 +128,15 @@ namespace StarSalvager.UI.Scrapyard
                         continue;
                     }
 
+                    if (!containsFacilityKey && i > 0)
+                    {
+                        continue;
+                    }
+
                     string description = facilityRemoteData.displayDescription;
                     description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
 
-                    TEST_FacilityBlueprint newBlueprint = new TEST_FacilityBlueprint
+                    FacilityBlueprint newBlueprint = new FacilityBlueprint
                     {
                         name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
                         description = description,
@@ -219,7 +225,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        private void PurchaseBlueprint([CanBeNull] TEST_FacilityBlueprint item)
+        private void PurchaseBlueprint([CanBeNull] FacilityBlueprint item)
         {
             if (!PlayerDataManager.CanAffordFacilityBlueprint(item))
             {
@@ -229,6 +235,75 @@ namespace StarSalvager.UI.Scrapyard
 
             PlayerDataManager.SpendPatchPoints(item.patchCost);
             PlayerDataManager.UnlockFacilityLevel(item.facilityType, item.level);
+
+            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
+            {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+
+                FACILITY_TYPE type = facilityRemoteData.type;
+                bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
+                bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
+
+                if (!containsFacilityBlueprintKey)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i <= PlayerDataManager.GetFacilityBlueprintRanks()[type]; i++)
+                {
+                    if (containsFacilityKey && PlayerDataManager.GetFacilityRanks()[type] >= i)
+                    {
+                        continue;
+                    }
+
+                    if (!containsFacilityKey && i > 0)
+                    {
+                        continue;
+                    }
+
+                    string description = facilityRemoteData.displayDescription;
+                    description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
+
+                    if (!facilityRemoteData.levels[i].facilityPrerequisites.Any(f => f.facilityType == item.facilityType && f.level == item.level))
+                    {
+                        continue;
+                    }
+
+                    bool hasPrereqs = true;
+                    for (int k = 0; k < facilityRemoteData.levels[i].facilityPrerequisites.Count; k++)
+                    {
+                        if (PlayerDataManager.GetFacilityRanks().ContainsKey(facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType) &&
+                            PlayerDataManager.GetFacilityRanks()[facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType] >= facilityRemoteData.levels[i].facilityPrerequisites[k].level)
+                        {
+                            continue;
+                        }
+
+                        hasPrereqs = false;
+                        break;
+                    }
+
+                    if (!hasPrereqs)
+                    {
+                        continue;
+                    }
+
+                    FacilityBlueprint newBlueprint = new FacilityBlueprint
+                    {
+                        name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
+                        description = description,
+                        facilityType = type,
+                        level = i,
+                        patchCost = facilityRemoteData.levels[i].patchCost
+                    };
+
+                    PlayerDataManager.AddNewFacilityBlueprintAlert(newBlueprint);
+                }
+            }
+
+            CheckFacilityBlueprintNewAlertUpdate?.Invoke();
         }
 
         private void SetupDetailsWindow([CanBeNull] TEST_FacilityItem item, bool active)
@@ -242,7 +317,7 @@ namespace StarSalvager.UI.Scrapyard
             detailsDescription.text = item?.description;
         }
         
-        private void SetupDetailsWindow([CanBeNull] TEST_FacilityBlueprint item, bool active)
+        private void SetupDetailsWindow([CanBeNull] FacilityBlueprint item, bool active)
         {
             detailsWindow.SetActive(active);
             detailsCostSection.SetActive(active);
@@ -317,7 +392,7 @@ namespace StarSalvager.UI.Scrapyard
 
     [Serializable]
     public class FacilityBlueprintUIElementScrollView : UIElementContentScrollView<FacilityBlueprintUIElement,
-            TEST_FacilityBlueprint>
+            FacilityBlueprint>
     {
     }
 }

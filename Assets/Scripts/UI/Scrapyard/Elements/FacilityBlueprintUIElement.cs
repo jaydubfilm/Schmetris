@@ -10,57 +10,72 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class TEST_FacilityBlueprint: IEquatable<TEST_FacilityBlueprint>
-    {
-        public string name;
-        public string description;
-        public FACILITY_TYPE facilityType;
-        public int level;
-
-        public int patchCost;
-
-        #region IEquatable
-
-        public bool Equals(TEST_FacilityBlueprint other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return name == other.name;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((TEST_FacilityBlueprint) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (name != null ? name.GetHashCode() : 0);
-        }
-
-        #endregion //IEquatable
-    }
-
-    public class FacilityBlueprintUIElement : UIElement<TEST_FacilityBlueprint>, IPointerEnterHandler, IPointerExitHandler
+    public class FacilityBlueprintUIElement : UIElement<FacilityBlueprint>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField, Required]
         private TMP_Text nameText;
         [SerializeField, Required]
         private Button craftButton;
-        
-        private Action<TEST_FacilityBlueprint, bool> _onHoverCallback;
 
-        public void Init(TEST_FacilityBlueprint data,
-            Action<TEST_FacilityBlueprint> onCraftPressed,
-            Action<TEST_FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable)
+        [SerializeField, Required]
+        private Image stickerImage;
+
+        private bool _canShowSticker;
+
+        private bool _isHovered;
+        private float _hoverTimer = 0;
+
+        private Action<FacilityBlueprint, bool> _onHoverCallback;
+
+        //============================================================================================================//
+
+        public void Update()
+        {
+            if (_isHovered)
+            {
+                _hoverTimer += Time.deltaTime;
+            }
+            else
+            {
+                _hoverTimer = 0;
+            }
+
+            if (_hoverTimer >= 1)
+            {
+                if (data != null)
+                {
+                    if (PlayerDataManager.CheckHasFacilityBlueprintAlert(data))
+                    {
+                        PlayerDataManager.ClearNewFacilityBlueprintAlert(data);
+                        LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate?.Invoke();
+                    }
+                }
+            }
+        }
+
+        //============================================================================================================//
+
+        private void OnEnable()
+        {
+            LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate += OnCheckFacilityBlueprintNewAlertUpdate;
+        }
+
+        private void OnDisable()
+        {
+            LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate -= OnCheckFacilityBlueprintNewAlertUpdate;
+        }
+
+        //============================================================================================================//
+
+        public void Init(FacilityBlueprint data,
+            Action<FacilityBlueprint> onCraftPressed,
+            Action<FacilityBlueprint, bool> onHoverCallback, bool craftButtonInteractable, bool canShowSticker = true)
         {
             Init(data);
+            _canShowSticker = canShowSticker;
 
-            craftButton.interactable = craftButtonInteractable && 
-                                       PlayerDataManager.CanAffordFacilityBlueprint(data);
+            craftButton.interactable = craftButtonInteractable && PlayerDataManager.CanAffordFacilityBlueprint(data);
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
 
             _onHoverCallback = onHoverCallback;
 
@@ -68,21 +83,46 @@ namespace StarSalvager.UI.Scrapyard
             craftButton.onClick.AddListener(() => { onCraftPressed?.Invoke(this.data); });
         }
 
-        public override void Init(TEST_FacilityBlueprint data)
+        public override void Init(FacilityBlueprint data)
         {
             this.data = data;
 
             nameText.text = data.name;
         }
-        
+
+        private void OnCheckFacilityBlueprintNewAlertUpdate()
+        {
+            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasFacilityBlueprintAlert(data));
+        }
+
+        //============================================================================================================//
+
         public void OnPointerEnter(PointerEventData eventData)
         {
+            _isHovered = true;
+
             _onHoverCallback?.Invoke(data, true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            _isHovered = false;
+
             _onHoverCallback?.Invoke(null, false);
         }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (data != null)
+            {
+                if (PlayerDataManager.CheckHasFacilityBlueprintAlert(data))
+                {
+                    PlayerDataManager.ClearNewFacilityBlueprintAlert(data);
+                    LogisticsScreenUI.CheckFacilityBlueprintNewAlertUpdate?.Invoke();
+                }
+            }
+        }
+
+        //============================================================================================================//
     }
 }

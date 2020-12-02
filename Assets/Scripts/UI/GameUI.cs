@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -13,8 +14,10 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -254,6 +257,8 @@ namespace StarSalvager.UI
         private TMP_Text waveSummaryText;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private TMP_Text confirmButtonText;
 
         [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image backgroundImage;
@@ -619,10 +624,20 @@ namespace StarSalvager.UI
             }
         }
 
+
+        private bool _fuel;
         public void SetFuelValue(float value)
         {
             fuelSlider.value = value;
-            CheckActivateGlow(fuelSlider, redSliderGlow);
+            var state = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+            //If we're glowing and we weren't before, play resource warning sound
+            if (state && _fuel == false)
+            {
+                AudioController.PlaySound(SOUND.RESOURCE_WARNING);
+            }
+
+            _fuel = state;
         }
 
         public void SetRepairValue(float value)
@@ -823,17 +838,28 @@ namespace StarSalvager.UI
 
         private bool _movingSummaryWindow;
 
-        public void ShowWaveSummaryWindow(bool show, in string title, in string text, Action onConfirmCallback,
-            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, float moveTime = 1f, bool instantMove = false)
+        public void ShowWaveSummaryWindow(bool show, 
+            in string title, 
+            in string text, 
+            Action onConfirmCallback,
+            string buttonText = "Continue",
+            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, 
+            float moveTime = 1f,
+            bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
-
+            
+            InputManager.SwitchCurrentActionMap(show ? "Menu Controls" : "Default");
+            
+            
             float targetY;
             if (show)
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
 
+                confirmButtonText.text = buttonText;
+                
                 confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(() =>
                 {
@@ -853,6 +879,8 @@ namespace StarSalvager.UI
 
                 waveSummaryTitle.color = spriteSet.titleColor;
                 waveSummaryText.color = spriteSet.textColor;
+                
+                
 
             }
             else
@@ -862,8 +890,6 @@ namespace StarSalvager.UI
 
             waveSummaryTitle.text = title;
             waveSummaryText.text = text;
-
-
 
             if (instantMove)
             {
@@ -875,6 +901,7 @@ namespace StarSalvager.UI
             }
 
             StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
+            
         }
 
         private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
@@ -898,6 +925,9 @@ namespace StarSalvager.UI
 
             _movingSummaryWindow = false;
             confirmButton.interactable = true;
+            
+            EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
+
         }
 
         #endregion //Wave Summary Window
@@ -979,21 +1009,24 @@ namespace StarSalvager.UI
         
 
 
-        private static void CheckActivateGlow(SliderText slider, Behaviour glowSlider)
+        private static bool CheckActivateGlow(SliderText slider, Behaviour glowSlider)
         {
-            CheckActivateGlow(slider.Slider, glowSlider);
+            return CheckActivateGlow(slider.Slider, glowSlider);
         }
 
-        private static void CheckActivateGlow(Slider slider, Behaviour glowSlider)
+        private static bool CheckActivateGlow(Slider slider, Behaviour glowSlider)
         {
             var value = slider.value / slider.maxValue;
-            glowSlider.enabled = value <= Globals.GameUIResourceThreshold;
+            var glowing = value <= Globals.GameUIResourceThreshold;
+            glowSlider.enabled = glowing;
+
+            return glowing;
         }
 
-        private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
+        /*private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
         {
             glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
-        }
+        }*/
 
         //Patch point Effect
         //====================================================================================================================//

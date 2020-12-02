@@ -29,7 +29,6 @@ namespace StarSalvager.Values
         public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
-        public static bool IsBetweenWavesInUniverseMap = false;
         public static bool IsRecoveryBot = false;
         public static int CameraScaleSize = 51;
 
@@ -107,6 +106,9 @@ namespace StarSalvager.Values
         
         public static void ScaleCamera(float cameraZoomScalerValue)
         {
+            if (!CameraController.Camera)
+                return;
+            
             ColumnsOnScreen = (int)cameraZoomScalerValue;
             if (ColumnsOnScreen % 2 == 0)
                 ColumnsOnScreen += 1;

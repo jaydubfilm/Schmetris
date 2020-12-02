@@ -18,6 +18,9 @@ namespace StarSalvager.Utilities.Inputs
     {
         private static List<IMoveOnInput> _moveOnInput;
 
+        [SerializeField, Required]
+        private PlayerInput playerInput;
+
         //Properties
         //====================================================================================================================//
 
@@ -156,6 +159,11 @@ namespace StarSalvager.Utilities.Inputs
         #endregion //Unity Functions
 
         //============================================================================================================//
+
+        public static void SwitchCurrentActionMap(in string actionMapName)
+        {
+            Instance.playerInput.SwitchCurrentActionMap(actionMapName);
+        }
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
         {
@@ -240,9 +248,22 @@ namespace StarSalvager.Utilities.Inputs
         #region Inputs
         private void SetupInputs()
         {
+            var actionMap = playerInput.currentActionMap.actions;
+
+            foreach (var action in actionMap)
+            {
+                Debug.Log(action.name);
+            }
+            
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
+                {
+                    Input.Actions.Default.SideMovement, MovementDelegator
+                },
+                {
+                    Input.Actions.Default.Rotate, MovementDelegator
+                },
                 {
                     Input.Actions.Default.Pause, Pause
                 },
@@ -267,12 +288,9 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.SelfDestruct, SelfDestruct
                 }
-                //{
-                //    Input.Actions.Default.SelfDestruct, SelfDestruct
-                //}
             };
             
-            //Here we setup the inputs dependent on the orientation
+            /*//Here we setup the inputs dependent on the orientation
             switch (Globals.Orientation)
             {
                 case ORIENTATION.VERTICAL:
@@ -285,7 +303,7 @@ namespace StarSalvager.Utilities.Inputs
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
+            }*/
         }
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
@@ -342,6 +360,21 @@ namespace StarSalvager.Utilities.Inputs
 
         #region Movement
 
+        private void MovementDelegator(InputAction.CallbackContext ctx)
+        {
+            switch (ctx.action.name)
+            {
+                case "Side Movement":
+                    if (Globals.Orientation == ORIENTATION.VERTICAL) SideMovement(ctx);
+                    else RotateMovement(ctx);
+                    break;
+                case "Rotate":
+                    if (Globals.Orientation == ORIENTATION.VERTICAL) RotateMovement(ctx);
+                    else SideMovement(ctx);
+                    break;
+            }
+        }
+        
         private void SideMovement(InputAction.CallbackContext ctx)
         {
             _currentMoveInput = ctx.ReadValue<float>();
@@ -356,7 +389,7 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
             MostRecentSideMovement = moveDirection;
@@ -429,10 +462,7 @@ namespace StarSalvager.Utilities.Inputs
             if (_moveOnInput == null)
                 return;
 
-            if (value != 0 && (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed)))
-                return;
-
-            if (value != 0 && LevelManager.Instance.EndWaveState)
+            if (value != 0 && !GameManager.Instance.IsLevelActive())
                 return;
 
             //_currentMovement = value;
@@ -473,10 +503,10 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
-            if (rotateDirection != 0 && LevelManager.Instance.EndWaveState)
+            if (rotateDirection != 0 && GameManager.Instance.IsLevelEndWave())
                 return;
 
             MostRecentRotateMovement = rotateDirection;
@@ -544,7 +574,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Rotate(float value)
         {
-            if (LevelManager.Instance.BotDead || (LevelManager.Instance.BotObject != null && LevelManager.Instance.BotObject.Destroyed))
+            if (GameManager.Instance.IsLevelBotDead())
                 return;
 
             foreach (var bot in _bots)
@@ -586,11 +616,14 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
-            if (LevelManager.Instance.EndWaveState)
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
-            
-            if(ctx.ReadValue<float>() == 1f)
+
+            if (ctx.ReadValue<float>() == 1f)
+            {
                 GameTimer.SetPaused(!isPaused);
+                SwitchCurrentActionMap(isPaused ? "Menu Controls" : "Default");
+            }
         }
         
         //private void SelfDestruct(InputAction.CallbackContext ctx)
