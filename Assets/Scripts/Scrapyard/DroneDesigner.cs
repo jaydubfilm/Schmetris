@@ -183,44 +183,46 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
+            UpdateFloatingMarkers(SelectedBrick.HasValue);
+            
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (!SelectedBrick.HasValue)
+            if (SelectedBrick.HasValue) 
+                return;
+
+            if (_scrapyardBot == null || mouseCoordinate == Vector2Int.zero) 
+                return;
+            
+            IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
+
+            if (attachableAtCoordinates == null ||
+                !(attachableAtCoordinates is ScrapyardPart partAtCoordinates)) 
+                return;
+            var type = partAtCoordinates.Type;
+            var level = partAtCoordinates.level;
+                        
+            Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
+
+            _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+
+            SelectedBrick = partAtCoordinates.ToBlockData();
+                        
+            SelectedPartClickPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            SelectedPartPreviousGridPosition = mouseCoordinate;
+            SelectedPartRemoveFromStorage = false;
+            SelectedPartReturnToStorageIfNotPlaced = true;
+            SaveBlockData();
+
+            if (_partDragImage == null)
             {
-                if (_scrapyardBot != null && mouseCoordinate != Vector2Int.zero)
-                {
-                    IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-
-                    if (attachableAtCoordinates != null && attachableAtCoordinates is ScrapyardPart partAtCoordinates)
-                    {
-                        var type = partAtCoordinates.Type;
-                        var level = partAtCoordinates.level;
-                        
-                        Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
-
-                        _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
-
-                        SelectedBrick = partAtCoordinates.ToBlockData();
-                        
-                        SelectedPartClickPosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-                        SelectedPartPreviousGridPosition = mouseCoordinate;
-                        SelectedPartRemoveFromStorage = false;
-                        SelectedPartReturnToStorageIfNotPlaced = true;
-                        SaveBlockData();
-
-                        if (_partDragImage == null)
-                        {
-                            _partDragImage = new GameObject().AddComponent<SpriteRenderer>();
-                            _partDragImage.sortingOrder = 1;
-                        }
-                        _partDragImage.gameObject.SetActive(true);
-                        _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).Sprites[level];
-                        _partDragImage.transform.position = currentAttachablePosition;
-                    }
-                }
+                _partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                _partDragImage.sortingOrder = 1;
             }
-            UpdateFloatingMarkers(true);
+            _partDragImage.gameObject.SetActive(true);
+            _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).Sprites[level];
+            _partDragImage.transform.position = currentAttachablePosition;
+            //UpdateFloatingMarkers(true);
         }
 
         private void OnLeftMouseButtonUp()
@@ -389,6 +391,11 @@ namespace StarSalvager
                 SelectedPartRemoveFromStorage = false;
                 SelectedPartReturnToStorageIfNotPlaced = false;
                 SaveBlockData();
+            }
+            else if (SelectedPartPreviousGridPosition == null && attachableAtCoordinates != null)
+            {
+                SelectedBrick = null;
+                return;
             }
             
             
