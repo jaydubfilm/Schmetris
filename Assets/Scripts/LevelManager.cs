@@ -740,7 +740,14 @@ namespace StarSalvager
                 return;
             }
 
-            BotObject.PROTO_GodMode = true;
+            if (BotObject.PROTO_GodMode == false)
+            {
+                GameUi.SetCurrentWaveText("Complete");
+                AudioController.PlaySound(SOUND.END_WAVE);
+                BotObject.PROTO_GodMode = true;
+            }
+            
+            
             GameManager.Instance.SetCurrentGameState(GameState.LevelActiveEndSequence);
             EnemyManager.SetEnemiesInert(true);
         }
@@ -752,7 +759,7 @@ namespace StarSalvager
                 return;
             }
 
-            AudioController.PlaySound(SOUND.END_WAVE);
+            
             GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
@@ -787,7 +794,6 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            GameUi.SetCurrentWaveText("Complete");
             GameUi.ShowAbortWindow(false);
 
             BotObject.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 10000);
