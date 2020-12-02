@@ -628,8 +628,22 @@ namespace StarSalvager.UI
         private bool _fuel;
         public void SetFuelValue(float value)
         {
+            bool hasBitAttached = false;
+            bool state = false;
+
+            //FIXME This is inefficient, and I want to find a better way of reducing the calls here
+            if (LevelManager.Instance != null && LevelManager.Instance.BotObject)
+            {
+                hasBitAttached = LevelManager.Instance.BotObject.attachedBlocks.HasBitAttached(BIT_TYPE.RED);
+            }
+            
             fuelSlider.value = value;
-            var state = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+            //Only if there are not any bits attached
+            if (!hasBitAttached)
+            {
+                state = CheckActivateGlow(fuelSlider, redSliderGlow);
+            }
 
             //If we're glowing and we weren't before, play resource warning sound
             if (state && _fuel == false)
