@@ -40,8 +40,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 2
-      m_density: 0.2793241
-      m_spawnsPerScreenWidthPerMinute: 25
+      m_density: 0.23780777
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -60,6 +60,15 @@ MonoBehaviour:
       m_asteroidSize: 0
       m_density: 0.3187052
       m_spawnsPerScreenWidthPerMinute: 38
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: red.L0
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -89,8 +98,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: -1
       m_asteroidSize: 2
-      m_density: 0.2793241
-      m_spawnsPerScreenWidthPerMinute: 25
+      m_density: 0.23780777
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -109,6 +118,15 @@ MonoBehaviour:
       m_asteroidSize: 0
       m_density: 0.3187052
       m_spawnsPerScreenWidthPerMinute: 38
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: red.L0
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20929426
+      m_spawnsPerScreenWidthPerMinute: 10
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
