@@ -2,31 +2,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 
 namespace StarSalvager.UI
 {
     public class HintManager : MonoBehaviour
     {
+        [BoxGroup("Testing")]
         public RectTransform TEST_target;
+        [BoxGroup("Testing")]
         public Vector2 TEST_multiplier = Vector2.one;
         
-        [Button]
+        [Button("One to One"), BoxGroup("Testing")]
         private void TEST()
         {
             HighlightRect("", TEST_target);
         }
         
-        [Button]
+        [Button("Size Multiplier"),BoxGroup("Testing")]
         private void TEST2()
         {
             HighlightRect("", TEST_target, TEST_multiplier);
         }
 
 
-        //====================================================================================================================//\
+        //====================================================================================================================//
+        private enum CORNER
+        {
+            TL,
+            TR,
+            BR,
+            BL
+        }
 
-        [SerializeField, Space(20f)] private Vector2 spacing;
+        [SerializeField]
+        private TMP_Text titleText;
+        [SerializeField]
+        private TMP_Text descriptionText;
+        
+
+        [SerializeField, Space(20f)] 
+        private Vector2 edgeSpacing;
         
         [SerializeField, Required]
         private RectTransform maskObjectRect;
@@ -63,7 +80,7 @@ namespace StarSalvager.UI
             maskParentRect.position = target.position;
             maskParentRect.sizeDelta = new Vector2(targetRect.width, targetRect.height) * sizeMultiplier;
 
-            TryFitInScreenBounds(canvasRectTransform.sizeDelta, spacing, ref maskParentRect);
+            TryFitInScreenBounds(canvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
 
 
 
@@ -80,11 +97,13 @@ namespace StarSalvager.UI
         }
 
 
+
+
         //====================================================================================================================//
 
         public void SetActive(bool state)
         {
-            
+            maskParentRect.gameObject.SetActive(state);
         }
         
         private void ResetMask()
@@ -96,6 +115,22 @@ namespace StarSalvager.UI
         }
         
         //====================================================================================================================//
+        
+        private static CORNER FindQuadrant(in RectTransform target)
+        {
+            var localPosition = target.localPosition;
+
+            if (localPosition.x < 0 && localPosition.y > 0)
+                return CORNER.TL;
+
+            if (localPosition.x > 0 && localPosition.y > 0)
+                return CORNER.TR;
+
+            if (localPosition.x > 0 && localPosition.y < 0)
+                return CORNER.BR;
+
+            return CORNER.BL;
+        }
 
         private static void TryFitInScreenBounds(in Vector2 canvasSize, in Vector2 spacing, ref RectTransform rectTransform)
         {
