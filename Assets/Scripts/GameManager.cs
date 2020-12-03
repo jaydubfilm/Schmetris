@@ -57,7 +57,15 @@ namespace StarSalvager
 
         public static bool IsState(GameState gameState)
         {
-            return m_currentGameState.HasFlag(gameState);
+            switch(gameState)
+            {
+                case GameState.LEVEL:
+                    return GameState.LEVEL.HasFlag(m_currentGameState);
+                case GameState.LEVEL_ACTIVE:
+                    return GameState.LEVEL_ACTIVE.HasFlag(m_currentGameState);
+                default:
+                    return m_currentGameState.HasFlag(gameState);
+            }
         }
 
         public static void SetCurrentGameState(GameState newGameState)
