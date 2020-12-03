@@ -282,7 +282,8 @@ namespace StarSalvager.UI
             continueRunButton.gameObject.SetActive(hasRun);
             abandonRunButton.gameObject.SetActive(hasRun);
             
-            EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
+            //FIXME This should wait until a EventSystem exists to be able to use
+            EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
             
         }
         
