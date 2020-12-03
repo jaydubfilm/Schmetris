@@ -106,8 +106,8 @@ namespace StarSalvager.UI
                 GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
             }
             
-            backButton.gameObject.SetActive(!GameManager.Instance.IsUniverseMapBetweenWaves());
-            betweenWavesScrapyardButton.gameObject.SetActive(GameManager.Instance.IsUniverseMapBetweenWaves());
+            backButton.gameObject.SetActive(!GameManager.IsState(GameState.UniverseMapBetweenWaves));
+            betweenWavesScrapyardButton.gameObject.SetActive(GameManager.IsState(GameState.UniverseMapBetweenWaves));
 
             if (PROTO_useSum)
             {
@@ -236,7 +236,7 @@ namespace StarSalvager.UI
                     !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
             }
 
-            if (GameManager.Instance.IsUniverseMapBetweenWaves())
+            if (GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree()
                     .ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);

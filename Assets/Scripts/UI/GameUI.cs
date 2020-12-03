@@ -1056,7 +1056,7 @@ namespace StarSalvager.UI
             if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
                 return;
 
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
                 return;
 
             

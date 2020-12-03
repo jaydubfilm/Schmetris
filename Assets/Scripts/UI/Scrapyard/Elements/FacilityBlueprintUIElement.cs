@@ -40,7 +40,7 @@ namespace StarSalvager.UI.Scrapyard
                 _hoverTimer = 0;
             }
 
-            if (_hoverTimer >= 1)
+            if (_hoverTimer >= 0.5f)
             {
                 if (data != null)
                 {

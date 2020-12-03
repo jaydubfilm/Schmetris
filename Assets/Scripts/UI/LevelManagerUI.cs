@@ -403,8 +403,7 @@ namespace StarSalvager.UI
             if (Console.Open)
                 return;
             
-            
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave))
                 return;
             
             pauseWindow.SetActive(true);
