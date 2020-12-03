@@ -50,17 +50,22 @@ namespace StarSalvager
             m_gameSettings.SetupGameSettings();
         }
 
+        public void Update()
+        {
+            Debug.Log(m_currentGameState);
+        }
+
         public static bool IsState(GameState gameState)
         {
             return m_currentGameState.HasFlag(gameState);
         }
 
-        /*public void SetCurrentGameState(GameState newGameState)
+        public static void SetCurrentGameState(GameState newGameState)
         {
             m_currentGameState = newGameState;
         }
 
-        public bool IsLevel()
+        /*public bool IsLevel()
         {
             return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
         }

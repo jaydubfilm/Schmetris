@@ -371,7 +371,7 @@ namespace StarSalvager
                     {
                         GameUi.ShowRecoveryBanner(false);
                         GameTimer.SetPaused(false);
-                        GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                        GameManager.SetCurrentGameState(GameState.Scrapyard);
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
                         ResetLevelTimer();
@@ -410,7 +410,7 @@ namespace StarSalvager
                     () => 
                 {
 
-                    GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                    GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                     ProcessScrapyardUsageBeginAnalytics();
 
                     ScreenFade.Fade(() =>
@@ -748,7 +748,7 @@ namespace StarSalvager
             }
             
             
-            GameManager.Instance.SetCurrentGameState(GameState.LevelActiveEndSequence);
+            GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
             EnemyManager.SetEnemiesInert(true);
         }
 
@@ -760,7 +760,7 @@ namespace StarSalvager
             }
 
             
-            GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
+            GameManager.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
 
@@ -1062,7 +1062,7 @@ namespace StarSalvager
             }
 
             SavePlayerData();
-            GameManager.Instance.SetCurrentGameState(GameState.LevelBotDead);
+            GameManager.SetCurrentGameState(GameState.LevelBotDead);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
@@ -1118,7 +1118,7 @@ namespace StarSalvager
 
         public void Activate()
         {
-            GameManager.Instance.SetCurrentGameState(GameState.LevelActive);
+            GameManager.SetCurrentGameState(GameState.LevelActive);
             
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
             

@@ -971,7 +971,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
-            if (GameManager.Instance.GetCurrentGameState() != GameState.MainMenu)
+            if (!GameManager.IsState(GameState.MainMenu))
             {
                 SavePlayerAccountData();
             }

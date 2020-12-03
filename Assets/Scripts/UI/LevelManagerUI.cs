@@ -158,7 +158,7 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -170,7 +170,7 @@ namespace StarSalvager.UI
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                GameManager.SetCurrentGameState(GameState.Scrapyard);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -183,7 +183,7 @@ namespace StarSalvager.UI
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                GameManager.SetCurrentGameState(GameState.Scrapyard);
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
 
