@@ -50,7 +50,7 @@ namespace StarSalvager.Factories
 
             //--------------------------------------------------------------------------------------------------------//
 
-            ((BoxCollider2D)temp.collider).size = sprite.bounds.size;
+            //((BoxCollider2D)temp.collider).size = sprite.bounds.size;
             temp.SetColliderActive(true);
             temp.SetSprite(sprite);
             temp.SetRotating(true);

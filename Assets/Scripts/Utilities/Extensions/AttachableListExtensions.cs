@@ -1368,6 +1368,11 @@ namespace StarSalvager.Utilities.Extensions
         }
         //====================================================================================================================//
         
+        public static bool HasBitAttached(this IEnumerable<IAttachable> attachables, BIT_TYPE type)
+        {
+            return attachables.OfType<Bit>().Any(x => x.Type == type);
+        }
+        
 
     }
 }

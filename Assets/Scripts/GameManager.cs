@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
+    //FIXME We'll likely want to make use of enum flags here
     public enum GameState
     {
         MainMenu,
@@ -21,9 +22,11 @@ namespace StarSalvager
         LevelBotDead
     }
     
-    [DefaultExecutionOrder(-10000)]
+    //Don't need to set this, Singleton already triggers [DefaultExecutionOrder]
+    //[DefaultExecutionOrder(-10000)]
     public class GameManager : Singleton<GameManager>
     {
+        //FIXME The game state can likely be stored as static, since we don't gain anything by accessing it through the instance
         private GameState m_currentGameState = GameState.MainMenu;
         
         [SerializeField, Required]

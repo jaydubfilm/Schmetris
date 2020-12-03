@@ -739,7 +739,7 @@ namespace StarSalvager.UI
             if (resources == null)
                 return string.Empty;
 
-            var outString = "Carried Resources:\n";
+            var outString = "Carried:\n";
 
             foreach (var resource in resources)
             {

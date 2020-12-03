@@ -18,6 +18,9 @@ namespace StarSalvager.Utilities.Inputs
     {
         private static List<IMoveOnInput> _moveOnInput;
 
+        [SerializeField, Required]
+        private PlayerInput playerInput;
+
         //Properties
         //====================================================================================================================//
 
@@ -156,6 +159,24 @@ namespace StarSalvager.Utilities.Inputs
         #endregion //Unity Functions
 
         //============================================================================================================//
+
+        public static void SwitchCurrentActionMap(in string actionMapName)
+        {
+            switch (actionMapName)
+            {
+                case "Default":
+                    Input.Actions.Default.Enable();
+                    Input.Actions.MenuControls.Disable();
+                    break;
+                case "Menu Controls":
+                    Input.Actions.Default.Disable();
+                    Input.Actions.MenuControls.Enable();
+                    break;
+            }
+            
+            Instance.playerInput.SwitchCurrentActionMap(actionMapName);
+            
+        }
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
         {
@@ -240,9 +261,22 @@ namespace StarSalvager.Utilities.Inputs
         #region Inputs
         private void SetupInputs()
         {
+            var actionMap = playerInput.currentActionMap.actions;
+
+            /*foreach (var action in actionMap)
+            {
+                Debug.Log(action.name);
+            }*/
+            
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
+                {
+                    Input.Actions.Default.SideMovement, MovementDelegator
+                },
+                {
+                    Input.Actions.Default.Rotate, MovementDelegator
+                },
                 {
                     Input.Actions.Default.Pause, Pause
                 },
@@ -267,12 +301,9 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.SelfDestruct, SelfDestruct
                 }
-                //{
-                //    Input.Actions.Default.SelfDestruct, SelfDestruct
-                //}
             };
             
-            //Here we setup the inputs dependent on the orientation
+            /*//Here we setup the inputs dependent on the orientation
             switch (Globals.Orientation)
             {
                 case ORIENTATION.VERTICAL:
@@ -285,7 +316,7 @@ namespace StarSalvager.Utilities.Inputs
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
+            }*/
         }
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
@@ -342,6 +373,21 @@ namespace StarSalvager.Utilities.Inputs
 
         #region Movement
 
+        private void MovementDelegator(InputAction.CallbackContext ctx)
+        {
+            switch (ctx.action.name)
+            {
+                case "Side Movement":
+                    if (Globals.Orientation == ORIENTATION.VERTICAL) SideMovement(ctx);
+                    else RotateMovement(ctx);
+                    break;
+                case "Rotate":
+                    if (Globals.Orientation == ORIENTATION.VERTICAL) RotateMovement(ctx);
+                    else SideMovement(ctx);
+                    break;
+            }
+        }
+        
         private void SideMovement(InputAction.CallbackContext ctx)
         {
             _currentMoveInput = ctx.ReadValue<float>();
@@ -585,9 +631,12 @@ namespace StarSalvager.Utilities.Inputs
             
             if (GameManager.Instance.IsLevelEndWave())
                 return;
-            
-            if(ctx.ReadValue<float>() == 1f)
+
+            if (ctx.ReadValue<float>() == 1f)
+            {
                 GameTimer.SetPaused(!isPaused);
+                SwitchCurrentActionMap(isPaused ? "Menu Controls" : "Default");
+            }
         }
         
         //private void SelfDestruct(InputAction.CallbackContext ctx)

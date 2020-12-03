@@ -5,13 +5,16 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Missions;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Console = StarSalvager.Utilities.Console;
+using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -107,7 +110,16 @@ namespace StarSalvager.UI
 
             m_canvasRect = GetComponent<RectTransform>();
             InitScrollPositions();
-            
+
+            /*StarSalvager.Utilities.Inputs.Input.Actions.MenuControls.Pause.performed += ctx =>
+            {
+                if (!ctx.control.IsPressed())
+                    return;
+                
+                GameTimer.SetPaused(false);
+                InputManager.SwitchCurrentActionMap("Default");
+            };*/
+
         }
 
         private void OnEnable()
@@ -127,7 +139,12 @@ namespace StarSalvager.UI
         private void Update()
         {
             if (isPaused)
+            {
+                /*if(Input.GetKeyDown(KeyCode.Escape))
+                    resumeButton.onClick.Invoke();*/
+                
                 return;
+            }
             
             if(m_isMissionReminderScrolling)
                 MoveMissionReminder();
@@ -220,6 +237,7 @@ namespace StarSalvager.UI
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
+                InputManager.SwitchCurrentActionMap("Default");
             });
             
             ToggleBetweenWavesUIActive(false);
@@ -240,6 +258,7 @@ namespace StarSalvager.UI
             
             SetPosition(0f);
         }
+        
 
         //============================================================================================================//
 

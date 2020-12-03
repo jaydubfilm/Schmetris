@@ -456,8 +456,6 @@ namespace StarSalvager
             if (GameTimer.IsPaused) 
                 return;
 
-
-
             if (direction != 0 && GameManager.Instance.IsLevelBotDead())
             {
                 isContinuousRotation = false;

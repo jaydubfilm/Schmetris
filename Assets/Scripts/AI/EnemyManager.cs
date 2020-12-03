@@ -37,7 +37,7 @@ namespace StarSalvager
         private bool _hasActiveEnemies;
 
         //============================================================================================================//
-        
+         
         // Start is called before the first frame update
         private void Start()
         {
@@ -74,7 +74,7 @@ namespace StarSalvager
             if (!GameManager.Instance.IsLevel() || GameManager.Instance.IsLevelBotDead())
                 return;
             
-            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.Instance.IsLevelActive())
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.Instance.IsLevelActive() && ! GameManager.Instance.IsLevelEndWave())
             {
                 _hasActiveEnemies = true;
                 AudioController.CrossFadeTrack(MUSIC.ENEMY);
@@ -104,11 +104,11 @@ namespace StarSalvager
                 switch (m_enemies[i])
                 {
                     case EnemyAttachable _:
-                        Recycling.Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
+                        Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
                         break;
                     
                     case Enemy _:
-                        Recycling.Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                        Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
                         break;
                     default:
                         throw new ArgumentException();

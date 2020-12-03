@@ -14,8 +14,10 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -626,8 +628,22 @@ namespace StarSalvager.UI
         private bool _fuel;
         public void SetFuelValue(float value)
         {
+            bool hasBitAttached = false;
+            bool state = false;
+
+            //FIXME This is inefficient, and I want to find a better way of reducing the calls here
+            if (LevelManager.Instance != null && LevelManager.Instance.BotObject)
+            {
+                hasBitAttached = LevelManager.Instance.BotObject.attachedBlocks.HasBitAttached(BIT_TYPE.RED);
+            }
+            
             fuelSlider.value = value;
-            var state = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+            //Only if there are not any bits attached
+            if (!hasBitAttached)
+            {
+                state = CheckActivateGlow(fuelSlider, redSliderGlow);
+            }
 
             //If we're glowing and we weren't before, play resource warning sound
             if (state && _fuel == false)
@@ -847,7 +863,10 @@ namespace StarSalvager.UI
         {
             if (_movingSummaryWindow)
                 return;
-
+            
+            InputManager.SwitchCurrentActionMap(show ? "Menu Controls" : "Default");
+            
+            
             float targetY;
             if (show)
             {
@@ -874,6 +893,8 @@ namespace StarSalvager.UI
 
                 waveSummaryTitle.color = spriteSet.titleColor;
                 waveSummaryText.color = spriteSet.textColor;
+                
+                
 
             }
             else
@@ -883,8 +904,6 @@ namespace StarSalvager.UI
 
             waveSummaryTitle.text = title;
             waveSummaryText.text = text;
-
-
 
             if (instantMove)
             {
@@ -896,6 +915,7 @@ namespace StarSalvager.UI
             }
 
             StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
+            
         }
 
         private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
@@ -919,6 +939,9 @@ namespace StarSalvager.UI
 
             _movingSummaryWindow = false;
             confirmButton.interactable = true;
+            
+            EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
+
         }
 
         #endregion //Wave Summary Window
@@ -1031,6 +1054,9 @@ namespace StarSalvager.UI
         public void CreatePatchPointEffect(int count)
         {
             if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
+                return;
+
+            if (GameManager.Instance.IsLevelEndWave())
                 return;
 
             
