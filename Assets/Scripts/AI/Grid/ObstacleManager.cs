@@ -119,7 +119,7 @@ namespace StarSalvager
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles, m_currentStageData);
-                if (GameManager.Instance.IsLevelActive())
+                if (GameManager.IsState(GameState.LevelActive))
                 {
                     SpawnNewRowOfObstacles();
                     TryMarkNewShapesOnGrid();
@@ -131,14 +131,14 @@ namespace StarSalvager
                 m_blendTimer += Time.deltaTime;
             }
 
-            if (GameManager.Instance.IsLevelActive() && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            if (GameManager.IsState(GameState.LevelActive) && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
             }
 
             HandleObstacleMovement();
 
-            if (GameManager.Instance.IsLevelActive())
+            if (GameManager.IsState(GameState.LevelActive))
             {
                 TrySpawnBonusShape();
             }
@@ -592,7 +592,7 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }

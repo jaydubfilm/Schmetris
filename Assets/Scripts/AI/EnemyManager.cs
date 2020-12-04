@@ -37,7 +37,7 @@ namespace StarSalvager
         private bool _hasActiveEnemies;
 
         //============================================================================================================//
-        
+         
         // Start is called before the first frame update
         private void Start()
         {
@@ -55,7 +55,7 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!GameManager.Instance.IsLevelActive())
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
             {
                 return;
             }
@@ -71,19 +71,19 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!GameManager.Instance.IsLevel() || GameManager.Instance.IsLevelBotDead())
+            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
                 return;
             
-            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.Instance.IsLevelActive())
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.IsState(GameState.LEVEL_ACTIVE) && !GameManager.IsState(GameState.LevelEndWave))
             {
                 _hasActiveEnemies = true;
                 AudioController.CrossFadeTrack(MUSIC.ENEMY);
             }
-            else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.Instance.IsLevelEndWave()))
+            else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.IsState(GameState.LevelEndWave)))
             {
                 _hasActiveEnemies = false;
                 
-                if(m_enemies.Count == 0 && GameManager.Instance.IsLevelActive())
+                if(m_enemies.Count == 0 && GameManager.IsState(GameState.LEVEL_ACTIVE))
                     AudioController.CrossFadePreviousTrack();
             }
         }
@@ -104,11 +104,11 @@ namespace StarSalvager
                 switch (m_enemies[i])
                 {
                     case EnemyAttachable _:
-                        Recycling.Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
+                        Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
                         break;
                     
                     case Enemy _:
-                        Recycling.Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                        Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
                         break;
                     default:
                         throw new ArgumentException();
@@ -206,7 +206,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }

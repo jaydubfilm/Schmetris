@@ -346,7 +346,7 @@
                     "id": "957b3a89-8a62-453d-bfbf-a23955633829",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press(behavior=2)"
                 },
                 {
                     "name": "Point",
@@ -385,6 +385,14 @@
                     "type": "Value",
                     "id": "ad18de5f-5d0c-46ea-a7e6-978097cb036f",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Right Click",
+                    "type": "Button",
+                    "id": "bf427530-d7d9-4cde-aa01-5e95d4450558",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
                 }
@@ -596,6 +604,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Scroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41928269-e262-4d2c-aede-d62b0a50c16e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

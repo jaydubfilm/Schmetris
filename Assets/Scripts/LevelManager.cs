@@ -184,7 +184,7 @@ namespace StarSalvager
                 return;
             }
 
-            if (!GameManager.Instance.IsLevel())
+            if (!GameManager.IsState(GameState.LEVEL))
             {
                 return;
             }
@@ -196,11 +196,11 @@ namespace StarSalvager
                 return;
             }
 
-            if (GameManager.Instance.IsLevelActiveEndSequence())
+            if (GameManager.IsState(GameState.LevelActiveEndSequence))
             {
                 TryBeginWaveEndSequence();
             }
-            else if (GameManager.Instance.IsLevelActive())
+            else if (GameManager.IsState(GameState.LEVEL_ACTIVE))
             {
                 ProgressStage();
             }
@@ -216,7 +216,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (GameManager.Instance.IsLevelEndWave()) 
+            if (GameManager.IsState(GameState.LevelEndWave)) 
                 return;
             
             UpdateUIClock();
@@ -232,7 +232,7 @@ namespace StarSalvager
         //FIXME Does this need to be happening every frame?
         private void CheckBotPositions()
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -282,7 +282,7 @@ namespace StarSalvager
         
         private void ProgressStage()
         {
-            if (GameManager.Instance.IsLevelActive())
+            if (GameManager.IsState(GameState.LEVEL_ACTIVE))
             {
                 m_waveTimer += Time.deltaTime;
                 m_checkFlightLengthMissionTimer += Time.deltaTime;
@@ -344,7 +344,7 @@ namespace StarSalvager
 
         private void ProcessEndOfWave()
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -371,7 +371,7 @@ namespace StarSalvager
                     {
                         GameUi.ShowRecoveryBanner(false);
                         GameTimer.SetPaused(false);
-                        GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                        GameManager.SetCurrentGameState(GameState.Scrapyard);
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
                         ResetLevelTimer();
@@ -410,7 +410,7 @@ namespace StarSalvager
                     () => 
                 {
 
-                    GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                    GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                     ProcessScrapyardUsageBeginAnalytics();
 
                     ScreenFade.Fade(() =>
@@ -664,7 +664,7 @@ namespace StarSalvager
 
             _audioCountDown = WARNING_COUNT;
 
-            if (!GameManager.Instance.IsUniverseMapBetweenWaves())
+            if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
                 m_levelTimer = 0;
             }
@@ -735,7 +735,7 @@ namespace StarSalvager
         
         private void TransitionToEndWaveState()
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -748,7 +748,7 @@ namespace StarSalvager
             }
             
             
-            GameManager.Instance.SetCurrentGameState(GameState.LevelActiveEndSequence);
+            GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
             EnemyManager.SetEnemiesInert(true);
         }
 
@@ -760,7 +760,7 @@ namespace StarSalvager
             }
 
             
-            GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
+            GameManager.SetCurrentGameState(GameState.LevelEndWave);
 
             SavePlayerData();
 
@@ -927,7 +927,7 @@ namespace StarSalvager
 
         public void SetBotExitScreen(bool value)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -983,7 +983,7 @@ namespace StarSalvager
                     }
                     case RDSValue<BlockData> rdsValueBlockData:
                     {
-                        if (!GameManager.Instance.IsLevelActive())
+                        if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                         {
                             switch (rdsValueBlockData.rdsValue.ClassType)
                             {
@@ -1062,7 +1062,7 @@ namespace StarSalvager
             }
 
             SavePlayerData();
-            GameManager.Instance.SetCurrentGameState(GameState.LevelBotDead);
+            GameManager.SetCurrentGameState(GameState.LevelBotDead);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
@@ -1118,7 +1118,7 @@ namespace StarSalvager
 
         public void Activate()
         {
-            GameManager.Instance.SetCurrentGameState(GameState.LevelActive);
+            GameManager.SetCurrentGameState(GameState.LevelActive);
             
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
             

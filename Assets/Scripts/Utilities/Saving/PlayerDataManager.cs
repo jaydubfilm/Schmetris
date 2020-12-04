@@ -791,12 +791,87 @@ namespace StarSalvager.Utilities.Saving
             foreach (var facilityData in Globals.FacilityInitialData)
             {
                 playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+                /*FacilityBlueprint facilityBlueprint = new FacilityBlueprint
+                {
+                    name = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayName,
+                    facilityType = (FACILITY_TYPE)facilityData.type,
+                    description = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayDescription,
+                    level = facilityData.level
+                };
+                PlayerDataManager.AddNewFacilityBlueprintAlert(facilityBlueprint);*/
             }
 
             List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
             foreach (var facilityData in remoteData)
             {
                 playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
+            }
+
+            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
+            {
+                if (facilityRemoteData.hideInFacilityMenu)
+                {
+                    continue;
+                }
+
+                FACILITY_TYPE type = facilityRemoteData.type;
+                bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
+                bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
+
+                if (!containsFacilityBlueprintKey)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i <= PlayerDataManager.GetFacilityBlueprintRanks()[type]; i++)
+                //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
+                {
+                    if (containsFacilityKey && PlayerDataManager.GetFacilityRanks()[type] >= i)
+                    {
+                        continue;
+                    }
+
+                    if (!containsFacilityKey && i > 0)
+                    {
+                        continue;
+                    }
+
+                    string description = facilityRemoteData.displayDescription;
+                    description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
+
+                    FacilityBlueprint newBlueprint = new FacilityBlueprint
+                    {
+                        name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
+                        description = description,
+                        facilityType = type,
+                        level = i,
+                        patchCost = facilityRemoteData.levels[i].patchCost
+                    };
+
+                    bool hasPrereqs = true;
+                    for (int k = 0; k < facilityRemoteData.levels[i].facilityPrerequisites.Count; k++)
+                    {
+                        if (PlayerDataManager.GetFacilityRanks().ContainsKey(facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType) &&
+                            PlayerDataManager.GetFacilityRanks()[facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType] >= facilityRemoteData.levels[i].facilityPrerequisites[k].level)
+                        {
+                            continue;
+                        }
+
+                        hasPrereqs = false;
+                        break;
+                    }
+
+                    bool craftButtonInteractable = hasPrereqs &&
+                        ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
+                        (!containsFacilityKey && i == 0));
+
+                    if (!craftButtonInteractable)
+                    {
+                        continue;
+                    }
+
+                    PlayerDataManager.AddNewFacilityBlueprintAlert(newBlueprint);
+                }
             }
 
             MissionManager.LoadMissionData();
@@ -896,7 +971,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void CustomOnApplicationQuit()
         {
-            if (GameManager.Instance.GetCurrentGameState() != GameState.MainMenu)
+            if (!GameManager.IsState(GameState.MainMenu))
             {
                 SavePlayerAccountData();
             }

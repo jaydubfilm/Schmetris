@@ -162,7 +162,20 @@ namespace StarSalvager.Utilities.Inputs
 
         public static void SwitchCurrentActionMap(in string actionMapName)
         {
+            switch (actionMapName)
+            {
+                case "Default":
+                    Input.Actions.Default.Enable();
+                    Input.Actions.MenuControls.Disable();
+                    break;
+                case "Menu Controls":
+                    Input.Actions.Default.Disable();
+                    Input.Actions.MenuControls.Enable();
+                    break;
+            }
+            
             Instance.playerInput.SwitchCurrentActionMap(actionMapName);
+            
         }
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
@@ -250,10 +263,10 @@ namespace StarSalvager.Utilities.Inputs
         {
             var actionMap = playerInput.currentActionMap.actions;
 
-            foreach (var action in actionMap)
+            /*foreach (var action in actionMap)
             {
                 Debug.Log(action.name);
-            }
+            }*/
             
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
@@ -389,7 +402,7 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
                 return;
 
             MostRecentSideMovement = moveDirection;
@@ -462,7 +475,7 @@ namespace StarSalvager.Utilities.Inputs
             if (_moveOnInput == null)
                 return;
 
-            if (value != 0 && !GameManager.Instance.IsLevelActive())
+            if (value != 0 && !GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
 
             //_currentMovement = value;
@@ -503,10 +516,10 @@ namespace StarSalvager.Utilities.Inputs
             if (isPaused)
                 return;
 
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
                 return;
 
-            if (rotateDirection != 0 && GameManager.Instance.IsLevelEndWave())
+            if (rotateDirection != 0 && GameManager.IsState(GameState.LevelEndWave))
                 return;
 
             MostRecentRotateMovement = rotateDirection;
@@ -574,7 +587,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="value"></param>
         private void Rotate(float value)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
                 return;
 
             foreach (var bot in _bots)
@@ -616,7 +629,7 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave))
                 return;
 
             if (ctx.ReadValue<float>() == 1f)

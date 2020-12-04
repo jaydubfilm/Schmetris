@@ -3,7 +3,6 @@ using System.Collections;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio.ScriptableObjects;
-using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.Audio

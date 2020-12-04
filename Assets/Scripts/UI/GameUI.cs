@@ -1056,6 +1056,9 @@ namespace StarSalvager.UI
             if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
                 return;
 
+            if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
+                return;
+
             
             var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
 

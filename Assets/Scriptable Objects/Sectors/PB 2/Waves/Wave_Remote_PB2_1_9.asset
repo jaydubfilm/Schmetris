@@ -13,19 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_1_9
   m_EditorClassIdentifier: 
   WaveSeed: 0
-  BonusShapes:
-  - m_selectionType: 1
-    m_shapeName: 
-    m_category: BS_2Cell
-    m_rotation: -1
-  - m_selectionType: 1
-    m_shapeName: 
-    m_category: BS_2Cell
-    m_rotation: -1
-  - m_selectionType: 1
-    m_shapeName: 
-    m_category: BS_2Cell
-    m_rotation: -1
+  BonusShapes: []
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0

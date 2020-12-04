@@ -424,6 +424,8 @@ namespace StarSalvager.UI.Scrapyard
         {
             _currentWindow = window;
             SetWindowActive((int)window);
+            
+            menuButton.gameObject.SetActive(window == Window.ShipInterior);
         }
 
         private void SetWindowActive(int index)

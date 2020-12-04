@@ -127,7 +127,7 @@ namespace StarSalvager
             if (bot != null)
             {
 
-                if (!GameManager.Instance.IsLevelActive())
+                if (!GameManager.IsState(GameState.LevelActive))
                 {
                     return;
                 }

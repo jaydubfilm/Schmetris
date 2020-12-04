@@ -159,6 +159,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 1764135583}
+    ActiveGameObject: {fileID: 1764135583}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 598996318}
     ActiveGameObject: {fileID: 598996318}
     GUIDsList: []
@@ -425,18 +437,6 @@ MonoBehaviour:
     list:
     - {fileID: 1504907909}
     ActiveGameObject: {fileID: 1504907909}
-    GUIDsList: []
-    GUIDsActiveGameObject: 
-    PATHsList: []
-    PATHsActiveGameObject: 
-    InstanceID: 0
-    wasInit: 0
-    CashedBool: 0
-  - FavParams: 0
-    FavString: []
-    list:
-    - {fileID: 1764135583}
-    ActiveGameObject: {fileID: 1764135583}
     GUIDsList: []
     GUIDsActiveGameObject: 
     PATHsList: []
