@@ -18,7 +18,31 @@ namespace StarSalvager.Utilities.Debugging
         //    Debug.DrawRay(pos + direction, right * arrowHeadLength);
         //    Debug.DrawRay(pos + direction, left * arrowHeadLength);
         //}
+        
+        public static void DrawSquare(Rect rect, Color color, float duration)
+        {
+            var worldMin = rect.min;
+            var worldMax = rect.max;
+            
+            DrawSquare(worldMin, worldMax, color, duration);
+        }
 
+        public static void DrawSquare(Vector2 worldMin, Vector2 worldMax, Color color, float duration)
+        {
+            var vectors = new []
+            {
+                new Vector2(worldMin.x, worldMax.y), 
+                worldMax, 
+                new Vector2(worldMax.x, worldMin.y),
+                worldMin
+            };
+            
+            Debug.DrawLine(vectors[0], vectors[1], color, duration);
+            Debug.DrawLine(vectors[1], vectors[2], color, duration);
+            Debug.DrawLine(vectors[2], vectors[3], color, duration);
+            Debug.DrawLine(vectors[3], vectors[0], color, duration);
+        }
+        
         public static void DrawArrowRay(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f,
             float arrowHeadAngle = 20.0f)
         {

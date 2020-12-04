@@ -745,6 +745,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TEST_target: {fileID: 0}
   TEST_multiplier: {x: 5, y: 5}
-  spacing: {x: 20, y: 20}
+  titleText: {fileID: 6586104082868023058}
+  descriptionText: {fileID: 8760214988973554262}
+  edgeSpacing: {x: 0, y: 0}
   maskObjectRect: {fileID: 2127280031386350367}
   maskParentRect: {fileID: 5794645805348983034}
