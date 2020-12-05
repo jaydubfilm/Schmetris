@@ -49,7 +49,7 @@ MonoBehaviour:
     m_attackDamage: 1
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 4
+    m_maxDrops: 2
     m_rdsEnemyData:
     - rdsData: 0
       type: 2
@@ -88,7 +88,7 @@ MonoBehaviour:
     m_attackDamage: 20
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
-    m_maxDrops: 5
+    m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
       type: 5
@@ -127,7 +127,7 @@ MonoBehaviour:
     m_attackDamage: 15
     m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 6
+    m_maxDrops: 2
     m_rdsEnemyData:
     - rdsData: 3
       type: 3
@@ -166,7 +166,7 @@ MonoBehaviour:
     m_attackDamage: 35
     m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
-    m_maxDrops: 8
+    m_maxDrops: 5
     m_rdsEnemyData:
     - rdsData: 0
       type: 1
@@ -205,7 +205,7 @@ MonoBehaviour:
     m_attackDamage: 0
     m_rateOfFire: 1
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 6
+    m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
       type: 3
@@ -264,7 +264,7 @@ MonoBehaviour:
     m_attackDamage: 2
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 5
+    m_maxDrops: 2
     m_rdsEnemyData:
     - rdsData: 0
       type: 2
@@ -323,7 +323,7 @@ MonoBehaviour:
     m_attackDamage: 25
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
-    m_maxDrops: 7
+    m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
       type: 5
@@ -382,7 +382,7 @@ MonoBehaviour:
     m_attackDamage: 15
     m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 8
+    m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
       type: 4
@@ -441,7 +441,7 @@ MonoBehaviour:
     m_attackDamage: 35
     m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
-    m_maxDrops: 8
+    m_maxDrops: 5
     m_rdsEnemyData:
     - rdsData: 0
       type: 1
