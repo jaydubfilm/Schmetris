@@ -664,8 +664,8 @@ MonoBehaviour:
     partType: 7
     lockRotation: 0
     canSell: 1
-    description: 'This powerfu pilot-triggered weapon deals explosive damage to all
-      enemies on the screen. '
+    description: 'This powerful pilot-triggered weapon deals explosive damage to
+      all enemies in a wide radius. '
     priority: 50
     burnType: 4
     levels:
@@ -1078,7 +1078,7 @@ MonoBehaviour:
     partType: 14
     lockRotation: 0
     canSell: 1
-    description: 
+    description: This medium-range heat-seeking projectile almost always hits.
     priority: 50
     burnType: 3
     levels:
@@ -1145,8 +1145,8 @@ MonoBehaviour:
   - name: Sniper
     partType: 15
     lockRotation: 0
-    canSell: 1
-    description: 
+    canSell: 0
+    description: A long range, very accurate weapon with a slow rate of fire.
     priority: 50
     burnType: 3
     levels:

@@ -97,7 +97,7 @@ MonoBehaviour:
   - MissionID: 3581e56a-ab74-40b1-9546-22f57c92efef
     MissionType: 3
     MissionName: Match 3 bits
-    MissionDescription: Match 3 bits
+    MissionDescription: Upgrade your bits by matching 3 of the same colour in a row.
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
@@ -181,7 +181,8 @@ MonoBehaviour:
   - MissionID: 8bf13add-01f8-44bd-91a8-fd330d72a92c
     MissionType: 5
     MissionName: Craft a magnet
-    MissionDescription: Craft a magnet to collect more materials
+    MissionDescription: Craft a magnet in the wreckshop to to increase your bit-collecting
+      capacity
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
@@ -307,7 +308,8 @@ MonoBehaviour:
   - MissionID: 020d7507-b997-41d7-bbff-921f40e58e73
     MissionType: 13
     MissionName: Upgrade refinery
-    MissionDescription: Upgrade your base's refinery facility
+    MissionDescription: Upgrade your base's refinery facility by spending a patch
+      point
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 0
@@ -352,7 +354,7 @@ MonoBehaviour:
   - MissionID: e906d702-a1ad-4533-b0d8-48e27a399b8c
     MissionType: 0
     MissionName: Kill a parasite
-    MissionDescription: Kill a parasite
+    MissionDescription: Kill a parasite enemy
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
@@ -394,7 +396,7 @@ MonoBehaviour:
   - MissionID: add6ce90-b614-49b9-a4cb-2f33d45f5a05
     MissionType: 0
     MissionName: Kill an invader
-    MissionDescription: Kill an invader
+    MissionDescription: Kill an invader enemy.
     MissionUnlockParameters:
     - MissionUnlockType: Mission Complete
       SectorUnlockNumber: 1
@@ -513,7 +515,7 @@ MonoBehaviour:
       level: 0
       probability: 0
       isGearRange: 0
-      gearValue: 50
+      gearValue: 100
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
