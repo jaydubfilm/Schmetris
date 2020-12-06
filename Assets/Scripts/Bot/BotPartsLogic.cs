@@ -1179,7 +1179,7 @@ namespace StarSalvager
 
             var position = part.transform.position;
             var shootDirection = ShouldUseGunTurret(levelData)
-                ? (collidableTarget.transform.position - part.transform.position).normalized
+                ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
             //TODO Might need to add something to change the projectile used for each gun piece
@@ -1193,6 +1193,49 @@ namespace StarSalvager
                     rangeBoost,
                     collisionTag,
                     true);
+        }
+
+        private Vector3 GetAimedProjectileAngle(CollidableBase target, Part part, string projectileId)
+        {
+            Vector3 targetVelocity;
+            switch(target)
+            {
+                case Enemy enemy:
+                    targetVelocity = enemy.EnemyMovementSpeed * enemy.m_mostRecentMovementDirection;
+                    break;
+                default:
+                    targetVelocity = Vector3.zero;
+                    break;
+            }
+            var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            
+            Vector3 totarget = target.transform.position - part.transform.position;
+
+            float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
+            float b = 2 * Vector3.Dot(targetVelocity, totarget);
+            float c = Vector3.Dot(totarget, totarget);
+
+            float p = -b / (2 * a);
+            float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
+
+            float t1 = p - q;
+            float t2 = p + q;
+            float t;
+
+            if (t1 > t2 && t2 > 0)
+            {
+                t = t2;
+            }
+            else
+            {
+                t = t1;
+            }
+
+            Vector3 aimSpot = target.transform.position + targetVelocity * t;
+            Vector3 bulletPath = aimSpot - part.transform.position;
+
+            return bulletPath;
+            //float timeToImpact = bulletPath.Length() / bullet.speed;//speed must be in units per second
         }
 
         private float GetProjectileRange(in Part part, in string projectileID)
