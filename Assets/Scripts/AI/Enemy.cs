@@ -34,6 +34,8 @@ namespace StarSalvager.AI
                 return m_enemyData.MovementType;
             }
         }
+
+        public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
         public string EnemyName => m_enemyData.Name;
 
         //ICanBeSeen Properties
@@ -62,7 +64,7 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         private float verticalLowestAllowed;
 
-        protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        public Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         public bool Disabled { get; protected set; }
 
