@@ -365,7 +365,21 @@ namespace StarSalvager
         
         public Bounds GetBounds()
         {
-            return CompositeCollider.bounds;
+            var maxY = attachedBits.Max(x => x.Coordinate.y);
+            var maxX = attachedBits.Max(x => x.Coordinate.x);
+            
+            var minY = attachedBits.Min(x => x.Coordinate.y);
+            var minX = attachedBits.Min(x => x.Coordinate.x);
+            
+            var size = new Vector2(maxX - minX, maxY - minY) * Constants.gridCellSize;
+
+            var centerPosition = attachedBits.GetCollectionCenterPosition();
+            
+            return new Bounds
+            {
+                center = centerPosition,
+                size = size
+            };
         }
 
         //====================================================================================================================//

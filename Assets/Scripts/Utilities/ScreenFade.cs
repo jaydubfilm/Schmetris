@@ -9,6 +9,8 @@ public class ScreenFade : Singleton<ScreenFade>
     [SerializeField]
     private Image image;
 
+    public bool Fading => _fading;
+
     private bool _fading;
     
     //Unity Functions
@@ -41,8 +43,20 @@ public class ScreenFade : Singleton<ScreenFade>
 
     }
 
+    public void WaitForFade(Action onFadeFinishedCallback)
+    {
+        StartCoroutine(WaitForFadeCoroutine(onFadeFinishedCallback));
+    }
+
     //Coroutines
     //====================================================================================================================//
+    
+    private static IEnumerator WaitForFadeCoroutine(Action onFadeFinishedCallback)
+    {
+        yield return new WaitUntil(() => Instance.Fading == false);
+        
+        onFadeFinishedCallback?.Invoke();
+    }
     
 
     private IEnumerator FadeCoroutine(Action onFadedCallback, float time)

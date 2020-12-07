@@ -16,6 +16,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.UI;
 
 namespace StarSalvager.UI
@@ -96,6 +97,21 @@ namespace StarSalvager.UI
             waveDataWindow.SetActive(false);
         }
 
+        //====================================================================================================================//
+
+        public RectTransform GetHintElement(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.NONE:
+                    return null;
+                case HINT.HOME:
+                    return betweenWavesScrapyardButton.transform as RectTransform;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
+
         //IReset Functions
         //====================================================================================================================//
         
@@ -105,10 +121,20 @@ namespace StarSalvager.UI
             {
                 GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
             }
-            
-            backButton.gameObject.SetActive(!GameManager.Instance.IsUniverseMapBetweenWaves());
-            betweenWavesScrapyardButton.gameObject.SetActive(GameManager.Instance.IsUniverseMapBetweenWaves());
 
+            var isBetweenWaves = GameManager.Instance.IsUniverseMapBetweenWaves();
+            
+            backButton.gameObject.SetActive(!isBetweenWaves);
+            betweenWavesScrapyardButton.gameObject.SetActive(isBetweenWaves);
+
+            ScreenFade.Instance.WaitForFade(() =>
+            {
+                if (isBetweenWaves)
+                {
+                    HintManager.Instance.TryShowHint(HINT.HOME);
+                }
+            });
+            
             if (PROTO_useSum)
             {
                 switch (IconType)
@@ -154,6 +180,8 @@ namespace StarSalvager.UI
                 _botDisplayObjects.Clear();
             }
         }
+
+        
 
         //UniverseMap Functions
         //====================================================================================================================//

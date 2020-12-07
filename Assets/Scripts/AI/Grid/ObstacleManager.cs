@@ -16,6 +16,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Missions;
 using StarSalvager.Prototype;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
@@ -390,6 +391,8 @@ namespace StarSalvager
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
+
+                        HintManager.Instance.TryShowHint(HINT.BONUS);
                     }
                 }
 

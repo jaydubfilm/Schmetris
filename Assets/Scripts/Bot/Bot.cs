@@ -20,6 +20,7 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Math;
@@ -433,9 +434,9 @@ namespace StarSalvager
 
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
-            
 
-            
+
+
             var camera = CameraController.Camera.GetComponent<CameraController>();
             camera.SetLookAtFollow(transform);
             camera.ResetCameraPosition();
@@ -444,6 +445,11 @@ namespace StarSalvager
 
         }
 
+        public void DisplayHints()
+        {
+            if(attachedBlocks.HasPartAttached(PART_TYPE.GUN)) 
+                HintManager.Instance.TryShowHint(HINT.GUN);
+        }
 
 
         #endregion // Init Bot 
@@ -3111,6 +3117,8 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             
             GameUi.FlashMagnet();
+
+            HintManager.Instance.TryShowHint(HINT.MAGNET);
 
             return true;
         }

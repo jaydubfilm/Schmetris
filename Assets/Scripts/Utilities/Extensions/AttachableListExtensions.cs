@@ -1373,6 +1373,11 @@ namespace StarSalvager.Utilities.Extensions
             return attachables.OfType<Bit>().Any(x => x.Type == type);
         }
         
+        public static bool HasPartAttached(this IEnumerable<IAttachable> attachables, PART_TYPE type)
+        {
+            return attachables.OfType<Part>().Any(x => x.Type == type);
+        }
+        
 
     }
 }
