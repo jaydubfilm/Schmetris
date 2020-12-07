@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Cameras;
 using StarSalvager.Utilities.Debugging;
 using TMPro;
 using UnityEngine;
@@ -25,6 +26,20 @@ namespace StarSalvager.UI
         private void TEST2()
         {
             HighlightRect(TEST_target.name, TEST_target, TEST_multiplier);
+        }
+        
+        [Button("Bot Highlight"),BoxGroup("Testing"), DisableInEditorMode]
+        private void TEST3()
+        {
+            var core = (Part)LevelManager.Instance.BotObject.attachedBlocks[0];
+            var partBounds = new Bounds
+            {
+                center = core.transform.position,
+                size = Vector3.one
+            };
+            
+            
+            HighlightWorldBounds(core.gameObject.name, partBounds);
         }
 
 
@@ -62,10 +77,27 @@ namespace StarSalvager.UI
                     return _canvas;
 
                 _canvas = GetComponentInParent<Canvas>();
+
                 return _canvas;
             }
         }
         private Canvas _canvas;
+
+
+        private RectTransform CanvasRectTransform
+        {
+            get
+            {
+                if (_canvasRectTransform != null)
+                    return _canvasRectTransform;
+
+                if (Canvas != null && Canvas.transform is RectTransform rectTransform)
+                    _canvasRectTransform = rectTransform;
+
+                return _canvasRectTransform;
+            }
+        }
+        private RectTransform _canvasRectTransform;
 
         //====================================================================================================================//
         
@@ -81,25 +113,46 @@ namespace StarSalvager.UI
 
             var highlightRect = GetRectAround(target, titleText.transform as RectTransform);
             
-            var canvasRectTransform = (RectTransform)Canvas.transform;
-            //var targetRect = target.rect;
-
-            // maskParentRect.pivot = target.pivot;
             maskParentRect.localPosition = highlightRect.center;
             maskParentRect.sizeDelta = highlightRect.size * sizeMultiplier;
 
-            //TryFitInScreenBounds(canvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
             
-            Debug.Log($"Center: {highlightRect.center}");
-
-
+            TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            
 
             ResetMask();
         }
 
-        private void HighlightScreenPoint(in string text, Vector2 screenPoint, Vector2 size)
+        private void HighlightWorldBounds(in string text, in Bounds worldSpaceBounds)
         {
-            throw new NotImplementedException();
+
+            var minScreenPoint = CameraController.Camera.WorldToScreenPoint(worldSpaceBounds.min);
+            var maxScreenPoint = CameraController.Camera.WorldToScreenPoint(worldSpaceBounds.max);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(CanvasRectTransform, minScreenPoint, null,
+                out var canvasMinPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(CanvasRectTransform, maxScreenPoint, null,
+                out var canvasMaxPoint);
+            
+            var canvasSpaceBounds = new Bounds
+            {
+                min = canvasMinPoint,
+                max = canvasMaxPoint
+            };
+            
+            titleText.text = text;
+            RepositionText(canvasSpaceBounds);
+            
+            var highlightRect = GetRectAround(canvasSpaceBounds, titleText.transform as RectTransform);
+            
+            maskParentRect.localPosition = highlightRect.center;
+            maskParentRect.sizeDelta = highlightRect.size;
+
+            
+            TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            
+
+            ResetMask();
         }
         private void HighlightWorldPoint(in string text, Vector3 worldPoint, Vector2 size)
         {
@@ -118,9 +171,14 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        /// <summary>
+        /// Returns the rect in canvas space coordinates surrounding the Min & Max of both rects.
+        /// </summary>
+        /// <param name="rectTransform1"></param>
+        /// <param name="rectTransform2"></param>
+        /// <returns></returns>
         private Rect GetRectAround(RectTransform rectTransform1, RectTransform rectTransform2)
         {
-            var canvasRectTransform = (RectTransform) Canvas.transform;
 
             var rect1 = RectToCanvasSpace(rectTransform1);
             var rect2 = RectToCanvasSpace(rectTransform2);
@@ -131,50 +189,77 @@ namespace StarSalvager.UI
             var maxY = Mathf.Max(rect1.yMax, rect2.yMax);
             var minY = Mathf.Min(rect1.yMin, rect2.yMin);
 
-            var size = new Vector2(maxX, maxY) - new Vector2(minX, minY);
-
-
             var outRect = new Rect
             {
-                center = Vector2.Lerp(rect1.center, rect2.center, 0.5f),
-                size = size
-                /*max = new Vector2(maxX, maxY),
-                min = new Vector2(minX, minY),*/
+                max = new Vector2(maxX, maxY),
+                min = new Vector2(minX, minY)
             };
-
-            SSDebug.DrawSquare(canvasRectTransform.TransformPoint(rect1.min),
-                canvasRectTransform.TransformPoint(rect1.max), Color.red, 5f);
-            SSDebug.DrawSquare(canvasRectTransform.TransformPoint(rect2.min),
-                canvasRectTransform.TransformPoint(rect2.max), Color.blue, 5f);
-            SSDebug.DrawSquare(canvasRectTransform.TransformPoint(outRect.min),
-                canvasRectTransform.TransformPoint(outRect.max), Color.green, 5f);
+            
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect1.min),
+                CanvasRectTransform.TransformPoint(rect1.max), Color.red, 5f);
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect2.min),
+                CanvasRectTransform.TransformPoint(rect2.max), Color.blue, 5f);
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(outRect.min),
+                CanvasRectTransform.TransformPoint(outRect.max), Color.green, 5f);
 
             return outRect;
         }
 
-        private Rect RectToCanvasSpace(RectTransform rectTransform)
+        /// <summary>
+        /// Returns the rect in canvas space coordinates surrounding the Min & Max of both rects.
+        /// </summary>
+        /// <param name="canvasSpaceBounds"></param>
+        /// <param name="rectTransform1"></param>
+        /// <returns></returns>
+        private Rect GetRectAround(Bounds canvasSpaceBounds, RectTransform rectTransform1)
         {
-            var canvasRectTransform = (RectTransform) Canvas.transform;
 
-            var rect = rectTransform.rect;
-            
-            var size = new Vector2(rect.width, rect.height);
-            var center = (Vector2)canvasRectTransform.InverseTransformPoint(rectTransform.position);
-            /*var max = center + new Vector2(size.x / 2f, size.y / 2f);
-            var min = center - new Vector2(size.x / 2f, size.y / 2f);*/
-            
-            //Debug.Log($"{rectTransform.name} Center: {center} Size: {size}", rectTransform);
-            
-            return new Rect
+            var rect = RectToCanvasSpace(rectTransform1);
+
+            var maxX = Mathf.Max(canvasSpaceBounds.max.x, rect.xMax);
+            var minX = Mathf.Min(canvasSpaceBounds.min.x, rect.xMin);
+
+            var maxY = Mathf.Max(canvasSpaceBounds.max.y, rect.yMax);
+            var minY = Mathf.Min(canvasSpaceBounds.min.y, rect.yMin);
+
+            var outRect = new Rect
             {
-                center = center,
-                size = size
-                /*max = max,
-                min = min*/
+                max = new Vector2(maxX, maxY),
+                min = new Vector2(minX, minY)
             };
+            
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(canvasSpaceBounds.min),
+                CanvasRectTransform.TransformPoint(canvasSpaceBounds.max), Color.red, 5f);
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect.min),
+                CanvasRectTransform.TransformPoint(rect.max), Color.blue, 5f);
+            SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(outRect.min),
+                CanvasRectTransform.TransformPoint(outRect.max), Color.green, 5f);
 
+            return outRect;
         }
 
+        /// <summary>
+        /// Converts the RectTransform into canvas space
+        /// </summary>
+        /// <param name="rectTransform"></param>
+        /// <returns></returns>
+        private Rect RectToCanvasSpace(in RectTransform rectTransform)
+        {
+            var rectTransformBounds =
+                RectTransformUtility.CalculateRelativeRectTransformBounds(CanvasRectTransform, rectTransform);
+
+            return new Rect
+            {
+                center = rectTransformBounds.center,
+                min = rectTransformBounds.min,
+                max = rectTransformBounds.max
+            };
+        }
+
+        /// <summary>
+        /// Reposition the text element to be offset of the target RectTransform relative to its position on screen
+        /// </summary>
+        /// <param name="rectTransform"></param>
         private void RepositionText(in RectTransform rectTransform)
         {
             var quadrant = FindQuadrant(rectTransform);
@@ -190,9 +275,29 @@ namespace StarSalvager.UI
             titleText.transform.localPosition += (Vector3)positionDelta;
         }
         
+        /// <summary>
+        /// Reposition the text element to be offset of the target RectTransform relative to its position on screen
+        /// </summary>
+        /// <param name="bounds"></param>
+        private void RepositionText(in Bounds bounds)
+        {
+            var quadrant = FindQuadrant(Canvas, bounds);
+            var reflectedCorner = quadrant.Reflected();
+            
+            titleText.transform.position = bounds.center;
+
+            /*
+            //Get the opposite corner of the rect, to space starting from there
+            var positionDelta = GetDistanceToCorner(reflectedCorner, bounds);
+            positionDelta += GetDistanceToCorner(reflectedCorner, titleText.transform as RectTransform) *
+                             new Vector2(1f, 1.9f);
+
+            titleText.transform.localPosition += (Vector3)positionDelta;*/
+        }
+        
         private void ResetMask()
         {
-            var canvasSize = ((RectTransform)Canvas.transform).sizeDelta;
+            var canvasSize = CanvasRectTransform.sizeDelta;
             
             maskObjectRect.position = maskParentRect.parent.TransformPoint(Vector3.zero);
             maskObjectRect.sizeDelta = new Vector2(canvasSize.x, canvasSize.y);
@@ -221,11 +326,47 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
             }
         }
+        private static Vector2 GetDistanceToCorner(CORNER corner, in Bounds bounds)
+        {
+            var rect = bounds.extents;
+            
+            //TODO Reflect corner
+
+            switch (corner)
+            {
+                case CORNER.TL:
+                    return new Vector2(-rect.x, rect.y);
+                case CORNER.TR:
+                    return new Vector2(rect.x, rect.y);
+                case CORNER.BR:
+                    return new Vector2(rect.x, -rect.y);
+                case CORNER.BL:
+                    return new Vector2(-rect.x, -rect.y);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
+            }
+        }
         
         private static CORNER FindQuadrant(in RectTransform target)
         {
             var canvas = target.GetComponentInParent<Canvas>();
             var localPosition = ToCanvasSpacePosition(canvas, target.position);
+
+            if (localPosition.x < 0 && localPosition.y > 0)
+                return CORNER.TL;
+
+            if (localPosition.x > 0 && localPosition.y > 0)
+                return CORNER.TR;
+
+            if (localPosition.x > 0 && localPosition.y < 0)
+                return CORNER.BR;
+
+            return CORNER.BL;
+        }
+        
+        private static CORNER FindQuadrant(Canvas canvas, in Bounds bounds)
+        {
+            var localPosition = ToCanvasSpacePosition(canvas, bounds.center);
 
             if (localPosition.x < 0 && localPosition.y > 0)
                 return CORNER.TL;
