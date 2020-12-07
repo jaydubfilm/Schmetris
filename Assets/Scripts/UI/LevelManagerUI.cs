@@ -308,6 +308,10 @@ namespace StarSalvager.UI
                 Mission curMission = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
                         Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
+
+                //Not ideal line, temporarily handling a bug until mission system gets reworked to now have duplicate data
+                curMission = MissionManager.MissionsCurrentData.CurrentMissions.FirstOrDefault(m => m.missionName == curMission.missionName);
+
                 curMissionReminder = curMission;
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
