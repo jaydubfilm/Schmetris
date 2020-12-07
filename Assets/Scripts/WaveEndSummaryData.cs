@@ -114,6 +114,11 @@ public class WaveEndSummaryData
 
     //====================================================================================================================//
 
+    public void AddGearsGained(int gearsAmount)
+    {
+        NumGearsGained += gearsAmount;
+    }
+
     public void AddEnemyKilled(string enemyName)
     {
         if (!_dictEnemiesKilled.ContainsKey(enemyName))

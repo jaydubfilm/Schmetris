@@ -324,6 +324,11 @@ namespace StarSalvager.Values
             int totalPatchPoints = GetTotalPatchPoints();
             Gears += amount;
 
+            if (GameManager.IsState(GameState.LEVEL))
+            {
+                LevelManager.Instance.WaveEndSummaryData.AddGearsGained(amount);
+            }
+
             int newTotalPatchPoints = GetTotalPatchPoints();
 
             if (newTotalPatchPoints <= totalPatchPoints) 
