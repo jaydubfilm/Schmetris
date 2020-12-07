@@ -160,6 +160,8 @@ namespace StarSalvager.Utilities.Inputs
 
         //============================================================================================================//
 
+        public static string CurrentActionMap { get; private set; }
+
         public static void SwitchCurrentActionMap(in string actionMapName)
         {
             switch (actionMapName)
@@ -173,6 +175,8 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.MenuControls.Enable();
                     break;
             }
+
+            CurrentActionMap = actionMapName;
             
             Instance.playerInput.SwitchCurrentActionMap(actionMapName);
             

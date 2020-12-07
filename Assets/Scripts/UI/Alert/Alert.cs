@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
@@ -102,6 +103,9 @@ namespace StarSalvager.UI
 
         private void Show(string Title, string Body, string neutralText, Action OnPressedCallback, string dontShowAgainCode)
         {
+            var previousInputType = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+            
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);
 
@@ -124,6 +128,7 @@ namespace StarSalvager.UI
             
             positiveButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnPressedCallback?.Invoke();
@@ -132,6 +137,9 @@ namespace StarSalvager.UI
         
         private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback, string dontShowAgainCode)
         {
+            var previousInputType = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+            
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);
 
@@ -154,6 +162,7 @@ namespace StarSalvager.UI
             
             positiveButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnConfirmedCallback?.Invoke(true);
@@ -164,6 +173,7 @@ namespace StarSalvager.UI
             
             negativeButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnConfirmedCallback?.Invoke(false);
@@ -172,6 +182,9 @@ namespace StarSalvager.UI
         
         private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode)
         {
+            var previousInputType = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+            
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);
 
@@ -195,6 +208,7 @@ namespace StarSalvager.UI
             
             positiveButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnConfirmedCallback?.Invoke(true);
@@ -205,6 +219,7 @@ namespace StarSalvager.UI
             
             negativeButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnConfirmedCallback?.Invoke(false);
@@ -215,6 +230,7 @@ namespace StarSalvager.UI
             
             neutralButton.onClick.AddListener(() =>
             {
+                InputManager.SwitchCurrentActionMap(previousInputType);
                 CheckDontShowAgain(ref _activeDontShowKey);
                 SetActive(false);
                 OnNeutralCallback?.Invoke();
@@ -281,6 +297,16 @@ namespace StarSalvager.UI
         }
         
         //============================================================================================================//
+
+#if UNITY_EDITOR
+
+        [Button, DisableInEditorMode]
+        private void TestAlert()
+        {
+            throw new Exception("Test Error");
+        }
+        
+#endif
     }
 }
 
