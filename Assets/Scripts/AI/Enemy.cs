@@ -48,7 +48,7 @@ namespace StarSalvager.AI
         
         protected EnemyData m_enemyData;
 
-        private ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
+        public ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
 
         protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;

@@ -749,7 +749,7 @@ namespace StarSalvager
             
             
             GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
-            EnemyManager.SetEnemiesInert(true);
+            //EnemyManager.SetEnemiesInert(true);
         }
 
         private void TryBeginWaveEndSequence()
@@ -759,8 +759,8 @@ namespace StarSalvager
                 return;
             }
 
-            
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
+            EnemyManager.SetEnemiesFallEndLevel();
 
             SavePlayerData();
 

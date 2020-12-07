@@ -55,7 +55,7 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
+            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -478,13 +478,23 @@ namespace StarSalvager
 
             return outList;
         }
-
+        
         public void SetEnemiesInert(bool inert)
         {
             if (inert)
                 m_enemiesToSpawn.Clear();
 
             m_enemiesInert = inert;
+        }
+
+        public void SetEnemiesFallEndLevel()
+        {
+            m_enemiesToSpawn.Clear();
+
+            for (int i = 0; i < m_enemies.Count; i++)
+            {
+                m_enemies[i].m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
+            }
         }
 
         public void RecycleAllEnemies()

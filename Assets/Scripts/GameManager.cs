@@ -67,35 +67,5 @@ namespace StarSalvager
         {
             m_currentGameState = newGameState;
         }
-
-        /*public bool IsLevel()
-        {
-            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
-        }
-
-        public bool IsLevelActive()
-        {
-            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence;
-        }
-
-        public bool IsLevelActiveEndSequence()
-        {
-            return m_currentGameState == GameState.LevelActiveEndSequence;
-        }
-
-        public bool IsLevelEndWave()
-        {
-            return m_currentGameState == GameState.LevelEndWave;
-        }
-
-        public bool IsLevelBotDead()
-        {
-            return m_currentGameState == GameState.LevelBotDead;
-        }
-
-        public bool IsUniverseMapBetweenWaves()
-        {
-            return m_currentGameState == GameState.UniverseMapBetweenWaves;
-        }*/
     }
 }
