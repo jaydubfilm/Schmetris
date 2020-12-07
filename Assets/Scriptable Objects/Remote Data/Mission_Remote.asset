@@ -760,7 +760,7 @@ MonoBehaviour:
     ThroughPart: 0
     OrphanBit: 0
     HasCombos: 0
-    FlightLength: 90
+    FlightLength: 200
     IsFromEnemyLoot: 0
     maxDrops: 0
     RDSLoot:
