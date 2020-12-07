@@ -876,7 +876,7 @@ namespace StarSalvager
             }
 
             Vector2Int[] bitExplosionPositions =
-                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 12, 6);
+                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 15, 6);
 
             for (int i = 0; i < bitExplosionPositions.Length; i++)
             {

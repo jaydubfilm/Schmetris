@@ -50,11 +50,6 @@ namespace StarSalvager
             m_gameSettings.SetupGameSettings();
         }
 
-        public void Update()
-        {
-            Debug.Log(m_currentGameState);
-        }
-
         public static bool IsState(GameState gameState)
         {
             switch(gameState)
