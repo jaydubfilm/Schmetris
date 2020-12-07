@@ -41,11 +41,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: f885cf5a004eaf04a8e3a4b74761759c, type: 3}
-    - {fileID: 21300000, guid: 33ea2390f28bebb4e85ee20da806e601, type: 3}
-    - {fileID: 21300000, guid: c4b455e4543ff5b4882333545ea3a33c, type: 3}
-    - {fileID: 21300000, guid: 3f984a2c5c1f01742aff2e73f2d0d677, type: 3}
-    - {fileID: 21300000, guid: 1161f477d697a5f4396cb4df30d28cce, type: 3}
+    - {fileID: 21300000, guid: 97723f51dcda8794194910143ab3b7eb, type: 3}
+    - {fileID: 21300000, guid: 5c13d53daa9fa4e46a3b966bf722f58a, type: 3}
+    - {fileID: 21300000, guid: fb1a39e7a67cbf2408caf1eca31a438b, type: 3}
+    - {fileID: 21300000, guid: 37b4d8895e4cbe04cb16c41b9566d77b, type: 3}
+    - {fileID: 21300000, guid: e37920fb30db2ef4bb02a8021d07646c, type: 3}
   - _name: Greenium
     bitType: 2
     _animation: {fileID: 0}
@@ -53,11 +53,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: bf8d37db6b960f74f8b1d54b7b6d3584, type: 3}
-    - {fileID: 21300000, guid: 8a8a65f6e737996478b30571d17d0281, type: 3}
-    - {fileID: 21300000, guid: 9fd44ecb56b3dd540ba9c0a9b49e7234, type: 3}
-    - {fileID: 21300000, guid: 62908dfd4e8347f4f9861f6a90050d83, type: 3}
-    - {fileID: 21300000, guid: 76381096cc4ab6b4e9c0fd169db03c41, type: 3}
+    - {fileID: 21300000, guid: 59bef078799c8a34caebc1ed94212e5b, type: 3}
+    - {fileID: 21300000, guid: c413b5a3c4b7aac48b3c625955f8bf39, type: 3}
+    - {fileID: 21300000, guid: 4cf189f875c85234982212652d6e0402, type: 3}
+    - {fileID: 21300000, guid: 961256dcf7d16204ba58d2f6c6e91da9, type: 3}
+    - {fileID: 21300000, guid: 5bedee41625806f48b72eca3af5fcfa1, type: 3}
   - _name: Greyscale
     bitType: 3
     _animation: {fileID: 0}
@@ -65,11 +65,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.8871865, g: 0, b: 1, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: 21256bc05496de24f92e59a6482ff08c, type: 3}
-    - {fileID: 21300000, guid: c9397fdc45834644ba7bef0aba384bb8, type: 3}
-    - {fileID: 21300000, guid: dc2a5d1b0a2c3ca4c9b4fc614a33863a, type: 3}
-    - {fileID: 21300000, guid: 10f33b04a4f20454fa2e753df63aa5ef, type: 3}
-    - {fileID: 21300000, guid: 14b535f119e20a245a017384a156b62f, type: 3}
+    - {fileID: 21300000, guid: b14e37e3b7025d9469c6330047e01dda, type: 3}
+    - {fileID: 21300000, guid: c04bc5fc7e0cbd9448f6acbf42649f13, type: 3}
+    - {fileID: 21300000, guid: c6e1b7a8cf7104e449b18fa4ecbd846b, type: 3}
+    - {fileID: 21300000, guid: 039fdcafdc4bad24bb26c2e72fde5cd4, type: 3}
+    - {fileID: 21300000, guid: ad79bd7009edfbd419e8713be958bb4b, type: 3}
   - _name: Reddite
     bitType: 4
     _animation: {fileID: 0}
@@ -77,11 +77,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: f41b7bcbd6784c048bd2329a27f409a8, type: 3}
-    - {fileID: 21300000, guid: b45595fb29affbf40a7f5e5ccd907adc, type: 3}
-    - {fileID: 21300000, guid: 35699eea5b3840e438e10c94a798639a, type: 3}
-    - {fileID: 21300000, guid: 28d226946e7db7b409a5fd96a626a517, type: 3}
-    - {fileID: 21300000, guid: c60849b5796713f4abfea478183029d5, type: 3}
+    - {fileID: 21300000, guid: ce3f6460d8e2de349a76b7f2cf9dd3b8, type: 3}
+    - {fileID: 21300000, guid: 76148379fcd327f4f95ac1788803cd7e, type: 3}
+    - {fileID: 21300000, guid: 82a7620280ef69e4fa85ce08b08079fa, type: 3}
+    - {fileID: 21300000, guid: a90ec0976c5e95f4e8bc839720bd4780, type: 3}
+    - {fileID: 21300000, guid: 353d8297155df3e40a816adc7fc20865, type: 3}
   - _name: Yelletron
     bitType: 5
     _animation: {fileID: 0}
@@ -89,11 +89,11 @@ MonoBehaviour:
       type: 3}
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: 7554be1fb56a99046b5401a6c940905e, type: 3}
-    - {fileID: 21300000, guid: b9b3fbb3719e3284e915c5842b6e673a, type: 3}
-    - {fileID: 21300000, guid: 82a15155f7fd3f341b4ba7c3fa91ec58, type: 3}
-    - {fileID: 21300000, guid: b6002ea435472cb498d2f0d64405e364, type: 3}
-    - {fileID: 21300000, guid: 85675c7f104318c469e5abe4153c310b, type: 3}
+    - {fileID: 21300000, guid: a401ef6effff5804c893fbf2ccf42a70, type: 3}
+    - {fileID: 21300000, guid: fe08ac54a35849a4191b53c0014a883f, type: 3}
+    - {fileID: 21300000, guid: 8e86bb3a971877240a45bcad322dfb1f, type: 3}
+    - {fileID: 21300000, guid: f69c3b4049ba99b4483a727847ab3ef1, type: 3}
+    - {fileID: 21300000, guid: 0ce0280b75bd8ef4390aaf7c7daa8cee, type: 3}
   - _name: Energy
     bitType: 6
     _animation: {fileID: 11400000, guid: fafe4dfee868e4949adf56733d997636, type: 2}
