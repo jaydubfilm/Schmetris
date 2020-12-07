@@ -9,13 +9,14 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(CompositeCollider2D))]
-    public class Shape : CollidableBase, IObstacle, ICustomRecycle, ICanBeHit
+    public class Shape : CollidableBase, IObstacle, ICustomRecycle, ICanBeHit, IHasBounds
     {
         //================================================================================================================//
 
@@ -358,6 +359,15 @@ namespace StarSalvager
             attachedBits.Clear();
         }
 
+
+        //IHasBounds Functions
+        //====================================================================================================================//
         
+        public Bounds GetBounds()
+        {
+            return CompositeCollider.bounds;
+        }
+
+        //====================================================================================================================//
     }
 }

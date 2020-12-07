@@ -359,12 +359,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7685498458507625620}
-  m_Father: {fileID: 1683210562915454308}
+  m_Father: {fileID: 5364297025927142710}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -648.9, y: 503}
+  m_AnchoredPosition: {x: 698.9, y: 106}
   m_SizeDelta: {x: 640.73035, y: 222.98059}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1711202206229670675
@@ -522,12 +522,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.3857601, y: 1.3857601, z: 1.3857601}
   m_Children: []
-  m_Father: {fileID: 1683210562915454308}
+  m_Father: {fileID: 5364297025927142710}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -192, y: -987}
+  m_AnchoredPosition: {x: 242, y: -987}
   m_SizeDelta: {x: 557.8467, y: 1079.0612}
   m_Pivot: {x: 0.38511506, y: 0.09235807}
 --- !u!222 &8929792350678222859
@@ -559,7 +559,7 @@ MonoBehaviour:
       m_Calls: []
   skeletonDataAsset: {fileID: 11400000, guid: 2c18bf16b12146246914d659b5f6c6e1, type: 2}
   initialSkinName: default
-  initialFlipX: 1
+  initialFlipX: 0
   initialFlipY: 0
   startingAnimation: 
   startingLoop: 1
@@ -608,8 +608,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5437401451315827095}
-  - {fileID: 987174099982962671}
+  - {fileID: 5364297025927142710}
   m_Father: {fileID: 5336697384150564262}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -617,6 +616,43 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &6959927580622089578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5364297025927142710}
+  m_Layer: 5
+  m_Name: AnchorObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5364297025927142710
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6959927580622089578}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5437401451315827095}
+  - {fileID: 987174099982962671}
+  m_Father: {fileID: 1683210562915454308}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8077028421996198662
 GameObject:
@@ -702,6 +738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5336697384150564262}
   - component: {fileID: 7362756022039508331}
+  - component: {fileID: 2153767571239093625}
   m_Layer: 5
   m_Name: HintManager
   m_TagString: Untagged
@@ -743,10 +780,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada338a4340d390408584b85a32e9cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HighlightManager: {fileID: 2153767571239093625}
+--- !u!114 &2153767571239093625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8577399173953347379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc2dd567724ab354bbd695e2a8d25f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   TEST_target: {fileID: 0}
-  TEST_multiplier: {x: 5, y: 5}
-  titleText: {fileID: 6586104082868023058}
-  descriptionText: {fileID: 8760214988973554262}
+  TEST_multiplier: {x: 1, y: 1}
+  textRectTransform: {fileID: 2097174061749017449}
   edgeSpacing: {x: 0, y: 0}
   maskObjectRect: {fileID: 2127280031386350367}
   maskParentRect: {fileID: 5794645805348983034}
+  anchorTransform: {fileID: 5364297025927142710}
+  skeletonGraphic: {fileID: 2869316282290237754}
+  textWindowRectTransform: {fileID: 987174099982962671}

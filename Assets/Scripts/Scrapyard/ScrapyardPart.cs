@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
@@ -156,5 +157,19 @@ namespace StarSalvager
             Recycler.Recycle<Damage>(_damage);
             _damage = null;
         }
+        
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
+        //====================================================================================================================//
     }
 }

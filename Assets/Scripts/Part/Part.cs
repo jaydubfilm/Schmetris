@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
@@ -255,7 +256,19 @@ namespace StarSalvager
             _damage = null;
         }
 
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
 
+        //====================================================================================================================//
 
     }
 }

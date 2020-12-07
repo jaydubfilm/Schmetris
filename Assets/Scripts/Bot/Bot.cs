@@ -28,12 +28,13 @@ using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
     {
         private readonly struct ShiftData
         {
@@ -4017,8 +4018,10 @@ namespace StarSalvager
         //====================================================================================================================//
 
 
-        
-        
+        public Bounds GetBounds()
+        {
+            return CompositeCollider2D.bounds;
+        }
     }
     
     public struct PendingCombo

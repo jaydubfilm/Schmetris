@@ -1,5 +1,6 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
@@ -54,7 +55,19 @@ namespace StarSalvager
         
         //============================================================================================================//
 
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
 
+        //====================================================================================================================//
     }
 }
 
