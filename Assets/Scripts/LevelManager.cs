@@ -813,7 +813,9 @@ namespace StarSalvager
                 if (sectorLootTable != null)
                 {
                     List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
-                    if (childNodesAccessible.Count == 0 || UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f)
+                    if (childNodesAccessible.Count == 0 || 
+                        (!FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.WillUseBackupLootTable(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector])
+                        && UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f))
                     {
                         sectorLootTable.ConfigureLootTable();
                         List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
