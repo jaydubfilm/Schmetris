@@ -780,7 +780,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada338a4340d390408584b85a32e9cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HighlightManager: {fileID: 2153767571239093625}
+  hintText: {fileID: 6586104082868023058}
+  infoText: {fileID: 8760214988973554262}
+  highlightManager: {fileID: 2153767571239093625}
 --- !u!114 &2153767571239093625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,7 +796,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TEST_target: {fileID: 0}
-  TEST_multiplier: {x: 1, y: 1}
+  TEST_multiplier: {x: 1.2, y: 1.2}
   textRectTransform: {fileID: 2097174061749017449}
   edgeSpacing: {x: 0, y: 0}
   maskObjectRect: {fileID: 2127280031386350367}

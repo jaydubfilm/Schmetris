@@ -4,7 +4,6 @@ using Spine.Unity;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Interfaces;
-using TMPro;
 using UnityEngine;
 
 namespace StarSalvager.UI.Hints
@@ -49,7 +48,7 @@ namespace StarSalvager.UI.Hints
             };
 
             SetActive(true);
-            HighlightWorldBounds(partBounds);
+            HighlightWorldBounds(partBounds, TEST_multiplier);
         }
 
 
@@ -63,13 +62,19 @@ namespace StarSalvager.UI.Hints
         #region Properties
 
         [SerializeField, Required] private RectTransform textRectTransform;
-        /*[SerializeField] private TMP_Text descriptionText;*/
-
 
         [SerializeField, Space(20f)] private Vector2 edgeSpacing;
 
         [SerializeField, Required] private RectTransform maskObjectRect;
         [SerializeField, Required] private RectTransform maskParentRect;
+        
+        [SerializeField, BoxGroup("Character")]
+        private RectTransform anchorTransform;
+        [SerializeField, BoxGroup("Character")]
+        private SkeletonGraphic skeletonGraphic;
+        [SerializeField, BoxGroup("Character")]
+        private RectTransform textWindowRectTransform;
+
 
         private Camera _camera;
 
@@ -107,13 +112,6 @@ namespace StarSalvager.UI.Hints
 
         #endregion //Properties
 
-        [SerializeField, BoxGroup("Character")]
-        private RectTransform anchorTransform;
-        [SerializeField, BoxGroup("Character")]
-        private SkeletonGraphic skeletonGraphic;
-        [SerializeField, BoxGroup("Character")]
-        private RectTransform textWindowRectTransform;
-
         //Unity Functions
         //====================================================================================================================//
 
@@ -127,22 +125,26 @@ namespace StarSalvager.UI.Hints
 
         public void Highlight(in RectTransform rectTransform)
         {
-            throw new NotImplementedException();
+            SetActive(true);
+            HighlightRect(rectTransform, TEST_multiplier);
         }
 
         public void Highlight(in IHasBounds iHasBounds)
         {
-            throw new NotImplementedException();
+            SetActive(true);
+            HighlightWorldBounds(iHasBounds.GetBounds(), TEST_multiplier);
         }
 
         public void Highlight(in Bounds worldSpaceBounds)
         {
-            throw new NotImplementedException();
+            SetActive(true);
+            HighlightWorldBounds(worldSpaceBounds, TEST_multiplier);
         }
 
         public void Highlight(in Vector2 worldSpacePosition)
         {
-            throw new NotImplementedException();
+            SetActive(true);
+            HighlightWorldPoint(worldSpacePosition, TEST_multiplier);
         }
 
         //Highlight RectTransform
@@ -234,6 +236,8 @@ namespace StarSalvager.UI.Hints
             
             Vector2 windowAnchorPosition = textWindowRectTransform.anchoredPosition;
             Vector2 skeletonAnchorPosition = skeletonRectTransform.anchoredPosition;
+
+            Vector3 skeletonLocalScale = skeletonGraphic.transform.localScale;
             
             switch (reflectedCorner)
             {
@@ -242,7 +246,8 @@ namespace StarSalvager.UI.Hints
                 case CORNER.BL:
                 case CORNER.TL:
                     anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(0, 0.5f);
-                    skeletonGraphic.initialFlipX = false;
+                    
+                    skeletonLocalScale.x = Mathf.Abs(skeletonLocalScale.x);
 
                     skeletonAnchorPosition.x = Mathf.Abs(skeletonAnchorPosition.x);
                     windowAnchorPosition.x = Mathf.Abs(windowAnchorPosition.x);
@@ -256,6 +261,8 @@ namespace StarSalvager.UI.Hints
                     anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(1, 0.5f);
                     skeletonGraphic.initialFlipX = true;
                     
+                    skeletonLocalScale.x = -Mathf.Abs(skeletonLocalScale.x);
+                    
                     skeletonAnchorPosition.x = -Mathf.Abs(skeletonAnchorPosition.x);
                     windowAnchorPosition.x = -Mathf.Abs(windowAnchorPosition.x);
                     break;
@@ -263,6 +270,11 @@ namespace StarSalvager.UI.Hints
                 default:
                     throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
             }
+
+            textWindowRectTransform.anchoredPosition = windowAnchorPosition;
+            
+            skeletonRectTransform.anchoredPosition = skeletonAnchorPosition;
+            skeletonRectTransform.transform.localScale = skeletonLocalScale;
         }
 
         //Get Data RectTransform
