@@ -386,7 +386,7 @@ namespace StarSalvager.UI
                             }
                         }
 
-                        //universeMapButtons[nodeIndex].Button.interactable = true;
+                        universeMapButtons[nodeIndex].Button.interactable = true;
                         universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }
