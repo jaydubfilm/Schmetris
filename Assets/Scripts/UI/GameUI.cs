@@ -662,7 +662,7 @@ namespace StarSalvager.UI
             {
                 state = CheckActivateGlow(fuelSlider, redSliderGlow);
                 
-                if(HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.Instance.IsLevelActive())
+                if(HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.IsState(GameState.LevelActive))
                     HintManager.TryShowHint(HINT.FUEL);
             }
 
