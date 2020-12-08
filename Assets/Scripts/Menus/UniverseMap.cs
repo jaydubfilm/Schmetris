@@ -127,11 +127,11 @@ namespace StarSalvager.UI
             backButton.gameObject.SetActive(!isBetweenWaves);
             betweenWavesScrapyardButton.gameObject.SetActive(isBetweenWaves);
 
-            ScreenFade.Instance.WaitForFade(() =>
+            ScreenFade.WaitForFade(() =>
             {
-                if (isBetweenWaves)
+                if (HintManager.CanShowHint(HINT.HOME) && isBetweenWaves)
                 {
-                    HintManager.Instance.TryShowHint(HINT.HOME);
+                    HintManager.TryShowHint(HINT.HOME);
                 }
             });
             

@@ -131,8 +131,7 @@ namespace StarSalvager.UI.Hints
 
         public void Highlight(in IHasBounds iHasBounds)
         {
-            SetActive(true);
-            HighlightWorldBounds(iHasBounds.GetBounds(), TEST_multiplier);
+            Highlight(iHasBounds.GetBounds());
         }
 
         public void Highlight(in Bounds worldSpaceBounds)
@@ -271,6 +270,20 @@ namespace StarSalvager.UI.Hints
                     throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
             }
 
+            switch (reflectedCorner)
+            {
+                case CORNER.TL:
+                case CORNER.TR:
+                    windowAnchorPosition.y = Mathf.Abs(windowAnchorPosition.y);
+                    break;
+                case CORNER.BR:
+                case CORNER.BL:
+                    windowAnchorPosition.y = -Mathf.Abs(windowAnchorPosition.y);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             textWindowRectTransform.anchoredPosition = windowAnchorPosition;
             
             skeletonRectTransform.anchoredPosition = skeletonAnchorPosition;
@@ -396,7 +409,7 @@ namespace StarSalvager.UI.Hints
         private CORNER RepositionText(in Bounds canvasSpaceBounds)
         {
             //var titleTransform = textRectTransform;
-            var quadrant = FindQuadrant(Canvas, canvasSpaceBounds);
+            var quadrant = FindQuadrant(canvasSpaceBounds.center);
             var reflectedCorner = quadrant.Reflected();
 
 
@@ -486,9 +499,9 @@ namespace StarSalvager.UI.Hints
             return CORNER.BL;
         }
 
-        private static CORNER FindQuadrant(Canvas canvas, in Bounds bounds)
+        private static CORNER FindQuadrant(in Vector2 canvasPoint)
         {
-            var localPosition = ToCanvasSpacePosition(canvas, bounds.center);
+            var localPosition = canvasPoint;
 
             if (localPosition.x < 0 && localPosition.y > 0)
                 return CORNER.TL;

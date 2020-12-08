@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -392,7 +393,8 @@ namespace StarSalvager
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
 
-                        HintManager.Instance.TryShowHint(HINT.BONUS);
+                        if(HintManager.CanShowHint(HINT.BONUS))
+                            HintManager.TryShowHint(HINT.BONUS, 1f);
                     }
                 }
 
@@ -554,6 +556,8 @@ namespace StarSalvager
                 m_offGridMovingObstacles[i].SpeedUpModifier = speedModifier;
             }
         }
+
+        
 
         //====================================================================================================================//
 

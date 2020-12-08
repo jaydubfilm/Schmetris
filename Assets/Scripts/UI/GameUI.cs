@@ -662,8 +662,8 @@ namespace StarSalvager.UI
             {
                 state = CheckActivateGlow(fuelSlider, redSliderGlow);
                 
-                if(value <= 0f && GameManager.Instance.IsLevelActive())
-                    HintManager.Instance.TryShowHint(HINT.FUEL);
+                if(HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.Instance.IsLevelActive())
+                    HintManager.TryShowHint(HINT.FUEL);
             }
 
             //If we're glowing and we weren't before, play resource warning sound

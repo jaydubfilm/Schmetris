@@ -447,8 +447,8 @@ namespace StarSalvager
 
         public void DisplayHints()
         {
-            if(attachedBlocks.HasPartAttached(PART_TYPE.GUN)) 
-                HintManager.Instance.TryShowHint(HINT.GUN);
+            if(HintManager.CanShowHint(HINT.GUN) && attachedBlocks.HasPartAttached(PART_TYPE.GUN))
+                HintManager.TryShowHint(HINT.GUN);
         }
 
 
@@ -3118,7 +3118,7 @@ namespace StarSalvager
             
             GameUi.FlashMagnet();
 
-            HintManager.Instance.TryShowHint(HINT.MAGNET);
+            if(HintManager.CanShowHint(HINT.MAGNET)) HintManager.TryShowHint(HINT.MAGNET);
 
             return true;
         }

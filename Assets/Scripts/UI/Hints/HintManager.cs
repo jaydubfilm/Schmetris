@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -67,7 +68,46 @@ namespace StarSalvager.UI.Hints
         //HintManager Functions
         //====================================================================================================================//
         
-        public void TryShowHint(HINT hint)
+        public static void TryShowHint(HINT hint)
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.ShowHint(hint);
+        }
+
+        public static bool CanShowHint(HINT hint)
+        {
+            if (Instance == null)
+                return false;
+
+            if (hint == HINT.NONE)
+                return false;
+
+            return !Instance._usedHints[hint];
+        }
+
+        public static void TryShowHint(HINT hint, float delayTime)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
+            {
+                Instance.ShowHint(hint);
+            }));
+        }
+        
+        private static IEnumerator WaitCoroutine(float time, Action onWaitCallback)
+        {
+            yield return new WaitForSeconds(time);
+            
+            onWaitCallback?.Invoke();
+        }
+        
+        //====================================================================================================================//
+        
+        private void ShowHint(HINT hint)
         {
             if (hint != HINT.NONE && _usedHints[hint])
                 return;

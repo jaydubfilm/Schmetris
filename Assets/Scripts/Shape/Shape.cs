@@ -372,6 +372,7 @@ namespace StarSalvager
             var minX = attachedBits.Min(x => x.Coordinate.x);
             
             var size = new Vector2(maxX - minX, maxY - minY) * Constants.gridCellSize;
+            size += Vector2.one;
 
             var centerPosition = attachedBits.GetCollectionCenterPosition();
             

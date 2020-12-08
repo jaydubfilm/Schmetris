@@ -43,9 +43,12 @@ public class ScreenFade : Singleton<ScreenFade>
 
     }
 
-    public void WaitForFade(Action onFadeFinishedCallback)
+    public static void WaitForFade(Action onFadeFinishedCallback)
     {
-        StartCoroutine(WaitForFadeCoroutine(onFadeFinishedCallback));
+        if (Instance == null)
+            return;
+        
+        Instance.StartCoroutine(WaitForFadeCoroutine(onFadeFinishedCallback));
     }
 
     //Coroutines
