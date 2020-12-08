@@ -16,6 +16,24 @@ namespace StarSalvager.Utilities.Inputs
 {
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+
+
+        [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
+        private string currentActionMap;
+
+        [Button, DisableInEditorMode, HorizontalGroup("Debug/Row1")]
+        private void ForceMenuControls()
+        {
+            SwitchCurrentActionMap("Menu Controls");
+        }
+        [Button, DisableInEditorMode, HorizontalGroup("Debug/Row1")]
+        private void ForceDefaultControls()
+        {
+            SwitchCurrentActionMap("Default");
+        }
+        
+        //====================================================================================================================//
+        
         private static List<IMoveOnInput> _moveOnInput;
 
         [SerializeField, Required]
@@ -162,6 +180,7 @@ namespace StarSalvager.Utilities.Inputs
 
         public static string CurrentActionMap { get; private set; }
 
+
         public static void SwitchCurrentActionMap(in string actionMapName)
         {
             switch (actionMapName)
@@ -176,7 +195,7 @@ namespace StarSalvager.Utilities.Inputs
                     break;
             }
 
-            CurrentActionMap = actionMapName;
+            Instance.currentActionMap = CurrentActionMap = actionMapName;
             
             Instance.playerInput.SwitchCurrentActionMap(actionMapName);
             

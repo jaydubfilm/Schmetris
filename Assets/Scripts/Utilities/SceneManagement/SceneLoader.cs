@@ -173,10 +173,10 @@ namespace StarSalvager.Utilities.SceneManagement
         {
             if (SCENES.ContainsKey(sceneName) && SCENES[sceneName] != null)
             {
-                SCENES[sceneName].SetSceneObjectsActive(active);
-                
                 //We want to ensure that no matter which menu the player is in the controls are ready
                 if(active) SetControlMap(sceneName);
+                
+                SCENES[sceneName].SetSceneObjectsActive(active);
 
                 return true;
             }
