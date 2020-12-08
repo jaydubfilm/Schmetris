@@ -3014,6 +3014,8 @@ namespace StarSalvager
         {
             return CheckHasMagnetOverage(BotPartsLogic.currentMagnet);
         }
+
+        private int magnetCounter = 0;
         
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
@@ -3118,7 +3120,8 @@ namespace StarSalvager
             
             GameUi.FlashMagnet();
 
-            if(HintManager.CanShowHint(HINT.MAGNET)) HintManager.TryShowHint(HINT.MAGNET);
+            if(magnetCounter++ >= 2 && HintManager.CanShowHint(HINT.MAGNET)) 
+                HintManager.TryShowHint(HINT.MAGNET);
 
             return true;
         }

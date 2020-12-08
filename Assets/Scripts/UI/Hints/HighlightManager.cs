@@ -1,4 +1,5 @@
 ﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using Spine.Unity;
 using StarSalvager.Cameras;
@@ -274,11 +275,11 @@ namespace StarSalvager.UI.Hints
             {
                 case CORNER.TL:
                 case CORNER.TR:
-                    windowAnchorPosition.y = Mathf.Abs(windowAnchorPosition.y);
+                    windowAnchorPosition.y = Mathf.Abs(textWindowRectTransform.sizeDelta.y);
                     break;
                 case CORNER.BR:
                 case CORNER.BL:
-                    windowAnchorPosition.y = -Mathf.Abs(windowAnchorPosition.y);
+                    windowAnchorPosition.y = -Mathf.Abs(textWindowRectTransform.sizeDelta.y);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

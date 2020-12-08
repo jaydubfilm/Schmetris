@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.Utilities;
@@ -28,8 +29,6 @@ namespace StarSalvager.UI.Hints
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
         
-        //private Dictionary<HINT, bool> _usedHints;
-        
         [SerializeField, Required]
         private TMP_Text hintText;
         [SerializeField, Required]
@@ -42,18 +41,6 @@ namespace StarSalvager.UI.Hints
 
         //Unity Functions
         //====================================================================================================================//
-
-        /*private void Start()
-        {
-            _usedHints = new Dictionary<HINT, bool>
-            {
-                [HINT.MAGNET] = false,
-                [HINT.BONUS] = false,
-                [HINT.GUN] = false,
-                [HINT.FUEL] = false,
-                [HINT.HOME] = false,
-            };
-        }*/
 
         private void Update()
         {
@@ -141,6 +128,9 @@ namespace StarSalvager.UI.Hints
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.BONUS:
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
+
+                    if (bonusShape is IRecycled recycled && recycled.IsRecycled)
+                        return;
                     
                     highlightManager.Highlight(bonusShape);
                     break;
@@ -160,6 +150,10 @@ namespace StarSalvager.UI.Hints
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.HOME:
+                    var hasBits = PlayerDataManager.GetBlockDatas().Any(x => x.ClassType.Equals(nameof(Bit)));
+                    if (!hasBits)
+                        return;
+                    
                     var homeButton = FindObjectOfType<UniverseMap>().GetHintElement(hint);
                     highlightManager.Highlight(homeButton);
                     break;

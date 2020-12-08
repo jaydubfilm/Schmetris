@@ -86,6 +86,8 @@ namespace StarSalvager.UI
         [SerializeField]
         private TMP_Text resourceText;
 
+        private RectTransform _shipwreckButtonRectTransform;
+
         //Unity Functions
         //============================================================================================================//
 
@@ -106,7 +108,7 @@ namespace StarSalvager.UI
                 case HINT.NONE:
                     return null;
                 case HINT.HOME:
-                    return betweenWavesScrapyardButton.transform as RectTransform;
+                    return _shipwreckButtonRectTransform;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -223,6 +225,8 @@ namespace StarSalvager.UI
                 {
                     universeMapButtons[i].Text.text = "";
                     universeMapButtons[i].TextBelow.text = "Shipwreck";
+                    
+                    _shipwreckButtonRectTransform = universeMapButtons[i].transform as RectTransform;
                     continue;
                 }
 
