@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
+using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.Utilities;
 using TMPro;
 using UnityEngine;
@@ -23,6 +23,9 @@ namespace StarSalvager.UI.Hints
     [RequireComponent(typeof(HighlightManager))]
     public class HintManager : Singleton<HintManager>
     {
+        [SerializeField, Required]
+        private HintRemoteDataScriptableObject hintRemoteData;
+        
         private Dictionary<HINT, bool> _usedHints;
         
         [SerializeField, Required]
@@ -112,9 +115,6 @@ namespace StarSalvager.UI.Hints
             if (hint != HINT.NONE && _usedHints[hint])
                 return;
             
-            var hintText = string.Empty;
-            var descriptionText = string.Empty;
-            //TODO Need to check for show conditions
             switch (hint)
             {
                 //----------------------------------------------------------------------------------------------------//
@@ -123,26 +123,17 @@ namespace StarSalvager.UI.Hints
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.MAGNET:
-                    hintText = "Magnetism";
-                    descriptionText = "Can only connect bits until this meter is full. Make combos to compress bits";
-                    
                     var magnetSlider = GameUI.Instance.GetHintElement(hint);
                     highlightManager.Highlight(magnetSlider);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.BONUS:
-                    hintText = "Bonus Shape";
-                    descriptionText = "Upgrade bits using Bonus Shapes";
-                    
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
                     
                     highlightManager.Highlight(bonusShape);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.GUN:
-                    hintText = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.GUN).name;
-                    descriptionText = "This is a gun part, it makes the pew pew";
-                    
                     var gunPart = LevelManager.Instance
                         .BotObject
                         .attachedBlocks
@@ -152,17 +143,11 @@ namespace StarSalvager.UI.Hints
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.FUEL:
-                    hintText = "Fuel";
-                    descriptionText = "Amount of Fuel left. Gather more by collecting red bits";
-                    
                     var fuelSlider = GameUI.Instance.GetHintElement(hint);
                     highlightManager.Highlight(fuelSlider);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.HOME:
-                    hintText = "Shipwreck";
-                    descriptionText = "Click here when you're ready to return to base to regroup, craft parts, and prepare to return to the fields.";
-                    
                     var homeButton = FindObjectOfType<UniverseMap>().GetHintElement(hint);
                     highlightManager.Highlight(homeButton);
                     break;
@@ -174,13 +159,18 @@ namespace StarSalvager.UI.Hints
 
             _usedHints[hint] = true;
 
-            this.hintText.text = hintText;
-            infoText.text = descriptionText;
+            ShowHintData(hintRemoteData.GetHintData(hint));
 
             _waiting = true;
             
             Time.timeScale = 0f;
             
+        }
+
+        private void ShowHintData(HintRemoteDataScriptableObject.HintData hintData)
+        {
+            hintText.text = hintData.shortText;
+            infoText.text = hintData.longDescription;
         }
 
         //Editor Functions

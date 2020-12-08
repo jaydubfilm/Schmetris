@@ -394,7 +394,7 @@ namespace StarSalvager
                         NewShapeOnScreen?.Invoke();
 
                         if(HintManager.CanShowHint(HINT.BONUS))
-                            HintManager.TryShowHint(HINT.BONUS, 1f);
+                            HintManager.TryShowHint(HINT.BONUS, 1.35f);
                     }
                 }
 

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c52316a5026164680ec8195a33dd09, type: 3}
+  m_Name: Hint Remote Data
+  m_EditorClassIdentifier: 
+  HintDatas:
+  - type: 1
+    shortText: Magnetism
+    longDescription: "See those white magnets popping up?  That means your magnetism
+      bar is full. To collect more stuff you need to MATCH-3 to make more room. OR
+      try using those handy white pulsars to bump bits you don't want off your drone. 
+      \r\n\r\n<b>HINT</b> To boost your magnetism, craft a magnet part in the wreckshop!"
+  - type: 2
+    shortText: Bonus Shapes
+    longDescription: Keep an eye out for BONUS SHAPES travelling horizontally near
+      the top of the screen. Match their colour pattern and rotation with bits on
+      your drone for instant upgrades and bonus points!
+  - type: 3
+    shortText: Gun
+    longDescription: Congratulations on building a gun!  This weapon will aim and
+      fire automatically as soon as an enemy comes in range... so long as you still
+      have ammo in your cargo!
+  - type: 4
+    shortText: Fuel
+    longDescription: "Darn, out of fuel!  You now have a CHOICE:  Either sit tight
+      and hope to make it through this wave alive...  or press 'X' to self-destruct
+      and get on with the game. \n\n<b>HINT</b> You can still rotate, so try to catch
+      some passing fuel bits if you see some"
+  - type: 5
+    shortText: Home
+    longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
+      Either take your loot back to base and safely stash it - or select a new wave
+      and try to collect more!'

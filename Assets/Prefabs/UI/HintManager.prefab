@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 427035960916714892}
   - component: {fileID: 8760214988973554262}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DescriptionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -265,12 +265,12 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 30
+  m_fontSize: 35
   m_fontSizeBase: 30
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 35
   m_fontStyle: 0
   m_textAlignment: 257
   m_characterSpacing: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 12, y: 12, z: 12, w: 12}
+  m_margin: {x: 20, y: 20, z: 20, w: 20}
   m_textInfo:
     textComponent: {fileID: 8760214988973554262}
     characterCount: 8
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 1711202206229670675}
   - component: {fileID: 8787661057789619008}
   m_Layer: 5
-  m_Name: Image
+  m_Name: WindowImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -780,6 +780,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada338a4340d390408584b85a32e9cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hintRemoteData: {fileID: 11400000, guid: be707388a471d4f4e9a3edadbc1ffd99, type: 2}
   hintText: {fileID: 6586104082868023058}
   infoText: {fileID: 8760214988973554262}
   highlightManager: {fileID: 2153767571239093625}
