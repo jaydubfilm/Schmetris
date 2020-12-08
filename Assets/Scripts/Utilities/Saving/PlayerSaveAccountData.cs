@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.UI.Hints;
 using UnityEngine;
 
 namespace StarSalvager.Values
@@ -72,6 +73,18 @@ namespace StarSalvager.Values
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
         [JsonProperty]
         private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
+
+        [JsonIgnore]
+        public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
+        [JsonProperty]
+        private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
+        {
+            [HINT.GUN] = false,
+            [HINT.FUEL] = false,
+            [HINT.HOME] = false,
+            [HINT.BONUS] = false,
+            [HINT.MAGNET] = false
+        };
 
         private List<List<Vector2Int>> LevelRingConnectionsJson = new List<List<Vector2Int>>
         {
@@ -417,6 +430,13 @@ namespace StarSalvager.Values
             }
 
             EnemiesKilled[enemyId]++;
+        }
+
+        //====================================================================================================================//
+
+        public void SetHintDisplay(HINT hint, bool state)
+        {
+            _hintDisplay[hint] = state;
         }
 
         //====================================================================================================================//

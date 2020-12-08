@@ -11,6 +11,7 @@ using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
@@ -848,6 +849,25 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
+
+        //Hints
+        //====================================================================================================================//
+
+        public static void SetHint(HINT hint, bool value)
+        {
+            PlayerAccountData.SetHintDisplay(hint, value);
+        }
+
+        public static bool GetHint(HINT hint)
+        {
+            return PlayerAccountData.HintDisplay[hint];
+        }
+
+        public static IReadOnlyDictionary<HINT, bool> GetHints()
+        {
+            return PlayerAccountData.HintDisplay;
+        }
+        
 
         //Meta Data Functions
         //====================================================================================================================//

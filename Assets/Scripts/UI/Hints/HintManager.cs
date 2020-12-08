@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using TMPro;
 using UnityEngine;
 
@@ -23,10 +23,12 @@ namespace StarSalvager.UI.Hints
     [RequireComponent(typeof(HighlightManager))]
     public class HintManager : Singleton<HintManager>
     {
+        public static bool USE_HINTS = true;
+        
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
         
-        private Dictionary<HINT, bool> _usedHints;
+        //private Dictionary<HINT, bool> _usedHints;
         
         [SerializeField, Required]
         private TMP_Text hintText;
@@ -41,7 +43,7 @@ namespace StarSalvager.UI.Hints
         //Unity Functions
         //====================================================================================================================//
 
-        private void Start()
+        /*private void Start()
         {
             _usedHints = new Dictionary<HINT, bool>
             {
@@ -51,7 +53,7 @@ namespace StarSalvager.UI.Hints
                 [HINT.FUEL] = false,
                 [HINT.HOME] = false,
             };
-        }
+        }*/
 
         private void Update()
         {
@@ -73,6 +75,9 @@ namespace StarSalvager.UI.Hints
         
         public static void TryShowHint(HINT hint)
         {
+            if (!USE_HINTS)
+                return;
+            
             if (Instance == null)
                 return;
             
@@ -81,17 +86,24 @@ namespace StarSalvager.UI.Hints
 
         public static bool CanShowHint(HINT hint)
         {
+            if (!USE_HINTS)
+                return false;
+            
             if (Instance == null)
                 return false;
 
             if (hint == HINT.NONE)
                 return false;
+            
 
-            return !Instance._usedHints[hint];
+            return !PlayerDataManager.GetHint(hint);
         }
 
         public static void TryShowHint(HINT hint, float delayTime)
         {
+            if (!USE_HINTS)
+                return;
+            
             if (Instance == null)
                 return;
 
@@ -112,7 +124,7 @@ namespace StarSalvager.UI.Hints
         
         private void ShowHint(HINT hint)
         {
-            if (hint != HINT.NONE && _usedHints[hint])
+            if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
                 return;
             
             switch (hint)
@@ -157,7 +169,7 @@ namespace StarSalvager.UI.Hints
                 //----------------------------------------------------------------------------------------------------//
             }
 
-            _usedHints[hint] = true;
+            PlayerDataManager.SetHint(hint, true);
 
             ShowHintData(hintRemoteData.GetHintData(hint));
 
