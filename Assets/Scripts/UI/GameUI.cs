@@ -643,11 +643,11 @@ namespace StarSalvager.UI
         }
 
 
-        private bool _fuel;
+        private bool _flashingFuelMeter;
         public void SetFuelValue(float value)
         {
             bool hasBitAttached = false;
-            bool state = false;
+            bool isGlowActive = false;
 
             //FIXME This is inefficient, and I want to find a better way of reducing the calls here
             if (LevelManager.Instance != null && LevelManager.Instance.BotObject)
@@ -660,19 +660,26 @@ namespace StarSalvager.UI
             //Only if there are not any bits attached
             if (!hasBitAttached)
             {
-                state = CheckActivateGlow(fuelSlider, redSliderGlow);
-                
-                if(HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.IsState(GameState.LevelActive))
+                isGlowActive = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+                if (HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.IsState(GameState.LevelActive))
                     HintManager.TryShowHint(HINT.FUEL);
+            }
+            //If we have bits, just make sure we're no longer flashing
+            else
+            {
+                _flashingFuelMeter = false;
+                //FIXME I think this should have a dedicated function as to not become confusing
+                redSliderGlow.enabled = false;
             }
 
             //If we're glowing and we weren't before, play resource warning sound
-            if (state && _fuel == false)
+            if (isGlowActive && _flashingFuelMeter == false)
             {
                 AudioController.PlaySound(SOUND.RESOURCE_WARNING);
             }
 
-            _fuel = state;
+            _flashingFuelMeter = isGlowActive;
         }
 
         public void SetRepairValue(float value)
