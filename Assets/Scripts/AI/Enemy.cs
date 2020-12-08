@@ -34,6 +34,8 @@ namespace StarSalvager.AI
                 return m_enemyData.MovementType;
             }
         }
+
+        public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
         public string EnemyName => m_enemyData.Name;
 
         //ICanBeSeen Properties
@@ -46,7 +48,7 @@ namespace StarSalvager.AI
         
         protected EnemyData m_enemyData;
 
-        private ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
+        public ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
 
         protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
@@ -62,7 +64,7 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         private float verticalLowestAllowed;
 
-        protected Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        public Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         public bool Disabled { get; protected set; }
 
@@ -123,7 +125,7 @@ namespace StarSalvager.AI
                 return;
             }
             
-            if(GameTimer.IsPaused || !GameManager.Instance.IsLevelActive() || GameManager.Instance.IsLevelActiveEndSequence() || Disabled)
+            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
                 return;
             
             m_fireTimer += Time.deltaTime;

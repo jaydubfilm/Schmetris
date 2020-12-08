@@ -122,7 +122,7 @@ namespace StarSalvager.Missions
 
         public static void ProcessMissionComplete(string missionName)
         {
-            Toast.AddToast(/*missionName + " Successful!!!!"*/"MISSION COMPLETED", time: 3.0f);
+            Toast.AddToast(missionName + " Completed!!!!", time: 3.0f);
             LevelManager.Instance.MissionsCompletedDuringThisFlight.Add(missionName);
             RecentCompletedMissionName = missionName;
             if (LevelManager.Instance.WaveEndSummaryData != null)

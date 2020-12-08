@@ -55,16 +55,17 @@ MonoBehaviour:
   - title: Magnet-combo-1
     useWaitTime: 0
     waitTime: 0
-    text: Try Matching three bits of the same colour
+    text: Try matching three bits of the same colour
   - title: Magnet-combo-2
     useWaitTime: 1
     waitTime: 4
-    text: Good Job! You upgraded some salvage by matching three bitrs in row. The
+    text: Good Job! You upgraded some salvage by matching three bits in row. The
       upgraded bit contains more material and takes up less space. Win-win!
   - title: Pulsar
     useWaitTime: 0
     waitTime: 0
-    text: Don't be afraid of those pulsars. Bump into them and move your bits around
+    text: The pulsing squares are called PULSARS. Bump into them and move your bits
+      around
   - title: Pulsar-1
     useWaitTime: 0
     waitTime: 8

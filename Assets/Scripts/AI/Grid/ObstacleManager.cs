@@ -121,7 +121,7 @@ namespace StarSalvager
             {
                 Globals.AsteroidFallTimer -= Globals.TimeForAsteroidToFallOneSquare;
                 LevelManager.Instance.WorldGrid.MoveObstacleMarkersDownwardOnGrid(m_obstacles, m_currentStageData);
-                if (GameManager.Instance.IsLevelActive())
+                if (GameManager.IsState(GameState.LevelActive))
                 {
                     SpawnNewRowOfObstacles();
                     TryMarkNewShapesOnGrid();
@@ -133,14 +133,14 @@ namespace StarSalvager
                 m_blendTimer += Time.deltaTime;
             }
 
-            if (GameManager.Instance.IsLevelActive() && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
+            if (GameManager.IsState(GameState.LevelActive) && LevelManager.Instance.CurrentStage == m_nextStageToSpawn)
             {
                 SetupStage(m_nextStageToSpawn);
             }
 
             HandleObstacleMovement();
 
-            if (GameManager.Instance.IsLevelActive())
+            if (GameManager.IsState(GameState.LevelActive))
             {
                 TrySpawnBonusShape();
             }
@@ -599,7 +599,7 @@ namespace StarSalvager
 
         public void SetupStage(int stageNumber)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -883,7 +883,7 @@ namespace StarSalvager
             }
 
             Vector2Int[] bitExplosionPositions =
-                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 12, 6);
+                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 15, 6);
 
             for (int i = 0; i < bitExplosionPositions.Length; i++)
             {

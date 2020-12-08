@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75aa57d01249eee43bdbc2b3cf0bb890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationTime: 0.6
+  animationTime: 0.3
   looping: 0
   useGlobalScale: 0
   globalScaleSpeed: 0

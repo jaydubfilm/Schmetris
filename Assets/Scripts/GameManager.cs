@@ -2,6 +2,7 @@
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,17 +10,21 @@ using UnityEngine;
 namespace StarSalvager
 {
     //FIXME We'll likely want to make use of enum flags here
+    [Flags]
     public enum GameState
     {
-        MainMenu,
-        AccountMenu,
-        Scrapyard,
-        UniverseMapBeforeFlight,
-        UniverseMapBetweenWaves,
-        LevelActive,
-        LevelActiveEndSequence,
-        LevelEndWave,
-        LevelBotDead
+        MainMenu = 0,
+        AccountMenu = 1 << 0,
+        Scrapyard = 1 << 1,
+        UniverseMapBeforeFlight = 1 << 2,
+        UniverseMapBetweenWaves = 1 << 3,
+        LevelActive = 1 << 4,
+        LevelActiveEndSequence = 1 << 5,
+        LevelEndWave = 1 << 6,
+        LevelBotDead = 1 << 7,
+
+        LEVEL_ACTIVE = LevelActive | LevelActiveEndSequence,
+        LEVEL = LEVEL_ACTIVE | LevelEndWave | LevelBotDead,
     }
     
     //Don't need to set this, Singleton already triggers [DefaultExecutionOrder]
@@ -27,7 +32,7 @@ namespace StarSalvager
     public class GameManager : Singleton<GameManager>
     {
         //FIXME The game state can likely be stored as static, since we don't gain anything by accessing it through the instance
-        private GameState m_currentGameState = GameState.MainMenu;
+        private static GameState m_currentGameState = GameState.MainMenu;
         
         [SerializeField, Required]
         private GameSettingsScriptableObject m_gameSettings;
@@ -45,44 +50,22 @@ namespace StarSalvager
             m_gameSettings.SetupGameSettings();
         }
 
-        public GameState GetCurrentGameState()
+        public static bool IsState(GameState gameState)
         {
-            return m_currentGameState;
+            switch(gameState)
+            {
+                case GameState.LEVEL:
+                    return GameState.LEVEL.HasFlag(m_currentGameState);
+                case GameState.LEVEL_ACTIVE:
+                    return GameState.LEVEL_ACTIVE.HasFlag(m_currentGameState);
+                default:
+                    return m_currentGameState.HasFlag(gameState);
+            }
         }
 
-        public void SetCurrentGameState(GameState newGameState)
+        public static void SetCurrentGameState(GameState newGameState)
         {
             m_currentGameState = newGameState;
-        }
-
-        public bool IsLevel()
-        {
-            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence || m_currentGameState == GameState.LevelEndWave || m_currentGameState == GameState.LevelBotDead;
-        }
-
-        public bool IsLevelActive()
-        {
-            return m_currentGameState == GameState.LevelActive || m_currentGameState == GameState.LevelActiveEndSequence;
-        }
-
-        public bool IsLevelActiveEndSequence()
-        {
-            return m_currentGameState == GameState.LevelActiveEndSequence;
-        }
-
-        public bool IsLevelEndWave()
-        {
-            return m_currentGameState == GameState.LevelEndWave;
-        }
-
-        public bool IsLevelBotDead()
-        {
-            return m_currentGameState == GameState.LevelBotDead;
-        }
-
-        public bool IsUniverseMapBetweenWaves()
-        {
-            return m_currentGameState == GameState.UniverseMapBetweenWaves;
         }
     }
 }

@@ -158,7 +158,7 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -170,7 +170,7 @@ namespace StarSalvager.UI
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                GameManager.SetCurrentGameState(GameState.Scrapyard);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -183,7 +183,7 @@ namespace StarSalvager.UI
 
             pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                GameManager.SetCurrentGameState(GameState.Scrapyard);
                 ToggleBetweenWavesUIActive(false);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
 
@@ -308,6 +308,10 @@ namespace StarSalvager.UI
                 Mission curMission = MissionManager.MissionsCurrentData
                     .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
                         Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
+
+                //Not ideal line, temporarily handling a bug until mission system gets reworked to now have duplicate data
+                curMission = MissionManager.MissionsCurrentData.CurrentMissions.FirstOrDefault(m => m.missionName == curMission.missionName);
+
                 curMissionReminder = curMission;
 
                 missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
@@ -403,8 +407,7 @@ namespace StarSalvager.UI
             if (Console.Open)
                 return;
             
-            
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave))
                 return;
             
             pauseWindow.SetActive(true);

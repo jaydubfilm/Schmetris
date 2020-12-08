@@ -55,7 +55,7 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!GameManager.Instance.IsLevelActive())
+            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -71,19 +71,19 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!GameManager.Instance.IsLevel() || GameManager.Instance.IsLevelBotDead())
+            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
                 return;
             
-            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.Instance.IsLevelActive() && ! GameManager.Instance.IsLevelEndWave())
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.IsState(GameState.LEVEL_ACTIVE) && !GameManager.IsState(GameState.LevelEndWave))
             {
                 _hasActiveEnemies = true;
                 AudioController.CrossFadeTrack(MUSIC.ENEMY);
             }
-            else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.Instance.IsLevelEndWave()))
+            else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.IsState(GameState.LevelEndWave)))
             {
                 _hasActiveEnemies = false;
                 
-                if(m_enemies.Count == 0 && GameManager.Instance.IsLevelActive())
+                if(m_enemies.Count == 0 && GameManager.IsState(GameState.LEVEL_ACTIVE))
                     AudioController.CrossFadePreviousTrack();
             }
         }
@@ -206,7 +206,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.Instance.IsLevelBotDead())
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
@@ -478,13 +478,23 @@ namespace StarSalvager
 
             return outList;
         }
-
+        
         public void SetEnemiesInert(bool inert)
         {
             if (inert)
                 m_enemiesToSpawn.Clear();
 
             m_enemiesInert = inert;
+        }
+
+        public void SetEnemiesFallEndLevel()
+        {
+            m_enemiesToSpawn.Clear();
+
+            for (int i = 0; i < m_enemies.Count; i++)
+            {
+                m_enemies[i].m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
+            }
         }
 
         public void RecycleAllEnemies()

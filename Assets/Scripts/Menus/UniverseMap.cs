@@ -119,12 +119,12 @@ namespace StarSalvager.UI
         
         public void Activate()
         {
-            if (GameManager.Instance.GetCurrentGameState() != GameState.UniverseMapBetweenWaves)
+            if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
-                GameManager.Instance.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
+                GameManager.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
             }
 
-            var isBetweenWaves = GameManager.Instance.IsUniverseMapBetweenWaves();
+            var isBetweenWaves = GameManager.IsState(GameState.UniverseMapBetweenWaves);
             
             backButton.gameObject.SetActive(!isBetweenWaves);
             betweenWavesScrapyardButton.gameObject.SetActive(isBetweenWaves);
@@ -207,7 +207,7 @@ namespace StarSalvager.UI
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+                GameManager.SetCurrentGameState(GameState.Scrapyard);
                 LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
                 LevelManager.Instance.ResetLevelTimer();
                 
@@ -268,7 +268,7 @@ namespace StarSalvager.UI
                     !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
             }
 
-            if (GameManager.Instance.IsUniverseMapBetweenWaves())
+            if (GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree()
                     .ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -418,7 +418,7 @@ namespace StarSalvager.UI
                             }
                         }
 
-                        //universeMapButtons[nodeIndex].Button.interactable = true;
+                        universeMapButtons[nodeIndex].Button.interactable = true;
                         universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
                     }
                 }

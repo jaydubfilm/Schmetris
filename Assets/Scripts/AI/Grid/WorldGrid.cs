@@ -423,7 +423,7 @@ namespace StarSalvager
             for (int i = 0; i < numBits; i++)
             {
                 Vector2Int bitPosition = startingPoint +
-                    (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange / 2, verticalExplosionRange + 1)) +
+                    (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange - verticalExplosionRange / 3, verticalExplosionRange + 1)) +
                     (Vector2Int.left * UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1));
 
                 if (GetGridSquareAtCoordinates(bitPosition).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up * 2).ObstacleInSquare || bitExplosionPositions.Contains(bitPosition))

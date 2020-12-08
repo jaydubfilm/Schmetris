@@ -207,7 +207,7 @@ namespace StarSalvager
             
             //See if the bot has completed the current wave
             //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave))
                 return;
             
             if (Destroyed)
@@ -463,7 +463,7 @@ namespace StarSalvager
             if (GameTimer.IsPaused) 
                 return;
 
-            if (direction != 0 && GameManager.Instance.IsLevelBotDead())
+            if (direction != 0 && GameManager.IsState(GameState.LevelBotDead))
             {
                 isContinuousRotation = false;
                 return;
@@ -530,7 +530,7 @@ namespace StarSalvager
 
         public void TrySelfDestruct()
         {
-            if (GameManager.Instance.IsLevelEndWave())
+            if (GameManager.IsState(GameState.LevelEndWave))
             {
                 return;
             }
@@ -1095,7 +1095,7 @@ namespace StarSalvager
         {
             destroyed = false;
             
-            if(!GameManager.Instance.IsLevelActive())
+            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
@@ -1129,7 +1129,7 @@ namespace StarSalvager
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
             
-            if(!GameManager.Instance.IsLevelActive())
+            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(worldPosition);
@@ -1248,7 +1248,7 @@ namespace StarSalvager
         
         public bool TryAsteroidDamageAt(Vector2 collisionPoint)
         {
-            if(!GameManager.Instance.IsLevelActive())
+            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
             
             var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);

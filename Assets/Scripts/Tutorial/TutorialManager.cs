@@ -406,7 +406,7 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
-            GameManager.Instance.SetCurrentGameState(GameState.LevelEndWave);
+            GameManager.SetCurrentGameState(GameState.LevelEndWave);
 
             yield return new WaitForSeconds(5f);
             
@@ -435,7 +435,7 @@ namespace StarSalvager.Tutorial
 
             ScreenFade.Fade(() =>
             {
-                GameManager.Instance.SetCurrentGameState(GameState.AccountMenu);
+                GameManager.SetCurrentGameState(GameState.AccountMenu);
                 Globals.UsingTutorial = false;
                 LevelManager.Instance.SetBotExitScreen(false);
                 LevelManager.Instance.BotObject.PROTO_GodMode = false;

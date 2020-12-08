@@ -136,7 +136,7 @@ namespace StarSalvager
 
         public void Activate()
         {
-            GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
+            GameManager.SetCurrentGameState(GameState.Scrapyard);
             
             GameTimer.SetPaused(true);
 
