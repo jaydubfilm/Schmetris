@@ -5,9 +5,12 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager.UI.Hints
 {
@@ -29,18 +32,27 @@ namespace StarSalvager.UI.Hints
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
         
-        [SerializeField, Required]
+        [SerializeField, Required, Space(10f)]
         private TMP_Text hintText;
         [SerializeField, Required]
         private TMP_Text infoText;
+
+        [SerializeField, Required, Space(10f)]
+        private Button confirmButton;
         
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
         private bool _waiting;
+        private string _previousInputActionGroup;
 
         //Unity Functions
         //====================================================================================================================//
+
+        private void Start()
+        {
+            confirmButton.onClick.AddListener(StopShowingHint);
+        }
 
         private void Update()
         {
@@ -50,9 +62,7 @@ namespace StarSalvager.UI.Hints
             //FIXME incorporate the new input system here
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Time.timeScale = 1f;
-                highlightManager.SetActive(false);
-                _waiting = false;
+                StopShowingHint();
             }
             
         }
@@ -170,13 +180,29 @@ namespace StarSalvager.UI.Hints
             _waiting = true;
             
             Time.timeScale = 0f;
-            
+
+            _previousInputActionGroup = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+
         }
 
         private void ShowHintData(HintRemoteDataScriptableObject.HintData hintData)
         {
             hintText.text = hintData.shortText;
             infoText.text = hintData.longDescription;
+        }
+
+        private void StopShowingHint()
+        {
+            if (!_waiting)
+                return;
+            
+            InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
+            _previousInputActionGroup = string.Empty;
+            
+            Time.timeScale = 1f;
+            highlightManager.SetActive(false);
+            _waiting = false;
         }
 
         //Editor Functions

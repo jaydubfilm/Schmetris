@@ -771,7 +771,7 @@ namespace StarSalvager.UI
             if (resources == null)
                 return string.Empty;
 
-            var outString = "Carried:\n";
+            var outString = "Cargo:\n";
 
             foreach (var resource in resources)
             {
