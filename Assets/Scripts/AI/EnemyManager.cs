@@ -482,7 +482,10 @@ namespace StarSalvager
         public void SetEnemiesInert(bool inert)
         {
             if (inert)
+            {
                 m_enemiesToSpawn.Clear();
+                m_timesToSpawn.Clear();
+            }
 
             m_enemiesInert = inert;
         }
@@ -490,6 +493,7 @@ namespace StarSalvager
         public void SetEnemiesFallEndLevel()
         {
             m_enemiesToSpawn.Clear();
+            m_timesToSpawn.Clear();
 
             for (int i = 0; i < m_enemies.Count; i++)
             {
