@@ -101,9 +101,11 @@ namespace StarSalvager.Utilities.Saving
 
                     for (int k = 0; k < numOptions; k++)
                     {
-                        int randomIndex = availableIndexes[UnityEngine.Random.Range(0, availableIndexes.Count)];
-                        availableIndexes.Remove(randomIndex);
-                        sectorWaveIndexConverter[i].Add(k, randomIndex);
+                        //int randomIndex = availableIndexes[UnityEngine.Random.Range(0, availableIndexes.Count)];
+                        //availableIndexes.Remove(randomIndex);
+                        //sectorWaveIndexConverter[i].Add(k, randomIndex);
+
+                        sectorWaveIndexConverter[i].Add(k, k);
                     }
                 }
                 hasSetupConverter = true;
