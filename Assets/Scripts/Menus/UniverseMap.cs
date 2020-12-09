@@ -18,6 +18,7 @@ using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.UI;
+using UnityEngine.SceneManagement;
 
 namespace StarSalvager.UI
 {
@@ -45,8 +46,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required]
         private Button swapUniverseButton;
-        [SerializeField, Required]
-        private Button backButton;
+        /*[SerializeField, Required]
+        private Button backButton;*/
         [SerializeField, Required]
         private Button betweenWavesScrapyardButton;
 
@@ -126,9 +127,6 @@ namespace StarSalvager.UI
 
             var isBetweenWaves = GameManager.IsState(GameState.UniverseMapBetweenWaves);
             
-            backButton.gameObject.SetActive(!isBetweenWaves);
-            betweenWavesScrapyardButton.gameObject.SetActive(isBetweenWaves);
-
             ScreenFade.WaitForFade(() =>
             {
                 if (HintManager.CanShowHint(HINT.HOME) && isBetweenWaves)
@@ -163,6 +161,8 @@ namespace StarSalvager.UI
             CreateBotPreview();
 
             resourceText.text = GetPreviewResources(PlayerDataManager.GetBlockDatas());
+
+            UpdateBackButtonText();
         }
 
         public void Reset()
@@ -190,20 +190,8 @@ namespace StarSalvager.UI
         
         private void InitButtons()
         {
-            /*swapUniverseButton.onClick.AddListener(() =>
-            {
-                if (FactoryManager.Instance.currentModularDataIndex == FactoryManager.Instance.ModularDataCount - 1)
-                {
-                    FactoryManager.Instance.currentModularDataIndex = 0;
-                }
-                else
-                {
-                    FactoryManager.Instance.currentModularDataIndex++;
-                }
-                PlayerPersistentData.PlayerData.currentModularSectorIndex = FactoryManager.Instance.currentModularDataIndex;
-            });*/
             swapUniverseButton.gameObject.SetActive(false);
-            backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
+            //backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
@@ -223,8 +211,8 @@ namespace StarSalvager.UI
             {
                 if (i == 0)
                 {
-                    universeMapButtons[i].Text.text = "";
-                    universeMapButtons[i].TextBelow.text = "Shipwreck";
+                    universeMapButtons[i].Text.text = "Base";
+                    universeMapButtons[i].TextBelow.text = string.Empty;
                     
                     _shipwreckButtonRectTransform = universeMapButtons[i].transform as RectTransform;
                     continue;
@@ -232,8 +220,8 @@ namespace StarSalvager.UI
 
                 universeMapButtons[i].SectorNumber = curSector;
                 universeMapButtons[i].WaveNumber = curWave;
-                universeMapButtons[i].Text.text = (curSector + 1) + "." + (curWave + 1);
-                universeMapButtons[i].TextBelow.text = "";
+                universeMapButtons[i].Text.text = $"{curSector + 1}.{curWave + 1}";
+                universeMapButtons[i].TextBelow.text = string.Empty;
                 universeMapButtons[i].SetupHoveredCallback(WaveHovered);
                 //int numWavesInSector = FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves();
                 if (curWave + 1 >= 5)
@@ -251,6 +239,26 @@ namespace StarSalvager.UI
                     curWave++;
                 }
             }
+        }
+
+        private void UpdateBackButtonText()
+        {
+            var buttonText = string.Empty;
+            var tmpText = betweenWavesScrapyardButton.GetComponentInChildren<TMP_Text>();
+            switch (SceneLoader.PreviousScene)
+            {
+                case SceneLoader.LEVEL:
+                    buttonText = "Back to Base";
+                    break;
+                case SceneLoader.MAIN_MENU:
+                case SceneLoader.SCRAPYARD:
+                    buttonText = "Exit Map";
+                    break;
+            }
+            
+            //TODO set the button text
+
+            tmpText.text = buttonText;
         }
         
         //============================================================================================================//
