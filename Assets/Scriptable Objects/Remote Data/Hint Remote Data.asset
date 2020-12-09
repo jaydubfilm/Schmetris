@@ -15,10 +15,9 @@ MonoBehaviour:
   HintDatas:
   - type: 1
     shortText: Magnetism
-    longDescription: "See those white magnets popping up?  That means your magnetism
-      bar is full. To collect more stuff you need to MATCH-3 to make more room. OR
-      try using those handy white pulsars to bump bits you don't want off your drone. 
-      \r\n\r\n<b>HINT</b> To boost your magnetism, craft a magnet part in the wreckshop!"
+    longDescription: Your magnetism is maxed!  To free some up, MERGE 3 identical
+      bits, or TRIM unwanted bits with pulsars and asteroids.  To carry more stuff,
+      carry, craft a magnet part in the wreckshop!
   - type: 2
     shortText: Bonus Shapes
     longDescription: Keep an eye out for BONUS SHAPES travelling horizontally near
