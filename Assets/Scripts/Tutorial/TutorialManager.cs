@@ -230,12 +230,6 @@ namespace StarSalvager.Tutorial
             }
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], false));
-            
-            /*if(_dialogOpen)
-                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
-            SetText(tutorialRemoteData[3], true, true);*/
-
-            //yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[3], true, true));
 
             var bot = LevelManager.Instance.BotObject;
             bot.OnFullMagnet += SetMagnet;
