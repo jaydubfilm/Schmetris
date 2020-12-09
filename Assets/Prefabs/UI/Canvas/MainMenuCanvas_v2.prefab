@@ -3081,7 +3081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7635685, g: 0.8451713, b: 0.851, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -4309,8 +4309,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -0.13012695, y: -177.99998}
-  m_SizeDelta: {x: -205.67798, y: 216.58258}
+  m_AnchoredPosition: {x: 0, y: -177.99998}
+  m_SizeDelta: {x: -205.67798, y: 165.44934}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &8183019527922961289
 CanvasRenderer:
@@ -5158,7 +5158,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 513, y: 161}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 79.71011, y: 79.71011}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8824952172545676019
 CanvasRenderer:
@@ -5181,7 +5181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.65262675, g: 0.7232719, b: 0.73, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -5412,7 +5412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5137255, g: 0.5686275, b: 0.57254905, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -6747,7 +6747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7626713, g: 0.84417814, b: 0.85, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -6977,7 +6977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5137255, g: 0.5686275, b: 0.57254905, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -7243,7 +7243,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -205.68, y: -260}
-  m_SizeDelta: {x: 37.856995, y: 216.58258}
+  m_SizeDelta: {x: 37.856995, y: 165.4493}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &2621564091955441944
 CanvasRenderer:
@@ -7762,7 +7762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5137255, g: 0.5686275, b: 0.57254905, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -7813,7 +7813,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -260}
-  m_SizeDelta: {x: 14.900391, y: 216.58258}
+  m_SizeDelta: {x: 14.900391, y: 165.4493}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6921012197286628539
 CanvasRenderer:
@@ -8118,7 +8118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5137255, g: 0.5686275, b: 0.57254905, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -9570,8 +9570,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -209.20001, y: -177.99998}
-  m_SizeDelta: {x: -205.67798, y: 216.58258}
+  m_AnchoredPosition: {x: -205.68, y: -177.99998}
+  m_SizeDelta: {x: -205.67798, y: 165.4493}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &2612218218608866355
 CanvasRenderer:
@@ -9692,9 +9692,9 @@ MonoBehaviour:
   - {fileID: 1507860510683389711}
   - {fileID: 8621691032037411591}
   - {fileID: 3914075362598222856}
-  speedRange: {x: 10, y: 25}
-  wobbleRange: {x: 5, y: 25}
-  wobbleSpeedRange: {x: 7, y: 10}
+  speedRange: {x: 0, y: 20}
+  wobbleRange: {x: 5, y: 15}
+  wobbleSpeedRange: {x: 8, y: 10}
   wobbleCurve:
     serializedVersion: 2
     m_Curve:
@@ -10340,7 +10340,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -105, y: 108}
-  m_SizeDelta: {x: 181.41406, y: 199.38785}
+  m_SizeDelta: {x: 130.6914, y: 143.63977}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6483408057595058789
 CanvasRenderer:
@@ -12593,7 +12593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7626713, g: 0.84417814, b: 0.85, a: 1}
   m_RaycastTarget: 0
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -12643,8 +12643,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 461, y: 53}
-  m_SizeDelta: {x: 158.98743, y: 158.98743}
+  m_AnchoredPosition: {x: 455, y: 89}
+  m_SizeDelta: {x: 209.12573, y: 209.12573}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7443903726894108734
 CanvasRenderer:
