@@ -135,6 +135,7 @@ namespace StarSalvager.UI
         //====================================================================================================================//
 
         private GAME_TYPE _selectedGameType;
+        private int _selectedAccountIndex = -1;
         
         //====================================================================================================================//
         
@@ -249,9 +250,11 @@ namespace StarSalvager.UI
             for (var i = 0; i < accountButtons.Length; i++)
             {
                 int index = i;
+                var interactable = i != _selectedAccountIndex;
                 accountButtons[i].onClick.RemoveAllListeners();
                 accountButtons[i].onClick.AddListener(() =>
                 {
+                    _selectedAccountIndex = index;
                     PlayerDataManager.SetCurrentSaveSlotIndex(index);
                     SetupAccountMenuWindow();
                     OpenWindow(WINDOW.ACCOUNT_MENU);
@@ -265,7 +268,10 @@ namespace StarSalvager.UI
                 
                 buttonText.text = !hasAccount
                     ? "Create new Account"
-                    : $"Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
+                    : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
+
+                //Check to see if the currently opened account is this button, disable if yes
+                accountButtons[i].interactable = interactable;
             }
             
         }
