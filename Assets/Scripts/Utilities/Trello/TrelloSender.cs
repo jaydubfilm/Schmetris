@@ -6,11 +6,13 @@ using DG.Util;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.SceneManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager.Utilities.Trello
 {
@@ -107,11 +109,15 @@ namespace StarSalvager.Utilities.Trello
 
         //====================================================================================================================//
 
+        private string _previousInputMap;
+
         private void OpenBugSubmissionWindow()
         {
             if (bugWindowObject.activeInHierarchy) 
                 return;
 
+            _previousInputMap = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
             
             StartCoroutine(TakeScreenshotRoutine(() =>
             {
@@ -167,6 +173,9 @@ namespace StarSalvager.Utilities.Trello
                     bugWindowObject.SetActive(false);
                     
                     Toast.AddToast("Bug Submitted");
+                    
+                    InputManager.SwitchCurrentActionMap(_previousInputMap);
+                    _previousInputMap = string.Empty;
                 }));
         }
         
