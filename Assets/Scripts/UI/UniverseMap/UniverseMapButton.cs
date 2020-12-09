@@ -76,6 +76,22 @@ namespace StarSalvager
             });
         }
 
+        public void Update()
+        {
+            PulseBotObject();
+        }
+
+        public void PulseBotObject()
+        {
+            if (!BotImage.gameObject.activeSelf)
+            {
+                return;
+            }
+
+            float scale = 1.0f + Mathf.PingPong(Time.time / 3, 0.25f);
+            BotImage.gameObject.transform.localScale = Vector3.one * scale;
+        }
+
         public void SetupHoveredCallback(Action<bool, int, int, RectTransform> onHoveredCallback)
         {
             _onHoveredCallback = onHoveredCallback;
