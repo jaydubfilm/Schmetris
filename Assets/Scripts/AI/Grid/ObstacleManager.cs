@@ -236,33 +236,36 @@ namespace StarSalvager
                 RemoveObstacleFromList(obstacle);
             }
 
-            /*for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
+            if (m_offGridMovingObstacles.Count > 0)
             {
-                var obstacle = m_offGridMovingObstacles[i];
-                if (obstacle == null)
+                for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
                 {
-                    m_offGridMovingObstacles.RemoveAt(i);
-                    continue;
-                }
+                    var obstacle = m_offGridMovingObstacles[i];
+                    if (obstacle == null)
+                    {
+                        m_offGridMovingObstacles.RemoveAt(i);
+                        continue;
+                    }
 
-                switch (obstacle.Obstacle)
-                {
-                    case Bit bit:
-                        Recycler.Recycle<Bit>(bit);
-                        break;
-                    case Asteroid asteroid:
-                        Recycler.Recycle<Asteroid>(asteroid);
-                        break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
-                        break;
-                    case Shape shape:
-                        Recycler.Recycle<Shape>(shape);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
+                    switch (obstacle.Obstacle)
+                    {
+                        case Bit bit:
+                            Recycler.Recycle<Bit>(bit);
+                            break;
+                        case Asteroid asteroid:
+                            Recycler.Recycle<Asteroid>(asteroid);
+                            break;
+                        case Component component:
+                            Recycler.Recycle<Component>(component);
+                            break;
+                        case Shape shape:
+                            Recycler.Recycle<Shape>(shape);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
+                    }
                 }
-            }*/
+            }
 
             for (int i = m_notFullyInGridShapes.Count - 1; i >= 0; i--)
             {
@@ -317,6 +320,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
                             }
@@ -329,6 +333,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
                                 asteroid.SetColliderActive(true);
                             }
@@ -341,6 +346,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(component, m_offGridMovingObstacles[i].EndPosition);
                                 component.SetColliderActive(true);
                             }
@@ -358,6 +364,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(shape, m_offGridMovingObstacles[i].EndPosition);
                                 shape.SetColliderActive(true);
                             }
@@ -895,20 +902,20 @@ namespace StarSalvager
                             Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                                 .CreateObject<Bit>((BIT_TYPE) rdsValueBlockData.rdsValue.Type,
                                     rdsValueBlockData.rdsValue.Level);
-                            AddObstacleToList(newBit);
+                            //AddObstacleToList(newBit);
                             PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
                             newBit.IsFromEnemyLoot = isFromEnemyLoot;
                             break;
                         case nameof(Asteroid):
                             Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                                 .CreateAsteroidRandom<Asteroid>();
-                            AddObstacleToList(newAsteroid);
+                            //AddObstacleToList(newAsteroid);
                             PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case nameof(Component):
                             Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
                                 .CreateObject<Component>((COMPONENT_TYPE) rdsValueBlockData.rdsValue.Type);
-                            AddObstacleToList(newComponent);
+                            //AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         default:
@@ -919,7 +926,7 @@ namespace StarSalvager
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                    AddObstacleToList(newAsteroid);
+                    //AddObstacleToList(newAsteroid);
                     PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                 }
                 else
@@ -1165,19 +1172,26 @@ namespace StarSalvager
             }
         }
 
-        private float m_bounceTravelDistance = 40.0f;
+        private float m_bounceTravelDistance = 20.0f;
         private float m_bounceSpeedAdjustment = 0.5f;
 
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
             RemoveObstacleFromList(obstacle);
+            float randomFactor = Random.Range(0.75f, 1.25f);
+            float bounceTravelDistance = m_bounceTravelDistance * randomFactor;
 
             var localPosition = obstacle.transform.localPosition;
-            Vector2 destination = (Vector2) localPosition + direction * m_bounceTravelDistance;
+            Vector2 destination = (Vector2) localPosition + direction * bounceTravelDistance;
+            float distance = Vector2.Distance(obstacle.transform.localPosition, destination);
+            destination = LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtLocalPosition(destination);
+            float newDistance = Vector2.Distance(obstacle.transform.localPosition, destination);
+            spinSpeed *= (distance / newDistance);
+
             PlaceMovableOffGrid(obstacle, localPosition, destination,
                 Vector2.Distance(localPosition, destination) /
-                (m_bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+                (bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,

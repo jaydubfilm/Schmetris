@@ -705,7 +705,7 @@ namespace StarSalvager
                                 closestAttachable is Part part && part.Destroyed)
                             {
                                 if (attachable is IObstacle obstacle)
-                                    obstacle.Bounce(collisionPoint);
+                                    obstacle.Bounce(collisionPoint, transform.position);
 
                                 return false;
                             }
@@ -724,7 +724,7 @@ namespace StarSalvager
                             var bounce = true;
                             if (bounce)
                             {
-                                bit.Bounce(collisionPoint);
+                                bit.Bounce(collisionPoint, transform.position);
                             }
 
                             ////We don't want to move a row if it hit an enemy instead of a bit
@@ -773,7 +773,7 @@ namespace StarSalvager
                         closestAttachable is Part part && part.Destroyed)
                     {
                         if (attachable is IObstacle obstacle)
-                            obstacle.Bounce(collisionPoint);
+                            obstacle.Bounce(collisionPoint, transform.position);
 
                         return false;
                     }
@@ -946,7 +946,7 @@ namespace StarSalvager
                             closestOnBot is Part part && part.Destroyed)
                         {
                             if (shape is IObstacle obstacle)
-                                obstacle.Bounce(collisionPoint);
+                                obstacle.Bounce(collisionPoint, transform.position);
 
                             return false;
                         }

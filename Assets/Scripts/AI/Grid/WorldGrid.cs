@@ -205,6 +205,11 @@ namespace StarSalvager
             return GetGridSquareAtCoordinates(coordinates);
         }
 
+        public Vector2 GetLocalPositionOfCenterOfGridSquareAtLocalPosition(Vector2 localPosition)
+        {
+            return GetLocalPositionOfCenterOfGridSquareAtCoordinates(GetCoordinatesOfGridSquareAtLocalPosition(localPosition));
+        }
+
         public Vector2Int GetCoordinatesOfGridSquareAtLocalPosition(Vector2 worldLocation)
         {
             return new Vector2Int((int)Mathf.Floor((worldLocation.x - m_anchorPoint.x) / Constants.gridCellSize), (int)Mathf.Floor((worldLocation.y - m_anchorPoint.y) / Constants.gridCellSize));

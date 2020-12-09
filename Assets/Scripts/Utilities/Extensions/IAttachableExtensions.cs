@@ -58,7 +58,7 @@ namespace StarSalvager.Utilities.Extensions
         }*/
 
 
-        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint)
+        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint, Vector2 contactCenterPosition)
         {
             Vector2 directionBounce = (Vector2)obstacle.transform.position - contactPoint;
             directionBounce.Normalize();
@@ -78,19 +78,23 @@ namespace StarSalvager.Utilities.Extensions
                 directionBounce.Normalize();
             }
 
-            float rotation = 180.0f;
+            float rotation = 360.0f;
             if (directionBounce.x >= 0)
             {
                 rotation *= -1;
             }
-            
-            
-            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, directionBounce, rotation, true, true, true);
+
+            Vector2 angleToCore = (Vector2)obstacle.transform.position - contactCenterPosition;
+            angleToCore.Normalize();
+
+            directionBounce = (directionBounce + angleToCore).normalized;
+
+            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, directionBounce, rotation, false, true, false);
         }
         
-        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint, ROTATION rotation)
+        public static void Bounce(this IObstacle obstacle, Vector2 contactPoint, Vector2 contactCenterPosition, ROTATION rotation)
         {
-            float degrees = 180.0f;
+            float degrees = 360.0f;
             if (rotation == ROTATION.CW)
             {
                 degrees *= -1;
@@ -99,7 +103,12 @@ namespace StarSalvager.Utilities.Extensions
             Vector2 rotDirection = (Vector2)obstacle.transform.position - contactPoint;
             rotDirection.Normalize();
 
-            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, rotDirection, degrees, true, true, true);
+            Vector2 angleToCore = (Vector2)obstacle.transform.position - contactCenterPosition;
+            angleToCore.Normalize();
+
+            rotDirection = (rotDirection + angleToCore).normalized;
+
+            LevelManager.Instance.ObstacleManager.BounceObstacle(obstacle, rotDirection, degrees, false, true, false);
         }
     }
 }

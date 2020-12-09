@@ -159,7 +159,7 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
-                this.Bounce(worldHitPoint, bot.MostRecentRotate);
+                this.Bounce(worldHitPoint, transform.position, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
             }
