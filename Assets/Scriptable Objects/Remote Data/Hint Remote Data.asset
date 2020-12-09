@@ -30,10 +30,10 @@ MonoBehaviour:
       have ammo in your cargo!
   - type: 4
     shortText: Fuel
-    longDescription: "Darn, out of fuel!  You now have a CHOICE:  Either sit tight
-      and hope to make it through this wave alive...  or press 'X' to self-destruct
-      and get on with the game. \n\n<b>HINT</b> You can still rotate, so try to catch
-      some passing fuel bits if you see some"
+    longDescription: 'Darn, out of fuel!  You now have a CHOICE:  Sit tight and hope
+      to make it through this wave alive...  OR press ''X'' to self-destruct and
+      get on with the game. HINT: You can still rotate, so try to catch some passing
+      fuel bits if you see some'
   - type: 5
     shortText: Home
     longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
