@@ -33,6 +33,7 @@ namespace StarSalvager.Utilities.SceneManagement
         //============================================================================================================//
 
         public static string CurrentScene => _currentScene;
+        public static string PreviousScene => _lastScene;
 
         private static string _currentScene;
         private static string _lastScene;
