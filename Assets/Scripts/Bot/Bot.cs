@@ -1090,6 +1090,7 @@ namespace StarSalvager
         /// Decides if the Attachable closest to the hit position should be destroyed or damaged on the bounce
         /// </summary>
         /// <param name="hitPosition"></param>
+        /// <param name="destroyed"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
         {
@@ -1102,16 +1103,15 @@ namespace StarSalvager
 
             switch (closestAttachable)
             {
+                //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
+                case Bit _:
                 case EnemyAttachable _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
-                case Bit _:
-                    break;
                 case Component _:
                     break;
                 case Part part:
-                    if (part.Destroyed) 
-                        return false;
+                    if (part.Destroyed) return false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
@@ -1173,16 +1173,6 @@ namespace StarSalvager
                 GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
-
-            /*switch (withSound)
-            {
-                case true when closestAttachable is Bit:
-                    AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
-                    break;
-                case true when closestAttachable is Part:
-                    AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
-                    break;
-            }*/
 
             switch (closestAttachable)
             {
@@ -1255,12 +1245,15 @@ namespace StarSalvager
 
             //------------------------------------------------------------------------------------------------//
 
-            if (closestAttachable is Part part && part.Destroyed)
-                return false;
-            
-            //TODO Need to add animation/effects here 
-            //Destroy both this and collided Bit
-            //Recycler.Recycle<Bit>(attachable.gameObject);
+            switch (closestAttachable)
+            {
+                case Part part when part.Destroyed:
+                    return false;
+                case Bit _:
+                    AsteroidDamageAt(closestAttachable);
+                    return false;
+            }
+
 
             AsteroidDamageAt(closestAttachable);
             return true;
@@ -1272,60 +1265,28 @@ namespace StarSalvager
         /// <param name="attachable"></param>
         private void AsteroidDamageAt(IAttachable attachable)
         {
-            FrameStop.Instance.Milliseconds(75);
 
             TryHitAt(attachable, 10000);
             AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
-            
-            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Explosion>();
-            explosion.transform.position = attachable.transform.position;*/
-            
-            //CreateExplosionEffect(attachable.transform.position);
 
-            MissionProgressEventData missionProgressEventData;
-
+            BIT_TYPE? type = null;
             switch (attachable)
             {
+                case Part _ :
+                    FrameStop.Milliseconds(75);
+                    break;
                 case Bit bit:
-                    
-                    missionProgressEventData = new MissionProgressEventData
-                    {
-                        bitType = bit.Type,
-                        intAmount = 1
-                    };
-                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
-                    break;
-                case Component _:
-                    missionProgressEventData = new MissionProgressEventData
-                    {
-                        bitType = null,
-                        intAmount = 1
-                    };
-                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
-                    break;
-                case Part _:
-                    missionProgressEventData = new MissionProgressEventData
-                    {
-                        bitType = null,
-                        intAmount = 1
-                    };
-                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
+                    type = bit.Type;
                     break;
                 case EnemyAttachable enemyAttachable:
-                    missionProgressEventData = new MissionProgressEventData
-                    {
-                        bitType = null,
-                        intAmount = 1
-                    };
-                    MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
                     enemyAttachable.SetAttached(false);
-                    return;
+                    break;
             }
+
+            AsteroidMissionUpdate(type);
 
             //FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
-            //coolTimer = coolDelay;
-
 
             if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && !PROTO_GodMode)
             {
@@ -1335,6 +1296,16 @@ namespace StarSalvager
             {
                 Destroy("Core Overheated");
             }
+        }
+
+        private static void AsteroidMissionUpdate(BIT_TYPE? bitType)
+        {
+            var missionProgressEventData = new MissionProgressEventData
+            {
+                bitType = bitType,
+                intAmount = 1
+            };
+            MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
         }
 
         #endregion //Asteroid Collision

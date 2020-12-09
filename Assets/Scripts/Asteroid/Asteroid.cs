@@ -9,13 +9,9 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using StarSalvager.AI;
 using StarSalvager.Factories;
-using StarSalvager.Utilities.Animations;
 using StarSalvager.Values;
-using StarSalvager.Factories.Data;
 using System.Linq;
 using StarSalvager.Prototype;
-
-using StarSalvager.UI;
 
 namespace StarSalvager
 {

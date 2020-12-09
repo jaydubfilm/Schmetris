@@ -10,33 +10,35 @@ namespace StarSalvager.Utilities
         
         //============================================================================================================//
         
-        public void Frames(int frames)
+        public static void Frames(int frames)
         {
-            if(stopped)
-                return;
+            if (Instance == null) return;
+            if(Instance.stopped) return;
 
-            StartCoroutine(FrameStopCoroutine(frames));
+            Instance.StartCoroutine(FrameStopCoroutine(frames));
         }
         
         
-        public void Seconds(float seconds)
+        public static void Seconds(float seconds)
         {
-            if(stopped)
-                return;
+            if (Instance == null) return;
+            
+            if(Instance.stopped) return;
 
-            StartCoroutine(FrameStopCoroutine(seconds));
+            Instance.StartCoroutine(FrameStopCoroutine(seconds));
         }
-        public void Milliseconds(int milliseconds)
+        public static void Milliseconds(int milliseconds)
         {
-            if(stopped)
-                return;
+            if (Instance == null) return;
+            
+            if(Instance.stopped) return;
 
-            StartCoroutine(FrameStopCoroutine(milliseconds / 1000f));
+            Instance.StartCoroutine(FrameStopCoroutine(milliseconds / 1000f));
         }
         
         //============================================================================================================//
 
-        private IEnumerator FrameStopCoroutine(int frames)
+        private static IEnumerator FrameStopCoroutine(int frames)
         {
             var count = 0;
 
@@ -51,7 +53,7 @@ namespace StarSalvager.Utilities
 
         }
         
-        private IEnumerator FrameStopCoroutine(float time)
+        private static IEnumerator FrameStopCoroutine(float time)
         {
             var t = 0f;
 
