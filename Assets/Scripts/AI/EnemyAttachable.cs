@@ -498,5 +498,19 @@ namespace StarSalvager.AI
         {
             return typeof(EnemyAttachable);
         }
+        
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
+        //====================================================================================================================//
     }
 }

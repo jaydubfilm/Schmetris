@@ -35,7 +35,7 @@ namespace StarSalvager.UI.Scrapyard
                          data.blockData.ClassType == nameof(ScrapyardPart);
 
             //Only want to be able to select parts
-            button.interactable = isPart && !_scrapyardBot.AtPartCapacity;
+            button.interactable = isPart && _scrapyardBot != null && !_scrapyardBot.AtPartCapacity;
             
             if (!button.interactable)
                 return;

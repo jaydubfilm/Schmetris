@@ -2,6 +2,7 @@
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
@@ -94,5 +95,19 @@ namespace StarSalvager
         {
             renderer.sprite = sprite;
         }
+        
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
+        //====================================================================================================================//
     }
 }

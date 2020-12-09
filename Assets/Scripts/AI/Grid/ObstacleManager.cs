@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Missions;
 using StarSalvager.Prototype;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
@@ -397,6 +399,9 @@ namespace StarSalvager
                     {
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
+
+                        if(HintManager.CanShowHint(HINT.BONUS))
+                            HintManager.TryShowHint(HINT.BONUS, 1.35f);
                     }
                 }
 
@@ -558,6 +563,8 @@ namespace StarSalvager
                 m_offGridMovingObstacles[i].SpeedUpModifier = speedModifier;
             }
         }
+
+        
 
         //====================================================================================================================//
 

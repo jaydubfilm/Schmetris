@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
@@ -429,7 +430,23 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
+        public RectTransform GetHintElement(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.NONE:
+                    return null;
+                case HINT.MAGNET:
+                    return magnetFlash.transform as RectTransform;
+                case HINT.FUEL:
+                    return GetSliderCover(BIT_TYPE.RED).Cover.transform as RectTransform;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
 
+        //====================================================================================================================//
+        
         private void InitValues()
         {
             
@@ -494,6 +511,7 @@ namespace StarSalvager.UI
 
             }
         }
+        
 
         //============================================================================================================//
 
@@ -625,11 +643,11 @@ namespace StarSalvager.UI
         }
 
 
-        private bool _fuel;
+        private bool _flashingFuelMeter;
         public void SetFuelValue(float value)
         {
             bool hasBitAttached = false;
-            bool state = false;
+            bool isGlowActive = false;
 
             //FIXME This is inefficient, and I want to find a better way of reducing the calls here
             if (LevelManager.Instance != null && LevelManager.Instance.BotObject)
@@ -642,16 +660,26 @@ namespace StarSalvager.UI
             //Only if there are not any bits attached
             if (!hasBitAttached)
             {
-                state = CheckActivateGlow(fuelSlider, redSliderGlow);
+                isGlowActive = CheckActivateGlow(fuelSlider, redSliderGlow);
+
+                if (HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.IsState(GameState.LevelActive))
+                    HintManager.TryShowHint(HINT.FUEL);
+            }
+            //If we have bits, just make sure we're no longer flashing
+            else
+            {
+                _flashingFuelMeter = false;
+                //FIXME I think this should have a dedicated function as to not become confusing
+                redSliderGlow.enabled = false;
             }
 
             //If we're glowing and we weren't before, play resource warning sound
-            if (state && _fuel == false)
+            if (isGlowActive && _flashingFuelMeter == false)
             {
                 AudioController.PlaySound(SOUND.RESOURCE_WARNING);
             }
 
-            _fuel = state;
+            _flashingFuelMeter = isGlowActive;
         }
 
         public void SetRepairValue(float value)
@@ -702,23 +730,25 @@ namespace StarSalvager.UI
 
         private void UncoverSlider(BIT_TYPE bitType)
         {
+            var sliderCover = GetSliderCover(bitType);
+            
+            sliderCover.SetHidden(false);
+        }
+
+        private SliderCover GetSliderCover(BIT_TYPE bitType)
+        {
             switch (bitType)
             {
                 case BIT_TYPE.BLUE:
-                    sliderCovers[4].SetHidden(false);
-                    break;
+                    return sliderCovers[4];
                 case BIT_TYPE.GREEN:
-                    sliderCovers[2].SetHidden(false);
-                    break;
+                    return sliderCovers[2];
                 case BIT_TYPE.GREY:
-                    sliderCovers[1].SetHidden(false);
-                    break;
+                    return sliderCovers[1];
                 case BIT_TYPE.RED:
-                    sliderCovers[0].SetHidden(false);
-                    break;
+                    return sliderCovers[0];
                 case BIT_TYPE.YELLOW:
-                    sliderCovers[3].SetHidden(false);
-                    break;
+                    return sliderCovers[3];
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
             }

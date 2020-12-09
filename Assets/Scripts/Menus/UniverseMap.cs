@@ -16,6 +16,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.UI;
 
 namespace StarSalvager.UI
@@ -85,6 +86,8 @@ namespace StarSalvager.UI
         [SerializeField]
         private TMP_Text resourceText;
 
+        private RectTransform _shipwreckButtonRectTransform;
+
         //Unity Functions
         //============================================================================================================//
 
@@ -96,6 +99,21 @@ namespace StarSalvager.UI
             waveDataWindow.SetActive(false);
         }
 
+        //====================================================================================================================//
+
+        public RectTransform GetHintElement(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.NONE:
+                    return null;
+                case HINT.HOME:
+                    return _shipwreckButtonRectTransform;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
+
         //IReset Functions
         //====================================================================================================================//
         
@@ -105,10 +123,20 @@ namespace StarSalvager.UI
             {
                 GameManager.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
             }
-            
-            backButton.gameObject.SetActive(!GameManager.IsState(GameState.UniverseMapBetweenWaves));
-            betweenWavesScrapyardButton.gameObject.SetActive(GameManager.IsState(GameState.UniverseMapBetweenWaves));
 
+            var isBetweenWaves = GameManager.IsState(GameState.UniverseMapBetweenWaves);
+            
+            backButton.gameObject.SetActive(!isBetweenWaves);
+            betweenWavesScrapyardButton.gameObject.SetActive(isBetweenWaves);
+
+            ScreenFade.WaitForFade(() =>
+            {
+                if (HintManager.CanShowHint(HINT.HOME) && isBetweenWaves)
+                {
+                    HintManager.TryShowHint(HINT.HOME);
+                }
+            });
+            
             if (PROTO_useSum)
             {
                 switch (IconType)
@@ -155,6 +183,8 @@ namespace StarSalvager.UI
             }
         }
 
+        
+
         //UniverseMap Functions
         //====================================================================================================================//
         
@@ -195,6 +225,8 @@ namespace StarSalvager.UI
                 {
                     universeMapButtons[i].Text.text = "";
                     universeMapButtons[i].TextBelow.text = "Shipwreck";
+                    
+                    _shipwreckButtonRectTransform = universeMapButtons[i].transform as RectTransform;
                     continue;
                 }
 
@@ -739,7 +771,7 @@ namespace StarSalvager.UI
             if (resources == null)
                 return string.Empty;
 
-            var outString = "Carried:\n";
+            var outString = "Cargo:\n";
 
             foreach (var resource in resources)
             {

@@ -25,6 +25,7 @@ using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
 using StarSalvager.Prototype;
+using StarSalvager.UI.Hints;
 
 namespace StarSalvager
 {
@@ -251,6 +252,9 @@ namespace StarSalvager
                 {
                     SetBotEnterScreen(false);
                     BotObject.PROTO_GodMode = Globals.UsingTutorial;
+
+                    //See if we need to show any hints to the player once the bot is on screen
+                    BotObject.DisplayHints();
                     
                     _t = 0f;
                     _startY = 0f;

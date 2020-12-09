@@ -20,6 +20,7 @@ using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.Missions;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Math;
@@ -28,12 +29,13 @@ using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
     {
         private readonly struct ShiftData
         {
@@ -432,9 +434,9 @@ namespace StarSalvager
 
                 AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
             }
-            
 
-            
+
+
             var camera = CameraController.Camera.GetComponent<CameraController>();
             camera.SetLookAtFollow(transform);
             camera.ResetCameraPosition();
@@ -443,6 +445,11 @@ namespace StarSalvager
 
         }
 
+        public void DisplayHints()
+        {
+            if(HintManager.CanShowHint(HINT.GUN) && attachedBlocks.HasPartAttached(PART_TYPE.GUN))
+                HintManager.TryShowHint(HINT.GUN);
+        }
 
 
         #endregion // Init Bot 
@@ -3007,6 +3014,8 @@ namespace StarSalvager
         {
             return CheckHasMagnetOverage(BotPartsLogic.currentMagnet);
         }
+
+        private int magnetCounter = 0;
         
         /// <summary>
         /// Determines based on the total of magnet slots which pieces must be removed to fit within the expected capacity
@@ -3110,6 +3119,9 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             
             GameUi.FlashMagnet();
+
+            if(magnetCounter++ >= 2 && HintManager.CanShowHint(HINT.MAGNET)) 
+                HintManager.TryShowHint(HINT.MAGNET);
 
             return true;
         }
@@ -4017,8 +4029,10 @@ namespace StarSalvager
         //====================================================================================================================//
 
 
-        
-        
+        public Bounds GetBounds()
+        {
+            return CompositeCollider2D.bounds;
+        }
     }
     
     public struct PendingCombo

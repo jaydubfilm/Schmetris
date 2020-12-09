@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using StarSalvager.Utilities.Interfaces;
+using UnityEngine;
 
 namespace StarSalvager
 {
-    public interface IAttachable
+    public interface IAttachable : IHasBounds
     {
         Vector2Int Coordinate { get; set; }
         Transform transform { get; }
