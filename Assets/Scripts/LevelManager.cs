@@ -537,6 +537,9 @@ namespace StarSalvager
 
         private void CheckPlayWarningSound()
         {
+            if (Globals.UsingTutorial)
+                return;
+            
             var duration = CurrentWaveData.GetWaveDuration();
             var timeLeft = duration - m_waveTimer;
 

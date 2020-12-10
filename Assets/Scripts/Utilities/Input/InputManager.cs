@@ -186,10 +186,18 @@ namespace StarSalvager.Utilities.Inputs
             switch (actionMapName)
             {
                 case "Default":
+                    
+                    
                     Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
                     break;
                 case "Menu Controls":
+                    if(Instance)
+                    {
+                        Instance.ProcessMovementInput(0);
+                        Instance.ProcessRotateInput(0);
+                    }
+                    
                     Input.Actions.Default.Disable();
                     Input.Actions.MenuControls.Enable();
                     break;
