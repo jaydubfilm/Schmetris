@@ -160,12 +160,14 @@ namespace StarSalvager
         #endregion //Properties
 
         private const int WARNING_COUNT = 4;
+        private const int TIME_AFTER_WAVE_DELAY = 5;
         private int _audioCountDown = WARNING_COUNT;
+        private float _afterWaveTimer = TIME_AFTER_WAVE_DELAY;
 
 
         //Unity Functions
         //====================================================================================================================//
-        
+
         private void Start()
         {
             RegisterPausable();
@@ -670,6 +672,7 @@ namespace StarSalvager
             m_waveTimer = 0;
 
             _audioCountDown = WARNING_COUNT;
+            _afterWaveTimer = TIME_AFTER_WAVE_DELAY;
 
             if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
@@ -761,8 +764,9 @@ namespace StarSalvager
 
         private void TryBeginWaveEndSequence()
         {
-            if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
+            if (!m_endLevelOverride && _afterWaveTimer >= 0)
             {
+                _afterWaveTimer -= Time.deltaTime;
                 return;
             }
 
