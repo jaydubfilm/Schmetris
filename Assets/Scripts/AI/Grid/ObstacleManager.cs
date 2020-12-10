@@ -1022,11 +1022,10 @@ namespace StarSalvager
                 }
                 case SELECTION_TYPE.ASTEROID:
                 {
-                    if (LevelManager.Instance.WaveTimer + 5.0f >= LevelManager.Instance.CurrentWaveData.GetWaveDuration())
+                    if (LevelManager.Instance.WaveTimer + Globals.AsteroidSpawnDisableTimeBeforeWaveEnd >= LevelManager.Instance.CurrentWaveData.GetWaveDuration())
                     {
                         return;
                     }
-
 
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                         .CreateAsteroid<Asteroid>(asteroidSize);

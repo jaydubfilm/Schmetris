@@ -68,6 +68,9 @@ namespace StarSalvager.Values
         public static float BotEnterScreenMaxSize => m_gameSettings.botEnterScreenMaxSize;
         public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;
 
+        public static float AsteroidSpawnDisableTimeBeforeWaveEnd => m_gameSettings.asteroidSpawnDisableTimeBeforeWaveEnd;
+        public static float TimeAfterWaveEndFlyOut => m_gameSettings.timeAfterWaveEndFlyOut;
+
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;
         public static float AsteroidFallTimer;

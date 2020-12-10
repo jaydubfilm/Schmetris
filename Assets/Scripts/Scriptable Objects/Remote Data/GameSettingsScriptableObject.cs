@@ -54,6 +54,9 @@ namespace StarSalvager.ScriptableObjects
         public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();
         public List<FacilityInitialData> facilityInitialBlueprintData = new List<FacilityInitialData>();
 
+        public float asteroidSpawnDisableTimeBeforeWaveEnd = 5.0f;
+        public float timeAfterWaveEndFlyOut = 5.0f;
+
         public void SetupGameSettings()
         {
             Globals.SetGameSettings(this);

@@ -160,9 +160,8 @@ namespace StarSalvager
         #endregion //Properties
 
         private const int WARNING_COUNT = 4;
-        private const int TIME_AFTER_WAVE_DELAY = 5;
         private int _audioCountDown = WARNING_COUNT;
-        private float _afterWaveTimer = TIME_AFTER_WAVE_DELAY;
+        private float _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
 
 
         //Unity Functions
@@ -672,7 +671,7 @@ namespace StarSalvager
             m_waveTimer = 0;
 
             _audioCountDown = WARNING_COUNT;
-            _afterWaveTimer = TIME_AFTER_WAVE_DELAY;
+            _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
 
             if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
