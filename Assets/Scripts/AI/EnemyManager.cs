@@ -82,9 +82,13 @@ namespace StarSalvager
             else if (_hasActiveEnemies && (m_enemies.Count == 0 || GameManager.IsState(GameState.LevelEndWave)))
             {
                 _hasActiveEnemies = false;
-                
-                if(m_enemies.Count == 0 && GameManager.IsState(GameState.LEVEL_ACTIVE))
-                    AudioController.CrossFadePreviousTrack();
+                //TODO Check and see if the enemy track is already playing, if so, go back to normal level track
+
+                /*if (m_enemies.Count == 0 && GameManager.IsState(GameState.LEVEL_ACTIVE))
+                {
+                    //AudioController.CrossFadePreviousTrack();
+                    AudioController.fade
+                }*/
             }
         }
 

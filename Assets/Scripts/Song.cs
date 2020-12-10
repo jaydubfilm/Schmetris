@@ -10,9 +10,12 @@ namespace StarSalvager.Audio
     public class Song : MonoBehaviour
     {
         public MUSIC Music;
-        
-        [ShowInInspector, ReadOnly]
-        public bool IsPlaying { get; private set; }
+
+        [ShowInInspector, ProgressBar(0f, 1f, 0.15f, 0.74f, 0.47f), ReadOnly]
+        public float CurrentVolume { get; private set; }
+
+        [ShowInInspector, ReadOnly] 
+        public bool IsPlaying => CurrentVolume > 0f;
 
         [SerializeField, Required]
         private SongScriptableObject song;
@@ -33,7 +36,7 @@ namespace StarSalvager.Audio
                 stem.SetVolume(1f);
             }
 
-            IsPlaying = true;
+            CurrentVolume = 1f;
         }
         [Button, DisableInEditorMode, HorizontalGroup("Row1")]
         public void Mute()
@@ -43,7 +46,8 @@ namespace StarSalvager.Audio
                 stem.SetVolume(0f);
             }
 
-            IsPlaying = false;
+            CurrentVolume = 0f;
+            //IsPlaying = false;
         }
 
         //Fade Functions
@@ -54,12 +58,18 @@ namespace StarSalvager.Audio
             if (_fading)
                 return;
 
+            if (CurrentVolume >= 1f)
+                return;
+
             StartCoroutine(FadeTrack(StemData.FADE.IN));
         }
         [Button, DisableInEditorMode, HorizontalGroup("Row2")]
         public void FadeOutTrack()
         {
             if (_fading)
+                return;
+            
+            if (CurrentVolume == 0f)
                 return;
 
             StartCoroutine(FadeTrack(StemData.FADE.OUT));
@@ -73,18 +83,43 @@ namespace StarSalvager.Audio
             _fading = true;
             
             var maxFadeTime = song.stems.Max(s => s.GetFadeTime(fadeDirection));
-            //var stems = song.stems.Select(stem => stem.FadeStem(fadeDirection)).ToArray();
             var stems = song.stems;
-            //var coroutines = new Coroutine[stems.Length];
 
             foreach (var t in stems)
             {
                 StartCoroutine(FadeStemCoroutine(t, fadeDirection));
             }
 
-            yield return new WaitForSecondsRealtime(maxFadeTime);
+            float start, target;
+            
+            switch (fadeDirection)
+            {
+                case StemData.FADE.IN:
+                    start = 0f;
+                    target = 1f;
+                    break;
+                case StemData.FADE.OUT:
+                    start = 1f;
+                    target = 0f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fadeDirection), fadeDirection, null);
+            }
 
-            IsPlaying = fadeDirection == StemData.FADE.IN;
+            var wait = 0f;
+            while (wait <= maxFadeTime)
+            {
+
+                CurrentVolume = Mathf.Lerp(start, target, wait / maxFadeTime);
+                
+                wait += Time.unscaledDeltaTime;
+                
+                yield return null;
+            }
+
+            CurrentVolume = target;
+
+            //IsPlaying = fadeDirection == StemData.FADE.IN;
             
             _fading = false;
         }
