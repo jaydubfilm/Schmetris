@@ -2,6 +2,7 @@
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
@@ -233,7 +234,7 @@ namespace StarSalvager
 
         public void CustomRecycle(params object[] args)
         {
-            SetSortingLayer(DEFAULT_LAYER);
+            SetSortingLayer(LayerHelper.ACTORS);
             
             BoostAmount = 0f;
             _boostIsSetup = false;

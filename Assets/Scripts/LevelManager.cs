@@ -25,7 +25,6 @@ using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
 using StarSalvager.Prototype;
-using StarSalvager.UI.Hints;
 
 namespace StarSalvager
 {
@@ -803,7 +802,7 @@ namespace StarSalvager
             m_waveTimer = 0;
             GameUi.ShowAbortWindow(false);
 
-            BotObject.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 10000);
+            BotObject.SetSortingLayer(LayerHelper.OVERLAY, 10000);
 
 
             Random.InitState(CurrentWaveData.WaveSeed);

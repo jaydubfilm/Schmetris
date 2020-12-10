@@ -1247,7 +1247,7 @@ namespace StarSalvager
             }
 
             if (newObstacle is CollidableBase collidableBase)
-                collidableBase.SetSortingLayer(Actor2DBase.OVERLAY_LAYER, 100);
+                collidableBase.SetSortingLayer(LayerHelper.OVERLAY, 100);
 
             if (newObstacle is Shape shape)
             {
@@ -1320,7 +1320,7 @@ namespace StarSalvager
 
         private void CreateEdgeSprites()
         {
-            const int X_SCALE = 45;
+            const int X_SCALE = 55;
             //TODO Create the sprite Objects
             if (_edgeSprites == null || _edgeSprites.Length == 0)
             {
@@ -1331,8 +1331,8 @@ namespace StarSalvager
                     var temp = new GameObject($"EdgeSprite_{i}").AddComponent<SpriteRenderer>();
                     temp.sprite = edgeSprite;
                     temp.color = edgeSpriteColor;
-                    temp.sortingLayerName = "Overlay";
-                    temp.sortingOrder = 1000;
+                    temp.sortingLayerName = LayerHelper.DEFAULT;
+                    temp.sortingOrder = 0;
                     _edgeSprites[i] = temp;
 
                     temp.transform.SetParent(WorldElementsRoot);

@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Values;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
@@ -290,7 +291,7 @@ namespace StarSalvager
             transform.localScale = Vector3.one;
             SetRotating(false);
 
-            SetSortingLayer(DEFAULT_LAYER);
+            SetSortingLayer(LayerHelper.ACTORS);
 
             PendingDetach = false;
             IsBusy = false;

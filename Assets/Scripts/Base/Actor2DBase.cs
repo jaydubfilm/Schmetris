@@ -6,8 +6,6 @@ namespace StarSalvager
     [RequireComponent(typeof(SpriteRenderer))]
     public abstract class Actor2DBase : MonoBehaviour, IRecycled, ISetSpriteLayer
     {
-        public const string DEFAULT_LAYER = "Default";
-        public const string OVERLAY_LAYER = "Overlay";
         
         //IRecycle Properties
         //====================================================================================================================//

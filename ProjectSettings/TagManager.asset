@@ -49,6 +49,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Actors
+    uniqueID: 1579873703
+    locked: 0
   - name: Damage
     uniqueID: 864554587
     locked: 0

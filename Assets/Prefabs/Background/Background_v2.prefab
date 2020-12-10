@@ -711,7 +711,7 @@ MonoBehaviour:
     MaterialInstance: {fileID: 0}
     startOffset: {x: 0, y: 0}
     startTile: {x: 1.25, y: 1.25}
-    Texture: {fileID: 2800000, guid: cce8f8a07d5e221419ec2c98a2ddd56a, type: 3}
+    Texture: {fileID: 2800000, guid: 2de5a9d5ce2b5f9438aab52b929bc3eb, type: 3}
     Color: {r: 0.28235295, g: 0.7019608, b: 0.6745098, a: 0.29803923}
     isInfinite: 0
     distance: 1
