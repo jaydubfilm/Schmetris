@@ -40,9 +40,9 @@ MonoBehaviour:
   - title: Magnet
     useWaitTime: 1
     waitTime: 4
-    text: Oops! You maxed out your magnetism! Right now your core can only carry
+    text: Nice work! You maxed out your magnetism! Right now your core can only carry
       8 bits at a time. With the right upgrades we could increase this limit, but
-      there are other ways to save space.
+      there are other ways to save space...
   - title: Combo-magnet-1
     useWaitTime: 0
     waitTime: 0
@@ -50,8 +50,8 @@ MonoBehaviour:
   - title: Combo-magnet-2
     useWaitTime: 1
     waitTime: 4
-    text: Oops!  You maxed out your magnetism!  Right now your core can only carry
-      8 bits at a time. With the right upgrades we could increase this limit.
+    text: You maxed out your magnetism!  Right now your core can only carry 8 bits
+      at a time. With the right upgrades we could increase this limit.
   - title: Magnet-combo-1
     useWaitTime: 0
     waitTime: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
     useWaitTime: 1
     waitTime: 6
     text: What are the chances? Fuel bits are automatically refined by your ship's
-      core when you need it.
+      core when you run out of fuel.
   - title: Fuel-2
     useWaitTime: 0
     waitTime: 0
