@@ -135,6 +135,11 @@ namespace StarSalvager.UI.Scrapyard
 
         private Blueprint lastBlueprint;
 
+        public void HideBlueprintCostWindow()
+        {
+            TryShowBlueprintCost(null, false, null);
+        }
+
         private void TryShowBlueprintCost(Blueprint blueprint, bool showWindow, RectTransform buttonTransform)
         {
             costWindowObject.SetActive(showWindow);

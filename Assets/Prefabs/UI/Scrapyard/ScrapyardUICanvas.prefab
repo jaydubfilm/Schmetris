@@ -3653,6 +3653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f03102e623f3348b15a21bbe1bcbca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  craftingBenchUI: {fileID: 4516276476365311521}
   shipInteriorWindow: {fileID: 1685861746185470129}
   missionsWindow: {fileID: 8433269335912893741}
   workbenchWindow: {fileID: 804723272161383032}
@@ -4407,7 +4408,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1270012368494641287}
   m_HandleRect: {fileID: 171391149529990237}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8778,7 +8779,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 430480370139046783}
   m_HandleRect: {fileID: 4209085874998782607}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -12045,7 +12046,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 246.17896, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2941869098092947876
@@ -12469,7 +12470,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 222.8479, y: 0}
   m_SizeDelta: {x: 445.6958, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5379183553774148121
@@ -16330,7 +16331,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1716551435691160883}
   m_HandleRect: {fileID: 392026533084429763}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -19985,7 +19986,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 293568756267335494}
   m_HandleRect: {fileID: 721652340515547965}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -20724,7 +20725,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4552339248726967317}
   m_HandleRect: {fileID: 1636191420782893229}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

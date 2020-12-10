@@ -18,6 +18,9 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class ScrapyardUI : MonoBehaviour
     {
+        [SerializeField]
+        private CraftingBenchUI craftingBenchUI;
+        
         //============================================================================================================//
 
         [SerializeField, Required]
@@ -406,6 +409,8 @@ namespace StarSalvager.UI.Scrapyard
                 case Window.Logistics:
                 case Window.Missions:
                     SetWindowActive(Window.ShipInterior);
+                    craftingBenchUI.HideBlueprintCostWindow();
+                    backButton.gameObject.SetActive(false);
                     break;
                 case Window.Settings:
                     _windows[(int)Window.Settings].SetActive(false);
