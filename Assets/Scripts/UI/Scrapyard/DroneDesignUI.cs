@@ -161,6 +161,7 @@ namespace StarSalvager.UI.Scrapyard
             Camera.onPostRender += _droneDesigner.DrawGL;
             _droneDesigner.SetupDrone();
             _droneDesigner.SetupDismantleBin();
+            _droneDesigner.SetupRepairHover();
 
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
@@ -182,6 +183,7 @@ namespace StarSalvager.UI.Scrapyard
             Camera.onPostRender -= _droneDesigner.DrawGL;
             _droneDesigner.RecycleDrone();
             _droneDesigner.RecycleDismantleBin();
+            _droneDesigner.RecycleRepairHover();
 
             cameraScaleOnEnter = m_cameraZoomScaler.value;
 

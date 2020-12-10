@@ -160,11 +160,12 @@ namespace StarSalvager
 
         private const int WARNING_COUNT = 4;
         private int _audioCountDown = WARNING_COUNT;
+        private float _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
 
 
         //Unity Functions
         //====================================================================================================================//
-        
+
         private void Start()
         {
             RegisterPausable();
@@ -669,6 +670,7 @@ namespace StarSalvager
             m_waveTimer = 0;
 
             _audioCountDown = WARNING_COUNT;
+            _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
 
             if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
@@ -760,8 +762,9 @@ namespace StarSalvager
 
         private void TryBeginWaveEndSequence()
         {
-            if (!m_endLevelOverride && (ObstacleManager.HasActiveBonusShapes || !ObstacleManager.HasNoActiveObstacles))
+            if (!m_endLevelOverride && _afterWaveTimer >= 0)
             {
+                _afterWaveTimer -= Time.deltaTime;
                 return;
             }
 

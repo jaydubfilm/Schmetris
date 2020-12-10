@@ -1457,10 +1457,7 @@ namespace StarSalvager
                 if(!CurrentlyUsedBitTypes.Contains(resource.BitType))
                     continue;
 
-                if (resource.BitType == BIT_TYPE.BLUE)
-                    UpdateUI(resource.BitType, resource.resource);
-                else
-                    UpdateUI(resource.BitType, resource.liquid);
+                UpdateUI(resource.BitType, resource.liquid);
             }
             
         }
