@@ -7,6 +7,7 @@ using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,6 +74,10 @@ namespace StarSalvager.UI.Hints
         public static void TryShowHint(HINT hint)
         {
             if (!USE_HINTS)
+                return;
+
+            //Don't want to show the hints while Im doing tutorial
+            if (Globals.UsingTutorial)
                 return;
             
             if (Instance == null)

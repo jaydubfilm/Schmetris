@@ -27,13 +27,11 @@ namespace StarSalvager.Tutorial
 
         [SerializeField]
         private bool debug;
+
+        //====================================================================================================================//
         
         [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject window;
-        /*[SerializeField, BoxGroup("Tutorial UI")]
-        private FadeUIImage glowImage;*/
-        /*[SerializeField, BoxGroup("Tutorial UI")]
-        private RectTransform glowBar;*/
         
         [SerializeField, BoxGroup("Tutorial UI"), Required]
         private TMP_Text text;
@@ -48,14 +46,13 @@ namespace StarSalvager.Tutorial
 
         [SerializeField, BoxGroup("Tutorial UI"), Required]
         private GameObject characterObject;
-        
-        //[SerializeField, BoxGroup("Tutorial UI")]
-        //private Image fadeImage;
-
+ 
         [SerializeField, BoxGroup("Tutorial UI")]
         private AnimationCurve slideCurve;
         [SerializeField, BoxGroup("Tutorial UI")]
         private AnimationCurve scaleCurve;
+
+        //====================================================================================================================//
         
         private bool _readyForInput;
         private bool _keyPressed;
@@ -70,6 +67,9 @@ namespace StarSalvager.Tutorial
         private MonoBehaviour mono;
 
         private float _playerStartFuel;
+        
+        private bool _dialogOpen;
+
 
         //Unity Functions
         //====================================================================================================================//
@@ -153,25 +153,20 @@ namespace StarSalvager.Tutorial
             {
                 yield return mono.StartCoroutine(stepCoroutine);
             }
-            
-            
         }
         
         private IEnumerator IntroStepCoroutine()
         {
             var bot = LevelManager.Instance.BotObject;
             bot.PROTO_GodMode = true;
-            
+
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
-            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));
-            
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[0], true));
         }
         private IEnumerator MoveStepCoroutine()
         {
             
             //TODO Need to have the bot fly in
-
             LevelManager.Instance.SetBotEnterScreen(true);
             
             var bot = LevelManager.Instance.BotObject;
@@ -235,8 +230,6 @@ namespace StarSalvager.Tutorial
             }
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], false));
-            
-            SetText(tutorialRemoteData[3], true, true);
 
             var bot = LevelManager.Instance.BotObject;
             bot.OnFullMagnet += SetMagnet;
@@ -271,7 +264,8 @@ namespace StarSalvager.Tutorial
             //tutorialSteps[4]
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[4], true));
             
-            SetText(tutorialRemoteData[6], true, true);
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[6], true, true));
+            //SetText(tutorialRemoteData[6], true, true);
 
             var bot = LevelManager.Instance.BotObject;
             bool magnet = bot.HasFullMagnet;
@@ -315,7 +309,12 @@ namespace StarSalvager.Tutorial
             
             yield return new WaitForSeconds(0.5f);
             
+            /*if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             SetText(tutorialRemoteData[8], true, true);
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));*/
+            
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[8], true, true));
 
             bool combo = false;
             bool magnet = false;
@@ -354,7 +353,12 @@ namespace StarSalvager.Tutorial
         {
             LevelManager.Instance.SetStage(3);
             
+            /*if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             SetText(tutorialRemoteData[10], true, true);
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));*/
+            
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[10], true, true));
 
             var bot = LevelManager.Instance.BotObject;
             
@@ -388,7 +392,12 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(4);
             
+            /*if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             SetText(tutorialRemoteData[12], true, true);
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));*/
+            
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[12], true, true));
 
             //TODO Set the wave to spawn all reds
             
@@ -399,7 +408,13 @@ namespace StarSalvager.Tutorial
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
             
+            /*if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
             SetText(tutorialRemoteData[14], true, true);
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));*/
+            
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[14], true, true));
+            
             pressAnyKeyText.gameObject.SetActive(false);
 
         }
@@ -463,9 +478,16 @@ namespace StarSalvager.Tutorial
         
         private IEnumerator WaitStep(TutorialStepData tutorialStepData, bool waitAnyKey)
         {
-            fillImage.gameObject.SetActive(tutorialStepData.useWaitTime);
+            
+            /*if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
+            
             
             SetText(tutorialStepData);
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));*/
+            
+            yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialStepData, false, false));
+            fillImage.gameObject.SetActive(tutorialStepData.useWaitTime);
 
             if (tutorialStepData.useWaitTime)
             {
@@ -486,6 +508,27 @@ namespace StarSalvager.Tutorial
                 yield return new WaitForAnyKey(this);
             
             _readyForInput = true;
+        }
+
+        /*private IEnumerator PresentCharacter()
+        {
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));
+        }
+
+        private IEnumerator HideCharacter()
+        {
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
+            yield return mono.StartCoroutine(SlideCharacterCoroutine(false));
+        }*/
+        private IEnumerator WaitShowDialogCoroutine(TutorialStepData tutorialStepData, bool hideAnyKey, bool hideFillImage)
+        {
+            if(_dialogOpen)
+                yield return mono.StartCoroutine(ShowDialogWindowCoroutine(false));
+            
+            SetText(tutorialStepData, hideAnyKey, hideFillImage);
+            
+            yield return mono.StartCoroutine(ShowDialogWindowCoroutine(true));
         }
 
         private IEnumerator SlideCharacterCoroutine(bool moveOnScreen)
@@ -509,6 +552,8 @@ namespace StarSalvager.Tutorial
             var endScale = show ? Vector3.one : Vector3.zero;
 
             yield return mono.StartCoroutine(LerpScaleCoroutine(rectTransform, startScale, endScale, 0.5f));
+
+            _dialogOpen = show;
         }
 
         private void InitPositions()
