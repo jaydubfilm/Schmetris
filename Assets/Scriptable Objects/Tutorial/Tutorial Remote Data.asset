@@ -40,9 +40,9 @@ MonoBehaviour:
   - title: Magnet
     useWaitTime: 1
     waitTime: 4
-    text: Oops! You maxed out your magnetism! Right now your core can only carry
-      8 bits at a time. With the right upgrades we could increase this limit, but
-      there are other ways to save space.
+    text: Wow! You maxed out your magnetism! Right now your core can only carry 8
+      bits at a time. With the right upgrades we could increase this limit, but there
+      are other ways to save space.
   - title: Combo-magnet-1
     useWaitTime: 0
     waitTime: 0
@@ -50,7 +50,7 @@ MonoBehaviour:
   - title: Combo-magnet-2
     useWaitTime: 1
     waitTime: 4
-    text: Oops!  You maxed out your magnetism!  Right now your core can only carry
+    text: Wow!  You maxed out your magnetism!  Right now your core can only carry
       8 bits at a time. With the right upgrades we could increase this limit.
   - title: Magnet-combo-1
     useWaitTime: 0
