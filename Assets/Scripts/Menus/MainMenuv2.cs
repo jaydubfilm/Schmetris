@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -78,6 +80,8 @@ namespace StarSalvager.UI
         //TODO This will likely need to be something beyond a normal Button
         [SerializeField, Required, FoldoutGroup("Account Window")]
         private Button[] accountButtons;
+        [SerializeField, Required, FoldoutGroup("Account Window")]
+        private RectTransform[] accountBotPreviewContainers;
         [SerializeField, Required, FoldoutGroup("Account Window")]
         private Button[] deleteAccountButtons;
 
@@ -270,10 +274,20 @@ namespace StarSalvager.UI
                     ? "Create new Account"
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
+                //If there's no account, pass null so the function knows to clean it
+                CreateBotPreview(accountBotPreviewContainers[i],
+                    hasAccount ? /*parsed block data*/ new List<BlockData>() : null);
+
                 //Check to see if the currently opened account is this button, disable if yes
                 accountButtons[i].interactable = interactable;
             }
             
+        }
+
+        private void CreateBotPreview(in RectTransform containerRect, in List<BlockData> blockDatas)
+        {
+            //TODO If the list is empty, the preview should be cleared
+            //You can either use a list of lists to hold any relevant preview objects, or check the transform children
         }
         
         //Setup Account Menu Window
