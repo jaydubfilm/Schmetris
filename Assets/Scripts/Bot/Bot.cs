@@ -1198,6 +1198,12 @@ namespace StarSalvager
 
             switch (closestAttachable)
             {
+                //----------------------------------------------------------------------------------------------------//
+                case Bit bit:
+                    CreateBitDeathEffect(bit.Type, bit.transform.position);
+                    RemoveAttachable(closestAttachable);
+                    break;
+                //----------------------------------------------------------------------------------------------------//
                 case Part deadPart when deadPart.Type == PART_TYPE.CORE:
                     CreateCoreDeathEffect();
 
@@ -1214,6 +1220,7 @@ namespace StarSalvager
                     
                     BotPartsLogic.PopulatePartsList();
                     break;
+                //----------------------------------------------------------------------------------------------------//
                 default:
                     RemoveAttachable(closestAttachable);
                     break;
@@ -2391,6 +2398,19 @@ namespace StarSalvager
             
             if(scale != 1f)
                 particleScaling.SetSimulationSize(scale);
+            
+            Destroy(explosion, time);
+        }
+        
+        private void CreateBitDeathEffect(BIT_TYPE bitType, Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BIT_DEATH, bitType);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
+
+            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
+            var time = particleScaling.AnimationTime;
             
             Destroy(explosion, time);
         }

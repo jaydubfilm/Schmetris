@@ -22,7 +22,8 @@ namespace StarSalvager.Factories
             LINE,
             TRAIL,
             BONUS_SHAPE,
-            BONUS_SHAPE_PARTICLE
+            BONUS_SHAPE_PARTICLE,
+            BIT_DEATH
         }
 
         public enum PART_EFFECT
@@ -37,25 +38,6 @@ namespace StarSalvager.Factories
         }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
-        /*private readonly GameObject _explosionPrefab;
-        private readonly GameObject _labelPrefab;
-        private readonly GameObject _floatingTextPrefab;
-        private readonly GameObject _connectedSpritePrefab;
-        private readonly GameObject _fadeSpritePrefab;
-        private readonly GameObject _shrinkLinePrefab;*/
-        
-        //============================================================================================================//
-
-        /*public EffectFactory(GameObject explosionPrefab, GameObject labelPrefab, GameObject floatingTextPrefab, GameObject connectedSpritePrefab, GameObject fadeSpritePrefab, GameObject shrinkLinePrefab)
-        {
-            _explosionPrefab = explosionPrefab;
-            _labelPrefab = labelPrefab;
-            _floatingTextPrefab = floatingTextPrefab;
-            _connectedSpritePrefab = connectedSpritePrefab;
-            _fadeSpritePrefab = fadeSpritePrefab;
-
-            _shrinkLinePrefab = shrinkLinePrefab;
-        }*/
 
         public EffectFactory(EffectProfileScriptableObject effectProfileScriptableObject)
         {
@@ -111,6 +93,42 @@ namespace StarSalvager.Factories
             return gameObject.GetComponent<T>();
         }
 
+        public GameObject CreateEffect(EFFECT effect, BIT_TYPE bitType)
+        {
+            GameObject gameObject;
+            switch (effect)
+            {
+                case EFFECT.BIT_DEATH:
+
+                    switch (bitType)
+                    {
+                        case BIT_TYPE.BLUE:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitBlueParticlePrefab);
+                            break;
+                        case BIT_TYPE.GREEN:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitGreenParticlePrefab);
+                            break;
+                        case BIT_TYPE.GREY:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitGreyParticlePrefab);
+                            break;
+                        case BIT_TYPE.RED:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitRedParticlePrefab);
+                            break;
+                        case BIT_TYPE.YELLOW:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitYellowParticlePrefab);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+                    }
+                    
+                    break;
+                default:
+                    gameObject = CreateEffect(effect);
+                    break;
+            }
+
+            return gameObject;
+        }
         
         public GameObject CreateEffect(EFFECT effect)
         {
