@@ -82,8 +82,17 @@ namespace StarSalvager.Values
             [HINT.GUN] = false,
             [HINT.FUEL] = false,
             [HINT.HOME] = false,
-            [HINT.BONUS_SHAPE] = false,
-            [HINT.MAGNET] = false
+            [HINT.BONUS] = false,
+            [HINT.MAGNET] = false,
+            
+            [HINT.GEARS] = false,
+            [HINT.PATCH_POINT] = false,
+            [HINT.CRAFT_PART] = false,
+            
+            [HINT.PARASITE] = false,
+            [HINT.DAMAGE] = false,
+            [HINT.COMPONENT] = false,
+            
         };
 
         private List<List<Vector2Int>> LevelRingConnectionsJson = new List<List<Vector2Int>>

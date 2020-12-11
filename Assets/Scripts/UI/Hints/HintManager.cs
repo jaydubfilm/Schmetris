@@ -20,7 +20,7 @@ namespace StarSalvager.UI.Hints
     {
         NONE,
         MAGNET,
-        BONUS_SHAPE,
+        BONUS,
         GUN,
         FUEL,
         HOME,
@@ -179,7 +179,7 @@ namespace StarSalvager.UI.Hints
                     highlightManager.Highlight(magnetSlider);
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.BONUS_SHAPE:
+                case HINT.BONUS:
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
 
                     if (bonusShape is IRecycled recycled && recycled.IsRecycled)

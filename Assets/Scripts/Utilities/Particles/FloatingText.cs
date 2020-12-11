@@ -151,7 +151,12 @@ namespace StarSalvager.Utilities.Particles
         
         public Bounds GetBounds()
         {
-            return TextMeshPro.mesh.bounds;
+            var meshBounds = TextMeshPro.mesh.bounds;
+            return new Bounds
+            {
+                center = transform.position + meshBounds.center,
+                size = meshBounds.size
+            };
         }
 
         //Unity Editor Functionsi

@@ -2776,12 +2776,13 @@ namespace StarSalvager
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //Show the gears hint, after the third time
-                    if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+                    if (_lastGearText && _combosMade++ > 0 && HintManager.CanShowHint(HINT.GEARS))
                     {
-                        HintManager.TryShowHint(HINT.GEARS,
-                            _lastGearText
-                                .GetComponent<IHasBounds>()
-                                .GetBounds());
+                        var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
+                        
+                        Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
+                        
+                        HintManager.TryShowHint(HINT.GEARS, iHasBounds);
                     }
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
