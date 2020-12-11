@@ -1131,6 +1131,7 @@ namespace StarSalvager
             Vector2 position = positionNullable.Value;
             obstacle.transform.parent = m_worldElementsRoot;
             obstacle.transform.localPosition = position;
+            obstacle.transform.rotation = Quaternion.identity;
             switch (obstacle)
             {
                 case Bit _:
@@ -1162,6 +1163,7 @@ namespace StarSalvager
         {
             obstacle.transform.parent = m_worldElementsRoot;
             obstacle.transform.localPosition = position;
+            obstacle.transform.rotation = Quaternion.identity;
             switch (obstacle)
             {
                 case Bit _:
