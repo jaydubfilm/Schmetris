@@ -320,7 +320,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
                             }
@@ -333,7 +333,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
                                 asteroid.SetColliderActive(true);
                             }
@@ -346,7 +346,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(component, m_offGridMovingObstacles[i].EndPosition);
                                 component.SetColliderActive(true);
                             }
@@ -364,7 +364,7 @@ namespace StarSalvager
                             }
                             else
                             {
-                                m_obstacles.Add(m_offGridMovingObstacles[i].Obstacle);
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(shape, m_offGridMovingObstacles[i].EndPosition);
                                 shape.SetColliderActive(true);
                             }
@@ -1183,7 +1183,7 @@ namespace StarSalvager
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
-            RemoveObstacleFromList(obstacle);
+            //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);
             float bounceTravelDistance = m_bounceTravelDistance * randomFactor;
 
