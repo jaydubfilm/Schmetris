@@ -757,7 +757,7 @@ namespace StarSalvager
             
             
             GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
-            //EnemyManager.SetEnemiesInert(true);
+            EnemyManager.SetEnemiesFallEndLevel();
         }
 
         private void TryBeginWaveEndSequence()
@@ -772,7 +772,7 @@ namespace StarSalvager
             AudioController.PlaySound(SOUND.END_WAVE);
 
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
-            EnemyManager.SetEnemiesFallEndLevel();
+            //EnemyManager.SetEnemiesFallEndLevel();
 
             SavePlayerData();
 
