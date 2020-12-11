@@ -2776,7 +2776,7 @@ namespace StarSalvager
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //Show the gears hint, after the third time
-                    if (_lastGearText && _combosMade++ > 0 && HintManager.CanShowHint(HINT.GEARS))
+                    if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
                     {
                         var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
                         

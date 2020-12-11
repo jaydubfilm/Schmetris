@@ -6,6 +6,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -635,6 +636,8 @@ namespace StarSalvager.UI.Scrapyard
         public void UpdateRepairButton()
         {
             var costs = DroneDesigner.GetRepairCostPair();
+            
+            
 
             ShowRepairCost(costs.x, costs.y);
         }
@@ -651,6 +654,13 @@ namespace StarSalvager.UI.Scrapyard
 
             if (!show)
                 return;
+            
+            
+            if (HintManager.CanShowHint(HINT.DAMAGE))
+            {
+                //FIXME Positioning is fucked
+                //HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
+            }
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
             repairButton.interactable = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;

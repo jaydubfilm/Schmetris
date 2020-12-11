@@ -224,6 +224,11 @@ namespace StarSalvager.UI.Hints
                     
                     break;
                 //----------------------------------------------------------------------------------------------------//
+                case HINT.DAMAGE:
+                    var repairBounds = FindObjectOfType<DroneDesigner>().GetHintElement(hint);
+                    
+                    highlightManager.Highlight(repairBounds);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
                 default:
@@ -310,6 +315,15 @@ namespace StarSalvager.UI.Hints
         private void TestGunHighlight()
         {
             TryShowHint(HINT.GUN);
+        }
+
+        [Button]
+        private void ClearHints()
+        {
+            foreach (HINT hint in Enum.GetValues(typeof(HINT)))
+            {
+                PlayerDataManager.SetHint(hint, false);
+            }
         }
         
 #endif
