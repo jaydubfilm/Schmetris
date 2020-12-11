@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
@@ -275,19 +276,13 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                CreateBotPreview(accountBotPreviewContainers[i],
-                    hasAccount ? /*parsed block data*/ new List<BlockData>() : null);
+                List<BlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
+                blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes
                 accountButtons[i].interactable = interactable;
             }
             
-        }
-
-        private void CreateBotPreview(in RectTransform containerRect, in List<BlockData> blockDatas)
-        {
-            //TODO If the list is empty, the preview should be cleared
-            //You can either use a list of lists to hold any relevant preview objects, or check the transform children
         }
         
         //Setup Account Menu Window

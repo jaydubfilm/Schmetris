@@ -1,9 +1,11 @@
-﻿using StarSalvager.Factories;
+﻿using Recycling;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.Extensions
 {
@@ -261,6 +263,131 @@ namespace StarSalvager.Utilities.Extensions
         */
 
         #endregion //Path to Core Checks
+
+        public static void CreateBotPreview(this List<BlockData> blockDatas, in RectTransform containerRect)
+        {
+            Transform[] allChildren = containerRect.GetComponentsInChildren<Transform>();
+            if (allChildren.Length > 0)
+            {
+                for (int i = allChildren.Length - 1; i >= 0; i--)
+                {
+                    if (allChildren[i] == containerRect.transform)
+                    {
+                        continue;
+                    }
+
+                    Image image = allChildren[i].GetComponent<Image>();
+                    if (image != null)
+                    {
+                        Recycler.Recycle<Image>(image);
+                    }
+                    else
+                    {
+                        GameObject.Destroy(allChildren[i]);
+                    }
+                }
+            }
+
+            if (blockDatas == null)
+            {
+                return;
+            }
+
+            Image CreateImageObject(object className, object typeName, object extra = null)
+            {
+                var temp = new GameObject($"{className}_{typeName}{(extra != null ? $"_{extra}" : string.Empty)}");
+                return temp.AddComponent<Image>();
+            }
+
+            void BotDisplaySetPosition(RectTransform newImageRect, int xOffset, int yOffset)
+            {
+                newImageRect.pivot = new Vector2(0.5f, 0.5f);
+                newImageRect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
+                newImageRect.sizeDelta = new Vector2(50, 50);
+                newImageRect.localScale = Vector3.one;
+            }
+
+            Image imageObject;
+            RectTransform rect;
+            Transform botDisplayRectTransform = containerRect.transform;
+
+            var damageProfile = FactoryManager.Instance.DamageProfile;
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
+            var componentFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
+
+
+            foreach (var blockData in blockDatas)
+            {
+                if (!Recycler.TryGrab(out imageObject))
+                {
+                    imageObject = CreateImageObject(blockData.ClassType, blockData.Type);
+                }
+
+                rect = (RectTransform)imageObject.transform;
+                rect.SetParent(botDisplayRectTransform, false);
+
+                BotDisplaySetPosition(rect, blockData.Coordinate.x, blockData.Coordinate.y);
+
+                float startingHealth = 0;
+
+                switch (blockData.ClassType)
+                {
+                    case nameof(Part):
+                    case nameof(ScrapyardPart):
+                        startingHealth = partFactory.GetRemoteData((PART_TYPE)blockData.Type).levels[blockData.Level]
+                            .health;
+
+                        imageObject.sprite = blockData.Health <= 0
+                            ? FactoryManager.Instance.PartsProfileData.GetDamageSprite(blockData.Level)
+                            : partFactory.GetProfileData((PART_TYPE)blockData.Type).Sprites[blockData.Level];
+
+                        break;
+                    case nameof(Bit):
+                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).Sprites[blockData.Level];
+                        startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[blockData.Level].health;
+                        break;
+                    case nameof(Component):
+                        imageObject.sprite = componentFactory.GetComponentProfile((COMPONENT_TYPE)blockData.Type).Sprites[blockData.Level];
+                        startingHealth = componentFactory.GetComponentRemoteData((COMPONENT_TYPE)blockData.Type).health;
+                        break;
+                }
+
+                float healthPercentage = blockData.Health / startingHealth;
+
+                var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
+
+                if (damageSprite == null || blockData.Health <= 0)
+                    continue;
+
+                if (!Recycler.TryGrab(out Image damageImage))
+                {
+                    damageImage = CreateImageObject(blockData.ClassType, blockData.Type, "Damage");
+                }
+
+                var damageRect = (RectTransform)imageObject.transform;
+
+                damageRect.SetParent(botDisplayRectTransform, false);
+                BotDisplaySetPosition(damageRect, blockData.Coordinate.x, blockData.Coordinate.y);
+
+                damageImage.sprite = damageSprite;
+            }
+
+            if (blockDatas.Count > 0)
+                return;
+
+            if (!Recycler.TryGrab(out imageObject))
+            {
+                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
+            }
+
+            rect = (RectTransform)imageObject.transform;
+            rect.SetParent(botDisplayRectTransform, false);
+
+            BotDisplaySetPosition(rect, 0, 0);
+
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
+        }
 
         public static List<IAttachable> ImportBlockDatas(this List<BlockData> blockDatas, bool inScrapyardForm)
         {

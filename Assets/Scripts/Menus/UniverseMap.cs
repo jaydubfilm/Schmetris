@@ -80,7 +80,6 @@ namespace StarSalvager.UI
         
         [SerializeField]
         private RectTransform botDisplayRectTransform;
-        private List<Image> _botDisplayObjects;
 
         #endregion //Properties
 
@@ -95,7 +94,6 @@ namespace StarSalvager.UI
         private void Start()
         {
             InitButtons();
-            _botDisplayObjects = new List<Image>();
             _connectionLines = new List<Image>();
             waveDataWindow.SetActive(false);
         }
@@ -158,7 +156,7 @@ namespace StarSalvager.UI
 
             DrawMap();
 
-            CreateBotPreview();
+            PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
 
             resourceText.text = GetPreviewResources(PlayerDataManager.GetBlockDatas());
 
@@ -172,15 +170,6 @@ namespace StarSalvager.UI
                 Destroy(_connectionLines[i].gameObject);
             }
             _connectionLines.Clear();
-
-            if (_botDisplayObjects.Count > 0)
-            {
-                for (int i = _botDisplayObjects.Count - 1; i >= 0; i--)
-                {
-                    Recycler.Recycle(typeof(Image), _botDisplayObjects[i].gameObject);
-                }
-                _botDisplayObjects.Clear();
-            }
         }
 
         
@@ -669,109 +658,6 @@ namespace StarSalvager.UI
 
         #endregion //Hover Preview UI
 
-        //Bot Preview
-        //====================================================================================================================//
-
-        #region Bot Preview
-
-        private void CreateBotPreview()
-        {
-            Image CreateImageObject(object className, object typeName, object extra = null)
-            {
-                var temp = new GameObject($"{className}_{typeName}{(extra != null ? $"_{extra}" : string.Empty)}");
-                return temp.AddComponent<Image>();
-            }
-            
-            Image imageObject;
-            RectTransform rect;
-            
-            var botBlockData = PlayerDataManager.GetBlockDatas();
-
-            var damageProfile = FactoryManager.Instance.DamageProfile;
-            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-            var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
-            var componentFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
-            
-            
-            foreach (var blockData in botBlockData)
-            {
-                if (!Recycler.TryGrab(out imageObject))
-                {
-                    imageObject = CreateImageObject(blockData.ClassType, blockData.Type);
-                }
-
-                rect = (RectTransform) imageObject.transform;
-                rect.SetParent(botDisplayRectTransform, false);
-
-                BotDisplaySetPosition(rect, blockData.Coordinate.x, blockData.Coordinate.y);
-
-                float startingHealth = 0;
-
-                switch (blockData.ClassType)
-                {
-                    case nameof(Part):
-                    case nameof(ScrapyardPart):
-                        startingHealth = partFactory.GetRemoteData((PART_TYPE) blockData.Type).levels[blockData.Level]
-                            .health;
-
-                        imageObject.sprite = blockData.Health <= 0
-                            ? FactoryManager.Instance.PartsProfileData.GetDamageSprite(blockData.Level)
-                            : partFactory.GetProfileData((PART_TYPE) blockData.Type).Sprites[blockData.Level];
-
-                        break;
-                    case nameof(Bit):
-                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE) blockData.Type).Sprites[blockData.Level];
-                        startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE) blockData.Type).levels[blockData.Level].health;
-                        break;
-                    case nameof(Component):
-                        imageObject.sprite = componentFactory.GetComponentProfile((COMPONENT_TYPE) blockData.Type).Sprites[blockData.Level];
-                        startingHealth = componentFactory.GetComponentRemoteData((COMPONENT_TYPE) blockData.Type).health;
-                        break;
-                }
-
-                _botDisplayObjects.Add(imageObject);
-                float healthPercentage = blockData.Health / startingHealth;
-                
-                var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
-
-                if (damageSprite == null || blockData.Health <= 0)
-                    continue;
-
-                if (!Recycler.TryGrab(out Image damageImage))
-                {
-                    damageImage = CreateImageObject(blockData.ClassType, blockData.Type, "Damage");
-                }
-
-                var damageRect = (RectTransform) imageObject.transform;
-
-                damageRect.SetParent(botDisplayRectTransform, false);
-                BotDisplaySetPosition(damageRect, blockData.Coordinate.x, blockData.Coordinate.y);
-
-                damageImage.sprite = damageSprite;
-
-                _botDisplayObjects.Add(damageImage);
-            }
-
-            if (botBlockData.Count > 0)
-                return;
-
-            if (!Recycler.TryGrab(out imageObject))
-            {
-                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
-            }
-
-            rect = (RectTransform) imageObject.transform;
-            rect.SetParent(botDisplayRectTransform, false);
-
-            BotDisplaySetPosition(rect, 0, 0);
-
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
-
-            _botDisplayObjects.Add(imageObject);
-        }
-
-        #endregion //Bot Preview
-
         private static string GetPreviewResources(List<BlockData> blockDatas)
         {
             var resources = CountResources(blockDatas);
@@ -822,14 +708,5 @@ namespace StarSalvager.UI
 
             return outValue;
         }
-        
-        private static void BotDisplaySetPosition(RectTransform rect, int xOffset, int yOffset)
-        {
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
-            rect.sizeDelta = new Vector2(50, 50);
-            rect.localScale = Vector3.one;
-        }
-        
     }
 }
