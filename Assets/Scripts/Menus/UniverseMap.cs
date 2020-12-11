@@ -22,7 +22,7 @@ using UnityEngine.SceneManagement;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintUIElement
     {
         private enum ICON_TYPE
         {

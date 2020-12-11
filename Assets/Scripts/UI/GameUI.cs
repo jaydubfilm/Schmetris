@@ -23,7 +23,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : SceneSingleton<GameUI>
+    public class GameUI : SceneSingleton<GameUI>, IHasHintUIElement
     {
         [Serializable]
         private struct SliderCover

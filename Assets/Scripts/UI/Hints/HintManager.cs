@@ -4,6 +4,7 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
+using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -19,13 +20,16 @@ namespace StarSalvager.UI.Hints
     {
         NONE,
         MAGNET,
-        BONUS,
+        BONUS_SHAPE,
         GUN,
         FUEL,
         HOME,
-        PART,
+        CRAFT_PART,
+        GEARS,
         PATCH_POINT,
-        COMPONENT
+        COMPONENT,
+        PARASITE,
+        DAMAGE,
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -144,7 +148,7 @@ namespace StarSalvager.UI.Hints
                     highlightManager.Highlight(magnetSlider);
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.BONUS:
+                case HINT.BONUS_SHAPE:
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
 
                     if (bonusShape is IRecycled recycled && recycled.IsRecycled)
@@ -175,6 +179,21 @@ namespace StarSalvager.UI.Hints
                     var homeButton = FindObjectOfType<UniverseMap>().GetHintElement(hint);
                     highlightManager.Highlight(homeButton);
                     break;
+                //----------------------------------------------------------------------------------------------------//
+                case HINT.CRAFT_PART:
+                    var hasPart = PlayerDataManager.GetCurrentPartsInStorage()
+                        .Any(x => x.ClassType.Equals(nameof(Part)));
+
+                    if (!hasPart)
+                        return;
+
+                    var partButton = FindObjectOfType<StorageUI>().GetHintElement(hint);
+
+                    highlightManager.Highlight(partButton);
+                    
+                    break;
+                //----------------------------------------------------------------------------------------------------//
+                //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -226,5 +245,10 @@ namespace StarSalvager.UI.Hints
         
 #endif
         
+    }
+    
+    public interface IHasHintUIElement
+    {
+        RectTransform GetHintElement(HINT hint);
     }
 }

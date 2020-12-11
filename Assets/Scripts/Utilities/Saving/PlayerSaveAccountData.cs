@@ -82,7 +82,7 @@ namespace StarSalvager.Values
             [HINT.GUN] = false,
             [HINT.FUEL] = false,
             [HINT.HOME] = false,
-            [HINT.BONUS] = false,
+            [HINT.BONUS_SHAPE] = false,
             [HINT.MAGNET] = false
         };
 

@@ -400,8 +400,8 @@ namespace StarSalvager
                         m_offGridMovingObstacles[i].isVisible = true;
                         NewShapeOnScreen?.Invoke();
 
-                        if(HintManager.CanShowHint(HINT.BONUS))
-                            HintManager.TryShowHint(HINT.BONUS, 1.35f);
+                        if(HintManager.CanShowHint(HINT.BONUS_SHAPE))
+                            HintManager.TryShowHint(HINT.BONUS_SHAPE, 1.35f);
                     }
                 }
 

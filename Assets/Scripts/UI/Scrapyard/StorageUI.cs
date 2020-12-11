@@ -1,5 +1,8 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using System.Linq;
+using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
@@ -7,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class StorageUI : MonoBehaviour
+    public class StorageUI : MonoBehaviour, IHasHintUIElement
     {
         
         //============================================================================================================//
@@ -96,6 +99,19 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public RectTransform GetHintElement(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.NONE:
+                    return null;
+                case HINT.CRAFT_PART:
+                    return storageUiElementScrollView.Elements.FirstOrDefault(x =>
+                        x.data.blockData.ClassType.Equals(nameof(Part)))?.transform;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
     }
     
     [System.Serializable]
