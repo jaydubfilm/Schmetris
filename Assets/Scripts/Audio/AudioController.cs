@@ -351,17 +351,13 @@ namespace StarSalvager.Audio
             /*FadeOutMusic(_playingMusic);
             FadeInMusic(target);*/
 
-            if (target != MUSIC.NONE)
+            foreach (var song in Songs)
             {
-                foreach (var song in Songs)
-                {
-                    if(song.Music == target)
-                        song.FadeInTrack();
-                    else
-                        song.FadeOutTrack();
-                }
+                if(song.Music == target)
+                    song.FadeInTrack();
+                else
+                    song.FadeOutTrack();
             }
-
             //_previousMusic = _playingMusic;
             _playingMusic = target;
         }

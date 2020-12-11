@@ -152,51 +152,54 @@ namespace StarSalvager
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
-                if (m_enemies[i] is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
+                Enemy enemy = m_enemies[i];
+                    
+                if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {
                     continue;
                 }
+                
+                if (enemy.transform.position.y <= -20)
+                {
+                    RemoveEnemy(enemy);
+                    Recycler.Recycle<Enemy>(enemy);
+                    continue;
+                }
 
-                if (m_enemies[i].Frozen)
+                if (enemy.Frozen)
                 {
                     continue;
                 }
 
                 //TODO: This process shouldn't be straight summing and averaging the different forces on different parts. 
                 //We should be selecting for the strongest forces and using those in any given direction, otherwise, the strong forces on one position can be dampened by the weaker on others.
-                if (m_enemiesInert || m_enemies[i].Disabled || m_enemies[i].Frozen)
+                if (m_enemiesInert || enemy.Disabled || enemy.Frozen)
                 {
-                    m_enemies[i].transform.position -= fallAmount;
+                    enemy.transform.position -= fallAmount;
                     continue;
                 }
                 
-                m_enemies[i].transform.position -= gridMovement;
+                enemy.transform.position -= gridMovement;
 
-                if (m_enemies[i].transform.position.y <= -20)
-                {
-                    Enemy enemy = m_enemies[i];
-                    RemoveEnemy(enemy);
-                    Recycler.Recycle<Enemy>(enemy);
-                    continue;
-                }
+                
 
-                Vector3 destination = m_enemies[i].GetDestination();
+                Vector3 destination = enemy.GetDestination();
 
                 Vector2 sumDirection = Vector2.zero;
-                foreach (Vector3 position in m_enemies[i].GetPositions())
+                foreach (Vector3 position in enemy.GetPositions())
                 {
                     Vector2 direction = new Vector2(destination.x - position.x, destination.y - position.y);
                     direction.Normalize();
-                    if (!m_enemies[i].IgnoreObstacleAvoidance)
+                    if (!enemy.IgnoreObstacleAvoidance)
                     {
-                        Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, m_enemies[i].IsAttachable);
+                        Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(position, enemy.IsAttachable);
                         direction += force;
                     }
                     sumDirection += direction;
                 }
                 sumDirection.Normalize();
 
-                m_enemies[i].ProcessMovement(sumDirection);
+                enemy.ProcessMovement(sumDirection);
             }
 
             /*if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)

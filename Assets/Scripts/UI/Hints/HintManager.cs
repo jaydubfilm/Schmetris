@@ -22,7 +22,10 @@ namespace StarSalvager.UI.Hints
         BONUS,
         GUN,
         FUEL,
-        HOME
+        HOME,
+        PART,
+        PATCH_POINT,
+        COMPONENT
     }
     
     [RequireComponent(typeof(HighlightManager))]
