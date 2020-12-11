@@ -224,6 +224,11 @@ namespace StarSalvager.UI.Hints
                     
                     break;
                 //----------------------------------------------------------------------------------------------------//
+                case HINT.DAMAGE:
+                    var repairBounds = FindObjectOfType<DroneDesigner>().GetHintElement(hint);
+                    
+                    highlightManager.Highlight(repairBounds);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
                 default:

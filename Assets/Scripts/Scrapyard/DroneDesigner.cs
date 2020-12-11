@@ -19,12 +19,13 @@ using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Missions;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
-    public class DroneDesigner : AttachableEditorToolBase, IReset, IInput
+    public class DroneDesigner : AttachableEditorToolBase, IReset, IInput, IHasHintElement
     {
         private DroneDesignUI DroneDesignUi
         {
@@ -1318,5 +1319,19 @@ namespace StarSalvager
         #endregion //Other
 
         //============================================================================================================//
+        public Bounds GetHintElement(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.NONE:
+                    return default;
+                case HINT.DAMAGE:
+                    var bounds = _repairHover.bounds;
+                    Debug.Log($"Center: {bounds.center}, Size: {bounds.size}");
+                    return bounds;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
     }
 }
