@@ -53,3 +53,12 @@ MonoBehaviour:
     longDescription: Congratulations!  You earned your first PATCH POINT!  These
       can be used to upgrade your base.  But don't stop now.  Collect enough gears
       to earn another!
+  - type: 11
+    shortText: Repairing
+    longDescription: Looks like you had a run-in with some space junk.  Use plasma
+      to REPAIR a part by dragging it onto the workbench icon.
+  - type: 10
+    shortText: Parasite
+    longDescription: Uh-oh.  Looks like we're not alone out here.  That parasite
+      is hungry for drone parts.  It will eat its way to your core if you don't figure
+      out a way to scrape it off.
