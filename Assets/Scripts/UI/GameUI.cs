@@ -1106,6 +1106,11 @@ namespace StarSalvager.UI
                 out var newPosition);
 
             StartCoroutine(PatchPointEffectCoroutine(newPosition, patchSprite, count));
+
+            if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
+            {
+                HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
+            }
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)

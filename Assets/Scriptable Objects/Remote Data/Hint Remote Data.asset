@@ -39,3 +39,17 @@ MonoBehaviour:
     longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
       Either take your loot back to base and safely stash it - or select a new wave
       and try to collect more!'
+  - type: 6
+    shortText: Stored Part
+    longDescription: 'You built your first part!  Drag it from the storage area onto
+      the grid to attach the part to your drone''s core. '
+  - type: 7
+    shortText: Gears
+    longDescription: Nice move!  That combo just won you some GEARS.  Gears are rewards
+      for making combos and other skilled flying moves. This is the real secret to
+      survival out here.
+  - type: 8
+    shortText: Patch Points
+    longDescription: Congratulations!  You earned your first PATCH POINT!  These
+      can be used to upgrade your base.  But don't stop now.  Collect enough gears
+      to earn another!

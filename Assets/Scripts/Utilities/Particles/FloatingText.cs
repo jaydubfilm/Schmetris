@@ -1,13 +1,14 @@
 ﻿using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Interfaces;
 using TMPro;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Particles
 {
     [RequireComponent(typeof(TextMeshPro))]
-    public class FloatingText : MonoBehaviour, IRecycled, ICustomRecycle
+    public class FloatingText : MonoBehaviour, IRecycled, ICustomRecycle, IHasBounds
     {
         //IRecycled Properties
         //====================================================================================================================//
@@ -136,13 +137,21 @@ namespace StarSalvager.Utilities.Particles
 
         //====================================================================================================================//
 
-        public static void Create(string text, Vector3 position, Color color)
+        public static GameObject Create(string text, Vector3 position, Color color)
         {
             if (FactoryManager.Instance == null)
-                return;
+                return null;
             
-            FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FloatingText>()
-                .Init(text, position, color);
+            var floatingText = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<FloatingText>();
+    
+            floatingText.Init(text, position, color);
+
+            return floatingText.gameObject;
+        }
+        
+        public Bounds GetBounds()
+        {
+            return TextMeshPro.mesh.bounds;
         }
 
         //Unity Editor Functionsi
@@ -156,5 +165,6 @@ namespace StarSalvager.Utilities.Particles
             Init("+98765", transform.position, 0.75f,1f,5f, Color.green);
         }
 #endif
+
     }
 }

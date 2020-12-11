@@ -36,6 +36,16 @@ MonoBehaviour:
     type: 3}
   bonusShapeParticlesPrefab: {fileID: 3491330463318522395, guid: 89b40eef1501c19438f7978e5bb4ec6c,
     type: 3}
+  bitBlueParticlePrefab: {fileID: 1089303195862234219, guid: 398cf821e843c64478b43e6175d85689,
+    type: 3}
+  bitGreenParticlePrefab: {fileID: 4223538968172695759, guid: 5aa6e4588f084f24a9806f78850d9bfd,
+    type: 3}
+  bitGreyParticlePrefab: {fileID: 8028857240869676160, guid: f5f329c1a5147b640aadfcd1d10836a6,
+    type: 3}
+  bitRedParticlePrefab: {fileID: 4871106170005503903, guid: aa128da51b950474895b36bfa0c81733,
+    type: 3}
+  bitYellowParticlePrefab: {fileID: 2791936726044460743, guid: 25a4600b44275634c9bc5a58f83e6567,
+    type: 3}
   tripleTurretSprite: {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
   repairEffectPrefab: {fileID: 1166414769957300450, guid: 1155e00c8911b4a4489e6d0f41f7f7f5,
     type: 3}
