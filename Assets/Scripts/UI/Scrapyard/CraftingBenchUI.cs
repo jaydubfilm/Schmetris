@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using StarSalvager.Utilities.UI;
@@ -116,6 +117,9 @@ namespace StarSalvager.UI.Scrapyard
                     Debug.Log("Craft button pressed");
                     mCraftingBench.CraftBlueprint(data);
                     _storageUi.UpdateStorage();
+                    
+                    if(HintManager.CanShowHint(HINT.CRAFT_PART))
+                        HintManager.TryShowHint(HINT.CRAFT_PART, 0.25f);
 
                 }, TryShowBlueprintCost);
             }

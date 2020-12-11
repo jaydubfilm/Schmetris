@@ -79,7 +79,7 @@ namespace StarSalvager.Audio
         private Transform _transform;
         //============================================================================================================//
 
-        #region Staic Functions
+        #region Static Functions
 
         //Static functions
         //============================================================================================================//
@@ -199,13 +199,13 @@ namespace StarSalvager.Audio
             
             Instance.CrossFadeMusic(trackTarget);
         }
-        public static void CrossFadePreviousTrack()
+        /*public static void CrossFadePreviousTrack()
         {
             if (Instance == null)
                 return;
             
             Instance.CrossFadeMusic(Instance._previousMusic);
-        }
+        }*/
         
         /*public static void FadeInMusic()
         {
@@ -340,35 +340,51 @@ namespace StarSalvager.Audio
         //============================================================================================================//
 
         private MUSIC _playingMusic = MUSIC.NONE;
-        private MUSIC _previousMusic = MUSIC.NONE;
+        /*private MUSIC _playingMusic = MUSIC.NONE;
+        private MUSIC _previousMusic = MUSIC.NONE;*/
 
         private void CrossFadeMusic(MUSIC target)
         {
             if (target == _playingMusic)
                 return;
             
-            FadeOutMusic(_playingMusic);
-            FadeInMusic(target);
+            /*FadeOutMusic(_playingMusic);
+            FadeInMusic(target);*/
 
-            _previousMusic = _playingMusic;
+            foreach (var song in Songs)
+            {
+                if(song.Music == target)
+                    song.FadeInTrack();
+                else
+                    song.FadeOutTrack();
+            }
+            //_previousMusic = _playingMusic;
             _playingMusic = target;
         }
 
-        private void FadeInMusic(MUSIC music)
+        /*private void FadeInMusic(MUSIC music)
         {
             if (music == MUSIC.NONE)
                 return;
-            
-            Songs.FirstOrDefault(m => m.Music == music)?.FadeInTrack();
-        }
 
-        private void FadeOutMusic(MUSIC music)
+            foreach (var song in Songs)
+            {
+                if(song.Music == music)
+                    song.FadeInTrack();
+                else
+                    song.FadeOutTrack();
+            }
+            
+            //Songs.FirstOrDefault(m => m.Music == music)?.FadeInTrack();
+        }*/
+
+        /*private void FadeOutMusic(MUSIC music)
         {
             if (music == MUSIC.NONE)
                 return;
             
             Songs.FirstOrDefault(m => m.Music == music)?.FadeOutTrack();
-        }
+        }*/
         
         
         //Looping Sounds

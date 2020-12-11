@@ -493,7 +493,7 @@ namespace StarSalvager.AI
 
             if (amount < 0)
             {
-                FloatingText.Create($"{-amount}", transform.position, Color.red);
+                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
             }
 
             if (CurrentHealth > 0) 

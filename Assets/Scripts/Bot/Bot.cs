@@ -22,10 +22,8 @@ using StarSalvager.Utilities;
 using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Particles;
-using StarSalvager.Utilities.Puzzle.Data;
 using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
@@ -117,6 +115,12 @@ namespace StarSalvager
         private bool _needToCheckMagnet;
 
         private List<WeldData> _weldDatas;
+
+
+        //====================================================================================================================//
+
+        private GameObject _lastGearText;
+        private int _combosMade;
 
         //============================================================================================================//
 
@@ -1198,6 +1202,12 @@ namespace StarSalvager
 
             switch (closestAttachable)
             {
+                //----------------------------------------------------------------------------------------------------//
+                case Bit bit:
+                    CreateBitDeathEffect(bit.Type, bit.transform.position);
+                    RemoveAttachable(closestAttachable);
+                    break;
+                //----------------------------------------------------------------------------------------------------//
                 case Part deadPart when deadPart.Type == PART_TYPE.CORE:
                     CreateCoreDeathEffect();
 
@@ -1214,6 +1224,7 @@ namespace StarSalvager
                     
                     BotPartsLogic.PopulatePartsList();
                     break;
+                //----------------------------------------------------------------------------------------------------//
                 default:
                     RemoveAttachable(closestAttachable);
                     break;
@@ -2394,6 +2405,19 @@ namespace StarSalvager
             
             Destroy(explosion, time);
         }
+        
+        private void CreateBitDeathEffect(BIT_TYPE bitType, Vector2 worldPosition)
+        {
+            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreateEffect(EffectFactory.EFFECT.BIT_DEATH, bitType);
+            LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
+            explosion.transform.position = worldPosition;
+
+            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
+            var time = particleScaling.AnimationTime;
+            
+            Destroy(explosion, time);
+        }
 
         private void CreateMergeEffect(Transform parent, float animationTime, Color color)
         {
@@ -2641,6 +2665,8 @@ namespace StarSalvager
         
         #region Combo Solvers
 
+        
+        
         private void SimpleComboSolver(PendingCombo pendingCombo, float gearMultiplier)
         {
             SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
@@ -2747,7 +2773,17 @@ namespace StarSalvager
                     //Waits till after combo finishes combining to add the points 
                     PlayerDataManager.ChangeGears(gearsToAdd);
                     
-                    FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
+
+                    //Show the gears hint, after the third time
+                    if (_lastGearText && _combosMade++ > 0 && HintManager.CanShowHint(HINT.GEARS))
+                    {
+                        var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
+                        
+                        Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
+                        
+                        HintManager.TryShowHint(HINT.GEARS, iHasBounds);
+                    }
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (closestToCore)
@@ -3750,6 +3786,24 @@ namespace StarSalvager
         
         #endregion //Pausable
 
+
+        //====================================================================================================================//
+        
+        public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
+            {
+                setSpriteLayer.SetSortingLayer(sortingLayerName, sortingOrder);
+            }
+        }
+
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            throw new NotImplementedException("Refer to shape for how to implement this");
+        }
+
         //============================================================================================================//
 
         #region Custom Recycle
@@ -3989,21 +4043,6 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
-        {
-            foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
-            {
-                setSpriteLayer.SetSortingLayer(sortingLayerName, sortingOrder);
-            }
-        }
-
-        //====================================================================================================================//
-
-
-        public Bounds GetBounds()
-        {
-            return CompositeCollider2D.bounds;
-        }
     }
     
     public struct PendingCombo

@@ -540,8 +540,8 @@ namespace StarSalvager
             if (Globals.UsingTutorial)
                 return;
             
-            var duration = CurrentWaveData.GetWaveDuration();
-            var timeLeft = duration - m_waveTimer;
+            //var duration = CurrentWaveData.GetWaveDuration();
+            var timeLeft = _afterWaveTimer;
 
             if (_audioCountDown < 1 || timeLeft >= _audioCountDown) 
                 return;
@@ -751,7 +751,7 @@ namespace StarSalvager
             if (BotObject.PROTO_GodMode == false)
             {
                 GameUi.SetCurrentWaveText("Complete");
-                AudioController.PlaySound(SOUND.END_WAVE);
+                
                 BotObject.PROTO_GodMode = true;
             }
             
@@ -765,8 +765,11 @@ namespace StarSalvager
             if (!m_endLevelOverride && _afterWaveTimer >= 0)
             {
                 _afterWaveTimer -= Time.deltaTime;
+                CheckPlayWarningSound();
                 return;
             }
+            
+            AudioController.PlaySound(SOUND.END_WAVE);
 
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
             EnemyManager.SetEnemiesFallEndLevel();

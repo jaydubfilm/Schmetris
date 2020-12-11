@@ -4,6 +4,7 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
+using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -22,7 +23,13 @@ namespace StarSalvager.UI.Hints
         BONUS,
         GUN,
         FUEL,
-        HOME
+        HOME,
+        CRAFT_PART,
+        GEARS,
+        PATCH_POINT,
+        COMPONENT,
+        PARASITE,
+        DAMAGE,
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -71,6 +78,23 @@ namespace StarSalvager.UI.Hints
         //HintManager Functions
         //====================================================================================================================//
         
+        public static bool CanShowHint(HINT hint)
+        {
+            if (!USE_HINTS)
+                return false;
+            
+            if (Instance == null)
+                return false;
+
+            if (hint == HINT.NONE)
+                return false;
+            
+
+            return !PlayerDataManager.GetHint(hint);
+        }
+
+        //====================================================================================================================//
+        
         public static void TryShowHint(HINT hint)
         {
             if (!USE_HINTS)
@@ -86,19 +110,33 @@ namespace StarSalvager.UI.Hints
             Instance.ShowHint(hint);
         }
 
-        public static bool CanShowHint(HINT hint)
+        public static void TryShowHint(HINT hint, Bounds worldBounds)
         {
             if (!USE_HINTS)
-                return false;
+                return;
+
+            //Don't want to show the hints while Im doing tutorial
+            if (Globals.UsingTutorial)
+                return;
             
             if (Instance == null)
-                return false;
-
-            if (hint == HINT.NONE)
-                return false;
+                return;
             
+            Instance.ShowHint(hint, worldBounds);
+        }
+        public static void TryShowHint(HINT hint, RectTransform rectTransform)
+        {
+            if (!USE_HINTS)
+                return;
 
-            return !PlayerDataManager.GetHint(hint);
+            //Don't want to show the hints while Im doing tutorial
+            if (Globals.UsingTutorial)
+                return;
+            
+            if (Instance == null)
+                return;
+            
+            Instance.ShowHint(hint, rectTransform);
         }
 
         public static void TryShowHint(HINT hint, float delayTime)
@@ -173,10 +211,63 @@ namespace StarSalvager.UI.Hints
                     highlightManager.Highlight(homeButton);
                     break;
                 //----------------------------------------------------------------------------------------------------//
+                case HINT.CRAFT_PART:
+                    var hasPart = PlayerDataManager.GetCurrentPartsInStorage()
+                        .Any(x => x.ClassType.Equals(nameof(Part)));
+
+                    if (!hasPart)
+                        return;
+
+                    var partButton = FindObjectOfType<StorageUI>().GetHintElement(hint);
+
+                    highlightManager.Highlight(partButton);
+                    
+                    break;
+                //----------------------------------------------------------------------------------------------------//
+                //----------------------------------------------------------------------------------------------------//
+                //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
                 //----------------------------------------------------------------------------------------------------//
             }
+
+            PlayerDataManager.SetHint(hint, true);
+
+            ShowHintData(hintRemoteData.GetHintData(hint));
+
+            _waiting = true;
+            
+            Time.timeScale = 0f;
+
+            _previousInputActionGroup = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+
+        }
+        private void ShowHint(HINT hint, Bounds worldBounds)
+        {
+            if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
+                return;
+            
+            highlightManager.Highlight(worldBounds);
+
+            PlayerDataManager.SetHint(hint, true);
+
+            ShowHintData(hintRemoteData.GetHintData(hint));
+
+            _waiting = true;
+            
+            Time.timeScale = 0f;
+
+            _previousInputActionGroup = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+
+        }
+        private void ShowHint(HINT hint, RectTransform rectTransform)
+        {
+            if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
+                return;
+            
+            highlightManager.Highlight(rectTransform);
 
             PlayerDataManager.SetHint(hint, true);
 
@@ -223,5 +314,15 @@ namespace StarSalvager.UI.Hints
         
 #endif
         
+    }
+    
+    public interface IHasHintUIElement
+    {
+        RectTransform GetHintElement(HINT hint);
+    }
+    
+    public interface IHasHintElement
+    {
+        Bounds GetHintElement(HINT hint);
     }
 }
