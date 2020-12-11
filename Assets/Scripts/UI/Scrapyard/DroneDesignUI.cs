@@ -659,7 +659,7 @@ namespace StarSalvager.UI.Scrapyard
             if (HintManager.CanShowHint(HINT.DAMAGE))
             {
                 //FIXME Positioning is fucked
-                HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
+                //HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
             }
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
