@@ -504,10 +504,10 @@ namespace StarSalvager.UI.Hints
         {
             var localPosition = canvasPoint;
 
-            if (localPosition.x < 0 && localPosition.y > 0)
+            if (localPosition.x < 0 && localPosition.y >= 0)
                 return CORNER.TL;
 
-            if (localPosition.x > 0 && localPosition.y > 0)
+            if (localPosition.x > 0 && localPosition.y >= 0)
                 return CORNER.TR;
 
             if (localPosition.x > 0 && localPosition.y < 0)
@@ -593,6 +593,40 @@ namespace StarSalvager.UI.Hints
                     return CORNER.TL;
                 case CORNER.BL:
                     return CORNER.TR;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
+            }
+        }
+        
+        public static CORNER VerticalMirror(this CORNER corner)
+        {
+            switch (corner)
+            {
+                case CORNER.TL:
+                    return CORNER.BL;
+                case CORNER.TR:
+                    return CORNER.BR;
+                case CORNER.BR:
+                    return CORNER.TR;
+                case CORNER.BL:
+                    return CORNER.TL;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
+            }
+        }
+        
+        public static CORNER HorizontalMirror(this CORNER corner)
+        {
+            switch (corner)
+            {
+                case CORNER.TL:
+                    return CORNER.TR;
+                case CORNER.TR:
+                    return CORNER.TL;
+                case CORNER.BR:
+                    return CORNER.BL;
+                case CORNER.BL:
+                    return CORNER.BR;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
             }

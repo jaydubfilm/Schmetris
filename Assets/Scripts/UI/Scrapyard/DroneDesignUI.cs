@@ -655,8 +655,12 @@ namespace StarSalvager.UI.Scrapyard
             if (!show)
                 return;
             
-            if(HintManager.CanShowHint(HINT.DAMAGE)) 
-                HintManager.TryShowHint(HINT.DAMAGE);
+            
+            if (HintManager.CanShowHint(HINT.DAMAGE))
+            {
+                //FIXME Positioning is fucked
+                HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
+            }
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
             repairButton.interactable = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;

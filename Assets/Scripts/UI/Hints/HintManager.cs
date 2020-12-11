@@ -316,6 +316,15 @@ namespace StarSalvager.UI.Hints
         {
             TryShowHint(HINT.GUN);
         }
+
+        [Button]
+        private void ClearHints()
+        {
+            foreach (HINT hint in Enum.GetValues(typeof(HINT)))
+            {
+                PlayerDataManager.SetHint(hint, false);
+            }
+        }
         
 #endif
         
