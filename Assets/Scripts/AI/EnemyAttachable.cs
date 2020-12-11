@@ -9,6 +9,7 @@ using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -387,6 +388,11 @@ namespace StarSalvager.AI
         public override void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
+            
+            if (amount < 0)
+            {
+                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
+            }
 
             if (CurrentHealth > 0)
                 return;

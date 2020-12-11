@@ -34,6 +34,14 @@ namespace StarSalvager.Utilities
             SetupExceptionHandling();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F10))
+            {
+                throw new Exception("Testing Exception");
+            }
+        }
+
         //============================================================================================================//
 
         private static void SetupExceptionHandling()
