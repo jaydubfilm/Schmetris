@@ -172,15 +172,15 @@ namespace StarSalvager
                 
                 m_enemies[i].transform.position -= gridMovement;
 
-                Vector3 destination = m_enemies[i].GetDestination();
-
-                if (destination.y <= -20)
+                if (m_enemies[i].transform.position.y <= -20)
                 {
                     Enemy enemy = m_enemies[i];
                     RemoveEnemy(enemy);
                     Recycler.Recycle<Enemy>(enemy);
                     continue;
                 }
+
+                Vector3 destination = m_enemies[i].GetDestination();
 
                 Vector2 sumDirection = Vector2.zero;
                 foreach (Vector3 position in m_enemies[i].GetPositions())
