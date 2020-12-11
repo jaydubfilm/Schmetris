@@ -14,6 +14,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
+using StarSalvager.Utilities.Particles;
 
 namespace StarSalvager.AI
 {
@@ -489,6 +490,11 @@ namespace StarSalvager.AI
         public virtual void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
+
+            if (amount < 0)
+            {
+                FloatingText.Create($"{-amount}", transform.position, Color.red);
+            }
 
             if (CurrentHealth > 0) 
                 return;
