@@ -20,7 +20,7 @@ MonoBehaviour:
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
-    m_category: BS_4Cell
+    m_category: BS_3Cell
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
@@ -140,7 +140,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
-      m_enemyCount: 2
+      m_enemyCount: 1
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5

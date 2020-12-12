@@ -16,11 +16,11 @@ MonoBehaviour:
   BonusShapes:
   - m_selectionType: 1
     m_shapeName: 
-    m_category: BS_3Cell
+    m_category: BS_2Cell
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
-    m_category: BS_3Cell
+    m_category: BS_2Cell
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
@@ -32,7 +32,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
     m_stageType: 0
-    m_spawningObstacleMultiplier: 1
+    m_spawningObstacleMultiplier: 0.5
     m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 2
@@ -43,7 +43,7 @@ MonoBehaviour:
       m_density: 0.2156731
       m_spawnsPerScreenWidthPerMinute: 11
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -52,7 +52,7 @@ MonoBehaviour:
       m_density: 0.20246209
       m_spawnsPerScreenWidthPerMinute: 9
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -61,7 +61,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -70,7 +70,7 @@ MonoBehaviour:
       m_density: 0.1682414
       m_spawnsPerScreenWidthPerMinute: 5
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
@@ -79,7 +79,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
@@ -88,7 +88,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
@@ -97,7 +97,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
@@ -106,7 +106,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: RedDouble
       m_category: 
@@ -115,7 +115,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: BlueDouble
       m_category: 
@@ -124,7 +124,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreenDouble
       m_category: 
@@ -133,7 +133,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: YellowDouble
       m_category: 
@@ -142,7 +142,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: blue.L0
       m_category: 
@@ -151,7 +151,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: grey.L0
       m_category: 
@@ -160,16 +160,16 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29583564
-      m_spawnsPerScreenWidthPerMinute: 30
+      m_density: 0.32389647
+      m_spawnsPerScreenWidthPerMinute: 20
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
@@ -178,7 +178,7 @@ MonoBehaviour:
       m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 45
     m_stageBlendPeriod: 0
@@ -187,7 +187,7 @@ MonoBehaviour:
     - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
       m_enemyCount: 2
     m_stageType: 0
-    m_spawningObstacleMultiplier: 1
+    m_spawningObstacleMultiplier: 0.5
     m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 2
@@ -198,7 +198,7 @@ MonoBehaviour:
       m_density: 0.2156731
       m_spawnsPerScreenWidthPerMinute: 11
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -207,7 +207,7 @@ MonoBehaviour:
       m_density: 0.20246209
       m_spawnsPerScreenWidthPerMinute: 9
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -216,7 +216,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
@@ -225,7 +225,7 @@ MonoBehaviour:
       m_density: 0.1682414
       m_spawnsPerScreenWidthPerMinute: 5
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
@@ -234,7 +234,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
@@ -243,7 +243,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
@@ -252,7 +252,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
@@ -261,7 +261,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: RedDouble
       m_category: 
@@ -270,7 +270,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: BlueDouble
       m_category: 
@@ -279,7 +279,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: GreenDouble
       m_category: 
@@ -288,7 +288,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: YellowDouble
       m_category: 
@@ -297,7 +297,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: blue.L0
       m_category: 
@@ -306,7 +306,7 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: grey.L0
       m_category: 
@@ -315,16 +315,16 @@ MonoBehaviour:
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29583564
-      m_spawnsPerScreenWidthPerMinute: 30
+      m_density: 0.32389647
+      m_spawnsPerScreenWidthPerMinute: 20
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
@@ -333,7 +333,7 @@ MonoBehaviour:
       m_density: 0.23780777
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
-      spawningMultiplier: 1
+      spawningMultiplier: 0.5
     m_stageColumnGroupObstacleData: []
   maxDrops: 0
   RDSEndOfWaveLoot: []
