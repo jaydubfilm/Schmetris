@@ -123,10 +123,11 @@ namespace StarSalvager
             if (bot != null)
             {
 
-                if (!GameManager.IsState(GameState.LevelActive))
+                /*if (!GameManager.IsState(GameState.LevelActive))
                 {
                     return;
                 }
+                */
 
 
                 if (bot.Rotating)

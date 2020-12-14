@@ -195,28 +195,31 @@ namespace StarSalvager.UI
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
-                Alert.ShowAlert("Are you sure?", "Giving up will abandon your current run. Are you sure you want to do that?", "Yes", "No", (b) =>
-                {
-                    if (b)
+                Alert.ShowAlert("Are you sure?",
+                    "Giving up will abandon your current run. Are you sure you want to do that?", "Yes", "No",
+                    value =>
                     {
+                        if (!value) 
+                            return;
+                        
                         if (Globals.UsingTutorial)
                         {
                             Globals.UsingTutorial = false;
-                            LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                            LevelManager.Instance.BotObject.IsInvulnerable = false;
                         }
 
                         GameUI.Instance.ShowRecoveryBanner(false);
                         Globals.IsRecoveryBot = false;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
-                        
-                        
+
+
                         ScreenFade.Fade(() =>
                         {
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL,
+                                MUSIC.MAIN_MENU);
                         });
-                    }
-                });
+                    });
             });
 
             deathWindowRetryButton.onClick.AddListener(() =>
