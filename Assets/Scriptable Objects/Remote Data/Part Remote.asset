@@ -1206,7 +1206,7 @@ MonoBehaviour:
     partType: 16
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Destroys asteroids, extracting valuable minerals.
     priority: 0
     burnType: 2
     levels:
@@ -1278,7 +1278,8 @@ MonoBehaviour:
     partType: 17
     lockRotation: 0
     canSell: 1
-    description: 
+    description: 'This part automatically refines any bit that lands on it, sending
+      the resources into the drone core. '
     priority: 0
     burnType: 0
     levels:
@@ -1304,7 +1305,7 @@ MonoBehaviour:
     partType: 23
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Boosts the range of any immediately adjacent part.
     priority: 50
     burnType: 2
     levels:
@@ -1364,7 +1365,7 @@ MonoBehaviour:
     partType: 24
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Boosts the rate of fire of any immediately adjacent part.
     priority: 50
     burnType: 5
     levels:
@@ -1428,7 +1429,7 @@ MonoBehaviour:
     partType: 25
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Boosts the damage of any immediately adjacent weapon.
     priority: 50
     burnType: 4
     levels:
@@ -1488,7 +1489,7 @@ MonoBehaviour:
     partType: 26
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Boosts the HP of any immediately adjacent part.
     priority: 50
     burnType: 1
     levels:
@@ -1548,7 +1549,8 @@ MonoBehaviour:
     partType: 6
     lockRotation: 0
     canSell: 1
-    description: 
+    description: Sends out a shock wave of cold, which temporarily paralyzes most
+      enemies.
     priority: 50
     burnType: 1
     levels:

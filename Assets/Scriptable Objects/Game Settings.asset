@@ -96,6 +96,7 @@ MonoBehaviour:
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
+  gameUIResourceThreshold: 0.33
   numCurrentTrackedMissionMax: 3
   onlyGetWaveLootOnce: 1
   recoveryOfDroneLocksHorizontalMovement: 1
@@ -109,3 +110,5 @@ MonoBehaviour:
     level: 0
   facilityInitialData: []
   facilityInitialBlueprintData: []
+  asteroidSpawnDisableTimeBeforeWaveEnd: 0
+  timeAfterWaveEndFlyOut: 8
