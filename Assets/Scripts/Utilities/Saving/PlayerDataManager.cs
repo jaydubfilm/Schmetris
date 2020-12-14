@@ -739,7 +739,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
         public static void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
+        {            
             PlayerAccountData.PlayerNewAlertData.AddNewFacilityBlueprintAlert(facilityBlueprint);
         }
 
@@ -867,6 +867,11 @@ namespace StarSalvager.Utilities.Saving
                         (!containsFacilityKey && i == 0));
 
                     if (!craftButtonInteractable)
+                    {
+                        continue;
+                    }
+
+                    if (facilityRemoteData.hideInFacilityMenu)
                     {
                         continue;
                     }

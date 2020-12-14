@@ -290,6 +290,11 @@ namespace StarSalvager.UI.Scrapyard
                         continue;
                     }
 
+                    if (facilityRemoteData.hideInFacilityMenu)
+                    {
+                        continue;
+                    }
+
                     FacilityBlueprint newBlueprint = new FacilityBlueprint
                     {
                         name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
