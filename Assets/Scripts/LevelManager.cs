@@ -251,7 +251,7 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
-                    BotObject.PROTO_GodMode = Globals.UsingTutorial;
+                    BotObject.IsInvulnerable = Globals.UsingTutorial;
 
                     //See if we need to show any hints to the player once the bot is on screen
                     BotObject.DisplayHints();
@@ -353,7 +353,7 @@ namespace StarSalvager
                 return;
             }
 
-            BotObject.PROTO_GodMode = false;
+            BotObject.IsInvulnerable = false;
 
             var botBlockData = BotObject.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
@@ -748,11 +748,12 @@ namespace StarSalvager
                 return;
             }
 
-            if (BotObject.PROTO_GodMode == false)
+            //Prevent the bot from burning anymore resources at the end of a wave
+            if (BotObject.CanUseResources)
             {
                 GameUi.SetCurrentWaveText("Complete");
                 
-                BotObject.PROTO_GodMode = true;
+                BotObject.CanUseResources = false;
             }
             
             
@@ -930,7 +931,7 @@ namespace StarSalvager
             {
                 AudioController.PlaySound(SOUND.BOT_ARRIVES);
                 CreateThrustEffect(BotObject);
-                BotObject.PROTO_GodMode = true;
+                BotObject.IsInvulnerable = true;
             }
             else if (_effect)
             {

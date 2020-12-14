@@ -158,7 +158,7 @@ namespace StarSalvager.Tutorial
         private IEnumerator IntroStepCoroutine()
         {
             var bot = LevelManager.Instance.BotObject;
-            bot.PROTO_GodMode = true;
+            bot.IsInvulnerable = true;
 
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[0], true));
@@ -170,7 +170,7 @@ namespace StarSalvager.Tutorial
             LevelManager.Instance.SetBotEnterScreen(true);
             
             var bot = LevelManager.Instance.BotObject;
-            bot.PROTO_GodMode = true;
+            bot.IsInvulnerable = true;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
             
@@ -375,7 +375,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnBitShift -= SetBump;
             
-            bot.PROTO_GodMode = false;
+            bot.CanUseResources = false;
             PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
@@ -403,7 +403,7 @@ namespace StarSalvager.Tutorial
             
             yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid > 0f);
             
-            bot.PROTO_GodMode = true;
+            bot.IsInvulnerable = true;
             LevelManager.Instance.SetStage(3);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[13], false));
@@ -453,7 +453,7 @@ namespace StarSalvager.Tutorial
                 GameManager.SetCurrentGameState(GameState.AccountMenu);
                 Globals.UsingTutorial = false;
                 LevelManager.Instance.SetBotExitScreen(false);
-                LevelManager.Instance.BotObject.PROTO_GodMode = false;
+                LevelManager.Instance.BotObject.IsInvulnerable = false;
 
 
                 PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
