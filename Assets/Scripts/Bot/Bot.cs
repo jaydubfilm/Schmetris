@@ -2220,7 +2220,7 @@ namespace StarSalvager
                 /*var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>().ToArray();*/
                 
-                CheckAllForCombos();
+                hasCombos = CheckAllForCombos();
                 
                 /*switch (attachable)
                 {
@@ -2549,10 +2549,12 @@ namespace StarSalvager
         #region Puzzle Checks
 
         #region Check for Combos from List
-        public void CheckAllForCombos()
+        public bool CheckAllForCombos()
         {
-            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
-            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+            bool bitCombos = CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+            bool componentCombos = CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+
+            return bitCombos || componentCombos;
         }
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
