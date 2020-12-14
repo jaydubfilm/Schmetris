@@ -181,6 +181,16 @@ namespace StarSalvager
             else if (x < 0)
                 x += m_gridSizeX;
 
+            if (y > m_gridSizeY)
+            {
+                y = m_gridSizeY - 1;
+            }
+
+            if (y < 0)
+            {
+                y = 0;
+            }
+
             return m_gridArray[x + (y * m_gridSizeX)];
         }
 
