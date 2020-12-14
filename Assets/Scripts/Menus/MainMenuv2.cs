@@ -398,6 +398,12 @@ namespace StarSalvager.UI
                             if (!response)
                                 return;
                             
+                            if (_selectedAccountIndex == index)
+                            {
+                                OpenWindow(WINDOW.MAIN_MENU);
+                                _selectedAccountIndex = -1;
+                            }
+
                             PlayerDataManager.DestroyAccountData();
                             PlayerDataManager.RemoveSaveFileData(index);
                             Files.DestroyPlayerSaveFile(index);
