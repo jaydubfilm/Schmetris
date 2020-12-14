@@ -811,7 +811,7 @@ namespace StarSalvager.Utilities
                     bot = FindObjectOfType<Bot>();
 
                     if (bot)
-                        bot.PROTO_GodMode = state;
+                        bot.IsInvulnerable = state;
                     else
                     {
                         _consoleDisplay += NoActiveObject(typeof(Bot));

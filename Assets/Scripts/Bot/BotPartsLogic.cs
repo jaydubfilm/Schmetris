@@ -670,7 +670,7 @@ namespace StarSalvager
                         break;
                 }
 
-                if(bot.PROTO_GodMode)
+                if(!bot.CanUseResources)
                     continue;
 
                 if (!shouldUpdateResource)
@@ -702,7 +702,7 @@ namespace StarSalvager
 
         private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
         {
-            if (bot.PROTO_GodMode) 
+            if (!bot.CanUseResources) 
                 return;
             
             powerValue -= powerToRemove;

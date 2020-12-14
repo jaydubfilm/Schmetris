@@ -28,6 +28,7 @@ using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
+using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager
@@ -84,7 +85,10 @@ namespace StarSalvager
         public float TEST_DetachTime = 1f;
         [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
         public bool TEST_SetDetachColor = true;
-
+        
+        //[SerializeField, BoxGroup("PROTOTYPE")]
+        //public bool PROTO_GodMode;
+        
         //============================================================================================================//
 
         public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
@@ -98,6 +102,20 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        public bool IsInvulnerable
+        {
+            get => !CanBeDamaged && !CanUseResources;
+            set => CanUseResources = CanBeDamaged = !value;
+        }
+        
+        [ShowInInspector, ReadOnly]
+        public bool CanBeDamaged { get; set; }
+        [ShowInInspector, ReadOnly]
+        public bool CanUseResources { get; set; }
+        
+
+        //====================================================================================================================//
+        
         public bool Destroyed => _isDestroyed;
         private bool _isDestroyed;
 
@@ -190,6 +208,51 @@ namespace StarSalvager
         private float previousDirection;
         private bool isContinuousRotation;
 
+        //Particle Tests
+        //====================================================================================================================//
+
+        private void SetParticles()
+        {
+            if (Destroyed)
+            {
+                TEST_ParticleSystem.Stop();
+                return;
+            }
+            
+            //This should be the core
+            if (!(attachedBlocks[0] is IHealth iHealth))
+                return;
+
+            var health = iHealth.CurrentHealth / iHealth.StartingHealth;
+            
+            if(health < 0.25f && !TEST_ParticleSystem.isPlaying)
+                TEST_ParticleSystem.Play();
+            else if (health >= 1f)
+            {
+                TEST_ParticleSystem.Stop();
+                return;
+            }
+
+
+            //FIXME This is only here as a proof of concept
+            switch (Globals.MovingDirection)
+            {
+                case DIRECTION.NULL:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(0f);
+                    break;
+                case DIRECTION.LEFT:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(10f);
+                    break;
+                case DIRECTION.RIGHT:
+                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
+                    break;
+            }
+            
+            
+            //var emission = TEST_ParticleSystem.sizeOverLifetime;
+            //emission.sizeMultiplier = 1f - healthValue;
+        }
+        
         //============================================================================================================//
 
         #region Unity Functions
@@ -266,6 +329,8 @@ namespace StarSalvager
         //IMoveOnInput
         //============================================================================================================//
 
+        #region IMoveOnInput Functions
+
         private void TryMovement()
         {
             var xPos = transform.position.x;
@@ -320,7 +385,7 @@ namespace StarSalvager
 
         public void Move(float direction)
         {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftAlt))
             {
                 m_currentInput = 0f;
                 return;
@@ -331,51 +396,7 @@ namespace StarSalvager
             m_distanceHorizontal += direction * Constants.gridCellSize;
         }
 
-
-        //Particle Tests
-        //====================================================================================================================//
-
-        private void SetParticles()
-        {
-            if (Destroyed)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-            
-            //This should be the core
-            if (!(attachedBlocks[0] is IHealth iHealth))
-                return;
-
-            var health = iHealth.CurrentHealth / iHealth.StartingHealth;
-            
-            if(health < 0.25f && !TEST_ParticleSystem.isPlaying)
-                TEST_ParticleSystem.Play();
-            else if (health >= 1f)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-
-
-            //FIXME This is only here as a proof of concept
-            switch (Globals.MovingDirection)
-            {
-                case DIRECTION.NULL:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(0f);
-                    break;
-                case DIRECTION.LEFT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(10f);
-                    break;
-                case DIRECTION.RIGHT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
-                    break;
-            }
-            
-            
-            //var emission = TEST_ParticleSystem.sizeOverLifetime;
-            //emission.sizeMultiplier = 1f - healthValue;
-        }
+        #endregion //IMoveOnInput Functions
 
         //============================================================================================================//
 
@@ -1087,8 +1108,6 @@ namespace StarSalvager
         
         #region TryHitAt
 
-        [SerializeField, BoxGroup("PROTOTYPE")]
-        public bool PROTO_GodMode;
 
         /// <summary>
         /// Decides if the Attachable closest to the hit position should be destroyed or damaged on the bounce
@@ -1156,7 +1175,7 @@ namespace StarSalvager
 
         public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
         {
-            if (PROTO_GodMode && closestAttachable.Coordinate == Vector2Int.zero)
+            if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
 
             if (!(closestAttachable is IHealth closestHealth))
@@ -1299,11 +1318,11 @@ namespace StarSalvager
             //FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
 
-            if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && !PROTO_GodMode)
+            if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
             {
                 Destroy("Core Destroyed by Asteroid");
             }
-            else if (BotPartsLogic.coreHeat >= 100 && !PROTO_GodMode)
+            else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
             {
                 Destroy("Core Overheated");
             }
@@ -2880,125 +2899,6 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        /*/// <summary>
-        /// Get any Bit/Bits that will be orphaned by the bits which will be moving
-        /// </summary>
-        /// <param name="movingBlocks"></param>
-        /// <param name="bitToUpgrade"></param>
-        /// <param name="orphanMoveData"></param>
-        /// <returns></returns>
-        public void CheckForOrphans(
-            IEnumerable<IAttachable> movingBlocks,
-            IAttachable bitToUpgrade,
-            ref List<OrphanMoveData> orphanMoveData)
-        {
-            var movingBits = movingBlocks as IAttachable[] ?? movingBlocks.ToArray();
-
-            //Check against all the bits that will be moving
-            //--------------------------------------------------------------------------------------------------------//
-
-            foreach (var movingBit in movingBits)
-            {
-                //Get the basic data about the current movingBit
-                //----------------------------------------------------------------------------------------------------//
-
-                var dif = bitToUpgrade.Coordinate - movingBit.Coordinate;
-                var travelDirection = dif.ToDirection();
-                var travelDistance = dif.magnitude;
-
-                //Debug.Log($"Travel Direction: {travelDirection} distance {travelDistance}");
-
-                if (travelDirection == DIRECTION.NULL)
-                    continue;
-
-
-
-                //Check around moving bits (Making sure to exclude the one that doesn't move)
-                //----------------------------------------------------------------------------------------------------//
-
-                //Get all the attachableBases around the specified attachable
-                var attachablesAround = attachedBlocks.GetAttachablesAround(movingBit);
-
-                //Don't want to bother checking the block that we know will not move
-                if (attachablesAround.Contains(bitToUpgrade))
-                    attachablesAround.Remove(bitToUpgrade);
-
-                //Double check that the neighbors are connected to the core
-                //----------------------------------------------------------------------------------------------------//
-
-                foreach (var attachable in attachablesAround)
-                {
-                    //Ignore the ones that we know are good
-                    //------------------------------------------------------------------------------------------------//
-                    if (attachable == null)
-                        continue;
-
-                    if (attachable == bitToUpgrade)
-                        continue;
-
-                    if (!(attachable is ICanDetach canDetach))
-                        continue;
-
-                    if (movingBits.Contains(attachable))
-                        continue;
-
-                    //Make sure that we haven't already determined this element to be moved
-                    if (orphanMoveData != null && orphanMoveData.Any(omd => omd.attachableBase == attachable))
-                        continue;
-
-                    //Check that we're connected to the core
-                    //------------------------------------------------------------------------------------------------//
-
-                    var hasPathToCore = attachedBlocks.HasPathToCore(attachable,
-                        movingBits
-                            .Select(b => b.Coordinate)
-                            .ToList());
-
-                    if (hasPathToCore)
-                        continue;
-
-                    var travelDistInt = (int) travelDistance;
-
-                    //We've got an orphan, record all of the necessary data
-                    //------------------------------------------------------------------------------------------------//
-
-                    if (orphanMoveData == null)
-                        orphanMoveData = new List<OrphanMoveData>();
-                    
-
-                    var newOrphanCoordinate =
-                        attachable.Coordinate + travelDirection.ToVector2Int() * travelDistInt;
-
-                    var attachedToOrphan = new List<ICanDetach>();
-                    attachedBlocks.GetAllConnectedDetachables(canDetach, 
-                        movingBits.OfType<ICanDetach>().ToArray(),
-                        ref attachedToOrphan);
-
-                    //If someone is already planning to move to the target position, just choose one spot back
-                    if (orphanMoveData.Count > 0 &&
-                        orphanMoveData.Any(x => x.intendedCoordinates == newOrphanCoordinate))
-                    {
-                        newOrphanCoordinate += travelDirection.Reflected().ToVector2Int();
-                        travelDistInt--;
-                    }
-
-
-                    //------------------------------------------------------------------------------------------------//
-
-                    SolveOrphanGroupPositionChange(attachable,
-                        attachedToOrphan.OfType<IAttachable>().ToList(),
-                        newOrphanCoordinate,
-                        travelDirection,
-                        travelDistInt,
-                        movingBits,
-                        ref orphanMoveData);
-                }
-
-            }
-        }*/
-
-
-
         #endregion //Puzzle Checks
 
         //============================================================================================================//
@@ -3785,7 +3685,6 @@ namespace StarSalvager
         }
         
         #endregion //Pausable
-
 
         //====================================================================================================================//
         
