@@ -182,7 +182,8 @@ namespace StarSalvager.UI.Hints
                 case HINT.BONUS:
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
 
-                    if (bonusShape is IRecycled recycled && recycled.IsRecycled)
+                    //Ensure that the bonus shape is not null when we want to highlight it
+                    if (!(bonusShape is null) && bonusShape is IRecycled recycled && recycled.IsRecycled)
                         return;
                     
                     highlightManager.Highlight(bonusShape);
