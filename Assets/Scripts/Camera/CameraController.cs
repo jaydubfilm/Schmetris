@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using StarSalvager.Values;
@@ -11,6 +12,7 @@ using StarSalvager.Utilities.SceneManagement;
 
 namespace StarSalvager.Cameras
 {
+    //TODO The addition of the second camera, made this messy it needs to be cleaned
     [DefaultExecutionOrder(-1000)]
     public class CameraController : MonoBehaviour, IMoveOnInput
     {
@@ -28,6 +30,10 @@ namespace StarSalvager.Cameras
         
         [Required]
         public CinemachineVirtualCamera CinemachineVirtualCamera;
+        [Required]
+        public CinemachineVirtualCamera CinemachineReCenterVirtualCamera;
+
+        public float blendTime = 1f;
 
         private Vector3 _startPos;
         private Vector3 _beginningLerpPos;
@@ -95,6 +101,8 @@ namespace StarSalvager.Cameras
         {
             SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, Vector3.zero);
             SetOrientation(Globals.Orientation);
+            
+            transform.position = Vector3.back * 10f;
         }
 
 
@@ -405,7 +413,22 @@ namespace StarSalvager.Cameras
         {
             CinemachineVirtualCamera.LookAt = target;
             CinemachineVirtualCamera.Follow = target;
+            
+            CinemachineReCenterVirtualCamera.LookAt = target;
+            CinemachineReCenterVirtualCamera.Follow = target;
 
+            StartCoroutine(RecenterCameraCoroutine());
+        }
+
+        private IEnumerator RecenterCameraCoroutine()
+        {
+            CinemachineReCenterVirtualCamera.Priority = 100;
+            
+            yield return new WaitForSeconds(blendTime);
+            
+            CinemachineReCenterVirtualCamera.Priority = 0;
+            
+            yield return new WaitForSeconds(blendTime);
         }
 
         /*public void SetDeadzone(float width = 0.1f, float height = 0f)
@@ -420,12 +443,22 @@ namespace StarSalvager.Cameras
 
         public void SetTrackedOffset(float x = 0f, float y = 0f, float z = 0f)
         {
-            var framingTransposer = CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            var framingTransposers = new[]
+            {
+                CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>(),
+                CinemachineReCenterVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>(),
+            };
+
 
             var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
             var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);
             
-            framingTransposer.m_TrackedObjectOffset = newPos;
+            //framingTransposer.m_TrackedObjectOffset = newPos;
+
+            foreach (var transposer in framingTransposers)
+            {
+                transposer.m_TrackedObjectOffset = newPos;
+            }
         }
 
         public void SetOrthoSize(float size)
@@ -434,6 +467,8 @@ namespace StarSalvager.Cameras
                 return;
 
             CinemachineVirtualCamera.m_Lens.OrthographicSize = size;
+            
+            CinemachineReCenterVirtualCamera.m_Lens.OrthographicSize = size;
         }
 
         public void ResetCameraPosition()
