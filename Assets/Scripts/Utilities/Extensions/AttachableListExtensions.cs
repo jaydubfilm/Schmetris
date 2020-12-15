@@ -922,7 +922,7 @@ namespace StarSalvager.Utilities.Extensions
             }
 
             var found = originalList
-                .FirstOrDefault(x => x.Coordinate == startingCoordinate + currentCoordinate && x.Type == toCompare.Type);
+                .FirstOrDefault(x => x.Level == toCompare.Level && x.Coordinate == startingCoordinate + currentCoordinate && x.Type == toCompare.Type);
 
             //If no one was at that location, that shapes don't match
             if (string.IsNullOrEmpty(found.ClassType))
