@@ -2779,7 +2779,15 @@ namespace StarSalvager
                     break;
             }
             
-            
+            if (closestToCore is Bit bit)
+            {
+                var amount = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                    .GetTotalResource(bit.Type, bit.level);
+                        
+                Debug.Log($"Added [{bit.Type}]: {amount}");
+                        
+                PlayerDataManager.GetResource(bit.Type).AddLiquid(amount);
+            }
 
             //Debug.Break();
             //Move all of the components that need to be moved
@@ -2805,6 +2813,8 @@ namespace StarSalvager
                         
                         HintManager.TryShowHint(HINT.GEARS, iHasBounds);
                     }
+
+                    
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (closestToCore)
