@@ -4,6 +4,7 @@ using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -868,11 +869,21 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var _original = ResetLevels(original);
-            var _compare = ResetLevels(comparison);
+            List<BlockData> _original;
+            IReadOnlyList<BlockData> _compare;
+            
+            if (Globals.BonusShapeLevelDependency)
+            {
+                _original = original;
+                _compare = comparison;
+            }
+            else
+            {
+                _original = ResetLevels(original);
+                _compare = ResetLevels(comparison);
+            }
 
-            //var _original = original;
-            //var _compare = comparison;
+            //--------------------------------------------------------------------------------------------------------//
 
             var startingPoints = _original.Where(x => x.Equals(_compare[0])).ToList();
 

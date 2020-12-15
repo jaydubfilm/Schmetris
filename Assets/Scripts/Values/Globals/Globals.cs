@@ -70,6 +70,7 @@ namespace StarSalvager.Values
 
         public static float AsteroidSpawnDisableTimeBeforeWaveEnd => m_gameSettings.asteroidSpawnDisableTimeBeforeWaveEnd;
         public static float TimeAfterWaveEndFlyOut => m_gameSettings.timeAfterWaveEndFlyOut;
+        public static bool BonusShapeLevelDependency => m_gameSettings.bonusShapeLevelDependency;
 
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;

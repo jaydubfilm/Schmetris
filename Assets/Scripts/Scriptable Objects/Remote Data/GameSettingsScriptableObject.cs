@@ -57,6 +57,8 @@ namespace StarSalvager.ScriptableObjects
         public float asteroidSpawnDisableTimeBeforeWaveEnd = 5.0f;
         public float timeAfterWaveEndFlyOut = 5.0f;
 
+        public bool bonusShapeLevelDependency = true;
+
         public void SetupGameSettings()
         {
             Globals.SetGameSettings(this);
