@@ -1241,12 +1241,12 @@ namespace StarSalvager
             {
                 case SELECTION_TYPE.CATEGORY:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
+                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave(), forceShape: true);
                     break;
 
                 case SELECTION_TYPE.SHAPE:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations, null, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave());
+                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations, null, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave(), forceShape: true);
                     break;
 
                 default:
@@ -1258,6 +1258,11 @@ namespace StarSalvager
 
             if (newObstacle is Shape shape)
             {
+                for (int i = 0; i < shape.AttachedBits.Count; i++)
+                {
+                    shape.AttachedBits[i].SetLevel(2);
+                }
+                
                 List<BlockData> newObstacleData = new List<BlockData>();
                 for (int i = 0; i < shape.AttachedBits.Count; i++)
                 {
@@ -1274,7 +1279,8 @@ namespace StarSalvager
 
         private void PlaceBonusShapeInLevel(IObstacle obstacle)
         {
-            int tryFlipSides = Random.Range(0, 2) * 2 - 1;
+            //int tryFlipSides = Random.Range(0, 2) * 2 - 1;
+            int tryFlipSides = -1;
 
             float screenOffset = Globals.ColumnsOnScreen * Constants.gridCellSize * 0.35f;
             //float height = Camera.main.orthographicSize * 0.5f;
@@ -1287,7 +1293,7 @@ namespace StarSalvager
             obstacle.transform.parent = LevelManager.Instance.CameraController.transform;
             obstacle.transform.localPosition = startingPosition;
 
-            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration, despawnOnEnd: true,
+            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration * 2, despawnOnEnd: true,
                 parentToGrid: false);
             m_bonusShapes.Add((Shape) obstacle);
             LevelManager.Instance.WaveEndSummaryData.NumTotalBonusShapesSpawned++;

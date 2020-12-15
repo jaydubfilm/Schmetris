@@ -81,7 +81,7 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
     
-        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null, List<BIT_TYPE> allowedBitTypes = null)
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null, List<BIT_TYPE> allowedBitTypes = null, bool forceShape = false)
         {
             Shape shape;
             //FIXME
@@ -116,7 +116,7 @@ namespace StarSalvager.Factories
 
                 var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
-                if (totalBits == 1 && typeof(T) == typeof(IObstacle))
+                if (!forceShape && totalBits == 1 && typeof(T) == typeof(IObstacle))
                 {
                     return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
                 }

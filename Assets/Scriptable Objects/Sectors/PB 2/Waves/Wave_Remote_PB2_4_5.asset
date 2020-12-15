@@ -20,7 +20,19 @@ MonoBehaviour:
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 
+    m_category: Singles
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
     m_category: BS_3Cell
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: Singles
+    m_rotation: -1
+  - m_selectionType: 1
+    m_shapeName: 
+    m_category: BS_2Cell
     m_rotation: -1
   - m_selectionType: 1
     m_shapeName: 

@@ -251,6 +251,16 @@ namespace StarSalvager
         //ICanCombo Functions
         //====================================================================================================================//
         
+        public void SetLevel(int amount)
+        {
+            level = Mathf.Clamp(amount, 0, 4);
+            renderer.sortingOrder = level;
+
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
+        }
+
         public void IncreaseLevel(int amount = 1)
         {
             level = Mathf.Clamp(level + amount, 0, 4);
