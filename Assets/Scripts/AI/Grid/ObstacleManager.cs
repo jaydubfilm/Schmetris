@@ -1241,7 +1241,7 @@ namespace StarSalvager
             {
                 case SELECTION_TYPE.CATEGORY:
                     newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations, previousShapesInLevel, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave(), forceShape: true);
+                        .CreateObject<IObstacle>(selectionType, category, numRotations, null, LevelManager.Instance.CurrentWaveData.GetBitTypesInWave(), forceShape: true);
                     break;
 
                 case SELECTION_TYPE.SHAPE:
@@ -1263,14 +1263,14 @@ namespace StarSalvager
                     switch(shape.AttachedBits.Count)
                     {
                         case 1:
-                            shape.AttachedBits[i].SetLevel(Random.Range(2, 4));
+                            shape.AttachedBits[i].SetLevel(Random.Range(2, 3));
                             break;
                         case 2:
-                            shape.AttachedBits[i].SetLevel(Random.Range(1, 3));
+                            shape.AttachedBits[i].SetLevel(Random.Range(0, 2));
                             break;
                         case 3:
                         default:
-                            shape.AttachedBits[i].SetLevel(Random.Range(0, 3));
+                            shape.AttachedBits[i].SetLevel(Random.Range(0, 2));
                             break;
                     }
                 }

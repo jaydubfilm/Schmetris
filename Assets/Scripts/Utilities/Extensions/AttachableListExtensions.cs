@@ -838,7 +838,7 @@ namespace StarSalvager.Utilities.Extensions
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            List<BlockData> ResetLevels(IReadOnlyList<BlockData> data)
+            /*List<BlockData> ResetLevels(IReadOnlyList<BlockData> data)
             {
                 var newList = new List<BlockData>(data);
                 for (var i = 0; i < data.Count; i++)
@@ -849,7 +849,7 @@ namespace StarSalvager.Utilities.Extensions
                 }
 
                 return newList;
-            }
+            }*/
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -868,8 +868,11 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var _original = ResetLevels(original);
-            var _compare = ResetLevels(comparison);
+            //var _original = ResetLevels(original);
+            //var _compare = ResetLevels(comparison);
+
+            var _original = original;
+            var _compare = comparison;
 
             var startingPoints = _original.Where(x => x.Equals(_compare[0])).ToList();
 
