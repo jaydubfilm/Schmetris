@@ -162,7 +162,6 @@ namespace StarSalvager.UI.Hints
 
            // titleText.text = text;
             var corner = RepositionText(target);
-            SetCharacterPosition(corner);
 
             var highlightRect = GetRectAround(target, textRectTransform);
 
@@ -171,7 +170,8 @@ namespace StarSalvager.UI.Hints
 
 
             TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
-
+            
+            TrySetCharacterPosition(RectToCanvasSpace(target), corner);
 
             ResetMask();
         }
@@ -193,7 +193,7 @@ namespace StarSalvager.UI.Hints
             var canvasSpaceBounds = WorldToCanvasSpaceBounds(CanvasRectTransform, worldSpaceBounds);
 
             var corner = RepositionText(canvasSpaceBounds);
-            SetCharacterPosition(corner);
+            
 
             var highlightRect = GetRectAround(canvasSpaceBounds, textRectTransform);
 
@@ -202,6 +202,12 @@ namespace StarSalvager.UI.Hints
 
             TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
 
+            TrySetCharacterPosition(new Rect
+            {
+                center = canvasSpaceBounds.center,
+                size =  canvasSpaceBounds.size
+            }, corner);
+            
             ResetMask();
         }
 
@@ -226,69 +232,104 @@ namespace StarSalvager.UI.Hints
             anchorTransform.gameObject.SetActive(state);
         }
 
-        private void SetCharacterPosition(CORNER corner)
+        /// <summary>
+        /// Tries to find a position for the character text box that does not overlap the text element, and the highlighted element.
+        /// If all positions were blocked, default back to original
+        /// </summary>
+        /// <param name="targetRect"></param>
+        /// <param name="corner"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private void TrySetCharacterPosition(Rect targetRect, in CORNER corner)
         {
-            //Want to ensure that the character that is giving the relevant information is out of the way
-            var reflectedCorner = corner.Reflected();
-
-            var skeletonRectTransform = (RectTransform) skeletonGraphic.transform;
-            
-            
-            Vector2 windowAnchorPosition = textWindowRectTransform.anchoredPosition;
-            Vector2 skeletonAnchorPosition = skeletonRectTransform.anchoredPosition;
-
-            Vector3 skeletonLocalScale = skeletonGraphic.transform.localScale;
-            
-            switch (reflectedCorner)
+            var overlapCount = 0;
+            var checkCorner = corner;
+            while (true)
             {
-                //Character on Left
-                //----------------------------------------------------------------------------------------------------//
-                case CORNER.BL:
-                case CORNER.TL:
-                    anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(0, 0.5f);
-                    
-                    skeletonLocalScale.x = Mathf.Abs(skeletonLocalScale.x);
+                //Want to ensure that the character that is giving the relevant information is out of the way
+                var reflectedCorner = checkCorner.Reflected();
 
-                    skeletonAnchorPosition.x = Mathf.Abs(skeletonAnchorPosition.x);
-                    windowAnchorPosition.x = Mathf.Abs(windowAnchorPosition.x);
-                    
+                var skeletonRectTransform = (RectTransform) skeletonGraphic.transform;
+
+
+                Vector2 windowAnchorPosition = textWindowRectTransform.anchoredPosition;
+                Vector2 skeletonAnchorPosition = skeletonRectTransform.anchoredPosition;
+
+                Vector3 skeletonLocalScale = skeletonGraphic.transform.localScale;
+
+                switch (reflectedCorner)
+                {
+                    //Character on Left
+                    //----------------------------------------------------------------------------------------------------//
+                    case CORNER.BL:
+                    case CORNER.TL:
+                        anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(0, 0.5f);
+
+                        skeletonLocalScale.x = Mathf.Abs(skeletonLocalScale.x);
+
+                        skeletonAnchorPosition.x = Mathf.Abs(skeletonAnchorPosition.x);
+                        windowAnchorPosition.x = Mathf.Abs(windowAnchorPosition.x);
+
+                        break;
+
+                    //Character on Right
+                    //----------------------------------------------------------------------------------------------------//
+                    case CORNER.TR:
+                    case CORNER.BR:
+                        anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(1, 0.5f);
+                        skeletonGraphic.initialFlipX = true;
+
+                        skeletonLocalScale.x = -Mathf.Abs(skeletonLocalScale.x);
+
+                        skeletonAnchorPosition.x = -Mathf.Abs(skeletonAnchorPosition.x);
+                        windowAnchorPosition.x = -Mathf.Abs(windowAnchorPosition.x);
+                        break;
+                    //----------------------------------------------------------------------------------------------------//
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(checkCorner), checkCorner, null);
+                }
+
+                switch (reflectedCorner)
+                {
+                    case CORNER.TL:
+                    case CORNER.TR:
+                        windowAnchorPosition.y = Mathf.Abs(textWindowRectTransform.sizeDelta.y);
+                        break;
+                    case CORNER.BR:
+                    case CORNER.BL:
+                        windowAnchorPosition.y = -Mathf.Abs(textWindowRectTransform.sizeDelta.y);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                textWindowRectTransform.anchoredPosition = windowAnchorPosition;
+
+                skeletonRectTransform.anchoredPosition = skeletonAnchorPosition;
+                skeletonRectTransform.transform.localScale = skeletonLocalScale;
+
+                if (overlapCount >= 4)
                     break;
+
+                var compareRect = RectToCanvasSpace(textWindowRectTransform);
+                var textRect = RectToCanvasSpace(textRectTransform);
                 
-                //Character on Right
-                //----------------------------------------------------------------------------------------------------//
-                case CORNER.TR:
-                case CORNER.BR:
-                    anchorTransform.anchorMax = anchorTransform.anchorMin = new Vector2(1, 0.5f);
-                    skeletonGraphic.initialFlipX = true;
+                if (compareRect.Overlaps(targetRect) || compareRect.Overlaps(textRect))
+                {
+                    Debug.LogError("Overlap happening");
                     
-                    skeletonLocalScale.x = -Mathf.Abs(skeletonLocalScale.x);
-                    
-                    skeletonAnchorPosition.x = -Mathf.Abs(skeletonAnchorPosition.x);
-                    windowAnchorPosition.x = -Mathf.Abs(windowAnchorPosition.x);
-                    break;
-                //----------------------------------------------------------------------------------------------------//
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
-            }
+                    SSDebug.DrawSquare(
+                        CanvasRectTransform.TransformPoint(compareRect.min),
+                        CanvasRectTransform.TransformPoint(compareRect.max), 
+                        Color.red,
+                        5f);
 
-            switch (reflectedCorner)
-            {
-                case CORNER.TL:
-                case CORNER.TR:
-                    windowAnchorPosition.y = Mathf.Abs(textWindowRectTransform.sizeDelta.y);
-                    break;
-                case CORNER.BR:
-                case CORNER.BL:
-                    windowAnchorPosition.y = -Mathf.Abs(textWindowRectTransform.sizeDelta.y);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                    overlapCount++;
+                    checkCorner = checkCorner.Next();
+                    continue;
+                }
 
-            textWindowRectTransform.anchoredPosition = windowAnchorPosition;
-            
-            skeletonRectTransform.anchoredPosition = skeletonAnchorPosition;
-            skeletonRectTransform.transform.localScale = skeletonLocalScale;
+                break;
+            }
         }
 
         //Get Data RectTransform
@@ -319,7 +360,7 @@ namespace StarSalvager.UI.Hints
             };
 
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect1.min),
-                CanvasRectTransform.TransformPoint(rect1.max), Color.red, 5f);
+                CanvasRectTransform.TransformPoint(rect1.max), Color.yellow, 5f);
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect2.min),
                 CanvasRectTransform.TransformPoint(rect2.max), Color.blue, 5f);
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(outRect.min),
@@ -394,7 +435,7 @@ namespace StarSalvager.UI.Hints
             };
 
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(canvasSpaceBounds.min),
-                CanvasRectTransform.TransformPoint(canvasSpaceBounds.max), Color.red, 5f);
+                CanvasRectTransform.TransformPoint(canvasSpaceBounds.max), Color.yellow, 5f);
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(rect.min),
                 CanvasRectTransform.TransformPoint(rect.max), Color.blue, 5f);
             SSDebug.DrawSquare(CanvasRectTransform.TransformPoint(outRect.min),
@@ -580,6 +621,22 @@ namespace StarSalvager.UI.Hints
 
     public static class CornerExtensions
     {
+        public static CORNER Next(this CORNER corner)
+        {
+            switch (corner)
+            {
+                case CORNER.TL:
+                    return CORNER.TR;
+                case CORNER.TR:
+                    return CORNER.BR;
+                case CORNER.BR:
+                    return CORNER.BL;
+                case CORNER.BL:
+                    return CORNER.TL;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(corner), corner, null);
+            }
+        }
         //TODO Can add functions for flipping horizontally/vertically
         public static CORNER Reflected(this CORNER corner)
         {
