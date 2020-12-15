@@ -7,6 +7,7 @@ using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
@@ -139,6 +140,8 @@ namespace StarSalvager.UI.Hints
             Instance.ShowHint(hint, rectTransform);
         }
 
+        //====================================================================================================================//
+        //TODO These need to consider things that are called many times
         public static void TryShowHint(HINT hint, float delayTime)
         {
             if (!USE_HINTS)
@@ -150,6 +153,34 @@ namespace StarSalvager.UI.Hints
             Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
             {
                 Instance.ShowHint(hint);
+            }));
+        }
+        
+        public static void TryShowHint(HINT hint, IHasBounds iHasBounds, float delayTime)
+        {
+            if (!USE_HINTS)
+                return;
+            
+            if (Instance == null)
+                return;
+
+            Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
+            {
+                Instance.ShowHint(hint, iHasBounds.GetBounds());
+            }));
+        }
+        
+        public static void TryShowHint(HINT hint, RectTransform rectTransform, float delayTime)
+        {
+            if (!USE_HINTS)
+                return;
+            
+            if (Instance == null)
+                return;
+
+            Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
+            {
+                Instance.ShowHint(hint, rectTransform);
             }));
         }
         
