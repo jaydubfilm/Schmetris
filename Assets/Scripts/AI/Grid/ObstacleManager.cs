@@ -1305,7 +1305,7 @@ namespace StarSalvager
             obstacle.transform.parent = LevelManager.Instance.CameraController.transform;
             obstacle.transform.localPosition = startingPosition;
 
-            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration * 2, despawnOnEnd: true,
+            PlaceMovableOffGrid(obstacle, startingPosition, endPosition, Globals.BonusShapeDuration * 2.5f, despawnOnEnd: true,
                 parentToGrid: false);
             m_bonusShapes.Add((Shape) obstacle);
             LevelManager.Instance.WaveEndSummaryData.NumTotalBonusShapesSpawned++;
