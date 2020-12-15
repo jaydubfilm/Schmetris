@@ -222,7 +222,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.IsState(GameState.LevelBotDead))
+            if (GameManager.IsState(GameState.LevelActiveEndSequence) || GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }
