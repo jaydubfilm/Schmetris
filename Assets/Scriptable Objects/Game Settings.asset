@@ -25,7 +25,7 @@ MonoBehaviour:
   botRotationSpeed: 500
   botContinuousRotationSpeed: 700
   missionReminderFrequency: 1
-  bonusShapeSpeed: 22
+  bonusShapeSpeed: 40
   levelResourceDropReductionAmount: 0.854
   asteroidDamage: 10
   bonusShapeGearsRewards:
@@ -112,3 +112,4 @@ MonoBehaviour:
   facilityInitialBlueprintData: []
   asteroidSpawnDisableTimeBeforeWaveEnd: 0
   timeAfterWaveEndFlyOut: 8
+  bonusShapeLevelDependency: 1
