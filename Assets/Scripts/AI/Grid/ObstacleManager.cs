@@ -320,6 +320,13 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
+                                    Debug.Log("MOO");
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
@@ -333,6 +340,13 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
+                                    Debug.Log("MOO");
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
                                 asteroid.SetColliderActive(true);
@@ -346,6 +360,13 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
+                                    Debug.Log("MOO");
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(component, m_offGridMovingObstacles[i].EndPosition);
                                 component.SetColliderActive(true);
