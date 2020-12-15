@@ -160,7 +160,7 @@ namespace StarSalvager
 
         private const int WARNING_COUNT = 4;
         private int _audioCountDown = WARNING_COUNT;
-        private float _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
+        private float _afterWaveTimer;
 
 
         //Unity Functions
@@ -169,6 +169,8 @@ namespace StarSalvager
         private void Start()
         {
             RegisterPausable();
+
+            _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
             
             m_bots = new List<Bot>();
             
