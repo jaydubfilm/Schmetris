@@ -2339,10 +2339,20 @@ namespace StarSalvager
                     var currencyToAdd = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResource(toUpgrade);
                     
                     PlayerDataManager.GetResource(toUpgrade.Type).AddResource(currencyToAdd, false);
+                    
+                    //FIXME This is not terribly efficient, i'd be better doing everyone at the same time
+                    var orphans = new List<OrphanMoveData>();
+                    attachedBlocks.CheckForOrphansFromProcessing(
+                        toUpgrade,
+                        ref orphans);
+            
+                    if(!orphans.IsNullOrEmpty())
+                        this.MoveOrphanPieces(orphans, null);
 
                     DestroyAttachable(toUpgrade);
                 }
 
+                CheckForDisconnects();
 
                 //Check for Combos
                 CheckForCombosAround<BIT_TYPE>(attachedBlocks);
