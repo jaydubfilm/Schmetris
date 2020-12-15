@@ -110,5 +110,5 @@ MonoBehaviour:
     level: 0
   facilityInitialData: []
   facilityInitialBlueprintData: []
-  asteroidSpawnDisableTimeBeforeWaveEnd: 0
+  asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
