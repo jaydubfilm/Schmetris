@@ -1263,7 +1263,7 @@ namespace StarSalvager
                     switch(shape.AttachedBits.Count)
                     {
                         case 1:
-                            shape.AttachedBits[i].SetLevel(Random.Range(2, 3));
+                            shape.AttachedBits[i].SetLevel(Random.Range(0, 3));
                             break;
                         case 2:
                             shape.AttachedBits[i].SetLevel(Random.Range(0, 2));
