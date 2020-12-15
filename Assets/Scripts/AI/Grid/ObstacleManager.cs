@@ -322,8 +322,7 @@ namespace StarSalvager
                             {
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
-                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
-                                    Debug.Log("MOO");
+                                    m_offGridMovingObstacles[i].Extend();
                                     continue;
                                 }
 
@@ -342,8 +341,7 @@ namespace StarSalvager
                             {
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
-                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
-                                    Debug.Log("MOO");
+                                    m_offGridMovingObstacles[i].Extend();
                                     continue;
                                 }
 
@@ -362,8 +360,7 @@ namespace StarSalvager
                             {
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
-                                    m_offGridMovingObstacles[i].LerpTimer = 0.9f;
-                                    Debug.Log("MOO");
+                                    m_offGridMovingObstacles[i].Extend();
                                     continue;
                                 }
 
