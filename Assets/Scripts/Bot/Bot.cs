@@ -104,14 +104,14 @@ namespace StarSalvager
 
         public bool IsInvulnerable
         {
-            get => !CanBeDamaged && !CanUseResources;
-            set => CanUseResources = CanBeDamaged = !value;
+            get => !CanBeDamaged /*&& !CanUseResources*/;
+            set => /*CanUseResources =*/ CanBeDamaged = !value;
         }
         
         [ShowInInspector, ReadOnly]
         public bool CanBeDamaged { get; set; }
-        [ShowInInspector, ReadOnly]
-        public bool CanUseResources { get; set; }
+
+        [ShowInInspector, ReadOnly] public bool CanUseResources;
         
 
         //====================================================================================================================//
@@ -2295,7 +2295,7 @@ namespace StarSalvager
                 AudioController.PlaySound(SOUND.BONUS_SHAPE_MATCH);
                 
                 AudioController.PlaySound(SOUND.BONUS_SHAPE_UPG);
-                //Upgrade the pieces matched
+                /*//Upgrade the pieces matched
                 foreach (var coordinate in upgrading)
                 {
                     var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
@@ -2303,7 +2303,7 @@ namespace StarSalvager
                     toUpgrade?.IncreaseLevel();
                     
                     
-                }
+                }*/
 
                 List<BIT_TYPE> numTypes = new List<BIT_TYPE>();
                 for (int i = 0; i < shape.AttachedBits.Count; i++)
@@ -2328,6 +2328,13 @@ namespace StarSalvager
                 FloatingText.Create($"+{gears}",
                     attachedBlocks.Find(upgrading).GetCollectionCenterCoordinateWorldPosition(),
                     Color.white);
+                
+                foreach (var coordinate in upgrading)
+                {
+                    var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
+
+                    DestroyAttachable(toUpgrade);
+                }
 
 
                 //Check for Combos
