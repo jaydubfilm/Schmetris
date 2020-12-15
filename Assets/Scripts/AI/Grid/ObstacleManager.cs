@@ -1260,7 +1260,19 @@ namespace StarSalvager
             {
                 for (int i = 0; i < shape.AttachedBits.Count; i++)
                 {
-                    shape.AttachedBits[i].SetLevel(2);
+                    switch(shape.AttachedBits.Count)
+                    {
+                        case 1:
+                            shape.AttachedBits[i].SetLevel(Random.Range(2, 4));
+                            break;
+                        case 2:
+                            shape.AttachedBits[i].SetLevel(Random.Range(1, 3));
+                            break;
+                        case 3:
+                        default:
+                            shape.AttachedBits[i].SetLevel(Random.Range(0, 3));
+                            break;
+                    }
                 }
                 
                 List<BlockData> newObstacleData = new List<BlockData>();
