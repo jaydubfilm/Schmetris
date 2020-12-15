@@ -208,7 +208,7 @@ namespace StarSalvager
             return anchorPoint + ((new Vector2(x, y) + m_adjustToMiddleOfGridSquare) * Constants.gridCellSize);
         }
 
-        private GridSquare GetGridSquareAtLocalPosition(Vector2 localPosition)
+        public GridSquare GetGridSquareAtLocalPosition(Vector2 localPosition)
         {
             Vector2Int coordinates = GetCoordinatesOfGridSquareAtLocalPosition(localPosition);
 
