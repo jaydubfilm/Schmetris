@@ -162,7 +162,14 @@ namespace StarSalvager
                 if (enemy.transform.position.y <= -20)
                 {
                     RemoveEnemy(enemy);
-                    Recycler.Recycle<Enemy>(enemy);
+                    if (enemy is EnemyAttachable)
+                    {
+                        Recycler.Recycle<EnemyAttachable>(enemy);
+                    }
+                    else
+                    {
+                        Recycler.Recycle<Enemy>(enemy);
+                    }
                     continue;
                 }
 
@@ -225,6 +232,7 @@ namespace StarSalvager
             m_timesToSpawn.Clear();
 
             //Populate enemies to spawn list
+            Debug.Log("POPULATE ENEMY LIST");
             foreach (StageEnemyData stageEnemyData in waveRemoteData.StageEnemyData)
             {
                 for (int i = 0; i < stageEnemyData.EnemyCount; i++)
