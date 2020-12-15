@@ -92,7 +92,11 @@ namespace StarSalvager.Factories
 
             return resources;
         }
-        
+
+        public int GetTotalResource(Bit bit)
+        {
+            return GetTotalResource(bit.Type, bit.level);
+        }
         public int GetTotalResource(BIT_TYPE bitType, int level)
         {
             return _remoteData.GetRemoteData(bitType).levels[level].resources;

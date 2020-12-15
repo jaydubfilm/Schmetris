@@ -2333,6 +2333,13 @@ namespace StarSalvager
                 {
                     var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
 
+                    if (toUpgrade is null)
+                        continue;
+
+                    var currencyToAdd = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetTotalResource(toUpgrade);
+                    
+                    PlayerDataManager.GetResource(toUpgrade.Type).AddResource(currencyToAdd, false);
+
                     DestroyAttachable(toUpgrade);
                 }
 
