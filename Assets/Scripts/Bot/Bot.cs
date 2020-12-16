@@ -300,7 +300,7 @@ namespace StarSalvager
                 Move(m_currentInput);
             }
 
-            CheckShuffleInput();
+            CheckEjectButton();
         }
 
         private void LateUpdate()
@@ -333,35 +333,82 @@ namespace StarSalvager
 
         private bool _isShifting;
 
-        private void CheckShuffleInput()
+        private void CheckEjectButton()
         {
-            void CoreShuffle(DIRECTION direction)
+            IAttachable GetAttachables(DIRECTION direction)
             {
-                var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
-                TryShift(direction, start);
+                IEnumerable<IAttachable> attachables;
+                switch (direction)
+                {
+                    case DIRECTION.UP:
+                    case DIRECTION.DOWN:
+                        attachables = attachedBlocks.Where(x => x.CanShift && x.Coordinate.x == 0);
+                        break;
+                    case DIRECTION.LEFT:
+                    case DIRECTION.RIGHT:
+                        attachables = attachedBlocks.Where(x => x.CanShift && x.Coordinate.y == 0);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+                }
+
+                var _x =0;
+                var _y =0;
+                switch (direction)
+                {
+                    case DIRECTION.LEFT:
+                        _x = attachables.Min(x => x.Coordinate.x);
+                        break;
+                    case DIRECTION.UP:
+                        _y = attachables.Max(x => x.Coordinate.y);
+                        break;
+                    case DIRECTION.RIGHT:
+                        _x = attachables.Max(x => x.Coordinate.x);
+                        break;
+                    case DIRECTION.DOWN:
+                        _y = attachables.Min(x => x.Coordinate.y);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+                }
+
+                return attachedBlocks.FirstOrDefault(x => x.Coordinate == new Vector2Int(_x, _y));
+            }
+
+            void Disconnect(DIRECTION direction)
+            {
+                var target = GetAttachables(direction);
+
+                DetachBlocks(
+                    new []
+                    {
+                        target as ICanDetach
+                    }, true);
+                
+                DetachSingleBlock(target as ICanDetach);
             }
             
             if (_isShifting)
                 return;
-            
+
             if (Input.GetKeyDown(KeyCode.W))
             {
-                CoreShuffle(DIRECTION.UP);
+                Disconnect(DIRECTION.UP);
             }
             
             if (Input.GetKeyDown(KeyCode.S))
             {
-                CoreShuffle(DIRECTION.DOWN);
+                Disconnect(DIRECTION.DOWN);
             }
             
             if (Input.GetKeyDown(KeyCode.A))
             {
-                CoreShuffle(DIRECTION.LEFT);
+                Disconnect(DIRECTION.LEFT);
             }
             
             if (Input.GetKeyDown(KeyCode.D))
             {
-                CoreShuffle(DIRECTION.RIGHT);
+                Disconnect(DIRECTION.RIGHT);
             }
         }
         
