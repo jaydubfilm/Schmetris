@@ -299,6 +299,8 @@ namespace StarSalvager
             {
                 Move(m_currentInput);
             }
+
+            CheckShuffleInput();
         }
 
         private void LateUpdate()
@@ -326,6 +328,43 @@ namespace StarSalvager
 
         #endregion //Unity Functions
 
+        //Core Shuffle Prototype
+        //====================================================================================================================//
+
+        private bool _isShifting;
+
+        private void CheckShuffleInput()
+        {
+            void CoreShuffle(DIRECTION direction)
+            {
+                var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
+                TryShift(direction, start);
+            }
+            
+            if (_isShifting)
+                return;
+            
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                CoreShuffle(DIRECTION.UP);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                CoreShuffle(DIRECTION.DOWN);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                CoreShuffle(DIRECTION.LEFT);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                CoreShuffle(DIRECTION.RIGHT);
+            }
+        }
+        
         //IMoveOnInput
         //============================================================================================================//
 
@@ -2202,6 +2241,8 @@ namespace StarSalvager
 
             bool hasDetached = false;
             bool hasCombos = false;
+
+            _isShifting = true;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
                 TEST_MergeTime,
@@ -2239,11 +2280,13 @@ namespace StarSalvager
                 MissionProgressEventData missionProgressEventData = new MissionProgressEventData
                 {
                     intAmount = toShift.Count,
-                    bumperShiftedThroughPart = passedCore,
+                    bumperShiftedThroughPart = false,
                     bumperOrphanedBits = hasDetached,
                     bumperCausedCombos = hasCombos
                 };
                 MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
+
+                _isShifting = false;
             }));
 
 
