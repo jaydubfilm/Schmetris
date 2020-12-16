@@ -315,8 +315,6 @@ namespace StarSalvager.UI.Hints
                 
                 if (compareRect.Overlaps(targetRect) || compareRect.Overlaps(textRect))
                 {
-                    Debug.LogError("Overlap happening");
-                    
                     SSDebug.DrawSquare(
                         CanvasRectTransform.TransformPoint(compareRect.min),
                         CanvasRectTransform.TransformPoint(compareRect.max), 

@@ -23,7 +23,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : SceneSingleton<GameUI>, IHasHintUIElement
+    public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
         [Serializable]
         private struct SliderCover
@@ -430,16 +430,22 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
-        public RectTransform GetHintElement(HINT hint)
+        public object[] GetHintElements(HINT hint)
         {
             switch (hint)
             {
                 case HINT.NONE:
                     return null;
                 case HINT.MAGNET:
-                    return magnetFlash.transform as RectTransform;
+                    return new object[]
+                    {
+                        magnetFlash.transform as RectTransform 
+                    };
                 case HINT.FUEL:
-                    return GetSliderCover(BIT_TYPE.RED).Cover.transform as RectTransform;
+                    return new object[]
+                    {
+                        GetSliderCover(BIT_TYPE.RED).Cover.transform as RectTransform
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

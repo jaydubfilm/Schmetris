@@ -70,7 +70,7 @@ namespace StarSalvager.AI
             {
                 if (CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 {
-                    HintManager.TryShowHint(HINT.PARASITE, this, 1f);
+                    HintManager.TryShowHint(HINT.PARASITE, 1f, this);
                 }
             }
             

@@ -22,7 +22,7 @@ using UnityEngine.SceneManagement;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset, IHasHintUIElement
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement
     {
         private enum ICON_TYPE
         {
@@ -100,14 +100,17 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
-        public RectTransform GetHintElement(HINT hint)
+        public object[] GetHintElements(HINT hint)
         {
             switch (hint)
             {
                 case HINT.NONE:
                     return null;
                 case HINT.HOME:
-                    return _shipwreckButtonRectTransform;
+                    return new object[]
+                    {
+                        _shipwreckButtonRectTransform 
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

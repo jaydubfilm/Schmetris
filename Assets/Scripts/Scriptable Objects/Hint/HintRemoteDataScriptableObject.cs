@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.UI.Hints;
@@ -14,9 +15,21 @@ namespace StarSalvager.ScriptableObjects.Hints
         {
             [FoldoutGroup("$type")]
             public HINT type;
-            [FoldoutGroup("$type")]
+            /*[FoldoutGroup("$type")]
             public string shortText;
             [FoldoutGroup("$type"), TextArea]
+            public string longDescription;*/
+            
+            [FoldoutGroup("$type")]
+            public List<HintText> hintTexts;
+        }
+
+        [Serializable]
+        public struct HintText
+        {
+            [FoldoutGroup("$shortText")]
+            public string shortText;
+            [FoldoutGroup("$shortText"), TextArea]
             public string longDescription;
         }
 

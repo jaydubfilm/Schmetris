@@ -20,6 +20,8 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour
     {
+        public bool CanAffordRepair { get; private set; }
+
         [SerializeField, Required] 
         private TMP_Text flightDataText;
         
@@ -661,9 +663,11 @@ namespace StarSalvager.UI.Scrapyard
                 //FIXME Positioning is fucked
                 HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
             }
+
+            CanAffordRepair = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
+            repairButton.interactable = CanAffordRepair;
             repairButtonGlow.SetActive(repairButton.interactable);
             
             /*var totalCost = repairCost + replacementCost;

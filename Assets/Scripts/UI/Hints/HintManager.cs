@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
@@ -37,7 +39,9 @@ namespace StarSalvager.UI.Hints
     public class HintManager : Singleton<HintManager>
     {
         public static bool USE_HINTS = true;
-        
+
+        public bool ShowingHint { get; private set; }
+
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
         
@@ -52,29 +56,7 @@ namespace StarSalvager.UI.Hints
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
-        private bool _waiting;
         private string _previousInputActionGroup;
-
-        //Unity Functions
-        //====================================================================================================================//
-
-        private void Start()
-        {
-            confirmButton.onClick.AddListener(StopShowingHint);
-        }
-
-        private void Update()
-        {
-            if (!_waiting)
-                return;
-            
-            //FIXME incorporate the new input system here
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                StopShowingHint();
-            }
-            
-        }
 
         //HintManager Functions
         //====================================================================================================================//
@@ -95,8 +77,8 @@ namespace StarSalvager.UI.Hints
         }
 
         //====================================================================================================================//
-        
-        public static void TryShowHint(HINT hint)
+
+        public static void TryShowHint(HINT hint, params object[] objectsToHighlight)
         {
             if (!USE_HINTS)
                 return;
@@ -108,82 +90,53 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return;
             
-            Instance.ShowHint(hint);
-        }
-
-        public static void TryShowHint(HINT hint, Bounds worldBounds)
-        {
-            if (!USE_HINTS)
+            if (Instance.ShowingHint)
                 return;
 
-            //Don't want to show the hints while Im doing tutorial
-            if (Globals.UsingTutorial)
-                return;
-            
-            if (Instance == null)
-                return;
-            
-            Instance.ShowHint(hint, worldBounds);
-        }
-        public static void TryShowHint(HINT hint, RectTransform rectTransform)
-        {
-            if (!USE_HINTS)
-                return;
-
-            //Don't want to show the hints while Im doing tutorial
-            if (Globals.UsingTutorial)
-                return;
-            
-            if (Instance == null)
-                return;
-            
-            Instance.ShowHint(hint, rectTransform);
+            if (objectsToHighlight.IsNullOrEmpty())
+                Instance.ShowHint(hint);
+            else 
+                Instance.ShowHint(hint, objectsToHighlight);
         }
 
         //====================================================================================================================//
-        //TODO These need to consider things that are called many times
-        public static void TryShowHint(HINT hint, float delayTime)
+        //Ensures that we don't call multiple coroutines when they're not needed
+        private static readonly List<HINT> WaitingHints = new List<HINT>();
+
+        /// <summary>
+        /// Show hint after a time delay. Optional params can specify which objects should be highlighted for the hint.
+        /// </summary>
+        /// <param name="hint"></param>
+        /// <param name="delayTime"></param>
+        /// <param name="objectsToHighlight"></param>
+        public static void TryShowHint(HINT hint, float delayTime, params object[] objectsToHighlight)
         {
             if (!USE_HINTS)
                 return;
             
             if (Instance == null)
                 return;
-
-            Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
-            {
-                Instance.ShowHint(hint);
-            }));
-        }
-        
-        public static void TryShowHint(HINT hint, IHasBounds iHasBounds, float delayTime)
-        {
-            if (!USE_HINTS)
+            
+            if (Instance.ShowingHint)
                 return;
             
-            if (Instance == null)
-                return;
-
-            Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
-            {
-                Instance.ShowHint(hint, iHasBounds.GetBounds());
-            }));
-        }
-        
-        public static void TryShowHint(HINT hint, RectTransform rectTransform, float delayTime)
-        {
-            if (!USE_HINTS)
+            if(!WaitingHints.Contains(hint))
+                WaitingHints.Add(hint);
+            else
                 return;
             
-            if (Instance == null)
-                return;
-
             Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
             {
-                Instance.ShowHint(hint, rectTransform);
+                WaitingHints.Remove(hint);
+                
+                //If we have an empty list, assume we want to obtain in it other ways
+                if(objectsToHighlight.IsNullOrEmpty())
+                    Instance.ShowHint(hint);
+                else
+                    Instance.ShowHint(hint, objectsToHighlight);
             }));
         }
-        
+
         private static IEnumerator WaitCoroutine(float time, Action onWaitCallback)
         {
             yield return new WaitForSeconds(time);
@@ -197,6 +150,8 @@ namespace StarSalvager.UI.Hints
         {
             if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
                 return;
+
+            object[] objectsToHighlight = null;
             
             switch (hint)
             {
@@ -206,18 +161,20 @@ namespace StarSalvager.UI.Hints
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.MAGNET:
-                    var magnetSlider = GameUI.Instance.GetHintElement(hint);
-                    highlightManager.Highlight(magnetSlider);
+                    objectsToHighlight = GameUI.Instance.GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.BONUS:
                     var bonusShape = FindObjectOfType<ObstacleManager>().ActiveBonusShapes.FirstOrDefault();
 
                     //Ensure that the bonus shape is not null when we want to highlight it
-                    if (!(bonusShape is null) && bonusShape is IRecycled recycled && recycled.IsRecycled)
+                    if (bonusShape is IRecycled recycled && recycled.IsRecycled)
                         return;
-                    
-                    highlightManager.Highlight(bonusShape);
+
+                    objectsToHighlight = new object[]
+                    {
+                        bonusShape
+                    };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.GUN:
@@ -226,12 +183,14 @@ namespace StarSalvager.UI.Hints
                         .attachedBlocks
                         .FirstOrDefault(x => x is Part part && part.Type == PART_TYPE.GUN) as Part;
                     
-                    highlightManager.Highlight(gunPart);
+                    objectsToHighlight = new object[]
+                    {
+                        gunPart
+                    };
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.FUEL:
-                    var fuelSlider = GameUI.Instance.GetHintElement(hint);
-                    highlightManager.Highlight(fuelSlider);
+                    objectsToHighlight = GameUI.Instance.GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.HOME:
@@ -239,8 +198,7 @@ namespace StarSalvager.UI.Hints
                     if (!hasBits)
                         return;
                     
-                    var homeButton = FindObjectOfType<UniverseMap>().GetHintElement(hint);
-                    highlightManager.Highlight(homeButton);
+                    objectsToHighlight = FindObjectOfType<UniverseMap>().GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.CRAFT_PART:
@@ -250,17 +208,17 @@ namespace StarSalvager.UI.Hints
                     if (!hasPart)
                         return;
 
-                    var partButton = FindObjectOfType<StorageUI>().GetHintElement(hint);
-
-                    highlightManager.Highlight(partButton);
-                    
+                    objectsToHighlight = FindObjectOfType<StorageUI>().GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.DAMAGE:
-                    var repairBounds = FindObjectOfType<DroneDesigner>().GetHintElement(hint);
+                    objectsToHighlight = FindObjectOfType<DroneDesigner>().GetHintElements(hint);
+
+                    var canAfford = FindObjectOfType<DroneDesignUI>().CanAffordRepair;
+                    var textIndex = canAfford ? 0 : 1;
                     
-                    highlightManager.Highlight(repairBounds);
-                    break;
+                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault(), canAfford));
+                    return;
                 //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
                 default:
@@ -268,74 +226,151 @@ namespace StarSalvager.UI.Hints
                 //----------------------------------------------------------------------------------------------------//
             }
 
-            PlayerDataManager.SetHint(hint, true);
-
-            ShowHintData(hintRemoteData.GetHintData(hint));
-
-            _waiting = true;
+            if (objectsToHighlight.IsNullOrEmpty())
+                throw new NullReferenceException("No objects to highlight");
             
-            Time.timeScale = 0f;
-
-            _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            StartCoroutine(HintPagesCoroutine(hint, objectsToHighlight));
 
         }
-        private void ShowHint(HINT hint, Bounds worldBounds)
+
+        private void ShowHint(HINT hint, params object[] objectsToHighlight)
         {
             if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
                 return;
             
-            highlightManager.Highlight(worldBounds);
+            StartCoroutine(HintPagesCoroutine(hint, objectsToHighlight));
+        }
 
-            PlayerDataManager.SetHint(hint, true);
+        //====================================================================================================================//
 
-            ShowHintData(hintRemoteData.GetHintData(hint));
-
-            _waiting = true;
+        /// <summary>
+        /// Highlight each element of objectsToHighlight with the HintData Text elements for this hint.
+        /// If there are more Text Elements than objects, all overflow will highlight the last object in the list.
+        /// </summary>
+        /// <param name="hint"></param>
+        /// <param name="objectsToHighlight"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private IEnumerator HintPagesCoroutine(HINT hint, IReadOnlyList<object> objectsToHighlight)
+        {
+            var hintData = hintRemoteData.GetHintData(hint);
             
             Time.timeScale = 0f;
-
+            ShowingHint = true;
+            
             _previousInputActionGroup = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap("Menu Controls");
 
-        }
-        private void ShowHint(HINT hint, RectTransform rectTransform)
-        {
-            if (hint != HINT.NONE && PlayerDataManager.GetHint(hint))
-                return;
+            var buttonPressed = false;
+            confirmButton.onClick.RemoveAllListeners();
+            confirmButton.onClick.AddListener(() =>
+            {
+                buttonPressed = true;
+            });
             
-            highlightManager.Highlight(rectTransform);
+            for (var i = 0; i < hintData.hintTexts.Count; i++)
+            {
+                var objectToHighlight = i >= objectsToHighlight.Count ? objectsToHighlight.Last() : objectsToHighlight[i];
+                
+                switch (objectToHighlight)
+                {
+                    case IHasBounds iHasBounds:
+                        highlightManager.Highlight(iHasBounds);
+                        break;
+                    case Bounds bounds:
+                        highlightManager.Highlight(bounds);
+                        break;
+                    case RectTransform rectTransform:
+                        highlightManager.Highlight(rectTransform);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(objectToHighlight), objectToHighlight, "Type not supported by Highlight");
+                }
+
+                ShowHintText(hintData.hintTexts[i]);
+
+                //TODO Need to also include waiting for button Press
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+                
+                buttonPressed = false;
+            }
 
             PlayerDataManager.SetHint(hint, true);
-
-            ShowHintData(hintRemoteData.GetHintData(hint));
-
-            _waiting = true;
-            
-            Time.timeScale = 0f;
-
-            _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
-
-        }
-
-        private void ShowHintData(HintRemoteDataScriptableObject.HintData hintData)
-        {
-            hintText.text = hintData.shortText;
-            infoText.text = hintData.longDescription;
-        }
-
-        private void StopShowingHint()
-        {
-            if (!_waiting)
-                return;
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = string.Empty;
             
             Time.timeScale = 1f;
+            ShowingHint = false;
             highlightManager.SetActive(false);
-            _waiting = false;
+
+        }
+
+        /// <summary>
+        /// Used if we want to highlight a specific element, with specific text
+        /// </summary>
+        /// <param name="hint"></param>
+        /// <param name="textIndex"></param>
+        /// <param name="objectToHighlight"></param>
+        /// <param name="setHint"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private IEnumerator HintCoroutine(HINT hint, int textIndex, object objectToHighlight, bool setHint = true)
+        {
+            var text = hintRemoteData.GetHintData(hint).hintTexts[textIndex];
+            
+            Time.timeScale = 0f;
+            ShowingHint = true;
+            
+            _previousInputActionGroup = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap("Menu Controls");
+
+            var buttonPressed = false;
+            confirmButton.onClick.RemoveAllListeners();
+            confirmButton.onClick.AddListener(() =>
+            {
+                buttonPressed = true;
+            });
+
+            switch (objectToHighlight)
+            {
+                case IHasBounds iHasBounds:
+                    highlightManager.Highlight(iHasBounds);
+                    break;
+                case Bounds bounds:
+                    highlightManager.Highlight(bounds);
+                    break;
+                case RectTransform rectTransform:
+                    highlightManager.Highlight(rectTransform);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(objectToHighlight), objectToHighlight, "Type not supported by Highlight");
+            }
+
+            ShowHintText(text);
+
+            //TODO Need to also include waiting for button Press
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+
+            if(setHint)
+                PlayerDataManager.SetHint(hint, setHint);
+            
+            InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
+            _previousInputActionGroup = string.Empty;
+            
+            Time.timeScale = 1f;
+            ShowingHint = false;
+            highlightManager.SetActive(false);
+
+        }
+
+        //====================================================================================================================//
+        
+
+        private void ShowHintText(HintRemoteDataScriptableObject.HintText hintText)
+        {
+            this.hintText.text = hintText.shortText;
+            infoText.text = hintText.longDescription;
         }
 
         //Editor Functions
@@ -362,13 +397,8 @@ namespace StarSalvager.UI.Hints
         
     }
     
-    public interface IHasHintUIElement
-    {
-        RectTransform GetHintElement(HINT hint);
-    }
-    
     public interface IHasHintElement
     {
-        Bounds GetHintElement(HINT hint);
+        object[] GetHintElements(HINT hint);
     }
 }
