@@ -181,7 +181,7 @@ namespace StarSalvager
             else if (x < 0)
                 x += m_gridSizeX;
 
-            if (y > m_gridSizeY)
+            if (y >= m_gridSizeY)
             {
                 y = m_gridSizeY - 1;
             }
