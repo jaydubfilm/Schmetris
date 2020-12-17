@@ -1859,7 +1859,7 @@ namespace StarSalvager
                     var shape = FactoryManager.Instance.GetFactory<ShapeFactory>().CreateObject<Shape>(shapeBits);
 
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(shape);
+                        LevelManager.Instance.ObstacleManager.AddObstacleToListAndParentToWorldRoot(shape);
                     
                     if (delayedCollider)
                     {
@@ -1892,7 +1892,7 @@ namespace StarSalvager
                     bit.transform.rotation = Quaternion.identity;
 
                     if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(bit);
+                        LevelManager.Instance.ObstacleManager.AddObstacleToListAndParentToWorldRoot(bit);
 
                     bits.RemoveAt(0);
                     
@@ -1914,7 +1914,7 @@ namespace StarSalvager
                 }
                 
                 if(LevelManager.Instance && canDetach is IObstacle obstacle)
-                    LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
+                    LevelManager.Instance.ObstacleManager.AddObstacleToListAndParentToWorldRoot(obstacle);
                 
 
                 canDetach.iAttachable.SetAttached(false);
@@ -1959,7 +1959,7 @@ namespace StarSalvager
             canDetach.transform.parent = null;
 
             if (LevelManager.Instance && canDetach is IObstacle obstacle)
-                LevelManager.Instance.ObstacleManager.AddOrphanToObstacles(obstacle);
+                LevelManager.Instance.ObstacleManager.AddObstacleToListAndParentToWorldRoot(obstacle);
 
             RemoveAttachable(canDetach.iAttachable);
         }
