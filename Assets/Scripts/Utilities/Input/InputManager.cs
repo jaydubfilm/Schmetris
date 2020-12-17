@@ -14,22 +14,27 @@ using UnityEngine.InputSystem;
 
 namespace StarSalvager.Utilities.Inputs
 {
+    public enum ACTION_MAP
+    {
+        NULL = -1,
+        DEFAULT,
+        MENU
+    }
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
 
-
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
-        private string currentActionMap;
+        private ACTION_MAP currentActionMap;
 
         [Button, DisableInEditorMode, HorizontalGroup("Debug/Row1")]
         private void ForceMenuControls()
         {
-            SwitchCurrentActionMap("Menu Controls");
+            SwitchCurrentActionMap(ACTION_MAP.MENU);
         }
         [Button, DisableInEditorMode, HorizontalGroup("Debug/Row1")]
         private void ForceDefaultControls()
         {
-            SwitchCurrentActionMap("Default");
+            SwitchCurrentActionMap(ACTION_MAP.DEFAULT);
         }
         
         //====================================================================================================================//
@@ -178,20 +183,20 @@ namespace StarSalvager.Utilities.Inputs
 
         //============================================================================================================//
 
-        public static string CurrentActionMap { get; private set; }
+        public static ACTION_MAP CurrentActionMap { get; private set; }
 
 
-        public static void SwitchCurrentActionMap(in string actionMapName)
+        public static void SwitchCurrentActionMap(in ACTION_MAP actionMap)
         {
-            switch (actionMapName)
+            switch (actionMap)
             {
-                case "Default":
+                case ACTION_MAP.DEFAULT:
                     
                     
                     Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
                     break;
-                case "Menu Controls":
+                case ACTION_MAP.MENU:
                     if(Instance)
                     {
                         Instance.ProcessMovementInput(0);
@@ -203,10 +208,24 @@ namespace StarSalvager.Utilities.Inputs
                     break;
             }
 
-            Instance.currentActionMap = CurrentActionMap = actionMapName;
-            
+            Instance.currentActionMap = CurrentActionMap = actionMap;
+
+            var actionMapName = GetActionMapName(actionMap);
             Instance.playerInput.SwitchCurrentActionMap(actionMapName);
             
+        }
+
+        private static string GetActionMapName(in ACTION_MAP actionMap)
+        {
+            switch (actionMap)
+            {
+                case ACTION_MAP.DEFAULT:
+                    return "Default";
+                case ACTION_MAP.MENU:
+                    return "Menu Controls";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(actionMap), actionMap, null);
+            }
         }
         
         public static void RegisterMoveOnInput(IMoveOnInput toAdd)
@@ -666,7 +685,7 @@ namespace StarSalvager.Utilities.Inputs
             if (ctx.ReadValue<float>() == 1f)
             {
                 GameTimer.SetPaused(!isPaused);
-                SwitchCurrentActionMap(isPaused ? "Menu Controls" : "Default");
+                SwitchCurrentActionMap(isPaused ? ACTION_MAP.MENU: ACTION_MAP.DEFAULT);
             }
         }
         

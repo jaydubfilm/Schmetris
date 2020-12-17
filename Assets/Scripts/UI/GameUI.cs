@@ -900,7 +900,7 @@ namespace StarSalvager.UI
             if (_movingSummaryWindow)
                 return;
             
-            InputManager.SwitchCurrentActionMap(show ? "Menu Controls" : "Default");
+            InputManager.SwitchCurrentActionMap(show ? ACTION_MAP.MENU : ACTION_MAP.DEFAULT);
             
             
             float targetY;

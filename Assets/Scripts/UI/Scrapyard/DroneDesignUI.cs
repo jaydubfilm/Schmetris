@@ -401,7 +401,7 @@ namespace StarSalvager.UI.Scrapyard
             //liquidResourceContentView
             foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.BLUE)
+                if (_bitType == BIT_TYPE.WHITE /*|| _bitType == BIT_TYPE.BLUE*/)
                     continue;
                 
                 if (DroneDesigner._scrapyardBot == null)
@@ -416,8 +416,8 @@ namespace StarSalvager.UI.Scrapyard
                     type = _bitType,
                 };
 
-                if (_bitType == BIT_TYPE.YELLOW)
-                    System.Console.WriteLine("");
+                /*if (_bitType == BIT_TYPE.YELLOW)
+                    System.Console.WriteLine("");*/
 
                 var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);
