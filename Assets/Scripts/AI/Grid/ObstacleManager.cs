@@ -1191,14 +1191,25 @@ namespace StarSalvager
         }
 
         private float m_bounceTravelDistance = 20.0f;
-        private float m_bounceSpeedAdjustment = 0.5f;
+        private float m_bounceSpeedAdjustment = 1.0f;
 
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
+            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
+            
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);
             float bounceTravelDistance = m_bounceTravelDistance * randomFactor;
+            float bounceSpeedAdjustment = 1.0f;
+
+            if (isBumper)
+            {
+                bounceTravelDistance *= 5;
+                bounceSpeedAdjustment /= 5;
+                despawnOnEnd = true;
+                Debug.Log("Bounce Bumper");
+            }
 
             var localPosition = obstacle.transform.localPosition;
             Vector2 destination = (Vector2) localPosition + direction * bounceTravelDistance;
@@ -1209,7 +1220,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, localPosition, destination,
                 Vector2.Distance(localPosition, destination) /
-                (bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+                (bounceTravelDistance * bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,
