@@ -375,7 +375,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnBitShift -= SetBump;
             
-            bot.CanUseResources = false;
+            bot.CanUseResources = true;
             PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));

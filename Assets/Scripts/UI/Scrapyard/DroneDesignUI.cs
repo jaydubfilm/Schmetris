@@ -156,7 +156,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
+            
         }
 
         private void OnEnable()
@@ -179,6 +179,8 @@ namespace StarSalvager.UI.Scrapyard
             repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
 
             ScaleCamera(m_cameraZoomScaler.value);
+            
+            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
         }
 
         private void OnDisable()
