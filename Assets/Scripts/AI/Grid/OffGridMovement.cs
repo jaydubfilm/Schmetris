@@ -42,6 +42,12 @@ namespace StarSalvager
 
         public abstract void Move(Vector3 shiftValue);
 
+        public void Extend()
+        {
+            LerpTimer = 0.75f;
+            EndPosition = (EndPosition - StartingPosition) * 1.33f + StartingPosition;
+        }
+
         public void Spin()
         {
             if (Spinning)

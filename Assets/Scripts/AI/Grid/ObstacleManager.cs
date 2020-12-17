@@ -320,6 +320,12 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].Extend();
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(bit, m_offGridMovingObstacles[i].EndPosition);
                                 bit.SetColliderActive(true);
@@ -333,6 +339,12 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].Extend();
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(asteroid, m_offGridMovingObstacles[i].EndPosition);
                                 asteroid.SetColliderActive(true);
@@ -346,6 +358,12 @@ namespace StarSalvager
                             }
                             else
                             {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].Extend();
+                                    continue;
+                                }
+
                                 AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
                                 PlaceMovableOnGridSpecific(component, m_offGridMovingObstacles[i].EndPosition);
                                 component.SetColliderActive(true);
@@ -973,13 +991,6 @@ namespace StarSalvager
                         LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
 
                     AddObstacleToList(newObstacle);
-                    if (newObstacle is Shape newShape)
-                    {
-                        foreach (Bit bit in newShape.AttachedBits)
-                        {
-                            AddObstacleToList(bit);
-                        }
-                    }
 
                     obstacle = newObstacle;
                     break;
@@ -993,13 +1004,6 @@ namespace StarSalvager
                         LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
 
                     AddObstacleToList(newObstacle);
-                    if (newObstacle is Shape newShape)
-                    {
-                        foreach (Bit bit in newShape.AttachedBits)
-                        {
-                            AddObstacleToList(bit);
-                        }
-                    }
                     
                     //Used to benchmark spawn rates
                     /*if (!startedCheck)
@@ -1059,11 +1063,10 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
 
-
             PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
         }
 
-        public void AddOrphanToObstacles(IObstacle obstacle)
+        public void AddObstacleToListAndParentToWorldRoot(IObstacle obstacle)
         {
             obstacle.transform.parent = WorldElementsRoot.transform;
             AddObstacleToList(obstacle);
@@ -1076,6 +1079,14 @@ namespace StarSalvager
                 return;
 
             m_obstacles.Add(obstacle);
+            if (obstacle is Shape newShape)
+            {
+                foreach (Bit bit in newShape.AttachedBits)
+                {
+                    AddObstacleToList(bit);
+                }
+            }
+
             obstacle.IsRegistered = true;
         }
 
@@ -1180,14 +1191,25 @@ namespace StarSalvager
         }
 
         private float m_bounceTravelDistance = 20.0f;
-        private float m_bounceSpeedAdjustment = 0.5f;
+        private float m_bounceSpeedAdjustment = 1.0f;
 
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
+            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
+            
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);
             float bounceTravelDistance = m_bounceTravelDistance * randomFactor;
+            float bounceSpeedAdjustment = 1.0f;
+
+            if (isBumper)
+            {
+                bounceTravelDistance *= 5;
+                bounceSpeedAdjustment /= 5;
+                despawnOnEnd = true;
+                Debug.Log("Bounce Bumper");
+            }
 
             var localPosition = obstacle.transform.localPosition;
             Vector2 destination = (Vector2) localPosition + direction * bounceTravelDistance;
@@ -1198,7 +1220,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, localPosition, destination,
                 Vector2.Distance(localPosition, destination) /
-                (bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+                (bounceTravelDistance * bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,
@@ -1210,6 +1232,7 @@ namespace StarSalvager
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning,
                 arc, parentToGrid);
         }
+
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)

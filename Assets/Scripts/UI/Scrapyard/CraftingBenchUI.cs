@@ -120,7 +120,7 @@ namespace StarSalvager.UI.Scrapyard
                     
                     if(HintManager.CanShowHint(HINT.CRAFT_PART))
                         HintManager.TryShowHint(HINT.CRAFT_PART, 0.25f);
-
+                    
                 }, TryShowBlueprintCost);
             }
         }

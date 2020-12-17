@@ -14,51 +14,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HintDatas:
   - type: 1
-    shortText: Magnetism
-    longDescription: Your magnetism is maxed!  To free some up, MERGE 3 identical
-      bits, or TRIM unwanted bits with pulsars and asteroids.  To carry more stuff,
-      craft a magnet part in the wreckshop!
+    hintTexts:
+    - shortText: Magnetism
+      longDescription: Your magnetism is maxed!  To free some up, MERGE 3 identical
+        bits, or TRIM unwanted bits with pulsars and asteroids.  To carry more stuff,
+        craft a magnet part in the wreckshop!
   - type: 2
-    shortText: Bonus Shapes
-    longDescription: Keep an eye out for BONUS SHAPES travelling horizontally near
-      the top of the screen. Match their colour pattern and rotation with bits on
-      your drone for instant upgrades and bonus points!
+    hintTexts:
+    - shortText: Bonus Shapes
+      longDescription: Keep an eye out for BONUS SHAPES travelling horizontally near
+        the top of the screen. Match their colour pattern and rotation with bits
+        on your drone for instant upgrades and bonus points!
   - type: 3
-    shortText: Gun
-    longDescription: Congratulations on building a gun!  This weapon will aim and
-      fire automatically as soon as an enemy comes in range... so long as you still
-      have ammo in your cargo!
+    hintTexts:
+    - shortText: Gun
+      longDescription: Congratulations on building a gun!  This weapon will aim and
+        fire automatically as soon as an enemy comes in range... so long as you still
+        have ammo in your cargo!
   - type: 4
-    shortText: Fuel
-    longDescription: 'Darn, out of fuel!  You now have a CHOICE:  Sit tight and hope
-      to make it through this wave alive...  OR press ''X'' to self-destruct and
-      get on with the game. HINT: You can still rotate, so try to catch some passing
-      fuel bits if you see some'
+    hintTexts:
+    - shortText: Fuel
+      longDescription: 'Darn, out of fuel!  You now have a CHOICE:  Sit tight and
+        hope to make it through this wave alive...  OR press ''X'' to self-destruct
+        and get on with the game.'
+    - shortText: Fuel
+      longDescription: You can still rotate, so try to catch some passing fuel bits
+        if you see some
   - type: 5
-    shortText: Home
-    longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
-      Either take your loot back to base and safely stash it - or select a new wave
-      and try to collect more!'
+    hintTexts:
+    - shortText: Home
+      longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
+        Either take your loot back to base and safely stash it - or select a new
+        wave and try to collect more!'
   - type: 6
-    shortText: Stored Part
-    longDescription: 'You built your first part!  Drag it from the storage area onto
-      the grid to attach the part to your drone''s core. '
+    hintTexts:
+    - shortText: Stored Part
+      longDescription: 'You built your first part!  Drag it from the storage area
+        onto the grid to attach the part to your drone''s core. '
   - type: 7
-    shortText: Gears
-    longDescription: Nice move!  That combo just won you some GEARS.  Gears are rewards
-      for making combos and other skilled flying moves. This is the real secret to
-      survival out here.
+    hintTexts:
+    - shortText: Gears
+      longDescription: Nice move!  That combo just won you some GEARS.  Gears are
+        rewards for making combos and other skilled flying moves. This is the real
+        secret to survival out here.
   - type: 8
-    shortText: Patch Points
-    longDescription: Congratulations!  You earned your first PATCH POINT!  These
-      can be used to upgrade your base.  But don't stop now.  Collect enough gears
-      to earn another!
+    hintTexts:
+    - shortText: Patch Points
+      longDescription: Congratulations!  You earned your first PATCH POINT!  These
+        can be used to upgrade your base.  But don't stop now.  Collect enough gears
+        to earn another!
   - type: 11
-    shortText: Repairing
-    longDescription: Looks like you had a run-in with some space junk.  Use plasma
-      to REPAIR a part by dragging it onto the workbench icon.
+    hintTexts:
+    - shortText: Repairing
+      longDescription: Looks like you had a run-in with some space junk.  Use plasma
+        to REPAIR a part by dragging it onto the workbench icon.
+    - shortText: Repairing
+      longDescription: Your drone has been damaged.  Collect PLASMA to repair your
+        parts.
   - type: 10
-    shortText: Parasite
-    longDescription: Uh-oh.  Looks like we're not alone out here.  That parasite
-      is hungry for drone parts.  It will eat its way to your core if you don't figure
-      out a way to scrape it off.
+    hintTexts:
+    - shortText: Parasite
+      longDescription: Uh-oh.  Looks like we're not alone out here.  That parasite
+        is hungry for drone parts.  It will eat its way to your core if you don't
+        figure out a way to scrape it off.

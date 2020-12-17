@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class StorageUI : MonoBehaviour, IHasHintUIElement
+    public class StorageUI : MonoBehaviour, IHasHintElement
     {
         
         //============================================================================================================//
@@ -99,15 +99,18 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public RectTransform GetHintElement(HINT hint)
+        public object[] GetHintElements(HINT hint)
         {
             switch (hint)
             {
                 case HINT.NONE:
                     return null;
                 case HINT.CRAFT_PART:
-                    return storageUiElementScrollView.Elements.FirstOrDefault(x =>
-                        x.data.blockData.ClassType.Equals(nameof(Part)))?.transform;
+                    return new object[]
+                    {
+                        storageUiElementScrollView.Elements.FirstOrDefault(x =>
+                            x.data.blockData.ClassType.Equals(nameof(Part)))?.transform
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

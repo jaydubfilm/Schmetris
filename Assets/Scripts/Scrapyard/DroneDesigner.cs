@@ -22,6 +22,7 @@ using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
+using Object = System.Object;
 
 namespace StarSalvager
 {
@@ -1319,16 +1320,17 @@ namespace StarSalvager
         #endregion //Other
 
         //============================================================================================================//
-        public Bounds GetHintElement(HINT hint)
+        public object[] GetHintElements(HINT hint)
         {
             switch (hint)
             {
                 case HINT.NONE:
                     return default;
                 case HINT.DAMAGE:
-                    var bounds = _repairHover.bounds;
-                    Debug.Log($"Center: {bounds.center}, Size: {bounds.size}");
-                    return bounds;
+                    return new object[]
+                    {
+                        _repairHover.bounds
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

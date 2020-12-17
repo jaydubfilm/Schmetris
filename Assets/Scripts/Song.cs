@@ -118,6 +118,12 @@ namespace StarSalvager.Audio
             }
 
             CurrentVolume = target;
+            
+            //Force set everyones volume, after to ensure that all are where they're meant to be
+            foreach (var stemData in stems)
+            {
+                stemData.SetVolume(Mathf.Lerp(0f, stemData.maxLevel, target));
+            }
 
             //IsPlaying = fadeDirection == StemData.FADE.IN;
             

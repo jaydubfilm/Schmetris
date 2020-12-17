@@ -162,7 +162,14 @@ namespace StarSalvager
                 if (enemy.transform.position.y <= -20)
                 {
                     RemoveEnemy(enemy);
-                    Recycler.Recycle<Enemy>(enemy);
+                    if (enemy is EnemyAttachable)
+                    {
+                        Recycler.Recycle<EnemyAttachable>(enemy);
+                    }
+                    else
+                    {
+                        Recycler.Recycle<Enemy>(enemy);
+                    }
                     continue;
                 }
 
@@ -215,7 +222,7 @@ namespace StarSalvager
 
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.IsState(GameState.LevelBotDead))
+            if (GameManager.IsState(GameState.LevelActiveEndSequence) || GameManager.IsState(GameState.LevelBotDead))
             {
                 return;
             }

@@ -20,6 +20,8 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class DroneDesignUI : MonoBehaviour
     {
+        public bool CanAffordRepair { get; private set; }
+
         [SerializeField, Required] 
         private TMP_Text flightDataText;
         
@@ -154,7 +156,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
+            
         }
 
         private void OnEnable()
@@ -177,6 +179,8 @@ namespace StarSalvager.UI.Scrapyard
             repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
 
             ScaleCamera(m_cameraZoomScaler.value);
+            
+            recoveryDroneBannerObject.SetActive(Globals.IsRecoveryBot);
         }
 
         private void OnDisable()
@@ -397,7 +401,7 @@ namespace StarSalvager.UI.Scrapyard
             //liquidResourceContentView
             foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.BLUE)
+                if (_bitType == BIT_TYPE.WHITE /*|| _bitType == BIT_TYPE.BLUE*/)
                     continue;
                 
                 if (DroneDesigner._scrapyardBot == null)
@@ -412,8 +416,8 @@ namespace StarSalvager.UI.Scrapyard
                     type = _bitType,
                 };
 
-                if (_bitType == BIT_TYPE.YELLOW)
-                    System.Console.WriteLine("");
+                /*if (_bitType == BIT_TYPE.YELLOW)
+                    System.Console.WriteLine("");*/
 
                 var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);
@@ -659,11 +663,13 @@ namespace StarSalvager.UI.Scrapyard
             if (HintManager.CanShowHint(HINT.DAMAGE))
             {
                 //FIXME Positioning is fucked
-                //HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
+                HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
             }
+
+            CanAffordRepair = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
             
             _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
+            repairButton.interactable = CanAffordRepair;
             repairButtonGlow.SetActive(repairButton.interactable);
             
             /*var totalCost = repairCost + replacementCost;

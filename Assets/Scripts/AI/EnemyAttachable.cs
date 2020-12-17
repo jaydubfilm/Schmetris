@@ -3,12 +3,15 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Missions;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
@@ -63,6 +66,14 @@ namespace StarSalvager.AI
 
         protected override void Update()
         {
+            if (HintManager.CanShowHint(HINT.PARASITE))
+            {
+                if (CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
+                {
+                    HintManager.TryShowHint(HINT.PARASITE, 1f, this);
+                }
+            }
+            
             
             if (FreezeTime > 0)
             {
