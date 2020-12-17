@@ -516,6 +516,7 @@ namespace StarSalvager
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
+                            liquidCapacities[BIT_TYPE.BLUE] += value;
                         }
                         
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))

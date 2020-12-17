@@ -335,22 +335,22 @@ namespace StarSalvager.UI.Scrapyard
         
         private void TryFillBotResources()
         {
-            BIT_TYPE[] types = {
+            /*BIT_TYPE[] types = {
                 BIT_TYPE.RED,
                 BIT_TYPE.GREY,
                 BIT_TYPE.GREEN,
                 BIT_TYPE.YELLOW
-            };
+            };*/
 
             List<BlockData> botData = PlayerDataManager.GetBlockDatas();
             
-            foreach (var bitType in types)
+            foreach (var bitType in Constants.BIT_ORDER)
             {
                 switch (bitType)
                 {
                     case BIT_TYPE.GREEN:
                         //TODO Check for repair
-                        if(!botData.Any(b => b.Type == (int)PART_TYPE.REPAIR))
+                        if(botData.All(b => b.Type != (int) PART_TYPE.REPAIR))
                             continue;
                         break;
                     case BIT_TYPE.GREY:
@@ -369,6 +369,8 @@ namespace StarSalvager.UI.Scrapyard
                         }
                         break;
                     case BIT_TYPE.RED:
+                        break;
+                    case BIT_TYPE.BLUE:
                         break;
                     default:
                         continue;

@@ -20,8 +20,9 @@ namespace StarSalvager.Values
             BIT_TYPE.RED,
             BIT_TYPE.GREY,
             BIT_TYPE.GREEN,
+            BIT_TYPE.BLUE,
             BIT_TYPE.YELLOW,
-            BIT_TYPE.BLUE
+            
         };
     }
 }
