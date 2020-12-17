@@ -293,6 +293,8 @@ namespace StarSalvager.UI.Hints
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
                 
                 buttonPressed = false;
+
+                yield return null;
             }
 
             PlayerDataManager.SetHint(hint, true);
