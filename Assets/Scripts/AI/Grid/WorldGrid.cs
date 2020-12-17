@@ -156,25 +156,7 @@ namespace StarSalvager
 
         private GridSquare GetGridSquareAtCoordinates(Vector2Int gridPosition)
         {
-            if (gridPosition.x >= m_gridSizeX)
-            {
-                gridPosition.x = m_gridSizeX - 1;
-            }
-            else if (gridPosition.x < 0)
-            {
-                gridPosition.x = 0;
-            }
-
-            if (gridPosition.y >= m_gridSizeY)
-            {
-                gridPosition.y = m_gridSizeY - 1;
-            }
-            else if (gridPosition.y < 0)
-            {
-                gridPosition.y = 0;
-            }
-
-            return m_gridArray[gridPosition.x + (gridPosition.y * m_gridSizeX)];
+            return GetGridSquareAtCoordinates(gridPosition.x, gridPosition.y);
         }
 
         public GridSquare GetGridSquareAtCoordinates(int x, int y)
