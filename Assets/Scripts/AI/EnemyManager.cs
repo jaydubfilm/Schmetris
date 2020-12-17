@@ -232,7 +232,6 @@ namespace StarSalvager
             m_timesToSpawn.Clear();
 
             //Populate enemies to spawn list
-            Debug.Log("POPULATE ENEMY LIST");
             foreach (StageEnemyData stageEnemyData in waveRemoteData.StageEnemyData)
             {
                 for (int i = 0; i < stageEnemyData.EnemyCount; i++)
