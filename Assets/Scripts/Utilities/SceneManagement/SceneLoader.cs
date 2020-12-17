@@ -190,20 +190,20 @@ namespace StarSalvager.Utilities.SceneManagement
         
         private static void SetControlMap(string sceneName)
         {
-            const string DEFAULT = "Default";
-            const string MENU = "Menu Controls";
+            /*const string DEFAULT = "Default";
+            const string MENU = "Menu Controls";*/
 
-            string target;
+            ACTION_MAP target;
             
             switch (sceneName)
             {
                 case MAIN_MENU:
                 case UNIVERSE_MAP:
                 case SCRAPYARD:
-                    target = MENU;
+                    target = ACTION_MAP.MENU;
                     break;
                 case LEVEL:
-                    target = DEFAULT;
+                    target = ACTION_MAP.DEFAULT;
                     break;
                 default:
                     throw new ArgumentException();

@@ -104,7 +104,7 @@ namespace StarSalvager.UI
         private void Show(string Title, string Body, string neutralText, Action OnPressedCallback, string dontShowAgainCode)
         {
             var previousInputType = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);
@@ -138,7 +138,7 @@ namespace StarSalvager.UI
         private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback, string dontShowAgainCode)
         {
             var previousInputType = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);
@@ -183,7 +183,7 @@ namespace StarSalvager.UI
         private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode)
         {
             var previousInputType = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             
             var shouldShowAlert = CheckShouldShowAlert(dontShowAgainCode);
             SetActive(shouldShowAlert);

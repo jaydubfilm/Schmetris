@@ -62,8 +62,10 @@ namespace StarSalvager.Utilities.Trello
             submitButton.onClick.AddListener(SendReport);
             cancelButton.onClick.AddListener(()=>
             {
+                ResetInput();
                 bugWindowObject.SetActive(false);
                 GameTimer.SetPaused(false);
+                
             });
             bugWindowObject.SetActive(false);
             
@@ -109,7 +111,7 @@ namespace StarSalvager.Utilities.Trello
 
         //====================================================================================================================//
 
-        private string _previousInputMap;
+        private ACTION_MAP _previousInputMap;
 
         private void OpenBugSubmissionWindow()
         {
@@ -117,7 +119,7 @@ namespace StarSalvager.Utilities.Trello
                 return;
 
             _previousInputMap = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             
             StartCoroutine(TakeScreenshotRoutine(() =>
             {
@@ -173,10 +175,15 @@ namespace StarSalvager.Utilities.Trello
                     bugWindowObject.SetActive(false);
                     
                     Toast.AddToast("Bug Submitted");
-                    
-                    InputManager.SwitchCurrentActionMap(_previousInputMap);
-                    _previousInputMap = string.Empty;
+
+                    ResetInput();
                 }));
+        }
+
+        private void ResetInput()
+        {
+            InputManager.SwitchCurrentActionMap(_previousInputMap);
+            _previousInputMap = ACTION_MAP.NULL;
         }
         
         //====================================================================================================================//

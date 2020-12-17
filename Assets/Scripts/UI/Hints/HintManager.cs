@@ -56,7 +56,7 @@ namespace StarSalvager.UI.Hints
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
-        private string _previousInputActionGroup;
+        private ACTION_MAP _previousInputActionGroup;
 
         //HintManager Functions
         //====================================================================================================================//
@@ -259,7 +259,7 @@ namespace StarSalvager.UI.Hints
             ShowingHint = true;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
             var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
@@ -298,7 +298,7 @@ namespace StarSalvager.UI.Hints
             PlayerDataManager.SetHint(hint, true);
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
-            _previousInputActionGroup = string.Empty;
+            _previousInputActionGroup = ACTION_MAP.NULL;
             
             Time.timeScale = 1f;
             ShowingHint = false;
@@ -323,7 +323,7 @@ namespace StarSalvager.UI.Hints
             ShowingHint = true;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
             var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
@@ -356,7 +356,7 @@ namespace StarSalvager.UI.Hints
                 PlayerDataManager.SetHint(hint, setHint);
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
-            _previousInputActionGroup = string.Empty;
+            _previousInputActionGroup = ACTION_MAP.NULL;
             
             Time.timeScale = 1f;
             ShowingHint = false;

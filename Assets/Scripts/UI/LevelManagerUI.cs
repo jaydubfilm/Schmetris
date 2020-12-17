@@ -240,7 +240,7 @@ namespace StarSalvager.UI
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                InputManager.SwitchCurrentActionMap("Default");
+                InputManager.SwitchCurrentActionMap(ACTION_MAP.DEFAULT);
             });
             
             ToggleBetweenWavesUIActive(false);
