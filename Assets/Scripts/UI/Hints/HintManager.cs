@@ -290,7 +290,7 @@ namespace StarSalvager.UI.Hints
                 ShowHintText(hintData.hintTexts[i]);
 
                 //TODO Need to also include waiting for button Press
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
                 
                 buttonPressed = false;
             }
@@ -350,7 +350,7 @@ namespace StarSalvager.UI.Hints
             ShowHintText(text);
 
             //TODO Need to also include waiting for button Press
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
 
             if(setHint)
                 PlayerDataManager.SetHint(hint, setHint);
