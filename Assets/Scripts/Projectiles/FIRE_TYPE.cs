@@ -8,5 +8,7 @@
         FIXED_SPRAY,
         HEAT_SEEKING,
         SPIRAL,
+        FOUR_ANGLES,
+        FOUR_ANGLES_DIAGONAL
     }
 }

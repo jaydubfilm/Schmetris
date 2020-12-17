@@ -199,10 +199,6 @@ namespace StarSalvager.Factories
                         Vector3.forward * Random.Range(-spreadAngle, spreadAngle)) - (Vector3) fromPosition);
                     break;*/
                 //----------------------------------------------------------------------------------------------------//
-                /*case FIRE_TYPE.Down:
-                    fireDirections.Add(Vector3.down);
-                    break;*/
-                //----------------------------------------------------------------------------------------------------//
                 case FIRE_TYPE.RANDOM_SPRAY:
                     shootAt = fromPosition + shootDirection;
                     //For each shot in the spray, rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
@@ -233,6 +229,20 @@ namespace StarSalvager.Factories
                     //Consult spiral formula to get the angle to shoot the next shot at
                     //fireDirections.Add(GetSpiralAttackDirection(fromPosition, ref TEMP_SPIRAL));
                     throw new NotImplementedException("This needs work, consult Alex's if attempting to use this");
+                //----------------------------------------------------------------------------------------------------//
+                case FIRE_TYPE.FOUR_ANGLES:
+                    fireDirections.Add(Vector2.left);
+                    fireDirections.Add(Vector2.right);
+                    fireDirections.Add(Vector2.up);
+                    fireDirections.Add(Vector2.down);
+                    break;
+                //----------------------------------------------------------------------------------------------------//
+                case FIRE_TYPE.FOUR_ANGLES_DIAGONAL:
+                    fireDirections.Add(Vector2.left + Vector2.up);
+                    fireDirections.Add(Vector2.right + Vector2.up);
+                    fireDirections.Add(Vector2.left + Vector2.down);
+                    fireDirections.Add(Vector2.right + Vector2.down);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(fireType), fireType, null);

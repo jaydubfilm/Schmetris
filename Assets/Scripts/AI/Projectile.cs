@@ -104,6 +104,8 @@ namespace StarSalvager.AI
                 case FIRE_TYPE.RANDOM_SPRAY:
                 case FIRE_TYPE.SPIRAL:
                 case FIRE_TYPE.FIXED_SPRAY:
+                case FIRE_TYPE.FOUR_ANGLES:
+                case FIRE_TYPE.FOUR_ANGLES_DIAGONAL:
                     newPosition +=
                         (EnemyVelocityModifier + TravelDirectionNormalized * ProjectileData.ProjectileSpeed) *
                         Time.deltaTime;
