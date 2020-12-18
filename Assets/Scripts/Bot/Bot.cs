@@ -78,8 +78,8 @@ namespace StarSalvager
         //====================================================================================================================//
         [SerializeField, BoxGroup("PROTOTYPE")]
         private bool PROTO_autoRefineFuel = true;
-        [SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
-        public float TEST_MergeTime = 0.6f;
+        //[SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
+        //public float TEST_MergeTime = 0.6f;
         
         [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
         public float TEST_DetachTime = 1f;
@@ -2201,7 +2201,7 @@ namespace StarSalvager
             bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                TEST_MergeTime,
+                Globals.BitShiftTime,
                 () =>
             {
                 //Checks for floaters
@@ -2786,7 +2786,7 @@ namespace StarSalvager
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                TEST_MergeTime,
+                Globals.ComboMergeTime,
                 () =>
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -183,7 +184,7 @@ namespace StarSalvager.Utilities.Extensions
 
         public static void MoveOrphanPieces(this Bot bot,IReadOnlyList<OrphanMoveData> orphans, Action onFinishedCallback)
         {
-            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, bot.TEST_MergeTime, onFinishedCallback));
+            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, Globals.BitShiftTime, onFinishedCallback));
         }
         
         private static IEnumerator MoveOrphanPiecesCoroutine(Bot bot,
