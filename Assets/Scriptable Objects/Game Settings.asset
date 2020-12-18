@@ -12,22 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  allowAccessToUnlockedLaterWaves: 1
   testingFeatures: 0
-  bitsPushThroughParts: 1
+  asteroidDamage: 10
+  gameUIResourceThreshold: 0.33
+  missionReminderFrequency: 1
+  numCurrentTrackedMissionMax: 3
+  patchPointBaseCost: 500
+  patchPointIncrementCost: 50
+  blueprintInitialData:
+  - type: 4
+    level: 0
+  - type: 9
+    level: 0
+  - type: 1
+    level: 0
+  facilityInitialData: []
+  facilityInitialBlueprintData: []
   gridWidth: 100
-  timeForAsteroidToFallOneSquare: 0.32
-  DASTime: 0.15
   gridHeightRelativeToScreen: 1.25
+  timeForAsteroidToFallOneSquare: 0.32
+  allowAccessToUnlockedLaterWaves: 1
+  levelResourceDropReductionAmount: 0.854
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
-  botHorizontalSpeed: 30
-  botRotationSpeed: 500
-  botContinuousRotationSpeed: 700
-  missionReminderFrequency: 1
+  onlyGetWaveLootOnce: 1
+  recoveryOfDroneLocksHorizontalMovement: 1
+  shortcutJumpToAfter: 1
   bonusShapeSpeed: 22
-  levelResourceDropReductionAmount: 0.854
-  asteroidDamage: 10
   bonusShapeGearsRewards:
   - numCells: 2
     numColours: 1
@@ -89,26 +100,17 @@ MonoBehaviour:
   - numCells: 5
     numColours: 5
     gearsValue: 1000
-  patchPointBaseCost: 500
-  patchPointIncrementCost: 50
+  asteroidSpawnDisableTimeBeforeWaveEnd: 1
+  timeAfterWaveEndFlyOut: 8
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
+  bitsPushThroughParts: 1
+  bitShiftTime: 0.15
+  comboMergeTime: 0.15
+  DASTime: 0.15
+  botHorizontalSpeed: 30
+  botRotationSpeed: 500
+  botContinuousRotationSpeed: 700
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
-  gameUIResourceThreshold: 0.33
-  numCurrentTrackedMissionMax: 3
-  onlyGetWaveLootOnce: 1
-  recoveryOfDroneLocksHorizontalMovement: 1
-  shortcutJumpToAfter: 1
-  blueprintInitialData:
-  - type: 4
-    level: 0
-  - type: 9
-    level: 0
-  - type: 1
-    level: 0
-  facilityInitialData: []
-  facilityInitialBlueprintData: []
-  asteroidSpawnDisableTimeBeforeWaveEnd: 1
-  timeAfterWaveEndFlyOut: 8
