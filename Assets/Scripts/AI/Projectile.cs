@@ -12,17 +12,17 @@ namespace StarSalvager.AI
     //TODO: Handle proper setting of the collision tag
     public class Projectile : CollidableBase, ICustomRecycle
     {
-        private Vector3 TravelDirectionNormalized { get; set; }
-        private Vector3 EnemyVelocityModifier { get; set; }
-        private ProjectileProfileData ProjectileData { get; set; }
+        protected Vector3 TravelDirectionNormalized { get; set; }
+        protected Vector3 EnemyVelocityModifier { get; set; }
+        protected ProjectileProfileData ProjectileData { get; set; }
 
-        private float _damageAmount;
+        protected float _damageAmount;
 
-        private bool _hasRange;
-        private float _lifeTime;
-        private CollidableBase _target;
+        protected bool _hasRange;
+        protected float _lifeTime;
+        protected CollidableBase _target;
 
-        private TrailRenderer _trailRenderer;
+        protected TrailRenderer _trailRenderer;
 
         //============================================================================================================//
 
