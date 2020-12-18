@@ -217,7 +217,7 @@ namespace StarSalvager.UI.Hints
                     var canAfford = FindObjectOfType<DroneDesignUI>().CanAffordRepair;
                     var textIndex = canAfford ? 0 : 1;
                     
-                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault(), canAfford));
+                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));
                     return;
                 //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
