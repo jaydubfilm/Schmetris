@@ -14,6 +14,7 @@ namespace StarSalvager.Factories
     public class ProjectileFactory : FactoryBase
     {
         private readonly GameObject m_prefab;
+        private readonly GameObject m_attachablePrefab;
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
 
         //============================================================================================================//
@@ -22,6 +23,7 @@ namespace StarSalvager.Factories
         {
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
+            m_attachablePrefab = projectileProfile.m_attachablePrefab;
         }
 
         //============================================================================================================//
@@ -38,7 +40,17 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
-            return Recycler.TryGrab(out T newObject) ? newObject : CreateGameObject().GetComponent<T>();
+            if (Recycler.TryGrab(out T newObject))
+            {
+                return newObject;
+            }
+
+            if (typeof(T) == typeof(ProjectileAttachable))
+            {
+                return Object.Instantiate(m_attachablePrefab).GetComponent<T>();
+            }
+
+            return CreateGameObject().GetComponent<T>();
         }
 
         //Static Target position functions
@@ -75,7 +87,7 @@ namespace StarSalvager.Factories
 
             foreach (var travelDirection in travelDirections)
             {
-                var projectile = CreateObject<Projectile>();
+                Projectile projectile = CreateObject<Projectile>();
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
@@ -140,7 +152,15 @@ namespace StarSalvager.Factories
 
             foreach (var travelDirection in travelDirections)
             {
-                var projectile = CreateObject<Projectile>();
+                Projectile projectile;
+                if (projectileProfile.Isattachable)
+                {
+                    projectile = CreateObject<ProjectileAttachable>();
+                }
+                else
+                {
+                    projectile = CreateObject<Projectile>();
+                }
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);

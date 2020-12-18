@@ -30,6 +30,7 @@ namespace StarSalvager.Factories.Data
 
         public int SprayCount => m_sprayCount;
 
+        public bool Isattachable => m_isAttachable;
         public bool CanHitAsteroids => m_canHitAsteroids;
         public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
 
@@ -98,6 +99,9 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
          ShowIf(nameof(showSprayCount))]
         private int m_sprayCount;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool m_isAttachable;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_canHitAsteroids;
