@@ -115,7 +115,7 @@ namespace StarSalvager
         //==============================================================================================================//
         
         private Dictionary<Part, Transform> _turrets;
-        private Dictionary<Part, Enemy> _gunTargets;
+        private Dictionary<Part, CollidableBase> _gunTargets;
         
         private List<Part> _parts;
         private List<Part> _smartWeapons;
@@ -131,6 +131,7 @@ namespace StarSalvager
         private Dictionary<Part, float> _bombTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
+        private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
 
         private Dictionary<Part, float> _gunRanges;
 
@@ -189,7 +190,7 @@ namespace StarSalvager
                 MagnetCount = _magnetOverride;
             }
 
-            _gunTargets = new Dictionary<Part, Enemy>();
+            _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Part>();
 
             var liquidCapacities = new Dictionary<BIT_TYPE, int>
@@ -995,12 +996,24 @@ namespace StarSalvager
                 range = 150f;
             }
             
-            var enemy = EnemyManager.GetClosestEnemy(part.transform.position, range);
+            //TODO: Make us able to pass multiple tags so a shot can hit multiple types of targets
+            CollidableBase fireTarget = EnemyManager.GetClosestEnemy(part.transform.position, range);
+            string tag = "Enemy";
             //TODO Determine if this fires at all times or just when there are active enemies in range
-            if (enemy == null)
-                return;
+            if (fireTarget == null)
+            {
+                fireTarget = LevelManager.Instance.ObstacleManager.GetClosestDestructableCollidable(part.transform.position, range);
+                if (fireTarget == null)
+                {
+                    return;
+                }
+                else if (fireTarget is SpaceJunk)
+                {
+                    tag = "Space Junk";
+                }
+            }
 
-            _gunTargets[part] = enemy;
+            _gunTargets[part] = fireTarget;
 
 
             //Use resources
@@ -1027,10 +1040,10 @@ namespace StarSalvager
                 case PART_TYPE.GUN:
                 case PART_TYPE.TRIPLESHOT:
                 case PART_TYPE.MISSILE:
-                    CreateProjectile(part, partLevelData, enemy);
+                    CreateProjectile(part, partLevelData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
-                    var direction = (enemy.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
+                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
                                      part.transform.position).normalized;
 
                     var lineShrink = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -1042,13 +1055,16 @@ namespace StarSalvager
 
                     lineShrink.Init(part.transform.position,
                         didHitTarget
-                            ? enemy.transform.position
+                            ? fireTarget.transform.position
                             : part.transform.position + direction * 100);
 
                     if (didHitTarget)
                     {
                         var damage = partLevelData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
-                        enemy.TryHitAt(enemy.transform.position, damage);
+                        if (fireTarget is ICanBeHit iCanBeHit)
+                        {
+                            iCanBeHit.TryHitAt(target.transform.position, damage);
+                        }
                     }
 
                     break;

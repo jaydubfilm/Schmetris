@@ -194,6 +194,9 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case SpaceJunk spaceJunk:
+                        Recycler.Recycle<SpaceJunk>(spaceJunk);
+                        break;
                     case MoveWithObstacles _:
                         break;
                     default:
@@ -483,6 +486,11 @@ namespace StarSalvager
 
                             Recycler.Recycle<Shape>(shape);
                             m_obstacles[i].IsRegistered = false;
+                            m_obstacles[i] = null;
+                            break;
+                        case SpaceJunk spaceJunk:
+                            spaceJunk.IsRegistered = false;
+                            Recycler.Recycle<SpaceJunk>(spaceJunk);
                             m_obstacles[i] = null;
                             break;
                         case MoveWithObstacles _:
@@ -1031,25 +1039,30 @@ namespace StarSalvager
                         return;
                     }
 
-                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
-                        .CreateAsteroid<Asteroid>(asteroidSize);
-                    AddObstacleToList(newAsteroid);
+                        /*Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                            .CreateAsteroid<Asteroid>(asteroidSize);
+                        AddObstacleToList(newAsteroid);
 
-                    switch (asteroidSize)
-                    {
-                        case ASTEROID_SIZE.Bit:
-                            break;
-                        case ASTEROID_SIZE.Small:
-                        case ASTEROID_SIZE.Medium:
-                        case ASTEROID_SIZE.Large:
-                            radiusAround = 1;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(asteroidSize), asteroidSize, null);
-                    }
+                        switch (asteroidSize)
+                        {
+                            case ASTEROID_SIZE.Bit:
+                                break;
+                            case ASTEROID_SIZE.Small:
+                            case ASTEROID_SIZE.Medium:
+                            case ASTEROID_SIZE.Large:
+                                radiusAround = 1;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(asteroidSize), asteroidSize, null);
+                        }
 
-                    Asteroids.Add(newAsteroid);
-                    obstacle = newAsteroid;
+                        Asteroids.Add(newAsteroid);
+                        obstacle = newAsteroid;*/
+
+                        SpaceJunk spaceJunk = FactoryManager.Instance.GetFactory<SpaceJunkFactory>().CreateSpaceJunk();
+                        AddObstacleToList(spaceJunk);
+                        obstacle = spaceJunk;
+
                     break;
                 }
                 case SELECTION_TYPE.BUMPER:
@@ -1148,6 +1161,7 @@ namespace StarSalvager
                 case Bit _:
                 case Asteroid _:
                 case Component _:
+                case SpaceJunk _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
                 case Shape shape:
@@ -1340,6 +1354,44 @@ namespace StarSalvager
 
         #endregion //Bonus Shapes
 
+
+        //====================================================================================================================//
+
+        public CollidableBase GetClosestDestructableCollidable(Vector2 position, float range)
+        {
+            var shortestDist = 999f;
+            CollidableBase closestDestructableObstacle = null;
+            foreach (var obstacle in m_obstacles)
+            {
+                if (obstacle == null)
+                    continue;
+
+                if (!(obstacle is CollidableBase collidableBase))
+                {
+                    continue;
+                }
+
+                if (!(obstacle is SpaceJunk))
+                {
+                    continue;
+                }
+
+                if (!CameraController.IsPointInCameraRect(collidableBase.transform.position))
+                    continue;
+
+                var dist = Vector2.Distance(position, collidableBase.transform.position);
+
+                if (dist > range)
+                    continue;
+                if (dist > shortestDist)
+                    continue;
+
+                shortestDist = dist;
+                closestDestructableObstacle = collidableBase;
+            }
+
+            return closestDestructableObstacle;
+        }
 
         //====================================================================================================================//
 

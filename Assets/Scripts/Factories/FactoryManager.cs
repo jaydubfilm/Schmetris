@@ -148,6 +148,14 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private SpaceJunkRemoteDataScriptableObject spaceJunkRemote;
+
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private GameObject spaceJunkPrefab;
+
+        //============================================================================================================//
+
         public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
         [SerializeField, Required, BoxGroup("Facilities")]
         private FacilityRemoteDataScriptableObject facilityRemote;
@@ -245,6 +253,9 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(EffectFactory):
                     return new EffectFactory(EffectProfileScriptableObject) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(SpaceJunkFactory):
+                    return new SpaceJunkFactory(spaceJunkPrefab, spaceJunkRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);
