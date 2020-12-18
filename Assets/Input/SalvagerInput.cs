@@ -107,6 +107,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""Vertical"",
+                    ""type"": ""Value"",
+                    ""id"": ""13015b03-2562-4a0b-ad99-308ab884205b"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)""
                 }
             ],
             ""bindings"": [
@@ -340,6 +348,39 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""SelfDestruct"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""QE"",
+                    ""id"": ""fc62fb5f-7879-4b0a-837a-444074beb58f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""36a0417a-7f1a-492a-a436-8bf32779648c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""29dd7764-d2b1-4240-8a7a-b61465f1daff"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -651,6 +692,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
             m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
+            m_Default_Vertical = m_Default.FindAction("Vertical", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -721,6 +763,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction4;
         private readonly InputAction m_Default_Continue;
         private readonly InputAction m_Default_SelfDestruct;
+        private readonly InputAction m_Default_Vertical;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -736,6 +779,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
             public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
+            public InputAction @Vertical => m_Wrapper.m_Default_Vertical;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -778,6 +822,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
+                    @Vertical.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnVertical;
+                    @Vertical.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnVertical;
+                    @Vertical.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnVertical;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -815,6 +862,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started += instance.OnSelfDestruct;
                     @SelfDestruct.performed += instance.OnSelfDestruct;
                     @SelfDestruct.canceled += instance.OnSelfDestruct;
+                    @Vertical.started += instance.OnVertical;
+                    @Vertical.performed += instance.OnVertical;
+                    @Vertical.canceled += instance.OnVertical;
                 }
             }
         }
@@ -921,6 +971,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction4(InputAction.CallbackContext context);
             void OnContinue(InputAction.CallbackContext context);
             void OnSelfDestruct(InputAction.CallbackContext context);
+            void OnVertical(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {

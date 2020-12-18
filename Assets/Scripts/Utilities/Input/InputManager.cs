@@ -322,6 +322,9 @@ namespace StarSalvager.Utilities.Inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
                 {
+                    Input.Actions.Default.Vertical, VerticalMovement
+                },
+                {
                     Input.Actions.Default.SideMovement, MovementDelegator
                 },
                 {
@@ -436,6 +439,13 @@ namespace StarSalvager.Utilities.Inputs
                     else SideMovement(ctx);
                     break;
             }
+        }
+        
+        private void VerticalMovement(InputAction.CallbackContext ctx)
+        {
+            var currentVerticalDirection = Mathf.RoundToInt(ctx.ReadValue<float>());
+            
+            _bots[0].MoveVertical(currentVerticalDirection);
         }
         
         private void SideMovement(InputAction.CallbackContext ctx)

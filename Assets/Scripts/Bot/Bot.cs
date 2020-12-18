@@ -76,7 +76,11 @@ namespace StarSalvager
         public bool isPaused => GameTimer.IsPaused;
 
         //====================================================================================================================//
-        [SerializeField, BoxGroup("PROTOTYPE")]
+
+        [SerializeField, BoxGroup("Vertical Movement Prototype")]
+        private float verticalMoveSpeed;
+        
+        /*[SerializeField, BoxGroup("PROTOTYPE")]
         private bool PROTO_autoRefineFuel = true;
         //[SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
         //public float TEST_MergeTime = 0.6f;
@@ -87,7 +91,7 @@ namespace StarSalvager
         public bool TEST_SetDetachColor = true;
         
         //[SerializeField, BoxGroup("PROTOTYPE")]
-        //public bool PROTO_GodMode;
+        //public bool PROTO_GodMode;*/
         
         //============================================================================================================//
 
@@ -281,6 +285,7 @@ namespace StarSalvager
                 return;
             
             TryMovement();
+            VerticalPositionUpdate();
 
             if (Rotating)
             {
@@ -394,6 +399,23 @@ namespace StarSalvager
             m_currentInput = direction;
 
             m_distanceHorizontal += direction * Constants.gridCellSize;
+        }
+
+        private int _verticalDirection;
+        public void MoveVertical(int direction)
+        {
+            _verticalDirection = direction;
+            
+        }
+
+        private void VerticalPositionUpdate()
+        {
+            if (_verticalDirection == 0)
+                return;
+            
+            transform.position += Vector3.up * (_verticalDirection * verticalMoveSpeed * Time.deltaTime);
+            
+            CameraController.Camera.GetComponent<CameraController>().SetTrackedOffset(y: transform.position.y * -1f);
         }
 
         #endregion //IMoveOnInput Functions

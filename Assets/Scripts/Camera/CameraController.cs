@@ -450,7 +450,10 @@ namespace StarSalvager.Cameras
             };
 
 
-            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            /*var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);*/
+
+            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y, z);
             var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);
             
             //framingTransposer.m_TrackedObjectOffset = newPos;

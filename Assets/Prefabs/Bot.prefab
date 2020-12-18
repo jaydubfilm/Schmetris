@@ -50,12 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TEST_ParticleSystem: {fileID: 3099671416270462534}
   TEST_ParticleSystemForceField: {fileID: 1806099405544202029}
-  PROTO_autoRefineFuel: 1
-  TEST_MergeTime: 0.3
-  TEST_DetachTime: 0.15
-  TEST_SetDetachColor: 0
+  verticalMoveSpeed: 10
   MostRecentRotate: 0
-  PROTO_GodMode: 0
 --- !u!114 &1775463995226503707
 MonoBehaviour:
   m_ObjectHideFlags: 0
