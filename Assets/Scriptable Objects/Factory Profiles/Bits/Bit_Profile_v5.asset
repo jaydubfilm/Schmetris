@@ -15,6 +15,8 @@ MonoBehaviour:
   Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
   AnimatedPrefab: {fileID: 2761212292129707405, guid: 624e44e3df70359479ea266891b61f0b,
     type: 3}
+  JunkPrefab: {fileID: 4611369530616709383, guid: 2fa72a9aeb1c5ef458a3299b79a536e8,
+    type: 3}
   ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
     type: 3}
   profiles:

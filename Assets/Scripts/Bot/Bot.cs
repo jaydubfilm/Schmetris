@@ -851,6 +851,44 @@ namespace StarSalvager
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
                 }
+                /*case ProjectileAttachable projectileAttachable:
+                {
+                    bool legalDirection;
+
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(projectileAttachable.transform.position);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+
+                    switch (closestAttachable)
+                    {
+                        case EnemyAttachable _:
+                        case Part part when part.Destroyed:
+                            return false;
+                    }
+
+                    //FIXME This isn't sufficient to prevent multiple parasites using the same location
+                    var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
+                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
+                        return false;
+
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    if (!legalDirection)
+                    {
+                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
+                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
+                            return false;
+                    }
+
+                    //Add these to the block depending on its relative position
+                    AttachAttachableToExisting(projectileAttachable, closestAttachable, connectionDirection);
+                    break;
+                }*/
             }
 
             if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
@@ -1145,6 +1183,20 @@ namespace StarSalvager
             if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
                 destroyed = true;
             
+            return true;
+        }
+
+        public bool TryProjectileTriggerAt(Vector2 worldPosition, string projectileName)
+        {
+            Debug.Log(projectileName);
+
+            if (projectileName == "Junk Bit")
+            {
+                Debug.Log("Try attach junk bit");
+                JunkBit junkBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkObject<JunkBit>();
+                TryAttachNewBlock(attachedBlocks.GetClosestAttachable(worldPosition).Coordinate, junkBit, false);
+            }
+
             return true;
         }
 

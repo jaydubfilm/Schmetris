@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_prefab: {fileID: 7094775417863100966, guid: 773aed333e2772c4ea3b98a10e091832,
     type: 3}
-  m_attachablePrefab: {fileID: 7094775417863100966, guid: cd3cc508b01465048bf256fbf64e99a3,
+  m_prefabTrigger: {fileID: 7094775417863100966, guid: cd3cc508b01465048bf256fbf64e99a3,
     type: 3}
   m_projectileProfileData:
   - m_projectileTypeID: 083be790-7a08-4f27-b506-e8e09a116bc8
@@ -30,7 +30,7 @@ MonoBehaviour:
     fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 54ef5003-668f-48e1-bd6b-9bfb3221d9d0
@@ -45,7 +45,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 315b7ca5-bf86-4e37-88db-d055fbea3f00
@@ -60,7 +60,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 80e17eca-2642-4846-b12f-02a08cab40e9
@@ -76,7 +76,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 8f0be7e3-1231-4c2c-81ca-460162be6318
@@ -91,7 +91,7 @@ MonoBehaviour:
     fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: cac32cbf-8978-4092-ad94-3ab8e384a0c7
@@ -107,7 +107,7 @@ MonoBehaviour:
     fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 30aba478-81d5-4d02-a410-9c321a671732
@@ -123,7 +123,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 45
     m_sprayCount: 3
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
@@ -139,7 +139,7 @@ MonoBehaviour:
     fireTowardsTarget: 1
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 00c01728-210c-4944-b1a3-0c3bf2183d42
@@ -155,7 +155,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 60
     m_sprayCount: 3
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: b352a285-3a9e-4b4e-86a0-9418fbad3f29
@@ -171,7 +171,7 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: 5591628b-3b62-4bea-b915-78c355070c11
@@ -187,21 +187,21 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 0
+    m_isTrigger: 0
     m_canHitAsteroids: 1
     m_addVelocityToProjectiles: 0
   - m_projectileTypeID: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
     m_sprite: {fileID: 21300000, guid: 78eaf3f07ae8f3b48b52f50a65be7d5b, type: 3}
     m_projectileType: Junk Bit
-    useTrail: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
+    useTrail: 1
+    color: {r: 0.764151, g: 0.61636704, b: 0.61636704, a: 1}
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
     fireType: 2
-    fireTowardsTarget: 1
+    fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isAttachable: 1
+    m_isTrigger: 1
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0

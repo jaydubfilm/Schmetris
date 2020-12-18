@@ -285,7 +285,19 @@ namespace StarSalvager.Factories
         }
 
         //============================================================================================================//
-        
+
+        public GameObject CreateJunkGameObject()
+        {
+            return Object.Instantiate(factoryProfile.JunkPrefab);
+        }
+
+        public T CreateJunkObject<T>()
+        {
+            var temp = CreateJunkGameObject();
+
+            return temp.GetComponent<T>();
+        }
+
         public GameObject CreateAnimatedGameObject()
         {
             return Object.Instantiate(factoryProfile.AnimatedPrefab);

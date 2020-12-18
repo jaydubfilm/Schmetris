@@ -92,7 +92,7 @@ namespace StarSalvager.AI
             Recycler.Recycle<Projectile>(this);
         }
 
-        private void ApplyMovement()
+        protected virtual void ApplyMovement()
         {
             var newPosition = transform.position;
 

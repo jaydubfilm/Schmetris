@@ -23,7 +23,7 @@ namespace StarSalvager.Factories
         {
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
-            m_attachablePrefab = projectileProfile.m_attachablePrefab;
+            m_attachablePrefab = projectileProfile.m_prefabTrigger;
         }
 
         //============================================================================================================//
@@ -45,7 +45,7 @@ namespace StarSalvager.Factories
                 return newObject;
             }
 
-            if (typeof(T) == typeof(ProjectileAttachable))
+            if (typeof(T) == typeof(ProjectileTrigger))
             {
                 return Object.Instantiate(m_attachablePrefab).GetComponent<T>();
             }
@@ -87,7 +87,15 @@ namespace StarSalvager.Factories
 
             foreach (var travelDirection in travelDirections)
             {
-                Projectile projectile = CreateObject<Projectile>();
+                Projectile projectile;
+                if (projectileProfile.IsTrigger)
+                {
+                    projectile = CreateObject<ProjectileTrigger>();
+                }
+                else
+                {
+                    projectile = CreateObject<Projectile>();
+                }
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
@@ -153,9 +161,9 @@ namespace StarSalvager.Factories
             foreach (var travelDirection in travelDirections)
             {
                 Projectile projectile;
-                if (projectileProfile.Isattachable)
+                if (projectileProfile.IsTrigger)
                 {
-                    projectile = CreateObject<ProjectileAttachable>();
+                    projectile = CreateObject<ProjectileTrigger>();
                 }
                 else
                 {
