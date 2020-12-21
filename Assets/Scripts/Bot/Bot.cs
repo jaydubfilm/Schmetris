@@ -77,24 +77,6 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        [SerializeField, BoxGroup("Vertical Movement Prototype")]
-        private float verticalMoveSpeed;
-        
-        /*[SerializeField, BoxGroup("PROTOTYPE")]
-        private bool PROTO_autoRefineFuel = true;
-        //[SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
-        //public float TEST_MergeTime = 0.6f;
-        
-        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
-        public float TEST_DetachTime = 1f;
-        [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
-        public bool TEST_SetDetachColor = true;
-        
-        //[SerializeField, BoxGroup("PROTOTYPE")]
-        //public bool PROTO_GodMode;*/
-        
-        //============================================================================================================//
-
         public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector] 
@@ -211,6 +193,8 @@ namespace StarSalvager
 
         private float previousDirection;
         private bool isContinuousRotation;
+        
+        private static GameObject _followTarget;
 
         //Particle Tests
         //====================================================================================================================//
@@ -251,10 +235,6 @@ namespace StarSalvager
                     TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
                     break;
             }
-            
-            
-            //var emission = TEST_ParticleSystem.sizeOverLifetime;
-            //emission.sizeMultiplier = 1f - healthValue;
         }
         
         //============================================================================================================//
@@ -286,6 +266,8 @@ namespace StarSalvager
             
             TryMovement();
             VerticalPositionUpdate();
+
+            UpdateFollowTarget(transform.position);
 
             if (Rotating)
             {
@@ -412,10 +394,13 @@ namespace StarSalvager
         {
             if (_verticalDirection == 0)
                 return;
-            
-            transform.position += Vector3.up * (_verticalDirection * verticalMoveSpeed * Time.deltaTime);
-            
-            CameraController.Camera.GetComponent<CameraController>().SetTrackedOffset(y: transform.position.y * -1f);
+
+            var currentPosition = transform.position;
+            currentPosition.y += _verticalDirection * Globals.VerticalMoveSpeed * Time.deltaTime;
+
+            currentPosition.y = Mathf.Clamp(currentPosition.y, Globals.VerticalMinHeight, Globals.VerticalMaxHeight);
+
+            transform.position = currentPosition;
         }
 
         #endregion //IMoveOnInput Functions
@@ -426,6 +411,8 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            CreateFollowTarget();
+            
             _weldDatas = new List<WeldData>();
             
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -455,12 +442,14 @@ namespace StarSalvager
             GameUi.SetHealthValue(1f);
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
-            camera.SetLookAtFollow(transform);
+            camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
         }
         
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
+            CreateFollowTarget();
+            
             _weldDatas = new List<WeldData>();
             
             _isDestroyed = false;
@@ -485,7 +474,7 @@ namespace StarSalvager
 
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
-            camera.SetLookAtFollow(transform);
+            camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
@@ -501,6 +490,26 @@ namespace StarSalvager
 
         #endregion // Init Bot 
 
+        //Follow Target
+        //====================================================================================================================//
+
+        #region Follow Target
+
+        private static void CreateFollowTarget()
+        {
+            _followTarget = new GameObject("Bot_Camera-Follow-Target");
+            _followTarget.transform.position = Vector3.up * 5f;
+        }
+
+        private static void UpdateFollowTarget(Vector3 desiredPosition)
+        {
+            var followPos = _followTarget.transform.position;
+            followPos.x = desiredPosition.x;
+            _followTarget.transform.position = followPos;
+        }
+
+        #endregion //Follow Target
+        
         //============================================================================================================//
 
         #region Input Solver

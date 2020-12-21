@@ -81,6 +81,11 @@ namespace StarSalvager.Values
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;
         public static float AsteroidFallTimer;
+        //====================================================================================================================//
+
+        public static float VerticalMoveSpeed => m_gameSettings.verticalMoveSpeed;
+        public static float VerticalMaxHeight => m_gameSettings.maxHeight;
+        public static float VerticalMinHeight => m_gameSettings.minHeight;
 
         //====================================================================================================================//
         

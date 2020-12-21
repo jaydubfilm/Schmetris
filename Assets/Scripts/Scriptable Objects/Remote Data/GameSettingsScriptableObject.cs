@@ -106,6 +106,13 @@ namespace StarSalvager.ScriptableObjects
         public float botRotationSpeed = 500.0f;
         [FoldoutGroup("Bot/Movement")]
         public float botContinuousRotationSpeed = 700.0f;
+        
+        [FoldoutGroup("Bot/Vertical Movement")]
+        public float verticalMoveSpeed = 0.15f;
+        [FoldoutGroup("Bot/Vertical Movement")]
+        public float maxHeight = 10;
+        [FoldoutGroup("Bot/Vertical Movement")]
+        public float minHeight = 0.15f;
 
         //Camera Properties
         //====================================================================================================================//
