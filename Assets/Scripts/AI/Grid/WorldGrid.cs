@@ -404,7 +404,7 @@ namespace StarSalvager
             {
                 if (forceSpawn)
                 {
-                    throw new Exception("Couldn't find position to spawn. Possible overlap occurring in grid region " + allowOverlap + (double)gridRegion.x + ", " + (double)gridRegion.y);
+                    Debug.LogError("Couldn't find position to spawn. Possible overlap occurring in grid region " + allowOverlap + (double)gridRegion.x + ", " + (double)gridRegion.y);
                     return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
                 }
                 else

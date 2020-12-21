@@ -33,6 +33,10 @@ namespace StarSalvager.Values
         public static int CameraScaleSize = 51;
 
 
+        //FIXME This is a mess, and must be organized
+        //Game Settings Values
+        //====================================================================================================================//
+        
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
         public static bool AllowAccessToUnlockedLaterWaves => m_gameSettings.allowAccessToUnlockedLaterWaves;
@@ -70,10 +74,16 @@ namespace StarSalvager.Values
 
         public static float AsteroidSpawnDisableTimeBeforeWaveEnd => m_gameSettings.asteroidSpawnDisableTimeBeforeWaveEnd;
         public static float TimeAfterWaveEndFlyOut => m_gameSettings.timeAfterWaveEndFlyOut;
+        
+        public static float BitShiftTime => m_gameSettings.bitShiftTime;
+        public static float ComboMergeTime => m_gameSettings.comboMergeTime;
 
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;
         public static float AsteroidFallTimer;
+
+        //====================================================================================================================//
+        
 
         public static ORIENTATION Orientation
         {

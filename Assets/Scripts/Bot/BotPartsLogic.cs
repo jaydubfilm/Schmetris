@@ -497,34 +497,44 @@ namespace StarSalvager
             ref float powerToRemove,
             in float deltaTime)
         {
-            if (part.Disabled && powerValue == 0f)
-                return false;
+            //If the part doesn't need power, continue
+            if (partLevelData.powerDraw <= 0f)
+                return true;
             
-            if (part.Disabled && powerValue > 0f && partLevelData.powerDraw > 0)
+            //Check to see if we want to power, that we have some to process
+            if (powerValue == 0f)
             {
-                part.Disabled = false;
-                InitPartData();
-            }
-            //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
-            else if (powerValue == 0f && partLevelData.powerDraw > 0)
-            {
-                var targetBit = GetFurthestBitToBurn(partLevelData, BIT_TYPE.YELLOW);
+                var targetBit = GetFurthestBitToBurn(BIT_TYPE.YELLOW);
 
                 if (targetBit != null)
                 {
                     powerValue = ProcessBit(part, targetBit);
                 }
+            }
 
-                if (powerValue == 0)
-                {
+            switch (part.Disabled)
+            {
+                //----------------------------------------------------------------------------------------------------//
+                //If the part we have is currently disabled, and we have no stored power, return false
+                case true when powerValue == 0f:
+                    return false;
+                //----------------------------------------------------------------------------------------------------//
+                //If the part is disabled, it needs power, and we have some stored, be sure to reEnable it
+                //FIXME THis shouldn't happen often, though I may want to reconsider how this is being approached
+                case true when powerValue > 0f:
+                    part.Disabled = false;
+                    InitPartData();
+                    break;
+                //----------------------------------------------------------------------------------------------------//
+                //If the part is Enabled and it requires power but we have none to give it
+                case false when powerValue == 0f:
                     part.Disabled = true;
                     InitPartData();
                     return false;
-                }
+                //----------------------------------------------------------------------------------------------------//
             }
 
-            if(partLevelData.powerDraw > 0f)
-                powerToRemove += partLevelData.powerDraw * deltaTime;
+            powerToRemove += partLevelData.powerDraw * deltaTime;
 
             return true;
         }

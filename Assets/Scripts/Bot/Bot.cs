@@ -78,8 +78,8 @@ namespace StarSalvager
         //====================================================================================================================//
         [SerializeField, BoxGroup("PROTOTYPE")]
         private bool PROTO_autoRefineFuel = true;
-        [SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
-        public float TEST_MergeTime = 0.6f;
+        //[SerializeField, Range(0.1f, 2f), BoxGroup("PROTOTYPE"), SuffixLabel("Sec", true)]
+        //public float TEST_MergeTime = 0.6f;
         
         [SerializeField, BoxGroup("PROTOTYPE/Magnet")]
         public float TEST_DetachTime = 1f;
@@ -694,26 +694,26 @@ namespace StarSalvager
                 case Bit bit:
                 {
                    
-                    bool legalDirection;
-
-                    //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
+                    bool legalDirection = true;
 
                     //------------------------------------------------------------------------------------------------//
 
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    
+                    /*
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
 
-                    legalDirection = true;
-                    //legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    //------------------------------------------------------------------------------------------------//
-
+                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+                    
                     if (!legalDirection)
                     {
                         //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
                         if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
                             return false;
-                    }
+                    }*/
+
+                    
                     //------------------------------------------------------------------------------------------------//
 
 
@@ -771,26 +771,24 @@ namespace StarSalvager
                 }
                 case Component component:
                 {
-                    bool legalDirection;
-
-
-                    //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(component.transform.position);
+                    bool legalDirection = true;
 
                     //----------------------------------------------------------------------------------------------------//
 
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    
+                    /*
+                    //Get the coordinate of the collision
+                    var bitCoordinate = GetRelativeCoordinate(component.transform.position);
 
                     legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    //----------------------------------------------------------------------------------------------------//
 
                     if (!legalDirection)
                     {
                         //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
                         if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
                             return false;
-                    }
+                    }*/
 
                     //Check if its legal to attach (Within threshold of connection)
                     //TODO This needs to bounce off instead of being destroyed
@@ -1145,7 +1143,6 @@ namespace StarSalvager
         //============================================================================================================//
         
         #region TryHitAt
-
 
         /// <summary>
         /// Decides if the Attachable closest to the hit position should be destroyed or damaged on the bounce
@@ -1563,9 +1560,9 @@ namespace StarSalvager
             //Checks for attempts to add attachable to occupied location
             if (attachedBlocks.Any(a => a.Coordinate == coordinate && !(a is Part part && part.Destroyed)))
             {
-                var on = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+                var onAttachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
                 Debug.LogError(
-                    $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {on.gameObject.name}",
+                    $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {onAttachable.gameObject.name}",
                     newAttachable.gameObject);
 
                 AttachToClosestAvailableCoordinate(coordinate, 
@@ -2256,9 +2253,12 @@ namespace StarSalvager
             bool hasCombos = false;
             
             StartCoroutine(ShiftInDirectionCoroutine(toShift, 
-                TEST_MergeTime,
+                Globals.BitShiftTime,
                 () =>
             {
+                //Checks for floaters
+                hasDetached = CheckForDisconnects();
+                
                 //TODO May want to consider that Enemies may still attack while being shifted
                 //This needs to happen before checking for disconnects because otherwise attached will be set to false
                 foreach (var wasBumped in toShift.Select(x => x.Target).OfType<IWasBumped>())
@@ -2266,8 +2266,7 @@ namespace StarSalvager
                     wasBumped.OnBumped();
                 }
                 
-                //Checks for floaters
-                hasDetached = CheckForDisconnects();
+                
 
                 /*var comboCheckGroup = toShift.Select(x => x.Target).Where(x => attachedBlocks.Contains(x) && x is ICanCombo)
                     .OfType<ICanCombo>().ToArray();*/
@@ -2839,7 +2838,7 @@ namespace StarSalvager
                 movingBits,
                 closestToCore,
                 orphans.ToArray(),
-                TEST_MergeTime,
+                Globals.ComboMergeTime,
                 () =>
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
@@ -3603,7 +3602,6 @@ namespace StarSalvager
         /// to the Composite collider
         /// </summary>
         /// <param name="toMove"></param>
-        /// <param name="direction"></param>
         /// <param name="seconds"></param>
         /// <param name="OnFinishedCallback"></param>
         /// <returns></returns>
@@ -3626,8 +3624,8 @@ namespace StarSalvager
                                                                      (Vector2)toMove[i].TargetCoordinate *
                                                                      Constants.gridCellSize);
 
-                var distance = System.Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
-                skipsCoordinate[i] = distance > System.Math.Round(Constants.gridCellSize, 2);
+                var distance = Math.Round(Vector2.Distance(startPositions[i], targetPositions[i]), 2);
+                skipsCoordinate[i] = distance > Math.Round(Constants.gridCellSize, 2);
 
                 if (skipsCoordinate[i])
                 {
@@ -3832,41 +3830,62 @@ namespace StarSalvager
             {
                 new BlockData
                 {
-                    ClassType = nameof(Part),
-                    Coordinate = new Vector2Int(0,-1),
-                    Level =0,
-                    Type = (int)PART_TYPE.STORERED,
-                    Health = 50
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Part),
-                    Coordinate = new Vector2Int(-1,0),
-                    Level =0,
-                    Type = (int)PART_TYPE.MAGNET,
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(1, 0),
+                    Level = 1,
+                    Type = (int) BIT_TYPE.GREY,
                     Health = 50
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(0,-2),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
+                    Coordinate = new Vector2Int(2,0),
+                    Level = 1,
+                    Type = (int) BIT_TYPE.GREEN,
+                    Health = 50
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1,-2),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
+                    Coordinate = new Vector2Int(2,1),
+                    Level = 1,
+                    Type = (int) BIT_TYPE.GREY,
+                    Health = 50
                 },
                 new BlockData
                 {
                     ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1,-1),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
+                    Coordinate = new Vector2Int(1,1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.BLUE,
+                    Health = 50
                 },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(1,2),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.GREEN,
+                    Health = 50
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(3, 1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.BLUE,
+                    Health = 50
+                },
+                new BlockData
+                {
+                    ClassType = nameof(Bit),
+                    Coordinate = new Vector2Int(4, 1),
+                    Level = 1,
+                    Type = (int) BIT_TYPE.GREEN,
+                    Health = 50
+                },
+                
+
             };
 
             AddMorePieces(blocks, false);
