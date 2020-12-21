@@ -200,7 +200,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public virtual void CustomRecycle(params object[] args)
         {
             transform.rotation = Quaternion.identity;
             _target = null;

@@ -55,6 +55,19 @@ namespace StarSalvager.AI
             return;
         }
 
-        //====================================================================================================================//
+        //============================================================================================================//
+
+        public override void CustomRecycle(params object[] args)
+        {
+            if (towObject != null && !towObjectIRecycledReference.IsRecycled)
+            {
+                GameObject.Destroy(towObject);
+            }
+
+            towObject = null;
+            towObjectIRecycledReference = null;
+
+            base.CustomRecycle(args);
+        }
     }
 }

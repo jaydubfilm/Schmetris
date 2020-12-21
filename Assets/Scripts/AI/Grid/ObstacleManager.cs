@@ -197,6 +197,12 @@ namespace StarSalvager
                     case SpaceJunk spaceJunk:
                         Recycler.Recycle<SpaceJunk>(spaceJunk);
                         break;
+                    case JunkBit junkBit:
+                        Recycler.Recycle<JunkBit>(junkBit);
+                        break;
+                    case Mine mine:
+                        Recycler.Recycle<Mine>(mine);
+                        break;
                     case MoveWithObstacles _:
                         break;
                     default:
@@ -232,6 +238,17 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case SpaceJunk spaceJunk:
+                        Recycler.Recycle<SpaceJunk>(spaceJunk);
+                        break;
+                    case JunkBit junkBit:
+                        Recycler.Recycle<JunkBit>(junkBit);
+                        break;
+                    case Mine mine:
+                        Recycler.Recycle<Mine>(mine);
+                        break;
+                    case MoveWithObstacles _:
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -263,6 +280,17 @@ namespace StarSalvager
                             break;
                         case Shape shape:
                             Recycler.Recycle<Shape>(shape);
+                            break;
+                        case SpaceJunk spaceJunk:
+                            Recycler.Recycle<SpaceJunk>(spaceJunk);
+                            break;
+                        case JunkBit junkBit:
+                            Recycler.Recycle<JunkBit>(junkBit);
+                            break;
+                        case Mine mine:
+                            Recycler.Recycle<Mine>(mine);
+                            break;
+                        case MoveWithObstacles _:
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -1057,7 +1085,7 @@ namespace StarSalvager
                         return;
                     }
 
-                        /*Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                             .CreateAsteroid<Asteroid>(asteroidSize);
                         AddObstacleToList(newAsteroid);
 
@@ -1075,12 +1103,7 @@ namespace StarSalvager
                         }
 
                         Asteroids.Add(newAsteroid);
-                        obstacle = newAsteroid;*/
-
-                        SpaceJunk spaceJunk = FactoryManager.Instance.GetFactory<SpaceJunkFactory>().CreateSpaceJunk();
-                        AddObstacleToList(spaceJunk);
-                        obstacle = spaceJunk;
-
+                        obstacle = newAsteroid;
                     break;
                 }
                 case SELECTION_TYPE.BUMPER:
