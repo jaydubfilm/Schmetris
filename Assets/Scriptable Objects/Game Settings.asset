@@ -111,6 +111,9 @@ MonoBehaviour:
   botHorizontalSpeed: 30
   botRotationSpeed: 500
   botContinuousRotationSpeed: 700
+  verticalMoveSpeed: 10
+  maxHeight: 10
+  minHeight: 5
   cameraUseInputMotion: 1
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2

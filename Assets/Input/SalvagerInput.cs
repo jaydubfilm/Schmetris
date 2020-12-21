@@ -185,7 +185,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""WS"",
+                    ""name"": ""QE"",
                     ""id"": ""459661cc-fd75-406a-a631-9109f238873f"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
@@ -198,7 +198,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""negative"",
                     ""id"": ""9f532104-7c58-4287-8df5-9159e146cfb1"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -209,40 +209,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""positive"",
                     ""id"": ""2df4da74-6936-45c1-afd1-9251a201d14b"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Arrows"",
-                    ""id"": ""2596d261-f92e-4f46-90be-f27c84e113c5"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""49e03006-4a42-405b-8210-48e41197d8f3"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rotate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""db9226e5-b073-4578-8dad-b8ba9558290a"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -350,7 +317,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""QE"",
+                    ""name"": ""Arrows"",
                     ""id"": ""fc62fb5f-7879-4b0a-837a-444074beb58f"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
@@ -363,7 +330,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""negative"",
                     ""id"": ""36a0417a-7f1a-492a-a436-8bf32779648c"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -374,7 +341,40 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""positive"",
                     ""id"": ""29dd7764-d2b1-4240-8a7a-b61465f1daff"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""WS"",
+                    ""id"": ""b0e7b1a3-e671-4b01-9f8d-0d65d86084c9"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""88875afc-0750-4508-9f63-d817bb8853e4"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vertical"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""5198c871-5540-4d11-9119-d4f6b82aba1f"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
