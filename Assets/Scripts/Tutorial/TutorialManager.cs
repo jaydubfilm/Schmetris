@@ -421,9 +421,10 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            yield return new WaitForSeconds(4f);
+            
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
-
-            yield return new WaitForSeconds(5f);
+            
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
             
