@@ -632,17 +632,17 @@ namespace StarSalvager.Utilities.Inputs
 
             direction = dir;
             
-            if (keyCount++ == 2)
+            if (keyCount++ == 1)
             {
                 Debug.Log($"Shuffle in {direction}");
 
                 switch (direction)
                 {
                     case -1:
-                        _bots[0].CoreShuffle(DIRECTION.LEFT);
+                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
                         break;
                     case 1:
-                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
+                        _bots[0].CoreShuffle(DIRECTION.LEFT);
                         break;
                 }
             }
