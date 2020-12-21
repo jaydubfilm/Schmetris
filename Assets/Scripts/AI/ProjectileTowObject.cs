@@ -17,7 +17,7 @@ namespace StarSalvager.AI
     {
 
         public GameObject towObject;
-        public IRecycled towObjectIRecycledReference;
+        public Actor2DBase towObjectIRecycledReference;
         
         protected override void Update()
         {
@@ -33,7 +33,19 @@ namespace StarSalvager.AI
                 towObject = null;
                 towObjectIRecycledReference = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
+                return;
             }
+
+            IAttachable attachable = towObject.GetComponent<IAttachable>();
+            if (attachable != null && attachable.Attached)
+            {
+                towObject = null;
+                towObjectIRecycledReference = null;
+                Recycler.Recycle<ProjectileTowObject>(this);
+                return;
+            }
+
+            towObject.transform.position = transform.position;
         }
         
         //============================================================================================================//

@@ -495,6 +495,15 @@ namespace StarSalvager
                             break;
                         case MoveWithObstacles _:
                             break;
+                        case JunkBit junkBit:
+                            if (!junkBit.Attached)
+                            {
+                                junkBit.IsRegistered = false;
+                                Recycler.Recycle<Bit>(junkBit);
+                                m_obstacles[i] = null;
+                            }
+
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }

@@ -849,44 +849,30 @@ namespace StarSalvager
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
                 }
-                /*case ProjectileAttachable projectileAttachable:
+                case JunkBit junkBit:
                 {
-                    bool legalDirection;
-
-                    //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(projectileAttachable.transform.position);
+                    bool legalDirection = true;
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    switch (closestAttachable)
+                    //Check if its legal to attach (Within threshold of connection)
+                    if (closestAttachable is EnemyAttachable ||
+                        closestAttachable is Part part && part.Destroyed)
                     {
-                        case EnemyAttachable _:
-                        case Part part when part.Destroyed:
-                            return false;
-                    }
+                        if (attachable is IObstacle obstacle)
+                            obstacle.Bounce(collisionPoint, transform.position);
 
-                    //FIXME This isn't sufficient to prevent multiple parasites using the same location
-                    var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
-                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
-
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    //----------------------------------------------------------------------------------------------------//
-
-                    if (!legalDirection)
-                    {
-                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
-                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                            return false;
                     }
 
                     //Add these to the block depending on its relative position
-                    AttachAttachableToExisting(projectileAttachable, closestAttachable, connectionDirection);
+                    AttachAttachableToExisting(junkBit, closestAttachable, connectionDirection);
+
+                    //CheckForCombosAround();
                     break;
-                }*/
+                }
             }
 
             if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))

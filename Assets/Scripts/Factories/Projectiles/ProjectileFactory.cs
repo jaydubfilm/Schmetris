@@ -14,7 +14,7 @@ namespace StarSalvager.Factories
     public class ProjectileFactory : FactoryBase
     {
         private readonly GameObject m_prefab;
-        private readonly GameObject m_attachablePrefab;
+        private readonly GameObject m_towPrefab;
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
 
         //============================================================================================================//
@@ -23,7 +23,7 @@ namespace StarSalvager.Factories
         {
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
-            m_attachablePrefab = projectileProfile.m_prefabTrigger;
+            m_towPrefab = projectileProfile.m_towPrefab;
         }
 
         //============================================================================================================//
@@ -47,7 +47,7 @@ namespace StarSalvager.Factories
 
             if (typeof(T) == typeof(ProjectileTowObject))
             {
-                return Object.Instantiate(m_attachablePrefab).GetComponent<T>();
+                return Object.Instantiate(m_towPrefab).GetComponent<T>();
             }
 
             return CreateGameObject().GetComponent<T>();
@@ -88,9 +88,22 @@ namespace StarSalvager.Factories
             foreach (var travelDirection in travelDirections)
             {
                 Projectile projectile;
-                if (projectileProfile.IsTrigger)
+                if (projectileProfile.IsTow)
                 {
-                    projectile = CreateObject<ProjectileTowObject>();
+                    ProjectileTowObject projectileTowObject = CreateObject<ProjectileTowObject>();
+                    GameObject towObject;
+                    switch(projectileProfile.TowObjectType)
+                    {
+                        case ProjectileProfileData.TowType.JunkBit:
+                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
+                            break;
+                        default:
+                            throw new Exception("Missing data for towObject");
+                    }
+                    projectileTowObject.towObject = towObject;
+                    projectileTowObject.towObjectIRecycledReference = towObject.GetComponent<Actor2DBase>();
+
+                    projectile = projectileTowObject;
                 }
                 else
                 {
@@ -161,7 +174,7 @@ namespace StarSalvager.Factories
             foreach (var travelDirection in travelDirections)
             {
                 Projectile projectile;
-                if (projectileProfile.IsTrigger)
+                if (projectileProfile.IsTow)
                 {
                     projectile = CreateObject<ProjectileTowObject>();
                 }
