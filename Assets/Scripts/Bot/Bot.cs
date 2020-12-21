@@ -497,7 +497,9 @@ namespace StarSalvager
 
         private static void CreateFollowTarget()
         {
-            _followTarget = new GameObject("Bot_Camera-Follow-Target");
+            if(_followTarget == null)
+                _followTarget = new GameObject("Bot_Camera-Follow-Target");
+            
             _followTarget.transform.position = Vector3.up * 5f;
         }
 
