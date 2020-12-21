@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class JunkBit : CollidableBase, IAttachable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
+    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
     {
         public IAttachable iAttachable => this;
 
@@ -39,7 +39,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool CanShift => true;
 
-        public int AttachPriority => level;
+        public int AttachPriority => 0;
         public bool PendingDetach { get; set; }
 
         public bool CountTowardsMagnetism => true;
@@ -58,20 +58,6 @@ namespace StarSalvager
         public bool IsRegistered { get; set; } = false;
 
         public bool IsMarkedOnGrid { get; set; } = false;
-
-        //Bit Properties
-        //============================================================================================================//
-        [ShowInInspector, ReadOnly]
-        public BIT_TYPE Type { get; set; }
-        [ShowInInspector, ReadOnly]
-        public int level { get; private set; }
-
-        [SerializeField]
-        private LayerMask collisionMask;
-
-        private Damage _damage;
-
-        public bool IsFromEnemyLoot;
 
         //IAttachable Functions
         //============================================================================================================//
@@ -124,14 +110,6 @@ namespace StarSalvager
             //{
             //    SetColor(Color.Lerp(renderer.color, Color.black, 0.2f));
             //}
-            
-            if (_damage == null)
-            {
-                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
-                _damage.transform.SetParent(transform, false);
-            }
-                
-            _damage.SetHealth(CurrentHealth/StartingHealth);
         }
 
         //ICanBeHit Functions
@@ -216,7 +194,7 @@ namespace StarSalvager
             RaycastHit2D? shortestHit = null;
             foreach (var rayStartPosition in startPositions)
             {
-                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
+                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength);
 
                 //If nothing was hit, ray failed, thus no reason to continue
                 if (hit.collider == null)
@@ -256,18 +234,30 @@ namespace StarSalvager
             SetSortingLayer(LayerHelper.ACTORS);
 
             PendingDetach = false;
+        }
 
-            if (_damage)
+
+        //ISaveable Functions
+        //============================================================================================================//
+
+        public BlockData ToBlockData()
+        {
+            return new BlockData
             {
-                Recycler.Recycle<Damage>(_damage);
-                _damage = null;
-            }
+                ClassType = GetType().Name,
+                Coordinate = Coordinate
+            };
+        }
+
+        public void LoadBlockData(BlockData blockData)
+        {
+            Coordinate = blockData.Coordinate;
         }
 
 
         //IHasBounds Functions
         //====================================================================================================================//
-        
+
         public Bounds GetBounds()
         {
             return new Bounds

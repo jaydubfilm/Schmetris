@@ -499,7 +499,16 @@ namespace StarSalvager
                             if (!junkBit.Attached)
                             {
                                 junkBit.IsRegistered = false;
-                                Recycler.Recycle<Bit>(junkBit);
+                                Recycler.Recycle<JunkBit>(junkBit);
+                                m_obstacles[i] = null;
+                            }
+
+                            break;
+                        case Crate crate:
+                            if (!crate.Attached)
+                            {
+                                crate.IsRegistered = false;
+                                Recycler.Recycle<Crate>(crate);
                                 m_obstacles[i] = null;
                             }
 

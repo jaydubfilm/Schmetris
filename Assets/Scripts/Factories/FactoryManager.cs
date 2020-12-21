@@ -156,6 +156,14 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private CrateRemoteDataScriptableObject crateRemote;
+
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private GameObject cratePrefab;
+
+        //============================================================================================================//
+
         public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
         [SerializeField, Required, BoxGroup("Facilities")]
         private FacilityRemoteDataScriptableObject facilityRemote;
@@ -256,6 +264,9 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(SpaceJunkFactory):
                     return new SpaceJunkFactory(spaceJunkPrefab, spaceJunkRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(CrateFactory):
+                    return new CrateFactory(cratePrefab, crateRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

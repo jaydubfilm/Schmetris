@@ -315,6 +315,7 @@ namespace StarSalvager.Utilities.Extensions
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             var componentFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
+            var crateFactory = FactoryManager.Instance.GetFactory<CrateFactory>();
 
 
             foreach (var blockData in blockDatas)
@@ -351,6 +352,12 @@ namespace StarSalvager.Utilities.Extensions
                         imageObject.sprite = componentFactory.GetComponentProfile((COMPONENT_TYPE)blockData.Type).Sprites[blockData.Level];
                         startingHealth = componentFactory.GetComponentRemoteData((COMPONENT_TYPE)blockData.Type).health;
                         break;
+                    case nameof(JunkBit):
+                        imageObject.sprite = bitFactory.GetJunkBitSprite();
+                        continue;
+                    case nameof(Crate):
+                        imageObject.sprite = crateFactory.GetCrateSprite(blockData.Level);
+                        continue;
                 }
 
                 float healthPercentage = blockData.Health / startingHealth;
@@ -432,6 +439,16 @@ namespace StarSalvager.Utilities.Extensions
                         {
                             attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(blockData));
                         }
+                        break;
+                    case nameof(JunkBit):
+                        var junkBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkObject<JunkBit>();
+                        junkBit.Coordinate = blockData.Coordinate;
+                        attachables.Add(junkBit);
+                        break;
+                    case nameof(Crate):
+                        var crate = FactoryManager.Instance.GetFactory<CrateFactory>().CreateCrateObject(blockData.Level);
+                        crate.Coordinate = blockData.Coordinate;
+                        attachables.Add(crate);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);

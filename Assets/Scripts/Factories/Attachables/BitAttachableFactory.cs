@@ -105,6 +105,11 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(type);
         }
 
+        public Sprite GetJunkBitSprite()
+        {
+            return factoryProfile.JunkSprite;
+        }
+
         public BitRemoteData GetBitRemoteData(BIT_TYPE type)
         {
             return _remoteData.GetRemoteData(type);

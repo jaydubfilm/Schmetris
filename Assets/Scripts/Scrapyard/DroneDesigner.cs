@@ -955,6 +955,60 @@ namespace StarSalvager
 
                         break;
                     //------------------------------------------------------------------------------------------------//
+                    case nameof(Crate):
+                        int numCrates = 1;
+                        for (int i = 0; i < blockData.Level; i++)
+                        {
+                            numCrates *= 3;
+                        }
+                        for (int c = 0; c < numCrates; c++)
+                        {
+                            List<IRDSObject> loot = FactoryManager.Instance.GetFactory<CrateFactory>().GetCrateLoot();
+                            for (int i = loot.Count - 1; i >= 0; i--)
+                            {
+                                switch (loot[i])
+                                {
+                                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
+                                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
+                                        loot.RemoveAt(i);
+                                        break;
+                                    case RDSValue<Blueprint> rdsValueBlueprint:
+                                        PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
+                                        Toast.AddToast("Unlocked Blueprint!");
+                                        loot.RemoveAt(i);
+                                        break;
+                                    case RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint:
+                                        PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
+                                        Toast.AddToast("Unlocked Facility Blueprint!");
+                                        loot.RemoveAt(i);
+                                        break;
+                                    case RDSValue<Vector2Int> rdsValueGears:
+                                        {
+                                            var gears = UnityEngine.Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);
+                                            PlayerDataManager.ChangeGears(gears);
+                                            loot.RemoveAt(i);
+                                            break;
+                                        }
+                                    case RDSValue<BlockData> rdsValueBlockData:
+                                        {
+                                            if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
+                                            {
+                                                switch (rdsValueBlockData.rdsValue.ClassType)
+                                                {
+                                                    case nameof(Component):
+                                                        PlayerDataManager.AddComponent((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type, 1);
+                                                        loot.RemoveAt(i);
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                }
+                            }
+                        }
+                        break;
                 }
             }
             

@@ -159,6 +159,18 @@ MonoBehaviour:
   - FavParams: 0
     FavString: []
     list:
+    - {fileID: 321811388}
+    ActiveGameObject: {fileID: 321811388}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
     - {fileID: 1413120469}
     ActiveGameObject: {fileID: 1413120469}
     GUIDsList: []
@@ -1631,6 +1643,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4303a0e45d7b444aa039bfdb3d12d59, type: 3}
+--- !u!1 &321811388 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8017945059100664150, guid: c4303a0e45d7b444aa039bfdb3d12d59,
+    type: 3}
+  m_PrefabInstance: {fileID: 321811387}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &439474853
 PrefabInstance:
   m_ObjectHideFlags: 0

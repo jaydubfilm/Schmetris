@@ -873,6 +873,30 @@ namespace StarSalvager
                     //CheckForCombosAround();
                     break;
                 }
+                case Crate crate:
+                {
+                    bool legalDirection = true;
+
+                    //----------------------------------------------------------------------------------------------------//
+
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+
+                    //Check if its legal to attach (Within threshold of connection)
+                    if (closestAttachable is EnemyAttachable ||
+                        closestAttachable is Part part && part.Destroyed)
+                    {
+                        if (attachable is IObstacle obstacle)
+                            obstacle.Bounce(collisionPoint, transform.position);
+
+                        return false;
+                    }
+
+                    //Add these to the block depending on its relative position
+                    AttachAttachableToExisting(crate, closestAttachable, connectionDirection);
+
+                    //CheckForCombosAround();
+                    break;
+                }
             }
 
             if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
@@ -1166,20 +1190,6 @@ namespace StarSalvager
             if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
                 destroyed = true;
             
-            return true;
-        }
-
-        public bool TryProjectileTriggerAt(Vector2 worldPosition, string projectileName)
-        {
-            Debug.Log(projectileName);
-
-            if (projectileName == "Junk Bit")
-            {
-                Debug.Log("Try attach junk bit");
-                JunkBit junkBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkObject<JunkBit>();
-                TryAttachNewBlock(attachedBlocks.GetClosestAttachable(worldPosition).Coordinate, junkBit, false);
-            }
-
             return true;
         }
 
@@ -1547,7 +1557,7 @@ namespace StarSalvager
             if (attachedBlocks.Any(a => a.Coordinate == coordinate && !(a is Part part && part.Destroyed)))
             {
                 var onAttachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-                Debug.LogError(
+                Debug.Log(
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {onAttachable.gameObject.name}",
                     newAttachable.gameObject);
 
@@ -1610,6 +1620,9 @@ namespace StarSalvager
                     break;
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
+                    break;
+                case Crate _ when checkForCombo:
+                    CheckForCombosAround<CRATE_TYPE>(coordinate);
                     break;
             }
             
@@ -1784,6 +1797,9 @@ namespace StarSalvager
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(newCoord);
                     break;
+                case Crate _ when checkForCombo:
+                    CheckForCombosAround<CRATE_TYPE>(newCoord);
+                    break;
             }
             
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
@@ -1838,6 +1854,9 @@ namespace StarSalvager
                     break;
                 case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(newCoord);
+                    break;
+                case Crate _ when checkForCombo:
+                    CheckForCombosAround<CRATE_TYPE>(newCoord);
                     break;
             }
             
@@ -2590,8 +2609,9 @@ namespace StarSalvager
         {
             bool bitCombos = CheckForCombosAround<BIT_TYPE>(attachedBlocks);
             bool componentCombos = CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+            bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
-            return bitCombos || componentCombos;
+            return bitCombos || componentCombos || crateCombos;
         }
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
@@ -2851,6 +2871,9 @@ namespace StarSalvager
                             break;
                         case Component _:
                             CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
+                            break;
+                        case Crate _:
+                            CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
                             break;
                     }
                     
@@ -3554,6 +3577,10 @@ namespace StarSalvager
                         Recycler.Recycle<Component>(component);
 
                         break;
+                    case Crate crate:
+                        Recycler.Recycle<Crate>(crate);
+
+                        break;
                 }
                 
             }
@@ -3768,6 +3795,12 @@ namespace StarSalvager
                         break;
                     case Component _:
                         Recycler.Recycle<Component>(attachable.gameObject);
+                        break;
+                    case JunkBit _:
+                        Recycler.Recycle<JunkBit>(attachable.gameObject);
+                        break;
+                    case Crate _:
+                        Recycler.Recycle<Crate>(attachable.gameObject);
                         break;
                     default:
                         //throw new Exception($"No solver to recycle object {attachable.gameObject.name}");

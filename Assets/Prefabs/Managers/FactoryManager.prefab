@@ -84,4 +84,7 @@ MonoBehaviour:
   spaceJunkRemote: {fileID: 11400000, guid: 471e8f786c473a94cb9552582925aa65, type: 2}
   spaceJunkPrefab: {fileID: 4611369530616709383, guid: d2f64aa72ef664b4398b303ad5b83bdc,
     type: 3}
+  crateRemote: {fileID: 11400000, guid: e48945caa38be1b4693640e888f5295b, type: 2}
+  cratePrefab: {fileID: 2338614340111776972, guid: a80aba27d8b8a524691d44cdd28925bf,
+    type: 3}
   facilityRemote: {fileID: 11400000, guid: 3707d8031afd382499acad94f3260a23, type: 2}
