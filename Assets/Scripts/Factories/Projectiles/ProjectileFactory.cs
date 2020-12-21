@@ -45,7 +45,7 @@ namespace StarSalvager.Factories
                 return newObject;
             }
 
-            if (typeof(T) == typeof(ProjectileTrigger))
+            if (typeof(T) == typeof(ProjectileTowObject))
             {
                 return Object.Instantiate(m_attachablePrefab).GetComponent<T>();
             }
@@ -90,7 +90,7 @@ namespace StarSalvager.Factories
                 Projectile projectile;
                 if (projectileProfile.IsTrigger)
                 {
-                    projectile = CreateObject<ProjectileTrigger>();
+                    projectile = CreateObject<ProjectileTowObject>();
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace StarSalvager.Factories
                 Projectile projectile;
                 if (projectileProfile.IsTrigger)
                 {
-                    projectile = CreateObject<ProjectileTrigger>();
+                    projectile = CreateObject<ProjectileTowObject>();
                 }
                 else
                 {

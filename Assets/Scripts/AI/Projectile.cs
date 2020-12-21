@@ -27,7 +27,7 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
         // Update is called once per frame
-        private void Update()
+        protected virtual void Update()
         {
             if (GameTimer.IsPaused)
                 return;
