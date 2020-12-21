@@ -16,8 +16,6 @@ namespace StarSalvager.Utilities.Inputs
 {
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
-
-
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private string currentActionMap;
 
@@ -153,6 +151,9 @@ namespace StarSalvager.Utilities.Inputs
         {
             DasChecksMovement();
             DasChecksRotate();
+
+            UpdateShuffleCountdown();
+            
         }
 
         private void OnEnable()
@@ -303,6 +304,15 @@ namespace StarSalvager.Utilities.Inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
                 {
+                    Input.Actions.Default.Shuffle_Left, DoubleShuffleLeft
+                },
+                {
+                    Input.Actions.Default.Shuffle_Right, DoubleShuffleRight
+                },
+                {
+                    Input.Actions.Default.ShuffleAlt, ShuffleInput
+                },
+                {
                     Input.Actions.Default.SideMovement, MovementDelegator
                 },
                 {
@@ -349,6 +359,9 @@ namespace StarSalvager.Utilities.Inputs
                     throw new ArgumentOutOfRangeException();
             }*/
         }
+
+
+        
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
             TriggerSmartWeapon(ctx, 0);
@@ -422,6 +435,7 @@ namespace StarSalvager.Utilities.Inputs
         private void SideMovement(InputAction.CallbackContext ctx)
         {
             _currentMoveInput = ctx.ReadValue<float>();
+
             ProcessMovementInput(_currentMoveInput);
         }
 
@@ -527,6 +541,114 @@ namespace StarSalvager.Utilities.Inputs
         }
 
         #endregion //Movement
+
+        //Double Side Shuffle
+        //====================================================================================================================//
+        
+        private void DoubleShuffleLeft(InputAction.CallbackContext ctx)
+        {
+            if (Globals.UseShuffleDance)
+                return;
+            
+            _bots[0].CoreShuffle(DIRECTION.LEFT);
+        }
+        private void DoubleShuffleRight(InputAction.CallbackContext ctx)
+        {
+            if (Globals.UseShuffleDance)
+                return;
+            
+            _bots[0].CoreShuffle(DIRECTION.RIGHT);
+        }
+
+        //Side Shuffle
+        //====================================================================================================================//
+
+        private const float TIMER = 0.3f;
+        private float countdown;
+        private int direction;
+        private int keyCount;
+
+        private void ShuffleInput(InputAction.CallbackContext ctx)
+        {
+            if (!Globals.UseShuffleDance)
+                return;
+            
+            var value = ctx.ReadValue<float>();
+            TrySideShuffleDance(Mathf.RoundToInt(value));
+        }
+
+        private void UpdateShuffleCountdown()
+        {
+            if (countdown > 0f)
+                countdown -= Time.deltaTime;
+            else
+            {
+                
+                keyCount = 0;
+                countdown = 0f;
+                direction = 0;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the shuffle steps are approved, and false if they've failed
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        private bool TrySideShuffleDance(int dir)
+        {
+            void SetFailed()
+            {
+                keyCount = 0;
+                countdown = 0f;
+                direction = 0;
+            }
+
+            switch (dir)
+            {
+                case 0 when countdown <= 0f:
+                    SetFailed();
+                    return false;
+                case 0 when countdown > 0f:
+                    return true;
+            }
+            
+            //Debug.Log($"Compare Dir: {dir} Direction: {direction}");
+
+            if (dir == direction)
+            {
+                 SetFailed();
+            }
+            else if (dir != direction && countdown <= 0f)
+            {
+                countdown = TIMER;
+            }
+
+            if (countdown <= 0f)
+            {
+                SetFailed();
+                return false;
+            }
+
+            direction = dir;
+            
+            if (keyCount++ == 2)
+            {
+                Debug.Log($"Shuffle in {direction}");
+
+                switch (direction)
+                {
+                    case -1:
+                        _bots[0].CoreShuffle(DIRECTION.LEFT);
+                        break;
+                    case 1:
+                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
+                        break;
+                }
+            }
+
+            return true;
+        }
 
         //Rotation
         //====================================================================================================================//

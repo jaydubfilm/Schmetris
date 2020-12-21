@@ -300,7 +300,7 @@ namespace StarSalvager
                 Move(m_currentInput);
             }
 
-            CheckShuffleInput();
+            //CheckShuffleInput();
         }
 
         private void LateUpdate()
@@ -332,8 +332,14 @@ namespace StarSalvager
         //====================================================================================================================//
 
         private bool _isShifting;
+        
+        public void CoreShuffle(DIRECTION direction)
+        {
+            var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
+            TryShift(direction, start);
+        }
 
-        private void CheckShuffleInput()
+        /*private void CheckShuffleInput()
         {
             void CoreShuffle(DIRECTION direction)
             {
@@ -363,7 +369,7 @@ namespace StarSalvager
             {
                 CoreShuffle(DIRECTION.RIGHT);
             }
-        }
+        }*/
         
         //IMoveOnInput
         //============================================================================================================//

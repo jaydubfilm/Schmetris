@@ -9,6 +9,9 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Star Salvager/Scriptable Objects/Game Settings")]
     public class GameSettingsScriptableObject : ScriptableObject
     {
+        public bool useShuffleDance = true;
+        
+        [Space(10f)]
         public bool allowAccessToUnlockedLaterWaves = true;
         public bool testingFeatures = false;
         public bool bitsPushThroughParts = false;

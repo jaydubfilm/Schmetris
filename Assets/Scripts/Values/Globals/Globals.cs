@@ -34,6 +34,9 @@ namespace StarSalvager.Values
 
 
         private static GameSettingsScriptableObject m_gameSettings = null;
+
+        public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
+        
         //Properties from Game Settings - do not give explicit values
         public static bool AllowAccessToUnlockedLaterWaves => m_gameSettings.allowAccessToUnlockedLaterWaves;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;

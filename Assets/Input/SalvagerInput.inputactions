@@ -92,6 +92,30 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "Shuffle_Left",
+                    "type": "Button",
+                    "id": "441fe924-9cd5-4731-83a1-fab6e04ca3c3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Shuffle_Right",
+                    "type": "Button",
+                    "id": "3242e052-34b3-468c-ae82-eea25cbf222d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "ShuffleAlt",
+                    "type": "Button",
+                    "id": "4db48088-98b6-4d2a-a958-eb58e20a7b4c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -99,7 +123,7 @@
                     "name": "Arrows",
                     "id": "d9f5e109-d46a-411f-b4c8-b353b2d244da",
                     "path": "1DAxis",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.1)",
                     "processors": "",
                     "groups": "",
                     "action": "Side Movement",
@@ -121,6 +145,39 @@
                     "name": "positive",
                     "id": "e570be30-c752-4bd6-a80f-99988102bb3f",
                     "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "AD",
+                    "id": "8b981256-905a-401f-a7af-2911351a11ef",
+                    "path": "1DAxis",
+                    "interactions": "Hold(duration=0.1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "cde95940-befa-43d1-9833-9c095e775854",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "b02cb09a-713a-41b3-8700-adf0c245e265",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -154,6 +211,39 @@
                     "name": "positive",
                     "id": "db9226e5-b073-4578-8dad-b8ba9558290a",
                     "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "WS",
+                    "id": "fb229206-cb0f-47b5-a4f8-b78cadd10068",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "afd08917-be30-4092-b715-3fc9a93ac503",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "f2171887-d7b0-4cb4-a4bd-bd0fbe7bc6a1",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -257,6 +347,61 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelfDestruct",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Arrows",
+                    "id": "9b106529-c53e-4de5-b3b0-48a251f3e5c5",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "e88e20c5-3b21-40de-97d7-27e9d911c933",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "e16f2229-03a3-42b9-841f-004dfcb88b97",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "59b17e95-f79d-4d51-a525-3804612ef44e",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "MultiTap(tapDelay=0.1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shuffle_Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d229c9c-92ac-4d02-a298-712d7cb26276",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "MultiTap(tapDelay=0.1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shuffle_Right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
