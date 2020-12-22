@@ -1305,6 +1305,32 @@ namespace StarSalvager
             //------------------------------------------------------------------------------------------------//
         }
 
+        public void TryMineExplosionAt(Vector2 minePosition, MINE_TYPE mineType)
+        {
+            Debug.Log("MINE EXPLODE");
+
+
+            float maxDamage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
+            float maxDistance = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDistance();
+            for (int i = 0; i < attachedBlocks.Count; i++)
+            {
+                float distance = Vector2.Distance(minePosition, attachedBlocks[i].transform.position);
+                if (distance > maxDistance)
+                {
+                    continue;
+                }
+
+                TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
+                    
+                /*if (!(attachedBlocks[i] is IHealth health))
+                {
+                    return;
+                }
+
+                health.ChangeHealth(maxDamage * (distance / maxDistance));*/
+            }
+        }
+
 
 
         #endregion //TryHitAt

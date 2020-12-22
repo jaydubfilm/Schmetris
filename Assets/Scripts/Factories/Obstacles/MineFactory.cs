@@ -26,6 +26,16 @@ namespace StarSalvager.Factories
             _mineRemote = mineRemote;
         }
 
+        public float GetMineMaxDamage()
+        {
+            return _mineRemote.MineMaxDamage;
+        }
+        public float GetMineMaxDistance()
+        {
+            return _mineRemote.MineMaxDistance;
+        }
+
+
         //============================================================================================================//
 
         public Mine CreateMine(MINE_TYPE type)

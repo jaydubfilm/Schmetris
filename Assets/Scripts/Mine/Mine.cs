@@ -41,7 +41,7 @@ namespace StarSalvager
                 return;
             }
 
-            if (bot.Rotating)
+            /*if (bot.Rotating)
             {
                 this.Bounce(worldHitPoint, transform.position, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
@@ -64,9 +64,10 @@ namespace StarSalvager
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
-            //bot.TryAddNewAttachable(this, inDirection, point);
+            //bot.TryAddNewAttachable(this, inDirection, point);*/
 
-            Debug.Log("MINE EXPLODE");
+            bot.TryMineExplosionAt(transform.position, Type);
+            Recycler.Recycle<Mine>(this);
         }
 
         private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
