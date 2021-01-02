@@ -172,6 +172,14 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        [SerializeField, Required, BoxGroup("Black Hole")]
+        private BlackHoleRemoteDataScriptableObject blackHoleRemote;
+
+        [SerializeField, Required, BoxGroup("Black Hole")]
+        private GameObject blackHolePrefab;
+
+        //============================================================================================================//
+
         public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
         [SerializeField, Required, BoxGroup("Facilities")]
         private FacilityRemoteDataScriptableObject facilityRemote;
@@ -278,6 +286,9 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(MineFactory):
                     return new MineFactory(minePrefab, mineRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(BlackHoleFactory):
+                    return new BlackHoleFactory(blackHolePrefab, blackHoleRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

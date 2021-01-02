@@ -90,4 +90,7 @@ MonoBehaviour:
   mineRemote: {fileID: 11400000, guid: 0ac1c204e08248e4581672d7e3b81307, type: 2}
   minePrefab: {fileID: 4611369530616709383, guid: 8f21901ce996a114184c54c9feadf014,
     type: 3}
+  blackHoleRemote: {fileID: 11400000, guid: b4fda01c7d6d38a4992a294cc584ae20, type: 2}
+  blackHolePrefab: {fileID: 4611369530616709383, guid: b9704b1ea0117dd44ba5167ae1970ad1,
+    type: 3}
   facilityRemote: {fileID: 11400000, guid: 3707d8031afd382499acad94f3260a23, type: 2}

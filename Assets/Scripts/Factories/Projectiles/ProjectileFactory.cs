@@ -96,7 +96,9 @@ namespace StarSalvager.Factories
                     {
                         case ProjectileProfileData.TowType.JunkBit:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
-                            //towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
+                            break;
+                        case ProjectileProfileData.TowType.Mine:
+                            towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
                             break;
                         default:
                             throw new Exception("Missing data for towObject");

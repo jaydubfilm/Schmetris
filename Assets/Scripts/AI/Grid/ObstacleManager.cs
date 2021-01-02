@@ -203,6 +203,9 @@ namespace StarSalvager
                     case Mine mine:
                         Recycler.Recycle<Mine>(mine);
                         break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
                     case MoveWithObstacles _:
                         break;
                     default:
@@ -247,6 +250,9 @@ namespace StarSalvager
                     case Mine mine:
                         Recycler.Recycle<Mine>(mine);
                         break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
                     case MoveWithObstacles _:
                         break;
                     default:
@@ -289,6 +295,9 @@ namespace StarSalvager
                             break;
                         case Mine mine:
                             Recycler.Recycle<Mine>(mine);
+                            break;
+                        case BlackHole blackHole:
+                            Recycler.Recycle<BlackHole>(blackHole);
                             break;
                         case MoveWithObstacles _:
                             break;
@@ -541,6 +550,9 @@ namespace StarSalvager
                             }
 
                             break;
+                        case BlackHole blackHole:
+                            Recycler.Recycle<BlackHole>(blackHole);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
@@ -627,6 +639,29 @@ namespace StarSalvager
             //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
         }*/
+
+        public List<BlackHole> GetAllBlackHoles()
+        {
+            List<BlackHole> blackHoles = new List<BlackHole>();
+
+            for (int i = 0; i < m_obstacles.Count; i++)
+            {
+                if (m_obstacles[i] is BlackHole blackHole)
+                {
+                    blackHoles.Add(blackHole);
+                }
+            }
+
+            for (int i = 0; i < m_offGridMovingObstacles.Count; i++)
+            {
+                if (m_obstacles[i] is BlackHole blackHole)
+                {
+                    blackHoles.Add(blackHole);
+                }
+            }
+
+            return blackHoles;
+        }
 
         public void IncreaseSpeedAllOffGridMoving(float speedModifier)
         {
@@ -998,7 +1033,6 @@ namespace StarSalvager
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                    //AddObstacleToList(newAsteroid);
                     PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                 }
                 else
@@ -1007,24 +1041,6 @@ namespace StarSalvager
                 }
             }
         }
-
-
-        //Used to benchmark spawn rates
-        /*[SerializeField, ReadOnly]
-        private bool startedCheck;
-        private float timeStart;
-
-        private int spawned;
-
-        [SerializeField, ReadOnly]
-        private List<float> test;
-        
-        //[ShowInInspector]
-        private float totalPerMin => startedCheck ? (spawned / (Time.time - timeStart)) * 60f : 0f;
-
-        [ShowInInspector]
-        private float Average => test.IsNullOrEmpty() ? 0f : test.Average();*/
-        
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
             ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
@@ -1059,22 +1075,6 @@ namespace StarSalvager
 
                     AddObstacleToList(newObstacle);
                     
-                    //Used to benchmark spawn rates
-                    /*if (!startedCheck)
-                    {
-                        startedCheck = true;
-                        timeStart = Time.time;
-                        test = new List<float>();
-                    }
-                    else if (startedCheck && Time.time - timeStart >= 1f)
-                    {
-                        test.Add(totalPerMin);
-                        timeStart = Time.time;
-                        spawned = 0;
-                    }
-                    else
-                        spawned++;*/
-                    
                     obstacle = newObstacle;
                     break;
                 }
@@ -1085,25 +1085,29 @@ namespace StarSalvager
                         return;
                     }
 
-                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
-                            .CreateAsteroid<Asteroid>(asteroidSize);
-                        AddObstacleToList(newAsteroid);
+                    obstacle = FactoryManager.Instance.GetFactory<BlackHoleFactory>().CreateBlackHole();
+                        AddObstacleToList(obstacle);
+                    break;
 
-                        switch (asteroidSize)
-                        {
-                            case ASTEROID_SIZE.Bit:
-                                break;
-                            case ASTEROID_SIZE.Small:
-                            case ASTEROID_SIZE.Medium:
-                            case ASTEROID_SIZE.Large:
-                                radiusAround = 1;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(asteroidSize), asteroidSize, null);
-                        }
+                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                        .CreateAsteroid<Asteroid>(asteroidSize);
+                    AddObstacleToList(newAsteroid);
 
-                        Asteroids.Add(newAsteroid);
-                        obstacle = newAsteroid;
+                    switch (asteroidSize)
+                    {
+                        case ASTEROID_SIZE.Bit:
+                            break;
+                        case ASTEROID_SIZE.Small:
+                        case ASTEROID_SIZE.Medium:
+                        case ASTEROID_SIZE.Large:
+                            radiusAround = 1;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(asteroidSize), asteroidSize, null);
+                    }
+
+                    Asteroids.Add(newAsteroid);
+                    obstacle = newAsteroid;
                     break;
                 }
                 case SELECTION_TYPE.BUMPER:
@@ -1186,6 +1190,9 @@ namespace StarSalvager
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
                         break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -1203,6 +1210,7 @@ namespace StarSalvager
                 case Asteroid _:
                 case Component _:
                 case SpaceJunk _:
+                case BlackHole _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
                 case Shape shape:

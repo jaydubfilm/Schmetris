@@ -41,31 +41,6 @@ namespace StarSalvager
                 return;
             }
 
-            /*if (bot.Rotating)
-            {
-                this.Bounce(worldHitPoint, transform.position, bot.MostRecentRotate);
-                AudioController.PlaySound(SOUND.BIT_BOUNCE);
-                return;
-            }
-
-            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
-            var direction = dir.ToDirection();
-
-            //Checks to see if the player is moving in the correct direction to bother checking, and if so,
-            //return the direction to shoot the ray
-            if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
-                return;
-            
-            if (dir != rayDirection && dir != Vector2Int.zero)
-                return;
-
-            if (!TryFindClosestCollision(rayDirection.ToDirection(), out var point))
-                return;
-
-            //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
-            var inDirection = (-rayDirection).ToDirection();
-            //bot.TryAddNewAttachable(this, inDirection, point);*/
-
             bot.TryMineExplosionAt(transform.position, Type);
             Recycler.Recycle<Mine>(this);
         }

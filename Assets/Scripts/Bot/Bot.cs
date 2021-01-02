@@ -333,6 +333,10 @@ namespace StarSalvager
 
         private void TryMovement()
         {
+            float blackHoleAmount = GetBlackHoleMovementImpact() * Time.deltaTime;
+            transform.position += Vector3.left * blackHoleAmount;
+            m_distanceHorizontal -= blackHoleAmount;
+
             var xPos = transform.position.x;
 
             var distHorizontal = Mathf.Abs(m_distanceHorizontal);
@@ -372,10 +376,39 @@ namespace StarSalvager
             var moveDirection = direction.ToVector2();
 
             m_distanceHorizontal -= toMove * moveDirection.x;
+
             transform.position += (Vector3)moveDirection * toMove;
 
             //--------------------------------------------------------------------------------------------------------//
 
+        }
+
+        public float GetBlackHoleMovementImpact()
+        {
+            float blackHoldImpact = 0.0f;
+            List<BlackHole> blackHoles = LevelManager.Instance.ObstacleManager.GetAllBlackHoles();
+
+            float maxPull = FactoryManager.Instance.GetFactory<BlackHoleFactory>().GetBlackHoleMaxPull();
+            float maxDistance = FactoryManager.Instance.GetFactory<BlackHoleFactory>().GetBlackHoleMaxDistance();
+            for (int i = 0; i < blackHoles.Count; i++)
+            {
+                float distance = Vector2.Distance(blackHoles[i].transform.position, transform.position);
+                if (distance > maxDistance)
+                {
+                    continue;
+                }
+
+                if (blackHoles[i].transform.position.x > transform.position.x)
+                {
+                    blackHoldImpact -= distance;
+                }
+                else
+                {
+                    blackHoldImpact += distance;
+                }
+            }
+
+            return blackHoldImpact;
         }
 
         public void RegisterMoveOnInput()
@@ -1321,13 +1354,6 @@ namespace StarSalvager
                 }
 
                 TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
-                    
-                /*if (!(attachedBlocks[i] is IHealth health))
-                {
-                    return;
-                }
-
-                health.ChangeHealth(maxDamage * (distance / maxDistance));*/
             }
         }
 
