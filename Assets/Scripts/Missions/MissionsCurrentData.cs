@@ -153,7 +153,7 @@ namespace StarSalvager.Missions
                 }
                 else if (missionLoot[i] is RDSValue<Component> rdsValueComponent)
                 {
-                    PlayerDataManager.AddComponent(rdsValueComponent.rdsValue.Type, 1);
+                    //PlayerDataManager.AddComponent(rdsValueComponent.rdsValue.Type, 1);
                 }
             }
         }

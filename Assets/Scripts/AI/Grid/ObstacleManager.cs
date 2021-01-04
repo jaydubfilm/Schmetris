@@ -505,12 +505,9 @@ namespace StarSalvager
                             m_obstacles[i] = null;
                             break;
                         case Component component:
-                            if (!component.Attached)
-                            {
-                                component.IsRegistered = false;
-                                Recycler.Recycle<Component>(component);
-                                m_obstacles[i] = null;
-                            }
+                            component.IsRegistered = false;
+                            Recycler.Recycle<Component>(component);
+                            m_obstacles[i] = null;
 
                             break;
                         case Shape shape:

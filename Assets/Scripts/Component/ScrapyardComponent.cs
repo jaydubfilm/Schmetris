@@ -1,11 +1,11 @@
-﻿using Recycling;
-using Sirenix.OdinInspector;
-using StarSalvager.Values;
+﻿using System;
+using Recycling;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardComponent : MonoBehaviour, IComponent, IAttachable, ICustomRecycle
+    [Obsolete]
+    public class ScrapyardComponent : MonoBehaviour, ICustomRecycle
     {
         public new Transform transform
         {
@@ -18,53 +18,14 @@ namespace StarSalvager
             }
         }
         private Transform _transform;
-        
-        //IComponent Properties
-        //============================================================================================================//
-        public COMPONENT_TYPE Type { get; set; }
 
-        public int level => 0;
-
-        //IAttachable Properties
-        //============================================================================================================//
-        
-        [ShowInInspector, ReadOnly]
-        public Vector2Int Coordinate { get; set; }
-        [ShowInInspector, ReadOnly]
-        public bool Attached { get; set; }
-        public bool CountAsConnectedToCore => true;
-        public bool CanShift => true;
-        public bool CountTowardsMagnetism => true;
-
-        //IAttachableFunctions
-        //============================================================================================================//
-        
-        public void SetAttached(bool isAttached)
-        {
-            Attached = isAttached;
-        }
-        
 
         //ICustomRecycle Functions
         //============================================================================================================//
 
         public virtual void CustomRecycle(params object[] args)
         {
-            SetAttached(false);
-        }
-        
-        //============================================================================================================//
-
-        //IHasBounds Functions
-        //====================================================================================================================//
-        
-        public Bounds GetBounds()
-        {
-            return new Bounds
-            {
-                center = transform.position,
-                size = Vector2.one * Constants.gridCellSize
-            };
+            //SetAttached(false);
         }
 
         //====================================================================================================================//

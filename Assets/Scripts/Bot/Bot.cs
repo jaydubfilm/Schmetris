@@ -802,46 +802,6 @@ namespace StarSalvager
 
                     break;
                 }
-                case Component component:
-                {
-                    bool legalDirection = true;
-
-                    //----------------------------------------------------------------------------------------------------//
-
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
-                    
-                    /*
-                    //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(component.transform.position);
-
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    if (!legalDirection)
-                    {
-                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to 
-                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                            return false;
-                    }*/
-
-                    //Check if its legal to attach (Within threshold of connection)
-                    //TODO This needs to bounce off instead of being destroyed
-                    if (closestAttachable is EnemyAttachable ||
-                        closestAttachable is Part part && part.Destroyed)
-                    {
-                        if (attachable is IObstacle obstacle)
-                            obstacle.Bounce(collisionPoint, transform.position);
-
-                        return false;
-                    }
-
-                    //Add these to the block depending on its relative position
-                    AttachAttachableToExisting(component, closestAttachable, connectionDirection);
-                    SessionDataProcessor.Instance.ComponentCollected(component.Type);
-
-                    //CheckForCombosAround();
-                    
-                    break;
-                }
                 //FIXME This seems to be wanting to attach to the wrong direction
                 case EnemyAttachable enemyAttachable:
                 {
