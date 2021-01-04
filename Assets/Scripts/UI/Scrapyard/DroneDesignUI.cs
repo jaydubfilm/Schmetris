@@ -176,7 +176,7 @@ namespace StarSalvager.UI.Scrapyard
 
             //TODO May want to setup some sort of Init function to merge these two setups
             //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
-            repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
+            //repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
 
             ScaleCamera(m_cameraZoomScaler.value);
             
@@ -199,7 +199,7 @@ namespace StarSalvager.UI.Scrapyard
             
             
             //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
-            repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
+            //repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -217,8 +217,8 @@ namespace StarSalvager.UI.Scrapyard
             
             repairButton.onClick.AddListener(() =>
             {
-                DroneDesigner.RepairParts();
-                PreviewRepairCost(false);
+                /*DroneDesigner.RepairParts();
+                PreviewRepairCost(false);*/
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -427,7 +427,7 @@ namespace StarSalvager.UI.Scrapyard
 
             UpdateFlightDataUI();
             
-            UpdateRepairButton();
+            //UpdateRepairButton();
         }
 
         private void UpdateLoadListUiScrollViews()
@@ -511,33 +511,6 @@ namespace StarSalvager.UI.Scrapyard
 
             foreach (var bitType in types)
             {
-                /*switch (bitType)
-                {
-                    case BIT_TYPE.GREEN:
-                        //TODO Check for repair
-                        if (!botData.Any(b => b.Type == (int)PART_TYPE.REPAIR))
-                            continue;
-                        break;
-                    case BIT_TYPE.GREY:
-                        //TODO Check for a gun
-                        if (!botData.Any(b => b.Type == (int)PART_TYPE.GUN || b.Type == (int)PART_TYPE.TRIPLESHOT))
-                            continue;
-                        break;
-                    case BIT_TYPE.YELLOW:
-                        for (int i = 0; i < botData.Count; i++)
-                        {
-                            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type).levels[botData[i].Level];
-                            if (partData.powerDraw > 0)
-                            {
-                                continue;
-                            }
-                        }
-                        break;
-                    case BIT_TYPE.RED:
-                        break;
-                    default:
-                        continue;
-                }*/
 
                 var botLiquidElement = liquidResourceContentView.FindElement(x => x.type == bitType);
                 var storageResourceElement = resourceScrollView.FindElement(x => x.type == bitType);
@@ -577,25 +550,9 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     resourceScrollViewPreviewAmounts.Add(storageResourceElement, movingAmount);
                 }
-                //storageResourceElement.PreviewChange(-movingAmount);
             }
 
             return resourceScrollViewPreviewAmounts;
-        }
-
-        private void PreviewRepairCost(bool showPreview)
-        {
-            var storageLiquidElement = resourceScrollView.FindElement(x => x.type == BIT_TYPE.GREEN);
-
-            if (!showPreview || !repairButton.interactable)
-            {
-                storageLiquidElement.PreviewChange(0);
-                return;
-            }
-            
-            var finalRepairCost = GetRepairCost(DroneDesigner.GetRepairCostPair());
-            storageLiquidElement.PreviewChange(-finalRepairCost);
-
         }
 
         public void PreviewCraftCost(bool showPreview, Blueprint blueprint)
@@ -631,111 +588,6 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Preview Costs
-
-        //Repair Costs
-        //====================================================================================================================//
-
-        #region Repair Cost
-
-        public void UpdateRepairButton()
-        {
-            var costs = DroneDesigner.GetRepairCostPair();
-            
-            
-
-            ShowRepairCost(costs.x, costs.y);
-        }
-
-        //FIXME This needs to be set up to better account for the weird things that come with Replacing destroyed parts
-        public void ShowRepairCost(int repairCost, int replacementCost)
-        {
-
-            var finalRepairCost = GetRepairCost(repairCost, replacementCost);
-            
-            var show = finalRepairCost > 0;
-            
-            repairButton.gameObject.SetActive(show);
-
-            if (!show)
-                return;
-            
-            
-            if (HintManager.CanShowHint(HINT.DAMAGE))
-            {
-                //FIXME Positioning is fucked
-                HintManager.TryShowHint(HINT.DAMAGE, 0.25f);
-            }
-
-            CanAffordRepair = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource >= finalRepairCost;
-            
-            _repairButtonText.text = $"Repair {finalRepairCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = CanAffordRepair;
-            repairButtonGlow.SetActive(repairButton.interactable);
-            
-            /*var totalCost = repairCost + replacementCost;
-            
-            
-            var show = totalCost > 0;
-            
-            repairButton.gameObject.SetActive(show);
-
-            if (!show)
-                return;
-
-            if (_repairButtonText == null)
-                return;
-            
-            var available = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN];
-
-            if (totalCost > available)
-            {
-                if (repairCost > 0)
-                {
-                    _repairButtonText.text = available < repairCost ? $"Repair {available}" : $"Repair all {repairCost}" + 
-                        $" {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] > 0;
-                }
-                else
-                {
-                    _repairButtonText.text = $"Repair all {replacementCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-                    repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= replacementCost;
-                }
-
-                return;
-            }
-            
-
-            _repairButtonText.text = $"Repair all {totalCost} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.GREEN]}";
-            repairButton.interactable = PlayerPersistentData.PlayerData.resources[BIT_TYPE.GREEN] >= totalCost;*/
-        }
-
-        private static int GetRepairCost(Vector2Int repairCostPair)
-        {
-            return GetRepairCost(repairCostPair.x, repairCostPair.y);
-        }
-        private static int GetRepairCost(int repairCost, int replacementCost)
-        {
-            var totalCost = repairCost + replacementCost;
-
-            if (totalCost == 0)
-                return 0;
-
-            var available = PlayerDataManager.GetResource(BIT_TYPE.GREEN).resource;
-
-            if (totalCost <= available || available == 0) 
-                return totalCost;
-            
-            
-            if (repairCost > 0)
-            {
-                return available < repairCost? available : repairCost;
-            }
-                
-            return replacementCost;
-
-        }
-
-        #endregion //Repair Cost
 
         //====================================================================================================================//
         

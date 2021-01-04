@@ -274,23 +274,8 @@ namespace StarSalvager.AI
             switch (_target)
             {
                 case IRecycled recyclable when recyclable.IsRecycled:
-                case Part part when part.Destroyed:
-                    var health = _target as IHealth;
-                
-                    //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
-                    if (health?.CurrentHealth <= 0)
-                    {
-                        if (TryMoveToTargetPosition())
-                            return;
-                    }
-                    //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
-                    //and the enemy should try and find a new target relative to its current position
-                    else if (health?.CurrentHealth > 0)
-                    {
-                        if(TryUpdateTarget())
-                            return;
-                    }
-
+                case Part _:
+                    return;
                     _target = null;
                     _attachedBot.ForceDetach(this);
                     return;

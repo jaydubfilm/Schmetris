@@ -323,7 +323,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (var attached in blocks)
             {
-                if(ignoreDestroyed && attached is Part part && part.Destroyed)
+                if(ignoreDestroyed /*&& attached is Part part && part.Destroyed*/)
                     continue;
                 //attached.SetColor(Color.white);
 

@@ -443,7 +443,7 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            BotPartsLogic.coreHeat = 0f;
+            //BotPartsLogic.coreHeat = 0f;
 
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
@@ -476,7 +476,7 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
             
-            BotPartsLogic.coreHeat = 0f;
+            //BotPartsLogic.coreHeat = 0f;
             
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
@@ -486,7 +486,7 @@ namespace StarSalvager
                     if(Globals.IsRecoveryBot)
                         FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
                     
-                    GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
+                    //GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
                 }
 
                 AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
@@ -758,8 +758,8 @@ namespace StarSalvager
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
                             //TODO This needs to bounce off instead of being destroyed
-                            if (closestAttachable is EnemyAttachable ||
-                                closestAttachable is Part part && part.Destroyed)
+                            if (closestAttachable is EnemyAttachable /*||
+                                closestAttachable is Part part && part.Destroyed*/)
                             {
                                 if (attachable is IObstacle obstacle)
                                     obstacle.Bounce(collisionPoint, transform.position);
@@ -817,7 +817,7 @@ namespace StarSalvager
                     switch (closestAttachable)
                     {
                         case EnemyAttachable _:
-                        case Part part when part.Destroyed:
+                        /*case Part part when part.Destroyed:*/
                             return false;
                     }
                     
@@ -850,8 +850,8 @@ namespace StarSalvager
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     //Check if its legal to attach (Within threshold of connection)
-                    if (closestAttachable is EnemyAttachable ||
-                        closestAttachable is Part part && part.Destroyed)
+                    if (closestAttachable is EnemyAttachable /*||
+                        closestAttachable is Part part && part.Destroyed*/)
                     {
                         if (attachable is IObstacle obstacle)
                             obstacle.Bounce(collisionPoint, transform.position);
@@ -874,8 +874,8 @@ namespace StarSalvager
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     //Check if its legal to attach (Within threshold of connection)
-                    if (closestAttachable is EnemyAttachable ||
-                        closestAttachable is Part part && part.Destroyed)
+                    if (closestAttachable is EnemyAttachable /*||
+                        closestAttachable is Part part && part.Destroyed*/)
                     {
                         if (attachable is IObstacle obstacle)
                             obstacle.Bounce(collisionPoint, transform.position);
@@ -973,7 +973,7 @@ namespace StarSalvager
         
         public bool CoordinateOccupied(Vector2Int coordinate)
         {
-            return _attachedBlocks.Any(x => x.Coordinate == coordinate && !(x is Part part && part.Destroyed));
+            return _attachedBlocks.Any(x => x.Coordinate == coordinate /*&& !(x is Part part && part.Destroyed)*/);
         }
 
         #endregion //Check For Legal Attach
@@ -1005,8 +1005,8 @@ namespace StarSalvager
                     case BIT_TYPE.YELLOW:
                         
                         //TODO This needs to bounce off instead of being destroyed
-                        if (closestOnBot is EnemyAttachable ||
-                            closestOnBot is Part part && part.Destroyed)
+                        if (closestOnBot is EnemyAttachable /*||
+                            closestOnBot is Part part && part.Destroyed*/)
                         {
                             if (shape is IObstacle obstacle)
                                 obstacle.Bounce(collisionPoint, transform.position);
@@ -1168,10 +1168,10 @@ namespace StarSalvager
                 case EnemyAttachable _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
-                case Component _:
-                    break;
-                case Part part:
-                    if (part.Destroyed) return false;
+                /*case Component _:
+                    break;*/
+                case Part _:
+                    /*if (part.Destroyed) return false;*/
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
@@ -1198,7 +1198,7 @@ namespace StarSalvager
             {
                 // Enemies attached should not be hit by other enemy projectiles
                 case EnemyAttachable _:
-                case Part part when part.Destroyed:
+                /*case Part part when part.Destroyed:*/
                     return false;
             }
 
@@ -1229,8 +1229,8 @@ namespace StarSalvager
 
             closestHealth.ChangeHealth(-Mathf.Abs(damage));
             
-            if(closestAttachable is Part part && part.Type == PART_TYPE.CORE)
-                GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
+            /*if(closestAttachable is Part part && part.Type == PART_TYPE.CORE)
+                GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);*/
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
@@ -1333,8 +1333,8 @@ namespace StarSalvager
 
             switch (closestAttachable)
             {
-                case Part part when part.Destroyed:
-                    return false;
+                /*case Part part when part.Destroyed:
+                    return false;*/
                 case Bit _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
@@ -1369,7 +1369,7 @@ namespace StarSalvager
                     break;
             }
 
-            //FIXME This value should not be hardcoded
+            /*//FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
 
             if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
@@ -1379,7 +1379,7 @@ namespace StarSalvager
             else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
             {
                 Destroy("Core Overheated");
-            }
+            }*/
         }
 
         #endregion //Asteroid Collision
@@ -1416,9 +1416,9 @@ namespace StarSalvager
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                         
                     break;
-                case Component _ when checkForCombo:
+                /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
-                    break;
+                    break;*/
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
                     break;
@@ -1459,9 +1459,9 @@ namespace StarSalvager
                 case Bit bit:
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                     break;
-                case Component _ when checkForCombo:
+                /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
-                    break;
+                    break;*/
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
                     break;
@@ -1496,7 +1496,7 @@ namespace StarSalvager
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
-            if (attachedBlocks.Any(a => a.Coordinate == coordinate && !(a is Part part && part.Destroyed)))
+            if (attachedBlocks.Any(a => a.Coordinate == coordinate /*&& !(a is Part part && part.Destroyed)*/))
             {
                 var onAttachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
                 Debug.Log(
@@ -2125,7 +2125,7 @@ namespace StarSalvager
                 }
                 else
                 {
-                    //FIXME This will work for parasites, but nothing else
+                    /*//FIXME This will work for parasites, but nothing else
                     //Checks to see if there are things stacked on top of the destroyed part
                     if (targetAttachable is Part part && part.Destroyed)
                     {
@@ -2148,7 +2148,7 @@ namespace StarSalvager
                                 }
                             }
                         }
-                    }
+                    }*/
                     
                     currentCoordinate += dir;
                     continue;
@@ -3583,13 +3583,13 @@ namespace StarSalvager
                     switch (attachable)
                     {
                         case Bit _:
-                        case Component _:
+                        //case Component _:
                             attachable.gameObject.SetActive(false);
 
                             break;
-                        case Part part:
+                        /*case Part part:
                             part.ChangeHealth(-10000);
-                            break;
+                            break;*/
                     }
                 }
 
@@ -3666,9 +3666,9 @@ namespace StarSalvager
                     case EnemyAttachable _:
                         Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
                         break;
-                    case Component _:
+                    /*case Component _:
                         Recycler.Recycle<Component>(attachable.gameObject);
-                        break;
+                        break;*/
                     case JunkBit _:
                         Recycler.Recycle<JunkBit>(attachable.gameObject);
                         break;

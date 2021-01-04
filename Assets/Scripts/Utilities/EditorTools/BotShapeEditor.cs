@@ -116,7 +116,7 @@ namespace StarSalvager
                 IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                 if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                 {
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, 1, ref partAtCoordinates);
                 }
             }
             else
@@ -156,9 +156,9 @@ namespace StarSalvager
                 if (_scrapyardBot != null)
                 {
                     IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE && partAtCoordinates.level > 0)
+                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                     {
-                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level - 1, ref partAtCoordinates);
+                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, 0, ref partAtCoordinates);
                         return;
                     }
 
