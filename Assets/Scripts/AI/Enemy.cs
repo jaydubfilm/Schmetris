@@ -6,7 +6,6 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
-using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
@@ -500,13 +499,6 @@ namespace StarSalvager.AI
                 return;
             
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                enemyTypeString = m_enemyData.EnemyType,
-                intAmount = 1
-            };
-            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

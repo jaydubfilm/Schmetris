@@ -19,7 +19,6 @@ using StarSalvager.Utilities.Puzzle;
 using UnityEngine;
 using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
-using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Math;
@@ -459,7 +458,7 @@ namespace StarSalvager
             
             if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
-            AttachNewBlock(Vector2Int.zero, core, updateMissions: false);
+            AttachNewBlock(Vector2Int.zero, core);
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
             
@@ -490,7 +489,7 @@ namespace StarSalvager
                     GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
                 }
 
-                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, updatePartList: false);
+                AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
             }
 
 
@@ -1370,8 +1369,6 @@ namespace StarSalvager
                     break;
             }
 
-            AsteroidMissionUpdate(type);
-
             //FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
 
@@ -1385,16 +1382,6 @@ namespace StarSalvager
             }
         }
 
-        private static void AsteroidMissionUpdate(BIT_TYPE? bitType)
-        {
-            var missionProgressEventData = new MissionProgressEventData
-            {
-                bitType = bitType,
-                intAmount = 1
-            };
-            MissionManager.ProcessMissionData(typeof(AsteroidCollisionMission), missionProgressEventData);
-        }
-
         #endregion //Asteroid Collision
 
         //============================================================================================================//
@@ -1404,7 +1391,6 @@ namespace StarSalvager
         public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
             bool checkForCombo = true, 
             bool updateColliderGeometry = true, 
-            bool updateMissions = true,
             bool updatePartList = true)
         {
             if (Destroyed) 
@@ -1427,18 +1413,6 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
-                    if (updateMissions)
-                    {
-                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                        {
-                            bitType = bit.Type,
-                            intAmount = 1,
-                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
-                        };
-                        
-                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
-                    }
-                        
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                         
                     break;
@@ -1448,18 +1422,6 @@ namespace StarSalvager
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
                     break;
-
-                //This can NEVER happen as Shape is not IAttachable
-                /*case Shape shape:
-                    if (updateMissions)
-                    {
-                        foreach (var attachedBit in shape.AttachedBits)
-                        {
-                            MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                                FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
-                        }
-                    }
-                    break;*/
             }
 
             if (newAttachable.CountTowardsMagnetism)
@@ -1473,8 +1435,7 @@ namespace StarSalvager
 
         public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, 
             bool checkForCombo = true, 
-            bool updateColliderGeometry = true, 
-            bool updateMissions = true, 
+            bool updateColliderGeometry = true,
             bool checkMagnet = true, 
             bool playSound = true,
             bool updatePartList = true)
@@ -1496,18 +1457,6 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
-                    if (updateMissions)
-                    {
-                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                        {
-                            bitType = bit.Type,
-                            intAmount = 1,
-                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
-                        };
-
-                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
-                    }
-
                     if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
                     break;
                 case Component _ when checkForCombo:
@@ -1525,24 +1474,6 @@ namespace StarSalvager
                 //if(playSound)
                 //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
-
-            /*if (updateMissions)
-            {
-                if (newAttachable is Bit bit)
-                {
-                    MissionManager.ProcessResourceCollectedMissionData(bit.Type, 
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type).levels[bit.level].resources);
-                }
-                else if (newAttachable is Shape shape)
-                {
-                    foreach (var attachedBit in shape.AttachedBits)
-                    {
-                        MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
-                    }
-                }
-            }*/
-
             
             /*if(checkForCombo)
                 CheckForCombosAround(coordinate);*/
@@ -1555,7 +1486,6 @@ namespace StarSalvager
             DIRECTION direction, 
             bool checkForCombo = true, 
             bool updateColliderGeometry = true,
-            bool updateMissions = true, 
             bool checkMagnet = true, 
             bool playSound = true,
             bool updatePartList = true)
@@ -1577,8 +1507,7 @@ namespace StarSalvager
                     newAttachable, 
                     direction,
                     checkForCombo, 
-                    updateColliderGeometry, 
-                    updateMissions);
+                    updateColliderGeometry);
                 
                 /*//I don't want the enemies to push to the end of the arm, I want it just attach to the closest available space
                 if (newAttachable is EnemyAttachable)
@@ -1586,8 +1515,7 @@ namespace StarSalvager
                         newAttachable, 
                         direction,
                         checkForCombo, 
-                        updateColliderGeometry, 
-                        updateMissions);
+                        updateColliderGeometry);
                 else
                     PushNewAttachable(newAttachable, direction, existingAttachable.Coordinate);*/
 
@@ -1608,18 +1536,6 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit bit:
-                    if (updateMissions)
-                    {
-                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                        {
-                            bitType = bit.Type,
-                            intAmount = 1,
-                            bitDroppedFromEnemyLoot = bit.IsFromEnemyLoot
-                        };
-
-                        MissionManager.ProcessMissionData(typeof(ResourceCollectedMission), missionProgressEventData);
-                    }
-
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
 
@@ -1646,28 +1562,7 @@ namespace StarSalvager
                 //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
             }
 
-
-
-            /*if (updateMissions)
-            {
-                if (newAttachable is Bit bit)
-                {
-                    MissionManager.ProcessResourceCollectedMissionData(bit.Type,
-                        FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitRemoteData(bit.Type)
-                            .levels[bit.level].resources);
-                }
-                /*else if (newAttachable is Shape shape)
-                {
-                    foreach (var attachedBit in shape.AttachedBits)
-                    {
-                        MissionManager.ProcessResourceCollectedMissionData(attachedBit.Type,
-                            FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                .GetBitRemoteData(attachedBit.Type).levels[attachedBit.level].resources);
-                    }
-                }#1#
-            }
-
-            if (checkForCombo)
+            /*if (checkForCombo)
             {
                 CheckForCombosAround(coordinate);
                 CheckHasMagnetOverage();
@@ -1735,9 +1630,8 @@ namespace StarSalvager
         /// <param name="desiredDirection"></param>
         /// <param name="checkForCombo"></param>
         /// <param name="updateColliderGeometry"></param>
-        /// <param name="updateMissions"></param>
         public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable, DIRECTION desiredDirection, bool checkForCombo, 
-            bool updateColliderGeometry, bool updateMissions)
+            bool updateColliderGeometry)
         {
             if (Destroyed) 
                 return;
@@ -1775,7 +1669,7 @@ namespace StarSalvager
                     if (!attachedBlocks.HasPathToCore(check))
                         continue;
                     //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
-                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry, updateMissions);
+                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry);
                     return;
                 }
 
@@ -2303,15 +2197,6 @@ namespace StarSalvager
 
                 CheckForBonusShapeMatches();
                 ForceCheckMagnets();
-
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    intAmount = toShift.Count,
-                    bumperShiftedThroughPart = passedCore,
-                    bumperOrphanedBits = hasDetached,
-                    bumperCausedCombos = hasCombos
-                };
-                MissionManager.ProcessMissionData(typeof(WhiteBumperMission), missionProgressEventData);
             }));
 
 
@@ -2681,18 +2566,6 @@ namespace StarSalvager
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                if (pendingCombo.ToMove[0] is Bit bit)
-                {
-                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                    {
-                        bitType = bit.Type,
-                        intAmount = 1,
-                        level = bit.level + 1,
-                        comboType = pendingCombo.ComboData.type
-                    };
-                    MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
-                }
-
                 var multiplier = comboFactory.GetGearMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
                 SimpleComboSolver(pendingCombo, multiplier);
             }
@@ -2733,18 +2606,6 @@ namespace StarSalvager
             if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var data))
                 return;
 
-            if (iCanCombo is Bit bit)
-            {
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    bitType = bit.Type,
-                    intAmount = 1,
-                    level = iCanCombo.level + 1,
-                    comboType = data.comboData.type
-                };
-                MissionManager.ProcessMissionData(typeof(ComboBlocksMission), missionProgressEventData);
-            }
-            
             var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, data.toMove.Count);
             SimpleComboSolver(data.comboData, data.toMove, multiplier);
         }
@@ -3922,51 +3783,6 @@ namespace StarSalvager
             AddMorePieces(blocks, false);
             CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
         }
-
-        /*[Button]
-        private void AddComboTestPieces()
-        {
-            var blocks = new List<BlockData>
-            {
-                new BlockData
-                {
-                    ClassType = nameof(Part),
-                    Coordinate = new Vector2Int(0,-1),
-                    Level =0,
-                    Type = (int)PART_TYPE.STORERED
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Part),
-                    Coordinate = new Vector2Int(-1,0),
-                    Level =0,
-                    Type = (int)PART_TYPE.MAGNET
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(0,-2),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1,-2),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(-1,-1),
-                    Level =0,
-                    Type = (int)BIT_TYPE.YELLOW
-                },
-            };
-            
-            AddMorePieces(blocks, true);
-        }*/
         
         private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
         {
@@ -3999,7 +3815,7 @@ namespace StarSalvager
         {
             foreach (var attachable in attachables)
             {
-                AttachNewBlock(attachable.Coordinate, attachable, updateMissions: false, checkForCombo: false, checkMagnet:false);
+                AttachNewBlock(attachable.Coordinate, attachable, checkForCombo: false, checkMagnet:false);
             }
 
             if(checkForCombos)

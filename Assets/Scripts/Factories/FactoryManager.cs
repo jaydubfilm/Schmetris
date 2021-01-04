@@ -13,10 +13,6 @@ namespace StarSalvager.Factories
     public class FactoryManager : Singleton<FactoryManager>
     {
         [SerializeField, Required, BoxGroup("Temporary")]
-        private MissionRemoteDataScriptableObject missionRemoteData;
-        public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
-
-        [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
 
         //[SerializeField, Required, BoxGroup("Temporary")]

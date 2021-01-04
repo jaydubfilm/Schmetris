@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
-using StarSalvager.Missions;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
@@ -175,7 +174,6 @@ namespace StarSalvager.Utilities.Inputs
         {
             Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
             GameTimer.CustomOnApplicationQuit();
-            MissionManager.CustomOnApplicationQuit();
             PlayerDataManager.CustomOnApplicationQuit();
         }
 

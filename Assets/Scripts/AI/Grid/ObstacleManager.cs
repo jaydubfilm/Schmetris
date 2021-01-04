@@ -15,7 +15,6 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
-using StarSalvager.Missions;
 using StarSalvager.Prototype;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
@@ -1077,15 +1076,6 @@ namespace StarSalvager
                 }
                 case SELECTION_TYPE.ASTEROID:
                 {
-                    if (LevelManager.Instance.WaveTimer + Globals.AsteroidSpawnDisableTimeBeforeWaveEnd >= LevelManager.Instance.CurrentWaveData.GetWaveDuration())
-                    {
-                        return;
-                    }
-
-                    obstacle = FactoryManager.Instance.GetFactory<BlackHoleFactory>().CreateBlackHole();
-                        AddObstacleToList(obstacle);
-                    break;
-
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                         .CreateAsteroid<Asteroid>(asteroidSize);
                     AddObstacleToList(newAsteroid);
@@ -1389,13 +1379,6 @@ namespace StarSalvager
                 s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
             LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched++;
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                intAmount = LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched
-            };
-
-            MissionManager.ProcessMissionData(typeof(ChainBonusShapesMission), missionProgressEventData);
         }
 
         #endregion //Bonus Shapes

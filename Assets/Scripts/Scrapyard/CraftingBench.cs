@@ -1,6 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using StarSalvager.Factories;
-using StarSalvager.Missions;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -28,13 +27,6 @@ namespace StarSalvager
                     Toast.AddToast("Not enough resources to craft");
                 return;
             }
-            
-            /*if (PlayerPersistentData.PlayerData.resources[BIT_TYPE.YELLOW] == 0)
-            {
-                Toast.AddToast("Not enough power to craft", time: 1.0f, verticalLayout: Toast.Layout.Start, horizontalLayout: Toast.Layout.Middle);
-                return;
-            }*/
-
 
             var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(blueprint.partType)
                 .levels[blueprint.level].health;
@@ -50,13 +42,6 @@ namespace StarSalvager
             {
                 PlayerDataManager.SubtractPartCosts(blueprint.partType, blueprint.level, false);
             }
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                partType = blueprint.partType,
-                level = blueprint.level
-            };
-            MissionManager.ProcessMissionData(typeof(CraftPartMission), missionProgressEventData);
 
             if (blueprint.partType == PART_TYPE.CORE)
             {

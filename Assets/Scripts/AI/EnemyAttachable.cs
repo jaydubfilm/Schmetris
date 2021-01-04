@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
@@ -348,7 +347,7 @@ namespace StarSalvager.AI
             if (_attachedBot.CoordinateOccupied(_target.Coordinate))
                 return false;
 
-            if (!_attachedBot.TryAttachNewBlock(_target.Coordinate, this, false, true, false))
+            if (!_attachedBot.TryAttachNewBlock(_target.Coordinate, this, false, true))
                 return false;
 
             if (!TryUpdateTarget())
@@ -416,13 +415,6 @@ namespace StarSalvager.AI
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                enemyTypeString = m_enemyData.EnemyType,
-                intAmount = 1
-            };
-            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
 
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

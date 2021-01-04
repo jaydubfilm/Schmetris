@@ -18,14 +18,6 @@ namespace StarSalvager.ScriptableObjects
         //FIXME The naming for this sucks
         public float gameUIResourceThreshold = 0.33f;
 
-        //Mission Properties
-        //====================================================================================================================//
-
-        [BoxGroup("Missions")]
-        public float missionReminderFrequency = 25.0f;
-        [BoxGroup("Missions")]
-        public int numCurrentTrackedMissionMax = 3;
-
         //Facility Properties
         //====================================================================================================================//
         
@@ -70,7 +62,9 @@ namespace StarSalvager.ScriptableObjects
         public bool recoveryOfDroneLocksHorizontalMovement = true;
         [BoxGroup("Waves")]
         public bool shortcutJumpToAfter = false;
-        
+        [BoxGroup("Waves")]
+        public float waveMessageReminderFrequency = 10.0f;
+
         [FoldoutGroup("Waves/Bonus Shapes")]
         public float bonusShapeSpeed = 12.0f;
         [FoldoutGroup("Waves/Bonus Shapes")]
