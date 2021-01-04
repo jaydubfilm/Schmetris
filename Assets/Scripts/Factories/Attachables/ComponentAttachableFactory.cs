@@ -9,6 +9,8 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
+    //TODO Need to convert this factory away from the Attachable setup
+    [Obsolete]
     public class ComponentAttachableFactory : AttachableFactoryBase<ComponentProfile, COMPONENT_TYPE>
     {
         private readonly ComponentRemoteDataScriptableObject _remoteData;
@@ -89,16 +91,16 @@ namespace StarSalvager.Factories
             
             //--------------------------------------------------------------------------------------------------------//
 
-            temp.Type = type;
+            //temp.Type = type;
             temp.SetColliderActive(true);
             
 
             //Have to check for null, as the Asteroid/Energy does not have health
-            if (remote != null)
+            /*if (remote != null)
             {
                 var health = remote.health;
                 temp.SetupHealthValues(health,health);
-            }
+            }*/
 
             return temp.gameObject;
         }
@@ -204,14 +206,14 @@ namespace StarSalvager.Factories
             }
             temp.SetSprite(sprite);
             temp.SetColliderActive(true);
-            temp.LoadBlockData(blockData);
+            //temp.LoadBlockData(blockData);
 
             //Have to check for null, as the Asteroid/Energy does not have health
-            if (remote != null)
+            /*if (remote != null)
             {
                 var health = remote.health;
                 temp.SetupHealthValues(health,health);
-            }
+            }*/
 
             return temp.gameObject;
         }
