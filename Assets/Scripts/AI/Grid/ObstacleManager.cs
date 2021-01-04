@@ -1085,9 +1085,9 @@ namespace StarSalvager
                         return;
                     }
 
-                    obstacle = FactoryManager.Instance.GetFactory<BlackHoleFactory>().CreateBlackHole();
+                    /*obstacle = FactoryManager.Instance.GetFactory<BlackHoleFactory>().CreateBlackHole();
                         AddObstacleToList(obstacle);
-                    break;
+                    break;*/
 
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                         .CreateAsteroid<Asteroid>(asteroidSize);
