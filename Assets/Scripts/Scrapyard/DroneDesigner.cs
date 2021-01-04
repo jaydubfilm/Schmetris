@@ -865,8 +865,6 @@ namespace StarSalvager
             if (botBlockData.Count == 0)
                 return;
                 
-            float refineryMultiplier = PlayerDataManager.GetRefineryMultiplier();
-
             var processedResources = new Dictionary<BIT_TYPE, int>();
             var wastedResources = new Dictionary<BIT_TYPE, int>();
 
@@ -890,11 +888,9 @@ namespace StarSalvager
                     case nameof(ScrapyardBit):
                         var bitType = (BIT_TYPE) blockData.Type;
 
-                        var facilityRefiningMultiplier = PlayerDataManager.GetFacilityMultiplier(bitType);
-
                         amount = bitAttachableFactory.GetTotalResource(bitType, blockData.Level);
 
-                        var addResourceAmount = (int) (amount * refineryMultiplier * facilityRefiningMultiplier);
+                        var addResourceAmount =  amount;
                         PlayerDataManager.GetResource(bitType)
                             .AddResourceReturnWasted(
                                 addResourceAmount, 
@@ -927,11 +923,6 @@ namespace StarSalvager
                                     case RDSValue<Blueprint> rdsValueBlueprint:
                                         PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
                                         Toast.AddToast("Unlocked Blueprint!");
-                                        loot.RemoveAt(i);
-                                        break;
-                                    case RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint:
-                                        PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
-                                        Toast.AddToast("Unlocked Facility Blueprint!");
                                         loot.RemoveAt(i);
                                         break;
                                     case RDSValue<Vector2Int> rdsValueGears:
@@ -982,7 +973,6 @@ namespace StarSalvager
             var bits = botBlockDatas
                 .Where(x => x.ClassType.Equals(nameof(Bit)) || x.ClassType.Equals(nameof(ScrapyardBit))).ToArray();
             
-            float refineryMultiplier = PlayerDataManager.GetRefineryMultiplier();
             BitAttachableFactory bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             
             
@@ -1000,8 +990,7 @@ namespace StarSalvager
 
                     var remoteData = bitAttachableFactory.GetBitRemoteData(bitType);
 
-                    float facilityRefiningMultiplier = PlayerDataManager.GetFacilityMultiplier(bitType);
-                    int resourceAmount = (int) (numAtLevel * remoteData.levels[i].resources * refineryMultiplier * facilityRefiningMultiplier);
+                    int resourceAmount = numAtLevel * remoteData.levels[i].resources;
 
                     var spriteIcon = TMP_SpriteMap.GetBitSprite(bitType, i);
                     var materialIcon = TMP_SpriteMap.MaterialIcons[bitType];

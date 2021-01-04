@@ -58,8 +58,6 @@ namespace StarSalvager.Values
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
         public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
-        public static List<FacilityInitialData> FacilityInitialData => m_gameSettings.facilityInitialData;
-        public static List<FacilityInitialData> FacilityInitialBlueprintData => m_gameSettings.facilityInitialBlueprintData;
         public static int PatchPointBaseCost => m_gameSettings.patchPointBaseCost;
         public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
 

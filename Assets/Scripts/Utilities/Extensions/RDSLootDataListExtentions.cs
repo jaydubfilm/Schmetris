@@ -13,7 +13,6 @@ namespace StarSalvager.Utilities.Extensions
                 return string.Empty;
             
             RemotePartProfileScriptableObject partRemoteData = null;
-            FacilityRemoteDataScriptableObject facilityRemoteData = null;
             ComponentRemoteDataScriptableObject componentRemoteData = null;
             
             var _outString = new List<string>
@@ -50,17 +49,6 @@ namespace StarSalvager.Utilities.Extensions
                         var partData = partRemoteData.GetRemoteData(partType);
                         
                         _outString.Add($"Blueprint: {partData.name} lvl{lootData.level + 1}");
-                        break;
-                    case RDSLootData.TYPE.FacilityBlueprint:
-                        //_outString.Add($"Facility Blueprint: {lootData.blue}");
-                        
-                        if (facilityRemoteData == null)
-                            facilityRemoteData = FactoryManager.Instance.FacilityRemote;
-                        
-                        var facilityType = (FACILITY_TYPE)lootData.type;
-                        var facilityData = facilityRemoteData.GetRemoteData(facilityType);
-                        
-                        _outString.Add($"Blueprint: {facilityData.displayName} lvl{lootData.level + 1}");
                         break;
                     case RDSLootData.TYPE.Gears:
                         _outString.Add($"Gears: {lootData.GearValue}");

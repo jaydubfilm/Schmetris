@@ -14,11 +14,6 @@ namespace StarSalvager.Factories
     {
         [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
-
-        //[SerializeField, Required, BoxGroup("Temporary")]
-        //private BitProfileScriptableObject[] _bitProfileScriptableObjects;
-        //[SerializeField, Required, BoxGroup("Temporary")]
-        //private PartProfileScriptableObject[] _partProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -30,6 +25,8 @@ namespace StarSalvager.Factories
 
         public int ModularDataCount => m_sectorRemoteData.Count;
 
+
+        public Sprite PatchSprite;
 
         //====================================================================================================================//
         public DamageProfileScriptableObject DamageProfile => damageProfile;
@@ -172,14 +169,7 @@ namespace StarSalvager.Factories
         private BlackHoleRemoteDataScriptableObject blackHoleRemote;
 
         [SerializeField, Required, BoxGroup("Black Hole")]
-        private GameObject blackHolePrefab;
-
-        //============================================================================================================//
-
-        public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
-        [SerializeField, Required, BoxGroup("Facilities")]
-        private FacilityRemoteDataScriptableObject facilityRemote;
-        
+        private GameObject blackHolePrefab;        
 
         //============================================================================================================//
 

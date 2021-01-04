@@ -83,10 +83,6 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required, FoldoutGroup("New Stickers")]
         private Image blueprintsNewSticker;
-        [SerializeField, Required, FoldoutGroup("New Stickers")]
-        private Image missionsNewSticker;
-        [SerializeField, Required, FoldoutGroup("New Stickers")]
-        private Image facilitiesNewSticker;
 
         //====================================================================================================================//
 
@@ -134,7 +130,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             //FIXME This should occur only when required, this is expensive and unnecessary 
             blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
-            facilitiesNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyFacilityBlueprintAlerts());
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 EscPressed();

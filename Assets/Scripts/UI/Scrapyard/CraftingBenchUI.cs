@@ -48,9 +48,6 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Cost Window")]
         private GameObject missingBannerObject;
 
-        [SerializeField, Required, FoldoutGroup("Cost Window")]
-        private TMP_Text missingFacilityText;
-
         [FormerlySerializedAs("blueprints")] [SerializeField]
         private BlueprintUIElementScrollView blueprintsContentScrollView;
 
@@ -235,14 +232,8 @@ namespace StarSalvager.UI.Scrapyard
 
             var resources = partRemoteData.levels[lastBlueprint.level].cost;
 
-            var hasIssue = CheckIfMissingFacility(resources, out var missingText);
-
-            costView.SetActive(!hasIssue);
-            missingBannerObject.SetActive(hasIssue);
-            missingFacilityText.text = missingText;
-
-            if (hasIssue)
-                return;
+            costView.SetActive(true);
+            missingBannerObject.SetActive(false);
 
             foreach (var resource in resources)
             {
@@ -252,37 +243,6 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         #endregion //Other
-
-        private static bool CheckIfMissingFacility(IEnumerable<CraftCost> resources, out string missingText)
-        { 
-            var facilities = new Dictionary<COMPONENT_TYPE, FACILITY_TYPE>
-            {
-                [COMPONENT_TYPE.COIL] = FACILITY_TYPE.WORKBENCHCOIL,
-                [COMPONENT_TYPE.CHIP] = FACILITY_TYPE.WORKBENCHCHIP,
-                [COMPONENT_TYPE.FUSOR] = FACILITY_TYPE.WORKBENCHFUSOR
-            };
-            
-            missingText = string.Empty;
-
-            var condensed = resources.Where(x => x.resourceType == CraftCost.TYPE.Component).ToArray();
-
-            if (condensed.IsNullOrEmpty())
-                return false;
-
-            foreach (var facility in from kvp in facilities
-                let type = (int) kvp.Key
-                let facility = kvp.Value
-                where condensed.Any(x => x.type == type) && !PlayerDataManager.CheckHasFacility(facility)
-                select facility)
-            {
-                missingText =
-                    $"Missing {FactoryManager.Instance.FacilityRemote.GetRemoteData(facility).displayName}";
-
-                return true;
-            }
-
-            return false;
-        }
 
         //============================================================================================================//
     }

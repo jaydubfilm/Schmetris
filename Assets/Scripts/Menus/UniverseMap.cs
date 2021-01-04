@@ -690,22 +690,17 @@ namespace StarSalvager.UI
             var outValue = new Dictionary<BIT_TYPE, int>();
             var remoteProfile = FactoryManager.Instance.BitsRemoteData;
             
-            var refineryMultiplier = PlayerDataManager.GetRefineryMultiplier();
-            
             
             foreach (var bit in blockDatas.Where(x => x.ClassType.Equals(nameof(Bit))))
             {
                 var bitType = (BIT_TYPE)bit.Type;
-                var facilityRefiningMultiplier = PlayerDataManager.GetFacilityMultiplier(bitType);
 
                 var remoteData = remoteProfile.GetRemoteData(bitType);
                 
                 if(!outValue.ContainsKey(bitType))
                     outValue.Add(bitType, 0);
 
-                outValue[bitType] += (int) (remoteData.levels[bit.Level].resources * 
-                                            refineryMultiplier *
-                                            facilityRefiningMultiplier);
+                outValue[bitType] += remoteData.levels[bit.Level].resources;
             }
 
 
