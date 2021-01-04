@@ -18,8 +18,6 @@ namespace StarSalvager.Utilities
         public static string BonusShapesMatched = "Bonus Shapes Matched";
         public static string BonusShapesMatchedPercentage = "Bonus Shapes Matched Percentage";
         public static string BlueprintsUnlocked = "Blueprints Unlocked";
-        public static string MissionsCompleted = "Missions Completed";
-        public static string MissionsUnlocked = "Missions Unlocked";
         public static string LevelTime = "Level Time";
 
         public enum AnalyticsEventType
@@ -37,8 +35,6 @@ namespace StarSalvager.Utilities
             TutorialStep,
             TutorialComplete,
             TutorialSkip,
-            MissionUnlock,
-            MissionComplete,
             GameStart,
             ScrapyardUsageBegin,
             ScrapyardUsageEnd,
@@ -80,12 +76,6 @@ namespace StarSalvager.Utilities
                     break;
                 case AnalyticsEventType.TutorialSkip:
                     result = ReportTutorialSkip(eventDataDictionary);
-                    break;
-                case AnalyticsEventType.MissionUnlock:
-                    result = ReportMissionUnlock(eventDataDictionary);
-                    break;
-                case AnalyticsEventType.MissionComplete:
-                    result = ReportMissionComplete(eventDataDictionary);
                     break;
 
 
@@ -207,16 +197,6 @@ namespace StarSalvager.Utilities
         private static AnalyticsResult ReportTutorialSkip(Dictionary<string, object> eventData = null)
         {
             return AnalyticsEvent.TutorialSkip(eventData: eventData);
-        }
-
-        private static AnalyticsResult ReportMissionUnlock(Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.Custom("mission_unlock", eventData);
-        }
-
-        private static AnalyticsResult ReportMissionComplete(Dictionary<string, object> eventData = null)
-        {
-            return AnalyticsEvent.Custom("mission_complete", eventData);
         }
 
         //============================================================================================================//

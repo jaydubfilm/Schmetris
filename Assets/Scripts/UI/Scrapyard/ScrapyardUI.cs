@@ -133,7 +133,6 @@ namespace StarSalvager.UI.Scrapyard
         private void Update()
         {
             //FIXME This should occur only when required, this is expensive and unnecessary 
-            missionsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyMissionAlerts());
             blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
             facilitiesNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyFacilityBlueprintAlerts());
 

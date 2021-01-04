@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
-using StarSalvager.Missions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
 using System;
@@ -61,8 +60,6 @@ namespace StarSalvager.Values
         public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
-
-        public MissionsCurrentData missionsCurrentData = null;
 
         [JsonIgnore]
         public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
@@ -337,7 +334,6 @@ namespace StarSalvager.Values
             TotalRuns++;
 
             PlayerRunData = data;
-            //MissionManager.LoadMissionData();
             PlayerDataManager.SavePlayerAccountData();
         }
 
@@ -362,13 +358,6 @@ namespace StarSalvager.Values
             AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
             
             LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                level = newTotalPatchPoints
-            };
-
-            MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
         }
 
         public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
@@ -531,7 +520,7 @@ namespace StarSalvager.Values
             }
         }
 
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
+        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
         {
             FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
             if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
@@ -541,17 +530,6 @@ namespace StarSalvager.Values
             else if (!_facilityRanks.ContainsKey(type))
             {
                 _facilityRanks.Add(type, level);
-            }
-
-            if (triggerMissionCheck)
-            {
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                {
-                    facilityType = type,
-                    level = level
-                };
-
-                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
             }
 
             int increaseAmount = remoteData.levels[level].increaseAmount;

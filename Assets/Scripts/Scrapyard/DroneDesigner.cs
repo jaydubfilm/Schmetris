@@ -18,7 +18,6 @@ using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
-using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
@@ -925,13 +924,6 @@ namespace StarSalvager
                             amount = blockData.Level * 3;
 
                         PlayerDataManager.AddComponent(componentType, amount, false);
-
-                        MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                        {
-                            componentType = componentType,
-                            intAmount = amount
-                        };
-                        MissionManager.ProcessMissionData(typeof(ComponentCollectedMission), missionProgressEventData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case nameof(Bit):

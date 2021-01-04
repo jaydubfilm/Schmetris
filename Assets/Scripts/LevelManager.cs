@@ -14,7 +14,6 @@ using System.Linq;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using StarSalvager.Missions;
 using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
 using StarSalvager.Audio;
@@ -62,8 +61,6 @@ namespace StarSalvager
 
         private float m_levelTimer = 0;
         public float LevelTimer => m_levelTimer + m_waveTimer;
-
-        private float m_checkFlightLengthMissionTimer = 0;
 
         private int m_currentStage;
         public int CurrentStage => m_currentStage;
@@ -147,7 +144,6 @@ namespace StarSalvager
         public int WaterAtBeginningOfWave;
         public int NumWavesInRow;
         public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
-        public List<string> MissionsCompletedDuringThisFlight = new List<string>();
 
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
@@ -291,16 +287,6 @@ namespace StarSalvager
             if (GameManager.IsState(GameState.LEVEL_ACTIVE))
             {
                 m_waveTimer += Time.deltaTime;
-                m_checkFlightLengthMissionTimer += Time.deltaTime;
-                if (m_checkFlightLengthMissionTimer >= 1.0f)
-                {
-                    m_checkFlightLengthMissionTimer -= 1;
-                    MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-                    {
-                        floatAmount = LevelTimer
-                    };
-                    MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
-                }
             }
 
             int currentStage = m_currentStage;
@@ -443,12 +429,8 @@ namespace StarSalvager
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
 
             EnemiesKilledInWave.Clear();
-            MissionManager.ProcessWaveComplete();
             
             ProjectileManager.CleanProjectiles();
-
-            MissionManager.ProcessMissionData(typeof(SectorsCompletedMission),
-                new MissionProgressEventData());
 
             Globals.IsRecoveryBot = false;
         }
@@ -568,8 +550,6 @@ namespace StarSalvager
             
             //--------------------------------------------------------------------------------------------------------//
             
-            MissionsCompletedDuringThisFlight.Clear();
-            
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
             
@@ -684,7 +664,6 @@ namespace StarSalvager
 
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
-            MissionsCompletedDuringThisFlight.Clear();
             m_runLostState = false;
             m_endLevelOverride = false;
 
@@ -781,17 +760,6 @@ namespace StarSalvager
 
             //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                sectorNumber = Globals.CurrentSector + 1,
-                waveNumber = Globals.CurrentWave + 1,
-                intAmount = NumWavesInRow,
-                floatAmount = LevelTimer
-            };
-            MissionManager.ProcessMissionData(typeof(LevelProgressMission), missionProgressEventData);
-            MissionManager.ProcessMissionData(typeof(ChainWavesMission), missionProgressEventData);
-            MissionManager.ProcessMissionData(typeof(FlightLengthMission), missionProgressEventData);
 
             WaveEndSummaryData.CompletedSector = Globals.CurrentSector;
             WaveEndSummaryData.CompletedWave = Globals.CurrentWave;

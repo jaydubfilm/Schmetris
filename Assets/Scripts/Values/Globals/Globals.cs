@@ -49,7 +49,7 @@ namespace StarSalvager.Values
         public static float BotHorizontalSpeed => m_gameSettings.botHorizontalSpeed;
         public static float BotRotationSpeed => m_gameSettings.botRotationSpeed;
         public static float BotContinuousRotationSpeed => m_gameSettings.botContinuousRotationSpeed;
-        public static float MissionReminderFrequency => m_gameSettings.missionReminderFrequency;
+        public static float WaveMessageReminderFrequency => m_gameSettings.waveMessageReminderFrequency;
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
         public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
@@ -64,7 +64,6 @@ namespace StarSalvager.Values
         public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
 
         public static float GameUIResourceThreshold => m_gameSettings.gameUIResourceThreshold;
-        public static int NumCurrentTrackedMissionMax => m_gameSettings.numCurrentTrackedMissionMax;
         public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
         public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
         public static bool ShortcutJumpToAfter => m_gameSettings.shortcutJumpToAfter;

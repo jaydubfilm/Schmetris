@@ -1,5 +1,4 @@
-﻿using StarSalvager.Missions;
-using System;
+﻿using System;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -106,11 +105,6 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static MissionsCurrentData GetMissionsCurrentData()
-        {
-            return PlayerAccountData.missionsCurrentData;
-        }
-
         public static void SetComponents(COMPONENT_TYPE type, int value)
         {
             PlayerRunData.SetComponents(type, value);
@@ -135,11 +129,6 @@ namespace StarSalvager.Utilities.Saving
             {
                 PlayerRunData.SetShipBlockData(blockData);
             }
-        }
-
-        public static void SetMissionsCurrentData(MissionsCurrentData missionData)
-        {
-            PlayerAccountData.missionsCurrentData = missionData;
         }
 
         //============================================================================================================//
@@ -651,9 +640,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.facilityBlueprintRanks;
         }
 
-        public static void UnlockFacilityLevel(FACILITY_TYPE facilityType, int level, bool triggerMissionCheck = true)
+        public static void UnlockFacilityLevel(FACILITY_TYPE facilityType, int level)
         {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level, triggerMissionCheck);
+            PlayerAccountData.UnlockFacilityLevel(facilityType, level);
 
             OnValuesChanged?.Invoke();
         }
@@ -665,38 +654,11 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level, bool triggerMissionCheck = true)
+        public static void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
         {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level, triggerMissionCheck);
+            PlayerAccountData.UnlockFacilityLevel(facilityType, level);
 
             OnValuesChanged?.Invoke();
-        }
-
-        //====================================================================================================================//
-
-        public static bool CheckHasMissionAlert(Mission mission)
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasMissionAlert(mission);
-        }
-
-        public static bool CheckHasAnyMissionAlerts()
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyMissionAlerts();
-        }
-
-        public static void AddNewMissionAlert(Mission mission)
-        {
-            PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
-        }
-
-        public static void ClearNewMissionAlert(Mission mission)
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
-        }
-
-        public static void ClearAllMissionAlerts()
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
         }
 
         //============================================================================================================//
@@ -766,7 +728,6 @@ namespace StarSalvager.Utilities.Saving
             else
             {
                 PlayerAccountData = tryImportPlayerAccountData;
-                MissionManager.LoadMissionData();
             }
             SavePlayerAccountData();
         }
@@ -791,7 +752,7 @@ namespace StarSalvager.Utilities.Saving
 
             foreach (var facilityData in Globals.FacilityInitialData)
             {
-                playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
+                playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
                 /*FacilityBlueprint facilityBlueprint = new FacilityBlueprint
                 {
                     name = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayName,
@@ -880,7 +841,6 @@ namespace StarSalvager.Utilities.Saving
                 }
             }
 
-            MissionManager.LoadMissionData();
             SavePlayerAccountData();
         }
 
