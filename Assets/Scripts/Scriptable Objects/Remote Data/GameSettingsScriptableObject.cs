@@ -18,7 +18,7 @@ namespace StarSalvager.ScriptableObjects
         //FIXME The naming for this sucks
         public float gameUIResourceThreshold = 0.33f;
 
-        //Facility Properties
+        //Experience Properties
         //====================================================================================================================//
         
         [BoxGroup("Facilities")]
@@ -26,12 +26,8 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Facilities")]
         public int patchPointIncrementCost = 50;
         
-        [BoxGroup("Facilities"), Space(10f)]
+        [BoxGroup("Blueprints"), Space(10f)]
         public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
-        [BoxGroup("Facilities")]
-        public List<FacilityInitialData> facilityInitialData = new List<FacilityInitialData>();
-        [BoxGroup("Facilities")]
-        public List<FacilityInitialData> facilityInitialBlueprintData = new List<FacilityInitialData>();
 
         //Wave Properties
         //====================================================================================================================//

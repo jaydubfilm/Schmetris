@@ -62,16 +62,6 @@ namespace StarSalvager.Values
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
         [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
-
-        [JsonIgnore]
         public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
         [JsonProperty]
         private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
@@ -317,7 +307,6 @@ namespace StarSalvager.Values
                 runStarted = false
             };
             data.SetupMap(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
-            data.FacilityEffectsOnNewAccount();
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;
@@ -444,14 +433,6 @@ namespace StarSalvager.Values
 
         //====================================================================================================================//
 
-        public bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
-        {
-            if (_facilityRanks.TryGetValue(type, out var rank))
-                return rank >= level;
-
-            return false;
-        }
-
         public void UnlockBlueprint(Blueprint blueprint)
         {
             if (unlockedBlueprints.All(b => b.name != blueprint.name))
@@ -516,85 +497,6 @@ namespace StarSalvager.Values
                         level = i
                     };
                     UnlockBlueprint(blueprint);
-                }
-            }
-        }
-
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
-            if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
-            {
-                _facilityRanks[type] = level;
-            }
-            else if (!_facilityRanks.ContainsKey(type))
-            {
-                _facilityRanks.Add(type, level);
-            }
-
-            int increaseAmount = remoteData.levels[level].increaseAmount;
-            int previousAmount = 0;
-            if (level > 0)
-            {
-                previousAmount = remoteData.levels[level - 1].increaseAmount;
-            }
-            switch (type)
-            {
-                case FACILITY_TYPE.FREEZER:
-                    PlayerRunData.RationCapacity += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEWATER:
-                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-            }
-
-            //Debug.Log(_rationCapacity);
-            PlayerDataManager.OnCapacitiesChanged?.Invoke();
-            PlayerDataManager.OnValuesChanged?.Invoke();
-        }
-
-        public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
-        {
-            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
-        }
-
-        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
-            string blueprintUnlockString = $"{remoteData.displayName} lvl {level + 1}";
-
-            if (_facilityBlueprintRanks.ContainsKey(facilityType))
-            {
-                if (_facilityBlueprintRanks[facilityType] < level)
-                {
-                    _facilityBlueprintRanks[facilityType] = level;
-
-                    //FIXME This may benefit from the use of a callback instead of a direct call
-                    if (LevelManager.Instance.WaveEndSummaryData != null)
-                    {
-                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
-                    }
-                }
-            }
-            else
-            {
-                _facilityBlueprintRanks.Add(facilityType, level);
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
                 }
             }
         }

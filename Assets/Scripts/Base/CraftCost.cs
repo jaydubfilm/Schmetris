@@ -13,8 +13,7 @@ namespace StarSalvager
         {
             Bit,
             Component,
-            Part,
-            PatchPoint
+            Part
         }
 
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(125), OnValueChanged("UpdateValue")]

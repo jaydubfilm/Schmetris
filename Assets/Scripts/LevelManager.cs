@@ -951,11 +951,6 @@ namespace StarSalvager
                         Toast.AddToast("Unlocked Blueprint!");
                         loot.RemoveAt(i);
                         break;
-                    case RDSValue<FacilityBlueprint> rdsValueFacilityBlueprint:
-                        PlayerDataManager.UnlockFacilityBlueprintLevel(rdsValueFacilityBlueprint.rdsValue);
-                        Toast.AddToast("Unlocked Facility Blueprint!");
-                        loot.RemoveAt(i);
-                        break;
                     case RDSValue<Vector2Int> rdsValueGears:
                     {
                         var gears = Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);

@@ -308,11 +308,6 @@ namespace StarSalvager.Utilities.Saving
             return hasResources && hasComponents && hasParts;
         }
 
-        public static bool CanAffordFacilityBlueprint(FacilityBlueprint facilityBlueprint)
-        {
-            return PlayerAccountData.GetAvailablePatchPoints() >= facilityBlueprint.patchCost;
-        }
-
         public static bool CanAffordCraftCostResources(List<CraftCost> costs)
         {
             foreach (CraftCost resource in costs)
@@ -593,17 +588,6 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RepairsDone += amount;
         }
 
-
-        public static bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
-        {
-            return PlayerAccountData.CheckHasFacility(type, level);
-        }
-
-        public static bool TryGetFacilityValue(FACILITY_TYPE type, out int level)
-        {
-            return PlayerAccountData.facilityRanks.TryGetValue(type, out level);
-        }
-
         public static void UnlockBlueprint(Blueprint blueprint)
         {
             PlayerAccountData.UnlockBlueprint(blueprint);
@@ -628,37 +612,6 @@ namespace StarSalvager.Utilities.Saving
         public static IReadOnlyList<Blueprint> GetUnlockedBlueprints()
         {
             return PlayerAccountData.unlockedBlueprints;
-        }
-
-        public static IReadOnlyDictionary<FACILITY_TYPE, int> GetFacilityRanks()
-        {
-            return PlayerAccountData.facilityRanks;
-        }
-
-        public static IReadOnlyDictionary<FACILITY_TYPE, int> GetFacilityBlueprintRanks()
-        {
-            return PlayerAccountData.facilityBlueprintRanks;
-        }
-
-        public static void UnlockFacilityLevel(FACILITY_TYPE facilityType, int level)
-        {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
-        {
-            PlayerAccountData.UnlockFacilityBlueprintLevel(facilityBlueprint);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
-        {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level);
-
-            OnValuesChanged?.Invoke();
         }
 
         //============================================================================================================//
@@ -686,33 +639,6 @@ namespace StarSalvager.Utilities.Saving
         public static void ClearAllBlueprintAlerts()
         {
             PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
-        }
-
-        //============================================================================================================//
-
-        public static bool CheckHasFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static bool CheckHasAnyFacilityBlueprintAlerts()
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyFacilityBlueprintAlerts();
-        }
-
-        public static void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {            
-            PlayerAccountData.PlayerNewAlertData.AddNewFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static void ClearNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearNewFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static void ClearAllFacilityBlueprintAlerts()
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearAllFacilityBlueprintAlerts();
         }
 
         //====================================================================================================================//
@@ -748,97 +674,6 @@ namespace StarSalvager.Utilities.Saving
                     level = blueprintData.level
                 };
                 playerAccountData.UnlockBlueprint(blueprint);
-            }
-
-            foreach (var facilityData in Globals.FacilityInitialData)
-            {
-                playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level);
-                /*FacilityBlueprint facilityBlueprint = new FacilityBlueprint
-                {
-                    name = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayName,
-                    facilityType = (FACILITY_TYPE)facilityData.type,
-                    description = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayDescription,
-                    level = facilityData.level
-                };
-                PlayerDataManager.AddNewFacilityBlueprintAlert(facilityBlueprint);*/
-            }
-
-            List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
-            foreach (var facilityData in remoteData)
-            {
-                playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
-            }
-
-            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
-            {
-                if (facilityRemoteData.hideInFacilityMenu)
-                {
-                    continue;
-                }
-
-                FACILITY_TYPE type = facilityRemoteData.type;
-                bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
-                bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
-
-                if (!containsFacilityBlueprintKey)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i <= PlayerDataManager.GetFacilityBlueprintRanks()[type]; i++)
-                //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
-                {
-                    if (containsFacilityKey && PlayerDataManager.GetFacilityRanks()[type] >= i)
-                    {
-                        continue;
-                    }
-
-                    if (!containsFacilityKey && i > 0)
-                    {
-                        continue;
-                    }
-
-                    string description = facilityRemoteData.displayDescription;
-                    description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
-
-                    FacilityBlueprint newBlueprint = new FacilityBlueprint
-                    {
-                        name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
-                        description = description,
-                        facilityType = type,
-                        level = i,
-                        patchCost = facilityRemoteData.levels[i].patchCost
-                    };
-
-                    bool hasPrereqs = true;
-                    for (int k = 0; k < facilityRemoteData.levels[i].facilityPrerequisites.Count; k++)
-                    {
-                        if (PlayerDataManager.GetFacilityRanks().ContainsKey(facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType) &&
-                            PlayerDataManager.GetFacilityRanks()[facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType] >= facilityRemoteData.levels[i].facilityPrerequisites[k].level)
-                        {
-                            continue;
-                        }
-
-                        hasPrereqs = false;
-                        break;
-                    }
-
-                    bool craftButtonInteractable = hasPrereqs &&
-                        ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
-                        (!containsFacilityKey && i == 0));
-
-                    if (!craftButtonInteractable)
-                    {
-                        continue;
-                    }
-
-                    if (facilityRemoteData.hideInFacilityMenu)
-                    {
-                        continue;
-                    }
-
-                    PlayerDataManager.AddNewFacilityBlueprintAlert(newBlueprint);
-                }
             }
 
             SavePlayerAccountData();
@@ -1039,56 +874,6 @@ namespace StarSalvager.Utilities.Saving
         private static string GetAsTitle(in string value)
         {
             return $"<b><color=white>{value}</color></b>";
-        }
-        
-        public static float GetRefineryMultiplier()
-        {
-            float refineryMultiplier = 1.0f;
-            if (!GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY)) 
-                return refineryMultiplier;
-            
-            int refineryRank = GetFacilityRanks()[FACILITY_TYPE.REFINERY];
-            float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
-                .levels[refineryRank].increaseAmount;
-            
-            refineryMultiplier = 1 + increaseAmount / 100;
-            
-            Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
-
-            return refineryMultiplier;
-        }
-        
-        public static float GetFacilityMultiplier(BIT_TYPE bitType)
-        {
-            FACILITY_TYPE facilityType;
-            switch (bitType)
-            {
-                case BIT_TYPE.BLUE:
-                    facilityType = FACILITY_TYPE.EVAPORATOR;
-                    break;
-                case BIT_TYPE.YELLOW:
-                    facilityType = FACILITY_TYPE.ALTERNATOR;
-                    break;
-                case BIT_TYPE.RED:
-                    facilityType = FACILITY_TYPE.SEPARATOR;
-                    break;
-                case BIT_TYPE.GREEN:
-                    facilityType = FACILITY_TYPE.CENTRIFUGE;
-                    break;
-                case BIT_TYPE.GREY:
-                    facilityType = FACILITY_TYPE.SMELTER;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-            }
-            
-            if (TryGetFacilityValue(facilityType, out var facilityValue))
-            {
-                return 1 + (float) FactoryManager.Instance.FacilityRemote
-                    .GetRemoteData(facilityType).levels[facilityValue].increaseAmount / 100;
-            }
-
-            return 1f;
         }
     }
 }

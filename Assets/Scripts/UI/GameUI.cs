@@ -1096,7 +1096,7 @@ namespace StarSalvager.UI
                 return;
 
             
-            var patchSprite = FactoryManager.Instance.FacilityRemote.PatchSprite;
+            var patchSprite = FactoryManager.Instance.PatchSprite;
 
             
             var botWorldPosition = LevelManager.Instance.BotObject.transform.position;

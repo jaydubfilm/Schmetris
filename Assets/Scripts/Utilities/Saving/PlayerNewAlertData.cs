@@ -12,12 +12,9 @@ namespace StarSalvager.Utilities.Saving
     public class PlayerNewAlertData
     {
         public List<string> NewBlueprintNames => _newBlueprintNames;
-        public List<string> NewFacilityBlueprintNames => _newFacilityBlueprintNames;
 
         [JsonProperty]
         private List<string> _newBlueprintNames = new List<string>();
-        [JsonProperty]
-        private List<string> _newFacilityBlueprintNames = new List<string>();
 
         //============================================================================================================//
 
@@ -50,39 +47,6 @@ namespace StarSalvager.Utilities.Saving
         public void ClearAllBlueprintAlerts()
         {
             _newBlueprintNames.Clear();
-        }
-
-        //============================================================================================================//
-
-        public bool CheckHasFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            return _newFacilityBlueprintNames.Any(m => m == facilityBlueprint.name);
-        }
-
-        public bool CheckHasAnyFacilityBlueprintAlerts()
-        {
-            return _newFacilityBlueprintNames.Count > 0;
-        }
-
-        public void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            if (!_newFacilityBlueprintNames.Any(m => m == facilityBlueprint.name))
-            {
-                _newFacilityBlueprintNames.Add(facilityBlueprint.name);
-            }
-        }
-
-        public void ClearNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            if (_newFacilityBlueprintNames.Any(m => m == facilityBlueprint.name))
-            {
-                _newFacilityBlueprintNames.Remove(facilityBlueprint.name);
-            }
-        }
-
-        public void ClearAllFacilityBlueprintAlerts()
-        {
-            _newFacilityBlueprintNames.Clear();
         }
     }
 }

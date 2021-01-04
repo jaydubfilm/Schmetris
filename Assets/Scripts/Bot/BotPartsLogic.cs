@@ -121,8 +121,6 @@ namespace StarSalvager
         private List<Part> _smartWeapons;
         private int _maxSmartWeapons;
 
-        private Dictionary<FACILITY_TYPE, int> _facilityImprovements;
-
         private Dictionary<Part, bool> _playingSounds;
 
         private Dictionary<Part, float> _projectileTimers;
@@ -206,8 +204,6 @@ namespace StarSalvager
             /*
             if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
             */
-
-            UpdateFacilityData();
             
             TryClearPartDictionaries();
             CheckShouldRecycleEffects();
@@ -339,8 +335,6 @@ namespace StarSalvager
                     case PART_TYPE.STORE:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
-
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
@@ -350,8 +344,6 @@ namespace StarSalvager
                     case PART_TYPE.STORERED:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
-
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
 
@@ -359,8 +351,6 @@ namespace StarSalvager
                     case PART_TYPE.STOREGREEN:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
-
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
 
@@ -368,8 +358,6 @@ namespace StarSalvager
                     case PART_TYPE.STOREGREY:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
-
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
 
@@ -377,8 +365,6 @@ namespace StarSalvager
                     case PART_TYPE.STOREYELLOW:
                         if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
-                            value = Mathf.RoundToInt(value * GetFacilityImprovement(FACILITY_TYPE.CONTAINERIMPROVE));
-
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
 
@@ -650,7 +636,6 @@ namespace StarSalvager
                         resourceValue -= resourcesConsumed;
 
                         var repairAmount = levelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
-                        repairAmount *= GetFacilityImprovement(FACILITY_TYPE.REPAIRERIMPROVE);
                         repairAmount *= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
                         //FIXME This will need some sort of time cooldown
@@ -777,7 +762,7 @@ namespace StarSalvager
 
             _coreCoolTimer = 0;
 
-            coreHeat -= coolSpeed * GetFacilityImprovement(FACILITY_TYPE.COOLING) * deltaTime;
+            coreHeat -= coolSpeed * deltaTime;
 
             if (coreHeat > 0)
                 return;
@@ -859,7 +844,6 @@ namespace StarSalvager
             resourceValue -= resourcesConsumed;
 
             var repairAmount = partLevelData.GetDataValue<float>(DataTest.TEST_KEYS.Heal);
-            repairAmount *= GetFacilityImprovement(FACILITY_TYPE.REPAIRERIMPROVE);
             repairAmount *= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
             //FIXME This will need some sort of time cooldown
@@ -940,8 +924,7 @@ namespace StarSalvager
 
                 if (resourceValue > 0)
                 {
-                    resourcesConsumed = partLevelData.burnRate *
-                                        GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
+                    resourcesConsumed = partLevelData.burnRate;
                     resourceValue -= resourcesConsumed;
                 }
             }
@@ -1039,8 +1022,7 @@ namespace StarSalvager
 
                 if (resourceValue > 0)
                 {
-                    resourcesConsumed = partLevelData.burnRate *
-                                        GetFacilityImprovement(FACILITY_TYPE.AMMODISCOUNT);
+                    resourcesConsumed = partLevelData.burnRate;
                     resourceValue -= resourcesConsumed;
                 }
             }
@@ -1342,7 +1324,7 @@ namespace StarSalvager
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
             {
-                _bombTimers[part] = cooldown * GetFacilityImprovement(FACILITY_TYPE.COOLDOWNDECREASE);
+                _bombTimers[part] = cooldown;
             }
 
             //Damage all the enemies
@@ -1376,7 +1358,7 @@ namespace StarSalvager
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
             {
-                _bombTimers[part] = cooldown* GetFacilityImprovement(FACILITY_TYPE.COOLDOWNDECREASE);
+                _bombTimers[part] = cooldown;
             }
 
             partLevelData.TryGetValue(DataTest.TEST_KEYS.Radius, out int radius);
@@ -1671,7 +1653,7 @@ namespace StarSalvager
                     maxBoost = mult;
             }
 
-            return maxBoost * GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
+            return maxBoost;
         }
 
         private float GetDefenseBoost(in Part part)
@@ -1686,8 +1668,7 @@ namespace StarSalvager
                 FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
 
-            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb) *
-                   GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
+            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb);
         }
 
         #endregion //Boosts
@@ -1751,56 +1732,6 @@ namespace StarSalvager
         }
 
         #endregion //Part Dictionary Recycling
-
-        //Facility Data
-        //====================================================================================================================//
-
-        #region Process Facility Values
-
-        private void UpdateFacilityData()
-        {
-            _facilityImprovements =
-                new Dictionary<FACILITY_TYPE, int>(
-                    (IDictionary<FACILITY_TYPE, int>) PlayerDataManager.GetFacilityRanks());
-        }
-
-        private float GetFacilityImprovement(FACILITY_TYPE facilityType)
-        {
-            if (_facilityImprovements.IsNullOrEmpty())
-                return 1f;
-
-            if (!_facilityImprovements.TryGetValue(facilityType, out var level))
-                return 1f;
-
-            switch (facilityType)
-            {
-                //----------------------------------------------------------------------------------------------------//
-                case FACILITY_TYPE.COOLDOWNDECREASE:
-                    return 1f - (0.2f * level);
-                case FACILITY_TYPE.COOLING:
-                    return 1f + (0.2f * level);
-                //----------------------------------------------------------------------------------------------------//
-                case FACILITY_TYPE.HULLSTRENGTH:
-                    return 1f + (0.25f * level);
-                //----------------------------------------------------------------------------------------------------//
-                case FACILITY_TYPE.ROTATESPEEDINCREASE:
-                case FACILITY_TYPE.CONTAINERIMPROVE:
-                case FACILITY_TYPE.BOOSTIMPROVE:
-                case FACILITY_TYPE.REPAIRERIMPROVE:
-                    return 1f + (0.1f * level);
-                //----------------------------------------------------------------------------------------------------//
-                case FACILITY_TYPE.AMMODISCOUNT:
-                    return 1f - (0.05f * level);
-                //----------------------------------------------------------------------------------------------------//
-                case FACILITY_TYPE.COREREPAIRSREGEN:
-                    throw new NotImplementedException();
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, null);
-            }
-        }
-        
-
-        #endregion //Process Facility Values
         
         //Playing Sounds
         //============================================================================================================//
