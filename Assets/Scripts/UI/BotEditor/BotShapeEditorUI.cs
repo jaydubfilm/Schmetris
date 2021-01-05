@@ -394,14 +394,11 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
-                for (int i = 0; i < partRemoteData.levels.Count; i++)
-                {
-                    if (partRemoteData.partType == PART_TYPE.CORE)
-                        continue;
+                if (partRemoteData.partType == PART_TYPE.CORE)
+                    continue;
 
-                    var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
-                    element.Init(partRemoteData, OnBrickElementPressed, i);
-                }
+                var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}", true);
+                element.Init(partRemoteData, OnBrickElementPressed);
             }
 
             //FIXME This needs to move to the Factory
@@ -558,7 +555,7 @@ namespace StarSalvager.UI
 
             IBlockData blockData;
 
-            
+
             switch (remoteDataType)
             {
                 case PART_TYPE partType:
@@ -568,7 +565,7 @@ namespace StarSalvager.UI
                     };
                     break;
                 case BIT_TYPE bitType:
-                    
+
                     blockData = new BitData
                     {
                         Type = (int) bitType,
@@ -579,7 +576,7 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
             }
 
-            m_botShapeEditor.SelectedBrick = blockData; 
+            m_botShapeEditor.SelectedBrick = blockData;
         }
 
         private void BotShapePressed(EditorGeneratorDataBase botData)

@@ -22,133 +22,17 @@ MonoBehaviour:
       resources.  Protect it at all costs!
     priority: 200
     burnType: 4
-    levels:
-    - unlockLevel: 0
-      health: 50
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 9
-      - key: Capacity
-        value: 30
-      - key: SMRTCapacity
-        value: 2
-      - key: PartCapacity
-        value: 12
-      burnRate: 1
-      cost: []
-    - unlockLevel: 0
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 12
-      - key: Capacity
-        value: 100
-      - key: SMRTCapacity
-        value: 3
-      - key: PartCapacity
-        value: 18
-      burnRate: 2
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 6
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 15
-      - key: Capacity
-        value: 200
-      - key: SMRTCapacity
-        value: 4
-      - key: PartCapacity
-        value: 24
-      burnRate: 3
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 12
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 6
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 0
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Magnet
+      value: 9
+    - key: Capacity
+      value: 30
+    - key: SMRTCapacity
+      value: 2
+    - key: PartCapacity
+      value: 12
+    burnRate: 1
   - name: Magnet
     partType: 1
     lockRotation: 0
@@ -157,79 +41,11 @@ MonoBehaviour:
       collection of additional materials and components in the field.
     priority: 75
     burnType: 5
-    levels:
-    - unlockLevel: 0
-      health: 50
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 3
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 50
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 20
-    - unlockLevel: 0
-      health: 70
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 5
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 300
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 2
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Magnet
-        value: 8
-      burnRate: 2
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 1200
-      - resourceType: 2
-        type: 1
-        partPrerequisiteLevel: 1
-        amount: 1
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 4
+    powerDraw: 0
+    dataTest:
+    - key: Magnet
+      value: 3
+    burnRate: 0
   - name: Repairer
     partType: 2
     lockRotation: 0
@@ -237,93 +53,13 @@ MonoBehaviour:
     description: Uses plasma to repair damaged parts within range.
     priority: 50
     burnType: 2
-    levels:
-    - unlockLevel: 0
-      health: 50
-      powerDraw: 0.1
-      dataTest:
-      - key: Heal
-        value: 2
-      - key: Radius
-        value: 1
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 70
-      powerDraw: 0.2
-      dataTest:
-      - key: Heal
-        value: 4
-      - key: Radius
-        value: 1
-      burnRate: 2
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 800
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Heal
-        value: 6
-      - key: Radius
-        value: 2
-      burnRate: 3
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 4500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 6000
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 2
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0.1
+    dataTest:
+    - key: Heal
+      value: 2
+    - key: Radius
+      value: 1
+    burnRate: 1
   - name: Armor
     partType: 3
     lockRotation: 0
@@ -332,65 +68,9 @@ MonoBehaviour:
       a great defense. '
     priority: 25
     burnType: 0
-    levels:
-    - unlockLevel: 0
-      health: 200
-      powerDraw: 0
-      dataTest: []
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 200
-    - unlockLevel: 0
-      health: 400
-      powerDraw: 0
-      dataTest: []
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 600
-      powerDraw: 0
-      dataTest: []
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 20000
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 3
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Gun
     partType: 4
     lockRotation: 0
@@ -399,91 +79,15 @@ MonoBehaviour:
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
     priority: 75
     burnType: 3
-    levels:
-    - unlockLevel: 0
-      health: 50
-      powerDraw: 0
-      dataTest:
-      - key: Damage
-        value: 7
-      - key: Cooldown
-        value: 0.5
-      - key: Projectile
-        value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
-      burnRate: 0.1
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 20
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 90
-    - unlockLevel: 0
-      health: 70
-      powerDraw: 0.15
-      dataTest:
-      - key: Damage
-        value: 20
-      - key: Cooldown
-        value: .4
-      - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
-      burnRate: 0.2
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 0
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Damage
-        value: 30
-      - key: Cooldown
-        value: .2
-      - key: Projectile
-        value: 083be790-7a08-4f27-b506-e8e09a116bc8
-      burnRate: 0.3
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1500
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 4
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Damage
+      value: 7
+    - key: Cooldown
+      value: 0.5
+    - key: Projectile
+      value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
+    burnRate: 0.1
   - name: Triple Shot
     partType: 12
     lockRotation: 1
@@ -492,63 +96,15 @@ MonoBehaviour:
       arc.  Very effective!
     priority: 50
     burnType: 3
-    levels:
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0.15
-      dataTest:
-      - key: Damage
-        value: 15
-      - key: Cooldown
-        value: 0.5
-      - key: Projectile
-        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
-      burnRate: 0.5
-      cost:
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Damage
-        value: 25
-      - key: Cooldown
-        value: 0.3
-      - key: Projectile
-        value: 00c01728-210c-4944-b1a3-0c3bf2183d42
-      burnRate: 0.5
-      cost:
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 3000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 7000
+    powerDraw: 0.15
+    dataTest:
+    - key: Damage
+      value: 15
+    - key: Cooldown
+      value: 0.5
+    - key: Projectile
+      value: 00c01728-210c-4944-b1a3-0c3bf2183d42
+    burnRate: 0.5
   - name: Shield
     partType: 5
     lockRotation: 0
@@ -557,109 +113,13 @@ MonoBehaviour:
       to all cells within its radius. '
     priority: 0
     burnType: 1
-    levels:
-    - unlockLevel: 4
-      health: 80
-      powerDraw: 0.1
-      dataTest:
-      - key: Absorb
-        value: .3
-      - key: Radius
-        value: 3
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 6
-      health: 100
-      powerDraw: 0.2
-      dataTest:
-      - key: Absorb
-        value: .5
-      - key: Radius
-        value: 4
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1000
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 750
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 750
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Absorb
-        value: .75
-      - key: Radius
-        value: 5
-      burnRate: 1
-      cost:
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 5000
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 5
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0.1
+    dataTest:
+    - key: Absorb
+      value: .3
+    - key: Radius
+      value: 3
+    burnRate: 1
   - name: Bomb
     partType: 7
     lockRotation: 0
@@ -668,59 +128,13 @@ MonoBehaviour:
       all enemies in a wide radius. '
     priority: 50
     burnType: 4
-    levels:
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0.15
-      dataTest:
-      - key: Cooldown
-        value: 5
-      - key: Damage
-        value: 50
-      burnRate: 5
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 3
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Cooldown
-        value: 10
-      - key: Damage
-        value: 100
-      burnRate: 10
-      cost:
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 3500
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 3500
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 3
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 3
-      - resourceType: 2
-        type: 7
-        partPrerequisiteLevel: 0
-        amount: 1
+    powerDraw: 0.15
+    dataTest:
+    - key: Cooldown
+      value: 5
+    - key: Damage
+      value: 50
+    burnRate: 5
   - name: Container
     partType: 8
     lockRotation: 0
@@ -729,79 +143,11 @@ MonoBehaviour:
       all resource types.
     priority: 50
     burnType: 0
-    levels:
-    - unlockLevel: 3
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 10
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 300
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 300
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 5
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 20
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 900
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 900
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 8
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 30
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2700
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2700
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 8
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Capacity
+      value: 10
+    burnRate: 0
   - name: Fuel Tank
     partType: 9
     lockRotation: 0
@@ -809,83 +155,11 @@ MonoBehaviour:
     description: Provides extra on-board fuel storage.
     priority: 50
     burnType: 0
-    levels:
-    - unlockLevel: 1
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 20
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 60
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 40
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 40
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 9
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 5
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 70
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 800
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 2
-        type: 9
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Capacity
+      value: 20
+    burnRate: 0
   - name: Plasma Drum
     partType: 10
     lockRotation: 0
@@ -893,83 +167,11 @@ MonoBehaviour:
     description: Provides extra on-board plasma storage.
     priority: 50
     burnType: 0
-    levels:
-    - unlockLevel: 2
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 20
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 80
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 120
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 30
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 10
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 6
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 50
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 800
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1600
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 10
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Capacity
+      value: 20
+    burnRate: 0
   - name: Magazine
     partType: 11
     lockRotation: 0
@@ -977,71 +179,11 @@ MonoBehaviour:
     description: 'Provides extra on-board storage for refined scrap metal. '
     priority: 0
     burnType: 0
-    levels:
-    - unlockLevel: 2
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 20
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 30
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 600
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 11
-        partPrerequisiteLevel: 0
-        amount: 1
-    - unlockLevel: 6
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 50
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2400
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 2
-        type: 11
-        partPrerequisiteLevel: 1
-        amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Capacity
+      value: 20
+    burnRate: 0
   - name: Battery
     partType: 13
     lockRotation: 0
@@ -1049,31 +191,11 @@ MonoBehaviour:
     description: Provides extra on-board storage for power.
     priority: 100
     burnType: 5
-    levels:
-    - unlockLevel: 3
-      health: 80
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 20
-      burnRate: 0
-      cost: []
-    - unlockLevel: 6
-      health: 100
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 30
-      burnRate: 0
-      cost: []
-    - unlockLevel: 9
-      health: 120
-      powerDraw: 0
-      dataTest:
-      - key: Capacity
-        value: 50
-      burnRate: 0
-      cost: []
+    powerDraw: 0
+    dataTest:
+    - key: Capacity
+      value: 20
+    burnRate: 0
   - name: Missile
     partType: 14
     lockRotation: 0
@@ -1081,67 +203,15 @@ MonoBehaviour:
     description: This medium-range heat-seeking projectile almost always hits.
     priority: 50
     burnType: 3
-    levels:
-    - unlockLevel: 5
-      health: 100
-      powerDraw: 0.15
-      dataTest:
-      - key: Damage
-        value: 5
-      - key: Cooldown
-        value: 1
-      - key: Projectile
-        value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
-      burnRate: 0.2
-      cost:
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-    - unlockLevel: 9
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Damage
-        value: 10
-      - key: Cooldown
-        value: 1
-      - key: Projectile
-        value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
-      burnRate: 0.4
-      cost:
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 6
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 5000
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 10000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 10000
+    powerDraw: 0.15
+    dataTest:
+    - key: Damage
+      value: 5
+    - key: Cooldown
+      value: 1
+    - key: Projectile
+      value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
+    burnRate: 0.2
   - name: Sniper
     partType: 15
     lockRotation: 0
@@ -1149,59 +219,13 @@ MonoBehaviour:
     description: A long range, very accurate weapon with a slow rate of fire.
     priority: 50
     burnType: 3
-    levels:
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0.15
-      dataTest:
-      - key: Damage
-        value: 50
-      - key: Cooldown
-        value: 3
-      burnRate: 0.1
-      cost:
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 200
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 400
-    - unlockLevel: 8
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Damage
-        value: 100
-      - key: Cooldown
-        value: 3
-      burnRate: 0.1
-      cost:
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 3500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 6500
+    powerDraw: 0.15
+    dataTest:
+    - key: Damage
+      value: 50
+    - key: Cooldown
+      value: 3
+    burnRate: 0.1
   - name: Blaster
     partType: 16
     lockRotation: 0
@@ -1209,71 +233,9 @@ MonoBehaviour:
     description: Destroys asteroids, extracting valuable minerals.
     priority: 0
     burnType: 2
-    levels:
-    - unlockLevel: 5
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Damage
-        value: 300
-      - key: Cooldown
-        value: 3
-      - key: Projectile
-        value: 5591628b-3b62-4bea-b915-78c355070c11
-      burnRate: 0.2
-      cost:
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 4
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 200
-    - unlockLevel: 7
-      health: 120
-      powerDraw: 0.6
-      dataTest:
-      - key: Damage
-        value: 400
-      - key: Cooldown
-        value: 2
-      - key: Projectile
-        value: 5591628b-3b62-4bea-b915-78c355070c11
-      burnRate: 0.3
-      cost:
-      - resourceType: 1
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 2000
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1000
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Auto-Refiner
     partType: 17
     lockRotation: 0
@@ -1282,25 +244,9 @@ MonoBehaviour:
       the resources into the drone core. '
     priority: 0
     burnType: 0
-    levels:
-    - unlockLevel: 0
-      health: 100
-      powerDraw: 0.3
-      dataTest: []
-      burnRate: 0
-      cost:
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 100
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Range Boost
     partType: 23
     lockRotation: 0
@@ -1308,59 +254,9 @@ MonoBehaviour:
     description: Boosts the range of any immediately adjacent part.
     priority: 50
     burnType: 2
-    levels:
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Multiplier
-        value: 1.25
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 50
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 50
-    - unlockLevel: 6
-      health: 120
-      powerDraw: 0.6
-      dataTest:
-      - key: Multiplier
-        value: 1.5
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1000
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Overclock
     partType: 24
     lockRotation: 0
@@ -1368,63 +264,9 @@ MonoBehaviour:
     description: Boosts the rate of fire of any immediately adjacent part.
     priority: 50
     burnType: 5
-    levels:
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Multiplier
-        value: 1.5
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 50
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 50
-    - unlockLevel: 6
-      health: 120
-      powerDraw: 0.6
-      dataTest:
-      - key: Multiplier
-        value: 2.0
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 500
-      - resourceType: 0
-        type: 5
-        partPrerequisiteLevel: 0
-        amount: 1000
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Offense
     partType: 25
     lockRotation: 0
@@ -1432,59 +274,9 @@ MonoBehaviour:
     description: Boosts the damage of any immediately adjacent weapon.
     priority: 50
     burnType: 4
-    levels:
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Multiplier
-        value: 1.5
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 250
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 100
-    - unlockLevel: 6
-      health: 120
-      powerDraw: 0.6
-      dataTest:
-      - key: Multiplier
-        value: 1.5
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 4
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 750
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 750
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Defense
     partType: 26
     lockRotation: 0
@@ -1492,59 +284,9 @@ MonoBehaviour:
     description: Boosts the HP of any immediately adjacent part.
     priority: 50
     burnType: 1
-    levels:
-    - unlockLevel: 4
-      health: 100
-      powerDraw: 0.3
-      dataTest:
-      - key: Absorb
-        value: 50
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 3
-      - resourceType: 1
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 250
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 100
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 100
-    - unlockLevel: 7
-      health: 120
-      powerDraw: 0.6
-      dataTest:
-      - key: Absorb
-        value: 100
-      burnRate: 0
-      cost:
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 2500
-      - resourceType: 0
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 750
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 750
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Freeze
     partType: 6
     lockRotation: 0
@@ -1553,56 +295,6 @@ MonoBehaviour:
       enemies.
     priority: 50
     burnType: 1
-    levels:
-    - unlockLevel: 3
-      health: 100
-      powerDraw: 0.15
-      dataTest:
-      - key: Radius
-        value: 10
-      - key: Time
-        value: 10
-      - key: Cooldown
-        value: 5
-      burnRate: 5
-      cost:
-      - resourceType: 1
-        type: 0
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 1
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 2
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 150
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 150
-    - unlockLevel: 7
-      health: 120
-      powerDraw: 0.3
-      dataTest:
-      - key: Radius
-        value: 15
-      - key: Time
-        value: 15
-      - key: Cooldown
-        value: 9
-      burnRate: 10
-      cost:
-      - resourceType: 1
-        type: 3
-        partPrerequisiteLevel: 0
-        amount: 1
-      - resourceType: 0
-        type: 2
-        partPrerequisiteLevel: 0
-        amount: 1500
-      - resourceType: 0
-        type: 1
-        partPrerequisiteLevel: 0
-        amount: 1500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0

@@ -25,17 +25,9 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required]
         private GameObject shipInteriorWindow;
-        [SerializeField, Required]
-        private GameObject missionsWindow;
         
         [SerializeField, Required]
         private GameObject workbenchWindow;
-
-        [SerializeField, Required]
-        private GameObject logisticsWindow;
-        
-        /*[SerializeField, Required]
-        private GameObject saveGameWindow;*/
 
         //====================================================================================================================//
         
@@ -43,10 +35,6 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject settingsWindow;
         [SerializeField, Required, FoldoutGroup("Menu Window")]
         private Button resumeGameButton;
-        /*[SerializeField, Required, FoldoutGroup("Settings Menu")]
-        private Button saveGameButton;
-        [SerializeField, Required, FoldoutGroup("Settings Menu")]
-        private Button loadGameButton;*/
         [SerializeField, Required, FoldoutGroup("Menu Window")]
         private Button settingsButton;
         [SerializeField, Required, FoldoutGroup("Menu Window")]
@@ -113,10 +101,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 shipInteriorWindow,
                 workbenchWindow,
-                logisticsWindow,
-                missionsWindow,
-                settingsWindow,
-                //saveGameWindow
+                settingsWindow
             };
             
             InitButtons();
@@ -355,8 +340,8 @@ namespace StarSalvager.UI.Scrapyard
                     case BIT_TYPE.YELLOW:
                         for (int i = 0; i < botData.Count; i++)
                         {
-                            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type).levels[botData[i].Level];
-                            if (partData.powerDraw > 0)
+                            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type);
+                            if (partRemoteData.powerDraw > 0)
                             {
                                 continue;
                             }

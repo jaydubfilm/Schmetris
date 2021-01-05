@@ -79,7 +79,7 @@ namespace StarSalvager.Editor
             _window = GetWindow<PartCostBulkEditor>("Bulk Part Cost Editor", true);
             _window.Show();
 
-            _window._partCostDatas = ToPartCostDataList(FindObjectOfType<FactoryManager>().PartsRemoteData.partRemoteData);
+            //_window._partCostDatas = ToPartCostDataList(FindObjectOfType<FactoryManager>().PartsRemoteData.partRemoteData);
 
             /*if (Selection.activeObject != null && Selection.activeObject.GetType() == typeof(Texture2D))
                 spriteTools.spritesheet = (Texture2D) Selection.activeObject;*/
@@ -88,13 +88,13 @@ namespace StarSalvager.Editor
         [Button(ButtonSizes.Large), HorizontalGroup("Row1")]
         private void RefreshList()
         {
-            _window._partCostDatas = ToPartCostDataList(FindObjectOfType<FactoryManager>().PartsRemoteData.partRemoteData);
+            //_window._partCostDatas = ToPartCostDataList(FindObjectOfType<FactoryManager>().PartsRemoteData.partRemoteData);
         }
         
         [Button(ButtonSizes.Large), HorizontalGroup("Row1")]
         private void SaveList()
         {
-            var list = FindObjectOfType<FactoryManager>().PartsRemoteData;
+            /*var list = FindObjectOfType<FactoryManager>().PartsRemoteData;
 
             for (int i = 0; i < _partCostDatas.Length; i++)
             {
@@ -116,7 +116,7 @@ namespace StarSalvager.Editor
                 FillData(partCostData, ref lvlData);
 
                 list.partRemoteData[partCostData.index].levels[partCostData.partLevel] = lvlData;
-            }
+            }*/
 
 
             //var core0 = _partCostDatas[0];
@@ -128,17 +128,17 @@ namespace StarSalvager.Editor
 //
             //list.partRemoteData[0].levels[0] = lvlData;
             
-            EditorUtility.SetDirty(list);
-            AssetDatabase.SaveAssets();
+            //EditorUtility.SetDirty(list);
+            //AssetDatabase.SaveAssets();
 
             //_window._partCostDatas = ToPartCostDataList(FindObjectOfType<FactoryManager>().PartsRemoteData.partRemoteData);
         }
 
-        [SerializeField, TableList(AlwaysExpanded = true,HideToolbar = true, CellPadding = 10)]
-        private PartCostData[] _partCostDatas;
+        //[SerializeField, TableList(AlwaysExpanded = true,HideToolbar = true, CellPadding = 10)]
+        //private PartCostData[] _partCostDatas;
 
 
-        private static PartCostData[] ToPartCostDataList(IReadOnlyList<PartRemoteData> partRemoteDatas)
+        /*private static PartCostData[] ToPartCostDataList(IReadOnlyList<PartRemoteData> partRemoteDatas)
         {
             var outData = new List<PartCostData>();
 
@@ -195,50 +195,49 @@ namespace StarSalvager.Editor
             }
 
             return outData.ToArray();
-        }
+        }*/
 
-        private static void FillData(PartCostData partCostData, ref PartLevelData partLevelData)
+        /*private static void FillData(PartCostData partCostData, ref PartRemoteData partRemoteData)
         {
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.NUT, partCostData.nut, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.BOLT, partCostData.bolt, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.FUSOR, partCostData.fusor, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.CHIP, partCostData.chip, ref partLevelData);
-            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.COIL, partCostData.coil, ref partLevelData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.NUT, partCostData.nut, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.BOLT, partCostData.bolt, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.FUSOR, partCostData.fusor, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.CHIP, partCostData.chip, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Component, (int) COMPONENT_TYPE.COIL, partCostData.coil, ref partRemoteData);
             
             
-            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.RED, partCostData.red, ref partLevelData);
-            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.GREEN, partCostData.green, ref partLevelData);
-            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.GREY, partCostData.grey, ref partLevelData);
-            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.YELLOW, partCostData.yellow, ref partLevelData);
-            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.BLUE, partCostData.blue, ref partLevelData);
+            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.RED, partCostData.red, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.GREEN, partCostData.green, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.GREY, partCostData.grey, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.YELLOW, partCostData.yellow, ref partRemoteData);
+            FillCost(CraftCost.TYPE.Bit, (int) BIT_TYPE.BLUE, partCostData.blue, ref partRemoteData);
 
-        }
+        }*/
 
-        private static void FillCost(CraftCost.TYPE craftType, int type, int amount, ref PartLevelData partLevelData)
+        /*private static void FillCost(CraftCost.TYPE craftType, int type, int amount, ref PartRemoteData partRemoteData)
         {
             var cost = new CraftCost { resourceType = craftType, type = type, amount = amount};
 
             if (amount <= 0)
             {
-                if (!partLevelData.cost.Contains(cost))
+                if (!partRemoteData.cost.Contains(cost))
                     return;
                 
-                partLevelData.cost.Remove(cost);
+                partRemoteData.cost.Remove(cost);
             }
             else
             {
-                if(!partLevelData.cost.Contains(cost))
-                    partLevelData.cost.Add(cost);
+                if(!partRemoteData.cost.Contains(cost))
+                    partRemoteData.cost.Add(cost);
                 else
                 {
-                    var index = partLevelData.cost.IndexOf(cost);
+                    var index = partRemoteData.cost.IndexOf(cost);
 
-                    partLevelData.cost[index] = cost;
+                    partRemoteData.cost[index] = cost;
                 }
             }
             
-            
-        }
+        }*/
     }
 }
 

@@ -108,7 +108,7 @@ namespace StarSalvager.Utilities.Extensions
         private static bool PathAlgorithm(IEnumerable<IBlockData> attachedBlockDatas, IBlockData current,
             ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
-            //If we're on (0, 0) we've reached the core, so go back up through 
+            //If we're on (0, 0) we've reached the core, so go back up through
             if (current.Coordinate == Vector2Int.zero)
                 return true;
 
@@ -196,7 +196,7 @@ namespace StarSalvager.Utilities.Extensions
         private static bool PathAlgorithm(IEnumerable<BlockData> attachedBlocks, Vector2Int current,
             ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
-            //If we're on (0, 0) we've reached the core, so go back up through 
+            //If we're on (0, 0) we've reached the core, so go back up through
             if (current == Vector2Int.zero)
                 return true;
 
@@ -341,7 +341,7 @@ namespace StarSalvager.Utilities.Extensions
                     case BitData bitData:
                         imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).Sprites[bitData.Level];
                         var startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[bitData.Level].health;
-                        
+
                         float healthPercentage = bitData.Health / startingHealth;
 
                         var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
@@ -360,7 +360,7 @@ namespace StarSalvager.Utilities.Extensions
                         BotDisplaySetPosition(damageRect, bitData.Coordinate.x, bitData.Coordinate.y);
 
                         damageImage.sprite = damageSprite;
-                        
+
                         break;
                     case JunkBitData _:
                         imageObject.sprite = bitFactory.GetJunkBitSprite();
@@ -384,7 +384,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
         }
 
         public static List<IAttachable> ImportBlockDatas(this List<IBlockData> blockDatas, bool inScrapyardForm)

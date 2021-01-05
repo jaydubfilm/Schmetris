@@ -25,8 +25,6 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required] 
         private TMP_Text flightDataText;
         
-        //[SerializeField, Required]
-        //private PointerEvents launchButtonPointerEvents;
         [SerializeField, Required]
         private PointerEvents repairButtonPointerEvents;
         [SerializeField, Required]
@@ -163,8 +161,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
             _droneDesigner.SetupDrone();
-            _droneDesigner.SetupDismantleBin();
-            _droneDesigner.SetupRepairHover();
 
             m_cameraZoomScaler.value = cameraScaleOnEnter;
 
@@ -187,8 +183,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
             _droneDesigner.RecycleDrone();
-            _droneDesigner.RecycleDismantleBin();
-            _droneDesigner.RecycleRepairHover();
 
             cameraScaleOnEnter = m_cameraZoomScaler.value;
 
@@ -575,16 +569,6 @@ namespace StarSalvager.UI.Scrapyard
 
                 return;
             }
-
-            var blueprintCraftCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(blueprint.partType).levels[blueprint.level].cost;
-
-            foreach (var craftCost in blueprintCraftCosts.Where(craftCost =>
-                craftCost.resourceType == CraftCost.TYPE.Bit))
-            {
-                resourceUIElements[(BIT_TYPE) craftCost.type].PreviewChange(-craftCost.amount);
-            }
-
         }
 
         #endregion //Preview Costs

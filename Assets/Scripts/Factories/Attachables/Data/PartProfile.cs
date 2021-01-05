@@ -32,16 +32,15 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private AnimationScriptableObject _animation;
 
+        public Sprite Sprite => _sprite;
+        [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
+        private Sprite _sprite;
+
         public Sprite[] Sprites
         {
-            get => _sprites;
-            set => _sprites = value;
+            get => null;
+            set => Debug.LogError("Trying to get Sprites List from Part Profile, this is a defunct variable");
         }
-
-        [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
-        private Sprite[] _sprites;
-        
-
 
         #region UNITY_EDITOR
 
@@ -52,10 +51,7 @@ namespace StarSalvager.Factories.Data
         {
             get
             {
-                if (_sprites == null || _sprites.Length == 0)
-                    return null;
-                
-                return _animation == null ? _sprites[0] : _animation.GetFrame(0);
+                return _animation == null ? _sprite : _animation.GetFrame(0);
             }
         }
 

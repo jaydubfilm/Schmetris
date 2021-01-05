@@ -20,9 +20,6 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        [SerializeField, Required]
-        private Storage mStorage;
-
         private DroneDesigner DroneDesigner => _droneDesigner ? _droneDesigner : (_droneDesigner = FindObjectOfType<DroneDesigner>());
         private DroneDesigner _droneDesigner;
         

@@ -12,9 +12,6 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), ValueDropdown("GetTypes")]
         public int type;
 
-        [FoldoutGroup("$Name")]
-        public int level;
-
         //This only compares Type and not all individual properties
 
         #region IEquatable
@@ -26,7 +23,7 @@ namespace StarSalvager
         /// <returns></returns>
         public bool Equals(BlueprintInitialData other)
         {
-            return type == other.type && level == other.level;
+            return type == other.type;
         }
 
         /// <summary>

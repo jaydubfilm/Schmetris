@@ -52,16 +52,6 @@ namespace StarSalvager.UI
                 partNameText.text = partRemote.name;
 
                 costElements = new List<CostUIElement>();
-                var levelCosts = partRemote.levels[0].cost;
-                foreach (var cost in levelCosts)
-                {
-                    var costElement = Instantiate(costPrefab).GetComponent<CostUIElement>();
-                    costElement.gameObject.name = $"{cost.type}_UIElement";
-                    costElement.transform.SetParent(transform, false);
-                    costElement.transform.localScale = Vector3.one;
-
-                    costElement.Init(cost);
-                }
 
                 button.onClick.AddListener(() =>
                 {

@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -48,7 +49,7 @@ namespace StarSalvager.UI
 
             if (this.data is PartRemoteData partRemote)
             {
-                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[_level];
+                logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).GetSprite();
 
                 button.onClick.AddListener(() =>
                 {
