@@ -74,8 +74,8 @@ namespace StarSalvager.UI.Scrapyard
             ((RectTransform) temp.transform).sizeDelta = Vector2.zero;
 
             _damageImage = temp;
-            _damageImage.sprite = sprite;*/
-        }
+            _damageImage.sprite = sprite;
+        }*/
 
         //====================================================================================================================//
 
