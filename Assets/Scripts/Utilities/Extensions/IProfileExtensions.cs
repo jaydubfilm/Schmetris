@@ -7,6 +7,11 @@ namespace StarSalvager.Utilities.Extensions
     {
         public static Sprite GetSprite(this IProfile profile, int level)
         {
+            if (profile is PartProfile partProfile)
+            {
+                return partProfile.GetSprite();
+            }
+            
             return level >= profile.Sprites.Length ? profile.Sprites[0] : profile.Sprites[level];
         }
         

@@ -336,7 +336,7 @@ namespace StarSalvager.Utilities.Extensions
                 {
                     case nameof(Part):
                     case nameof(ScrapyardPart):
-                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE)blockData.Type).Sprites[blockData.Level];
+                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE)blockData.Type).GetSprite();
 
                         break;
                     case nameof(Bit):
