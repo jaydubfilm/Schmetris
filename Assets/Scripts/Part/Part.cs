@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, IHealthBoostable, ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, /*IHealthBoostable,*/ ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -23,33 +23,33 @@ namespace StarSalvager
             set { }
         }
 
-        public bool CountAsConnectedToCore => !Destroyed;
+        public bool CountAsConnectedToCore => true;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
 
-        //IHealth Properties
+        /*//IHealth Properties
         //============================================================================================================//
 
         public float StartingHealth { get; private set; }
 
         [ShowInInspector, ReadOnly, ProgressBar(0, nameof(BoostedHealth))]
-        public float CurrentHealth { get; private set; }
+        public float CurrentHealth { get; private set; }*/
 
-        //IHealthCanBoost Properties
+        /*//IHealthCanBoost Properties
         //====================================================================================================================//
 
         public float BoostedHealth => StartingHealth + BoostAmount;
         public float BoostAmount { get; private set; }
-        private bool _boostIsSetup;
+        private bool _boostIsSetup;*/
 
         //Part Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
-        [ShowInInspector, ReadOnly]
-        public int level { get; private set; }
+        /*[ShowInInspector, ReadOnly]
+        public int level { get; private set; }*/
         
-        public bool Destroyed { get; private set; }
+        //public bool Destroyed { get; private set; }
 
         public bool LockRotation { get; set; }
 
@@ -66,7 +66,7 @@ namespace StarSalvager
         private bool _disabled;
 
         
-        private Damage _damage;
+        //private Damage _damage;
 
         //Unity Functions
         //====================================================================================================================//
@@ -83,7 +83,7 @@ namespace StarSalvager
         {
         }
 
-        //IHealth Functions
+        /*//IHealth Functions
         //====================================================================================================================//
         
         public void SetupHealthValues(float startingHealth, float currentHealth)
@@ -118,9 +118,9 @@ namespace StarSalvager
             }
 
             UpdateDamage();
-        }
+        }*/
 
-        //IHealthCanBoost Functions
+        /*//IHealthCanBoost Functions
         //====================================================================================================================//
         
         public void SetHealthBoost(float boostAmount)
@@ -140,9 +140,9 @@ namespace StarSalvager
             }
             
             BoostAmount = boostAmount;
-        }
+        }*/
         
-        //====================================================================================================================//
+        /*//====================================================================================================================//
         
 
         private void UpdateDamage()
@@ -157,7 +157,7 @@ namespace StarSalvager
             }
 
             _damage.SetHealth(CurrentHealth / BoostedHealth);
-        }
+        }*/
 
         //Part Functions
         //============================================================================================================//
@@ -176,7 +176,7 @@ namespace StarSalvager
 
         }
 
-        private void SetDestroyed(bool isDestroyed)
+        /*private void SetDestroyed(bool isDestroyed)
         {
             Destroyed = isDestroyed;
 
@@ -192,7 +192,7 @@ namespace StarSalvager
             RecycleDamageEffect();
             renderer.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(level);
             
-        }
+        }*/
 
         //ICustomRotateFunctions
         //====================================================================================================================//
@@ -215,8 +215,8 @@ namespace StarSalvager
                 ClassType = nameof(Part),
                 Coordinate = Coordinate,
                 Type = (int) Type,
-                Level = level,
-                Health = CurrentHealth
+                /*Level = level,
+                Health = CurrentHealth*/
             };
         }
 
@@ -224,8 +224,8 @@ namespace StarSalvager
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
-            level = blockData.Level;
-            CurrentHealth = blockData.Health;
+            /*level = blockData.Level;
+            CurrentHealth = blockData.Health;*/
 
         }
 
@@ -236,26 +236,26 @@ namespace StarSalvager
         {
             SetSortingLayer(LayerHelper.ACTORS);
             
-            BoostAmount = 0f;
-            _boostIsSetup = false;
+            /*BoostAmount = 0f;
+            _boostIsSetup = false;*/
             
             SetColor(Color.white);
 
-            RecycleDamageEffect();
-            Destroyed = false;
+            //RecycleDamageEffect();
+            //Destroyed = false;
             Disabled = false;
             SetColliderActive(true);
             //collider.enabled = true;
         }
 
-        private void RecycleDamageEffect()
+        /*private void RecycleDamageEffect()
         {
             if (!_damage) 
                 return;
             
             Recycler.Recycle<Damage>(_damage);
             _damage = null;
-        }
+        }*/
 
         //IHasBounds Functions
         //====================================================================================================================//

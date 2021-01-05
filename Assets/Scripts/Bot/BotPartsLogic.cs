@@ -96,7 +96,7 @@ namespace StarSalvager
         [SerializeField, BoxGroup("BurnRates")]
         private bool useBurnRate = true;
 
-        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
+        /*[SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
         public float coreHeat;
 
         [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("/s", Overlay = true)]
@@ -106,7 +106,7 @@ namespace StarSalvager
         private float coolDelay;
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        private float _coreCoolTimer;
+        private float _coreCoolTimer;*/
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int MagnetCount { get; private set; }
@@ -155,11 +155,11 @@ namespace StarSalvager
 
         //==============================================================================================================//
         
-        public void AddCoreHeat(float amount)
+        /*public void AddCoreHeat(float amount)
         {
             coreHeat += amount;
             _coreCoolTimer = coolDelay;
-        }
+        }*/
 
         //====================================================================================================================//
         
@@ -237,7 +237,7 @@ namespace StarSalvager
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
-                var levelData = partData.levels[part.level];
+                var levelData = partData.levels[0];
 
                 if (levelData.burnRate > 0 && !usedResourceTypes.Contains(partData.burnType))
                     usedResourceTypes.Add(partData.burnType);
@@ -258,7 +258,7 @@ namespace StarSalvager
                 }
 
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
-                if (part.Destroyed || part.Disabled)
+                if (part.Disabled)
                     continue;
 
                 int value;
@@ -293,7 +293,7 @@ namespace StarSalvager
 
                         if (_magnetOverride > 0)
                             break;
-                        if (partData.levels[part.level].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partData.levels[0].TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             MagnetCount += value;
                         }
@@ -402,7 +402,7 @@ namespace StarSalvager
                 }
             }
 
-            SetupHealthBoots();
+            //SetupHealthBoots();
             SetupGunRangeValues();
 
             //Force update capacities, once new values determined
@@ -423,7 +423,7 @@ namespace StarSalvager
             if (!_boostEffects.IsNullOrEmpty())
             {
                 var keys = new List<Part>(_boostEffects.Keys);
-                foreach (var key in keys.Where(key => key.Disabled || key.Destroyed))
+                foreach (var key in keys.Where(key => key.Disabled/* || key.Destroyed*/))
                 {
                     Destroy(_boostEffects[key]);
                     _boostEffects.Remove(key);
@@ -436,7 +436,7 @@ namespace StarSalvager
             GameUI.ShowLiquidSliders(usedResourceTypes);
         }
         
-        private void SetupHealthBoots()
+        /*private void SetupHealthBoots()
         {
             var pendingBoosts = new Dictionary<Part, float>();
 
@@ -464,7 +464,7 @@ namespace StarSalvager
             {
                 pendingBoost.Key.SetHealthBoost(pendingBoost.Value);
             }
-        }
+        }*/
 
         //Parts Update Loop
         //============================================================================================================//
@@ -579,8 +579,8 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
-                if(part.Destroyed)
-                    continue;
+                /*if(part.Destroyed)
+                    continue;*/
                 
                 var (partRemoteData, levelData) = GetPartData(part);
 
@@ -691,7 +691,7 @@ namespace StarSalvager
         private (PartRemoteData partRemoteData, PartLevelData partLevelData) GetPartData(in Part part)
         {
             var partRemoteData = _partAttachableFactory.GetRemoteData(part.Type);
-            var partLevelData = partRemoteData.levels[part.level];
+            var partLevelData = partRemoteData.levels[0];
 
             return (partRemoteData, partLevelData);
         }
@@ -742,7 +742,7 @@ namespace StarSalvager
             CanSelfDestruct = outOfFuel;
             //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
 
-            //TODO Need to check on Heating values for the core
+            /*//TODO Need to check on Heating values for the core
             if (coreHeat <= 0)
             {
                 GameUI.SetHeatSliderValue(0f);
@@ -768,13 +768,13 @@ namespace StarSalvager
                 return;
 
             coreHeat = 0;
-            part.SetColor(Color.white);
+            part.SetColor(Color.white);*/
         }
 
         private void RepairUpdate(in Part part, in PartLevelData partLevelData, ref float resourceValue,
             ref float resourcesConsumed, in float deltaTime)
         {
-            if (resourceValue <= 0f && useBurnRate)
+            /*if (resourceValue <= 0f && useBurnRate)
             {
                 //TODO Need to play the no resources for repair sound here
                 return;
@@ -861,7 +861,7 @@ namespace StarSalvager
             }
 
 
-            TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);*/
         }
 
         private void BlasterUpdate(in Part part, in PartLevelData partLevelData, ref float resourceValue,
@@ -1155,7 +1155,7 @@ namespace StarSalvager
             foreach (var part in _parts)
             {
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
-                if (part.Destroyed || part.Disabled)
+                if (/*part.Destroyed || */part.Disabled)
                     continue;
 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
@@ -1167,7 +1167,7 @@ namespace StarSalvager
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.GUN:
 
-                        var projectileID = partData.levels[part.level]
+                        var projectileID = partData.levels[0]
                             .GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
 
                         _gunRanges.Add(part, GetProjectileRange(part, projectileID));
@@ -1319,7 +1319,7 @@ namespace StarSalvager
             var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            var partLevelData = partData.levels[part.level];
+            var partLevelData = partData.levels[0];
 
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
@@ -1353,7 +1353,7 @@ namespace StarSalvager
             var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            var partLevelData = partData.levels[part.level];
+            var partLevelData = partData.levels[0];
 
             //Set the cooldown time
             if (partLevelData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
@@ -1624,7 +1624,7 @@ namespace StarSalvager
         private float GetBoostValue(PART_TYPE boostPart, in Part fromPart)
         {
             var boosts = _parts
-                .Where(x => !x.Disabled && !x.Destroyed && x.Type == boostPart)
+                .Where(x => !x.Disabled /*&& !x.Destroyed*/ && x.Type == boostPart)
                 .ToList();
 
             if (boosts.IsNullOrEmpty())
@@ -1644,7 +1644,7 @@ namespace StarSalvager
                 FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(boostPart);
 
             var maxBoost = 1f;
-            foreach (var levelData in beside.Select(part => partRemoteData.levels[part.level]))
+            foreach (var levelData in beside.Select(part => partRemoteData.levels[0]))
             {
                 if (!levelData.TryGetValue(DataTest.TEST_KEYS.Multiplier, out float mult))
                     continue;
@@ -1656,20 +1656,21 @@ namespace StarSalvager
             return maxBoost;
         }
 
-        private float GetDefenseBoost(in Part part)
+        /*private float GetDefenseBoost(in Part part)
         {
             if (part.Type != PART_TYPE.BOOSTDEFENSE)
                 return 0f;
 
-            if (part.Destroyed || part.Disabled)
+            if (/*part.Destroyed ||#1# part.Disabled)
                 return 0f;
 
             PartRemoteData partRemoteData =
                 FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
+            
+            return partRemoteData.levels[0].GetDataValue<float>(DataTest.TEST_KEYS.Absorb) *
+                   GetFacilityImprovement(FACILITY_TYPE.BOOSTIMPROVE);
 
-
-            return partRemoteData.levels[part.level].GetDataValue<float>(DataTest.TEST_KEYS.Absorb);
-        }
+        }*/
 
         #endregion //Boosts
 
@@ -1710,7 +1711,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, T>(partDictionary);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled /*|| data.Key.Destroyed*/))
             {
                 OnRecycleCallback?.Invoke(data.Value);
                 
@@ -1723,7 +1724,7 @@ namespace StarSalvager
                 return;
 
             var copy = new Dictionary<Part, T>(partDictionary);
-            foreach (var data in copy.Where(data => data.Key.IsRecycled || data.Key.Destroyed))
+            foreach (var data in copy.Where(data => data.Key.IsRecycled /*|| data.Key.Destroyed*/))
             {
                 OnRecycleCallback?.Invoke(data.Key);
                 

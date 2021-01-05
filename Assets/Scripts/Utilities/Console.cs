@@ -675,7 +675,7 @@ namespace StarSalvager.Utilities
                             //PlayerPersistentData.PlayerData.liquidResource[bit] = amount;
                     
                             break;*/
-                        case "heat":
+                        /*case "heat":
                             if (!float.TryParse(split[3], out var heat))
                             {
                                 _consoleDisplay += UnrecognizeCommand(split[3]);
@@ -691,7 +691,7 @@ namespace StarSalvager.Utilities
                             }
 
                             botPartsLogic.coreHeat = heat;
-                            break;
+                            break;*/
                         case "health":
                             if (!float.TryParse(split[3], out var health))
                             {

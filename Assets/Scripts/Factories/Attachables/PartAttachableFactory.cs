@@ -24,7 +24,6 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
             
-            part.SetLevel(level);
             part.SetSprite(sprite);
         }
 
@@ -84,16 +83,11 @@ namespace StarSalvager.Factories
             
             //--------------------------------------------------------------------------------------------------------//
 
-            //var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
             temp.SetSprite(sprite);
             temp.LoadBlockData(blockData);
             temp.LockRotation = remote.lockRotation;
 
-
-            //temp.StartingHealth =
-            temp.SetupHealthValues(startingHealth, blockData.Health);
-
-            temp.gameObject.name = $"{temp.Type}_{temp.level}";
+            temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
         }
         public T CreateObject<T>(BlockData blockData)
@@ -130,14 +124,9 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(BlockData blockData)
         {
-            var profileData = (PartProfileScriptableObject)factoryProfile;
-            
-            var remote = remotePartData.GetRemoteData((PART_TYPE)blockData.Type);
             var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
             var sprite = profile.GetSprite(blockData.Level);
-            var startingHealth = remote.levels[blockData.Level].health;
-            
-            //var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
+
 
             if (!Recycler.TryGrab(out ScrapyardPart temp))
             {
@@ -145,23 +134,19 @@ namespace StarSalvager.Factories
             }
             
             temp.LoadBlockData(blockData);
-            temp.SetSprite(temp.Destroyed ? profileData.GetDamageSprite(blockData.Level) : sprite);
-            temp.SetupHealthValues(startingHealth, blockData.Health);
-
+            temp.SetSprite(sprite);
 
             var gameObject = temp.gameObject;
-            gameObject.name = $"{temp.Type}_{temp.level}";
+            gameObject.name = $"{temp.Type}";
             
             return gameObject;
         }
 
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
-            if (toOverride.Destroyed)
-                return;
             
             var profile = factoryProfile.GetProfile(overrideType);
-            var sprite = profile.GetSprite(toOverride.level);
+            var sprite = profile.GetSprite(0);
 
             //TODO This should be the same function
             switch (toOverride)

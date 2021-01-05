@@ -277,7 +277,7 @@ namespace StarSalvager
                     case ScrapyardBit _:
                         throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
                     case ScrapyardPart scrapyardPart:
-                        PlayerDataManager.AddPartResources(scrapyardPart.Type, scrapyardPart.level, true);
+                        PlayerDataManager.AddPartResources(scrapyardPart.Type, 0, true);
                         UpdatePartsList();
                         break;
                 }
@@ -496,7 +496,7 @@ namespace StarSalvager
                 int value;
 
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-                var levelData = partData.levels[part.level];
+                var levelData = partData.levels[0];
 
                 PowerDraw += levelData.powerDraw;
                 
