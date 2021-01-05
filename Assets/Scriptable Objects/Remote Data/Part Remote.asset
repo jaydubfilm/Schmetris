@@ -149,6 +149,17 @@ MonoBehaviour:
         type: 0
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Magnet
+      value: 9
+    - key: Capacity
+      value: 30
+    - key: SMRTCapacity
+      value: 2
+    - key: PartCapacity
+      value: 12
+    burnRate: 1
   - name: Magnet
     partType: 1
     lockRotation: 0
@@ -230,6 +241,11 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 0
         amount: 4
+    powerDraw: 0
+    dataTest:
+    - key: Magnet
+      value: 3
+    burnRate: 0
   - name: Repairer
     partType: 2
     lockRotation: 0
@@ -324,6 +340,13 @@ MonoBehaviour:
         type: 2
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0.1
+    dataTest:
+    - key: Heal
+      value: 2
+    - key: Radius
+      value: 1
+    burnRate: 1
   - name: Armor
     partType: 3
     lockRotation: 0
@@ -391,6 +414,9 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Gun
     partType: 4
     lockRotation: 0
@@ -484,6 +510,15 @@ MonoBehaviour:
         type: 4
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest:
+    - key: Damage
+      value: 7
+    - key: Cooldown
+      value: 0.5
+    - key: Projectile
+      value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
+    burnRate: 0.1
   - name: Triple Shot
     partType: 12
     lockRotation: 1
@@ -549,6 +584,15 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 7000
+    powerDraw: 0.15
+    dataTest:
+    - key: Damage
+      value: 15
+    - key: Cooldown
+      value: 0.5
+    - key: Projectile
+      value: 00c01728-210c-4944-b1a3-0c3bf2183d42
+    burnRate: 0.5
   - name: Shield
     partType: 5
     lockRotation: 0
@@ -660,6 +704,13 @@ MonoBehaviour:
         type: 5
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0.1
+    dataTest:
+    - key: Absorb
+      value: .3
+    - key: Radius
+      value: 3
+    burnRate: 1
   - name: Bomb
     partType: 7
     lockRotation: 0
@@ -721,6 +772,13 @@ MonoBehaviour:
         type: 7
         partPrerequisiteLevel: 0
         amount: 1
+    powerDraw: 0.15
+    dataTest:
+    - key: Cooldown
+      value: 5
+    - key: Damage
+      value: 50
+    burnRate: 5
   - name: Container
     partType: 8
     lockRotation: 0
@@ -802,6 +860,9 @@ MonoBehaviour:
         type: 8
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Fuel Tank
     partType: 9
     lockRotation: 0
@@ -886,6 +947,9 @@ MonoBehaviour:
         type: 9
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Plasma Drum
     partType: 10
     lockRotation: 0
@@ -970,6 +1034,9 @@ MonoBehaviour:
         type: 10
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Magazine
     partType: 11
     lockRotation: 0
@@ -1042,6 +1109,9 @@ MonoBehaviour:
         type: 11
         partPrerequisiteLevel: 1
         amount: 1
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Battery
     partType: 13
     lockRotation: 0
@@ -1074,6 +1144,9 @@ MonoBehaviour:
         value: 50
       burnRate: 0
       cost: []
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Missile
     partType: 14
     lockRotation: 0
@@ -1142,6 +1215,9 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 10000
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Sniper
     partType: 15
     lockRotation: 0
@@ -1202,6 +1278,9 @@ MonoBehaviour:
         type: 3
         partPrerequisiteLevel: 0
         amount: 6500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Blaster
     partType: 16
     lockRotation: 0
@@ -1274,6 +1353,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1000
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Auto-Refiner
     partType: 17
     lockRotation: 0
@@ -1301,6 +1383,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 100
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Range Boost
     partType: 23
     lockRotation: 0
@@ -1361,6 +1446,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Overclock
     partType: 24
     lockRotation: 0
@@ -1425,6 +1513,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Offense
     partType: 25
     lockRotation: 0
@@ -1485,6 +1576,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 750
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Defense
     partType: 26
     lockRotation: 0
@@ -1545,6 +1639,9 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 750
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
   - name: Freeze
     partType: 6
     lockRotation: 0
@@ -1606,3 +1703,6 @@ MonoBehaviour:
         type: 1
         partPrerequisiteLevel: 0
         amount: 1500
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
