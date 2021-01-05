@@ -76,10 +76,10 @@ namespace StarSalvager.UI
                     costText.text = $"{PlayerDataManager.GetResource((BIT_TYPE)data.type).resource}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Component:
-                    resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)
+                    /*resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)
                         
-                        .GetSprite(0);
-                    costText.text = $"{PlayerDataManager.GetComponents()[(COMPONENT_TYPE) data.type]}/{data.amount}";
+                        .GetSprite(0);*/
+                    costText.text = $"Components: {PlayerDataManager.GetComponents()}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Part:
                     resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)

@@ -77,7 +77,7 @@ namespace StarSalvager.UI.Scrapyard
                 });
             }
             
-            foreach (var storageBlockData in PlayerDataManager.GetComponents())
+            /*foreach (var storageBlockData in PlayerDataManager.GetComponents())
             {
                 //TODO Need to separate the components
                 TEST_Storage testStorage = new TEST_Storage
@@ -91,7 +91,7 @@ namespace StarSalvager.UI.Scrapyard
                     var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
                     temp.Init(testStorage, null); 
                 }
-            }
+            }*/
         }
 
         //============================================================================================================//

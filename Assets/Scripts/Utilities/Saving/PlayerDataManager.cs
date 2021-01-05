@@ -77,16 +77,19 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerRunData.GetResource(bitType);
         }
-
-        public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
+        public static int GetComponents()
         {
             return PlayerRunData.Components;
         }
+        /*public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
+        {
+            return PlayerRunData.Components;
+        }*/
 
-        public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
+        /*public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
         {
             return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
-        }
+        }*/
 
         public static List<IBlockData> GetBlockDatas()
         {
@@ -105,19 +108,19 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static void SetComponents(COMPONENT_TYPE type, int value)
+        public static void SetComponents(int value)
         {
-            PlayerRunData.SetComponents(type, value);
+            PlayerRunData.SetComponents(value);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetComponents(Dictionary<COMPONENT_TYPE, int> componentDictionary)
+        /*public static void SetComponents(Dictionary<COMPONENT_TYPE, int> componentDictionary)
         {
             PlayerRunData.SetComponents(componentDictionary);
 
             OnValuesChanged?.Invoke();
-        }
+        }*/
 
         public static void SetBlockData(List<IBlockData> blockData)
         {
@@ -195,9 +198,9 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void AddComponent(COMPONENT_TYPE type, int amount, bool updateValuesChanged = true)
+        public static void AddComponent(int amount, bool updateValuesChanged = true)
         {
-            PlayerRunData.AddComponent(type, amount);
+            PlayerRunData.AddComponent(amount);
 
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
@@ -231,13 +234,13 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Component)
                     continue;
 
-                SubtractComponent((COMPONENT_TYPE)resource.type, resource.amount);
+                SubtractComponent(resource.amount);
             }
         }
 
-        public static void SubtractComponent(COMPONENT_TYPE type, int amount)
+        public static void SubtractComponent(int amount)
         {
-            PlayerRunData.SubtractComponent(type, amount);
+            PlayerRunData.SubtractComponent(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -333,7 +336,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.resourceType != CraftCost.TYPE.Component)
                     continue;
 
-                if (GetComponents()[(COMPONENT_TYPE)resource.type] < resource.amount)
+                if (PlayerRunData.Components < resource.amount)
                 {
                     return false;
                 }

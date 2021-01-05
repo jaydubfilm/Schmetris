@@ -689,11 +689,11 @@ namespace StarSalvager
                 tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
             }
 
-            Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
+            /*Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
             foreach (var component in PlayerDataManager.GetComponents())
             {
                 tempComponentDictionary.Add((int)component.Key, component.Value);
-            }
+            }*/
 
             Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
             {
@@ -961,14 +961,14 @@ namespace StarSalvager
                         
                         break;
                     }
-                    case RDSValue<BlockData> rdsValueBlockData:
+                    case RDSValue<IBlockData> rdsValueBlockData:
                     {
                         if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                         {
                             switch (rdsValueBlockData.rdsValue.ClassType)
                             {
                                 case nameof(Component):
-                                    PlayerDataManager.AddComponent((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type, 1);
+                                    PlayerDataManager.AddComponent(/*(COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type,*/ 1);
                                     loot.RemoveAt(i);
                                     break;
                                 default:

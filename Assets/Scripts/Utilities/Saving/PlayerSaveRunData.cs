@@ -32,18 +32,23 @@ namespace StarSalvager.Utilities.Saving
         };
 
         public int RationCapacity = 500;
-
+        
         [JsonIgnore]
-        public Dictionary<COMPONENT_TYPE, int> Components => _components;
-        [JsonProperty]
-        private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
-        {
-            {COMPONENT_TYPE.FUSOR, 0},
-            {COMPONENT_TYPE.CHIP, 0},
-            {COMPONENT_TYPE.NUT, 0},
-            {COMPONENT_TYPE.BOLT, 0},
-            {COMPONENT_TYPE.COIL, 0}
-        };
+        public int Components => _components;
+
+        [JsonProperty] private int _components;
+
+/*[JsonIgnore]
+public Dictionary<COMPONENT_TYPE, int> Components => _components;
+[JsonProperty]
+private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
+{
+    {COMPONENT_TYPE.FUSOR, 0},
+    {COMPONENT_TYPE.CHIP, 0},
+    {COMPONENT_TYPE.NUT, 0},
+    {COMPONENT_TYPE.BOLT, 0},
+    {COMPONENT_TYPE.COIL, 0}
+};*/
 
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> recoveryDroneBlockData = new List<IBlockData>();
@@ -141,29 +146,29 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetComponents(COMPONENT_TYPE type, int value)
+        public void SetComponents(int value)
         {
-            _components[type] = value;
+            _components = value;
         }
 
-        public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
+        /*public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
         {
             foreach (var value in liquidValues)
             {
                 _components[value.Key] = value.Value;
             }
-        }
+        }*/
 
         //============================================================================================================//
 
-        public void AddComponent(COMPONENT_TYPE type, int amount)
+        public void AddComponent(int amount)
         {
-            _components[type] += Mathf.Abs(amount);
+            _components += Mathf.Abs(amount);
         }
 
-        public void SubtractComponent(COMPONENT_TYPE type, int amount)
+        public void SubtractComponent(int amount)
         {
-            _components[type] -= Mathf.Abs(amount);
+            _components -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//

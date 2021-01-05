@@ -852,7 +852,7 @@ namespace StarSalvager
                                                 switch (rdsValueBlockData.rdsValue.ClassType)
                                                 {
                                                     case nameof(Component):
-                                                        PlayerDataManager.AddComponent((COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type, 1);
+                                                        PlayerDataManager.AddComponent(1);
                                                         loot.RemoveAt(i);
                                                         break;
                                                     default:

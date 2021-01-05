@@ -43,7 +43,7 @@ namespace StarSalvager.Utilities
             string.Concat("add ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("add ", "patchpoints ", "[uint]").ToUpper(),
             string.Concat("add ", "storage ", "parts ", "[PART_TYPE] ", "[Amount:int]").ToUpper(),
-            string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),
+            /*string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),*/
             "\n",
             string.Concat("clear ", "console").ToUpper(),
             string.Concat("clear ", "remotedata").ToUpper(),
@@ -67,7 +67,7 @@ namespace StarSalvager.Utilities
             "\n",
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
-            string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),
+            /*string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),*/
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
             string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
@@ -265,7 +265,15 @@ namespace StarSalvager.Utilities
             switch (split[1].ToLower())
             {
                 case "component":
-                    if (!int.TryParse(split[3], out var compAmount))
+                    if (!int.TryParse(split[2], out var compAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+                    
+                    PlayerDataManager.AddComponent(compAmount, false);
+                    
+                    /*if (!int.TryParse(split[3], out var compAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
                         break;
@@ -294,7 +302,7 @@ namespace StarSalvager.Utilities
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
-                    }
+                    }*/
                     PlayerDataManager.OnValuesChanged?.Invoke();
                     break;
                 case "currency":
@@ -398,7 +406,7 @@ namespace StarSalvager.Utilities
 
                     switch (split[2].ToLower())
                     {
-                        case "components":
+                        /*case "components":
                             if (Enum.TryParse(split[3], true, out COMPONENT_TYPE compType))
                             {
                                 PlayerDataManager.AddComponent(compType, addAmount);
@@ -406,7 +414,7 @@ namespace StarSalvager.Utilities
                             }
 
                             _consoleDisplay += UnrecognizeCommand(split[3]);
-                            break;
+                            break;*/
                         case "parts":
                             if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                             {
@@ -759,13 +767,13 @@ namespace StarSalvager.Utilities
                     break;
                 case "component":
 
-                    if (!int.TryParse(split[3], out var compAmount))
+                    if (!int.TryParse(split[2], out var compAmount))
                     {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-
-                    if (split[2].ToLower().Equals("all"))
+                    PlayerDataManager.SetComponents(compAmount);
+                    /*if (split[2].ToLower().Equals("all"))
                     {
                         var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
 
@@ -787,7 +795,7 @@ namespace StarSalvager.Utilities
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
-                    }
+                    }*/
 
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
