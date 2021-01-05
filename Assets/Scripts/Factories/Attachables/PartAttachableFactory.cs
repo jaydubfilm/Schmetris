@@ -27,11 +27,6 @@ namespace StarSalvager.Factories
             part.SetSprite(sprite);
         }
 
-        public bool CheckLevelExists(PART_TYPE partType, int level)
-        {
-            return factoryProfile.GetProfile(partType).Sprites.Length > level;
-        }
-
         //============================================================================================================//
 
         public PartRemoteData GetRemoteData(PART_TYPE partType)
@@ -88,6 +83,7 @@ namespace StarSalvager.Factories
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
         }
+
         public T CreateObject<T>(BlockData blockData)
         {
             var temp = CreateGameObject(blockData);

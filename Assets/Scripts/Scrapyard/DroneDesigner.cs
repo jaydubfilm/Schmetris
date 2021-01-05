@@ -43,18 +43,12 @@ namespace StarSalvager
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
         private GameObject availablePointMarkerPrefab;
-        [SerializeField]
-        private SpriteRenderer dismantleBinPrefab;
-        [SerializeField]
-        private SpriteRenderer repairHoverPrefab;
 
         [NonSerialized]
         public bool IsUpgrading;
 
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
-        private SpriteRenderer _dismantleBin;
-        private SpriteRenderer _repairHover;
 
         private Stack<ScrapyardEditData> _toUndoStack;
         private Stack<ScrapyardEditData> _toRedoStack;
@@ -204,7 +198,6 @@ namespace StarSalvager
                 !(attachableAtCoordinates is ScrapyardPart partAtCoordinates)) 
                 return;
             var type = partAtCoordinates.Type;
-            var level = 0;
                         
             Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
 
@@ -224,9 +217,8 @@ namespace StarSalvager
                 _partDragImage.sortingOrder = 1;
             }
             _partDragImage.gameObject.SetActive(true);
-            _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).Sprites[level];
+            _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).GetSprite();
             _partDragImage.transform.position = currentAttachablePosition;
-            //UpdateFloatingMarkers(true);
         }
 
         private void OnLeftMouseButtonUp()
@@ -248,48 +240,8 @@ namespace StarSalvager
             {
                 Vector2 worldMousePosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
 
-                //Dismantle part
-                if (_dismantleBin != null && Vector2.Distance(worldMousePosition, _dismantleBin.transform.position) <= 1.5f)
-                {
-                    var blockData = SelectedBrick.Value;
-                        
-                    Toast.AddToast("Dismantle part");
-
-                    PlayerDataManager.AddPartResources(SelectedBrick.Value, true);
-
-                    //Dismantle part from storage
-                    if (SelectedPartRemoveFromStorage)
-                    {
-                        PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
-
-                        _toUndoStack.Push(new ScrapyardEditData
-                        {
-                            EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE,
-                            BlockData = blockData
-                        });
-                        _toRedoStack.Clear();
-                    }
-                    //Dismantle part from bot
-                    else
-                    {
-                        blockData.Coordinate = SelectedPartPreviousGridPosition.Value;
-                        _toUndoStack.Push(new ScrapyardEditData
-                        {
-                            EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_BOT,
-                            BlockData = blockData
-                        });
-                        _toRedoStack.Clear();
-                    }
-
-                    SelectedBrick = null;
-                    SelectedIndex = 0;
-                    SelectedPartPreviousGridPosition = null;
-                    SelectedPartRemoveFromStorage = false;
-                    SelectedPartReturnToStorageIfNotPlaced = false;
-                    SaveBlockData();
-                }
                 //Move part back to previous location since drag position is inviable
-                else if(SelectedPartPreviousGridPosition != null)
+                if(SelectedPartPreviousGridPosition != null)
                 {
                     var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedBrick.Value);
 
@@ -311,9 +263,8 @@ namespace StarSalvager
                     SelectedPartReturnToStorageIfNotPlaced = false;
                         
                     SaveBlockData();
-                        
-                        
                 }
+
                 UpdateFloatingMarkers(false);
                 return;
             }
@@ -400,7 +351,6 @@ namespace StarSalvager
             
             
             UpdateFloatingMarkers(false);
-            /*DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());*/
         }
 
         private void OnRightMouseButton(InputAction.CallbackContext ctx)
@@ -502,7 +452,6 @@ namespace StarSalvager
                     RotateBots(-toUndo.Value, false);
                     break;
                 default:
-                    //Debug.LogError("Unhandled undo/redo stack case");
                     throw new ArgumentOutOfRangeException(nameof(toUndo.EventType), toUndo.EventType, null);
             }
 
@@ -555,7 +504,6 @@ namespace StarSalvager
                     RotateBots(toRedo.Value, false);
                     break;
                 default:
-                    //Debug.LogError("Unhandled undo/redo stack case");
                     throw new ArgumentOutOfRangeException(nameof(toRedo.EventType), toRedo.EventType, null);
             }
 
@@ -782,52 +730,6 @@ namespace StarSalvager
             }
 
             UpdateFloatingMarkers(false);
-        }
-
-        public void SetupDismantleBin()
-        {
-            if (_dismantleBin != null)
-            {
-                return;
-            }
-
-            _dismantleBin = Instantiate(dismantleBinPrefab);
-            _dismantleBin.transform.position = new Vector2(6, 2);
-            _dismantleBin.transform.parent = transform;
-        }
-
-        public void SetupRepairHover()
-        {
-            if (_repairHover != null)
-            {
-                return;
-            }
-
-            _repairHover = Instantiate(repairHoverPrefab);
-            _repairHover.transform.position = new Vector2(6, -2);
-            _repairHover.transform.parent = transform;
-        }
-
-        public void RecycleDismantleBin()
-        {
-            if (_dismantleBin == null)
-            {
-                return;
-            }
-
-            GameObject.Destroy(_dismantleBin);
-            _dismantleBin = null;
-        }
-
-        public void RecycleRepairHover()
-        {
-            if (_repairHover == null)
-            {
-                return;
-            }
-
-            GameObject.Destroy(_repairHover);
-            _repairHover = null;
         }
 
         //Sell Bits & Components
@@ -1150,10 +1052,11 @@ namespace StarSalvager
                 case HINT.NONE:
                     return default;
                 case HINT.DAMAGE:
-                    return new object[]
+                    throw new Exception("Unhandled case for HINT.DAMAGE hover in DroneDesigner");
+                    /*return new object[]
                     {
                         _repairHover.bounds
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

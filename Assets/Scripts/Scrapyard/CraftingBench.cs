@@ -20,32 +20,12 @@ namespace StarSalvager
 
         public void CraftBlueprint(Blueprint blueprint)
         {
-            /*if (!Globals.TestingFeatures && (!PlayerDataManager.CanAffordPart(blueprint.partType)
-                || blueprint.partType == PART_TYPE.CORE && !mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Any(p => p.Type == (int)PART_TYPE.CORE && p.Level == blueprint.level - 1)))
-            {
-                if (!Toast.Instance.showingToast)
-                    Toast.AddToast("Not enough resources to craft");
-                return;
-            }
             BlockData blockData = new BlockData
             {
                 ClassType = nameof(Part),
                 Type = (int)blueprint.partType
             };
-
-            if (!Globals.TestingFeatures)
-            {
-                PlayerDataManager.SubtractPartCosts(blueprint.partType, false);
-            }
-
-            if (blueprint.partType == PART_TYPE.CORE)
-            {
-                ScrapyardPart core = mDroneDesigner._scrapyardBot.AttachedBlocks.First(p => p.Coordinate == Vector2Int.zero) as ScrapyardPart;
-                FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(blueprint.partType, blueprint.level,
-                    ref core);
-            }
-            else
-                PlayerDataManager.AddPartToStorage(blockData);*/
+            PlayerDataManager.AddPartToStorage(blockData);
         }
     }
 }

@@ -388,7 +388,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
         }
 
         public static List<IAttachable> ImportBlockDatas(this List<BlockData> blockDatas, bool inScrapyardForm)
