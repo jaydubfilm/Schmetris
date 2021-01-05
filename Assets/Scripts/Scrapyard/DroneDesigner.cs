@@ -531,7 +531,9 @@ namespace StarSalvager
 
         public void SaveLayout(string layoutName)
         {
-            ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
+            throw new NotImplementedException();
+            
+            /*ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
             if (saveLayout != null)
             {
                 saveLayout = new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas());
@@ -540,12 +542,14 @@ namespace StarSalvager
             {
                 _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas()));
             }
-            Files.ExportLayoutData(_scrapyardLayouts);
+            Files.ExportLayoutData(_scrapyardLayouts);*/
         }
 
         public void LoadLayout(string name)
         {
-            var tempLayout = _scrapyardLayouts.First(l => l.Name == name);
+            throw new NotImplementedException();
+
+            /*var tempLayout = _scrapyardLayouts.First(l => l.Name == name);
 
             if (tempLayout == null)
                 return;
@@ -631,7 +635,7 @@ namespace StarSalvager
             }
             DroneDesignUi.UpdateBotResourceElements();
             DroneDesignUi.RefreshScrollViews();
-            SaveBlockData();
+            SaveBlockData();*/
         }
 
         #endregion //Layouts
