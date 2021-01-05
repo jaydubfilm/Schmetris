@@ -335,11 +335,10 @@ namespace StarSalvager.Utilities.Extensions
                 switch (blockData)
                 {
                     case PartData _:
-                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE) blockData.Type)
-                            .Sprites[0];
+                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE) blockData.Type).GetSprite();
                         break;
                     case BitData bitData:
-                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).Sprites[bitData.Level];
+                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).GetSprite(bitData.Level);
                         var startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[bitData.Level].health;
 
                         float healthPercentage = bitData.Health / startingHealth;

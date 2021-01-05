@@ -115,62 +115,6 @@ namespace StarSalvager.Cameras
             
             if (!Globals.CameraUseInputMotion || gameObject.scene.name != SceneLoader.LEVEL)
                 return;
-
-            
-            
-            //--------------------------------------------------------------------------------------------------------//
-
-            /*if (InputManager.Instance.MostRecentSideMovement != 0)
-            {
-                CurrentState = _atBounds ? STATE.MOTION : STATE.NONE;
-            }
-            else if (_beginningLerpPos != _startPos && InputManager.Instance.MostRecentSideMovement == 0)
-            {
-                CurrentState = STATE.RECENTER;
-            }
-            else
-            {
-                CurrentState = STATE.NONE;
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            if (InputManager.Instance.MostRecentSideMovement == 0 && tempPosition == transform.position &&
-                _lerpValue == 0.0f)
-            {
-                _beginningLerpPos = transform.position;
-            }
-            else if (_lerpValue == 0.0f)
-            {
-                _beginningLerpPos = _startPos;
-            }
-
-            if (_beginningLerpPos != _startPos &&
-                (InputManager.Instance.MostRecentSideMovement == 0 ||
-                 transform.position.x > Globals.CameraOffsetBounds ||
-                 transform.position.x < -Globals.CameraOffsetBounds))
-            {
-                _lerpValue = Mathf.Min(1.0f, _lerpValue + Globals.CameraSmoothing * Time.deltaTime);
-                transform.position = Vector3.Lerp(_beginningLerpPos, _startPos, Mathf.SmoothStep(0.0f, 1.0f, _lerpValue));
-                if (_lerpValue == 1.0f)
-                {
-                    transform.position = _startPos;
-                    _lerpValue = 0.0f;
-                }
-
-                _cameraXOffset = transform.position.x;
-                
-                _last = _current;
-                _current = tempPosition;
-            }
-            else
-            {
-                _last = _current = Vector2.zero;
-            }
-
-            tempPosition = transform.position;*/
-
-
         }
 
         private void LateUpdate()
@@ -311,37 +255,6 @@ namespace StarSalvager.Cameras
 
         //================================================================================================================//
 
-        /*[Obsolete("This should not move using the ObstacleManager")]
-        public void MoveCameraWithObstacles(Vector3 toMoveCamera)
-        {
-            if (!Globals.CameraUseInputMotion)
-                return;
-
-            var newPosition = transform.position;
-            newPosition += toMoveCamera;
-
-            //_atBounds = ClampX(Globals.CameraOffsetBounds, -Globals.CameraOffsetBounds, ref newPosition);
-
-            if (newPosition.x > Globals.CameraOffsetBounds)
-            {
-                newPosition = new Vector3(Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-                _atBounds = true;
-            }
-            else if (newPosition.x < -Globals.CameraOffsetBounds)
-            {
-                newPosition = new Vector3(-Globals.CameraOffsetBounds, newPosition.y, newPosition.z);
-                _atBounds = true;
-            }
-            else
-            {
-                _atBounds = false;
-            }
-
-            transform.position = newPosition;
-
-            _cameraXOffset = newPosition.x;
-        }*/
-
         public void SetOrthographicSize(float screenWidthInWorld, Vector3 botPosition)
         {
             var orthographicSize = screenWidthInWorld * (Screen.height / (float) Screen.width) / 2;
@@ -443,14 +356,17 @@ namespace StarSalvager.Cameras
 
         public void SetTrackedOffset(float x = 0f, float y = 0f, float z = 0f)
         {
-            var framingTransposers = new[]
+            /*var framingTransposers = new[]
             {
                 CinemachineVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>(),
                 CinemachineReCenterVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>(),
             };
 
 
-            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            /*var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y * 2f, z);
+            var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);#1#
+
+            var targetPosition = CinemachineVirtualCamera.m_LookAt.position + new Vector3(x, y, z);
             var newPos = CinemachineVirtualCamera.m_LookAt.InverseTransformPoint(targetPosition);
             
             //framingTransposer.m_TrackedObjectOffset = newPos;
@@ -458,7 +374,7 @@ namespace StarSalvager.Cameras
             foreach (var transposer in framingTransposers)
             {
                 transposer.m_TrackedObjectOffset = newPos;
-            }
+            }*/
         }
 
         public void SetOrthoSize(float size)
