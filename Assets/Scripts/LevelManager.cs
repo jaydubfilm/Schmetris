@@ -795,7 +795,7 @@ namespace StarSalvager
                 SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]);
                 if (sectorLootTable != null)
                 {
-                    List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
+                    List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
                     if (childNodesAccessible.Count == 0 || 
                         (!FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.WillUseBackupLootTable(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector])
                         && UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f))

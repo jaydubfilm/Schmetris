@@ -372,7 +372,7 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static LevelRingNodeTree GetLevelRingNodeTree()
+        public static LevelNodeTree GetLevelRingNodeTree()
         {
             return PlayerRunData.LevelRingNodeTree;
         }
@@ -387,9 +387,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.PlayerPreviouslyCompletedNodes;
         }
 
-        public static IReadOnlyList<int> GetShortcutNodes()
+        public static IReadOnlyList<int> GetWreckNodes()
         {
-            return PlayerRunData.ShortcutNodes;
+            return PlayerRunData.WreckNodes;
         }
 
         //====================================================================================================================//

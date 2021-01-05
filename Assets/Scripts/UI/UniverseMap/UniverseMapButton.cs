@@ -16,10 +16,18 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
 {
+    public enum NodeType
+    {
+        Level,
+        Wreck
+    }
+    
     [RequireComponent(typeof(Button)), RequireComponent(typeof(PointerEvents))]
     public class UniverseMapButton : MonoBehaviour
     {
         private Action<bool, int, int, RectTransform> _onHoveredCallback;
+
+        public NodeType NodeType;
 
         [NonSerialized]
         public Button Button;
@@ -53,6 +61,14 @@ namespace StarSalvager
         {
             Button.onClick.AddListener(() =>
             {
+                if (NodeType == NodeType.Wreck)
+                {
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                    });
+                }
+                
                 if (SectorNumber < 0 || WaveNumber < 0)
                 {
                     LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
@@ -67,7 +83,6 @@ namespace StarSalvager
                 
                 Globals.CurrentSector = SectorNumber;
                 Globals.CurrentWave = WaveNumber;
-                //Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
 
                 ScreenFade.Fade(() =>
                 {

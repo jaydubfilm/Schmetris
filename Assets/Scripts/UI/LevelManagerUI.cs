@@ -319,7 +319,7 @@ namespace StarSalvager.UI
             }
             else
             {
-                List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
+                List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
                 betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
             }
 

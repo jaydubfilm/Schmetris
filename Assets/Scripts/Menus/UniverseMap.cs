@@ -183,7 +183,6 @@ namespace StarSalvager.UI
         private void InitButtons()
         {
             swapUniverseButton.gameObject.SetActive(false);
-            //backButton.onClick.AddListener(() => SceneLoader.LoadPreviousScene());
 
             betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
@@ -215,7 +214,6 @@ namespace StarSalvager.UI
                 universeMapButtons[i].Text.text = $"{curSector + 1}.{curWave + 1}";
                 universeMapButtons[i].TextBelow.text = string.Empty;
                 universeMapButtons[i].SetupHoveredCallback(WaveHovered);
-                //int numWavesInSector = FactoryManager.Instance.SectorRemoteData[curSector].GetNumberOfWaves();
                 if (curWave + 1 >= 5)
                 {
                     curSector++;
@@ -278,14 +276,14 @@ namespace StarSalvager.UI
                 {
                     int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
 
-                    List<LevelRingNode> childNodesAccessible =
+                    List<LevelNode> childNodesAccessible =
                         PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     if (nodeIndex == curIndex)
                     {
                         for (int k = 0; k < childNodesAccessible.Count; k++)
                         {
-                            bool isChildShortcut = PlayerDataManager.GetShortcutNodes()
+                            bool isChildShortcut = PlayerDataManager.GetWreckNodes()
                                 .Contains(childNodesAccessible[k].nodeIndex);
                             if (isChildShortcut)
                             {
@@ -334,10 +332,15 @@ namespace StarSalvager.UI
                         }
                     }
 
-                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
+                    bool isShortcut = PlayerDataManager.GetWreckNodes().Contains(nodeIndex);
                     if (isShortcut)
                     {
                         universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
+                        universeMapButtons[nodeIndex].NodeType = NodeType.Wreck;
+                    }
+                    else
+                    {
+                        universeMapButtons[nodeIndex].NodeType = NodeType.Wreck;
                     }
                 }
             }
@@ -354,12 +357,12 @@ namespace StarSalvager.UI
                 {
                     int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
 
-                    List<LevelRingNode> childNodesAccessible =
+                    List<LevelNode> childNodesAccessible =
                         PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
 
                     for (int k = 0; k < childNodesAccessible.Count; k++)
                     {
-                        bool isChildShortcut = PlayerDataManager.GetShortcutNodes()
+                        bool isChildShortcut = PlayerDataManager.GetWreckNodes()
                             .Contains(childNodesAccessible[k].nodeIndex);
                         if (isChildShortcut)
                         {
@@ -368,7 +371,7 @@ namespace StarSalvager.UI
                         }
                     }
 
-                    bool isShortcut = PlayerDataManager.GetShortcutNodes().Contains(nodeIndex);
+                    bool isShortcut = PlayerDataManager.GetWreckNodes().Contains(nodeIndex);
 
                     if (childNodesAccessible.Count == 0)
                     {
@@ -380,7 +383,7 @@ namespace StarSalvager.UI
                         {
                             for (int k = 0; k < childNodesAccessible.Count; k++)
                             {
-                                if (PlayerDataManager.GetShortcutNodes().Contains(childNodesAccessible[k].nodeIndex))
+                                if (PlayerDataManager.GetWreckNodes().Contains(childNodesAccessible[k].nodeIndex))
                                 {
                                     int index = childNodesAccessible[k].nodeIndex;
                                     universeMapButtons[index].Button.interactable = true;

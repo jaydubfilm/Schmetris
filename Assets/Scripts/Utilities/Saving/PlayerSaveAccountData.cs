@@ -236,7 +236,7 @@ namespace StarSalvager.Values
         };
 
         [JsonIgnore]
-        public List<List<int>> ShortcutNodes = new List<List<int>>()
+        public List<List<int>> WreckNodes = new List<List<int>>()
         {
             new List<int>
             { 
@@ -306,7 +306,7 @@ namespace StarSalvager.Values
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
-            data.SetupMap(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
+            data.SetupMap(LevelRingConnectionsJson[randomIndex], WreckNodes[randomIndex]);
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;

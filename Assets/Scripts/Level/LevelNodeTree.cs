@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelRingNodeTree
+public class LevelNodeTree
 {
-    private LevelRingNode startingPoint;
+    private LevelNode startingPoint;
 
-    public LevelRingNodeTree()
+    public LevelNodeTree()
     {
-        startingPoint = new LevelRingNode(0);
+        startingPoint = new LevelNode(0);
     }
 
     public void ReadInNodeConnectionData(List<Vector2Int> nodeConnections)
     {
         for (int i = 0; i < nodeConnections.Count; i++)
         {
-            LevelRingNode newNode = TryFindNode(nodeConnections[i].x);
+            LevelNode newNode = TryFindNode(nodeConnections[i].x);
             if (newNode == null)
             {
-                newNode = new LevelRingNode(nodeConnections[i].x);
+                newNode = new LevelNode(nodeConnections[i].x);
             }
 
             bool successfullyParent = TryAddNodeToTree(newNode, nodeConnections[i].y);
@@ -36,12 +36,12 @@ public class LevelRingNodeTree
         return startingPoint.ConvertNodeTreeIntoConnections();
     }
 
-    public LevelRingNode TryFindNode(int index)
+    public LevelNode TryFindNode(int index)
     {
         return startingPoint.TryFindNode(index);
     }
 
-    private bool TryAddNodeToTree(LevelRingNode newNode, int index)
+    private bool TryAddNodeToTree(LevelNode newNode, int index)
     {
         return startingPoint.TryAddNode(newNode, index);
     }
