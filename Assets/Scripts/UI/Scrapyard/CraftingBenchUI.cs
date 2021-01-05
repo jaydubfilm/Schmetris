@@ -215,7 +215,7 @@ namespace StarSalvager.UI.Scrapyard
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(lastBlueprint.partType);
 
-            itemIcon.sprite = partProfileData.Sprite;
+            itemIcon.sprite = partProfileData.GetSprite();
 
 
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()

@@ -108,7 +108,7 @@ namespace StarSalvager.UI.Scrapyard
                     image.sprite = FactoryManager.Instance
                         .GetFactory<PartAttachableFactory>()
                         .GetProfileData(data.partType)
-                        .Sprite;
+                        .GetSprite();
             }
             catch (NullReferenceException)
             {

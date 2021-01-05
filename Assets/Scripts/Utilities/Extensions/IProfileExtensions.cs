@@ -14,6 +14,11 @@ namespace StarSalvager.Utilities.Extensions
         {
             return profile.Sprites[Random.Range(0, profile.Sprites.Length)];
         }
+
+        public static Sprite GetSprite(this PartProfile profile)
+        {
+            return profile.Sprite;
+        }
     }
 }
 
