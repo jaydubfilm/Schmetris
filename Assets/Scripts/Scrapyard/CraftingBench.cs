@@ -12,12 +12,6 @@ namespace StarSalvager
 {
     public class CraftingBench : MonoBehaviour
     {
-        [SerializeField, Required]
-        private CraftingBenchUI storageUI;
-
-        [SerializeField, Required]
-        private DroneDesigner mDroneDesigner;
-
         public void CraftBlueprint(Blueprint blueprint)
         {
             BlockData blockData = new BlockData
