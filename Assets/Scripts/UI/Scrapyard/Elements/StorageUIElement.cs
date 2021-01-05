@@ -54,7 +54,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void SetupDamageSprite()
         {
-            var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
+            /*var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
                 .levels[data.blockData.Level].health;
             //Add Damage Overlay
             var healthValue = data.blockData.Health / maxHealth;
@@ -74,7 +74,7 @@ namespace StarSalvager.UI.Scrapyard
             ((RectTransform) temp.transform).sizeDelta = Vector2.zero;
 
             _damageImage = temp;
-            _damageImage.sprite = sprite;
+            _damageImage.sprite = sprite;*/
         }
         
         //====================================================================================================================//

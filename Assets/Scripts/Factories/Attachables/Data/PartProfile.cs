@@ -32,6 +32,10 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private AnimationScriptableObject _animation;
 
+        public Sprite Sprite => _sprite;
+        [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
+        private Sprite _sprite;
+
         public Sprite[] Sprites
         {
             get => _sprites;

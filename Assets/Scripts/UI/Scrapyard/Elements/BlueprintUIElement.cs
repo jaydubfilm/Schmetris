@@ -108,11 +108,11 @@ namespace StarSalvager.UI.Scrapyard
                     image.sprite = FactoryManager.Instance
                         .GetFactory<PartAttachableFactory>()
                         .GetProfileData(data.partType)
-                        .GetSprite(data.level);
+                        .Sprite;
             }
             catch (NullReferenceException)
             {
-                Debug.LogError($"Cannot find profile or sprite for {data.partType} of level {data.level}");
+                Debug.LogError($"Cannot find profile or sprite for {data.partType}");
                 throw;
             }
         }

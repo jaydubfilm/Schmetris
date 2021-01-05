@@ -443,9 +443,8 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            //BotPartsLogic.coreHeat = 0f;
-
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
+            //TODO: Set up actual health of bot
+            var startingHealth = 100;
             //Add core component
             var core = partFactory.CreateObject<Part>(
                 new BlockData

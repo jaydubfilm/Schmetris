@@ -13,13 +13,12 @@ namespace StarSalvager
     {
         public string name;
         public PART_TYPE partType;
-        public int level;
 
         [JsonIgnore]
-        public bool CanAfford => PlayerDataManager.CanAffordPart(partType, level);
+        public bool CanAfford => PlayerDataManager.CanAffordPart(partType);
 
         [JsonIgnore]
-        public string DisplayString => $"{GetDisplayName()} lvl {level + 1}";
+        public string DisplayString => $"{GetDisplayName()}";
 
         private string GetDisplayName()
         {
@@ -33,7 +32,7 @@ namespace StarSalvager
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return name == other.name && partType.Equals(other.partType) && level == other.level;
+            return name == other.name && partType.Equals(other.partType);
         }
 
         public override bool Equals(object obj)

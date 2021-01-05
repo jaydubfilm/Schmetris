@@ -355,8 +355,8 @@ namespace StarSalvager.UI.Scrapyard
                     case BIT_TYPE.YELLOW:
                         for (int i = 0; i < botData.Count; i++)
                         {
-                            var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type).levels[botData[i].Level];
-                            if (partData.powerDraw > 0)
+                            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type);
+                            if (partRemoteData.powerDraw > 0)
                             {
                                 continue;
                             }

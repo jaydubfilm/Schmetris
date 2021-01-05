@@ -46,8 +46,7 @@ namespace StarSalvager.Utilities.Extensions
                     Blueprint blueprintData = new Blueprint
                     {
                         name = (PART_TYPE)rdsData.type + " " + rdsData.level,
-                        partType = (PART_TYPE)rdsData.type,
-                        level = rdsData.level
+                        partType = (PART_TYPE)rdsData.type
                     };
                     rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }

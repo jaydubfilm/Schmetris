@@ -575,16 +575,6 @@ namespace StarSalvager.UI.Scrapyard
 
                 return;
             }
-
-            var blueprintCraftCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(blueprint.partType).levels[blueprint.level].cost;
-
-            foreach (var craftCost in blueprintCraftCosts.Where(craftCost =>
-                craftCost.resourceType == CraftCost.TYPE.Bit))
-            {
-                resourceUIElements[(BIT_TYPE) craftCost.type].PreviewChange(-craftCost.amount);
-            }
-
         }
 
         #endregion //Preview Costs

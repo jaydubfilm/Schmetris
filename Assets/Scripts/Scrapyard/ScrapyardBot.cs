@@ -12,6 +12,7 @@ using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -69,14 +70,14 @@ namespace StarSalvager
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
+            //TODO: Figure out a real way to determine health
+            var startingHealth = 100;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
                 new BlockData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
-                    Level = 0,
                     Health = startingHealth
                 });
 
@@ -495,22 +496,21 @@ namespace StarSalvager
             {
                 int value;
 
-                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-                var levelData = partData.levels[0];
+                var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
-                PowerDraw += levelData.powerDraw;
+                PowerDraw += partRemoteData.powerDraw;
                 
-                if(!UsedResourceTypes.Contains(partData.burnType))
-                    UsedResourceTypes.Add(partData.burnType);
+                if(!UsedResourceTypes.Contains(partRemoteData.burnType))
+                    UsedResourceTypes.Add(partRemoteData.burnType);
                 
-                if(levelData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                if(partRemoteData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
                     UsedResourceTypes.Add(BIT_TYPE.YELLOW);
                 
                 switch (part.Type)
                 { 
                     case PART_TYPE.CORE:
                         
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -519,19 +519,19 @@ namespace StarSalvager
                             liquidCapacities[BIT_TYPE.BLUE] += value;
                         }
                         
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
 
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
                         {
                             MAXParts = intValue;
                         }
                         break;
                     case PART_TYPE.MAGNET: 
                     
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
@@ -541,7 +541,7 @@ namespace StarSalvager
                     case PART_TYPE.SHIELD:
                         break;
                     case PART_TYPE.STORE:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -549,25 +549,25 @@ namespace StarSalvager
                         }
                         break;
                     case PART_TYPE.STORERED:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREEN:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
                         break;
                     case PART_TYPE.STOREGREY:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
                         break;
                     case PART_TYPE.STOREYELLOW:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }

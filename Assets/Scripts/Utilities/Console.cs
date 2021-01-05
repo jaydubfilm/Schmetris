@@ -413,13 +413,7 @@ namespace StarSalvager.Utilities
                                 var partBlockData = new BlockData
                                 {
                                     ClassType = nameof(Part),
-                                    Type = (int) partType,
-                                    Level = 0,
-                                    Health = FactoryManager.Instance
-                                        .PartsRemoteData
-                                        .GetRemoteData(partType)
-                                        .levels[0]
-                                        .health
+                                    Type = (int) partType
                                 };
                                 
                                 for (var i = 0; i < addAmount; i++)
@@ -1006,8 +1000,7 @@ namespace StarSalvager.Utilities
                         return;
                     }
 
-                    var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                        .CreateObject<IAttachable>(part, lvl);
+                    var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(part);
                     
                     bot.AttachNewBlock(coord, newPart, true, true, false);
                     break;

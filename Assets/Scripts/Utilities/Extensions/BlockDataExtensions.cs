@@ -336,12 +336,7 @@ namespace StarSalvager.Utilities.Extensions
                 {
                     case nameof(Part):
                     case nameof(ScrapyardPart):
-                        startingHealth = partFactory.GetRemoteData((PART_TYPE)blockData.Type).levels[blockData.Level]
-                            .health;
-
-                        imageObject.sprite = blockData.Health <= 0
-                            ? FactoryManager.Instance.PartsProfileData.GetDamageSprite(blockData.Level)
-                            : partFactory.GetProfileData((PART_TYPE)blockData.Type).Sprites[blockData.Level];
+                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE)blockData.Type).Sprites[blockData.Level];
 
                         break;
                     case nameof(Bit):

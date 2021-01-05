@@ -480,22 +480,22 @@ namespace StarSalvager
                     _scrapyardBot.TryRemoveAttachableAt(undoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
                     _scrapyardBot.TryRemoveAttachableAt(toUndo.Destination, false);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    PlayerDataManager.SubtractPartCosts(partType, undoBlockData.Level, true);
+                    PlayerDataManager.SubtractPartCosts(partType);
                     PlayerDataManager.AddPartToStorage(undoBlockData);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
-                    PlayerDataManager.SubtractPartCosts(partType, undoBlockData.Level, true);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
+                    PlayerDataManager.SubtractPartCosts(partType);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.ROTATE:
@@ -529,7 +529,7 @@ namespace StarSalvager
             switch (toRedo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, redoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(redoBlockData.Coordinate, attachable);
                     break;
@@ -539,7 +539,7 @@ namespace StarSalvager
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, redoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     _scrapyardBot.AttachNewBit(toRedo.Destination, attachable);
                     break;
@@ -646,9 +646,9 @@ namespace StarSalvager
                 if (partData.Type == (int)PART_TYPE.CORE)
                     continue;
 
-                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type, partData.Level))
+                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type))
                 {
-                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type, partData.Level, true);
+                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type);
                 }
                 else
                 {

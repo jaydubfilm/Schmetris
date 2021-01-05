@@ -143,14 +143,14 @@ namespace StarSalvager.Utilities.Saving
 
         public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
         {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
             AddCraftCostResources(costs);
 
             if (!isRecursive)
                 return;
 
             if (level > 0)
-                AddPartResources(partType, level - 1, isRecursive);
+                AddPartResources(partType, level - 1, isRecursive);*/
         }
 
         public static void AddCraftCostResources(List<CraftCost> costs)
@@ -164,16 +164,16 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public static void SubtractPartResources(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
+        public static void SubtractPartResources(PART_TYPE partType, float costModifier = 1.0f)
         {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
             SubtractCraftCostResources(costs);
 
             if (!isRecursive)
                 return;
 
             if (level > 0)
-                SubtractPartResources(partType, level - 1, isRecursive, costModifier);
+                SubtractPartResources(partType, level - 1, isRecursive, costModifier);*/
         }
 
         public static void SubtractCraftCostResources(List<CraftCost> costs, float costModifier = 1.0f)
@@ -203,25 +203,25 @@ namespace StarSalvager.Utilities.Saving
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
+        public static void SubtractPartCosts(PART_TYPE partType, float costModifier = 1.0f)
         {
-            SubtractPartResources(partType, level, isRecursive, costModifier);
-            SubtractPartComponents(partType, level, isRecursive);
-            SubtractPartPremades(partType, level, isRecursive);
+            SubtractPartResources(partType, costModifier);
+            SubtractPartComponents(partType);
+            SubtractPartPremades(partType);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractPartComponents(PART_TYPE partType, int level, bool isRecursive)
+        public static void SubtractPartComponents(PART_TYPE partType)
         {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
             SubtractCraftCostComponents(costs);
 
             if (!isRecursive)
                 return;
 
             if (level > 0)
-                SubtractPartComponents(partType, level - 1, isRecursive);
+                SubtractPartComponents(partType, level - 1, isRecursive);*/
         }
 
         public static void SubtractCraftCostComponents(IEnumerable<CraftCost> costs)
@@ -242,16 +242,16 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractPartPremades(PART_TYPE partType, int level, bool isRecursive)
+        public static void SubtractPartPremades(PART_TYPE partType)
         {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
+            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
             SubtractCraftCostPremades(costs);
 
             if (!isRecursive)
                 return;
 
             if (level > 0)
-                SubtractPartPremades(partType, level - 1, isRecursive);
+                SubtractPartPremades(partType, level - 1, isRecursive);*/
         }
 
         public static void SubtractCraftCostPremades(IEnumerable<CraftCost> costs)
@@ -290,9 +290,9 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public static bool CanAffordPart(PART_TYPE partType, int level, float resourceCostModifier = 1.0f)
+        public static bool CanAffordPart(PART_TYPE partType)
         {
-            bool hasResources;
+            /*bool hasResources;
             bool hasComponents;
             bool hasParts;
 
@@ -305,7 +305,9 @@ namespace StarSalvager.Utilities.Saving
             var premadeCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
             hasParts = CanAffordCraftCostPremades(premadeCosts);
 
-            return hasResources && hasComponents && hasParts;
+            return hasResources && hasComponents && hasParts;*/
+
+            return true;
         }
 
         public static bool CanAffordCraftCostResources(List<CraftCost> costs)
@@ -595,9 +597,9 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void UnlockBlueprint(PART_TYPE partType, int level)
+        public static void UnlockBlueprint(PART_TYPE partType)
         {
-            PlayerAccountData.UnlockBlueprint(partType, level);
+            PlayerAccountData.UnlockBlueprint(partType);
 
             OnValuesChanged?.Invoke();
         }
@@ -669,9 +671,8 @@ namespace StarSalvager.Utilities.Saving
             {
                 Blueprint blueprint = new Blueprint
                 {
-                    name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
-                    partType = (PART_TYPE)blueprintData.type,
-                    level = blueprintData.level
+                    name = $"{((PART_TYPE)blueprintData.type)}",
+                    partType = (PART_TYPE)blueprintData.type
                 };
                 playerAccountData.UnlockBlueprint(blueprint);
             }

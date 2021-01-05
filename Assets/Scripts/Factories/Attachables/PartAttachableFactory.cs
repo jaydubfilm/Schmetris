@@ -52,8 +52,6 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(blockData.Level);
-            var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
-
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -100,22 +98,19 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateGameObject(PART_TYPE partType, int level = 0)
+        public GameObject CreateGameObject(PART_TYPE partType)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
             var blockData = new BlockData
             {
-                Level = level,
-                Type = (int) partType,
-                Health = startingHealth
+                Type = (int) partType
             };
 
             return CreateGameObject(blockData);
         }
 
-        public T CreateObject<T>(PART_TYPE partType, int level = 0)
+        public T CreateObject<T>(PART_TYPE partType)
         {
-            var temp = CreateGameObject(partType, level);
+            var temp = CreateGameObject(partType);
 
             return temp.GetComponent<T>();
         }
@@ -164,22 +159,19 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)
+        public GameObject CreateScrapyardGameObject(PART_TYPE partType)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
             var blockData = new BlockData
             {
-                Level = level,
-                Type = (int)partType,
-                Health = startingHealth
+                Type = (int)partType
             };
 
             return CreateScrapyardGameObject(blockData);
         }
 
-        public T CreateScrapyardObject<T>(PART_TYPE partType, int level = 0)
+        public T CreateScrapyardObject<T>(PART_TYPE partType)
         {
-            var temp = CreateScrapyardGameObject(partType, level);
+            var temp = CreateScrapyardGameObject(partType);
 
             return temp.GetComponent<T>();
         }

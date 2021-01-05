@@ -215,31 +215,23 @@ namespace StarSalvager.UI.Scrapyard
             var partProfileData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetProfileData(lastBlueprint.partType);
 
-            itemIcon.sprite = partProfileData.Sprites[lastBlueprint.level];
+            itemIcon.sprite = partProfileData.Sprite;
 
 
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(lastBlueprint.partType);
 
-            itemNameText.text = $"{partRemoteData.name} {lastBlueprint.level + 1}";
+            itemNameText.text = $"{partRemoteData.name}";
             itemDescriptionText.text = partRemoteData.description;
 
-            var powerDraw = partRemoteData.levels[lastBlueprint.level].powerDraw;
+            var powerDraw = partRemoteData.powerDraw;
             itemPowerUsage.gameObject.SetActive(powerDraw > 0);
 
             if (powerDraw > 0)
                 itemPowerUsage.text = $"Power: {powerDraw} {TMP_SpriteMap.MaterialIcons[BIT_TYPE.YELLOW]}/s";
 
-            var resources = partRemoteData.levels[lastBlueprint.level].cost;
-
             costView.SetActive(true);
             missingBannerObject.SetActive(false);
-
-            foreach (var resource in resources)
-            {
-                var element = costView.AddElement(resource, $"{resource.type}_UIElement");
-                element.Init(resource);
-            }
         }
 
         #endregion //Other

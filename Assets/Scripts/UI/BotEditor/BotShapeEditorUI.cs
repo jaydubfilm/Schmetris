@@ -394,14 +394,11 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
-                for (int i = 0; i < partRemoteData.levels.Count; i++)
-                {
-                    if (partRemoteData.partType == PART_TYPE.CORE)
-                        continue;
+                if (partRemoteData.partType == PART_TYPE.CORE)
+                    continue;
 
-                    var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}_{i}_UIElement", true);
-                    element.Init(partRemoteData, OnBrickElementPressed, i);
-                }
+                var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}", true);
+                element.Init(partRemoteData, OnBrickElementPressed);
             }
 
             //FIXME This needs to move to the Factory
@@ -558,19 +555,16 @@ namespace StarSalvager.UI
             
             string classType;
             int type;
-            float health;
             
             switch (remoteDataType)
             {
                 case PART_TYPE partType:
                     type = (int) partType;
                     classType = nameof(Part);
-                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
                     break;
                 case BIT_TYPE bitType:
                     classType = nameof(Bit);
                     type = (int) bitType;
-                    health = FactoryManager.Instance.BitsRemoteData.GetRemoteData(bitType).levels[level].health;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
@@ -580,8 +574,7 @@ namespace StarSalvager.UI
             {
                 ClassType = classType,
                 Type = type,
-                Level = level,
-                Health = health
+                Level = level
             };
         }
 
