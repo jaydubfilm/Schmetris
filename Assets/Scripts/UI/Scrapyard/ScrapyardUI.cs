@@ -336,7 +336,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };*/
 
-            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
+            List<BitData> botData = PlayerDataManager.GetBlockDatas().OfType<BitData>().ToList();
             
             foreach (var bitType in Constants.BIT_ORDER)
             {

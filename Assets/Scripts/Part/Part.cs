@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable, IPart, /*IHealthBoostable,*/ ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart, /*IHealthBoostable,*/ ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -208,11 +208,10 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public PartData ToBlockData()
         {
-            return new BlockData
+            return new PartData
             {
-                ClassType = nameof(Part),
                 Coordinate = Coordinate,
                 Type = (int) Type,
                 /*Level = level,
@@ -220,7 +219,12 @@ namespace StarSalvager
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadBlockData(PartData blockData)
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
@@ -271,5 +275,9 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

@@ -445,15 +445,12 @@ namespace StarSalvager
 
             //BotPartsLogic.coreHeat = 0f;
 
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
             //Add core component
             var core = partFactory.CreateObject<Part>(
-                new BlockData
+                new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
-                    Level = 0,
-                    Health = startingHealth
                 });
             
             if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
@@ -3718,9 +3715,9 @@ namespace StarSalvager
         [Button]
         private void SetupTest()
         {
-            var blocks = new List<BlockData>
+            var blocks = new List<IBlockData>
             {
-                new BlockData
+                /*new BlockData
                 {
                     ClassType = nameof(Bit),
                     Coordinate = new Vector2Int(1, 0),
@@ -3775,7 +3772,7 @@ namespace StarSalvager
                     Level = 1,
                     Type = (int) BIT_TYPE.GREEN,
                     Health = 50
-                },
+                },*/
                 
 
             };
@@ -3784,22 +3781,22 @@ namespace StarSalvager
             CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
         }
         
-        private void AddMorePieces(IEnumerable<BlockData> blocks, bool checkForCombos)
+        private void AddMorePieces(IEnumerable<IBlockData> blocks, bool checkForCombos)
         {
             var toAdd = new List<IAttachable>();
             foreach (var blockData in blocks)
             {
                 IAttachable attachable;
 
-                switch (blockData.ClassType)
+                switch (blockData)
                 {
-                    case nameof(Bit):
+                    case BitData bitData:
                         attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                            .CreateObject<Bit>(blockData);
+                            .CreateObject<Bit>(bitData);
                         break;
-                    case nameof(Part):
+                    case PartData partData:
                         attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                            .CreateObject<Part>(blockData);
+                            .CreateObject<Part>(partData);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);
@@ -3825,9 +3822,9 @@ namespace StarSalvager
         [Button]
         private void TestContains()
         {
-            var testBlockData = new List<BlockData>
+            var testBlockData = new List<IBlockData>
             {
-                new BlockData
+                /*new BlockData
                 {
                     ClassType = nameof(Bit),
                     Type = (int)BIT_TYPE.RED,
@@ -3847,7 +3844,7 @@ namespace StarSalvager
                     Type = (int)BIT_TYPE.RED,
                     Level = 0,
                     Coordinate = new Vector2Int(1,-1)
-                },
+                },*/
             };
             
             var result =attachedBlocks.Contains<Bit>(testBlockData, out _);

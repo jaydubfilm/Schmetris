@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Analytics.Data;
+using StarSalvager.Utilities.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
@@ -127,7 +128,7 @@ namespace StarSalvager.Utilities.FileIO
                 return new EditorBotShapeGeneratorData();
             }
 
-            return ImportJsonData<EditorBotShapeGeneratorData>(path);
+            return ImportJsonData<EditorBotShapeGeneratorData>(path, new IBlockDataArrayConverter());
         }
 
         #endregion //Bot Shape Editor
@@ -261,7 +262,7 @@ namespace StarSalvager.Utilities.FileIO
         {
             var path = Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE);
             
-            return !File.Exists(path) ? new List<ScrapyardLayout>() : ImportJsonData<List<ScrapyardLayout>>(path);
+            return !File.Exists(path) ? new List<ScrapyardLayout>() : ImportJsonData<List<ScrapyardLayout>>(path, new IBlockDataArrayConverter());
         }
 
         #endregion //Drone Data
@@ -386,9 +387,14 @@ namespace StarSalvager.Utilities.FileIO
         
         private static T ImportJsonData<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            var jsonData = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<T>(jsonData);
         }
-        
+        private static T ImportJsonData<T>(string path, params JsonConverter[] converters)
+        {
+            var jsonData = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<T>(jsonData, converters);
+        }
     }
 
 }

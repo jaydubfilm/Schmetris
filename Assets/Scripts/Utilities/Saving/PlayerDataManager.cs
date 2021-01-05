@@ -88,7 +88,7 @@ namespace StarSalvager.Utilities.Saving
             return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
         }
 
-        public static List<BlockData> GetBlockDatas()
+        public static List<IBlockData> GetBlockDatas()
         {
             if (Globals.IsRecoveryBot)
             {
@@ -119,7 +119,7 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetBlockData(List<BlockData> blockData)
+        public static void SetBlockData(List<IBlockData> blockData)
         {
             if (Globals.IsRecoveryBot)
             {
@@ -133,12 +133,12 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public static void AddPartResources(BlockData blockData, bool isRecursive)
+        public static void AddPartResources(IBlockData blockData, bool isRecursive)
         {
             if (!blockData.ClassType.Equals(nameof(Part)))
                 return;
 
-            AddPartResources((PART_TYPE)blockData.Type, blockData.Level, isRecursive);
+            AddPartResources((PART_TYPE)blockData.Type, 0, isRecursive);
         }
 
         public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
@@ -267,7 +267,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SubtractPremade(PART_TYPE partType, int level, int amount)
         {
-            List<BlockData> storedMatches = PlayerRunData.partsInStorageBlockData.FindAll(p => p.Type == (int)partType && p.Level == level);
+            List<IBlockData> storedMatches = PlayerRunData.partsInStorageBlockData.FindAll(p => p.Type == (int)partType);
 
             if (storedMatches.Count < amount)
             {
@@ -350,7 +350,7 @@ namespace StarSalvager.Utilities.Saving
                 if (resource.type == (int)PART_TYPE.CORE)
                     continue;
 
-                var partCount = PlayerRunData.partsInStorageBlockData.Count(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel);
+                var partCount = PlayerRunData.partsInStorageBlockData.Count(p => p.Type == resource.type );
 
                 if (partCount < resource.amount)
                     return false;
@@ -392,24 +392,24 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static IReadOnlyList<BlockData> GetCurrentPartsInStorage()
+        public static IReadOnlyList<IBlockData> GetCurrentPartsInStorage()
         {
             return PlayerRunData.GetCurrentPartsInStorage();
         }
 
-        public static void SetCurrentPartsInStorage(List<BlockData> blockData)
+        public static void SetCurrentPartsInStorage(List<IBlockData> blockData)
         {
             PlayerRunData.SetCurrentPartsInStorage(blockData);
         }
 
-        public static void AddPartToStorage(BlockData blockData)
+        public static void AddPartToStorage(IBlockData blockData)
         {
             PlayerRunData.AddPartToStorage(blockData);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void RemovePartFromStorage(BlockData blockData)
+        public static void RemovePartFromStorage(IBlockData blockData)
         {
             PlayerRunData.RemovePartFromStorage(blockData);
 

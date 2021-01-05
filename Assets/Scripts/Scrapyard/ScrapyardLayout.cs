@@ -9,9 +9,9 @@ namespace StarSalvager.Utilities.JsonDataTypes
     public class ScrapyardLayout : IEquatable<ScrapyardLayout>
     {
         public string Name;
-        public List<BlockData> BlockData;
+        public List<IBlockData> BlockData;
 
-        public ScrapyardLayout(string name, List<BlockData> blockData)
+        public ScrapyardLayout(string name, List<IBlockData> blockData)
         {
             Name = name;
             BlockData = blockData;

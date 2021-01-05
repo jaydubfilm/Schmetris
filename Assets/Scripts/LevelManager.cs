@@ -992,7 +992,7 @@ namespace StarSalvager
             {
                 var blockData = bot.GetBlockDatas();
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
-                    blockData = new List<BlockData>();
+                    blockData = new List<IBlockData>();
 
                 PlayerDataManager.SetBlockData(blockData);
             }

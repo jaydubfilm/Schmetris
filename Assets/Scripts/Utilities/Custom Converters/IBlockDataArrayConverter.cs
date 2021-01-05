@@ -6,16 +6,17 @@ using StarSalvager.Utilities.JsonDataTypes;
 
 namespace StarSalvager.Utilities.Converters
 {
-    public class IBlockDataArrayConverter : JsonConverter<IBlockData[]>
+    public class IBlockDataArrayConverter : JsonConverter<IEnumerable<IBlockData>>
     {
-        public override void WriteJson(JsonWriter writer, IBlockData[] value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, IEnumerable<IBlockData> value, JsonSerializer serializer)
         {
             JToken t = JToken.FromObject(value);
             JArray o = (JArray) t;
             o.WriteTo(writer);
         }
 
-        public override IBlockData[] ReadJson(JsonReader reader, Type objectType, IBlockData[] existingValue,
+        public override IEnumerable<IBlockData> ReadJson(JsonReader reader, Type objectType,
+            IEnumerable<IBlockData> existingValue,
             bool hasExistingValue,
             JsonSerializer serializer)
         {
@@ -31,18 +32,31 @@ namespace StarSalvager.Utilities.Converters
             foreach (var jObject in jArray)
             {
                 var classType = (string) jObject[nameof(IBlockData.ClassType)];
-
-                IBlockData iBlockData = classType switch
+                IBlockData iBlockData;
+                switch (classType)
                 {
-                    nameof(Bit) => jObject.ToObject<BitData>(),
-                    nameof(Part) => jObject.ToObject<PartData>(),
-                    _ => throw new ArgumentOutOfRangeException(nameof(classType), classType, null)
-                };
+                    case nameof(ScrapyardBit):
+                    case nameof(Bit):
+                        iBlockData = jObject.ToObject<BitData>();
+                        break;
+                    case nameof(ScrapyardPart):
+                    case nameof(Part):
+                        iBlockData = jObject.ToObject<PartData>();
+                        break;
+                    case nameof(JunkBit):
+                        iBlockData = jObject.ToObject<JunkBitData>();
+                        break;
+                    case nameof(Crate):
+                        iBlockData = jObject.ToObject<CrateData>();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
+                }
 
                 outData.Add(iBlockData);
             }
 
-            return outData.ToArray();
+            return outData;
         }
     }
 }

@@ -67,8 +67,8 @@ namespace StarSalvager.UI.Scrapyard
                 int tempInt = i;
                 TEST_Storage testStorage = new TEST_Storage
                 {
-                    name = (PART_TYPE)storageBlockData.Type + " " + storageBlockData.Level,
-                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).GetSprite(storageBlockData.Level),
+                    name = $"{(PART_TYPE)storageBlockData.Type}",
+                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).GetSprite(0),
                     blockData = storageBlockData,
                     storageIndex = tempInt
                 };

@@ -88,21 +88,21 @@ namespace StarSalvager.Utilities.Extensions
         }
         public static void ImportLayout(this Bot bot, string jsonLayout)
         {
-            var loadedBlocks = JsonConvert.DeserializeObject<List<BlockData>>(jsonLayout);
+            var loadedBlocks = JsonConvert.DeserializeObject<List<IBlockData>>(jsonLayout);
 
             foreach (var block in loadedBlocks)
             {
                 IAttachable attachable;
-                switch (block.ClassType)
+                switch (block)
                 {
-                    case nameof(Bit):
-                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<IAttachable>(block);
+                    case BitData bitData:
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<IAttachable>(bitData);
                         break;
-                    case nameof(Part):
-                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(block);
+                    case PartData partData:
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(partData);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
+                        throw new ArgumentOutOfRangeException(nameof(block), block, null);
                 }
                 
                 bot.AttachNewBlock(attachable.Coordinate, attachable);
@@ -114,9 +114,9 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        public static List<BlockData> GetBlockDatas(this Bot bot)
+        public static List<IBlockData> GetBlockDatas(this Bot bot)
         {
-            var blockDatas = new List<BlockData>();
+            var blockDatas = new List<IBlockData>();
             
             var attachables = new List<IAttachable>(bot.attachedBlocks);
             //var ignoreAttachables = bot.PendingDetach == null
@@ -134,9 +134,9 @@ namespace StarSalvager.Utilities.Extensions
             return blockDatas;
         }
 
-        public static List<BlockData> GetBlockDatas(this ScrapyardBot bot)
+        public static List<IBlockData> GetBlockDatas(this ScrapyardBot bot)
         {
-            var blockDatas = new List<BlockData>();
+            var blockDatas = new List<IBlockData>();
 
             var attachables = new List<IAttachable>(bot.AttachedBlocks);
 

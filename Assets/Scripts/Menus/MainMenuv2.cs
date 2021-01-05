@@ -276,7 +276,7 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                List<BlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
+                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
                 blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes

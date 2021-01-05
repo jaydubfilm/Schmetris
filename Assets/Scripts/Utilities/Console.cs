@@ -410,16 +410,9 @@ namespace StarSalvager.Utilities
                         case "parts":
                             if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                             {
-                                var partBlockData = new BlockData
+                                var partBlockData = new PartData
                                 {
-                                    ClassType = nameof(Part),
                                     Type = (int) partType,
-                                    Level = 0,
-                                    Health = FactoryManager.Instance
-                                        .PartsRemoteData
-                                        .GetRemoteData(partType)
-                                        .levels[0]
-                                        .health
                                 };
                                 
                                 for (var i = 0; i < addAmount; i++)

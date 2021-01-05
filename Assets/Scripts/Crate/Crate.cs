@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
@@ -10,12 +11,13 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Crate : CollidableBase, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable, ICanCombo<CRATE_TYPE>, ICanDetach
+    public class Crate : CollidableBase, IAttachable, ICustomRecycle, IHealth, ICanBeHit, IObstacle, ISaveable<CrateData>, ICanCombo<CRATE_TYPE>, ICanDetach
     {
         [SerializeField]
         private LayerMask collisionMask;
 
         private Damage _damage;
+        private ISaveable<CrateData> _saveableImplementation;
 
         //ICanCombo Properties
         //====================================================================================================================//
@@ -185,22 +187,29 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public CrateData ToBlockData()
         {
-            return new BlockData
+            return new CrateData
             {
-                ClassType = nameof(Crate),
                 Coordinate = Coordinate,
                 Type = (int)Type,
                 Level = level,
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        IBlockData ISaveable.ToBlockData()
         {
-            Coordinate = blockData.Coordinate;
-            Type = (CRATE_TYPE)blockData.Type;
-            level = blockData.Level;
+            return ToBlockData();
+        }
+
+        public void LoadBlockData(IBlockData blockData)
+        {
+            if (!(blockData is CrateData crateData))
+                throw new Exception();
+            
+            Coordinate = crateData.Coordinate;
+            Type = (CRATE_TYPE)crateData.Type;
+            level = crateData.Level;
         }
 
         //ICustomRecycle Functions

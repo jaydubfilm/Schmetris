@@ -40,8 +40,8 @@ namespace StarSalvager.UI.Scrapyard
             if (!button.interactable)
                 return;
 
-            if (isPart)
-                SetupDamageSprite();
+            /*if (isPart)
+                SetupDamageSprite();*/
             
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
@@ -52,10 +52,10 @@ namespace StarSalvager.UI.Scrapyard
         
         //============================================================================================================//
 
-        private void SetupDamageSprite()
+        /*private void SetupDamageSprite()
         {
-            var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
-                .levels[data.blockData.Level].health;
+            /*var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
+                .levels[data.blockData.Level].health;#1#
             //Add Damage Overlay
             var healthValue = data.blockData.Health / maxHealth;
 
@@ -75,7 +75,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _damageImage = temp;
             _damageImage.sprite = sprite;
-        }
+        }*/
         
         //====================================================================================================================//
         
@@ -147,7 +147,7 @@ namespace StarSalvager.UI.Scrapyard
     {
         public string name;
         public Sprite sprite;
-        public BlockData blockData;
+        public IBlockData blockData;
         public int storageIndex;
 
         public bool Equals(TEST_Storage other)

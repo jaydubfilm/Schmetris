@@ -46,13 +46,13 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
 
-        public GameObject CreateGameObject(BlockData blockData)
+        public GameObject CreateGameObject(PartData partData)
         {
-            var type = (PART_TYPE) blockData.Type;
+            var type = (PART_TYPE) partData.Type;
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(blockData.Level);
-            var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
+            var sprite = profile.GetSprite(0);
+            //var startingHealth = remote.levels[partData.Level].health;//.health[blockData.Level];
 
             
             //--------------------------------------------------------------------------------------------------------//
@@ -69,7 +69,7 @@ namespace StarSalvager.Factories
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
 
-                temp.gameObject.name = $"{nameof(AnimatedPart)}_{type}_lvl{blockData.Level}";
+                temp.gameObject.name = $"{nameof(AnimatedPart)}_{type}";
             }
             else
             {
@@ -78,21 +78,21 @@ namespace StarSalvager.Factories
                     temp = CreateObject<Part>();
                 }
                 
-                temp.gameObject.name = $"{nameof(Part)}_{type}_lvl{blockData.Level}";
+                temp.gameObject.name = $"{nameof(Part)}_{type}";
             }
             
             //--------------------------------------------------------------------------------------------------------//
 
             temp.SetSprite(sprite);
-            temp.LoadBlockData(blockData);
+            temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
         }
-        public T CreateObject<T>(BlockData blockData)
+        public T CreateObject<T>(PartData partData)
         {
-            var temp = CreateGameObject(blockData);
+            var temp = CreateGameObject(partData);
 
             return temp.GetComponent<T>();
 
@@ -102,12 +102,10 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(PART_TYPE partType, int level = 0)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
-            var blockData = new BlockData
+            //var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
+            var blockData = new PartData
             {
-                Level = level,
                 Type = (int) partType,
-                Health = startingHealth
             };
 
             return CreateGameObject(blockData);
@@ -122,10 +120,10 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(BlockData blockData)
+        public GameObject CreateScrapyardGameObject(PartData partData)
         {
-            var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
-            var sprite = profile.GetSprite(blockData.Level);
+            var profile = factoryProfile.GetProfile((PART_TYPE)partData.Type);
+            var sprite = profile.GetSprite(0);
 
 
             if (!Recycler.TryGrab(out ScrapyardPart temp))
@@ -133,7 +131,7 @@ namespace StarSalvager.Factories
                 temp = CreateScrapyardObject<ScrapyardPart>();
             }
             
-            temp.LoadBlockData(blockData);
+            temp.LoadBlockData(partData);
             temp.SetSprite(sprite);
 
             var gameObject = temp.gameObject;
@@ -166,12 +164,10 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
-            var blockData = new BlockData
+            //var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
+            var blockData = new PartData
             {
-                Level = level,
                 Type = (int)partType,
-                Health = startingHealth
             };
 
             return CreateScrapyardGameObject(blockData);
@@ -184,9 +180,9 @@ namespace StarSalvager.Factories
             return temp.GetComponent<T>();
         }
         
-        public T CreateScrapyardObject<T>(BlockData blockData)
+        public T CreateScrapyardObject<T>(PartData partData)
         {
-            var temp = CreateScrapyardGameObject(blockData);
+            var temp = CreateScrapyardGameObject(partData);
 
             return temp.GetComponent<T>();
         }

@@ -106,7 +106,7 @@ namespace StarSalvager.ScriptableObjects
                         case SELECTION_TYPE.BUMPER:
                             continue;
                         case SELECTION_TYPE.SHAPE:
-                            List<BlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
+                            List<IBlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
                             foreach (var blockData in shapeBlockData)
                             {
                                 BIT_TYPE bitType = (BIT_TYPE)blockData.Type;
@@ -173,7 +173,7 @@ namespace StarSalvager.ScriptableObjects
                         case SELECTION_TYPE.BUMPER:
                             continue;
                         case SELECTION_TYPE.SHAPE:
-                            List<BlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
+                            List<IBlockData> shapeBlockData = FactoryManager.Instance.GetFactory<ShapeFactory>().GetByName(obstacleData.ShapeName).BlockData;
                             foreach (var blockData in shapeBlockData)
                             {
                                 BIT_TYPE bitType = (BIT_TYPE)blockData.Type;

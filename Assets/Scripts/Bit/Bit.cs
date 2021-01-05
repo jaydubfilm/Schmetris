@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach
     {
         //IAttachable properties
         //============================================================================================================//
@@ -264,22 +264,24 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public BitData ToBlockData()
         {
-            return new BlockData
+            return new BitData
             {
-                ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
                 Level = level
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
         {
-            Coordinate = blockData.Coordinate;
-            Type = (BIT_TYPE) blockData.Type;
-            level = blockData.Level;
+            if (!(blockData is BitData bitData))
+                throw new Exception();
+            
+            Coordinate = bitData.Coordinate;
+            Type = (BIT_TYPE)bitData.Type;
+            level = bitData.Level;
         }
 
         //============================================================================================================//
@@ -318,6 +320,10 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-        
+
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

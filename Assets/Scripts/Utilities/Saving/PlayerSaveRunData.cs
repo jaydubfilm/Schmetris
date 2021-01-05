@@ -45,9 +45,9 @@ namespace StarSalvager.Utilities.Saving
             {COMPONENT_TYPE.COIL, 0}
         };
 
-        public List<BlockData> mainDroneBlockData = new List<BlockData>();
-        public List<BlockData> recoveryDroneBlockData = new List<BlockData>();
-        public List<BlockData> partsInStorageBlockData = new List<BlockData>();
+        public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
+        public List<IBlockData> recoveryDroneBlockData = new List<IBlockData>();
+        public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
@@ -238,48 +238,48 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
         
-        public List<BlockData> GetCurrentBlockData()
+        public List<IBlockData> GetCurrentBlockData()
         {
             return mainDroneBlockData;
         }
 
-        public void SetShipBlockData(List<BlockData> blockData)
+        public void SetShipBlockData(List<IBlockData> blockData)
         {
             mainDroneBlockData.Clear();
             mainDroneBlockData.AddRange(blockData);
         }
 
-        public List<BlockData> GetRecoveryDroneBlockData()
+        public List<IBlockData> GetRecoveryDroneBlockData()
         {
             return recoveryDroneBlockData;
         }
 
-        public void SetRecoveryDroneBlockData(List<BlockData> blockData)
+        public void SetRecoveryDroneBlockData(List<IBlockData> blockData)
         {
             recoveryDroneBlockData.Clear();
             recoveryDroneBlockData.AddRange(blockData);
         }
 
-        public List<BlockData> GetCurrentPartsInStorage()
+        public List<IBlockData> GetCurrentPartsInStorage()
         {
             return partsInStorageBlockData;
         }
 
-        public void SetCurrentPartsInStorage(List<BlockData> blockData)
+        public void SetCurrentPartsInStorage(List<IBlockData> blockData)
         {
             partsInStorageBlockData.Clear();
             partsInStorageBlockData.AddRange(blockData);
         }
 
-        public void AddPartToStorage(BlockData blockData)
+        public void AddPartToStorage(IBlockData blockData)
         {
             partsInStorageBlockData.Add(blockData);
             PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
-        public void RemovePartFromStorage(BlockData blockData)
+        public void RemovePartFromStorage(IBlockData blockData)
         {
-            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
+            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Type == blockData.Type));
         }
 
         public void RemovePartFromStorageAtIndex(int index)

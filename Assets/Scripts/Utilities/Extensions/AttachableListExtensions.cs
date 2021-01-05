@@ -202,12 +202,12 @@ namespace StarSalvager.Utilities.Extensions
 
         #region Get Block Data
 
-        public static List<BlockData> GetBlockDatas<T>(this IEnumerable<T> attachables) where T : IAttachable
+        public static List<IBlockData> GetBlockDatas<T>(this IEnumerable<T> attachables) where T : IAttachable
         {
             return attachables.OfType<ISaveable>().GetBlockDatas();
         }
 
-        public static List<BlockData> GetBlockDatas(this IEnumerable<ISaveable> saveables)
+        public static List<IBlockData> GetBlockDatas(this IEnumerable<ISaveable> saveables)
         {
             return saveables.Select(x => x.ToBlockData()).ToList();
         }
@@ -819,9 +819,11 @@ namespace StarSalvager.Utilities.Extensions
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
         public static bool Contains<T>(this List<IAttachable> attachables, IEnumerable<T> comparison, out List<Vector2Int> upgrading)
-            where T : IAttachable, ISaveable
+            where T : IAttachable, ISaveable<BitData>
         {
-            return attachables.Contains<T>(comparison.OfType<ISaveable>().GetBlockDatas(), out upgrading);
+            return attachables.Contains<T>(
+                comparison.GetBlockDatas().ToList(),
+                out upgrading);
         }
 
         /// <summary>
@@ -833,14 +835,15 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="upgrading"></param>
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
-        public static bool Contains<T>(this List<IAttachable> attachables, IReadOnlyList<BlockData> comparison, out List<Vector2Int> upgrading)
-            where T : IAttachable, ISaveable
+        public static bool Contains<T>(this List<IAttachable> attachables,
+            IReadOnlyList<IBlockData> comparison, 
+            out List<Vector2Int> upgrading) where T : IAttachable, ISaveable<BitData>
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            List<BlockData> ResetLevels(IReadOnlyList<BlockData> data)
+            List<BitData> ResetLevels(IReadOnlyList<BitData> data)
             {
-                var newList = new List<BlockData>(data);
+                var newList = new List<BitData>(data);
                 for (var i = 0; i < data.Count; i++)
                 {
                     var temp = data[i];
@@ -868,8 +871,8 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var _original = ResetLevels(original);
-            var _compare = ResetLevels(comparison);
+            var _original = ResetLevels(original.OfType<BitData>().ToList());
+            var _compare = ResetLevels(comparison.OfType<BitData>().ToList());
 
             var startingPoints = _original.Where(x => x.Equals(_compare[0])).ToList();
 
@@ -892,11 +895,11 @@ namespace StarSalvager.Utilities.Extensions
 
         private static bool TraversalContains(
             Vector2Int startingCoordinate, 
-            BlockData toCompare,
+            IBlockData toCompare,
             Vector2Int currentCoordinate,
             DIRECTION currentDirection,
-            IReadOnlyCollection<BlockData> originalList,
-            IReadOnlyCollection<BlockData> compareList,
+            IReadOnlyCollection<BitData> originalList,
+            IReadOnlyCollection<BitData> compareList,
             ref List<Vector2Int> traversedCompared,
             ref List<Vector2Int> upgrading)
         {

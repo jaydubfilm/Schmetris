@@ -661,9 +661,9 @@ namespace StarSalvager.UI
 
         #endregion //Hover Preview UI
 
-        private static string GetPreviewResources(List<BlockData> blockDatas)
+        private static string GetPreviewResources(IEnumerable<IBlockData> blockDatas)
         {
-            var resources = CountResources(blockDatas);
+            var resources = CountResources(blockDatas.OfType<BitData>().ToList());
 
             if (resources == null)
                 return string.Empty;
@@ -682,7 +682,7 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
-        private static Dictionary<BIT_TYPE, int> CountResources(List<BlockData> blockDatas)
+        private static Dictionary<BIT_TYPE, int> CountResources(List<BitData> blockDatas)
         {
             if (blockDatas.IsNullOrEmpty())
                 return null;
@@ -691,7 +691,7 @@ namespace StarSalvager.UI
             var remoteProfile = FactoryManager.Instance.BitsRemoteData;
             
             
-            foreach (var bit in blockDatas.Where(x => x.ClassType.Equals(nameof(Bit))))
+            foreach (var bit in blockDatas)
             {
                 var bitType = (BIT_TYPE)bit.Type;
 

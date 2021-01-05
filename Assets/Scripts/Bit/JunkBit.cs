@@ -3,18 +3,17 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Values;
-using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
+    //FIXME This can be combined with the Bit class a little
+    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<BitData>, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
     {
         public IAttachable iAttachable => this;
 
@@ -101,7 +100,7 @@ namespace StarSalvager
 
             if (CurrentHealth <= 0)
             {
-                Recycler.Recycle<Bit>(this);
+                Recycler.Recycle<JunkBit>(this);
                 return;
             }
 
@@ -240,18 +239,22 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public BitData ToBlockData()
         {
-            return new BlockData
+            return new BitData
             {
-                ClassType = GetType().Name,
+                Type = (int)BIT_TYPE.NONE,
+                //ClassType = GetType().Name,
                 Coordinate = Coordinate
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
         {
-            Coordinate = blockData.Coordinate;
+            if (!(blockData is JunkBitData junkBitData))
+                throw new Exception();
+            
+            Coordinate = junkBitData.Coordinate;
         }
 
 
@@ -268,6 +271,10 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-        
+
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

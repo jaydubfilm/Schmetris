@@ -49,12 +49,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public Crate CreateCrateObject(int level)
+        public Crate CreateCrateObject(CrateData crateData)
         {
             Crate crate = CreateObject<Crate>();
             crate.Type = CRATE_TYPE.STANDARD;
-            crate.IncreaseLevel(level);
-            UpdateCrateData(level, ref crate);
+            //crate.IncreaseLevel(level);
+            UpdateCrateData(crateData.Level, ref crate);
+            crate.Coordinate = crateData.Coordinate;
 
             return crate;
         }

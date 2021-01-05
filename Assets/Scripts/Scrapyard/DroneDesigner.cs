@@ -153,10 +153,9 @@ namespace StarSalvager
 
         public void Reset()
         {
-            if (SelectedBrick.HasValue && SelectedPartReturnToStorageIfNotPlaced)
+            if (SelectedBrick != null && SelectedPartReturnToStorageIfNotPlaced)
             {
-                BlockData blockData = SelectedBrick.Value;
-                PlayerDataManager.AddPartToStorage(blockData);
+                PlayerDataManager.AddPartToStorage(SelectedBrick);
             }
 
             SelectedBrick = null;
@@ -187,12 +186,12 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
-            UpdateFloatingMarkers(SelectedBrick.HasValue);
+            UpdateFloatingMarkers(SelectedBrick != null);
             
             if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
                 return;
 
-            if (SelectedBrick.HasValue) 
+            if (SelectedBrick != null) 
                 return;
 
             if (_scrapyardBot == null || mouseCoordinate == Vector2Int.zero) 
@@ -236,7 +235,7 @@ namespace StarSalvager
             
             _isDragging = false;
 
-            if (!SelectedBrick.HasValue || _scrapyardBot == null)
+            if (SelectedBrick is null || _scrapyardBot == null)
             {
                 UpdateFloatingMarkers(false);
                 return;
@@ -251,11 +250,11 @@ namespace StarSalvager
                 //Dismantle part
                 if (_dismantleBin != null && Vector2.Distance(worldMousePosition, _dismantleBin.transform.position) <= 1.5f)
                 {
-                    var blockData = SelectedBrick.Value;
+                    //var blockData = SelectedBrick.Value;
                         
                     Toast.AddToast("Dismantle part");
 
-                    PlayerDataManager.AddPartResources(SelectedBrick.Value, true);
+                    PlayerDataManager.AddPartResources(SelectedBrick, true);
 
                     //Dismantle part from storage
                     if (SelectedPartRemoveFromStorage)
@@ -265,18 +264,18 @@ namespace StarSalvager
                         _toUndoStack.Push(new ScrapyardEditData
                         {
                             EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE,
-                            BlockData = blockData
+                            BlockData = SelectedBrick
                         });
                         _toRedoStack.Clear();
                     }
                     //Dismantle part from bot
                     else
                     {
-                        blockData.Coordinate = SelectedPartPreviousGridPosition.Value;
+                        SelectedBrick.Coordinate = SelectedPartPreviousGridPosition.Value;
                         _toUndoStack.Push(new ScrapyardEditData
                         {
                             EventType = SCRAPYARD_ACTION.DISMANTLE_FROM_BOT,
-                            BlockData = blockData
+                            BlockData = SelectedBrick
                         });
                         _toRedoStack.Clear();
                     }
@@ -291,7 +290,10 @@ namespace StarSalvager
                 //Move part back to previous location since drag position is inviable
                 else if(SelectedPartPreviousGridPosition != null)
                 {
-                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedBrick.Value);
+                    if (!(SelectedBrick is PartData partData))
+                        throw new Exception();
+                    
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
                     //Check if part should be removed from storage
                     //TODO Should be checking if the player does in-fact have the part in their storage
@@ -322,9 +324,12 @@ namespace StarSalvager
             //Check if there mouse coordinates are empty
             if (attachableAtCoordinates == null)
             {
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedBrick.Value);
+                if (!(SelectedBrick is PartData partData))
+                    throw new Exception();
+                
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
-                var blockData = SelectedBrick.Value;
+                //var blockData = SelectedBrick.Value;
                 
                 _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
                 
@@ -332,26 +337,26 @@ namespace StarSalvager
                 //TODO Should be checking if the player does in-fact have the part in their storage
                 if (SelectedPartRemoveFromStorage)
                 {
-                    blockData.Coordinate = mouseGridCoordinate;
+                    SelectedBrick.Coordinate = mouseGridCoordinate;
 
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
 
                     _toUndoStack.Push(new ScrapyardEditData
                     {
                         EventType = SCRAPYARD_ACTION.EQUIP,
-                        BlockData = blockData
+                        BlockData = SelectedBrick
                     });
                     _toRedoStack.Clear();
                 }
                 else
                 {
-                    blockData.Coordinate = SelectedPartPreviousGridPosition.Value;
+                    SelectedBrick.Coordinate = SelectedPartPreviousGridPosition.Value;
                     
                     _toUndoStack.Push(new ScrapyardEditData
                     {
                         EventType = SCRAPYARD_ACTION.RELOCATE,
                         Destination = mouseGridCoordinate,
-                        BlockData = blockData
+                        BlockData = SelectedBrick
                     });
                     _toRedoStack.Clear();
                 }
@@ -370,8 +375,11 @@ namespace StarSalvager
             //If there is an attachable at location
             else if (SelectedPartPreviousGridPosition != null)
             {
+                if (!(SelectedBrick is PartData partData))
+                    throw new Exception();
+                
                 //Return object to previous location on bot
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(SelectedBrick.Value);
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
                 //Check if part should be removed from storage
                 //TODO Should be checking if the player does in-fact have the part in their storage
@@ -480,22 +488,22 @@ namespace StarSalvager
                     _scrapyardBot.TryRemoveAttachableAt(undoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.UNEQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, 0);
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, 0);
                     _scrapyardBot.TryRemoveAttachableAt(toUndo.Destination, false);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    PlayerDataManager.SubtractPartCosts(partType, undoBlockData.Level, true);
+                    PlayerDataManager.SubtractPartCosts(partType, 0, true);
                     PlayerDataManager.AddPartToStorage(undoBlockData);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, undoBlockData.Level);
-                    PlayerDataManager.SubtractPartCosts(partType, undoBlockData.Level, true);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, 0);
+                    PlayerDataManager.SubtractPartCosts(partType, 0, true);
                     _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
                     break;
                 case SCRAPYARD_ACTION.ROTATE:
@@ -529,7 +537,7 @@ namespace StarSalvager
             switch (toRedo.EventType)
             {
                 case SCRAPYARD_ACTION.EQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, redoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, 0);
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     _scrapyardBot.AttachNewBit(redoBlockData.Coordinate, attachable);
                     break;
@@ -539,16 +547,16 @@ namespace StarSalvager
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, redoBlockData.Level);
+                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType, 0);
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     _scrapyardBot.AttachNewBit(toRedo.Destination, attachable);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    PlayerDataManager.AddPartResources(partType, redoBlockData.Level, true);
+                    PlayerDataManager.AddPartResources(partType, 0, true);
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     break;
                 case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
-                    PlayerDataManager.AddPartResources(partType, redoBlockData.Level, true);
+                    PlayerDataManager.AddPartResources(partType, 0, true);
                     _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
                     break;
                 case SCRAPYARD_ACTION.ROTATE:
@@ -603,7 +611,7 @@ namespace StarSalvager
                 return;
 
             //Setup your list of available parts by adding storage and parts on bot together into a temp list
-            List<BlockData> partComparer = new List<BlockData>();
+            List<IBlockData> partComparer = new List<IBlockData>();
             partComparer.AddRange(PlayerDataManager.GetCurrentPartsInStorage());
             foreach (var attachable in _scrapyardBot.AttachedBlocks)
             {
@@ -626,7 +634,7 @@ namespace StarSalvager
             Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
 
             //Setup your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
-            List<BlockData> newLayoutComparer = new List<BlockData>();
+            List<IBlockData> newLayoutComparer = new List<IBlockData>();
             newLayoutComparer.AddRange(tempLayout.BlockData);
 
             for (int i = newLayoutComparer.Count - 1; i >= 0; i--)
@@ -646,9 +654,9 @@ namespace StarSalvager
                 if (partData.Type == (int)PART_TYPE.CORE)
                     continue;
 
-                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type, partData.Level))
+                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type, 0))
                 {
-                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type, partData.Level, true);
+                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type, 0, true);
                 }
                 else
                 {
@@ -768,7 +776,7 @@ namespace StarSalvager
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
             Globals.IsRecoveryBot = !Globals.IsRecoveryBot;
-            List<BlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
+            List<IBlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
 
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
@@ -844,19 +852,19 @@ namespace StarSalvager
             
             Globals.IsRecoveryBot = true;
             //Get the Recovery Drone data & clean it
-            var recoveryDroneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
+            var recoveryDroneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
             PlayerDataManager.SetBlockData(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             Globals.IsRecoveryBot = false;
             
             //Get the active Drone Data & clean it
-            var droneBlockData = new List<BlockData>(PlayerDataManager.GetBlockDatas());
+            var droneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
             PlayerDataManager.SetBlockData(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
             
             //--------------------------------------------------------------------------------------------------------//
 
             //Only get all the things that aren't parts from the two bots
-            List<BlockData> botBlockData = recoveryDroneBlockData
+            List<IBlockData> botBlockData = recoveryDroneBlockData
                 .Where(x => !x.ClassType.Equals(nameof(Part)))
                 .Concat(droneBlockData.Where(x => !x.ClassType.Equals(nameof(Part))))
                 .ToList();
@@ -871,10 +879,10 @@ namespace StarSalvager
             foreach (var blockData in botBlockData)
             {
                 int amount;
-                switch (blockData.ClassType)
+                switch (blockData)
                 {
                     //------------------------------------------------------------------------------------------------//
-                    case nameof(Component):
+                    /*case nameof(Component):
                         amount = 1;
                         var componentType = (COMPONENT_TYPE) blockData.Type;
 
@@ -882,13 +890,12 @@ namespace StarSalvager
                             amount = blockData.Level * 3;
 
                         PlayerDataManager.AddComponent(componentType, amount, false);
-                        break;
+                        break;*/
                     //------------------------------------------------------------------------------------------------//
-                    case nameof(Bit):
-                    case nameof(ScrapyardBit):
-                        var bitType = (BIT_TYPE) blockData.Type;
+                    case BitData bitData:
+                        var bitType = (BIT_TYPE) bitData.Type;
 
-                        amount = bitAttachableFactory.GetTotalResource(bitType, blockData.Level);
+                        amount = bitAttachableFactory.GetTotalResource(bitType, bitData.Level);
 
                         var addResourceAmount =  amount;
                         PlayerDataManager.GetResource(bitType)
@@ -903,9 +910,9 @@ namespace StarSalvager
 
                         break;
                     //------------------------------------------------------------------------------------------------//
-                    case nameof(Crate):
+                    case CrateData crateData:
                         int numCrates = 1;
-                        for (int i = 0; i < blockData.Level; i++)
+                        for (int i = 0; i < crateData.Level; i++)
                         {
                             numCrates *= 3;
                         }
@@ -932,7 +939,7 @@ namespace StarSalvager
                                             loot.RemoveAt(i);
                                             break;
                                         }
-                                    case RDSValue<BlockData> rdsValueBlockData:
+                                    case RDSValue<IBlockData> rdsValueBlockData:
                                         {
                                             if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                                             {
@@ -965,13 +972,12 @@ namespace StarSalvager
 
         
 
-        private static void ShowAlertInfo(IEnumerable<BlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
+        private static void ShowAlertInfo(IEnumerable<IBlockData> botBlockDatas, Dictionary<BIT_TYPE, int> processedResources, Dictionary<BIT_TYPE, int> wastedResources)
         {
             if (processedResources.IsNullOrEmpty() || wastedResources.IsNullOrEmpty())
                 return;
             
-            var bits = botBlockDatas
-                .Where(x => x.ClassType.Equals(nameof(Bit)) || x.ClassType.Equals(nameof(ScrapyardBit))).ToArray();
+            var bits = botBlockDatas.OfType<BitData>().ToArray();
             
             BitAttachableFactory bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
             

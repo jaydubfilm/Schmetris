@@ -555,34 +555,31 @@ namespace StarSalvager.UI
         private void OnBrickElementPressed((Enum remoteDataType, int level) tuple)
         {
             var (remoteDataType, level) = tuple;
-            
-            string classType;
-            int type;
-            float health;
+
+            IBlockData blockData;
+
             
             switch (remoteDataType)
             {
                 case PART_TYPE partType:
-                    type = (int) partType;
-                    classType = nameof(Part);
-                    health = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).levels[level].health;
+                    blockData = new PartData
+                    {
+                        Type = (int) partType
+                    };
                     break;
                 case BIT_TYPE bitType:
-                    classType = nameof(Bit);
-                    type = (int) bitType;
-                    health = FactoryManager.Instance.BitsRemoteData.GetRemoteData(bitType).levels[level].health;
+                    
+                    blockData = new BitData
+                    {
+                        Type = (int) bitType,
+                        Health = FactoryManager.Instance.BitsRemoteData.GetRemoteData(bitType).levels[level].health
+                    };
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(remoteDataType), remoteDataType, null);
             }
-            
-            m_botShapeEditor.SelectedBrick = new BlockData
-            {
-                ClassType = classType,
-                Type = type,
-                Level = level,
-                Health = health
-            };
+
+            m_botShapeEditor.SelectedBrick = blockData; 
         }
 
         private void BotShapePressed(EditorGeneratorDataBase botData)

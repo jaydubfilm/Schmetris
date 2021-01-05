@@ -12,7 +12,7 @@ namespace StarSalvager.Factories.Data
         private List<string> m_categories;
         public List<string> Categories => m_categories;
         
-        public EditorShapeGeneratorData(string name, List<BlockData> blockData, List<string> categories) : base(name, blockData)
+        public EditorShapeGeneratorData(string name, List<IBlockData> blockData, List<string> categories) : base(name, blockData)
         {
             m_categories = categories;
             m_classType = nameof(EditorShapeGeneratorData);

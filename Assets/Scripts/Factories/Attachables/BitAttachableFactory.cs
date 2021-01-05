@@ -120,16 +120,16 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitData"></param>
         /// <returns></returns>
-        public GameObject CreateGameObject(BlockData blockData)
+        public GameObject CreateGameObject(BitData bitData)
         {
-            var type = (BIT_TYPE) blockData.Type;
+            var type = (BIT_TYPE) bitData.Type;
             
             var remote = _remoteData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             //FIXME I may want to put this somewhere else, and leave the level dependent sprite obtaining here
-            var sprite = profile.GetSprite(blockData.Level);
+            var sprite = profile.GetSprite(bitData.Level);
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -145,7 +145,7 @@ namespace StarSalvager.Factories
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
                 
-                temp.gameObject.name = $"{nameof(AnimatedBit)}_{type}_Lvl{blockData.Level}";
+                temp.gameObject.name = $"{nameof(AnimatedBit)}_{type}_Lvl{bitData.Level}";
             }
             else
             {
@@ -154,7 +154,7 @@ namespace StarSalvager.Factories
                     temp = CreateObject<Bit>();
                 }
                 
-                temp.gameObject.name = $"{nameof(Bit)}_{type}_Lvl{blockData.Level}";
+                temp.gameObject.name = $"{nameof(Bit)}_{type}_Lvl{bitData.Level}";
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -165,12 +165,12 @@ namespace StarSalvager.Factories
             }
             temp.SetSprite(sprite);
             temp.SetColliderActive(true);
-            temp.LoadBlockData(blockData);
+            temp.LoadBlockData(bitData);
 
             //Have to check for null, as the Asteroid/Energy does not have health
             if (remote != null)
             {
-                var health = remote.levels[blockData.Level].health;
+                var health = remote.levels[bitData.Level].health;
                 temp.SetupHealthValues(health,health);
             }
 
@@ -179,12 +179,12 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T CreateObject<T>(BlockData blockData)
+        public T CreateObject<T>(BitData bitData)
         {
-            var temp = CreateGameObject(blockData);
+            var temp = CreateGameObject(bitData);
 
             return temp.GetComponent<T>();
 
@@ -199,7 +199,7 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateGameObject(BIT_TYPE bitType, int level = 0)
         {
-            var blockData = new BlockData
+            var blockData = new BitData
             {
                 Level = level,
                 Type = (int) bitType
@@ -225,13 +225,13 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitData"></param>
         /// <returns></returns>
-        public GameObject CreateScrapyardGameObject(BlockData blockData)
+        public GameObject CreateScrapyardGameObject(BitData bitData)
         {
-            var remote = _remoteData.GetRemoteData((BIT_TYPE)blockData.Type);
-            var profile = factoryProfile.GetProfile((BIT_TYPE)blockData.Type);
-            var sprite = profile.GetSprite(blockData.Level);
+            var remote = _remoteData.GetRemoteData((BIT_TYPE)bitData.Type);
+            var profile = factoryProfile.GetProfile((BIT_TYPE)bitData.Type);
+            var sprite = profile.GetSprite(bitData.Level);
 
 
             if (!Recycler.TryGrab(out ScrapyardBit temp))
@@ -239,7 +239,7 @@ namespace StarSalvager.Factories
                 temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardBit>();
             }
             temp.SetSprite(sprite);
-            temp.LoadBlockData(blockData);
+            temp.LoadBlockData(bitData);
 
             return temp.gameObject;
         }
@@ -248,12 +248,12 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitData"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T CreateScrapyardObject<T>(BlockData blockData)
+        public T CreateScrapyardObject<T>(BitData bitData)
         {
-            var temp = CreateScrapyardGameObject(blockData);
+            var temp = CreateScrapyardGameObject(bitData);
 
             return temp.GetComponent<T>();
 
@@ -268,13 +268,13 @@ namespace StarSalvager.Factories
         /// <returns></returns>
         public GameObject CreateScrapyardGameObject(BIT_TYPE bitType, int level = 0)
         {
-            var blockData = new BlockData
+            var bitData = new BitData
             {
                 Level = level,
                 Type = (int)bitType
             };
 
-            return CreateScrapyardGameObject(blockData);
+            return CreateScrapyardGameObject(bitData);
         }
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
@@ -296,6 +296,7 @@ namespace StarSalvager.Factories
             return Object.Instantiate(factoryProfile.JunkPrefab);
         }
 
+        
         public T CreateJunkObject<T>()
         {
             var temp = CreateJunkGameObject();

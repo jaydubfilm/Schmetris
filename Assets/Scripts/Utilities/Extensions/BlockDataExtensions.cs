@@ -4,6 +4,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.AI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,9 +18,9 @@ namespace StarSalvager.Utilities.Extensions
         /// <summary>
         /// Function will review and detach any blocks that no longer have a connection to the core.
         /// </summary>
-        public static bool CheckHasDisconnects(this IEnumerable<BlockData> blockDatas)
+        public static bool CheckHasDisconnects(this IEnumerable<IBlockData> blockDatas)
         {
-            var toSolve = new List<BlockData>(blockDatas);
+            var toSolve = new List<IBlockData>(blockDatas);
 
             foreach (var blockData in toSolve)
             {
@@ -45,12 +46,12 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="from"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<BlockData> GetAttachablesAround(this IEnumerable<BlockData> blockDatas,
-            BlockData from, bool includeCorners = false)
+        public static List<IBlockData> GetAttachablesAround(this IEnumerable<IBlockData> blockDatas,
+            IBlockData from, bool includeCorners = false)
         {
-            var enumerable = blockDatas as BlockData[] ?? blockDatas.ToArray();
+            var enumerable = blockDatas as IBlockData[] ?? blockDatas.ToArray();
 
-            var outList = new List<BlockData>()
+            var outList = new List<IBlockData>()
             {
                 enumerable.GetBlockDataNextTo(from.Coordinate, DIRECTION.LEFT),
                 enumerable.GetBlockDataNextTo(from.Coordinate, DIRECTION.UP),
@@ -71,13 +72,13 @@ namespace StarSalvager.Utilities.Extensions
 
         //============================================================================================================//
 
-        public static BlockData GetBlockDataNextTo(this IEnumerable<BlockData> blockDatas, Vector2Int from,
+        public static IBlockData GetBlockDataNextTo(this IEnumerable<IBlockData> blockDatas, Vector2Int from,
             DIRECTION direction)
         {
             return blockDatas.GetBlockDataNextTo(from, direction.ToVector2Int());
         }
 
-        public static BlockData GetBlockDataNextTo(this IEnumerable<BlockData> blockDatas, Vector2Int from,
+        public static IBlockData GetBlockDataNextTo(this IEnumerable<IBlockData> blockDatas, Vector2Int from,
             Vector2Int direction)
         {
             var coord = from + direction;
@@ -96,7 +97,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="checking"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
-        public static bool HasPathToCore(this IEnumerable<BlockData> attachedBlockDatas, BlockData checking,
+        public static bool HasPathToCore(this IEnumerable<IBlockData> attachedBlockDatas, IBlockData checking,
             List<Vector2Int> toIgnore = null)
         {
             var travelled = new List<Vector2Int>();
@@ -104,7 +105,7 @@ namespace StarSalvager.Utilities.Extensions
             return PathAlgorithm(attachedBlockDatas, checking, toIgnore, ref travelled);
         }
 
-        private static bool PathAlgorithm(IEnumerable<BlockData> attachedBlockDatas, BlockData current,
+        private static bool PathAlgorithm(IEnumerable<IBlockData> attachedBlockDatas, IBlockData current,
             ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
             //If we're on (0, 0) we've reached the core, so go back up through 
@@ -117,21 +118,22 @@ namespace StarSalvager.Utilities.Extensions
             for (var i = 0; i < blockDatasAround.Count; i++)
             {
                 //If there's no attachable, keep going
-                if (blockDatasAround[i].ClassType == null)
+                if (blockDatasAround[i] == null)
                     continue;
 
                 // If ignore list contains this Coordinate, keep going
                 if (toIgnore != null && toIgnore.Contains(blockDatasAround[i].Coordinate))
                 {
                     //Debug.LogError($"toIgnore contains {attachablesAround[i].Coordinate}");
-                    blockDatasAround[i] = new BlockData();
+                    blockDatasAround[i] = null;
                     continue;
                 }
 
-                if (blockDatasAround[i].ClassType == "EnemyAttachable")
+                if (blockDatasAround[i].ClassType == nameof(EnemyAttachable))
                 {
-                    blockDatasAround[i] = new BlockData();
-                    continue;
+                    throw new NotImplementedException();
+                    /*blockDatasAround[i] = null;
+                    continue;*/
                 }
 
                 // If we've not already been at this Coordinate, keep going
@@ -139,11 +141,11 @@ namespace StarSalvager.Utilities.Extensions
                     continue;
 
                 //Debug.LogError($"travelled already contains {around[i].Coordinate}");
-                blockDatasAround[i] = new BlockData();
+                blockDatasAround[i] = null;
             }
 
             //Check to see if the list is completely null
-            if (blockDatasAround.All(ab => ab.ClassType == null))
+            if (blockDatasAround.All(ab => ab == null))
             {
                 //Debug.LogError($"FAILED. Nothing around {current}", current);
                 return false;
@@ -264,7 +266,7 @@ namespace StarSalvager.Utilities.Extensions
 
         #endregion //Path to Core Checks
 
-        public static void CreateBotPreview(this List<BlockData> blockDatas, in RectTransform containerRect)
+        public static void CreateBotPreview(this List<IBlockData> blockDatas, in RectTransform containerRect)
         {
             Transform[] allChildren = containerRect.GetComponentsInChildren<Transform>();
             if (allChildren.Length > 0)
@@ -330,54 +332,43 @@ namespace StarSalvager.Utilities.Extensions
 
                 BotDisplaySetPosition(rect, blockData.Coordinate.x, blockData.Coordinate.y);
 
-                float startingHealth = 0;
-
-                switch (blockData.ClassType)
+                switch (blockData)
                 {
-                    case nameof(Part):
-                    case nameof(ScrapyardPart):
-                        startingHealth = partFactory.GetRemoteData((PART_TYPE)blockData.Type).levels[blockData.Level]
-                            .health;
+                    case PartData _:
+                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE) blockData.Type)
+                            .Sprites[0];
+                        break;
+                    case BitData bitData:
+                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).Sprites[bitData.Level];
+                        var startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[bitData.Level].health;
+                        
+                        float healthPercentage = bitData.Health / startingHealth;
 
-                        imageObject.sprite = blockData.Health <= 0
-                            ? FactoryManager.Instance.PartsProfileData.GetDamageSprite(blockData.Level)
-                            : partFactory.GetProfileData((PART_TYPE)blockData.Type).Sprites[blockData.Level];
+                        var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
 
+                        if (damageSprite == null || bitData.Health <= 0)
+                            continue;
+
+                        if (!Recycler.TryGrab(out Image damageImage))
+                        {
+                            damageImage = CreateImageObject(bitData.ClassType, bitData.Type, "Damage");
+                        }
+
+                        var damageRect = (RectTransform)imageObject.transform;
+
+                        damageRect.SetParent(botDisplayRectTransform, false);
+                        BotDisplaySetPosition(damageRect, bitData.Coordinate.x, bitData.Coordinate.y);
+
+                        damageImage.sprite = damageSprite;
+                        
                         break;
-                    case nameof(Bit):
-                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).Sprites[blockData.Level];
-                        startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[blockData.Level].health;
-                        break;
-                    case nameof(Component):
-                        imageObject.sprite = componentFactory.GetComponentProfile((COMPONENT_TYPE)blockData.Type).Sprites[blockData.Level];
-                        startingHealth = componentFactory.GetComponentRemoteData((COMPONENT_TYPE)blockData.Type).health;
-                        break;
-                    case nameof(JunkBit):
+                    case JunkBitData _:
                         imageObject.sprite = bitFactory.GetJunkBitSprite();
                         continue;
-                    case nameof(Crate):
-                        imageObject.sprite = crateFactory.GetCrateSprite(blockData.Level);
+                    case CrateData crateData:
+                        imageObject.sprite = crateFactory.GetCrateSprite(crateData.Level);
                         continue;
                 }
-
-                float healthPercentage = blockData.Health / startingHealth;
-
-                var damageSprite = damageProfile.GetDetailSprite(healthPercentage);
-
-                if (damageSprite == null || blockData.Health <= 0)
-                    continue;
-
-                if (!Recycler.TryGrab(out Image damageImage))
-                {
-                    damageImage = CreateImageObject(blockData.ClassType, blockData.Type, "Damage");
-                }
-
-                var damageRect = (RectTransform)imageObject.transform;
-
-                damageRect.SetParent(botDisplayRectTransform, false);
-                BotDisplaySetPosition(damageRect, blockData.Coordinate.x, blockData.Coordinate.y);
-
-                damageImage.sprite = damageSprite;
             }
 
             if (blockDatas.Count > 0)
@@ -396,44 +387,41 @@ namespace StarSalvager.Utilities.Extensions
             imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).Sprites[0];
         }
 
-        public static List<IAttachable> ImportBlockDatas(this List<BlockData> blockDatas, bool inScrapyardForm)
+        public static List<IAttachable> ImportBlockDatas(this List<IBlockData> blockDatas, bool inScrapyardForm)
         {
-            List<IAttachable> attachables = new List<IAttachable>();
+            var attachables = new List<IAttachable>();
 
-            foreach (BlockData blockData in blockDatas)
+            foreach (var blockData in blockDatas)
             {
-                switch (blockData.ClassType)
+                switch (blockData)
                 {
-                    case nameof(Bit):
-                    case nameof(ScrapyardBit):
+                    case BitData bitData:
                         if (inScrapyardForm)
                         {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(blockData));
+                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitData));
                         }
                         else
                         {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(blockData));
+                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitData));
                         }
                         break;
-                    case nameof(Part):
-                    case nameof(ScrapyardPart):
+                    case PartData partData:
                         if (inScrapyardForm)
                         {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(blockData));
+                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData));
                         }
                         else
                         {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(blockData));
+                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(partData));
                         }
                         break;
-                    case nameof(JunkBit):
+                    case JunkBitData _:
                         var junkBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkObject<JunkBit>();
                         junkBit.Coordinate = blockData.Coordinate;
                         attachables.Add(junkBit);
                         break;
-                    case nameof(Crate):
-                        var crate = FactoryManager.Instance.GetFactory<CrateFactory>().CreateCrateObject(blockData.Level);
-                        crate.Coordinate = blockData.Coordinate;
+                    case CrateData crateData:
+                        var crate = FactoryManager.Instance.GetFactory<CrateFactory>().CreateCrateObject(crateData);
                         attachables.Add(crate);
                         break;
                     default:

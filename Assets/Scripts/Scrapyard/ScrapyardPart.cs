@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, ICustomRecycle
+    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable<PartData>, IPart, ICustomRecycle
     {
         protected new SpriteRenderer renderer
         {
@@ -69,17 +69,17 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public PartData ToBlockData()
         {
-            return new BlockData
+            return new PartData
             {
-                ClassType = GetType().Name,
+                //ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
@@ -113,5 +113,9 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

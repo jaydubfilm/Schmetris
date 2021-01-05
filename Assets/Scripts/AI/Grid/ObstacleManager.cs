@@ -1305,7 +1305,7 @@ namespace StarSalvager
 
         #region Bonus Shapes
 
-        List<List<BlockData>> previousShapesInLevel = new List<List<BlockData>>();
+        List<List<BitData>> previousShapesInLevel = new List<List<BitData>>();
 
         private void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
         {
@@ -1331,7 +1331,7 @@ namespace StarSalvager
 
             if (newObstacle is Shape shape)
             {
-                List<BlockData> newObstacleData = new List<BlockData>();
+                List<BitData> newObstacleData = new List<BitData>();
                 for (int i = 0; i < shape.AttachedBits.Count; i++)
                 {
                     newObstacleData.Add(shape.AttachedBits[i].ToBlockData());

@@ -8,4 +8,5 @@ namespace StarSalvager.Utilities.JsonDataTypes
         Vector2Int Coordinate { get; set; }
         int Type { get; set; }
     }
+
 }

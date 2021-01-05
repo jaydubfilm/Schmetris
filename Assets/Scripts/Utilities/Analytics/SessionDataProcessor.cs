@@ -59,7 +59,7 @@ namespace StarSalvager.Utilities.Analytics
 
         //====================================================================================================================//
         
-        public void StartNewWave(int sector, int wave, IEnumerable<BlockData> initialBot)
+        public void StartNewWave(int sector, int wave, IEnumerable<IBlockData> initialBot)
         {
             if (_currentWave.HasValue)
             {
@@ -67,7 +67,7 @@ namespace StarSalvager.Utilities.Analytics
                 EndActiveWave();
             }
 
-            var botAtStart = new List<BlockData>(initialBot);
+            var botAtStart = new List<IBlockData>(initialBot);
             _currentWave = new WaveData(botAtStart, sector, wave);
             
             
@@ -124,14 +124,14 @@ namespace StarSalvager.Utilities.Analytics
             _currentWave = wave;
         }
 
-        public void SetEndingLayout(IEnumerable<BlockData> botLayout)
+        public void SetEndingLayout(IEnumerable<IBlockData> botLayout)
         {
             if (!_currentWave.HasValue)
                 return;
 
             var wave = _currentWave.Value;
 
-            wave.botAtEnd = new List<BlockData>(botLayout);
+            wave.botAtEnd = new List<IBlockData>(botLayout);
             _currentWave = wave;
         }
 

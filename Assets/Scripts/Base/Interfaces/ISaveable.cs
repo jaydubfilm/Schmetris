@@ -2,10 +2,14 @@
 
 namespace StarSalvager
 {
+    public interface ISaveable<TE>: ISaveable where TE: IBlockData
+    {
+        new TE ToBlockData();
+    }
     public interface ISaveable
     {
-        BlockData ToBlockData();
-        void LoadBlockData(BlockData blockData);
+        IBlockData ToBlockData();
+        void LoadBlockData(IBlockData blockData);
     }
 }
 

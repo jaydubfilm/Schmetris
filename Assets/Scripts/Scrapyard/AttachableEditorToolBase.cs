@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System;
+using JetBrains.Annotations;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
@@ -20,8 +21,7 @@ namespace StarSalvager
 
         protected CameraController CameraController => m_cameraController;
 
-        [NonSerialized]
-        public BlockData? SelectedBrick;
+        [NonSerialized] [CanBeNull] public IBlockData SelectedBrick;
         public int SelectedIndex;
         
         [NonSerialized]
@@ -35,11 +35,11 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void SelectPartFromStorage(BlockData? blockData, int index, bool returnIfNotPlaced = false)
+        public void SelectPartFromStorage(IBlockData blockData, int index, bool returnIfNotPlaced = false)
         {
             SelectedBrick = blockData;
             SelectedIndex = index;
-            SelectedPartRemoveFromStorage = blockData.HasValue;
+            SelectedPartRemoveFromStorage = !(blockData is null);
             SelectedPartReturnToStorageIfNotPlaced = returnIfNotPlaced;
         }
 

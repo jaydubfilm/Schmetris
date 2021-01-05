@@ -81,7 +81,7 @@ namespace StarSalvager.Factories
             return shape.GetComponent<T>();
         }
     
-        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BlockData>> exclusionList = null, List<BIT_TYPE> allowedBitTypes = null)
+        public T CreateObject<T>(SELECTION_TYPE selectionType, string identifier, int numRotations, List<List<BitData>> exclusionList = null, List<BIT_TYPE> allowedBitTypes = null)
         {
             Shape shape;
             //FIXME
@@ -118,13 +118,15 @@ namespace StarSalvager.Factories
 
                 if (totalBits == 1 && typeof(T) == typeof(IObstacle))
                 {
-                    return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
+                    var bitData = (BitData) shapeData.BlockData[0];
+                    return bitFactory.CreateObject<T>((BIT_TYPE)bitData.Type, bitData.Level);
                 }
 
                 shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {
-                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
+                    var bitData = (BitData) shapeData.BlockData[i];
+                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)bitData.Type, bitData.Level);
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
                 }
 
@@ -156,13 +158,15 @@ namespace StarSalvager.Factories
                 
                 if (totalBits == 1 && typeof(T) == typeof(IObstacle))
                 {
-                    return bitFactory.CreateObject<T>((BIT_TYPE)shapeData.BlockData[0].Type, shapeData.BlockData[0].Level);
+                    var bitData = (BitData) shapeData.BlockData[0];
+                    return bitFactory.CreateObject<T>((BIT_TYPE)bitData.Type, bitData.Level);
                 }
 
                 shape = CreateObject<Shape>();
                 for (var i = 0; i < totalBits; i++)
                 {
-                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)shapeData.BlockData[i].Type, shapeData.BlockData[i].Level);
+                    var bitData = (BitData) shapeData.BlockData[i];
+                    var bit = bitFactory.CreateObject<Bit>((BIT_TYPE)bitData.Type, bitData.Level);
                     shape.PushNewBit(bit, shapeData.BlockData[i].Coordinate);
                 }
 
@@ -249,7 +253,7 @@ namespace StarSalvager.Factories
             return customShapeCategoryData[category];
         }
 
-        public EditorShapeGeneratorData GetRandomInCategory(string category, List<List<BlockData>> exclusionList)
+        public EditorShapeGeneratorData GetRandomInCategory(string category, List<List<BitData>> exclusionList)
         {
             List<EditorShapeGeneratorData> categoryData = GetCategoryData(category).Where(s => !ShouldExclude(s, exclusionList)).ToList();
             if (categoryData.Count == 0)
@@ -260,18 +264,18 @@ namespace StarSalvager.Factories
             return categoryData[Random.Range(0, categoryData.Count)];
         }
 
-        private bool ShouldExclude(EditorShapeGeneratorData shapeData, List<List<BlockData>> exclusionList)
+        private bool ShouldExclude(EditorShapeGeneratorData shapeData, List<List<BitData>> exclusionList)
         {
             if (exclusionList == null)
             {
                 return false;
             }
             
-            List<BlockData> shapeBlockData = shapeData.BlockData;
+            List<BitData> shapeBlockData = shapeData.BlockData.OfType<BitData>().ToList();
 
             for (int i = 0; i < exclusionList.Count; i++)
             {
-                List<BlockData> previousShapeBlockData = exclusionList[i];
+                List<BitData> previousShapeBlockData = exclusionList[i];
                 if (previousShapeBlockData.Count != shapeBlockData.Count)
                 {
                     continue;

@@ -507,7 +507,7 @@ namespace StarSalvager.UI.Scrapyard
                 BIT_TYPE.YELLOW
             };
 
-            List<BlockData> botData = PlayerDataManager.GetBlockDatas();
+            List<IBlockData> botData = PlayerDataManager.GetBlockDatas();
 
             foreach (var bitType in types)
             {

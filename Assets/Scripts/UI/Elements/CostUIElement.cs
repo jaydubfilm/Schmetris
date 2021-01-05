@@ -88,11 +88,11 @@ namespace StarSalvager.UI
                     int partCount;
                     if (data.type == (int)PART_TYPE.CORE)
                     {
-                        partCount = mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Count(x => x.Type == (int)PART_TYPE.CORE && x.Level == data.partPrerequisiteLevel);
+                        partCount = mDroneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas().Count(x => x.Type == (int)PART_TYPE.CORE);
                     }
                     else
                     {
-                        partCount = PlayerDataManager.GetCurrentPartsInStorage().Count(x => x.Type == data.type && x.Level == data.partPrerequisiteLevel);
+                        partCount = PlayerDataManager.GetCurrentPartsInStorage().Count(x => x.Type == data.type);
                     }
                     
                     costText.text = $"{partCount}/{data.amount}";
