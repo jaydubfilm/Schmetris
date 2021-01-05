@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace StarSalvager.Utilities.JsonDataTypes
 {
+    [Obsolete("Use the IBlockData types")]
     [Serializable]
     public struct BlockData : IEquatable<BlockData>
     {

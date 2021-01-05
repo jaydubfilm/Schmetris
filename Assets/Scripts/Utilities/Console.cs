@@ -1162,7 +1162,6 @@ namespace StarSalvager.Utilities
                     return false;
             }
         }
-
     }
 }
 
