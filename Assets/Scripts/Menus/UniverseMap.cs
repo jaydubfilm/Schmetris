@@ -44,13 +44,6 @@ namespace StarSalvager.UI
         [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
 
-        [SerializeField, Required]
-        private Button swapUniverseButton;
-        /*[SerializeField, Required]
-        private Button backButton;*/
-        [SerializeField, Required]
-        private Button betweenWavesScrapyardButton;
-
         //====================================================================================================================//
         
         [SerializeField, FoldoutGroup("Hover Window")]
@@ -81,12 +74,12 @@ namespace StarSalvager.UI
         [SerializeField]
         private RectTransform botDisplayRectTransform;
 
-        #endregion //Properties
-
         [SerializeField]
         private TMP_Text resourceText;
 
         private RectTransform _shipwreckButtonRectTransform;
+
+        #endregion //Properties
 
         //Unity Functions
         //============================================================================================================//
@@ -121,21 +114,6 @@ namespace StarSalvager.UI
         
         public void Activate()
         {
-            if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
-            {
-                GameManager.SetCurrentGameState(GameState.UniverseMapBeforeFlight);
-            }
-
-            var isBetweenWaves = GameManager.IsState(GameState.UniverseMapBetweenWaves);
-            
-            ScreenFade.WaitForFade(() =>
-            {
-                if (HintManager.CanShowHint(HINT.HOME) && isBetweenWaves)
-                {
-                    HintManager.TryShowHint(HINT.HOME);
-                }
-            });
-            
             if (PROTO_useSum)
             {
                 switch (IconType)
@@ -162,8 +140,6 @@ namespace StarSalvager.UI
             PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
 
             resourceText.text = GetPreviewResources(PlayerDataManager.GetBlockDatas());
-
-            UpdateBackButtonText();
         }
 
         public void Reset()
@@ -182,20 +158,6 @@ namespace StarSalvager.UI
         
         private void InitButtons()
         {
-            swapUniverseButton.gameObject.SetActive(false);
-
-            betweenWavesScrapyardButton.onClick.AddListener(() =>
-            {
-                GameManager.SetCurrentGameState(GameState.Scrapyard);
-                LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
-                LevelManager.Instance.ResetLevelTimer();
-                
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
-                });
-            });
-
             int curSector = 0;
             int curWave = 0;
             for (int i = 0; i < universeMapButtons.Count; i++)
@@ -211,6 +173,7 @@ namespace StarSalvager.UI
 
                 universeMapButtons[i].SectorNumber = curSector;
                 universeMapButtons[i].WaveNumber = curWave;
+                universeMapButtons[i].NodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(universeMapButtons[i].SectorNumber, universeMapButtons[i].WaveNumber);
                 universeMapButtons[i].Text.text = $"{curSector + 1}.{curWave + 1}";
                 universeMapButtons[i].TextBelow.text = string.Empty;
                 universeMapButtons[i].SetupHoveredCallback(WaveHovered);
@@ -230,26 +193,6 @@ namespace StarSalvager.UI
                 }
             }
         }
-
-        private void UpdateBackButtonText()
-        {
-            var buttonText = string.Empty;
-            var tmpText = betweenWavesScrapyardButton.GetComponentInChildren<TMP_Text>();
-            switch (SceneLoader.PreviousScene)
-            {
-                case SceneLoader.LEVEL:
-                    buttonText = "Back to Base";
-                    break;
-                case SceneLoader.MAIN_MENU:
-                case SceneLoader.SCRAPYARD:
-                    buttonText = "Exit Map";
-                    break;
-            }
-            
-            //TODO set the button text
-
-            tmpText.text = buttonText;
-        }
         
         //============================================================================================================//
 
@@ -258,15 +201,55 @@ namespace StarSalvager.UI
             for (int i = 0; i < universeMapButtons.Count; i++)
             {
                 universeMapButtons[i].Button.image.color = Color.white;
+                universeMapButtons[i].Button.interactable = false;
                 universeMapButtons[i].BotImage.gameObject.SetActive(false);
                 universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
                 universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(
                     PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null &&
                     PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 &&
                     !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
+
+                if (PlayerDataManager.GetWreckNodes().Contains(i))
+                {
+                    universeMapButtons[i].NodeType = NodeType.Wreck;
+                }
+                else
+                {
+                    universeMapButtons[i].NodeType = NodeType.Level;
+                }
             }
 
-            if (GameManager.IsState(GameState.UniverseMapBetweenWaves))
+            CenterToItem(universeMapButtons[Globals.CurrentNode].GetComponent<RectTransform>());
+
+            for (int i = 0; i < universeMapButtons.Count; i++)
+            {
+                int curIndex = universeMapButtons[i].NodeIndex;
+                List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes;
+
+                for (int k = 0; k < childNodesAccessible.Count; k++)
+                {
+                    DrawConnection(curIndex, childNodesAccessible[k].nodeIndex, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == curIndex));
+                }
+
+                if (PlayerDataManager.GetWreckNodes().Contains(universeMapButtons[i].NodeIndex))
+                {
+                    universeMapButtons[i].ShortcutImage.gameObject.SetActive(true);
+                }
+
+                if (curIndex == Globals.CurrentNode)
+                {
+                    for (int k = 0; k < universeMapButtons.Count; k++)
+                    {
+                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                        {
+                            universeMapButtons[k].Button.interactable = true;
+                        }
+                    }
+                }
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            /*if (GameManager.IsState(GameState.UniverseMapBetweenWaves))
             {
                 int curIndex = PlayerDataManager.GetLevelRingNodeTree()
                     .ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
@@ -426,8 +409,8 @@ namespace StarSalvager.UI
                     }
                 }
             }
-
-            universeMapButtons[0].Button.interactable = true;
+            
+            universeMapButtons[0].Button.interactable = true;*/
         }
 
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)
@@ -578,7 +561,7 @@ namespace StarSalvager.UI
             {
                 //Get the actual wave data here
                 var sectorData = FactoryManager.Instance.SectorRemoteData[sector];
-                var (enemies, bits) = sectorData.GetIndexConvertedRemoteData(sector, wave).GetWaveSummaryData(PROTO_useSum);
+                var (enemies, bits) = sectorData.GetRemoteData(wave).GetWaveSummaryData(PROTO_useSum);
 
                 //Parse the information to get the sprites & titles
                 var testSpriteScales = GetSpriteTitleObjects(enemies, bits);

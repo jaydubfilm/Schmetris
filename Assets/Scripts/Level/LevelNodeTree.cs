@@ -12,7 +12,7 @@ public class LevelNodeTree
         startingPoint = new LevelNode(0);
     }
 
-    public void ReadInNodeConnectionData(List<Vector2Int> nodeConnections)
+    public void ReadInNodeConnectionData(List<Vector2Int> nodeConnections, List<int> wreckNodes)
     {
         for (int i = 0; i < nodeConnections.Count; i++)
         {
@@ -28,6 +28,11 @@ public class LevelNodeTree
             {
                 Debug.LogError("Reading in Node Connection Data for LevelRingNodeTree: Failed to find node " + newNode.nodeIndex + " 'parent with index " + nodeConnections[i].y);
             }
+        }
+
+        for (int i = 0; i < wreckNodes.Count; i++)
+        {
+            TryFindNode(wreckNodes[i]).isWreckNode = true;
         }
     }
 

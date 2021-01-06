@@ -6,6 +6,7 @@ using UnityEngine;
 public class LevelNode : IEquatable<LevelNode>
 {
     public int nodeIndex;
+    public bool isWreckNode;
 
     public List<LevelNode> childNodes = new List<LevelNode>();
 

@@ -27,7 +27,10 @@ namespace StarSalvager
     {
         private Action<bool, int, int, RectTransform> _onHoveredCallback;
 
+        [NonSerialized]
         public NodeType NodeType;
+        [NonSerialized]
+        public int NodeIndex;
 
         [NonSerialized]
         public Button Button;
@@ -61,33 +64,26 @@ namespace StarSalvager
         {
             Button.onClick.AddListener(() =>
             {
-                if (NodeType == NodeType.Wreck)
-                {
-                    ScreenFade.Fade(() =>
-                    {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
-                    });
-                }
-                
-                if (SectorNumber < 0 || WaveNumber < 0)
-                {
-                    LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
-                    LevelManager.Instance.ResetLevelTimer();
+                Globals.CurrentNode = NodeIndex;
 
-                    ScreenFade.Fade(() =>
-                    {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
-                    });
-                    return;
-                }
-                
-                Globals.CurrentSector = SectorNumber;
-                Globals.CurrentWave = WaveNumber;
-
-                ScreenFade.Fade(() =>
+                switch(NodeType)
                 {
-                    SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
-                });
+                    case NodeType.Level:
+                        Globals.CurrentSector = SectorNumber;
+                        Globals.CurrentWave = WaveNumber;
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                        });
+                        break;
+                    case NodeType.Wreck:
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                        });
+                        break;
+                }
             });
         }
 

@@ -46,7 +46,7 @@ namespace StarSalvager
 
         public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
-        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetIndexConvertedRemoteData(Globals.CurrentSector, Globals.CurrentWave);
+        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -366,7 +366,6 @@ namespace StarSalvager
                         GameManager.SetCurrentGameState(GameState.Scrapyard);
                         ProcessLevelCompleteAnalytics();
                         ProcessScrapyardUsageBeginAnalytics();
-                        ResetLevelTimer();
 
                         ScreenFade.Fade(() =>
                         {
@@ -402,7 +401,7 @@ namespace StarSalvager
                     () => 
                 {
 
-                    GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                    GameManager.SetCurrentGameState(GameState.UniverseMap);
                     ProcessScrapyardUsageBeginAnalytics();
 
                     ScreenFade.Fade(() =>
@@ -654,11 +653,6 @@ namespace StarSalvager
             _audioCountDown = WARNING_COUNT;
             _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
 
-            if (!GameManager.IsState(GameState.UniverseMapBetweenWaves))
-            {
-                m_levelTimer = 0;
-            }
-
             SetBotEnterScreen(false);
             SetBotExitScreen(false);
 
@@ -670,12 +664,6 @@ namespace StarSalvager
 
             if (_towLineRenderer)
                 Destroy(_towLineRenderer.gameObject);
-        }
-
-        public void ResetLevelTimer()
-        {
-            m_levelTimer = 0;
-            NumWavesInRow = 0;
         }
 
         private void SetupLevelAnalytics()
@@ -784,29 +772,6 @@ namespace StarSalvager
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
-
-            if (!Globals.OnlyGetWaveLootOnce || !PlayerDataManager.CheckIfCompleted(progressionSector, Globals.CurrentWave))
-            {
-                UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
-                /*CurrentWaveData.ConfigureLootTable();
-                List<IRDSObject> newWaveLoot = CurrentWaveData.rdsTable.rdsResult.ToList();
-                DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);*/
-
-                SectorLootTableScriptableObject sectorLootTable = FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.GetLootTableAtIndex(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]);
-                if (sectorLootTable != null)
-                {
-                    List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave)).childNodes;
-                    if (childNodesAccessible.Count == 0 || 
-                        (!FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector].sectorRemoteDataLootTablesScriptable.WillUseBackupLootTable(PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector])
-                        && UnityEngine.Random.Range(0.0f, 1.0f) <= 0.33f))
-                    {
-                        sectorLootTable.ConfigureLootTable();
-                        List<IRDSObject> newWaveLoot = sectorLootTable.rdsTable.rdsResult.ToList();
-                        DropLoot(newWaveLoot, -ObstacleManager.WorldElementsRoot.transform.position + Vector3.up * (10 * Constants.gridCellSize), false);
-                        PlayerDataManager.NumTimesGottenLootTableInSector[Globals.CurrentSector]++;
-                    }
-                }
-            }
 
             int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
             if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
