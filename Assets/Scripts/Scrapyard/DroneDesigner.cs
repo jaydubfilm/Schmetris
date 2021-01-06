@@ -159,7 +159,6 @@ namespace StarSalvager
             SelectedPartReturnToStorageIfNotPlaced = false;
 
             //Camera.onPostRender -= DrawGL;
-            Globals.IsRecoveryBot = false;
 
             RecycleDrone();
         }
@@ -727,7 +726,6 @@ namespace StarSalvager
 
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
 
-            Globals.IsRecoveryBot = !Globals.IsRecoveryBot;
             List<IBlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
 
             //Checks to make sure there is a core on the bot
@@ -753,27 +751,13 @@ namespace StarSalvager
         {
             var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
-            //Obtain the block data from both the Recovery Drone & Drone
-            //--------------------------------------------------------------------------------------------------------//
-
-            Globals.IsRecoveryBot = true;
-            //Get the Recovery Drone data & clean it
-            var recoveryDroneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
-            PlayerDataManager.SetBlockData(recoveryDroneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
-
-            Globals.IsRecoveryBot = false;
-
-            //Get the active Drone Data & clean it
             var droneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
             PlayerDataManager.SetBlockData(droneBlockData.Where(x => x.ClassType.Equals(nameof(Part)) || x.ClassType.Equals(nameof(ScrapyardPart))).ToList());
 
             //--------------------------------------------------------------------------------------------------------//
 
-            //Only get all the things that aren't parts from the two bots
-            List<IBlockData> botBlockData = recoveryDroneBlockData
-                .Where(x => !x.ClassType.Equals(nameof(Part)))
-                .Concat(droneBlockData.Where(x => !x.ClassType.Equals(nameof(Part))))
-                .ToList();
+            //Only get all the things that aren't parts from the bot
+            List<IBlockData> botBlockData = droneBlockData.Where(x => !x.ClassType.Equals(nameof(Part))).ToList();
 
             //If we have nothing to process, don't bother moving forward
             if (botBlockData.Count == 0)

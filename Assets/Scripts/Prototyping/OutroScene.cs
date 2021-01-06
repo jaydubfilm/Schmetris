@@ -125,10 +125,6 @@ namespace StarSalvager.Prototype
                 PlayerDataManager.GetRunSummaryString(),
                 () =>
                 {
-                    
-                    //Alert.ShowDancers(false);
-                    Globals.IsRecoveryBot = false;
-                    GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
                     
@@ -147,12 +143,6 @@ namespace StarSalvager.Prototype
                 "Main Menu",
                 GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
-            
-            /*Alert.ShowAlert("GAME OVER",
-                PlayerDataManager.GetRunSummaryString(),
-                "Finish",
-                );
-            Alert.SetLineHeight(90f);*/
         }
         
 

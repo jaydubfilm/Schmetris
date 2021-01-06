@@ -51,7 +51,6 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 };*/
 
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
-        public List<IBlockData> recoveryDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
@@ -226,17 +225,6 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         {
             mainDroneBlockData.Clear();
             mainDroneBlockData.AddRange(blockData);
-        }
-
-        public List<IBlockData> GetRecoveryDroneBlockData()
-        {
-            return recoveryDroneBlockData;
-        }
-
-        public void SetRecoveryDroneBlockData(List<IBlockData> blockData)
-        {
-            recoveryDroneBlockData.Clear();
-            recoveryDroneBlockData.AddRange(blockData);
         }
 
         public List<IBlockData> GetCurrentPartsInStorage()

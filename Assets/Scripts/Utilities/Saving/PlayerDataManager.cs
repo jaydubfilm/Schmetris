@@ -99,14 +99,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static List<IBlockData> GetBlockDatas()
         {
-            if (Globals.IsRecoveryBot)
-            {
-                return PlayerRunData.recoveryDroneBlockData;
-            }
-            else
-            {
-                return PlayerRunData.mainDroneBlockData;
-            }
+            return PlayerRunData.mainDroneBlockData;
         }
 
         public static IReadOnlyList<string> GetDontShowAgainKeys()
@@ -121,23 +114,9 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        /*public static void SetComponents(Dictionary<COMPONENT_TYPE, int> componentDictionary)
-        {
-            PlayerRunData.SetComponents(componentDictionary);
-
-            OnValuesChanged?.Invoke();
-        }*/
-
         public static void SetBlockData(List<IBlockData> blockData)
         {
-            if (Globals.IsRecoveryBot)
-            {
-                PlayerRunData.SetRecoveryDroneBlockData(blockData);
-            }
-            else
-            {
-                PlayerRunData.SetShipBlockData(blockData);
-            }
+            PlayerRunData.SetShipBlockData(blockData);
         }
 
         //============================================================================================================//

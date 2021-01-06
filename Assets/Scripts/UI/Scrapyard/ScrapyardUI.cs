@@ -225,9 +225,6 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             //TODO Need to decide if this should happen at arrival or at launch
-            Globals.IsRecoveryBot = true;
-            TryFillBotResources();
-            Globals.IsRecoveryBot = false;
             TryFillBotResources();
 
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();

@@ -205,8 +205,6 @@ namespace StarSalvager.UI
                             LevelManager.Instance.BotObject.IsInvulnerable = false;
                         }
 
-                        GameUI.Instance.ShowRecoveryBanner(false);
-                        Globals.IsRecoveryBot = false;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
 

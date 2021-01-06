@@ -833,7 +833,6 @@ namespace StarSalvager.Utilities
                             if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
-                            //TODO Alex B: This used to update both recovery and regular bot, now only does the current one
                             PlayerDataManager.GetResource(_bitType).SetLiquid(floatAmount, false);
                         }
                         PlayerDataManager.OnValuesChanged?.Invoke();
@@ -841,7 +840,6 @@ namespace StarSalvager.Utilities
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        //TODO Alex B: This used to update both recovery and regular bot, now only does the current one
                         PlayerDataManager.GetResource(bitType).SetLiquid(floatAmount);
                     }
                     else

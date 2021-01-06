@@ -57,8 +57,6 @@ namespace StarSalvager.UI
             [Required, FoldoutGroup("$NAME")]
             public GameObject buttonCover;
 
-            //public Sprite[] sprites;
-
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
@@ -188,8 +186,6 @@ namespace StarSalvager.UI
         private GameObject abortWindow;
         [SerializeField, Required, FoldoutGroup("B Window")]
         private Button abortButton;
-        [FormerlySerializedAs("recoveryDronBanner")] [SerializeField, Required, FoldoutGroup("B Window")]
-        private GameObject recoveryDroneBanner;
         
 
         //Bottom Left Window
@@ -478,7 +474,6 @@ namespace StarSalvager.UI
             SetPlayerGearsProgress((0, 0));
             ShowAbortWindow(false);
 
-            ShowRecoveryBanner(false);
             ShowLiquidSliders(null);
 
             OutlineMagnet(false);
@@ -1048,13 +1043,6 @@ namespace StarSalvager.UI
                 vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
         }
 
-        //============================================================================================================//
-
-        public void ShowRecoveryBanner(bool shown)
-        {
-            recoveryDroneBanner.SetActive(shown);
-        }
-        
         //====================================================================================================================//
         
 

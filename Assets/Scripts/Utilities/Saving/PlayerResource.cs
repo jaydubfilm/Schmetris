@@ -29,7 +29,7 @@ namespace StarSalvager.Utilities.Saving
         [JsonIgnore]
         public float liquid
         {
-            get => Globals.IsRecoveryBot ? _recoveryBotLiquid : _mainBotLiquid;
+            get => _mainBotLiquid;
         }
 
 
@@ -41,13 +41,11 @@ namespace StarSalvager.Utilities.Saving
         [JsonIgnore]
         public int liquidCapacity
         {
-            get => Globals.IsRecoveryBot ? _recoveryBotLiquidCapacity : _mainBotLiquidCapacity;
+            get => _mainBotLiquidCapacity;
         }
 
         [JsonProperty]
         private int _mainBotLiquidCapacity;
-        [JsonProperty]
-        private int _recoveryBotLiquidCapacity;
 
         public PlayerResource(BIT_TYPE type, int resource, int resourceCapacity, int mainBotLiquid, int mainBotLiquidCapacity, int recoveryBotLiquid, int recoveryBotLiquidCapacity)
         {
@@ -57,8 +55,6 @@ namespace StarSalvager.Utilities.Saving
             _resourceCapacity = resourceCapacity;
             _mainBotLiquid = mainBotLiquid;
             _mainBotLiquidCapacity = mainBotLiquidCapacity;
-            _recoveryBotLiquid = recoveryBotLiquid;
-            _recoveryBotLiquidCapacity = recoveryBotLiquidCapacity;
         }
 
         public void SetResource(int amount, bool updateValuesChanged = true)
@@ -84,14 +80,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetLiquid(float amount, bool updateValuesChanged = true)
         {
-            if (Globals.IsRecoveryBot)
-            {
-                _recoveryBotLiquid = Mathf.Clamp(amount, 0f, _recoveryBotLiquidCapacity);
-            }
-            else
-            {
-                _mainBotLiquid = Mathf.Clamp(amount, 0f, _mainBotLiquidCapacity);
-            }
+            _mainBotLiquid = Mathf.Clamp(amount, 0f, _mainBotLiquidCapacity);
 
             if (updateValuesChanged)
             {
@@ -101,16 +90,8 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetLiquidCapacity(int amount, bool updateCapacitiesChanged = true)
         {
-            if (Globals.IsRecoveryBot)
-            {
-                _recoveryBotLiquidCapacity = amount;
-                _recoveryBotLiquid = Mathf.Clamp(_recoveryBotLiquid, 0f, _recoveryBotLiquidCapacity);
-            }
-            else
-            {
-                _mainBotLiquidCapacity = amount;
-                _mainBotLiquid = Mathf.Clamp(_mainBotLiquid, 0f, _mainBotLiquidCapacity);
-            }
+            _mainBotLiquidCapacity = amount;
+            _mainBotLiquid = Mathf.Clamp(_mainBotLiquid, 0f, _mainBotLiquidCapacity);
 
             if (updateCapacitiesChanged)
             {
@@ -155,14 +136,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void AddLiquid(float amount, bool updateValuesChanged = true)
         {
-            if (Globals.IsRecoveryBot)
-            {
-                _recoveryBotLiquid = Mathf.Min(_recoveryBotLiquid + amount, _recoveryBotLiquidCapacity);
-            }
-            else
-            {
-                _mainBotLiquid = Mathf.Min(_mainBotLiquid + amount, _mainBotLiquidCapacity);
-            }
+            _mainBotLiquid = Mathf.Min(_mainBotLiquid + amount, _mainBotLiquidCapacity);
 
             if (updateValuesChanged)
             {
@@ -183,14 +157,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SubtractLiquid(float amount, bool updateValuesChanged = true)
         {
-            if (Globals.IsRecoveryBot)
-            {
-                _recoveryBotLiquid = Mathf.Max(_recoveryBotLiquid - amount, 0);
-            }
-            else
-            {
-                _mainBotLiquid = Mathf.Min(_mainBotLiquid - amount, 0);
-            }
+            _mainBotLiquid = Mathf.Min(_mainBotLiquid - amount, 0);
 
             if (updateValuesChanged)
             {

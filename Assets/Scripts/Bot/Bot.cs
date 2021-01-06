@@ -447,8 +447,6 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            //BotPartsLogic.coreHeat = 0f;
-
             //Add core component
             var core = partFactory.CreateObject<Part>(
                 new PartData
@@ -456,8 +454,6 @@ namespace StarSalvager
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
                 });
-
-            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
             AttachNewBlock(Vector2Int.zero, core);
 
@@ -479,19 +475,9 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            //BotPartsLogic.coreHeat = 0f;
-
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                if (attachable is Part part && part.Type == PART_TYPE.CORE)
-                {
-                    if(Globals.IsRecoveryBot)
-                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
-
-                    //GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
-                }
-
                 AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
             }
 
