@@ -299,7 +299,7 @@ namespace StarSalvager.Values
 
         public void ResetPlayerRunData()
         {
-            int randomIndex = UnityEngine.Random.Range(0, 5);
+            int randomIndex = 0;
 
             PlayerSaveRunData data = new PlayerSaveRunData()
             {

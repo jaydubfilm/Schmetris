@@ -24,7 +24,6 @@ namespace StarSalvager.Values
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
-        public static int CurrentNode = 0;
         public static int CurrentSector = 0;
         public static int CurrentWave = 0;
         public static bool SectorComplete = false;

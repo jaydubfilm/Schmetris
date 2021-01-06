@@ -204,22 +204,9 @@ namespace StarSalvager.UI
                 universeMapButtons[i].Button.interactable = false;
                 universeMapButtons[i].BotImage.gameObject.SetActive(false);
                 universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
-                universeMapButtons[i].PointOfInterestImage.gameObject.SetActive(
-                    PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i) != null &&
-                    PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes.Count == 0 &&
-                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(i));
-
-                if (PlayerDataManager.GetWreckNodes().Contains(i))
-                {
-                    universeMapButtons[i].NodeType = NodeType.Wreck;
-                }
-                else
-                {
-                    universeMapButtons[i].NodeType = NodeType.Level;
-                }
             }
 
-            CenterToItem(universeMapButtons[Globals.CurrentNode].GetComponent<RectTransform>());
+            CenterToItem(universeMapButtons[PlayerDataManager.GetCurrentNode()].GetComponent<RectTransform>());
 
             for (int i = 0; i < universeMapButtons.Count; i++)
             {
@@ -228,16 +215,27 @@ namespace StarSalvager.UI
 
                 for (int k = 0; k < childNodesAccessible.Count; k++)
                 {
-                    DrawConnection(curIndex, childNodesAccessible[k].nodeIndex, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == curIndex));
+                    DrawConnection(curIndex, childNodesAccessible[k].nodeIndex, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == curIndex)
+                        || !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == childNodesAccessible[k].nodeIndex));
                 }
 
                 if (PlayerDataManager.GetWreckNodes().Contains(universeMapButtons[i].NodeIndex))
                 {
                     universeMapButtons[i].ShortcutImage.gameObject.SetActive(true);
+                    universeMapButtons[i].NodeType = NodeType.Wreck;
+                }
+                else
+                {
+                    universeMapButtons[i].NodeType = NodeType.Level;
                 }
 
-                if (curIndex == Globals.CurrentNode)
+                if (curIndex == PlayerDataManager.GetCurrentNode())
                 {
+                    if (PlayerDataManager.GetWreckNodes().Contains(universeMapButtons[i].NodeIndex))
+                    {
+                        universeMapButtons[i].Button.interactable = true;
+                    }
+                    
                     for (int k = 0; k < universeMapButtons.Count; k++)
                     {
                         if (childNodesAccessible.Any(n => n.nodeIndex == k))
@@ -247,170 +245,6 @@ namespace StarSalvager.UI
                     }
                 }
             }
-
-            ////////////////////////////////////////////////////////////////////////////////////////
-            /*if (GameManager.IsState(GameState.UniverseMapBetweenWaves))
-            {
-                int curIndex = PlayerDataManager.GetLevelRingNodeTree()
-                    .ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
-                CenterToItem(universeMapButtons[curIndex].GetComponent<RectTransform>());
-
-                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
-                {
-                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
-
-                    List<LevelNode> childNodesAccessible =
-                        PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
-
-                    if (nodeIndex == curIndex)
-                    {
-                        for (int k = 0; k < childNodesAccessible.Count; k++)
-                        {
-                            bool isChildShortcut = PlayerDataManager.GetWreckNodes()
-                                .Contains(childNodesAccessible[k].nodeIndex);
-                            if (isChildShortcut)
-                            {
-                                universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject
-                                    .SetActive(true);
-                            }
-                        }
-
-                        universeMapButtons[nodeIndex].BotImage.gameObject.SetActive(true);
-                        if (childNodesAccessible.Count == 0)
-                        {
-                            universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                            Alert.ShowAlert("Dead End", "You've reached a dead end. Return to base.", "Ok", null);
-                        }
-
-                        for (int k = 0; k < universeMapButtons.Count; k++)
-                        {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                            {
-                                universeMapButtons[k].Button.interactable = true;
-                                DrawConnection(curIndex, k,
-                                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                            }
-                            else
-                            {
-                                universeMapButtons[k].Button.interactable = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (childNodesAccessible.Count == 0)
-                        {
-                            //universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                        }
-                        else
-                        {
-                            for (int k = 0; k < universeMapButtons.Count; k++)
-                            {
-                                if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                                {
-                                    DrawConnection(nodeIndex, k,
-                                        !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                                }
-                            }
-                        }
-                    }
-
-                    bool isShortcut = PlayerDataManager.GetWreckNodes().Contains(nodeIndex);
-                    if (isShortcut)
-                    {
-                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                        universeMapButtons[nodeIndex].NodeType = NodeType.Wreck;
-                    }
-                    else
-                    {
-                        universeMapButtons[nodeIndex].NodeType = NodeType.Wreck;
-                    }
-                }
-            }
-            else
-            {
-                CenterToItem(universeMapButtons[0].GetComponent<RectTransform>());
-                universeMapButtons[0].BotImage.gameObject.SetActive(true);
-                for (int i = 0; i < universeMapButtons.Count; i++)
-                {
-                    universeMapButtons[i].Button.interactable = Globals.TestingFeatures;
-                }
-
-                for (int i = 0; i < PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Count; i++)
-                {
-                    int nodeIndex = PlayerDataManager.GetPlayerPreviouslyCompletedNodes()[i];
-
-                    List<LevelNode> childNodesAccessible =
-                        PlayerDataManager.GetLevelRingNodeTree().TryFindNode(nodeIndex).childNodes;
-
-                    for (int k = 0; k < childNodesAccessible.Count; k++)
-                    {
-                        bool isChildShortcut = PlayerDataManager.GetWreckNodes()
-                            .Contains(childNodesAccessible[k].nodeIndex);
-                        if (isChildShortcut)
-                        {
-                            universeMapButtons[childNodesAccessible[k].nodeIndex].ShortcutImage.gameObject
-                                .SetActive(true);
-                        }
-                    }
-
-                    bool isShortcut = PlayerDataManager.GetWreckNodes().Contains(nodeIndex);
-
-                    if (childNodesAccessible.Count == 0)
-                    {
-                        //universeMapButtons[nodeIndex].Button.image.color = Color.red;
-                    }
-                    else
-                    {
-                        if (!Globals.ShortcutJumpToAfter)
-                        {
-                            for (int k = 0; k < childNodesAccessible.Count; k++)
-                            {
-                                if (PlayerDataManager.GetWreckNodes().Contains(childNodesAccessible[k].nodeIndex))
-                                {
-                                    int index = childNodesAccessible[k].nodeIndex;
-                                    universeMapButtons[index].Button.interactable = true;
-                                    universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
-                                    DrawConnection(0, index, false, true);
-                                }
-                            }
-                        }
-
-                        for (int k = 0; k < universeMapButtons.Count; k++)
-                        {
-                            if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                            {
-                                if (nodeIndex == 0)
-                                {
-                                    universeMapButtons[k].Button.interactable = true;
-                                }
-
-                                DrawConnection(nodeIndex, k,
-                                    !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == k));
-                            }
-                        }
-                    }
-
-                    if (isShortcut)
-                    {
-                        if (Globals.ShortcutJumpToAfter)
-                        {
-                            for (int k = 0; k < childNodesAccessible.Count; k++)
-                            {
-                                int index = childNodesAccessible[k].nodeIndex;
-                                universeMapButtons[index].Button.interactable = true;
-                                //universeMapButtons[index].ShortcutImage.gameObject.SetActive(true);
-                                //DrawConnection(0, index, false, true);
-                            }
-                        }
-
-                        universeMapButtons[nodeIndex].Button.interactable = true;
-                        universeMapButtons[nodeIndex].ShortcutImage.gameObject.SetActive(true);
-                    }
-                }
-            }
-            
-            universeMapButtons[0].Button.interactable = true;*/
         }
 
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)

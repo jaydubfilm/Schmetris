@@ -84,8 +84,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             ShipInterior = 0,
             Workbench,
-            Logistics,
-            Missions,
             Settings,
         }
         
@@ -145,20 +143,6 @@ namespace StarSalvager.UI.Scrapyard
                 backButton.gameObject.SetActive(true);
                 
                 SetWindowActive(Window.Workbench);
-            });
-            
-            missionsButton.onClick.AddListener(() =>
-            {
-                backButton.gameObject.SetActive(true);
-
-                SetWindowActive(Window.Missions);
-            });
-            
-            logisticsButton.onClick.AddListener(() =>
-            {
-                backButton.gameObject.SetActive(true);
-                
-                SetWindowActive(Window.Logistics);
             });
             
             menuButton.onClick.AddListener(() =>
@@ -387,12 +371,6 @@ namespace StarSalvager.UI.Scrapyard
                     _currentWindow = Window.Settings;
                     break;
                 case Window.Workbench:
-                case Window.Logistics:
-                case Window.Missions:
-                    SetWindowActive(Window.ShipInterior);
-                    craftingBenchUI.HideBlueprintCostWindow();
-                    backButton.gameObject.SetActive(false);
-                    break;
                 case Window.Settings:
                     _windows[(int)Window.Settings].SetActive(false);
                     _currentWindow = Window.ShipInterior;

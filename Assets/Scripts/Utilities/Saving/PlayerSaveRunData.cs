@@ -17,6 +17,7 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         public bool runStarted;
+        public int CurrentNode = 0;
 
         //TEMP
         public bool hasSetupConverter;

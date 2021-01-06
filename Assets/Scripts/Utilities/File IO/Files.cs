@@ -206,12 +206,9 @@ namespace StarSalvager.Utilities.FileIO
                 return null;
             }
 
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                ObjectCreationHandling = ObjectCreationHandling.Replace
-            };
-
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
+            var loaded = ImportJsonData<PlayerSaveAccountData>(
+                PlayerAccountSavePaths[saveSlotIndex],
+                new IBlockDataArrayConverter());
 
             if (loaded.PlayerRunData.PlaythroughID != "")
             {

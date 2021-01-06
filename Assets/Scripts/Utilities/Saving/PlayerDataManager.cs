@@ -64,6 +64,16 @@ namespace StarSalvager.Utilities.Saving
         //Run Data Functions
         //====================================================================================================================//
 
+        public static int GetCurrentNode()
+        {
+            return PlayerRunData.CurrentNode;
+        }
+
+        public static void SetCurrentNode(int node)
+        {
+            PlayerRunData.CurrentNode = node;
+        }
+
         public static List<PlayerResource> GetResources()
         {
             return PlayerRunData.GetResources();

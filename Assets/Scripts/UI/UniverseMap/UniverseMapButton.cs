@@ -13,6 +13,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using StarSalvager.Utilities.Saving;
+using System.Linq;
 
 namespace StarSalvager
 {
@@ -64,7 +65,7 @@ namespace StarSalvager
         {
             Button.onClick.AddListener(() =>
             {
-                Globals.CurrentNode = NodeIndex;
+                PlayerDataManager.SetCurrentNode(NodeIndex);
 
                 switch(NodeType)
                 {
@@ -78,6 +79,11 @@ namespace StarSalvager
                         });
                         break;
                     case NodeType.Wreck:
+                        if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(NodeIndex))
+                        {
+                            PlayerDataManager.AddCompletedNode(NodeIndex);
+                        }
+
                         ScreenFade.Fade(() =>
                         {
                             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
