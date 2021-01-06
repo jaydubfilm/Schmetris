@@ -115,10 +115,6 @@ namespace StarSalvager.UI.Scrapyard
 
             backButton.onClick.AddListener(() =>
             {
-                throw new NotImplementedException();
-                /*backButton.gameObject.SetActive(false);
-
-                SetWindowActive(Window.ShipInterior);*/
             });
 
             //--------------------------------------------------------------------------------------------------------//

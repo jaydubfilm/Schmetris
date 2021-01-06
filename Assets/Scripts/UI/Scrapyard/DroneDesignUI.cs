@@ -10,6 +10,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
@@ -39,6 +40,10 @@ namespace StarSalvager.UI.Scrapyard
         private Button repairButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private FadeUIImage repairButtonGlow;
+        
+        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        private Button launchButton;
+        
         private TMP_Text _repairButtonText;
 
         [SerializeField]
@@ -130,13 +135,17 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-
             _repairButtonText = repairButton.GetComponentInChildren<TMP_Text>();
             
             repairButton.onClick.AddListener(() =>
             {
                 /*DroneDesigner.RepairParts();
                 PreviewRepairCost(false);*/
+            });
+            
+            launchButton.onClick.AddListener(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
 
             //--------------------------------------------------------------------------------------------------------//
