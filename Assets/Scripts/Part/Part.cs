@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart, /*IHealthBoostable,*/ ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart, ICustomRecycle
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -27,29 +27,12 @@ namespace StarSalvager
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
 
-        /*//IHealth Properties
-        //============================================================================================================//
-
-        public float StartingHealth { get; private set; }
-
-        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(BoostedHealth))]
-        public float CurrentHealth { get; private set; }*/
-
-        /*//IHealthCanBoost Properties
-        //====================================================================================================================//
-
-        public float BoostedHealth => StartingHealth + BoostAmount;
-        public float BoostAmount { get; private set; }
-        private bool _boostIsSetup;*/
-
         //Part Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
-        /*[ShowInInspector, ReadOnly]
-        public int level { get; private set; }*/
-        
-        //public bool Destroyed { get; private set; }
+
+        public PatchData[] Patches { get; set; }
 
         public bool LockRotation { get; set; }
 
@@ -65,9 +48,6 @@ namespace StarSalvager
 
         private bool _disabled;
 
-        
-        //private Damage _damage;
-
         //Unity Functions
         //====================================================================================================================//
         
@@ -82,82 +62,6 @@ namespace StarSalvager
         public void SetAttached(bool isAttached)
         {
         }
-
-        /*//IHealth Functions
-        //====================================================================================================================//
-        
-        public void SetupHealthValues(float startingHealth, float currentHealth)
-        {
-            StartingHealth = startingHealth;
-            CurrentHealth = currentHealth;
-
-            SetDestroyed(CurrentHealth <= 0f);
-            
-            if(CurrentHealth < BoostedHealth)
-                UpdateDamage();
-        }
-
-        public void SetupHealthValuesWithoutChangingSprite(float startingHealth, float currentHealth)
-        {
-            StartingHealth = startingHealth;
-            CurrentHealth = currentHealth;
-        }
-
-        public void ChangeHealth(float amount)
-        {
-            if (Destroyed)
-                return;
-            
-            CurrentHealth += amount;
-
-            if (CurrentHealth <= 0)
-            {
-                CurrentHealth = 0;
-                SetDestroyed(true);
-                return;
-            }
-
-            UpdateDamage();
-        }*/
-
-        /*//IHealthCanBoost Functions
-        //====================================================================================================================//
-        
-        public void SetHealthBoost(float boostAmount)
-        {
-            //Consider floating point errors
-            if (Math.Abs(boostAmount - BoostAmount) < 0.01f)
-                return;
-            
-            if (boostAmount < BoostAmount)
-            {
-                CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, StartingHealth + boostAmount);
-            }
-            else if (boostAmount > BoostAmount && !_boostIsSetup)
-            {
-                CurrentHealth = StartingHealth + boostAmount;
-                _boostIsSetup = true;
-            }
-            
-            BoostAmount = boostAmount;
-        }*/
-        
-        /*//====================================================================================================================//
-        
-
-        private void UpdateDamage()
-        {
-            if (Destroyed)
-                return;
-            
-            if (_damage == null)
-            {
-                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
-                _damage.transform.SetParent(transform, false);
-            }
-
-            _damage.SetHealth(CurrentHealth / BoostedHealth);
-        }*/
 
         //Part Functions
         //============================================================================================================//
@@ -175,24 +79,6 @@ namespace StarSalvager
 #endif
 
         }
-
-        /*private void SetDestroyed(bool isDestroyed)
-        {
-            Destroyed = isDestroyed;
-
-            //collider.enabled = !Destroyed;
-            
-            //TODO Need to update the sprite
-            if (!Destroyed)
-            {
-                renderer.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(Type).GetSprite(level);
-                return;
-            }
-
-            RecycleDamageEffect();
-            renderer.sprite = FactoryManager.Instance.PartsProfileData.GetDamageSprite(level);
-            
-        }*/
 
         //ICustomRotateFunctions
         //====================================================================================================================//
@@ -214,8 +100,7 @@ namespace StarSalvager
             {
                 Coordinate = Coordinate,
                 Type = (int) Type,
-                /*Level = level,
-                Health = CurrentHealth*/
+                Patches = Patches
             };
         }
 
@@ -228,9 +113,7 @@ namespace StarSalvager
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
-            /*level = blockData.Level;
-            CurrentHealth = blockData.Health;*/
-
+            Patches = blockData.Patches;
         }
 
         //============================================================================================================//
@@ -240,26 +123,11 @@ namespace StarSalvager
         {
             SetSortingLayer(LayerHelper.ACTORS);
             
-            /*BoostAmount = 0f;
-            _boostIsSetup = false;*/
-            
             SetColor(Color.white);
 
-            //RecycleDamageEffect();
-            //Destroyed = false;
             Disabled = false;
             SetColliderActive(true);
-            //collider.enabled = true;
         }
-
-        /*private void RecycleDamageEffect()
-        {
-            if (!_damage) 
-                return;
-            
-            Recycler.Recycle<Damage>(_damage);
-            _damage = null;
-        }*/
 
         //IHasBounds Functions
         //====================================================================================================================//

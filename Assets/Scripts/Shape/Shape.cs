@@ -25,7 +25,7 @@ namespace StarSalvager
         //================================================================================================================//
 
         public List<Bit> AttachedBits => attachedBits;
-        private List<Bit> attachedBits => _attachedBits;
+        private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
         private List<Bit> _attachedBits;
 
         public bool CanMove => true;

@@ -149,7 +149,7 @@ namespace StarSalvager.UI.Scrapyard
             costWindowVerticalLayoutGroup.enabled = false;
             costWindowCanvasGroup.alpha = 0;
 
-            _droneDesignUI.PreviewCraftCost(showWindow, blueprint);
+            //_droneDesignUI.PreviewCraftCost(showWindow, blueprint);
 
             if (!showWindow)
             {

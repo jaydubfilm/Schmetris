@@ -12,4 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ade67e9c6a64a949965ee394a0a8979, type: 3}
   m_Name: Patch Remote
   m_EditorClassIdentifier: 
-  patchRemoteData: []
+  patchRemoteData:
+  - name: DAMAGE
+    type: 0
+    description: 
+    Levels:
+    - level: 1
+      Properties:
+      - key: 
+        value: 
+    - level: 2
+      Properties: []
+    allowedParts: 040000001000000007000000
+  - name: RANGE
+    type: 1
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: FIRE RATE
+    type: 2
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: AOE
+    type: 3
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: EFFICIENCY
+    type: 4
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: DURATION
+    type: 5
+    description: 
+    Levels: []
+    allowedParts: 

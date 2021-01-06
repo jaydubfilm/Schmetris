@@ -211,8 +211,10 @@ namespace StarSalvager.Utilities.FileIO
                 ObjectCreationHandling = ObjectCreationHandling.Replace
             };
 
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
-
+            var loaded = ImportJsonData<PlayerSaveAccountData>(
+                PlayerAccountSavePaths[saveSlotIndex],
+                new IBlockDataArrayConverter());
+            
             if (loaded.PlayerRunData.PlaythroughID != "")
             {
                 loaded.PlayerRunData.SetupMap();

@@ -18,14 +18,8 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class ScrapyardUI : MonoBehaviour
     {
-        [SerializeField]
-        private CraftingBenchUI craftingBenchUI;
-        
         //============================================================================================================//
 
-        [SerializeField, Required]
-        private GameObject shipInteriorWindow;
-        
         [SerializeField, Required]
         private GameObject workbenchWindow;
 
@@ -54,23 +48,10 @@ namespace StarSalvager.UI.Scrapyard
         private Toggle testingFeaturesToggle;
         
         //============================================================================================================//
-
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button workbenchButton;
-        [FormerlySerializedAs("mapButton")] 
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button launchButton;
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button logisticsButton;
-        [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
-        private Button missionsButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
-
-        [SerializeField, Required, FoldoutGroup("New Stickers")]
-        private Image blueprintsNewSticker;
 
         //====================================================================================================================//
 
@@ -82,10 +63,7 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject[] _windows;
         private enum Window
         {
-            ShipInterior = 0,
             Workbench,
-            Logistics,
-            Missions,
             Settings,
         }
         
@@ -99,7 +77,6 @@ namespace StarSalvager.UI.Scrapyard
             
             _windows = new[]
             {
-                shipInteriorWindow,
                 workbenchWindow,
                 settingsWindow
             };
@@ -108,17 +85,14 @@ namespace StarSalvager.UI.Scrapyard
             InitMenuButtons();
             InitSettings();
             
-            SetWindowActive(Window.ShipInterior);
+            SetWindowActive(Window.Workbench);
         }
 
-        private void Update()
+        /*private void Update()
         {
-            //FIXME This should occur only when required, this is expensive and unnecessary 
-            blueprintsNewSticker.gameObject.SetActive(PlayerDataManager.CheckHasAnyBlueprintAlerts());
-
             if (Input.GetKeyDown(KeyCode.Escape))
                 EscPressed();
-        }
+        }*/
 
         private void OnEnable()
         {
@@ -132,35 +106,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-            //Launch Window Buttons
-            //--------------------------------------------------------------------------------------------------------//
-            
-            launchButton.onClick.AddListener(TryLaunch);
-            
-            //Navigation Buttons
-            //--------------------------------------------------------------------------------------------------------//
 
-            workbenchButton.onClick.AddListener(() =>
-            {
-                backButton.gameObject.SetActive(true);
-                
-                SetWindowActive(Window.Workbench);
-            });
-            
-            missionsButton.onClick.AddListener(() =>
-            {
-                backButton.gameObject.SetActive(true);
-
-                SetWindowActive(Window.Missions);
-            });
-            
-            logisticsButton.onClick.AddListener(() =>
-            {
-                backButton.gameObject.SetActive(true);
-                
-                SetWindowActive(Window.Logistics);
-            });
-            
             menuButton.onClick.AddListener(() =>
             {
                 _windows[(int)Window.Settings].SetActive(true);
@@ -169,9 +115,10 @@ namespace StarSalvager.UI.Scrapyard
             
             backButton.onClick.AddListener(() =>
             {
-                backButton.gameObject.SetActive(false);
+                throw new NotImplementedException();
+                /*backButton.gameObject.SetActive(false);
                 
-                SetWindowActive(Window.ShipInterior);
+                SetWindowActive(Window.ShipInterior);*/
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -184,16 +131,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 _windows[(int)Window.Settings].SetActive(false);
             });
-
-            /*saveGameButton.onClick.AddListener(() =>
-            {
-                PlayerDataManager.SavePlayerAccountData();
-            });
             
-            loadGameButton.onClick.AddListener(() =>
-            {
-                throw new NotImplementedException();
-            });*/
             settingsButton.onClick.AddListener(() =>
             {
                 settingsWindowObject.SetActive(true);
@@ -378,7 +316,7 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        private void EscPressed()
+        /*private void EscPressed()
         {
             switch (_currentWindow)
             {
@@ -387,10 +325,7 @@ namespace StarSalvager.UI.Scrapyard
                     _currentWindow = Window.Settings;
                     break;
                 case Window.Workbench:
-                case Window.Logistics:
-                case Window.Missions:
                     SetWindowActive(Window.ShipInterior);
-                    craftingBenchUI.HideBlueprintCostWindow();
                     backButton.gameObject.SetActive(false);
                     break;
                 case Window.Settings:
@@ -400,18 +335,18 @@ namespace StarSalvager.UI.Scrapyard
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
+        }*/
 
         //============================================================================================================//
 
-        private Window _currentWindow;
+        /*private Window _currentWindow;*/
         
         private void SetWindowActive(Window window)
         {
-            _currentWindow = window;
+            //_currentWindow = window;
             SetWindowActive((int)window);
             
-            menuButton.gameObject.SetActive(window == Window.ShipInterior);
+            menuButton.gameObject.SetActive(true);
         }
 
         private void SetWindowActive(int index)

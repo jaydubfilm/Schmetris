@@ -69,7 +69,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         [JsonIgnore]
         public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
-        [JsonProperty]
+        [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
 

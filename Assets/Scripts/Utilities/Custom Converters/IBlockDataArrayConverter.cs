@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -26,7 +27,19 @@ namespace StarSalvager.Utilities.Converters
             var jArray = JArray.Load(reader);
 
             if (!jArray.HasValues)
-                return new IBlockData[0];
+            {
+                if (objectType == typeof(IBlockData[]))
+                {
+                    return new IBlockData[0];
+                }
+            
+                if (objectType == typeof(List<IBlockData>) || objectType == typeof(IEnumerable<IBlockData>))
+                {
+                    return new List<IBlockData>();
+                }
+                
+                throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
+            }
 
             var outData = new List<IBlockData>();
             foreach (var jObject in jArray)
@@ -56,7 +69,20 @@ namespace StarSalvager.Utilities.Converters
                 outData.Add(iBlockData);
             }
 
-            return outData;
+            if (objectType == typeof(IBlockData[]))
+            {
+                return outData.ToArray();
+            }
+            
+            if (objectType == typeof(List<IBlockData>))
+            {
+                return outData.ToList();
+            }
+            
+            if(objectType == typeof(IEnumerable<IBlockData>))
+                return outData;
+
+            throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
         }
     }
 }

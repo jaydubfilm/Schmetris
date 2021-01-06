@@ -15,13 +15,13 @@ namespace StarSalvager.Utilities.JsonDataTypes
 
         public int Type { get; set; }
 
-        public PatchData[] Sockets { get; set; }
+        public PatchData[] Patches { get; set; }
 
         #region IEquatable
 
         public bool Equals(PartData other)
         {
-            return Coordinate.Equals(other.Coordinate) && Type == other.Type && Equals(Sockets, other.Sockets);
+            return Coordinate.Equals(other.Coordinate) && Type == other.Type && Equals(Patches, other.Patches);
         }
 
         public override bool Equals(object obj)
@@ -35,7 +35,7 @@ namespace StarSalvager.Utilities.JsonDataTypes
             {
                 var hashCode = Coordinate.GetHashCode();
                 hashCode = (hashCode * 397) ^ Type;
-                hashCode = (hashCode * 397) ^ (Sockets != null ? Sockets.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Patches != null ? Patches.GetHashCode() : 0);
                 return hashCode;
             }
         }

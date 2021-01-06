@@ -6,7 +6,7 @@
         bool Disabled { get; }
         PART_TYPE Type { get; set; }
 
-        
+        PatchData[] Patches { get; set; }
     }
 }
 

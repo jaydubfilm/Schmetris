@@ -58,6 +58,8 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
 
+        public PatchData[] Patches { get; set; }
+
         //IAttachable Functions
         //============================================================================================================//
 
@@ -76,13 +78,20 @@ namespace StarSalvager
                 //ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
+                Patches =  Patches
             };
         }
 
         public void LoadBlockData(IBlockData blockData)
         {
+            throw new System.NotImplementedException();
+        }
+
+        public void LoadBlockData(PartData blockData)
+        {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
+            Patches = blockData.Patches;
         }
 
         //============================================================================================================//
