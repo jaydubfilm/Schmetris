@@ -86,6 +86,12 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
         
+        [SerializeField, Required, BoxGroup("Patches")]
+        private PatchRemoteDataScriptableObject patchRemoteData;
+        public PatchRemoteDataScriptableObject PatchRemoteData => patchRemoteData;
+        
+        //============================================================================================================//
+        
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
         /*[SerializeField, Required, BoxGroup("Bot")]

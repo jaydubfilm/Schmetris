@@ -7,22 +7,27 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI.Scrapyard
 {
     public class StorageUI : MonoBehaviour, IHasHintElement
     {
-        
-        //============================================================================================================//
-        
-        [SerializeField]
-        private StorageUIElementScrollView storageUiElementScrollView;
 
         //============================================================================================================//
 
-        private DroneDesigner DroneDesigner => _droneDesigner ? _droneDesigner : (_droneDesigner = FindObjectOfType<DroneDesigner>());
+        [SerializeField] private StorageUIElementScrollView storageUiElementScrollView;
+
+        [SerializeField, BoxGroup("Patches")] 
+        private PatchUIElementScrollView patchUIElementScrollView;
+
+        //============================================================================================================//
+
+        private DroneDesigner DroneDesigner =>
+            _droneDesigner ? _droneDesigner : _droneDesigner = FindObjectOfType<DroneDesigner>();
+
         private DroneDesigner _droneDesigner;
-        
+
         //============================================================================================================//
 
         // Start is called before the first frame update
@@ -33,7 +38,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
-            
+
             UpdateStorage();
 
             PlayerDataManager.OnValuesChanged += UpdateStorage;
@@ -41,7 +46,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnDisable()
         {
-            PlayerDataManager.OnValuesChanged -= UpdateStorage;   
+            PlayerDataManager.OnValuesChanged -= UpdateStorage;
         }
 
         //============================================================================================================//
@@ -53,45 +58,51 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateStorage()
         {
-            //var droneDesign = FindObjectOfType<DroneDesigner>();
-            
+            // Update the Part Storage Scroll View contents
+            //--------------------------------------------------------------------------------------------------------//
             storageUiElementScrollView.ClearElements();
-            
-            for (int i = 0; i < PlayerDataManager.GetCurrentPartsInStorage().Count; i++)
+            var storedParts = PlayerDataManager.GetCurrentPartsInStorage();
+            for (int i = 0; i < storedParts.Count; i++)
             {
-                var storageBlockData = PlayerDataManager.GetCurrentPartsInStorage()[i];
+                var storageBlockData = storedParts[i];
 
                 int tempInt = i;
                 TEST_Storage testStorage = new TEST_Storage
                 {
-                    name = $"{(PART_TYPE)storageBlockData.Type}",
-                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).GetSprite(0),
+                    name = $"{(PART_TYPE) storageBlockData.Type}",
+                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                        .GetProfileData((PART_TYPE) storageBlockData.Type).GetSprite(0),
                     blockData = storageBlockData,
                     storageIndex = tempInt
                 };
 
-                var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
-                temp.Init(testStorage, data =>
-                {
-                    DroneDesigner.SelectPartFromStorage(data.blockData, tempInt);
-                });
+                var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement",
+                    allowDuplicate: true);
+                temp.Init(testStorage, data => { DroneDesigner.SelectPartFromStorage(data.blockData, tempInt); });
             }
-            
-            /*foreach (var storageBlockData in PlayerDataManager.GetComponents())
+
+            // Update the Patch Scroll View contents
+            //--------------------------------------------------------------------------------------------------------//
+
+            patchUIElementScrollView.ClearElements();
+            var storedPatches = PlayerDataManager.GetCurrentPatchesInStorage();
+            for (int i = 0; i < storedPatches.Count; i++)
             {
-                //TODO Need to separate the components
-                TEST_Storage testStorage = new TEST_Storage
+                var storageBlockData = storedPatches[i];
+
+                int tempInt = i;
+                Patch_Storage patchStorage = new Patch_Storage
                 {
-                    name = storageBlockData.Key.ToString(),
-                    sprite = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>().GetComponentProfile(storageBlockData.Key).GetSprite(0),
+                    PatchData = storageBlockData,
+                    storageIndex = tempInt
                 };
 
-                for (int i = 0; i < storageBlockData.Value; i++)
-                {
-                    var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement", allowDuplicate: true);
-                    temp.Init(testStorage, null); 
-                }
-            }*/
+                var temp = patchUIElementScrollView.AddElement(patchStorage,
+                    $"{(PATCH_TYPE) storageBlockData.Type}_UIElement", allowDuplicate: true);
+
+                temp.Init(patchStorage);
+            }
+
         }
 
         //============================================================================================================//
@@ -112,10 +123,25 @@ namespace StarSalvager.UI.Scrapyard
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
         }
+
+#if UNITY_EDITOR
+
+        [Button]
+        private void AddPatchToStorage()
+        {
+            PlayerDataManager.AddPatchToStorage(new PatchData
+            {
+                Type = (int)PATCH_TYPE.DAMAGE,
+                Level = Random.Range(0, 5)
+            });
+        }
+        
+#endif
     }
-    
+
     [System.Serializable]
-    public class StorageUIElementScrollView: UIElementContentScrollView<StorageUIElement, TEST_Storage>
-    {}
+    public class StorageUIElementScrollView : UIElementContentScrollView<StorageUIElement, TEST_Storage>
+    {
+    }
 }
 

@@ -53,6 +53,8 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> recoveryDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
+        
+        public List<PatchData> patchesInStorage = new List<PatchData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
@@ -239,6 +241,9 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             recoveryDroneBlockData.AddRange(blockData);
         }
 
+        //Parts
+        //====================================================================================================================//
+        
         public List<IBlockData> GetCurrentPartsInStorage()
         {
             return partsInStorageBlockData;
@@ -268,6 +273,40 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
                 partsInStorageBlockData.RemoveAt(index);
             }
         }
+
+        //Patches
+        //====================================================================================================================//
+        public List<PatchData> GetCurrentPatchesInStorage()
+        {
+            return patchesInStorage;
+        }
+        
+        public void AddPatchToStorage(PatchData patchData)
+        {
+            patchesInStorage.Add(patchData);
+            PlayerDataManager.OnValuesChanged?.Invoke();
+        }
+
+        public void RemovePatchFromStorage(PatchData patchData)
+        {
+            var index = patchesInStorage.FindIndex(b => b.Type == patchData.Type);
+
+            if (index < 0)
+                throw new ArgumentException();
+            
+            patchesInStorage.RemoveAt(index);
+        }
+
+        public void RemovePatchFromStorageAtIndex(int index)
+        {
+            if (index >= partsInStorageBlockData.Count)
+                return;
+            
+            partsInStorageBlockData.RemoveAt(index);
+        }
+
+        //====================================================================================================================//
+        
 
         public void SaveData()
         {

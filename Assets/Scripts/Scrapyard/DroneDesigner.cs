@@ -128,6 +128,24 @@ namespace StarSalvager
 
         #endregion
 
+        //====================================================================================================================//
+        private PatchUIElement _draggingPatch;
+        public void BeginDragPatch(in PatchUIElement patchUIElement)
+        {
+            _draggingPatch = patchUIElement;
+        }
+
+        public void EndDragPatch()
+        {
+            if (_draggingPatch == null)
+                return;
+            
+            //TODO Check which part we're over
+            //TODO Try to add the current Patch to that part
+            //TODO
+            
+        }
+
         //============================================================================================================//
 
         #region IReset Functions
