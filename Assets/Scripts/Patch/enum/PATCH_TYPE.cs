@@ -2,8 +2,12 @@
 {
     public enum PATCH_TYPE
     {
-        RANGE,
+        EMPTY = -1,
         DAMAGE,
-        EFFICIENCY
+        RANGE,
+        FIRE_RATE,
+        AOE,
+        EFFICIENCY,
+        DURATION
     }
 }

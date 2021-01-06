@@ -25,12 +25,12 @@ public class BlockTesting : MonoBehaviour
                 {
                     new PatchData
                     {
-                        SocketType = (int)PATCH_TYPE.RANGE,
+                        Type = (int)PATCH_TYPE.RANGE,
                         Level = 0
                     },
                     new PatchData
                     {
-                        SocketType = (int)PATCH_TYPE.DAMAGE,
+                        Type = (int)PATCH_TYPE.DAMAGE,
                         Level = 1
                     }
                 }
@@ -43,7 +43,7 @@ public class BlockTesting : MonoBehaviour
                 {
                     new PatchData
                     {
-                        SocketType = (int)PATCH_TYPE.EFFICIENCY,
+                        Type = (int)PATCH_TYPE.EFFICIENCY,
                         Level = 2
                     }
                 }

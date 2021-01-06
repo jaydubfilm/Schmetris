@@ -5,7 +5,7 @@ namespace StarSalvager
     [Serializable]
     public struct PatchData
     {
-        public int SocketType;
+        public int Type;
         public int Level;
     }
 }

@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Parts.Data;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
@@ -262,7 +263,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
 
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -271,7 +272,7 @@ namespace StarSalvager
                             liquidCapacities[BIT_TYPE.BLUE] += value;
                         }
 
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.SMRTCapacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.SMRTCapacity, out value))
                         {
                             _maxSmartWeapons = value;
                         }
@@ -279,7 +280,7 @@ namespace StarSalvager
                         if (_magnetOverride > 0)
                             break;
 
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             MagnetCount += value;
                         }
@@ -289,7 +290,7 @@ namespace StarSalvager
 
                         if (_magnetOverride > 0)
                             break;
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             MagnetCount += value;
                         }
@@ -311,7 +312,7 @@ namespace StarSalvager
                         shield.transform.localPosition = Vector3.zero;
 
 
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Radius, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Radius, out value))
                         {
                             shield.SetSize(value);
                         }
@@ -329,7 +330,7 @@ namespace StarSalvager
 
                         break;
                     case PART_TYPE.STORE:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
@@ -338,28 +339,28 @@ namespace StarSalvager
 
                         break;
                     case PART_TYPE.STORERED:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                         }
 
                         break;
                     case PART_TYPE.STOREGREEN:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                         }
 
                         break;
                     case PART_TYPE.STOREGREY:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.GREY] += value;
                         }
 
                         break;
                     case PART_TYPE.STOREYELLOW:
-                        if (partData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
+                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
@@ -872,7 +873,7 @@ namespace StarSalvager
             //Cooldown
             //--------------------------------------------------------------------------------------------//
 
-            var cooldown = partRemoteData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+            var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
             cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
             if (_projectileTimers[part] < cooldown)
@@ -965,7 +966,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             //FIXME This now might more sense to count down instead of counting up
-            var cooldown = partRemoteData.GetDataValue<float>(DataTest.TEST_KEYS.Cooldown);
+            var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
             cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
             if (_projectileTimers[part] < cooldown)
@@ -1036,7 +1037,7 @@ namespace StarSalvager
                     var lineShrink = FactoryManager.Instance.GetFactory<EffectFactory>()
                         .CreateObject<LineShrink>();
 
-                    var chance = partRemoteData.GetDataValue<float>(DataTest.TEST_KEYS.Probability);
+                    var chance = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Probability);
                     var didHitTarget = Random.value <= chance;
 
 
@@ -1047,7 +1048,7 @@ namespace StarSalvager
 
                     if (didHitTarget)
                     {
-                        var damage = partRemoteData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+                        var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
                         if (fireTarget is ICanBeHit iCanBeHit)
                         {
                             iCanBeHit.TryHitAt(target.transform.position, damage);
@@ -1128,7 +1129,7 @@ namespace StarSalvager
                 return;
             }
 
-            partRemoteData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float bombCooldown);
+            partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float bombCooldown);
 
             resourcesConsumed = deltaTime;
             resourceValue -= resourcesConsumed;
@@ -1162,7 +1163,7 @@ namespace StarSalvager
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.GUN:
 
-                        var projectileID = partData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+                        var projectileID = partData.GetDataValue<string>(PartProperties.KEYS.Projectile);
 
                         _gunRanges.Add(part, GetProjectileRange(part, projectileID));
 
@@ -1173,8 +1174,8 @@ namespace StarSalvager
 
         private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
         {
-            var projectileId = partRemoteData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
-            var damage = partRemoteData.GetDataValue<float>(DataTest.TEST_KEYS.Damage);
+            var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
             damage *= GetBoostValue(PART_TYPE.BOOSTDAMAGE, part);
 
             var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
@@ -1256,7 +1257,7 @@ namespace StarSalvager
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
         {
-            var projectileId = partRemoteData.GetDataValue<string>(DataTest.TEST_KEYS.Projectile);
+            var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
@@ -1315,13 +1316,13 @@ namespace StarSalvager
 
 
             //Set the cooldown time
-            if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
             {
                 _bombTimers[part] = cooldown;
             }
 
             //Damage all the enemies
-            if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Damage, out float damage))
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
             {
                 EnemyManager.DamageAllEnemies(damage);
             }
@@ -1348,13 +1349,13 @@ namespace StarSalvager
 
 
             //Set the cooldown time
-            if (partRemoteData.TryGetValue(DataTest.TEST_KEYS.Cooldown, out float cooldown))
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
             {
                 _bombTimers[part] = cooldown;
             }
 
-            partRemoteData.TryGetValue(DataTest.TEST_KEYS.Radius, out int radius);
-            partRemoteData.TryGetValue(DataTest.TEST_KEYS.Time, out float freezeTime);
+            partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius);
+            partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float freezeTime);
 
             var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
 
@@ -1638,7 +1639,7 @@ namespace StarSalvager
             var maxBoost = 1f;
             foreach (var remoteData in beside.Select(part => partRemoteData))
             {
-                if (!remoteData.TryGetValue(DataTest.TEST_KEYS.Multiplier, out float mult))
+                if (!remoteData.TryGetValue(PartProperties.KEYS.Multiplier, out float mult))
                     continue;
 
                 if (mult > maxBoost)
