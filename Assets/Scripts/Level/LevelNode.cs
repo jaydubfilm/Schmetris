@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelRingNode : IEquatable<LevelRingNode>
+public class LevelNode : IEquatable<LevelNode>
 {
     public int nodeIndex;
+    public bool isWreckNode;
 
-    public List<LevelRingNode> childNodes = new List<LevelRingNode>();
+    public List<LevelNode> childNodes = new List<LevelNode>();
 
-    public LevelRingNode(int index)
+    public LevelNode(int index)
     {
         nodeIndex = index;
     }
@@ -27,7 +28,7 @@ public class LevelRingNode : IEquatable<LevelRingNode>
         return nodeConnectionsList;
     }
 
-    public LevelRingNode TryFindNode(int index)
+    public LevelNode TryFindNode(int index)
     {
         if (Equals(index))
         {
@@ -36,7 +37,7 @@ public class LevelRingNode : IEquatable<LevelRingNode>
 
         for (int i = 0; i < childNodes.Count; i++)
         {
-            LevelRingNode node = childNodes[i].TryFindNode(index);
+            LevelNode node = childNodes[i].TryFindNode(index);
             if (node != null)
             {
                 return node;
@@ -46,7 +47,7 @@ public class LevelRingNode : IEquatable<LevelRingNode>
         return null;
     }
 
-    public bool TryAddNode(LevelRingNode newNode, int index)
+    public bool TryAddNode(LevelNode newNode, int index)
     {
         if (Equals(index))
         {
@@ -73,7 +74,7 @@ public class LevelRingNode : IEquatable<LevelRingNode>
     /// </summary>
     /// <param name="other"></param>
     /// <returns></returns>
-    public bool Equals(LevelRingNode other)
+    public bool Equals(LevelNode other)
     {
         return nodeIndex == other.nodeIndex;
     }
@@ -90,7 +91,7 @@ public class LevelRingNode : IEquatable<LevelRingNode>
     /// <returns></returns>
     public override bool Equals(object obj)
     {
-        return obj is LevelRingNode other && Equals(other);
+        return obj is LevelNode other && Equals(other);
     }
 
     public override int GetHashCode()

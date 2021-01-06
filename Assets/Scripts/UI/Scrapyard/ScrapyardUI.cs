@@ -24,7 +24,7 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject workbenchWindow;
 
         //====================================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Menu Window")]
         private GameObject settingsWindow;
         [SerializeField, Required, FoldoutGroup("Menu Window")]
@@ -35,7 +35,7 @@ namespace StarSalvager.UI.Scrapyard
         private Button quitGameButton;
 
         //====================================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Settings Window")]
         private GameObject settingsWindowObject;
         [SerializeField, Required, FoldoutGroup("Settings Window")]
@@ -46,7 +46,7 @@ namespace StarSalvager.UI.Scrapyard
         private Slider sfxVolumeSlider;
         [SerializeField, Required, FoldoutGroup("Settings Window")]
         private Toggle testingFeaturesToggle;
-        
+
         //============================================================================================================//
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
@@ -57,7 +57,7 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private CameraController CameraController;
-        
+
         private DroneDesigner _droneDesigner;
 
         private GameObject[] _windows;
@@ -66,25 +66,25 @@ namespace StarSalvager.UI.Scrapyard
             Workbench,
             Settings,
         }
-        
+
         //============================================================================================================//
 
-        
+
         // Start is called before the first frame update
         private void Start()
         {
             _droneDesigner = FindObjectOfType<DroneDesigner>();
-            
+
             _windows = new[]
             {
                 workbenchWindow,
                 settingsWindow
             };
-            
+
             InitButtons();
             InitMenuButtons();
             InitSettings();
-            
+
             SetWindowActive(Window.Workbench);
         }
 
@@ -97,9 +97,9 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             CameraController.CameraOffset(Vector3.zero, true);
-            
+
             backButton.onClick?.Invoke();
-            
+
         }
 
         //============================================================================================================//
@@ -112,12 +112,12 @@ namespace StarSalvager.UI.Scrapyard
                 _windows[(int)Window.Settings].SetActive(true);
             });
 
-            
+
             backButton.onClick.AddListener(() =>
             {
                 throw new NotImplementedException();
                 /*backButton.gameObject.SetActive(false);
-                
+
                 SetWindowActive(Window.ShipInterior);*/
             });
 
@@ -131,12 +131,12 @@ namespace StarSalvager.UI.Scrapyard
             {
                 _windows[(int)Window.Settings].SetActive(false);
             });
-            
+
             settingsButton.onClick.AddListener(() =>
             {
                 settingsWindowObject.SetActive(true);
             });
-            
+
             quitGameButton.onClick.AddListener(() =>
             {
                 Alert.ShowAlert("Quitting",
@@ -155,7 +155,7 @@ namespace StarSalvager.UI.Scrapyard
                             {
                                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
-                            
+
                             return;
                         }
 #if UNITY_EDITOR
@@ -171,14 +171,14 @@ namespace StarSalvager.UI.Scrapyard
         private void InitSettings()
         {
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
-            
+
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
-            
+
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
             {
                 Globals.TestingFeatures = toggle;
             });
-            
+
             settingsBackButton.onClick.AddListener(() =>
             {
                 settingsWindowObject.SetActive(false);
@@ -187,7 +187,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //Launch Window Functions
         //============================================================================================================//
-        
+
         private void TryLaunch()
         {
             if (PlayerDataManager.GetBlockDatas().CheckHasDisconnects())
@@ -200,28 +200,28 @@ namespace StarSalvager.UI.Scrapyard
 
                         SetWindowActive(Window.Workbench);
                     });
-                
+
                 return;
             }
 
             //Checks to see if we need to display a window
             if (PlayerDataManager.GetCurrentPartsInStorage().Count > 0)
             {
-                Alert.ShowAlert("Warning!", 
+                Alert.ShowAlert("Warning!",
                     "You have unused parts left in storage, are you sure you want to launch?",
-                    "Launch!", 
-                    "Back", 
+                    "Launch!",
+                    "Back",
                     state =>
                     {
                         if(state) Launch();
-                        
-                    }, 
+
+                    },
                     "PartsStorage");
-                
+
                 return;
             }
 
-            
+
 
             Launch();
         }
@@ -233,23 +233,23 @@ namespace StarSalvager.UI.Scrapyard
             TryFillBotResources();
             Globals.IsRecoveryBot = false;
             TryFillBotResources();
-            
+
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
-            
+
             if (Globals.SectorComplete)
             {
                 Globals.SectorComplete = false;
             }
-            
-            
-            
+
+
+
             ScreenFade.Fade(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
         }
-        
-        
+
+
         private void TryFillBotResources()
         {
             /*BIT_TYPE[] types = {
@@ -260,7 +260,7 @@ namespace StarSalvager.UI.Scrapyard
             };*/
 
             List<BitData> botData = PlayerDataManager.GetBlockDatas().OfType<BitData>().ToList();
-            
+
             foreach (var bitType in Constants.BIT_ORDER)
             {
                 switch (bitType)
@@ -325,9 +325,6 @@ namespace StarSalvager.UI.Scrapyard
                     _currentWindow = Window.Settings;
                     break;
                 case Window.Workbench:
-                    SetWindowActive(Window.ShipInterior);
-                    backButton.gameObject.SetActive(false);
-                    break;
                 case Window.Settings:
                     _windows[(int)Window.Settings].SetActive(false);
                     _currentWindow = Window.ShipInterior;
@@ -340,12 +337,12 @@ namespace StarSalvager.UI.Scrapyard
         //============================================================================================================//
 
         /*private Window _currentWindow;*/
-        
+
         private void SetWindowActive(Window window)
         {
             //_currentWindow = window;
             SetWindowActive((int)window);
-            
+
             menuButton.gameObject.SetActive(true);
         }
 
@@ -357,6 +354,5 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-    } 
+    }
 }
-

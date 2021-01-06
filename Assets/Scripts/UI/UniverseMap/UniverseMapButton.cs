@@ -13,13 +13,25 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using StarSalvager.Utilities.Saving;
+using System.Linq;
 
 namespace StarSalvager
 {
+    public enum NodeType
+    {
+        Level,
+        Wreck
+    }
+    
     [RequireComponent(typeof(Button)), RequireComponent(typeof(PointerEvents))]
     public class UniverseMapButton : MonoBehaviour
     {
         private Action<bool, int, int, RectTransform> _onHoveredCallback;
+
+        [NonSerialized]
+        public NodeType NodeType;
+        [NonSerialized]
+        public int NodeIndex;
 
         [NonSerialized]
         public Button Button;
@@ -53,26 +65,31 @@ namespace StarSalvager
         {
             Button.onClick.AddListener(() =>
             {
-                if (SectorNumber < 0 || WaveNumber < 0)
-                {
-                    LevelManager.Instance.ProcessScrapyardUsageBeginAnalytics();
-                    LevelManager.Instance.ResetLevelTimer();
+                PlayerDataManager.SetCurrentNode(NodeIndex);
 
-                    ScreenFade.Fade(() =>
-                    {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
-                    });
-                    return;
+                switch(NodeType)
+                {
+                    case NodeType.Level:
+                        Globals.CurrentSector = SectorNumber;
+                        Globals.CurrentWave = WaveNumber;
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                        });
+                        break;
+                    case NodeType.Wreck:
+                        if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(NodeIndex))
+                        {
+                            PlayerDataManager.AddCompletedNode(NodeIndex);
+                        }
+
+                        ScreenFade.Fade(() =>
+                        {
+                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP);
+                        });
+                        break;
                 }
-                
-                Globals.CurrentSector = SectorNumber;
-                Globals.CurrentWave = WaveNumber;
-                //Debug.Log($"SectorWave {SectorNumber + 1}.{WaveNumber + 1} uses {SectorNumber + 1}.{PlayerDataManager.SectorWaveIndexConverter[SectorNumber][WaveNumber] + 1}");
-
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
-                });
             });
         }
 

@@ -17,9 +17,9 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         public bool runStarted;
+        public int CurrentNode = 0;
 
         //TEMP
-        public List<Dictionary<int, int>> sectorWaveIndexConverter = new List<Dictionary<int, int>>();
         public bool hasSetupConverter;
 
         [JsonProperty]
@@ -32,7 +32,7 @@ namespace StarSalvager.Utilities.Saving
         };
 
         public int RationCapacity = 500;
-        
+
         [JsonIgnore]
         public int Components => _components;
 
@@ -64,18 +64,18 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         [JsonIgnore]
         public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
-        [JsonProperty] 
+        [JsonProperty]
         private List<string> _dontShowAgainKeys = new List<string>();
 
         [JsonIgnore]
-        public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
+        public LevelNodeTree LevelRingNodeTree = new LevelNodeTree();
         [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
 
         };
 
-        public List<int> ShortcutNodes = new List<int>()
+        public List<int> WreckNodes = new List<int>()
         {
 
         };
@@ -87,47 +87,21 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         //============================================================================================================//
 
-        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> shortcutNodes = null)
+        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
         {
-            //TEMP
-            if (!hasSetupConverter)
-            {
-                for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-                {
-                    List<int> availableIndexes = new List<int>();
-                    sectorWaveIndexConverter.Add(new Dictionary<int, int>());
-
-                    int numOptions = FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves();
-
-                    for (int k = 0; k < numOptions; k++)
-                    {
-                        availableIndexes.Add(k);
-                    }
-
-                    for (int k = 0; k < numOptions; k++)
-                    {
-                        //int randomIndex = availableIndexes[UnityEngine.Random.Range(0, availableIndexes.Count)];
-                        //availableIndexes.Remove(randomIndex);
-                        //sectorWaveIndexConverter[i].Add(k, randomIndex);
-
-                        sectorWaveIndexConverter[i].Add(k, k);
-                    }
-                }
-                hasSetupConverter = true;
-            }
-            //ENDTEMP
-
             if (levelRingConnectionsJson != null)
             {
                 LevelRingConnectionsJson.Clear();
                 LevelRingConnectionsJson.AddRange(levelRingConnectionsJson);
             }
-            if (shortcutNodes != null)
+
+            if (wreckNodes != null)
             {
-                ShortcutNodes.AddRange(shortcutNodes);
+                WreckNodes.Clear();
+                WreckNodes.AddRange(wreckNodes);
             }
-            
-            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
+
+            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
         }
 
         //============================================================================================================//
@@ -242,7 +216,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         }
 
         //====================================================================================================================//
-        
+
         public List<IBlockData> GetCurrentBlockData()
         {
             return mainDroneBlockData;

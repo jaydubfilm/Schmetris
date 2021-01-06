@@ -29,10 +29,6 @@ namespace StarSalvager.Utilities.Saving
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
 
-        //TEMP
-        public static Dictionary<int, int> NumTimesGottenLootTableInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
-        public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
-
         //====================================================================================================================//
 
         public static Version GetVersion()
@@ -67,6 +63,16 @@ namespace StarSalvager.Utilities.Saving
 
         //Run Data Functions
         //====================================================================================================================//
+
+        public static int GetCurrentNode()
+        {
+            return PlayerRunData.CurrentNode;
+        }
+
+        public static void SetCurrentNode(int node)
+        {
+            PlayerRunData.CurrentNode = node;
+        }
 
         public static List<PlayerResource> GetResources()
         {
@@ -375,7 +381,7 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static LevelRingNodeTree GetLevelRingNodeTree()
+        public static LevelNodeTree GetLevelRingNodeTree()
         {
             return PlayerRunData.LevelRingNodeTree;
         }
@@ -390,9 +396,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.PlayerPreviouslyCompletedNodes;
         }
 
-        public static IReadOnlyList<int> GetShortcutNodes()
+        public static IReadOnlyList<int> GetWreckNodes()
         {
-            return PlayerRunData.ShortcutNodes;
+            return PlayerRunData.WreckNodes;
         }
 
         //====================================================================================================================//

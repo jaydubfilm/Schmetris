@@ -155,7 +155,7 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                GameManager.SetCurrentGameState(GameState.UniverseMap);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -319,7 +319,7 @@ namespace StarSalvager.UI
             }
             else
             {
-                List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
+                List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
                 betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
             }
 

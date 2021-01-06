@@ -23,28 +23,25 @@ namespace StarSalvager.Utilities.Converters
         {
             if (reader.TokenType == JsonToken.Null)
                 return null;
-
             var jArray = JArray.Load(reader);
-
             if (!jArray.HasValues)
             {
                 if (objectType == typeof(IBlockData[]))
                 {
                     return new IBlockData[0];
                 }
-            
+
                 if (objectType == typeof(List<IBlockData>) || objectType == typeof(IEnumerable<IBlockData>))
                 {
                     return new List<IBlockData>();
                 }
-                
+
                 throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
             }
-
             var outData = new List<IBlockData>();
             foreach (var jObject in jArray)
             {
-                var classType = (string) jObject[nameof(IBlockData.ClassType)];
+                var classType = (string)jObject[nameof(IBlockData.ClassType)];
                 IBlockData iBlockData;
                 switch (classType)
                 {
@@ -65,20 +62,18 @@ namespace StarSalvager.Utilities.Converters
                     default:
                         throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
                 }
-
                 outData.Add(iBlockData);
             }
-
             if (objectType == typeof(IBlockData[]))
             {
                 return outData.ToArray();
             }
-            
+
             if (objectType == typeof(List<IBlockData>))
             {
                 return outData.ToList();
             }
-            
+
             if(objectType == typeof(IEnumerable<IBlockData>))
                 return outData;
 
