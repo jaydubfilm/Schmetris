@@ -280,6 +280,8 @@ namespace StarSalvager
                 return;
 
             TryMovement();
+            
+            UpdateFollowTarget(transform.position);
 
             if (Rotating)
             {
@@ -436,6 +438,8 @@ namespace StarSalvager
 
         public void InitBot()
         {
+            CreateFollowTarget();
+            
             _weldDatas = new List<WeldData>();
 
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -462,12 +466,14 @@ namespace StarSalvager
             GameUi.SetHealthValue(1f);
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
-            camera.SetLookAtFollow(transform);
+            camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
         }
 
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
+            CreateFollowTarget();
+            
             _weldDatas = new List<WeldData>();
 
             _isDestroyed = false;
@@ -492,7 +498,7 @@ namespace StarSalvager
 
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
-            camera.SetLookAtFollow(transform);
+            camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
@@ -704,6 +710,29 @@ namespace StarSalvager
 
         #endregion //Rotation
 
+        //====================================================================================================================//
+        
+        #region Follow Target
+
+        private static GameObject _followTarget;
+        
+        private static void CreateFollowTarget()
+        {
+            if(_followTarget == null)
+                _followTarget = new GameObject("Bot_Camera-Follow-Target");
+            
+            _followTarget.transform.position = Vector3.up * 5f;
+        }
+
+        private static void UpdateFollowTarget(Vector3 desiredPosition)
+        {
+            var followPos = _followTarget.transform.position;
+            followPos.x = desiredPosition.x;
+            _followTarget.transform.position = followPos;
+        }
+
+        #endregion //Follow Target
+        
         //============================================================================================================//
 
         #region TryAddNewAttachable
