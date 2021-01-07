@@ -33,7 +33,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
+    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds, IHealth
     {
         private readonly struct ShiftData
         {
@@ -207,6 +207,34 @@ namespace StarSalvager
         private float previousDirection;
         private bool isContinuousRotation;
 
+        //IHealth Test
+        //====================================================================================================================//
+
+        public float StartingHealth { get; private set; }
+        public float CurrentHealth { get;  private set; }
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            CurrentHealth = currentHealth;
+            StartingHealth = startingHealth;
+        }
+
+        public void ChangeHealth(float amount)
+        {
+            CurrentHealth += amount;
+
+            //TODO Need to update UI
+
+            if (CurrentHealth > 0)
+                return;
+            
+            CreateCoreDeathEffect();
+
+            cinemachineImpulseSource.GenerateImpulse(5);
+            GameUi.FlashBorder();
+
+            Destroy("Core Destroyed");
+        }
+        
         //Particle Tests
         //====================================================================================================================//
 
@@ -1241,10 +1269,13 @@ namespace StarSalvager
             if (damage <= 0f)
                 return;
 
-            closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
-            /*if(closestAttachable is Part part && part.Type == PART_TYPE.CORE)
-                GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);*/
+            //If something hit a part, we actually want to damage the bot as a whole
+            if (closestAttachable is Part)
+            {
+                ChangeHealth(-Mathf.Abs(damage));
+            }
+            else
+                closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
@@ -1278,14 +1309,14 @@ namespace StarSalvager
                     RemoveAttachable(closestAttachable);
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case Part deadPart when deadPart.Type == PART_TYPE.CORE:
+                /*case Part deadPart when deadPart.Type == PART_TYPE.CORE:
                     CreateCoreDeathEffect();
 
                     cinemachineImpulseSource.GenerateImpulse(5);
                     GameUi.FlashBorder();
 
                     Destroy("Core Destroyed");
-                    break;
+                    break;*/
                 case Part _:
                     CreateExplosionEffect(closestAttachable.transform.position);
 

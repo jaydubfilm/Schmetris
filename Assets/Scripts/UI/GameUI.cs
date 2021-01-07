@@ -274,22 +274,6 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Extras/Cracks")]
         private Image[] crackImages;
 
-
-        //Heat Vignette
-        //============================================================================================================//
-
-        [SerializeField, Required, ToggleGroup("Extras/useVignette", "Vignette")]
-        private bool useVignette;
-
-        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
-        private Image vignetteImage;
-
-        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
-        private Color vignetteMinColor;
-
-        [SerializeField, Required, ToggleGroup("Extras/useVignette")]
-        private Color vignetteMaxColor;
-
         //Patch Point Effect
         //====================================================================================================================//
         
@@ -352,7 +336,7 @@ namespace StarSalvager.UI
         {
             InitSliderText();
 
-            vignetteImage.gameObject.SetActive(useVignette);
+            //vignetteImage.gameObject.SetActive(useVignette);
 
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
             
@@ -458,7 +442,6 @@ namespace StarSalvager.UI
             SetWaterValue(0f);
             SetPowerValue(0f);
 
-            SetHeatSliderValue(0f);
             SetCarryCapacity(0f, 1);
             
             SetHealthValue(1f);
@@ -1030,18 +1013,6 @@ namespace StarSalvager.UI
         }
         
 
-
-        /// <summary>
-        /// Value sent should be normalized
-        /// </summary>
-        /// <param name="value"></param>
-        public void SetHeatSliderValue(float value)
-        {
-            heatFillImage.fillAmount = value;
-
-            if (useVignette)
-                vignetteImage.color = Color.Lerp(vignetteMinColor, vignetteMaxColor, value);
-        }
 
         //====================================================================================================================//
         

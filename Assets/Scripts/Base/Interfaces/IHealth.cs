@@ -8,12 +8,12 @@
         void ChangeHealth(float amount);
     }
 
-    public interface IHealthBoostable : IHealth
+    /*public interface IHealthBoostable : IHealth
     {
         float BoostedHealth { get; }
         float BoostAmount { get; }
         void SetHealthBoost(float boostAmount);
-    }
+    }*/
 }
 
 
