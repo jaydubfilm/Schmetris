@@ -102,6 +102,7 @@ namespace StarSalvager.Values
             new Vector2Int(19, 18),
             new Vector2Int(21, 19),
             new Vector2Int(22, 21),
+            new Vector2Int(26, 21),
             new Vector2Int(23, 22),
             new Vector2Int(24, 23),
             new Vector2Int(25, 24),
