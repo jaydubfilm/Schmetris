@@ -41,9 +41,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Waves")]
         public float timeForAsteroidToFallOneSquare = 0.25f;
         
-        [BoxGroup("Waves")]
-        public bool allowAccessToUnlockedLaterWaves = true;
-        
         [Range(0,1f)][BoxGroup("Waves")]
         public float levelResourceDropReductionAmount = 0.5f;
         
@@ -52,12 +49,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Waves")]
         public float obstacleDensityReductionModifier = 5.0f;
         
-        [BoxGroup("Waves")]
-        public bool onlyGetWaveLootOnce = true;
-        [BoxGroup("Waves")]
-        public bool recoveryOfDroneLocksHorizontalMovement = true;
-        [BoxGroup("Waves")]
-        public bool shortcutJumpToAfter = false;
         [BoxGroup("Waves")]
         public float waveMessageReminderFrequency = 10.0f;
 

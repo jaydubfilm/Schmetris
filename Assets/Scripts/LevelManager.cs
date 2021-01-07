@@ -422,18 +422,6 @@ namespace StarSalvager
             _towLineRenderer.startColor = _towLineRenderer.endColor = Color.gray;
         }
 
-        private void UpdateTowLineRenderer(Vector3 botPosition, Vector3 recoveryDronePosition)
-        {
-            if (!_towLineRenderer)
-                return;
-            
-            _towLineRenderer.SetPositions(new []
-            {
-                botPosition,
-                recoveryDronePosition
-            });
-        }
-
         //====================================================================================================================//
 
         private void UpdateUIClock()
