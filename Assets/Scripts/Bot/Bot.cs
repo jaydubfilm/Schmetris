@@ -448,11 +448,13 @@ namespace StarSalvager
             CompositeCollider2D.enabled = true;
 
             //Add core component
+            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
+                    Patches = new PatchData[patchSockets]
                 });
 
             AttachNewBlock(Vector2Int.zero, core);

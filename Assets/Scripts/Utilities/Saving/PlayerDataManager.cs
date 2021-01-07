@@ -341,6 +341,8 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.WreckNodes;
         }
 
+        
+        //Parts
         //====================================================================================================================//
 
         public static IReadOnlyList<IBlockData> GetCurrentPartsInStorage()
@@ -374,7 +376,37 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        //Patches
         //====================================================================================================================//
+
+        public static IReadOnlyList<PatchData> GetCurrentPatchesInStorage()
+        {
+            return PlayerRunData.GetCurrentPatchesInStorage();
+        }
+        
+        public static void AddPatchToStorage(PatchData patchData)
+        {
+            PlayerRunData.AddPatchToStorage(patchData);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void RemovePatchFromStorage(PatchData patchData)
+        {
+            PlayerRunData.RemovePatchFromStorage(patchData);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void RemovePatchFromStorageAtIndex(int index)
+        {
+            PlayerRunData.RemovePatchFromStorageAtIndex(index);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        //====================================================================================================================//
+        
 
         public static float GetLevelResourceModifier(int sector, int wave)
         {

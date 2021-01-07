@@ -1,9 +1,7 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
 using StarSalvager.Utilities;
-using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;
@@ -17,11 +15,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }
 
-        public bool Attached
-        {
-            get => true;
-            set { }
-        }
+        public bool Attached => true;
 
         public bool CountAsConnectedToCore => true;
         public bool CanShift => false;
@@ -33,6 +27,7 @@ namespace StarSalvager
         public PART_TYPE Type { get; set; }
 
         public PatchData[] Patches { get; set; }
+
 
         public bool LockRotation { get; set; }
 
@@ -65,6 +60,35 @@ namespace StarSalvager
 
         //Part Functions
         //============================================================================================================//
+        
+        public void AddPatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
+                    continue;
+
+                Patches[i] = patchData;
+                return;
+            }
+
+            throw new Exception("No available space for new patch");
+        }
+
+        public void RemovePatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(!Patches[i].Equals(patchData))
+                    continue;
+
+                Patches[i] = default;
+                
+                return;
+            }
+
+            throw new Exception($"No Patch found matching {(PATCH_TYPE)patchData.Type}[{patchData.Level}]");
+        }
 
         protected override void OnCollide(GameObject gObj, Vector2 worldHitPoint)
         {

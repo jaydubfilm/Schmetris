@@ -33,6 +33,8 @@ namespace StarSalvager.UI.Scrapyard
         
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView liquidResourceContentView;
+        
+        
 
         //============================================================================================================//
 

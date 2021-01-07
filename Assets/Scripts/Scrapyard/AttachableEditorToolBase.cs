@@ -77,13 +77,13 @@ namespace StarSalvager
         }
 
         //Get current mouse coordinate on the scrapyard grid.
-        protected static bool TryGetMouseCoordinate(out Vector2Int mouseCoordinate)
+        protected static bool IsMouseInEditorGrid(out Vector2Int mouseCoordinate)
         {
-                
             mouseCoordinate = Vector2Int.zero;
 
             if (CameraController.Camera is null)
-                return false;
+                throw new ArgumentException(
+                    $"{nameof(CameraController.Camera)} is not set on {nameof(CameraController)}");
             
             Vector2 worldMousePosition = CameraController.Camera.ScreenToWorldPoint(Input.mousePosition);
 

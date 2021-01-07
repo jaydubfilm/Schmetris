@@ -88,15 +88,10 @@ namespace StarSalvager.UI.Scrapyard
             SetWindowActive(Window.Workbench);
         }
 
-        /*private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-                EscPressed();
-        }*/
-
         private void OnEnable()
         {
             CameraController.CameraOffset(Vector3.zero, true);
+            CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
 
             backButton.onClick?.Invoke();
 

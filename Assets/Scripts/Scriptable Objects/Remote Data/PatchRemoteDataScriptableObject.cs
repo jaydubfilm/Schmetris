@@ -10,6 +10,11 @@ namespace StarSalvager.ScriptableObjects
     {
         public List<PatchRemoteData> patchRemoteData = new List<PatchRemoteData>();
 
+
+        public PatchRemoteData GetRemoteData(int Type)
+        {
+            return GetRemoteData((PATCH_TYPE)Type);
+        }
         public PatchRemoteData GetRemoteData(PATCH_TYPE Type)
         {
             return patchRemoteData
