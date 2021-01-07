@@ -69,6 +69,8 @@ namespace StarSalvager.Values
         
         public static float BitShiftTime => m_gameSettings.bitShiftTime;
         public static float ComboMergeTime => m_gameSettings.comboMergeTime;
+        public static bool UnmergeLargeBitsOnRefine => m_gameSettings.unmergeLargeBitsOnRefine;
+        public static bool SendExcessResourceToBase => m_gameSettings.sendExcessResourceToBase;
 
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;

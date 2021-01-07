@@ -70,6 +70,10 @@ namespace StarSalvager.ScriptableObjects
         public float botEnterScreenMaxSize = 1.5f;
         [BoxGroup("Bot")]
         public float botExitScreenMaxSize = 2.0f;
+        [BoxGroup("Bot")]
+        public bool unmergeLargeBitsOnRefine = true;
+        [BoxGroup("Bot")]
+        public bool sendExcessResourceToBase = false;
         
         [FoldoutGroup("Bot/Animations")]
         public bool bitsPushThroughParts;
