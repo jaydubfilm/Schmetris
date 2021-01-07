@@ -33,8 +33,9 @@ namespace StarSalvager.UI.Scrapyard
         
         [SerializeField, BoxGroup("Resource UI")]
         private ResourceUIElementScrollView liquidResourceContentView;
-        
-        
+
+        [SerializeField] 
+        private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
 
         //============================================================================================================//
 
@@ -92,7 +93,8 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            
+
+            InitPurchasePatches();
         }
 
         private void OnEnable()
@@ -106,10 +108,6 @@ namespace StarSalvager.UI.Scrapyard
             PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
             PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;
 
-            //TODO May want to setup some sort of Init function to merge these two setups
-            //launchButtonPointerEvents.PointerEntered += PreviewFillBothBotsResources;
-            //repairButtonPointerEvents.PointerEntered += PreviewRepairCost;
-
         }
 
         private void OnDisable()
@@ -121,10 +119,6 @@ namespace StarSalvager.UI.Scrapyard
 
             PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
             PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;
-            
-            
-            //launchButtonPointerEvents.PointerEntered -= PreviewFillBothBotsResources;
-            //repairButtonPointerEvents.PointerEntered -= PreviewRepairCost;
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -160,6 +154,46 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Scroll Views
 
+        private void InitPurchasePatches()
+        {
+            var patches = new[]
+            {
+                new Purchase_PatchData
+                {
+                    cost = 10,
+                    PatchData = new PatchData
+                    {
+                        Level = 0,
+                        Type = (int)PATCH_TYPE.RANGE
+                    }
+                },
+                new Purchase_PatchData
+                {
+                    cost = 10,
+                    PatchData = new PatchData
+                    {
+                        Level = 0,
+                        Type = (int)PATCH_TYPE.DAMAGE
+                    }
+                },
+                new Purchase_PatchData
+                {
+                    cost = 10,
+                    PatchData = new PatchData
+                    {
+                        Level = 0,
+                        Type = (int)PATCH_TYPE.FIRE_RATE
+                    }
+                }
+            };
+            
+            foreach (var t in patches)
+            {
+                var element = purchasePatchUIElementScrollView.AddElement(t);
+                element.Init(t);
+            }
+        }
+
         public void RefreshScrollViews()
         {
             UpdateBotResourceElements();
@@ -167,25 +201,6 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateBotResourceElements()
         {
-            /*foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
-            {
-                if (_bitType == BIT_TYPE.WHITE)
-                    continue;
-
-                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
-
-                var data = new ResourceAmount
-                {
-                    //resourceType = CraftCost.TYPE.Bit,
-                    type = _bitType,
-                    amount = playerResource.resource,
-                    capacity = playerResource.resourceCapacity
-                };
-
-                var element = resourceScrollView.AddElement(data, $"{_bitType}_UIElement");
-                element.Init(data);
-            }*/
-
             //liquidResourceContentView
             foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {

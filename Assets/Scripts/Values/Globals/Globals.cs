@@ -38,6 +38,8 @@ namespace StarSalvager.Values
         
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
+        
+        public static float BotStartingHealth => m_gameSettings.botHealth;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
