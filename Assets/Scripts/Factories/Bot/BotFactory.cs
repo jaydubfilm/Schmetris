@@ -42,6 +42,11 @@ namespace StarSalvager.Factories
         {
             var outData = !Recycler.TryGrab<Bot>(out GameObject gameObject) ? Object.Instantiate(prefab) : gameObject;
             outData.name = "Bot";
+            
+            if(outData.GetComponent<IHealth>() is IHealth iHealth)
+                iHealth.SetupHealthValues(100,100);
+            
+            
             return outData;
         }
 
