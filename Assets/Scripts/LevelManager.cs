@@ -495,10 +495,7 @@ namespace StarSalvager
             InputManager.Instance.InitInput();
             InputManager.Instance.LockRotation = true;
 
-            WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
-
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
-
             
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
@@ -579,44 +576,12 @@ namespace StarSalvager
 
         private void SetupLevelAnalytics()
         {
-            Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-
-            /*Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
-            foreach (var component in PlayerDataManager.GetComponents())
-            {
-                tempComponentDictionary.Add((int)component.Key, component.Value);
-            }*/
-
             Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
             {
 
             };
             string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
-        }
-
-        private void CheckPlayerWater()
-        {
-            var amount = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
-            var required = Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate;
-
-            if (amount >= required)
-                return;
-            
-            GameTimer.SetPaused(true);
-            m_levelManagerUI.ShowSummaryWindow("Almost out of water",
-                "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                () => { GameTimer.SetPaused(false); },
-                "Return",
-                GameUI.WindowSpriteSet.TYPE.RED
-            );
         }
         
         //============================================================================================================//
@@ -793,7 +758,7 @@ namespace StarSalvager
                 switch (loot[i])
                 {
                     case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
+                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddLiquid(rdsValueResourceRefined.rdsValue.Item2);
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<Blueprint> rdsValueBlueprint:

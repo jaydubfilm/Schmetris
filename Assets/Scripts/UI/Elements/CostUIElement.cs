@@ -73,13 +73,13 @@ namespace StarSalvager.UI
                 case CraftCost.TYPE.Bit:
                     resourceImage.sprite = _bitAttachableFactory.GetBitProfile((BIT_TYPE) data.type).refinedSprite;
                     
-                    costText.text = $"{PlayerDataManager.GetResource((BIT_TYPE)data.type).resource}/{data.amount}";
+                    //costText.text = $"{PlayerDataManager.GetResource((BIT_TYPE)data.type).resource}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Component:
                     /*resourceImage.sprite = _componentAttachableFactory.GetComponentProfile((COMPONENT_TYPE) data.type)
                         
                         .GetSprite(0);*/
-                    costText.text = $"Components: {PlayerDataManager.GetComponents()}/{data.amount}";
+                    //costText.text = $"Components: {PlayerDataManager.GetComponents()}/{data.amount}";
                     break;
                 case CraftCost.TYPE.Part:
                     resourceImage.sprite = _partAttachableFactory.GetProfileData((PART_TYPE) data.type)
@@ -95,7 +95,7 @@ namespace StarSalvager.UI
                         partCount = PlayerDataManager.GetCurrentPartsInStorage().Count(x => x.Type == data.type);
                     }
                     
-                    costText.text = $"{partCount}/{data.amount}";
+                    //costText.text = $"{partCount}/{data.amount}";
                     break;
             }
         }

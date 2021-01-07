@@ -1594,7 +1594,13 @@ namespace StarSalvager
 
                     break;
                 default:
-                    return;
+                    float curLiquid = PlayerDataManager.GetResource(bit.Type).liquid;
+                    float curLiquidCapacity = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
+                    if (curLiquid / curLiquidCapacity > 0.5f)
+                    {
+                        return;
+                    }
+                    break;
             }
 
             var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;

@@ -141,17 +141,6 @@ namespace StarSalvager.Utilities.Saving
                 AddPartResources(partType, level - 1, isRecursive);*/
         }
 
-        public static void AddCraftCostResources(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                GetResource((BIT_TYPE)resource.type).AddResource(resource.amount, false);
-            }
-        }
-
         public static void SubtractPartResources(PART_TYPE partType, float costModifier = 1.0f)
         {
             /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
@@ -163,18 +152,6 @@ namespace StarSalvager.Utilities.Saving
             if (level > 0)
                 SubtractPartResources(partType, level - 1, isRecursive, costModifier);*/
         }
-
-        public static void SubtractCraftCostResources(List<CraftCost> costs, float costModifier = 1.0f)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                GetResource((BIT_TYPE)resource.type).SubtractResource((int)(resource.amount * costModifier), false);
-            }
-        }
-
 
         public static void SubtractComponents(IEnumerable<CraftCost> cost)
         {
@@ -294,22 +271,6 @@ namespace StarSalvager.Utilities.Saving
             hasParts = CanAffordCraftCostPremades(premadeCosts);
 
             return hasResources && hasComponents && hasParts;*/
-
-            return true;
-        }
-
-        public static bool CanAffordCraftCostResources(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                if (GetResource((BIT_TYPE)resource.type).resource < resource.amount)
-                {
-                    return false;
-                }
-            }
 
             return true;
         }

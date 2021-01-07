@@ -783,7 +783,7 @@ namespace StarSalvager
                         break;*/
                     //------------------------------------------------------------------------------------------------//
                     case BitData bitData:
-                        var bitType = (BIT_TYPE) bitData.Type;
+                        /*var bitType = (BIT_TYPE) bitData.Type;
 
                         amount = bitAttachableFactory.GetTotalResource(bitType, bitData.Level);
 
@@ -795,7 +795,7 @@ namespace StarSalvager
                                 false);
 
                         TryIncrementDict(bitType, amount, ref processedResources);
-                        TryIncrementDict(bitType, wastedResource, ref wastedResources);
+                        TryIncrementDict(bitType, wastedResource, ref wastedResources);*/
 
 
                         break;
@@ -814,7 +814,7 @@ namespace StarSalvager
                                 switch (loot[i])
                                 {
                                     case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
+                                        //PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
                                         loot.RemoveAt(i);
                                         break;
                                     case RDSValue<Blueprint> rdsValueBlueprint:

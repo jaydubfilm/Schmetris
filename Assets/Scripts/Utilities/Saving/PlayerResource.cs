@@ -17,70 +17,35 @@ namespace StarSalvager.Utilities.Saving
         private BIT_TYPE bitType;
 
         [JsonIgnore]
-        public int resource => _resource;
-        [JsonProperty]
-        private int _resource;
-
-        [JsonIgnore]
-        public int resourceCapacity => _resourceCapacity;
-        [JsonProperty]
-        private int _resourceCapacity;
-
-        [JsonIgnore]
         public float liquid
         {
-            get => _mainBotLiquid;
+            get => _botLiquid;
         }
 
 
         [JsonProperty]
-        private float _mainBotLiquid;
-        [JsonProperty]
-        private float _recoveryBotLiquid;
+        private float _botLiquid;
 
         [JsonIgnore]
         public int liquidCapacity
         {
-            get => _mainBotLiquidCapacity;
+            get => _botLiquidCapacity;
         }
 
         [JsonProperty]
-        private int _mainBotLiquidCapacity;
+        private int _botLiquidCapacity;
 
-        public PlayerResource(BIT_TYPE type, int resource, int resourceCapacity, int mainBotLiquid, int mainBotLiquidCapacity, int recoveryBotLiquid, int recoveryBotLiquidCapacity)
+        public PlayerResource(BIT_TYPE type, int botLiquid, int botLiquidCapacity)
         {
             bitType = type;
 
-            _resource = resource;
-            _resourceCapacity = resourceCapacity;
-            _mainBotLiquid = mainBotLiquid;
-            _mainBotLiquidCapacity = mainBotLiquidCapacity;
-        }
-
-        public void SetResource(int amount, bool updateValuesChanged = true)
-        {
-            _resource = Mathf.Clamp(amount, 0, _resourceCapacity);
-
-            if (updateValuesChanged)
-            {
-                PlayerDataManager.OnValuesChanged?.Invoke();
-            }
-        }
-
-        public void SetResourceCapacity(int amount, bool updateCapacitiesChanged = true)
-        {
-            _resourceCapacity = amount; ;
-            _resource = Mathf.Clamp(_resource, 0, _resourceCapacity);
-
-            if (updateCapacitiesChanged)
-            {
-                PlayerDataManager.OnCapacitiesChanged?.Invoke();
-            }
+            _botLiquid = botLiquid;
+            _botLiquidCapacity = botLiquidCapacity;
         }
 
         public void SetLiquid(float amount, bool updateValuesChanged = true)
         {
-            _mainBotLiquid = Mathf.Clamp(amount, 0f, _mainBotLiquidCapacity);
+            _botLiquid = Mathf.Clamp(amount, 0f, _botLiquidCapacity);
 
             if (updateValuesChanged)
             {
@@ -90,8 +55,8 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetLiquidCapacity(int amount, bool updateCapacitiesChanged = true)
         {
-            _mainBotLiquidCapacity = amount;
-            _mainBotLiquid = Mathf.Clamp(_mainBotLiquid, 0f, _mainBotLiquidCapacity);
+            _botLiquidCapacity = amount;
+            _botLiquid = Mathf.Clamp(_botLiquid, 0f, _botLiquidCapacity);
 
             if (updateCapacitiesChanged)
             {
@@ -99,55 +64,9 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public void AddResource(int amount, bool updateValuesChanged = true)
-        {
-            _resource += amount;
-            _resource = Mathf.Min(_resource, _resourceCapacity);
-
-            if (updateValuesChanged)
-            {
-                PlayerDataManager.OnValuesChanged?.Invoke();
-            }
-        }
-
-        public void AddResourceReturnWasted(int amount, out int totalWasted, bool updateValuesChanged = true)
-        {
-            totalWasted = default;
-            
-            _resource += amount;
-            totalWasted = Mathf.Max(0, _resource - _resourceCapacity);
-            _resource = Mathf.Min(_resource, _resourceCapacity);
-
-            if (updateValuesChanged)
-            {
-                PlayerDataManager.OnValuesChanged?.Invoke();
-            }
-        }
-
-        public void AddResourceCapacity(int amount, bool updateCapacitiesChanged = true)
-        {
-            _resourceCapacity += amount;
-
-            if (updateCapacitiesChanged)
-            {
-                PlayerDataManager.OnValuesChanged?.Invoke();
-            }
-        }
-
         public void AddLiquid(float amount, bool updateValuesChanged = true)
         {
-            _mainBotLiquid = Mathf.Min(_mainBotLiquid + amount, _mainBotLiquidCapacity);
-
-            if (updateValuesChanged)
-            {
-                PlayerDataManager.OnValuesChanged?.Invoke();
-            }
-        }
-
-        public void SubtractResource(int amount, bool updateValuesChanged = true)
-        {
-            _resource -= amount;
-            _resource = Mathf.Max(_resource, 0);
+            _botLiquid = Mathf.Min(_botLiquid + amount, _botLiquidCapacity);
 
             if (updateValuesChanged)
             {
@@ -157,7 +76,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SubtractLiquid(float amount, bool updateValuesChanged = true)
         {
-            _mainBotLiquid = Mathf.Min(_mainBotLiquid - amount, 0);
+            _botLiquid = Mathf.Min(_botLiquid - amount, 0);
 
             if (updateValuesChanged)
             {

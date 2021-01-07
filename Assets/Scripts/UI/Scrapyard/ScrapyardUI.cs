@@ -224,9 +224,6 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Launch()
         {
-            //TODO Need to decide if this should happen at arrival or at launch
-            TryFillBotResources();
-
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
 
             if (Globals.SectorComplete)
@@ -240,73 +237,6 @@ namespace StarSalvager.UI.Scrapyard
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
-        }
-
-
-        private void TryFillBotResources()
-        {
-            /*BIT_TYPE[] types = {
-                BIT_TYPE.RED,
-                BIT_TYPE.GREY,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.YELLOW
-            };*/
-
-            List<BitData> botData = PlayerDataManager.GetBlockDatas().OfType<BitData>().ToList();
-
-            foreach (var bitType in Constants.BIT_ORDER)
-            {
-                switch (bitType)
-                {
-                    case BIT_TYPE.GREEN:
-                        //TODO Check for repair
-                        if(botData.All(b => b.Type != (int) PART_TYPE.REPAIR))
-                            continue;
-                        break;
-                    case BIT_TYPE.GREY:
-                        //TODO Check for a gun
-                        if (!botData.Any(b => b.Type == (int)PART_TYPE.GUN || b.Type == (int)PART_TYPE.TRIPLESHOT))
-                            continue;
-                        break;
-                    case BIT_TYPE.YELLOW:
-                        for (int i = 0; i < botData.Count; i++)
-                        {
-                            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)botData[i].Type);
-                            if (partRemoteData.powerDraw > 0)
-                            {
-                                continue;
-                            }
-                        }
-                        break;
-                    case BIT_TYPE.RED:
-                        break;
-                    case BIT_TYPE.BLUE:
-                        break;
-                    default:
-                        continue;
-                }
-
-
-                float currentAmount = PlayerDataManager.GetResource(bitType).liquid;
-                float currentCapacity = PlayerDataManager.GetResource(bitType).liquidCapacity;
-
-                var fillRemaining = currentCapacity - currentAmount;
-
-                //If its already full, then we're good to move on
-                if (fillRemaining <= 0f)
-                    continue;
-
-                var availableResources = PlayerDataManager.GetResource(bitType).resource;
-
-                //If we have no resources available to refill the liquid, move onto the next
-                if(availableResources <= 0)
-                    continue;
-
-                var movingAmount = Mathf.RoundToInt(Mathf.Min(availableResources, fillRemaining));
-
-                PlayerDataManager.GetResource(bitType).SubtractResource(movingAmount);
-                PlayerDataManager.GetResource(bitType).AddLiquid(movingAmount);
-            }
         }
 
         /*private void EscPressed()

@@ -305,47 +305,6 @@ namespace StarSalvager.Utilities
                     }*/
                     PlayerDataManager.OnValuesChanged?.Invoke();
                     break;
-                case "currency":
-                    /*if (!Enum.TryParse(split[2], true, out bit))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                    }
-
-                    if (int.TryParse(split[3], out var intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                    }
-
-                    PlayerPersistentData.PlayerData.resources[bit] += intAmount;*/
-
-                    if (!int.TryParse(split[3], out intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (PlayerResource value in PlayerDataManager.GetResources())
-                        {
-                            value.AddResource(intAmount);
-                        }
-
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-
-                        PlayerDataManager.GetResource(bitType).AddResource(intAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-
-                    PlayerDataManager.OnValuesChanged?.Invoke();
-
-                    break;
                 case "gears":
                     if (!int.TryParse(split[2], out intAmount))
                     {
@@ -730,40 +689,6 @@ namespace StarSalvager.Utilities
                     }
 
                     Globals.ScaleCamera(columns);
-                    break;
-                case "currency":
-
-
-                    if (!int.TryParse(split[3], out intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-                        {
-                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                                continue;
-
-                            PlayerDataManager.GetResource(_bitType).SetResource(intAmount, false);
-                        }
-                        PlayerDataManager.OnValuesChanged?.Invoke();
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-                        PlayerDataManager.GetResource(bitType).SetResource(intAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-
-
-                    PlayerDataManager.OnValuesChanged?.Invoke();
-
                     break;
                 case "component":
 

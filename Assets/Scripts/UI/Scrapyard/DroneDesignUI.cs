@@ -237,8 +237,7 @@ namespace StarSalvager.UI.Scrapyard
             var powerDraw = _droneDesigner._scrapyardBot.PowerDraw;
             var availablePower =
                 Mathf.Clamp(
-                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid +
-                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).resource, 0,
+                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid, 0,
                     PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
 
             string powerTime = "infinite";
