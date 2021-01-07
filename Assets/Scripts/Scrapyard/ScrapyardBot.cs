@@ -71,13 +71,14 @@ namespace StarSalvager
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            //var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
+            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
+                    Patches = new PatchData[patchSockets]
                 });
 
             if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);

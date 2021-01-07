@@ -98,7 +98,8 @@ namespace StarSalvager.UI.Scrapyard
                 };
 
                 var temp = patchUIElementScrollView.AddElement(patchStorage,
-                    $"{(PATCH_TYPE) storageBlockData.Type}_UIElement", allowDuplicate: true);
+                    $"{(PATCH_TYPE) storageBlockData.Type}_UIElement", 
+                    allowDuplicate: true);
 
                 temp.Init(patchStorage);
             }

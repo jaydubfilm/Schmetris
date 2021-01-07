@@ -98,7 +98,7 @@ namespace StarSalvager
             if (ctx.ReadValue<float>() == 1f)
                 return;
 
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (_shape != null && _shape.AttachedBits.All(b => b.Coordinate != mouseCoordinate))
@@ -152,7 +152,7 @@ namespace StarSalvager
             if (ctx.ReadValue<float>() == 0f)
                 return;
             
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (mouseCoordinate.x != 0 || mouseCoordinate.y != 0)

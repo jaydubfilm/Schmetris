@@ -7,6 +7,10 @@
         PART_TYPE Type { get; set; }
 
         PatchData[] Patches { get; set; }
+
+        void AddPatch(in PatchData patchData);
+        void RemovePatch(in PatchData patchData);
     }
+
 }
 

@@ -450,11 +450,13 @@ namespace StarSalvager
             //BotPartsLogic.coreHeat = 0f;
 
             //Add core component
+            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
+                    Patches = new PatchData[patchSockets]
                 });
 
             if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);

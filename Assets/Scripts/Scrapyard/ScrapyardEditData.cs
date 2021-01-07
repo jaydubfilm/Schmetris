@@ -10,7 +10,7 @@ namespace StarSalvager
         public SCRAPYARD_ACTION EventType;
         public Vector2Int Destination;
 
-        public IBlockData BlockData;
+        public IBlockData IBlockData;
         public float Value;
 
         /*public Vector2Int Coordinate;

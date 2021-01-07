@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -59,6 +60,38 @@ namespace StarSalvager
         public PART_TYPE Type { get; set; }
 
         public PatchData[] Patches { get; set; }
+
+        //IPart Functions
+        //====================================================================================================================//
+        
+        public void AddPatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
+                    continue;
+
+                Patches[i] = patchData;
+                return;
+            }
+
+            throw new Exception("No available space for new patch");
+        }
+
+        public void RemovePatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(!Patches[i].Equals(patchData))
+                    continue;
+
+                Patches[i] = default;
+                
+                return;
+            }
+
+            throw new Exception($"No Patch found matching {(PATCH_TYPE)patchData.Type}[{patchData.Level}]");
+        }
 
         //IAttachable Functions
         //============================================================================================================//

@@ -299,10 +299,10 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         public void RemovePatchFromStorageAtIndex(int index)
         {
-            if (index >= partsInStorageBlockData.Count)
+            if (index >= patchesInStorage.Count)
                 return;
             
-            partsInStorageBlockData.RemoveAt(index);
+            patchesInStorage.RemoveAt(index);
         }
 
         //====================================================================================================================//

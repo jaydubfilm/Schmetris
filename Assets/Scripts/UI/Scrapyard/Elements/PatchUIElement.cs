@@ -10,16 +10,29 @@ namespace StarSalvager.UI.Scrapyard
     {
         [SerializeField] private TMP_Text titleText;
 
+        private static DroneDesigner droneDesigner
+        {
+            get
+            {
+                if (_droneDesigner == null)
+                    _droneDesigner = FindObjectOfType<DroneDesigner>();
+                
+                return _droneDesigner;
+            }
+        }
         private static DroneDesigner _droneDesigner;
+        
         private Canvas _canvas;
         private Vector2 _offset;
+
+        private RectTransform _originalParent;
+        private int _originalIndex;
 
         public override void Init(Patch_Storage data)
         {
             _canvas = GetComponentInParent<Canvas>();
 
-            if (_droneDesigner == null)
-                _droneDesigner = FindObjectOfType<DroneDesigner>();
+            
             
             this.data = data;
 
@@ -28,6 +41,15 @@ namespace StarSalvager.UI.Scrapyard
 
             titleText.text = $"{patchName} {data.PatchData.Level + 1}";
 
+            _originalParent = transform.parent as RectTransform;
+            _originalIndex = transform.GetSiblingIndex();
+
+        }
+
+        public void ResetInScrollview()
+        {
+            transform.SetParent(_originalParent);
+            transform.SetSiblingIndex(_originalIndex);
         }
 
         //====================================================================================================================//
@@ -43,7 +65,7 @@ namespace StarSalvager.UI.Scrapyard
             
             transform.SetParent(_canvas.transform, true);
             
-            _droneDesigner.BeginDragPatch(this);
+            droneDesigner.BeginDragPatch(this);
         }
         
         public void OnDrag(PointerEventData eventData)
@@ -61,7 +83,7 @@ namespace StarSalvager.UI.Scrapyard
         public void OnEndDrag(PointerEventData eventData)
         {
             //throw new NotImplementedException();
-            _droneDesigner.EndDragPatch();
+            droneDesigner.EndDragPatch();
         }
 
         //====================================================================================================================//

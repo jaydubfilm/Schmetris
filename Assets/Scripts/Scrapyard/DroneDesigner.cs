@@ -39,6 +39,21 @@ namespace StarSalvager
         }
         [SerializeField, Required]
         private DroneDesignUI _droneDesignUi;
+        
+        private StorageUI StorageUI
+        {
+            get
+            {
+                if (_storageUI == null)
+                    _storageUI = FindObjectOfType<StorageUI>();
+
+                return _storageUI;
+            }
+        }
+        [SerializeField, Required]
+        private StorageUI _storageUI;
+        
+        
         [SerializeField]
         private GameObject floatingPartWarningPrefab;
         [SerializeField]
@@ -137,13 +152,57 @@ namespace StarSalvager
 
         public void EndDragPatch()
         {
+            //If we're not dragging anything, don't bother with the next steps
             if (_draggingPatch == null)
                 return;
-            
-            //TODO Check which part we're over
+
+            //Check if the mouse is within the editor grid
+            if (!IsMouseInEditorGrid(out var mouseGridCoordinate))
+                return;
+
+            //Check which part we're over, if any
+            var attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
+
+            if (attachableAtCoordinates == null)
+            {
+                _draggingPatch.ResetInScrollview();
+                _draggingPatch = null;
+                return;
+            }
+
             //TODO Try to add the current Patch to that part
-            //TODO
+
+            //Check to make sure we're probing a part, and not something else
+            if (!(attachableAtCoordinates is ScrapyardPart part))
+                throw new ArgumentOutOfRangeException(nameof(attachableAtCoordinates), attachableAtCoordinates, $"Expected {nameof(ScrapyardPart)}");
+
+            var patchData = _draggingPatch.data.PatchData;
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchData.Type);
+            var partType = part.Type;
+
+            //Check if the part is allowed to have this Patch
+            if (!patchRemoteData.allowedParts.Contains(partType))
+            {
+                _draggingPatch.ResetInScrollview();
+                _draggingPatch = null;
+                return;
+            }
+
+            //Check to see if the part has any available slots for the new patch
+            if (part.Patches.All(x => x.Type != (int) PATCH_TYPE.EMPTY))
+            {
+                _draggingPatch.ResetInScrollview();
+                _draggingPatch = null;
+                return;
+            }
+
+            //TODO Determine if we can have 2 of the same patch on one part
             
+            //TODO Add Patch to part
+            part.AddPatch(patchData);
+            PlayerDataManager.RemovePatchFromStorageAtIndex(_draggingPatch.data.storageIndex);
+
+            StorageUI.UpdateStorage();
         }
 
         //============================================================================================================//
@@ -200,7 +259,7 @@ namespace StarSalvager
         {
             UpdateFloatingMarkers(SelectedBrick != null);
 
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (SelectedBrick != null)
@@ -240,6 +299,20 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonUp()
         {
+            //--------------------------------------------------------------------------------------------------------//
+
+            void ResetSelected()
+            {
+                SelectedBrick = null;
+                SelectedIndex = 0;
+                SelectedPartClickPosition = null;
+                SelectedPartPreviousGridPosition = null;
+                SelectedPartRemoveFromStorage = false;
+                SelectedPartReturnToStorageIfNotPlaced = false;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (_partDragImage != null)
                 _partDragImage.gameObject.SetActive(false);
 
@@ -253,15 +326,15 @@ namespace StarSalvager
 
 
             //Check if mouse coordinate is inside the editing grid
-            if (!TryGetMouseCoordinate(out var mouseGridCoordinate))
-            {
-                Vector2 worldMousePosition = Cameras.CameraController.Camera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            //--------------------------------------------------------------------------------------------------------//
 
+            if (!IsMouseInEditorGrid(out var mouseGridCoordinate))
+            {
                 //Move part back to previous location since drag position is inviable
                 if(SelectedPartPreviousGridPosition != null)
                 {
-                    if (!(SelectedBrick is PartData partData))
-                        throw new Exception();
+                    if (!(SelectedBrick is PartData partData)) 
+                        throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
 
                     var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
@@ -274,31 +347,27 @@ namespace StarSalvager
 
                     _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
                     DroneDesignUi.RefreshScrollViews();
-
-                    SelectedBrick = null;
-                    SelectedIndex = 0;
-                    SelectedPartClickPosition = null;
-                    SelectedPartPreviousGridPosition = null;
-                    SelectedPartRemoveFromStorage = false;
-                    SelectedPartReturnToStorageIfNotPlaced = false;
-
+                    
+                    ResetSelected();
                     SaveBlockData();
                 }
 
                 UpdateFloatingMarkers(false);
                 return;
             }
+            
+            //If mouse position was legal
+            //--------------------------------------------------------------------------------------------------------//
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
+            
             //Check if there mouse coordinates are empty
             if (attachableAtCoordinates == null)
             {
                 if (!(SelectedBrick is PartData partData))
-                    throw new Exception();
+                    throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
 
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
-
-                //var blockData = SelectedBrick.Value;
 
                 _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
 
@@ -313,7 +382,7 @@ namespace StarSalvager
                     _toUndoStack.Push(new ScrapyardEditData
                     {
                         EventType = SCRAPYARD_ACTION.EQUIP,
-                        BlockData = SelectedBrick
+                        IBlockData = SelectedBrick
                     });
                     _toRedoStack.Clear();
                 }
@@ -325,27 +394,22 @@ namespace StarSalvager
                     {
                         EventType = SCRAPYARD_ACTION.RELOCATE,
                         Destination = mouseGridCoordinate,
-                        BlockData = SelectedBrick
+                        IBlockData = SelectedBrick
                     });
                     _toRedoStack.Clear();
                 }
 
 
                 DroneDesignUi.RefreshScrollViews();
-
-                SelectedBrick = null;
-                SelectedIndex = 0;
-                SelectedPartClickPosition = null;
-                SelectedPartPreviousGridPosition = null;
-                SelectedPartRemoveFromStorage = false;
-                SelectedPartReturnToStorageIfNotPlaced = false;
+                
+                ResetSelected();
                 SaveBlockData();
             }
             //If there is an attachable at location
             else if (SelectedPartPreviousGridPosition != null)
             {
                 if (!(SelectedBrick is PartData partData))
-                    throw new Exception();
+                    throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
 
                 //Return object to previous location on bot
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
@@ -361,15 +425,10 @@ namespace StarSalvager
 
                 DroneDesignUi.RefreshScrollViews();
 
-
-                SelectedBrick = null;
-                SelectedIndex = 0;
-                SelectedPartPreviousGridPosition = null;
-                SelectedPartRemoveFromStorage = false;
-                SelectedPartReturnToStorageIfNotPlaced = false;
+                ResetSelected();
                 SaveBlockData();
             }
-            else if (SelectedPartPreviousGridPosition == null && attachableAtCoordinates != null)
+            else if (SelectedPartPreviousGridPosition == null/* && attachableAtCoordinates != null*/)
             {
                 SelectedBrick = null;
                 return;
@@ -389,7 +448,7 @@ namespace StarSalvager
 
         private void OnRightMouseButtonDown()
         {
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (_scrapyardBot == null)
@@ -410,12 +469,24 @@ namespace StarSalvager
                 blockData.Coordinate = mouseCoordinate;
                 _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
 
-
+                for (int i = 0; i < scrapPart.Patches.Length; i++)
+                {
+                    var patchData = scrapPart.Patches[i];
+                    
+                    if (patchData.Type == (int) PATCH_TYPE.EMPTY)
+                        continue;
+                    
+                    PlayerDataManager.AddPatchToStorage(patchData);
+                    scrapPart.Patches[i] = default;
+                }
+                
                 PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
+                
+                
                 _toUndoStack.Push(new ScrapyardEditData
                 {
                     EventType = SCRAPYARD_ACTION.UNEQUIP,
-                    BlockData = blockData
+                    IBlockData = blockData
                 });
                 _toRedoStack.Clear();
 
@@ -443,7 +514,7 @@ namespace StarSalvager
 
             ScrapyardEditData toUndo = _toUndoStack.Pop();
 
-            var undoBlockData = toUndo.BlockData;
+            var undoBlockData = toUndo.IBlockData;
             var partType = (PART_TYPE) undoBlockData.Type;
 
             ScrapyardPart attachable;
@@ -496,7 +567,7 @@ namespace StarSalvager
             ScrapyardEditData toRedo = _toRedoStack.Pop();
 
 
-            var redoBlockData = toRedo.BlockData;
+            var redoBlockData = toRedo.IBlockData;
             var partType = (PART_TYPE) redoBlockData.Type;
 
             ScrapyardPart attachable;

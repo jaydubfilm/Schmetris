@@ -418,9 +418,14 @@ namespace StarSalvager.Utilities
                         case "parts":
                             if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                             {
+                                var patchSockets = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType)
+                                    .PatchSockets;
+                                
                                 var partBlockData = new PartData
                                 {
                                     Type = (int) partType,
+                                    Patches = new PatchData[patchSockets]
+                                    
                                 };
 
                                 for (var i = 0; i < addAmount; i++)
