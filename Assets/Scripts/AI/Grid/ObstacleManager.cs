@@ -35,8 +35,6 @@ namespace StarSalvager
         private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
-        public GameObject RecoveredBotFalling = null;
-        public bool RecoveredBotTowing = false;
 
         public List<Asteroid> Asteroids { get; private set; }
 
@@ -318,13 +316,6 @@ namespace StarSalvager
                 m_bonusShapes.RemoveAt(i);
             }
 
-            if (RecoveredBotFalling != null)
-            {
-                GameObject.Destroy(RecoveredBotFalling);
-                RecoveredBotFalling = null;
-            }
-            RecoveredBotTowing = false;
-
             m_bonusShapes.Clear();
             previousShapesInLevel.Clear();
             m_offGridMovingObstacles.Clear();
@@ -564,14 +555,6 @@ namespace StarSalvager
                     rotate.transform.localRotation *=
                         Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
-            }
-
-            if (RecoveredBotFalling != null && !RecoveredBotTowing)
-            {
-                var pos = RecoveredBotFalling.transform.localPosition;
-                pos -= amountShift;
-
-                RecoveredBotFalling.transform.localPosition = pos;
             }
 
             /*if (Mathf.Abs(m_distanceHorizontal) > 0.2f)

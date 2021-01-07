@@ -261,6 +261,17 @@ namespace StarSalvager
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
 
+        public void DecreaseLevel(int amount = 1)
+        {
+            level = Mathf.Clamp(level - amount, 0, 4);
+            renderer.sortingOrder = level;
+
+            //Sets the gameObject info (Sprite)
+            var bit = this;
+            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
+        }
+
+
         //ISaveable Functions
         //============================================================================================================//
 

@@ -71,8 +71,6 @@ namespace StarSalvager
 
         private static GameUI GameUI => GameUI.Instance;
 
-        private float _waterDrainTimer;
-
         //Magnet Properties
         //====================================================================================================================//
         
@@ -702,14 +700,6 @@ namespace StarSalvager
                 powerValue = 0f;
 
             PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue, false);
-
-
-            _waterDrainTimer += deltaTime * Constants.waterDrainRate;
-
-            if (_waterDrainTimer >= 1 && PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource > 0)
-            {
-                _waterDrainTimer--;
-            }
         }
 
         //Individual Part Functions
@@ -1554,15 +1544,23 @@ namespace StarSalvager
             //If we want to process a bit, we want to remove it from the attached list while its processed
             bot.MarkAttachablePendingRemoval(targetBit);
 
-            //TODO May want to play around with the order of operations here
-            StartCoroutine(RefineBitCoroutine(targetBit,
-                part.transform,
-                orphans,
-                1.6f,
-                () =>
-                {
-                    bot.DestroyAttachable<Bit>(targetBit);
-                }));
+
+            if (targetBit.level >= 2)
+            {
+                targetBit.DecreaseLevel();
+            }
+            else
+            {
+                //TODO May want to play around with the order of operations here
+                StartCoroutine(RefineBitCoroutine(targetBit,
+                    part.transform,
+                    orphans,
+                    1.6f,
+                    () =>
+                    {
+                        bot.DestroyAttachable<Bit>(targetBit);
+                    }));
+            }
 
 
             SessionDataProcessor.Instance.LiquidProcessed(targetBit.Type, amountProcessed);

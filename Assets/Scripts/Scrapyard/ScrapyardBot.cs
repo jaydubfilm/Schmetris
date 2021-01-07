@@ -81,8 +81,6 @@ namespace StarSalvager
                     Patches = new PatchData[patchSockets]
                 });
 
-            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
-
             AttachNewBit(Vector2Int.zero, core);
         }
 
@@ -90,11 +88,6 @@ namespace StarSalvager
         {
             foreach (var attachable in botAttachables)
             {
-                if(attachable is Part part && part.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
-                else if(attachable is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(scrapyardPart, PART_TYPE.RECOVERY);
-
                 AttachNewBit(attachable.Coordinate, attachable);
             }
         }

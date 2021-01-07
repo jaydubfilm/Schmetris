@@ -27,7 +27,7 @@ MonoBehaviour:
     - key: Magnet
       value: 9
     - key: Capacity
-      value: 30
+      value: 60
     - key: SMRTCapacity
       value: 2
     - key: PartCapacity

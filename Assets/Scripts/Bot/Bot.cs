@@ -447,8 +447,6 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            //BotPartsLogic.coreHeat = 0f;
-
             //Add core component
             var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             var core = partFactory.CreateObject<Part>(
@@ -458,8 +456,6 @@ namespace StarSalvager
                     Coordinate = Vector2Int.zero,
                     Patches = new PatchData[patchSockets]
                 });
-
-            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
 
             AttachNewBlock(Vector2Int.zero, core);
 
@@ -481,19 +477,9 @@ namespace StarSalvager
             _isDestroyed = false;
             CompositeCollider2D.enabled = true;
 
-            //BotPartsLogic.coreHeat = 0f;
-
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                if (attachable is Part part && part.Type == PART_TYPE.CORE)
-                {
-                    if(Globals.IsRecoveryBot)
-                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
-
-                    //GameUi.SetHealthValue(part.CurrentHealth / part.BoostedHealth);
-                }
-
                 AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
             }
 
@@ -1610,7 +1596,13 @@ namespace StarSalvager
 
                     break;
                 default:
-                    return;
+                    float curLiquid = PlayerDataManager.GetResource(bit.Type).liquid;
+                    float curLiquidCapacity = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
+                    if (curLiquid / curLiquidCapacity > 0.5f)
+                    {
+                        return;
+                    }
+                    break;
             }
 
             var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;

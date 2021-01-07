@@ -29,7 +29,6 @@ namespace StarSalvager.Values
         public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
-        public static bool IsRecoveryBot = false;
         public static int CameraScaleSize = 51;
 
 
@@ -39,7 +38,6 @@ namespace StarSalvager.Values
         
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
-        public static bool AllowAccessToUnlockedLaterWaves => m_gameSettings.allowAccessToUnlockedLaterWaves;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
@@ -62,9 +60,6 @@ namespace StarSalvager.Values
         public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
 
         public static float GameUIResourceThreshold => m_gameSettings.gameUIResourceThreshold;
-        public static bool OnlyGetWaveLootOnce => m_gameSettings.onlyGetWaveLootOnce;
-        public static bool RecoveryOfDroneLocksHorizontalMovement => m_gameSettings.recoveryOfDroneLocksHorizontalMovement;
-        public static bool ShortcutJumpToAfter => m_gameSettings.shortcutJumpToAfter;
 
         public static float BotEnterScreenMaxSize => m_gameSettings.botEnterScreenMaxSize;
         public static float BotExitScreenMaxSize => m_gameSettings.botExitScreenMaxSize;

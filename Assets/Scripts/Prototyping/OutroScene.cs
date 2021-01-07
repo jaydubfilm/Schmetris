@@ -43,12 +43,12 @@ namespace StarSalvager.Prototype
             dialogueLines.Clear();
             dialogueLines.Add((1, "The drone is lost. May death take us quickly."));
             dialogueLines.Add((0, "It’s been a pleasure and an honour, Captain."));
-            dialogueLines.Add((1, $"{PlayerDataManager.GetResource(BIT_TYPE.GREY).resource + 1} perfectly refined scrap metal bits. And for what?"));
+            /*dialogueLines.Add((1, $"{PlayerDataManager.GetResource(BIT_TYPE.GREY).resource + 1} perfectly refined scrap metal bits. And for what?"));
             dialogueLines.Add((0, $"I thought it was {PlayerDataManager.GetResource(BIT_TYPE.GREY).resource}."));
             dialogueLines.Add((1, "Nah I’ve had this one in my pocket since yesterday. What? I like how it feels."));
             dialogueLines.Add((0, $"{ PlayerDataManager.GetResource(BIT_TYPE.GREY).resource + 1} metal bits is enough to craft another drone core."));
             dialogueLines.Add((0, "(ahem) Captain… it’ll put a dent in our cargo stores, but -"));
-            dialogueLines.Add((1, "Are you saying we’re still in the game?"));
+            dialogueLines.Add((1, "Are you saying we’re still in the game?"));*/
             dialogueLines.Add((0, "We’re still in the game!"));
 
             _outroSceneStage = 0;
@@ -125,10 +125,6 @@ namespace StarSalvager.Prototype
                 PlayerDataManager.GetRunSummaryString(),
                 () =>
                 {
-                    
-                    //Alert.ShowDancers(false);
-                    Globals.IsRecoveryBot = false;
-                    GameUI.Instance.ShowRecoveryBanner(false);
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
                     
@@ -147,12 +143,6 @@ namespace StarSalvager.Prototype
                 "Main Menu",
                 GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
-            
-            /*Alert.ShowAlert("GAME OVER",
-                PlayerDataManager.GetRunSummaryString(),
-                "Finish",
-                );
-            Alert.SetLineHeight(90f);*/
         }
         
 

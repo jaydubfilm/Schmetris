@@ -351,68 +351,24 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
             
-            
-
             PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
-
-            if (Globals.IsRecoveryBot)
-            {
-                m_levelManagerUI.ShowSummaryWindow("DRONE RECOVERED",
-                    "Congratulations, Captain, you have recovered your drone!\nReturn to base and repair its damaged parts.", 
-                    () =>
-                    {
-                        GameUi.ShowRecoveryBanner(false);
-                        GameTimer.SetPaused(false);
-                        GameManager.SetCurrentGameState(GameState.Scrapyard);
-                        ProcessLevelCompleteAnalytics();
-                        ProcessScrapyardUsageBeginAnalytics();
-
-                        ScreenFade.Fade(() =>
-                        {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
-                        });
-                    },
-                    "Return");
-            }
-            /*else if (EndSectorState)
-            {
-                m_levelManagerUI.ShowSummaryWindow("Sector Completed",
-                    "You beat the last wave of the sector. Return to base!", () =>
-                    {
-                        GameTimer.SetPaused(false);
-                        GameManager.Instance.SetCurrentGameState(GameState.Scrapyard);
-                        ProcessLevelCompleteAnalytics();
-                        ProcessScrapyardUsageBeginAnalytics();
-                        ResetLevelTimer();
-
-                        ScreenFade.Fade(() =>
-                        {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
-                        });
-                    });
-            }*/
-            else
-            {
-                AudioController.CrossFadeTrack(MUSIC.NONE);
+            AudioController.CrossFadeTrack(MUSIC.NONE);
                 
-                m_levelManagerUI.ShowSummaryWindow(
-                    WaveEndSummaryData.WaveEndTitle,
-                    m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                    () => 
+            m_levelManagerUI.ShowSummaryWindow(
+                WaveEndSummaryData.WaveEndTitle,
+                m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                () => 
+            {
+
+                GameManager.SetCurrentGameState(GameState.UniverseMap);
+                ProcessScrapyardUsageBeginAnalytics();
+
+                ScreenFade.Fade(() =>
                 {
-
-                    GameManager.SetCurrentGameState(GameState.UniverseMap);
-                    ProcessScrapyardUsageBeginAnalytics();
-
-                    ScreenFade.Fade(() =>
-                    {
-                        SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
-                    });
-                },
-                    "Continue");
-            }
-
-
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
+                });
+            },
+                "Continue");
 
             Dictionary<string, object> levelCompleteAnalyticsDictionary =
                 WaveEndSummaryData.GetWaveEndSummaryAnalytics();
@@ -430,8 +386,6 @@ namespace StarSalvager
             EnemiesKilledInWave.Clear();
             
             ProjectileManager.CleanProjectiles();
-
-            Globals.IsRecoveryBot = false;
         }
 
         //FIXME This will need to be cleaned up
@@ -442,14 +396,7 @@ namespace StarSalvager
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
             if (botMoveOffScreenSpeed < 20)
             {
-                if (Globals.IsRecoveryBot && !ObstacleManager.RecoveredBotTowing)
-                {
-                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 0.25f;
-                }
-                else
-                {
-                    botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
-                }
+                botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
             }
 
             foreach (var bot in m_bots)
@@ -458,25 +405,6 @@ namespace StarSalvager
                 float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
                     (bot.transform.position.y - offset) / (yPos - offset));
                 bot.transform.localScale = new Vector2(scale, scale);
-
-
-                const float distanceTrail = 6.0f;
-                if (ObstacleManager.RecoveredBotFalling != null && bot.transform.position.y >=
-                    ObstacleManager.RecoveredBotFalling.transform.position.y + distanceTrail)
-                {
-                    if (!ObstacleManager.RecoveredBotTowing)
-                    {
-                        CreateTowEffect();
-                        AudioController.PlaySound(SOUND.RECOVERY_TOW);
-                    }
-
-                    ObstacleManager.RecoveredBotTowing = true;
-                    ObstacleManager.RecoveredBotFalling.transform.position =
-                        bot.transform.position + (Vector3.down * distanceTrail);
-
-                    UpdateTowLineRenderer(bot.transform.position,
-                        ObstacleManager.RecoveredBotFalling.transform.position);
-                }
                 
                 m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
             }
@@ -492,18 +420,6 @@ namespace StarSalvager
 
             _towLineRenderer.widthMultiplier = 0.2f;
             _towLineRenderer.startColor = _towLineRenderer.endColor = Color.gray;
-        }
-
-        private void UpdateTowLineRenderer(Vector3 botPosition, Vector3 recoveryDronePosition)
-        {
-            if (!_towLineRenderer)
-                return;
-            
-            _towLineRenderer.SetPositions(new []
-            {
-                botPosition,
-                recoveryDronePosition
-            });
         }
 
         //====================================================================================================================//
@@ -537,7 +453,7 @@ namespace StarSalvager
         {
             var yPos = Constants.gridCellSize * Globals.GridSizeY;
 
-            return m_bots[0].transform.position.y >= yPos && (ObstacleManager.RecoveredBotFalling == null || ObstacleManager.RecoveredBotFalling.transform.position.y > yPos);
+            return m_bots[0].transform.position.y >= yPos;
         }
 
         //LevelManager Functions
@@ -579,10 +495,7 @@ namespace StarSalvager
             InputManager.Instance.InitInput();
             InputManager.Instance.LockRotation = true;
 
-            WaterAtBeginningOfWave = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
-
             SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
-
             
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
@@ -640,11 +553,6 @@ namespace StarSalvager
                 m_bots.RemoveAt(i);
             }
 
-            if (!Globals.IsRecoveryBot)
-            {
-                LiquidResourcesCachedOnDeath.Clear();
-            }
-
             ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
 
             m_waveEndSummaryData = null;
@@ -668,44 +576,12 @@ namespace StarSalvager
 
         private void SetupLevelAnalytics()
         {
-            Dictionary<int, float> tempResourceDictionary = new Dictionary<int, float>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                tempResourceDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-
-            /*Dictionary<int, int> tempComponentDictionary = new Dictionary<int, int>();
-            foreach (var component in PlayerDataManager.GetComponents())
-            {
-                tempComponentDictionary.Add((int)component.Key, component.Value);
-            }*/
-
             Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
             {
 
             };
             string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
-        }
-
-        private void CheckPlayerWater()
-        {
-            var amount = PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource;
-            var required = Instance.CurrentWaveData.GetWaveDuration() * Constants.waterDrainRate;
-
-            if (amount >= required)
-                return;
-            
-            GameTimer.SetPaused(true);
-            m_levelManagerUI.ShowSummaryWindow("Almost out of water",
-                "You are nearly out of water at base. You will have to return home at the end of this wave with extra water.",
-                () => { GameTimer.SetPaused(false); },
-                "Return",
-                GameUI.WindowSpriteSet.TYPE.RED
-            );
         }
         
         //============================================================================================================//
@@ -777,32 +653,6 @@ namespace StarSalvager
             if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
             {
                 PlayerDataManager.AddCompletedNode(curNodeIndex);
-            }
-
-            if (Globals.IsRecoveryBot)
-            {
-                ScrapyardBot scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
-                Globals.IsRecoveryBot = false;
-                var currentBlockData = PlayerDataManager.GetBlockDatas();
-                Globals.IsRecoveryBot = true;
-                //Checks to make sure there is a core on the bot
-                if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
-                {
-                    scrapyardBot.InitBot();
-                }
-                else
-                {
-                    Globals.IsRecoveryBot = false;
-                    var importedData = currentBlockData.ImportBlockDatas(true);
-                    scrapyardBot.InitBot(importedData);
-                    Globals.IsRecoveryBot = true;
-                }
-                if (!Globals.RecoveryOfDroneLocksHorizontalMovement)
-                {
-                    scrapyardBot.transform.parent = m_obstacleManager.WorldElementsRoot;
-                }
-                scrapyardBot.transform.position = m_bots[0].transform.position + (Vector3.up * (Globals.GridSizeY * Constants.gridCellSize));
-                ObstacleManager.RecoveredBotFalling = scrapyardBot.gameObject;
             }
 
             for (int i = 0; i < m_bots.Count; i++)
@@ -908,7 +758,7 @@ namespace StarSalvager
                 switch (loot[i])
                 {
                     case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddResource(rdsValueResourceRefined.rdsValue.Item2);
+                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddLiquid(rdsValueResourceRefined.rdsValue.Item2);
                         loot.RemoveAt(i);
                         break;
                     case RDSValue<Blueprint> rdsValueBlueprint:
@@ -971,8 +821,6 @@ namespace StarSalvager
 
             ScreenFade.Fade(() =>
             {
-                Globals.IsRecoveryBot = true;
-                GameUi.ShowRecoveryBanner(true);
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
             });
             
@@ -993,18 +841,6 @@ namespace StarSalvager
 
             InputManager.Instance.CancelMove();
             InputManager.Instance.LockRotation = true;
-
-            if (!Globals.IsRecoveryBot)
-            {
-                foreach (Bot bot in m_bots)
-                {
-                    IAttachable attachable = bot.attachedBlocks.First(a => a.Coordinate == Vector2.zero);
-                    if (attachable is Part core)
-                    {
-                        //core.SetupHealthValuesWithoutChangingSprite(core.StartingHealth, core.StartingHealth / 2);
-                    }
-                }
-            }
 
             SavePlayerData();
             GameManager.SetCurrentGameState(GameState.LevelBotDead);
@@ -1030,30 +866,14 @@ namespace StarSalvager
             SessionDataProcessor.Instance.PlayerKilled();
             SessionDataProcessor.Instance.EndActiveWave();
 
-            if (!Globals.IsRecoveryBot)
-            {
-                m_levelManagerUI.ShowSummaryWindow("DRONE DISABLED",
-                    "You have lost communication with your main drone.\nDeploy your recovery drone to attempt a rescue.",
-                    () =>
-                    {
-                        RestartLevel();
-                    },
-                    "Deploy",
-                    GameUI.WindowSpriteSet.TYPE.RED);
+            //Alert.ShowDancers(true);
+            AudioController.CrossFadeTrack(MUSIC.NONE);
 
-                //m_levelManagerUI.ToggleDeathUIActive(true, deathMethod);
-            }
-            else
-            {
-                //Alert.ShowDancers(true);
-                AudioController.CrossFadeTrack(MUSIC.NONE);
+            m_runLostState = true;
+            //GameTimer.SetPaused(false);
 
-                m_runLostState = true;
-                //GameTimer.SetPaused(false);
-
-                OutroScene.gameObject.SetActive(true);
-                GameUI.Instance.FadeBackground(true);
-            }
+            OutroScene.gameObject.SetActive(true);
+            GameUI.Instance.FadeBackground(true);
         }
 
         //IReset Functions

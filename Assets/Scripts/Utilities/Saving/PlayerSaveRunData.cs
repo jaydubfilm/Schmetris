@@ -24,11 +24,11 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonProperty]
         private List<PlayerResource> _playerResources = new List<PlayerResource>() {
-            new PlayerResource(BIT_TYPE.BLUE, 75, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.GREEN, 0, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.GREY, 0, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.RED, 100, 300, 30, 0, 30, 0),
-            new PlayerResource(BIT_TYPE.YELLOW, 0, 300, 0, 0, 0, 0)
+            new PlayerResource(BIT_TYPE.BLUE, 0, 0),
+            new PlayerResource(BIT_TYPE.GREEN, 0, 0),
+            new PlayerResource(BIT_TYPE.GREY, 0, 0),
+            new PlayerResource(BIT_TYPE.RED, 30, 0),
+            new PlayerResource(BIT_TYPE.YELLOW, 0, 0)
         };
 
         public int RationCapacity = 500;
@@ -51,9 +51,8 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 };*/
 
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
-        public List<IBlockData> recoveryDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
-        
+
         public List<PatchData> patchesInStorage = new List<PatchData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
@@ -230,20 +229,6 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             mainDroneBlockData.AddRange(blockData);
         }
 
-        public List<IBlockData> GetRecoveryDroneBlockData()
-        {
-            return recoveryDroneBlockData;
-        }
-
-        public void SetRecoveryDroneBlockData(List<IBlockData> blockData)
-        {
-            recoveryDroneBlockData.Clear();
-            recoveryDroneBlockData.AddRange(blockData);
-        }
-
-        //Parts
-        //====================================================================================================================//
-        
         public List<IBlockData> GetCurrentPartsInStorage()
         {
             return partsInStorageBlockData;
@@ -280,7 +265,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         {
             return patchesInStorage;
         }
-        
+
         public void AddPatchToStorage(PatchData patchData)
         {
             patchesInStorage.Add(patchData);
@@ -293,7 +278,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
             if (index < 0)
                 throw new ArgumentException();
-            
+
             patchesInStorage.RemoveAt(index);
         }
 
@@ -301,12 +286,12 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         {
             if (index >= patchesInStorage.Count)
                 return;
-            
+
             patchesInStorage.RemoveAt(index);
         }
 
         //====================================================================================================================//
-        
+
 
         public void SaveData()
         {
