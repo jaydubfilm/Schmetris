@@ -166,7 +166,7 @@ namespace StarSalvager
                         return;
                     }
 
-                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate);
                 } 
             }
                 
@@ -292,7 +292,7 @@ namespace StarSalvager
 
                 foreach (var remove in toRemove)
                 {
-                    _scrapyardBot.TryRemoveAttachableAt(remove.Coordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(remove.Coordinate);
                 }
             }
 

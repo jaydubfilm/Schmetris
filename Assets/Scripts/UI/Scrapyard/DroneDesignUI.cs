@@ -117,8 +117,6 @@ namespace StarSalvager.UI.Scrapyard
             Camera.onPostRender -= _droneDesigner.DrawGL;
             _droneDesigner.RecycleDrone();
 
-            DroneDesigner?.ClearUndoRedoStacks();
-
             PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
             PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;
             

@@ -10,7 +10,6 @@ namespace StarSalvager.Utilities.Analytics.Data
     [Serializable]
     public struct ComponentSummaryData
     {
-        [HideInInspector, HideInTables] public COMPONENT_TYPE type;
         [DisplayAsString] public int collected;
         [DisplayAsString] public int diconnected;
 
@@ -22,7 +21,7 @@ namespace StarSalvager.Utilities.Analytics.Data
 
         private Sprite GetSprite()
         {
-            return UnityEngine.Object.FindObjectOfType<FactoryManager>().ComponentProfile.GetProfile(type).GetSprite(0);
+            return UnityEngine.Object.FindObjectOfType<FactoryManager>().componentSprite;
         }
 
 

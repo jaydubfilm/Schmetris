@@ -60,9 +60,12 @@ MonoBehaviour:
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}
   bitProfile: {fileID: 11400000, guid: 30d05195f0c0d17489f40a71c8b0f9c2, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
-  componentProfile: {fileID: 11400000, guid: 0162e5c6fcd936548b93c28b633aa41e, type: 2}
+  componentPrefab: {fileID: 2338614340111776972, guid: 5a3c5e73739d8214988059505400adfa,
+    type: 3}
   componentRemoteData: {fileID: 11400000, guid: 523cb1ee8ef6f2f42b0810f1cbbb34e3,
     type: 2}
+  componentSprite: {fileID: -1898356965268507749, guid: 862bb916985978d4f88cee2b8cd29d02,
+    type: 3}
   partProfile: {fileID: 11400000, guid: 7d66a1c3ee1addb46aafb73e393bb79c, type: 2}
   partRemoteData: {fileID: 11400000, guid: 9631580295037634aa09b50d158e6b05, type: 2}
   shapePrefab: {fileID: 3556400771574459110, guid: 4cdd28f9004e4354b98be3c83792613a,

@@ -36,7 +36,7 @@ namespace StarSalvager.Utilities.Extensions
             if (sessionSummaryData.ComponentSummaryData == null)
                 sessionSummaryData.ComponentSummaryData = new List<ComponentSummaryData>();
 
-            foreach (var componentSummary in toAdd.ComponentSummaryData)
+            /*foreach (var componentSummary in toAdd.ComponentSummaryData)
             {
                 var index = sessionSummaryData.ComponentSummaryData.FindIndex(x => x.type == componentSummary.type);
                 if (index < 0)
@@ -50,7 +50,7 @@ namespace StarSalvager.Utilities.Extensions
 
                     sessionSummaryData.ComponentSummaryData[index] = temp;
                 }
-            }
+            }*/
 
             if (sessionSummaryData.enemiesKilledData == null)
                 sessionSummaryData.enemiesKilledData = new List<EnemySummaryData>();

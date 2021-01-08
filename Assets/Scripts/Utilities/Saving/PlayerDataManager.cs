@@ -83,10 +83,12 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerRunData.GetResource(bitType);
         }
+
         public static int GetComponents()
         {
             return PlayerRunData.Components;
         }
+
         /*public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
         {
             return PlayerRunData.Components;
@@ -121,83 +123,12 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public static void AddPartResources(IBlockData blockData, bool isRecursive)
-        {
-            if (!blockData.ClassType.Equals(nameof(Part)))
-                return;
-
-            AddPartResources((PART_TYPE)blockData.Type, 0, isRecursive);
-        }
-
-        public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
-        {
-            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            AddCraftCostResources(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                AddPartResources(partType, level - 1, isRecursive);*/
-        }
-
-        public static void SubtractPartResources(PART_TYPE partType, float costModifier = 1.0f)
-        {
-            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostResources(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartResources(partType, level - 1, isRecursive, costModifier);*/
-        }
-
-        public static void SubtractComponents(IEnumerable<CraftCost> cost)
-        {
-            SubtractCraftCostComponents(cost);
-
-            OnValuesChanged?.Invoke();
-        }
-
         public static void AddComponent(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddComponent(amount);
 
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractPartCosts(PART_TYPE partType, float costModifier = 1.0f)
-        {
-            SubtractPartResources(partType, costModifier);
-            SubtractPartComponents(partType);
-            SubtractPartPremades(partType);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractPartComponents(PART_TYPE partType)
-        {
-            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostComponents(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartComponents(partType, level - 1, isRecursive);*/
-        }
-
-        public static void SubtractCraftCostComponents(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Component)
-                    continue;
-
-                SubtractComponent(resource.amount);
-            }
         }
 
         public static void SubtractComponent(int amount)
@@ -207,107 +138,10 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractPartPremades(PART_TYPE partType)
-        {
-            /*var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostPremades(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartPremades(partType, level - 1, isRecursive);*/
-        }
-
-        public static void SubtractCraftCostPremades(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Part)
-                    continue;
-
-                SubtractPremade((PART_TYPE)resource.type, resource.partPrerequisiteLevel, resource.amount);
-            }
-        }
-
-        public static void SubtractPremade(PART_TYPE partType, int level, int amount)
-        {
-            List<IBlockData> storedMatches = PlayerRunData.partsInStorageBlockData.FindAll(p => p.Type == (int)partType);
-
-            if (storedMatches.Count < amount)
-            {
-                Debug.LogError("Tried to subtract premade parts that don't exist");
-            }
-
-            for (int i = 0; i < amount; i++)
-            {
-                PlayerRunData.RemovePartFromStorage(storedMatches[0]);
-            }
-
-            OnValuesChanged?.Invoke();
-        }
-
         //FIXME This should be stored via Account, not Run
         public static void AddDontShowAgainKey(string key)
         {
             PlayerRunData.AddDontShowAgainKey(key);
-        }
-
-        //============================================================================================================//
-
-        public static bool CanAffordPart(PART_TYPE partType)
-        {
-            /*bool hasResources;
-            bool hasComponents;
-            bool hasParts;
-
-            var resourceCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasResources = CanAffordCraftCostResources(resourceCosts);
-
-            var componentCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasComponents = CanAffordCraftCostComponents(componentCosts);
-
-            var premadeCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasParts = CanAffordCraftCostPremades(premadeCosts);
-
-            return hasResources && hasComponents && hasParts;*/
-
-            return true;
-        }
-
-        public static bool CanAffordCraftCostComponents(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Component)
-                    continue;
-
-                if (PlayerRunData.Components < resource.amount)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool CanAffordCraftCostPremades(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Part)
-                    continue;
-
-                if (resource.type == (int)PART_TYPE.CORE)
-                    continue;
-
-                var partCount = PlayerRunData.partsInStorageBlockData.Count(p => p.Type == resource.type );
-
-                if (partCount < resource.amount)
-                    return false;
-            }
-
-            return true;
         }
 
         //====================================================================================================================//

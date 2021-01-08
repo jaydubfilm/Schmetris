@@ -1,10 +1,12 @@
 ﻿using System;
 using Recycling;
+using StarSalvager.Factories;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IObstacle, ICustomRecycle
+    public class Component : CollidableBase, IObstacle
     {
         
         //IObstacle Properties
@@ -20,17 +22,17 @@ namespace StarSalvager
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             var bot = gameObject.GetComponent<Bot>();
-            
-            //TODO Collect the component
-            throw new NotImplementedException($"Collecting {nameof(Component)} not yet implemented");
+
+            if (bot == null)
+            {
+                return;
+            }
+
+            PlayerDataManager.AddComponent(FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained());
+
+            Recycler.Recycle<Component>(this);
 
         }
-        
-        public virtual void CustomRecycle(params object[] args)
-        {
-
-        }
-
     }
 }
 

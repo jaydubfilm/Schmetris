@@ -29,8 +29,6 @@ namespace StarSalvager.UI
         [SerializeField]
         private GameObject costPrefab;
 
-        private List<CostUIElement> costElements;
-
         private RectTransform _canvasTr;
         private RectTransform partDragImageTransform;
 
@@ -50,8 +48,6 @@ namespace StarSalvager.UI
 
                 logoImage.sprite = _partAttachableFactory.GetProfileData(partRemote.partType).Sprites[0];
                 partNameText.text = partRemote.name;
-
-                costElements = new List<CostUIElement>();
 
                 button.onClick.AddListener(() =>
                 {

@@ -71,7 +71,7 @@ namespace StarSalvager.Utilities.Analytics.Data
                     }
                 }
 
-                foreach (var componentSummary in waveData.ComponentSummaryData)
+                /*foreach (var componentSummary in waveData.ComponentSummaryData)
                 {
                     var index = ComponentSummaryData.FindIndex(x => x.type == componentSummary.type);
                     if (index < 0)
@@ -85,7 +85,7 @@ namespace StarSalvager.Utilities.Analytics.Data
 
                         ComponentSummaryData[index] = temp;
                     }
-                }
+                }*/
 
                 foreach (var enemySummary in waveData.enemiesKilledData)
                 {

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace StarSalvager
 {
     [RequireComponent(typeof(SimpleAnimator))]
-    public class AnimatedComponent :  Component, IOverrideRecycleType, ISimpleAnimation
+    public class AnimatedComponent :  Component, ICustomRecycle, ISimpleAnimation
     {
         public SimpleAnimator SimpleAnimator
         {
@@ -22,10 +22,8 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        public override void CustomRecycle(params object[] args)
+        public void CustomRecycle(params object[] args)
         {
-            base.CustomRecycle(args);
-            
             _simpleAnimator.Stop();
         }
 

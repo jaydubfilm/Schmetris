@@ -65,9 +65,6 @@ namespace StarSalvager
         private List<GameObject> _floatingPartWarnings;
         private List<GameObject> _availablePointMarkers;
 
-        private Stack<ScrapyardEditData> _toUndoStack;
-        private Stack<ScrapyardEditData> _toRedoStack;
-
         private ScrapyardLayout _currentLayout;
 
         public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
@@ -87,8 +84,6 @@ namespace StarSalvager
         {
             _floatingPartWarnings = new List<GameObject>();
             _availablePointMarkers = new List<GameObject>();
-            _toUndoStack = new Stack<ScrapyardEditData>();
-            _toRedoStack = new Stack<ScrapyardEditData>();
             _scrapyardLayouts = Files.ImportLayoutData();
             _currentLayout = null;
             IsUpgrading = false;
@@ -276,7 +271,7 @@ namespace StarSalvager
 
             Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
 
-            _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+            _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate);
 
             SelectedBrick = partAtCoordinates.ToBlockData();
 
@@ -377,25 +372,10 @@ namespace StarSalvager
                     SelectedBrick.Coordinate = mouseGridCoordinate;
 
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
-
-                    _toUndoStack.Push(new ScrapyardEditData
-                    {
-                        EventType = SCRAPYARD_ACTION.EQUIP,
-                        IBlockData = SelectedBrick
-                    });
-                    _toRedoStack.Clear();
                 }
                 else
                 {
                     SelectedBrick.Coordinate = SelectedPartPreviousGridPosition.Value;
-
-                    _toUndoStack.Push(new ScrapyardEditData
-                    {
-                        EventType = SCRAPYARD_ACTION.RELOCATE,
-                        Destination = mouseGridCoordinate,
-                        IBlockData = SelectedBrick
-                    });
-                    _toRedoStack.Clear();
                 }
 
 
@@ -466,7 +446,7 @@ namespace StarSalvager
 
                 var blockData = scrapPart.ToBlockData();
                 blockData.Coordinate = mouseCoordinate;
-                _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate);
 
                 for (int i = 0; i < scrapPart.Patches.Length; i++)
                 {
@@ -480,14 +460,6 @@ namespace StarSalvager
                 }
                 
                 PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
-                
-                
-                _toUndoStack.Push(new ScrapyardEditData
-                {
-                    EventType = SCRAPYARD_ACTION.UNEQUIP,
-                    IBlockData = blockData
-                });
-                _toRedoStack.Clear();
 
                 SaveBlockData();
             }
@@ -501,125 +473,6 @@ namespace StarSalvager
         }
 
         #endregion //User Input
-
-        //============================================================================================================//
-
-        #region Undo/Redo Stack
-
-        public void UndoStackPop()
-        {
-            if (_toUndoStack.Count == 0 || _scrapyardBot == null)
-                return;
-
-            ScrapyardEditData toUndo = _toUndoStack.Pop();
-
-            var undoBlockData = toUndo.IBlockData;
-            var partType = (PART_TYPE) undoBlockData.Type;
-
-            ScrapyardPart attachable;
-
-            switch (toUndo.EventType)
-            {
-                case SCRAPYARD_ACTION.EQUIP:
-                    PlayerDataManager.AddPartToStorage
-                        (_scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == undoBlockData.Coordinate).ToBlockData());
-                    _scrapyardBot.TryRemoveAttachableAt(undoBlockData.Coordinate, false);
-                    break;
-                case SCRAPYARD_ACTION.UNEQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
-                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
-                    _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
-                    break;
-                case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
-                    _scrapyardBot.TryRemoveAttachableAt(toUndo.Destination, false);
-                    _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
-                    break;
-                case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    PlayerDataManager.SubtractPartCosts(partType);
-                    PlayerDataManager.AddPartToStorage(undoBlockData);
-                    break;
-                case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
-                    PlayerDataManager.SubtractPartCosts(partType);
-                    _scrapyardBot.AttachNewBit(undoBlockData.Coordinate, attachable);
-                    break;
-                case SCRAPYARD_ACTION.ROTATE:
-                    RotateBots(-toUndo.Value, false);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(toUndo.EventType), toUndo.EventType, null);
-            }
-
-            DroneDesignUi.RefreshScrollViews();
-            SaveBlockData();
-
-            UpdateFloatingMarkers(false);
-            _toRedoStack.Push(toUndo);
-        }
-
-        public void RedoStackPop()
-        {
-            if (_toRedoStack.Count == 0 || _scrapyardBot == null)
-                return;
-
-            ScrapyardEditData toRedo = _toRedoStack.Pop();
-
-
-            var redoBlockData = toRedo.IBlockData;
-            var partType = (PART_TYPE) redoBlockData.Type;
-
-            ScrapyardPart attachable;
-
-            switch (toRedo.EventType)
-            {
-                case SCRAPYARD_ACTION.EQUIP:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
-                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
-                    _scrapyardBot.AttachNewBit(redoBlockData.Coordinate, attachable);
-                    break;
-                case SCRAPYARD_ACTION.UNEQUIP:
-                    PlayerDataManager.AddPartToStorage
-                        (_scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>().FirstOrDefault(a => a.Coordinate == redoBlockData.Coordinate).ToBlockData());
-                    _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
-                    break;
-                case SCRAPYARD_ACTION.RELOCATE:
-                    attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partType);
-                    _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
-                    _scrapyardBot.AttachNewBit(toRedo.Destination, attachable);
-                    break;
-                case SCRAPYARD_ACTION.DISMANTLE_FROM_STORAGE:
-                    PlayerDataManager.AddPartResources(partType, 0, true);
-                    PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
-                    break;
-                case SCRAPYARD_ACTION.DISMANTLE_FROM_BOT:
-                    PlayerDataManager.AddPartResources(partType, 0, true);
-                    _scrapyardBot.TryRemoveAttachableAt(redoBlockData.Coordinate, false);
-                    break;
-                case SCRAPYARD_ACTION.ROTATE:
-                    RotateBots(toRedo.Value, false);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(toRedo.EventType), toRedo.EventType, null);
-            }
-
-            DroneDesignUi.RefreshScrollViews();
-            SaveBlockData();
-
-            UpdateFloatingMarkers(false);
-            _toUndoStack.Push(toRedo);
-        }
-
-        public void ClearUndoRedoStacks()
-        {
-            if (!_isStarted)
-                return;
-
-            _toUndoStack.Clear();
-            _toRedoStack.Clear();
-        }
-
-        #endregion //Stack
 
         //============================================================================================================//
 
@@ -1021,19 +874,11 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void RotateBots(float direction, bool pushToUndoStack = true)
+        public void RotateBots(float direction)
         {
             if (_scrapyardBot != null)
             {
                 _scrapyardBot.Rotate(direction);
-                if (pushToUndoStack)
-                {
-                    _toUndoStack.Push(new ScrapyardEditData
-                    {
-                        EventType = SCRAPYARD_ACTION.ROTATE,
-                        Value = direction
-                    });
-                }
             }
         }
 
