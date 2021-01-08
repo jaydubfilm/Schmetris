@@ -211,6 +211,7 @@ namespace StarSalvager
             GameTimer.SetPaused(true);
 
             SellBits();
+            SetupDrone();
 
             UpdateFloatingMarkers(false);
 

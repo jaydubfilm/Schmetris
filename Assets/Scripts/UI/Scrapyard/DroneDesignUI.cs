@@ -100,7 +100,6 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
-            _droneDesigner.SetupDrone();
 
             if (_scrollViewsSetup)
                 RefreshScrollViews();
