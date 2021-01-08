@@ -27,8 +27,6 @@ namespace StarSalvager.Editor.CustomEditors
         public List<PartPath> PartPaths = new List<PartPath>();
         [HideInInspector]
         public List<BitPath> BitPaths = new List<BitPath>();
-        [HideInInspector]
-        public List<ComponentPath> ComponentPaths = new List<ComponentPath>();
 
         public string GetTypePath<TE>(TE type) where TE: Enum
         {
@@ -42,8 +40,6 @@ namespace StarSalvager.Editor.CustomEditors
                 case BIT_TYPE _:
                     path = Path.Combine(bitSpritePath, type.ToString());
                     break;
-                case COMPONENT_TYPE _:
-                    throw new NotImplementedException();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -61,9 +57,6 @@ namespace StarSalvager.Editor.CustomEditors
                 case BIT_TYPE bitType:
                     return BitPaths.FirstOrDefault(x => x.Type == bitType)?.path;
                 
-                case COMPONENT_TYPE componentType:
-                    return ComponentPaths.FirstOrDefault(x => x.Type == componentType)?.path;
-                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -78,10 +71,6 @@ namespace StarSalvager.Editor.CustomEditors
                 
                 case BIT_TYPE bitType:
                     UpdateAddEntry(ref BitPaths, bitType, newPath);
-                    break;
-                
-                case COMPONENT_TYPE componentType:
-                    UpdateAddEntry(ref ComponentPaths, componentType, newPath);
                     break;
                 
                 default:
@@ -114,8 +103,6 @@ namespace StarSalvager.Editor.CustomEditors
     
     [Serializable]
     public class BitPath : DataPathBase<BIT_TYPE> { }
-    [Serializable]
-    public class ComponentPath : DataPathBase<COMPONENT_TYPE> { }
 
     [Serializable]
     public abstract class DataPathBase<TE> : IEquatable<DataPathBase<TE>> where TE : Enum

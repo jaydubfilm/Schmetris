@@ -6,8 +6,12 @@
         DAMAGE,
         RANGE,
         FIRE_RATE,
-        AOE,
         EFFICIENCY,
-        DURATION
+        DURATION,
+        CRITICAL,
+        ELECTRIC,
+        CORROSIVE,
+        REINFORCED,
+        SPECIALIST
     }
 }

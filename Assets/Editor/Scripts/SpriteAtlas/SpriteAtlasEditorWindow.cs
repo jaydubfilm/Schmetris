@@ -53,21 +53,6 @@ namespace StarSalvager.Editor
 
             }
         }
-        [Serializable]
-        private class ComponentAtlasData : AtlasDataBase<COMPONENT_TYPE>
-        {
-            protected override string GetName()
-            {
-                var factory = FindObjectOfType<FactoryManager>();
-
-                if (factory is null)
-                    return type.ToString();
-
-                var remoteData = factory.componentRemoteData.GetRemoteData(type);
-
-                return remoteData is null ? type.ToString() : remoteData.name;
-            }
-        }
 
         //SpriteAtlasEditor Properties
         //====================================================================================================================//
@@ -116,9 +101,6 @@ namespace StarSalvager.Editor
         
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
         private List<BitAtlasData> bitAtlasDatas;
-        
-        //[SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
-        private List<ComponentAtlasData> componentAtlasDatas;
 
         private void SetupLists()
         {

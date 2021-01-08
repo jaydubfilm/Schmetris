@@ -45,6 +45,8 @@ namespace StarSalvager
             }
         }
 
+        #region Properties
+
         public List<BIT_TYPE> CurrentlyUsedBitTypes => _currentlyUsedBitTypes;
         private List<BIT_TYPE> _currentlyUsedBitTypes = new List<BIT_TYPE>();
 
@@ -93,18 +95,6 @@ namespace StarSalvager
         [SerializeField, BoxGroup("BurnRates")]
         private bool useBurnRate = true;
 
-        /*[SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
-        public float coreHeat;
-
-        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("/s", Overlay = true)]
-        private float coolSpeed;
-
-        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("s", Overlay = true)]
-        private float coolDelay;
-
-        [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        private float _coreCoolTimer;*/
-
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int MagnetCount { get; private set; }
         private int _magnetOverride;
@@ -132,6 +122,8 @@ namespace StarSalvager
 
         private static PartAttachableFactory _partAttachableFactory;
 
+        #endregion //Properties
+
         //Unity Functions
         //==============================================================================================================//
 
@@ -149,14 +141,6 @@ namespace StarSalvager
         {
             PlayerDataManager.OnValuesChanged -= ForceUpdateResourceUI;
         }
-
-        //==============================================================================================================//
-        
-        /*public void AddCoreHeat(float amount)
-        {
-            coreHeat += amount;
-            _coreCoolTimer = coolDelay;
-        }*/
 
         //====================================================================================================================//
         
@@ -198,16 +182,9 @@ namespace StarSalvager
             };
 
             var usedResourceTypes = new List<BIT_TYPE>();
-            /*
-            if(!Globals.UsingTutorial) usedResourceTypes.Add(BIT_TYPE.BLUE);
-            */
-            
+
             TryClearPartDictionaries();
             CheckShouldRecycleEffects();
-
-            /*CheckIfShieldShouldRecycle();
-            CheckIfFlashIconShouldRecycle();
-            CheckIfBombsShouldRecycle();*/
 
             //Update the Game UI for the Smart Weapons
             //--------------------------------------------------------------------------------------------------------//
@@ -430,36 +407,6 @@ namespace StarSalvager
             _currentlyUsedBitTypes = usedResourceTypes;
             GameUI.ShowLiquidSliders(usedResourceTypes);
         }
-        
-        /*private void SetupHealthBoots()
-        {
-            var pendingBoosts = new Dictionary<Part, float>();
-
-            //Find & determine every part which will be updated
-            foreach (var defenceBoost in _parts.Where(x => x.Type == PART_TYPE.BOOSTDEFENSE))
-            {
-                var partsAround = _parts.GetAttachablesAround(defenceBoost).OfType<Part>();
-                var boostAmount = GetDefenseBoost(defenceBoost);
-
-                foreach (var part in partsAround)
-                {
-                    if(!pendingBoosts.ContainsKey(part))
-                        pendingBoosts.Add(part, boostAmount);
-                    else
-                    {
-                        pendingBoosts[part] += boostAmount;
-                    }
-                }
-            }
-
-            if (pendingBoosts.IsNullOrEmpty())
-                return;
-
-            foreach (var pendingBoost in pendingBoosts)
-            {
-                pendingBoost.Key.SetHealthBoost(pendingBoost.Value);
-            }
-        }*/
 
         //Parts Update Loop
         //============================================================================================================//
@@ -677,9 +624,6 @@ namespace StarSalvager
             TryRemovePowerResource(powerValue, powerToRemove, deltaTime);
             LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
 
-            //UpdateUI(BIT_TYPE.YELLOW, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid);
-            //UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);
-
             UpdateAllUI();
         }
 
@@ -720,41 +664,13 @@ namespace StarSalvager
 
             if (resourceValue > 0f && useBurnRate)
             {
-                resourcesConsumed = partRemoteData.burnRate * deltaTime;
+                var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
+                resourcesConsumed = partRemoteData.burnRate * deltaTime * consumptionBoost;
                 resourceValue -= resourcesConsumed;
             }
 
 
             CanSelfDestruct = outOfFuel;
-            //LevelManagerUI.OverrideText = outOfFuel ? "Out of Fuel. 'D' to self destruct" : string.Empty;
-
-            /*//TODO Need to check on Heating values for the core
-            if (coreHeat <= 0)
-            {
-                GameUI.SetHeatSliderValue(0f);
-                return;
-            }
-
-            GameUI.SetHeatSliderValue(coreHeat / 100f);
-
-
-            part.SetColor(Color.Lerp(Color.white, Color.red, coreHeat / 100f));
-
-            if (_coreCoolTimer > 0f)
-            {
-                _coreCoolTimer -= deltaTime;
-                return;
-            }
-
-            _coreCoolTimer = 0;
-
-            coreHeat -= coolSpeed * deltaTime;
-
-            if (coreHeat > 0)
-                return;
-
-            coreHeat = 0;
-            part.SetColor(Color.white);*/
         }
 
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
@@ -910,7 +826,8 @@ namespace StarSalvager
 
                 if (resourceValue > 0)
                 {
-                    resourcesConsumed = partRemoteData.burnRate;
+                    var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
+                    resourcesConsumed = partRemoteData.burnRate * consumptionBoost;
                     resourceValue -= resourcesConsumed;
                 }
             }
@@ -957,9 +874,9 @@ namespace StarSalvager
 
             //FIXME This now might more sense to count down instead of counting up
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
+            var cooldownBoost = GetPatchMultiplier(part, PATCH_TYPE.FIRE_RATE);
 
-            if (_projectileTimers[part] < cooldown)
+            if (_projectileTimers[part] < cooldown * cooldownBoost)
             {
                 _projectileTimers[part] += deltaTime;
                 return;
@@ -1008,7 +925,9 @@ namespace StarSalvager
 
                 if (resourceValue > 0)
                 {
-                    resourcesConsumed = partRemoteData.burnRate;
+                    var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
+                    
+                    resourcesConsumed = partRemoteData.burnRate * consumptionBoost;
                     resourceValue -= resourcesConsumed;
                 }
             }
@@ -1121,8 +1040,9 @@ namespace StarSalvager
 
             partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float bombCooldown);
 
+            var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
             resourcesConsumed = deltaTime;
-            resourceValue -= resourcesConsumed;
+            resourceValue -= resourcesConsumed * consumptionBoost;
 
             _bombTimers[part] -= deltaTime;
             GameUI.SetFill(index, 1f - _bombTimers[part] / bombCooldown);
@@ -1164,12 +1084,14 @@ namespace StarSalvager
 
         private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
         {
+            var rangeBoost = GetPatchMultiplier(part, PATCH_TYPE.RANGE);
+            var damageBoost = GetPatchMultiplier(part, PATCH_TYPE.DAMAGE);
+            
+            
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
-            damage *= GetBoostValue(PART_TYPE.BOOSTDAMAGE, part);
 
-            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
-
+            
             var position = part.transform.position;
             var shootDirection = ShouldUseGunTurret(partRemoteData)
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
@@ -1182,7 +1104,7 @@ namespace StarSalvager
                     position,
                     collidableTarget,
                     shootDirection,
-                    damage,
+                    damage * damageBoost,
                     rangeBoost,
                     collisionTag,
                     true);
@@ -1426,17 +1348,6 @@ namespace StarSalvager
                 return;
 
             UpdateAllUI();
-
-            /*foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                UpdateUI(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
-            }
-
-            //UpdateUI(BIT_TYPE.YELLOW, PlayerPersistentData.PlayerData.li[BIT_TYPE.YELLOW]);
-            UpdateUI(BIT_TYPE.BLUE, PlayerDataManager.GetResource(BIT_TYPE.BLUE).resource);*/
         }
 
         private void UpdateAllUI()
@@ -1617,6 +1528,50 @@ namespace StarSalvager
         }
 
         #endregion //Process Bit
+
+        //Patches
+        //====================================================================================================================//
+
+        private static float GetPatchMultiplier(in Part part, in PATCH_TYPE patchType)
+        {
+            //Find out
+            var pType = (int) patchType;
+            var patches = part.Patches.Where(x => x.Type == pType).ToList().AsReadOnly();
+            
+            if (patches.Count == 0)
+                return 1;
+
+            var remoteData = FactoryManager.Instance.PatchRemoteData;
+            
+            var total = 0f;
+            foreach (var patchData in patches)
+            {
+                var data = remoteData.GetRemoteData(patchType)
+                    .GetDataValue<float>(patchData.Level, PartProperties.KEYS.Probability);
+
+                total += data;
+            }
+
+            switch (patchType)
+            {
+                case PATCH_TYPE.DAMAGE:
+                case PATCH_TYPE.RANGE:
+                    return 1 + total;
+                case PATCH_TYPE.FIRE_RATE:
+                case PATCH_TYPE.EFFICIENCY:
+                    return  1 - total;
+                
+                case PATCH_TYPE.DURATION:
+                case PATCH_TYPE.CRITICAL:
+                case PATCH_TYPE.ELECTRIC:
+                case PATCH_TYPE.CORROSIVE:
+                case PATCH_TYPE.REINFORCED:
+                case PATCH_TYPE.SPECIALIST:
+                    throw new NotImplementedException($"{patchType} not yet implemented");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(patchType), patchType, null);
+            }
+        }
 
         //Boosts
         //====================================================================================================================//

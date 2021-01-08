@@ -19,33 +19,79 @@ MonoBehaviour:
     Levels:
     - level: 1
       Properties:
-      - key: 
-        value: 
+      - key: Multiplier
+        value: 0.1
     - level: 2
-      Properties: []
+      Properties:
+      - key: Multiplier
+        value: 0.2
     allowedParts: 040000001000000007000000
   - name: RANGE
     type: 2
     description: 
-    Levels: []
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
     allowedParts: 
   - name: FIRE RATE
     type: 3
     description: 
-    Levels: []
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
     allowedParts: 
-  - name: AOE
+  - name: EFFECIENCY
     type: 4
     description: 
-    Levels: []
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
     allowedParts: 
-  - name: EFFICIENCY
+  - name: DURATION
     type: 5
     description: 
     Levels: []
     allowedParts: 
-  - name: DURATION
+  - name: CRITCAL
     type: 6
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: ELECTRIC
+    type: 7
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: CORROSIVE
+    type: 8
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: REINFORCED
+    type: 9
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: SPECIALIST
+    type: 10
     description: 
     Levels: []
     allowedParts: 
