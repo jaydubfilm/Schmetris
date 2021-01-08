@@ -654,6 +654,7 @@ namespace StarSalvager
             {
                 PlayerDataManager.AddCompletedNode(curNodeIndex);
             }
+            PlayerDataManager.SetCurrentNode(curNodeIndex);
 
             for (int i = 0; i < m_bots.Count; i++)
             {
