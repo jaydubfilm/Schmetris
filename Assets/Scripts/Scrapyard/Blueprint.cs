@@ -15,9 +15,6 @@ namespace StarSalvager
         public PART_TYPE partType;
 
         [JsonIgnore]
-        public bool CanAfford => PlayerDataManager.CanAffordPart(partType);
-
-        [JsonIgnore]
         public string DisplayString => $"{GetDisplayName()}";
 
         private string GetDisplayName()

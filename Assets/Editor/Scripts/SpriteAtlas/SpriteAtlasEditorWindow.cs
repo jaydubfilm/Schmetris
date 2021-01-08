@@ -106,7 +106,6 @@ namespace StarSalvager.Editor
         {
             partAtlasDatas = SetupList<PartAtlasData, PART_TYPE>();
             bitAtlasDatas = SetupList<BitAtlasData, BIT_TYPE>();
-            //componentAtlasDatas = SetupList<ComponentAtlasData, COMPONENT_TYPE>();
         }
         
         private static List<T> SetupList<T, TE>() where TE: Enum where T: AtlasDataBase<TE>, new()
@@ -176,37 +175,18 @@ namespace StarSalvager.Editor
             }
             
             //--------------------------------------------------------------------------------------------------------//
-            
-            /*foreach (var componentAtlasData in componentAtlasDatas)
-            {
-                SpriteAtlasSettings.UpdatePath(componentAtlasData.type, componentAtlasData.selectedVersion);
-
-                index = factoryManager.ComponentProfile.GetProfileIndex(componentAtlasData.type);
-                if (index < 0) 
-                    continue;
-
-                var profile = factoryManager.ComponentProfile.profiles[index];
-                componentAtlasData.Sprites.CopyTo(profile.Sprites, 0);
-
-                factoryManager.ComponentProfile.profiles[index] = profile;
-            }*/
-            
-            //--------------------------------------------------------------------------------------------------------//
 
             #endregion //Clunky Updates that I dont like...
 
             /*UpdateData<PartAtlasData, PART_TYPE>(partAtlasDatas);*/
             
-            //Update the Part/Bit/Component Profiles
+            //Update the Part/Bit Profiles
             EditorUtility.SetDirty(factoryManager.PartsProfileData);
             EditorUtility.SetDirty(factoryManager.BitProfileData);
-            //EditorUtility.SetDirty(factoryManager.ComponentProfile);
             
             //Update the Part/Bit Atlases
             UpdateSpriteAtlas<PartAtlasData, PART_TYPE>(SpriteAtlasSettings.partsAtlas, partAtlasDatas);
             UpdateSpriteAtlas<BitAtlasData, BIT_TYPE>(SpriteAtlasSettings.bitsAtlas, bitAtlasDatas);
-            //TODO Need to Update Component Atlas
-            //UpdateSpriteAtlas<ComponentAtlasData, COMPONENT_TYPE>(SpriteAtlasSettings., partAtlasDatas);
             
             
             EditorUtility.SetDirty(SpriteAtlasSettings);
@@ -228,9 +208,6 @@ namespace StarSalvager.Editor
                     break;
                 case bool _ when typeof(TE) == typeof(BIT_TYPE):
                     profileData = factoryManager.BitProfileData ;
-                    break;
-                case bool _ when typeof(TE) == typeof(COMPONENT_TYPE):
-                    profileData = factoryManager.ComponentProfile;
                     break;
             }
         }

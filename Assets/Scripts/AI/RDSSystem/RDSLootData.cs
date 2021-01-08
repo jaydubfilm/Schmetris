@@ -26,10 +26,10 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
         public TYPE rdsData;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Null)]
         public int type;
 
-        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined)]
+        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined), ShowIf("rdsData", TYPE.Component)]
         public int amount;
 
         [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid),
@@ -124,7 +124,7 @@ namespace StarSalvager
                     value = $"{(ASTEROID_SIZE) type}";
                     break;
                 case TYPE.Component:
-                    value = $"{(COMPONENT_TYPE) type}";
+                    value = "Components";
                     break;
                 case TYPE.Blueprint:
                     value = $"{(PART_TYPE) type}";
@@ -156,12 +156,10 @@ namespace StarSalvager
                 case TYPE.Asteroid:
                     valueType = typeof(ASTEROID_SIZE);
                     break;
-                case TYPE.Component:
-                    valueType = typeof(COMPONENT_TYPE);
-                    break;
                 case TYPE.Blueprint:
                     valueType = typeof(PART_TYPE);
                     break;
+                case TYPE.Component:
                 case TYPE.Gears:
                 case TYPE.Null:
                     return null;

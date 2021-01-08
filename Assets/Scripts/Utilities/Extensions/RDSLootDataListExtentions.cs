@@ -35,11 +35,8 @@ namespace StarSalvager.Utilities.Extensions
                     case RDSLootData.TYPE.Component:
                         if (componentRemoteData)
                             componentRemoteData = FactoryManager.Instance.componentRemoteData;
-                        
-                        var componentType = (COMPONENT_TYPE)lootData.type;
-                        var componentData = componentRemoteData.GetRemoteData(componentType);
-                        
-                        _outString.Add($"Blueprint: {componentData.name}");
+
+                        _outString.Add($"Components: {componentRemoteData.NumComponentsGained}");
                         break;
                     case RDSLootData.TYPE.Blueprint:
                         if (partRemoteData == null)

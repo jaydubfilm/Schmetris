@@ -43,17 +43,17 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
-        
+
         //============================================================================================================//
-        
-        public ComponentProfileScriptableObject ComponentProfile => componentProfile as ComponentProfileScriptableObject;
-        
+
         [SerializeField, Required, BoxGroup("Attachables/Components")]
-        private AttachableProfileScriptableObject componentProfile;
-        
+        private GameObject componentPrefab;
+
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         public ComponentRemoteDataScriptableObject componentRemoteData;
 
+        [SerializeField, Required, BoxGroup("Attachables/Components")]
+        public Sprite componentSprite;
 
         
         //============================================================================================================//
@@ -249,8 +249,8 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(PartAttachableFactory):
                     return new PartAttachableFactory(partProfile, partRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
-                case bool _ when type == typeof(ComponentAttachableFactory):
-                    return new ComponentAttachableFactory(componentProfile, componentRemoteData) as T;
+                case bool _ when type == typeof(ComponentFactory):
+                    return new ComponentFactory(componentPrefab, componentRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ShapeFactory):
                     return new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()) as T;

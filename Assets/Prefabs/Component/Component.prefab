@@ -45,9 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e2817eb9616bd43936c229ba6aea4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!212 &5182901841678242745
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -87,7 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 1579873703
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3680335508457511949, guid: f9d1bee348604c049920eaebab6d26f1,
+  m_Sprite: {fileID: -1898356965268507749, guid: 862bb916985978d4f88cee2b8cd29d02,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -260,22 +260,9 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void TryRemoveAttachableAt(Vector2Int coordinate, bool refund)
+        public void TryRemoveAttachableAt(Vector2Int coordinate)
         {
             var attachable = AttachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-            //TODO - think of a better place to handle this selling event
-            if (refund)
-            {
-                switch (attachable)
-                {
-                    case ScrapyardBit _:
-                        throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
-                    case ScrapyardPart scrapyardPart:
-                        PlayerDataManager.AddPartResources(scrapyardPart.Type, 0, true);
-                        UpdatePartsList();
-                        break;
-                }
-            }
 
             if (attachable is null)
                 return;

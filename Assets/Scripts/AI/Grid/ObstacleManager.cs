@@ -999,8 +999,7 @@ namespace StarSalvager
                             PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case nameof(Component):
-                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
-                                .CreateObject<Component>((COMPONENT_TYPE) rdsValueBlockData.rdsValue.Type);
+                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
                             //AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;

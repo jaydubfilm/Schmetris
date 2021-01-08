@@ -80,7 +80,7 @@ namespace StarSalvager.UI.Scrapyard
             _canShowSticker = canShowSticker;
             //craftButtonImage = craftButton.GetComponent<Image>();
 
-            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
+            craftButton.interactable = true;
             stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
 
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
@@ -126,7 +126,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateUI()
         {
-            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
+            craftButton.interactable = true;
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else

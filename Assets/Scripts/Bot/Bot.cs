@@ -1588,9 +1588,6 @@ namespace StarSalvager
                         TryAutoProcessBit(bit, part);
 
                     break;
-                case Component _ when checkForCombo:
-                    CheckForCombosAround<COMPONENT_TYPE>(coordinate);
-                    break;
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
                     break;
@@ -1751,9 +1748,6 @@ namespace StarSalvager
                 case Bit _ when checkForCombo:
                     CheckForCombosAround<BIT_TYPE>(newCoord);
                     break;
-                case Component _ when checkForCombo:
-                    CheckForCombosAround<COMPONENT_TYPE>(newCoord);
-                    break;
                 case Crate _ when checkForCombo:
                     CheckForCombosAround<CRATE_TYPE>(newCoord);
                     break;
@@ -1808,9 +1802,6 @@ namespace StarSalvager
                 case Bit _ when checkForCombo:
                     CheckForCombosAround<BIT_TYPE>(newCoord);
 
-                    break;
-                case Component _ when checkForCombo:
-                    CheckForCombosAround<COMPONENT_TYPE>(newCoord);
                     break;
                 case Crate _ when checkForCombo:
                     CheckForCombosAround<CRATE_TYPE>(newCoord);
@@ -2556,10 +2547,9 @@ namespace StarSalvager
         public bool CheckAllForCombos()
         {
             bool bitCombos = CheckForCombosAround<BIT_TYPE>(attachedBlocks);
-            bool componentCombos = CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
             bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
-            return bitCombos || componentCombos || crateCombos;
+            return bitCombos || crateCombos;
         }
 
         private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
@@ -2792,9 +2782,6 @@ namespace StarSalvager
                     {
                         case Bit _:
                             CheckForCombosAround<BIT_TYPE>(attachedBlocks);
-                            break;
-                        case Component _:
-                            CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
                             break;
                         case Crate _:
                             CheckForCombosAround<CRATE_TYPE>(attachedBlocks);

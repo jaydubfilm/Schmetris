@@ -584,9 +584,6 @@ namespace StarSalvager.Utilities
                 case "parts":
                     _consoleDisplay += $"\n{GetEnumsAsString<PART_TYPE>()}";
                     break;
-                case "components":
-                    _consoleDisplay += $"\n{GetEnumsAsString<COMPONENT_TYPE>()}";
-                    break;
                 case "enemies":
                     _consoleDisplay += $"\n{GetEnemyNameList()}";
                     break;
@@ -938,30 +935,6 @@ namespace StarSalvager.Utilities
                     var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(part);
 
                     bot.AttachNewBlock(coord, newPart, true, true, false);
-                    break;
-                case "component":
-                    if (!Enum.TryParse(split[2], true, out COMPONENT_TYPE component))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-                    if (!Vector2IntExtensions.TryParseVector2Int(split[3], out coord))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-
-                    bot = FindObjectOfType<Bot>();
-                    if (bot == null)
-                    {
-                        _consoleDisplay += NoActiveObject(typeof(Bot));
-                        return;
-                    }
-
-                    var newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
-                        .CreateObject<IAttachable>(component);
-
-                    bot.AttachNewBlock(coord, newComponent, true, true, false);
                     break;
                 case "enemy":
                     float delay = 0f;

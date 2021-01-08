@@ -58,11 +58,6 @@ namespace StarSalvager.Factories.Data
             }*/
         }
         #endregion //IEquatable
-
-        public static ComponentRemoteData FirstOrDefault(Func<object, bool> func)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

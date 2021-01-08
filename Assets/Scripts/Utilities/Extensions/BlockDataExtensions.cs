@@ -316,7 +316,7 @@ namespace StarSalvager.Utilities.Extensions
             var damageProfile = FactoryManager.Instance.DamageProfile;
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             var bitFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
-            var componentFactory = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>();
+            var componentFactory = FactoryManager.Instance.GetFactory<ComponentFactory>();
             var crateFactory = FactoryManager.Instance.GetFactory<CrateFactory>();
 
 
