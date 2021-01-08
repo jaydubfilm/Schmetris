@@ -385,12 +385,25 @@ namespace StarSalvager.Utilities.FileIO
         private static T ImportJsonData<T>(string path)
         {
             var jsonData = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<T>(jsonData);
+            
+            var settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+            };
+            
+            return JsonConvert.DeserializeObject<T>(jsonData, settings);
         }
         private static T ImportJsonData<T>(string path, params JsonConverter[] converters)
         {
             var jsonData = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<T>(jsonData, converters);
+            
+            var settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                Converters = converters
+            };
+            
+            return JsonConvert.DeserializeObject<T>(jsonData, settings);
         }
     }
 
