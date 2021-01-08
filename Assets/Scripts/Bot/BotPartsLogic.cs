@@ -1547,7 +1547,19 @@ namespace StarSalvager
 
             if (targetBit.level >= 2)
             {
-                targetBit.DecreaseLevel();
+                if (Globals.SendExcessResourceToBase)
+                {
+                    var excessResource = FactoryManager.Instance
+                        .GetFactory<BitAttachableFactory>()
+                        .GetBitRemoteData(bitType)
+                        .levels[targetBit.level - 1]
+                        .resources;
+                    Debug.Log("Send value " + excessResource + " to base.");
+                }
+                else
+                {
+                    targetBit.DecreaseLevel();
+                }
             }
             else
             {
