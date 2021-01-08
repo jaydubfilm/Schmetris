@@ -1257,6 +1257,7 @@ namespace StarSalvager
             if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
 
+            //FIXME Need to incorporate bot health here
             if (!(closestAttachable is IHealth closestHealth))
                 return;
 
@@ -1273,9 +1274,13 @@ namespace StarSalvager
             if (closestAttachable is Part)
             {
                 ChangeHealth(-Mathf.Abs(damage));
+                return;
             }
-            else
-                closestHealth.ChangeHealth(-Mathf.Abs(damage));
+
+            /*if (!(closestAttachable is IHealth closestHealth))
+                return;*/
+            
+            closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
@@ -1284,9 +1289,9 @@ namespace StarSalvager
                 case Bit _ when withSound:
                     AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
                     break;
-                case Part _ when withSound:
+                /*case Part _ when withSound:
                     AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
-                    break;
+                    break;*/
             }
 
             if(withSound && !attachableDestroyed)
