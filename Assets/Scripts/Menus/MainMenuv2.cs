@@ -439,7 +439,7 @@ namespace StarSalvager.UI
                 AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
                 PlayerDataManager.SetRunStarted();
-                LeaveMenu(SceneLoader.SCRAPYARD);
+                LeaveMenu(SceneLoader.UNIVERSE_MAP);
             });
             abandonRunButton.onClick.AddListener(() =>
             {

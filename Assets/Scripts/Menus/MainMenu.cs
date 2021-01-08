@@ -248,7 +248,7 @@ namespace StarSalvager.UI
                     FactoryManager.Instance.currentModularDataIndex = 0;
                     PlayerDataManager.SetRunStarted();
 
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
                 }
             });
 

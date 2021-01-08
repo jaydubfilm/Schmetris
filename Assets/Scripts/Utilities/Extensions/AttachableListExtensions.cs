@@ -312,7 +312,7 @@ namespace StarSalvager.Utilities.Extensions
 
         #region Get Closest Attachable
 
-        public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool ignoreDestroyed = false) where T : IAttachable
+        public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool onlyFindParts = false) where T : IAttachable
         {
             if (blocks.Count == 1)
                 return blocks[0];
@@ -323,7 +323,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (var attached in blocks)
             {
-                if(ignoreDestroyed /*&& attached is Part part && part.Destroyed*/)
+                if(onlyFindParts && !(attached is Part part))
                     continue;
                 //attached.SetColor(Color.white);
 

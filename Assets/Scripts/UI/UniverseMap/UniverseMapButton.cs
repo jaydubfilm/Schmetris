@@ -65,8 +65,6 @@ namespace StarSalvager
         {
             Button.onClick.AddListener(() =>
             {
-                PlayerDataManager.SetCurrentNode(NodeIndex);
-
                 switch(NodeType)
                 {
                     case NodeType.Level:
@@ -79,6 +77,8 @@ namespace StarSalvager
                         });
                         break;
                     case NodeType.Wreck:
+                        PlayerDataManager.SetCurrentNode(NodeIndex);
+
                         if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(NodeIndex))
                         {
                             PlayerDataManager.AddCompletedNode(NodeIndex);
