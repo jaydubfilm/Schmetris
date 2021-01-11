@@ -25,7 +25,7 @@ namespace StarSalvager.UI
 {
     public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
-        [Serializable]
+        /*[Serializable]
         private struct SliderCover
         {
             [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
@@ -38,7 +38,7 @@ namespace StarSalvager.UI
                 Slider.SetActive(!hidden);
                 Cover.SetActive(hidden);
             }
-        }
+        }*/
         
         [Serializable]
         public struct SmartWeaponV2
@@ -145,7 +145,7 @@ namespace StarSalvager.UI
         [SerializeField]
         private RectTransform viewableAreaTransform;
 
-        [SerializeField, Required, FoldoutGroup("Slider Glows")]
+        /*[SerializeField, Required, FoldoutGroup("Slider Glows")]
         private Image redSliderGlow;
 
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
@@ -158,7 +158,7 @@ namespace StarSalvager.UI
         private Image blueSliderGlow;
 
         [SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image yellowSliderGlow;
+        private Image yellowSliderGlow;*/
 
         //Top Left Window
         //============================================================================================================//
@@ -191,7 +191,7 @@ namespace StarSalvager.UI
         //Bottom Left Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("BL Window")]
+        /*[SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderCover[] sliderCovers;
         
         [SerializeField, Required, FoldoutGroup("BL Window")]
@@ -206,7 +206,7 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("BL Window")]
         private SliderText waterSlider;
         [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText powerSlider;
+        private SliderText powerSlider;*/
         
 
 
@@ -334,7 +334,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            InitSliderText();
+            //InitSliderText();
 
             //vignetteImage.gameObject.SetActive(useVignette);
 
@@ -342,7 +342,7 @@ namespace StarSalvager.UI
             
             InitValues();
 
-            glowImages = new[]
+            /*glowImages = new[]
             {
                 redSliderGlow,
                 blueSliderGlow,
@@ -350,7 +350,7 @@ namespace StarSalvager.UI
                 greySliderGlow,
                 yellowSliderGlow,
                 //heatSliderGlow
-            };
+            };*/
         }
 
         private void OnEnable()
@@ -362,7 +362,7 @@ namespace StarSalvager.UI
             PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
         }
 
-        private void LateUpdate()
+        /*private void LateUpdate()
         {
             var value = 1f / (speed);
 
@@ -378,7 +378,7 @@ namespace StarSalvager.UI
 
                 image.color = color;
             }
-        }
+        }*/
 
         private void OnDisable()
         {
@@ -422,10 +422,11 @@ namespace StarSalvager.UI
                         magnetFlash.transform as RectTransform 
                     };
                 case HINT.FUEL:
-                    return new object[]
+                    return null;
+                    /*return new object[]
                     {
                         GetSliderCover(BIT_TYPE.RED).Cover.transform as RectTransform
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -439,16 +440,16 @@ namespace StarSalvager.UI
             InitSmartWeaponUI();
             ResetIcons();
 
-            SetWaterValue(0f);
-            SetPowerValue(0f);
+            /*SetWaterValue(0f);
+            SetPowerValue(0f);*/
 
             SetCarryCapacity(0f, 1);
             
             SetHealthValue(1f);
 
-            SetFuelValue(0f);
+            /*SetFuelValue(0f);
             SetRepairValue(0f);
-            SetAmmoValue(0f);
+            SetAmmoValue(0f);*/
 
             SetProgressValue(0f);
             //SetTimeString("0:00");
@@ -457,7 +458,7 @@ namespace StarSalvager.UI
             SetPlayerGearsProgress((0, 0));
             ShowAbortWindow(false);
 
-            ShowLiquidSliders(null);
+            //ShowLiquidSliders(null);
 
             OutlineMagnet(false);
 
@@ -465,7 +466,7 @@ namespace StarSalvager.UI
             FadeBackground(false, true);
         }
 
-        private void InitSliderText()
+        /*private void InitSliderText()
         {
             fuelSlider.Init();
             repairSlider.Init();
@@ -474,7 +475,7 @@ namespace StarSalvager.UI
             waterSlider.Init();
             powerSlider.Init();
 
-        }
+        }*/
 
         private void InitSmartWeaponUI()
         {
@@ -503,7 +504,7 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
+            /*SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
             SetResourceSliderBounds(BIT_TYPE.GREEN, 0, PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquidCapacity);
             SetResourceSliderBounds(BIT_TYPE.GREY, 0, PlayerDataManager.GetResource(BIT_TYPE.GREY).liquidCapacity);
 
@@ -512,7 +513,7 @@ namespace StarSalvager.UI
 
             SetFuelValue(PlayerDataManager.GetResource(BIT_TYPE.RED).liquid);
             SetRepairValue(PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquid);
-            SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);
+            SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);*/
 
             SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
         }
@@ -602,7 +603,7 @@ namespace StarSalvager.UI
             patchPointsText.text = $"{points}";
         }
 
-        public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
+        /*public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
         {
             switch (type)
             {
@@ -624,10 +625,10 @@ namespace StarSalvager.UI
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-        }
+        }*/
 
 
-        private bool _flashingFuelMeter;
+        /*private bool _flashingFuelMeter;
         public void SetFuelValue(float value)
         {
             bool hasBitAttached = false;
@@ -690,12 +691,12 @@ namespace StarSalvager.UI
         {
             powerSlider.value = value;
             CheckActivateGlow(powerSlider, yellowSliderGlow);
-        }
+        }*/
 
 
         //====================================================================================================================//
 
-        public void ShowLiquidSliders(IEnumerable<BIT_TYPE> types)
+        /*public void ShowLiquidSliders(IEnumerable<BIT_TYPE> types)
         {
             foreach (var sliderCover in sliderCovers)
             {
@@ -710,9 +711,9 @@ namespace StarSalvager.UI
                 UncoverSlider(bitType);
             }
             
-        }
+        }*/
 
-        private void UncoverSlider(BIT_TYPE bitType)
+        /*private void UncoverSlider(BIT_TYPE bitType)
         {
             var sliderCover = GetSliderCover(bitType);
             
@@ -736,7 +737,7 @@ namespace StarSalvager.UI
                 default:
                     throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
             }
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -1018,7 +1019,7 @@ namespace StarSalvager.UI
         
 
 
-        private static bool CheckActivateGlow(SliderText slider, Behaviour glowSlider)
+        /*private static bool CheckActivateGlow(SliderText slider, Behaviour glowSlider)
         {
             return CheckActivateGlow(slider.Slider, glowSlider);
         }
@@ -1030,7 +1031,7 @@ namespace StarSalvager.UI
             glowSlider.enabled = glowing;
 
             return glowing;
-        }
+        }*/
 
         /*private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
         {

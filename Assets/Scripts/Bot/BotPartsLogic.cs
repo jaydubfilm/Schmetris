@@ -92,8 +92,8 @@ namespace StarSalvager
         //==============================================================================================================//
 
         //FIXME I don't think this is the best way of preventing using resouces. Should consider another way
-        [SerializeField, BoxGroup("BurnRates")]
-        private bool useBurnRate = true;
+        /*[SerializeField, BoxGroup("BurnRates")]
+        private bool useBurnRate = true;*/
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int MagnetCount { get; private set; }
@@ -132,7 +132,7 @@ namespace StarSalvager
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
         }
 
-        private void OnEnable()
+        /*private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += ForceUpdateResourceUI;
         }
@@ -140,7 +140,7 @@ namespace StarSalvager
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= ForceUpdateResourceUI;
-        }
+        }*/
 
         //====================================================================================================================//
         
@@ -172,16 +172,16 @@ namespace StarSalvager
             _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Part>();
 
-            var liquidCapacities = new Dictionary<BIT_TYPE, int>
+            /*var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
                 {BIT_TYPE.RED, 0},
                 {BIT_TYPE.BLUE, 0},
                 {BIT_TYPE.YELLOW, 0},
                 {BIT_TYPE.GREEN, 0},
                 {BIT_TYPE.GREY, 0},
-            };
+            };*/
 
-            var usedResourceTypes = new List<BIT_TYPE>();
+            //var usedResourceTypes = new List<BIT_TYPE>();
 
             TryClearPartDictionaries();
             CheckShouldRecycleEffects();
@@ -211,7 +211,7 @@ namespace StarSalvager
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
-                if (partData.burnRate > 0 && !usedResourceTypes.Contains(partData.burnType))
+                /*if (partData.burnRate > 0 && !usedResourceTypes.Contains(partData.burnType))
                     usedResourceTypes.Add(partData.burnType);
 
                 if(partData.powerDraw > 0f && !usedResourceTypes.Contains(BIT_TYPE.YELLOW))
@@ -227,7 +227,7 @@ namespace StarSalvager
                         usedResourceTypes.Add(BIT_TYPE.GREEN);
                     if(!usedResourceTypes.Contains(BIT_TYPE.YELLOW))
                         usedResourceTypes.Add(BIT_TYPE.YELLOW);
-                }
+                }*/
 
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Disabled)
@@ -238,14 +238,14 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
 
-                        if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
+                        /*if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                             liquidCapacities[BIT_TYPE.BLUE] += value;
-                        }
+                        }*/
 
                         if (partData.TryGetValue(PartProperties.KEYS.SMRTCapacity, out value))
                         {
@@ -304,7 +304,7 @@ namespace StarSalvager
                         });
 
                         break;
-                    case PART_TYPE.STORE:
+                    /*case PART_TYPE.STORE:
                         if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
@@ -338,7 +338,7 @@ namespace StarSalvager
                         if (partData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
-                        }
+                        }*/
 
                         break;
                     case PART_TYPE.FREEZE:
@@ -378,10 +378,10 @@ namespace StarSalvager
             SetupGunRangeValues();
 
             //Force update capacities, once new values determined
-            foreach (var capacity in liquidCapacities)
+            /*foreach (var capacity in liquidCapacities)
             {
                 PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
-            }
+            }*/
 
             if (!_turrets.IsNullOrEmpty())
             {
@@ -404,14 +404,14 @@ namespace StarSalvager
 
 
             bot.ForceCheckMagnets();
-            _currentlyUsedBitTypes = usedResourceTypes;
-            GameUI.ShowLiquidSliders(usedResourceTypes);
+            /*_currentlyUsedBitTypes = usedResourceTypes;
+            GameUI.ShowLiquidSliders(usedResourceTypes);*/
         }
 
         //Parts Update Loop
         //============================================================================================================//
 
-        /// <summary>
+        /*/// <summary>
         /// Returns true if the part has the power required to function
         /// </summary>
         /// <param name="part"></param>
@@ -465,9 +465,9 @@ namespace StarSalvager
             powerToRemove += partRemoteData.powerDraw * deltaTime;
 
             return true;
-        }
+        }*/
 
-        private bool ShouldUpdateResourceUsage(in Part part, in PartRemoteData partRemoteData, out float resourceValue)
+        /*private bool ShouldUpdateResourceUsage(in Part part, in PartRemoteData partRemoteData, out float resourceValue)
         {
             resourceValue = default;
             
@@ -504,7 +504,7 @@ namespace StarSalvager
             }
 
             return true;
-        }
+        }*/
 
         //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
@@ -515,8 +515,8 @@ namespace StarSalvager
 
             var deltaTime = Time.deltaTime;
 
-            var powerValue = PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid;
-            var powerToRemove = 0f;
+            //var powerValue = PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid;
+            //var powerToRemove = 0f;
 
             //Be careful to not use return here
             foreach (var part in _parts)
@@ -526,11 +526,11 @@ namespace StarSalvager
                 
                 var partRemoteData = GetPartData(part);
 
-                if(!TryUpdatePowerUsage(part, partRemoteData, ref powerValue, ref powerToRemove, deltaTime))
+                /*if(!TryUpdatePowerUsage(part, partRemoteData, ref powerValue, ref powerToRemove, deltaTime))
                     continue;
 
                 var shouldUpdateResource =
-                    ShouldUpdateResourceUsage(part, partRemoteData, out var resourceValue);
+                    ShouldUpdateResourceUsage(part, partRemoteData, out var resourceValue);*/
 
                 //Used to measure total consumption of parts over time
                 float resourcesConsumed = 0f;
@@ -538,11 +538,11 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
-                        CoreUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        CoreUpdate(part, partRemoteData);
                         break;
                     case PART_TYPE.REPAIR:
 
-                        RepairUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        RepairUpdate(part, partRemoteData);
 
                         /*f (resourceValue <= 0f && useBurnRate)
                         {
@@ -591,40 +591,40 @@ namespace StarSalvager
                         TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);*/
                         break;
                     case PART_TYPE.BLASTER:
-                        BlasterUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        BlasterUpdate(part, partRemoteData, deltaTime);
                         break;
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.MISSILE:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
-                        GunUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        GunUpdate(part, partRemoteData, deltaTime);
                         break;
                     case PART_TYPE.SHIELD:
-                        ShieldUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        ShieldUpdate(part, partRemoteData,  deltaTime);
                         break;
                     case PART_TYPE.FREEZE:
                     case PART_TYPE.BOMB:
-                        BombUpdate(part, partRemoteData, ref resourceValue, ref resourcesConsumed, deltaTime);
+                        BombUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
 
-                if(!bot.CanUseResources)
-                    continue;
+                /*if(!bot.CanUseResources)
+                    continue;*/
 
-                if (!shouldUpdateResource)
-                    continue;
+                /*if (!shouldUpdateResource)
+                    continue;*/
                 
-                //UpdateUI(partRemoteData.burnType, resourceValue);
+                /*//UpdateUI(partRemoteData.burnType, resourceValue);
                 PlayerDataManager.GetResource(partRemoteData.burnType).SetLiquid(resourceValue, false);
 
                 if(resourcesConsumed > 0)
-                    LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resourcesConsumed);
+                    LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(partRemoteData.burnType, resourcesConsumed);*/
             }
 
-            TryRemovePowerResource(powerValue, powerToRemove, deltaTime);
-            LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);
+            /*TryRemovePowerResource(powerValue, powerToRemove, deltaTime);
+            LevelManager.Instance.WaveEndSummaryData.AddConsumedBit(BIT_TYPE.YELLOW, powerToRemove);*/
 
-            UpdateAllUI();
+            /*UpdateAllUI();*/
         }
 
         private PartRemoteData GetPartData(in Part part)
@@ -634,7 +634,7 @@ namespace StarSalvager
             return partRemoteData;
         }
 
-        private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
+        /*private void TryRemovePowerResource(float powerValue, float powerToRemove, in float deltaTime)
         {
             if (!bot.CanUseResources) 
                 return;
@@ -644,17 +644,16 @@ namespace StarSalvager
                 powerValue = 0f;
 
             PlayerDataManager.GetResource(BIT_TYPE.YELLOW).SetLiquid(powerValue, false);
-        }
+        }*/
 
         //Individual Part Functions
         //====================================================================================================================//
         
         #region Parts
 
-        private void CoreUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
         {
-            var outOfFuel = resourceValue <= 0f && useBurnRate;
+            /*var outOfFuel = resourceValue <= 0f && useBurnRate;
             GameUI.ShowAbortWindow(outOfFuel);
 
 
@@ -670,11 +669,10 @@ namespace StarSalvager
             }
 
 
-            CanSelfDestruct = outOfFuel;
+            CanSelfDestruct = outOfFuel;*/
         }
 
-        private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void RepairUpdate(in Part part, in PartRemoteData partRemoteData)
         {
             /*if (resourceValue <= 0f && useBurnRate)
             {
@@ -766,8 +764,7 @@ namespace StarSalvager
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.BoostedHealth);*/
         }
 
-        private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
             if (_projectileTimers == null)
@@ -816,7 +813,7 @@ namespace StarSalvager
             //Use resources
             //--------------------------------------------------------------------------------------------//
 
-            if (useBurnRate)
+            /*if (useBurnRate)
             {
                 if (resourceValue <= 0f)
                 {
@@ -830,7 +827,7 @@ namespace StarSalvager
                     resourcesConsumed = partRemoteData.burnRate * consumptionBoost;
                     resourceValue -= resourcesConsumed;
                 }
-            }
+            }*/
 
             //--------------------------------------------------------------------------------------------//
 
@@ -839,8 +836,7 @@ namespace StarSalvager
             CreateProjectile(part, partRemoteData, asteroid, "Asteroid");
         }
 
-        private void GunUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void GunUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //TODO Need to determine if the shoot type is looking for enemies or not
             //--------------------------------------------------------------------------------------------//
@@ -915,7 +911,7 @@ namespace StarSalvager
             //Use resources
             //--------------------------------------------------------------------------------------------//
 
-            if (useBurnRate)
+            /*if (useBurnRate)
             {
                 if (resourceValue <= 0f)
                 {
@@ -930,7 +926,7 @@ namespace StarSalvager
                     resourcesConsumed = partRemoteData.burnRate * consumptionBoost;
                     resourceValue -= resourcesConsumed;
                 }
-            }
+            }*/
 
             switch (part.Type)
             {
@@ -972,10 +968,9 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
         }
 
-        private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            const float fakeHealth = 25f;
+            /*const float fakeHealth = 25f;
 
             var data = _shields[part];
             var shield = data.shield;
@@ -1013,11 +1008,10 @@ namespace StarSalvager
             //FIXME This needs to have some sort of play cooldown
             //AudioController.PlaySound(SOUND.SHIELD_RECHARGE);
 
-            shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));
+            shield.SetAlpha(0.5f * (data.currentHp / fakeHealth));*/
         }
         
-        private void BombUpdate(in Part part, in PartRemoteData partRemoteData, ref float resourceValue,
-            ref float resourcesConsumed, in float deltaTime)
+        private void BombUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //TODO This still needs to account for multiple bombs
             if (!_bombTimers.TryGetValue(part, out var timer))
@@ -1031,18 +1025,18 @@ namespace StarSalvager
 
             var index = _smartWeapons.FindIndex(0, _smartWeapons.Count, x => x == tempPart);
 
-            if (useBurnRate && resourceValue <= 0)
+            /*if (useBurnRate && resourceValue <= 0)
             {
                 //FIXME I don't like that this is getting called so often
                 //GameUI.SetHasResource(index, false);
                 return;
-            }
+            }*/
 
             partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float bombCooldown);
 
-            var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
+            /*var consumptionBoost = GetPatchMultiplier(part, PATCH_TYPE.EFFICIENCY);
             resourcesConsumed = deltaTime;
-            resourceValue -= resourcesConsumed * consumptionBoost;
+            resourceValue -= resourcesConsumed * consumptionBoost;*/
 
             _bombTimers[part] -= deltaTime;
             GameUI.SetFill(index, 1f - _bombTimers[part] / bombCooldown);
@@ -1342,15 +1336,15 @@ namespace StarSalvager
 
         #region Update UI
 
-        private void ForceUpdateResourceUI()
+        /*private void ForceUpdateResourceUI()
         {
             if (GameUI == null)
                 return;
 
             UpdateAllUI();
-        }
+        }*/
 
-        private void UpdateAllUI()
+        /*private void UpdateAllUI()
         {
             var resources = PlayerDataManager.GetResources();
 
@@ -1362,9 +1356,9 @@ namespace StarSalvager
                 UpdateUI(resource.BitType, resource.liquid);
             }
             
-        }
+        }*/
         
-        private static void UpdateUI(BIT_TYPE type, float value)
+        /*private static void UpdateUI(BIT_TYPE type, float value)
         {
             if (!GameUI)
                 return;
@@ -1389,7 +1383,7 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-        }
+        }*/
 
         #endregion //Update UI
 
@@ -1399,7 +1393,7 @@ namespace StarSalvager
         #region Process Bit
 
         
-        /// <summary>
+        /*/// <summary>
         /// Checks to see if the current liquid is less than or equal to valueToCheck
         /// </summary>
         /// <param name="part"></param>
@@ -1432,7 +1426,7 @@ namespace StarSalvager
 
             //We wont add any if its already full!
             /*if (current + amountProcessed > capacity)
-                return 0;*/
+                return 0;#1#
 
             if (current == capacity)
                 return 0;
@@ -1525,7 +1519,7 @@ namespace StarSalvager
                 ? default
                 : PlayerDataManager.GetResource(type).liquid;
             return value;
-        }
+        }*/
 
         #endregion //Process Bit
 

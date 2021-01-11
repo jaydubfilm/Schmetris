@@ -337,7 +337,7 @@ namespace StarSalvager
                     }
 
                     _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-                    DroneDesignUi.RefreshScrollViews();
+                    //DroneDesignUi.RefreshScrollViews();
                     
                     ResetSelected();
                     SaveBlockData();
@@ -376,7 +376,7 @@ namespace StarSalvager
                 }
 
 
-                DroneDesignUi.RefreshScrollViews();
+                //DroneDesignUi.RefreshScrollViews();
                 
                 ResetSelected();
                 SaveBlockData();
@@ -399,7 +399,7 @@ namespace StarSalvager
 
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
 
-                DroneDesignUi.RefreshScrollViews();
+                //DroneDesignUi.RefreshScrollViews();
 
                 ResetSelected();
                 SaveBlockData();
@@ -793,7 +793,7 @@ namespace StarSalvager
 
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
-            DroneDesignUi.UpdateBotResourceElements();
+            //DroneDesignUi.UpdateBotResourceElements();
 
             //Show the final alert to the player
             ShowAlertInfo(botBlockData, processedResources, wastedResources);

@@ -420,26 +420,26 @@ namespace StarSalvager
 
         #region Parts
 
-        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
+        /*[SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
         private float coreHeat;
         [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("/s", Overlay = true)]
         private float coolSpeed;
         [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("s", Overlay = true)]
         private float coolDelay;
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
-        private float coolTimer;
+        private float coolTimer;*/
 
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
         private int magnetCount;
 
-        public float PowerDraw { get; private set; }
+        /*public float PowerDraw { get; private set; }*/
 
         private int MAXParts { get; set; }
 
         public bool AtPartCapacity => _parts.Count >= MAXParts + 1;
         public string PartCapacity => $"{_parts.Count - 1 }/{MAXParts }";
 
-        public List<BIT_TYPE> UsedResourceTypes { get; private set; }
+        /*public List<BIT_TYPE> UsedResourceTypes { get; private set; }*/
 
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -459,7 +459,7 @@ namespace StarSalvager
         {
             magnetCount = 0;
             MAXParts = 0;
-            PowerDraw = 0f;
+            /*PowerDraw = 0f;
 
             var liquidCapacities = new Dictionary<BIT_TYPE, int>
             {
@@ -469,8 +469,9 @@ namespace StarSalvager
                 {BIT_TYPE.GREEN, 0},
                 {BIT_TYPE.GREY, 0},
             };
+            */
 
-            UsedResourceTypes = new List<BIT_TYPE>();
+            //UsedResourceTypes = new List<BIT_TYPE>();
 
             foreach (var part in _parts)
             {
@@ -478,26 +479,26 @@ namespace StarSalvager
 
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
-                PowerDraw += partRemoteData.powerDraw;
+                /*PowerDraw += partRemoteData.powerDraw;
 
                 if(!UsedResourceTypes.Contains(partRemoteData.burnType))
-                    UsedResourceTypes.Add(partRemoteData.burnType);
+                    UsedResourceTypes.Add(partRemoteData.burnType);*/
 
-                if(partRemoteData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
-                    UsedResourceTypes.Add(BIT_TYPE.YELLOW);
+                /*if(partRemoteData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
+                    UsedResourceTypes.Add(BIT_TYPE.YELLOW);*/
 
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
 
-                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Capacity, out value))
+                        /*if (partRemoteData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
                             liquidCapacities[BIT_TYPE.GREEN] += value;
                             liquidCapacities[BIT_TYPE.GREY] += value;
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                             liquidCapacities[BIT_TYPE.BLUE] += value;
-                        }
+                        }*/
 
                         if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
@@ -520,7 +521,7 @@ namespace StarSalvager
                     //FIXME I'll need a way of disposing of the shield visual object
                     case PART_TYPE.SHIELD:
                         break;
-                    case PART_TYPE.STORE:
+                    /*case PART_TYPE.STORE:
                         if (partRemoteData.TryGetValue(PartProperties.KEYS.Capacity, out value))
                         {
                             liquidCapacities[BIT_TYPE.RED] += value;
@@ -551,15 +552,15 @@ namespace StarSalvager
                         {
                             liquidCapacities[BIT_TYPE.YELLOW] += value;
                         }
-                        break;
+                        break;*/
                 }
             }
 
             //Force update capacities, once new values determined
-            foreach (var capacity in liquidCapacities)
+            /*foreach (var capacity in liquidCapacities)
             {
                 PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
-            }
+            }*/
         }
 
         #endregion //Parts

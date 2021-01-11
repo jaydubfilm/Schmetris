@@ -31,8 +31,8 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        [SerializeField, BoxGroup("Resource UI")]
-        private ResourceUIElementScrollView liquidResourceContentView;
+        /*[SerializeField, BoxGroup("Resource UI")]
+        private ResourceUIElementScrollView liquidResourceContentView;*/
 
         [SerializeField] 
         private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
@@ -88,7 +88,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             InitButtons();
 
-            UpdateBotResourceElements();
+            //UpdateBotResourceElements();
             _scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
@@ -102,11 +102,11 @@ namespace StarSalvager.UI.Scrapyard
             Camera.onPostRender += _droneDesigner.DrawGL;
             _droneDesigner.SetupDrone();
 
-            if (_scrollViewsSetup)
+            /*if (_scrollViewsSetup)
                 RefreshScrollViews();
             
             PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
-            PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;*/
 
         }
 
@@ -115,8 +115,8 @@ namespace StarSalvager.UI.Scrapyard
             Camera.onPostRender -= _droneDesigner.DrawGL;
             _droneDesigner.RecycleDrone();
 
-            PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
-            PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;
+            /*PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
+            PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;*/
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -192,17 +192,17 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        public void RefreshScrollViews()
+        /*public void RefreshScrollViews()
         {
             UpdateBotResourceElements();
-        }
+        }*/
 
-        public void UpdateBotResourceElements()
+        /*public void UpdateBotResourceElements()
         {
             //liquidResourceContentView
             foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
             {
-                if (_bitType == BIT_TYPE.WHITE /*|| _bitType == BIT_TYPE.BLUE*/)
+                if (_bitType == BIT_TYPE.WHITE /*|| _bitType == BIT_TYPE.BLUE#1#)
                     continue;
                 
                 if (DroneDesigner._scrapyardBot == null)
@@ -218,7 +218,7 @@ namespace StarSalvager.UI.Scrapyard
                 };
 
                 /*if (_bitType == BIT_TYPE.YELLOW)
-                    System.Console.WriteLine("");*/
+                    System.Console.WriteLine("");#1#
 
                 var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
                 element.Init(data, true);
@@ -229,13 +229,13 @@ namespace StarSalvager.UI.Scrapyard
             UpdateFlightDataUI();
             
             //UpdateRepairButton();
-        }
+        }*/
 
         #endregion //Scroll Views
 
         //============================================================================================================//
 
-        #region Flight Data UI
+        /*#region Flight Data UI
 
         private void UpdateFlightDataUI()
         {
@@ -265,7 +265,7 @@ namespace StarSalvager.UI.Scrapyard
             flightDataText.gameObject.SetActive(false);
         }
 
-        #endregion //Flight Data UI
+        #endregion //Flight Data UI*/
 
         //====================================================================================================================//
         

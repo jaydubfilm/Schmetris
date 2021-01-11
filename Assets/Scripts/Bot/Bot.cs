@@ -1647,15 +1647,15 @@ namespace StarSalvager
                     break;
             }
 
-            var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
+            /*var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
 
             if(hasProcessed && part.Type == PART_TYPE.REFINER)
-                PlayRefineSound(bit.Type);
+                PlayRefineSound(bit.Type);*/
 
             CheckForDisconnects();
         }
 
-        private void PlayRefineSound(BIT_TYPE bitType)
+        /*private void PlayRefineSound(BIT_TYPE bitType)
         {
             SOUND sound;
 
@@ -1682,6 +1682,7 @@ namespace StarSalvager
             AudioController.PlaySound(sound);
 
         }
+        */
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
         /// <summary>
@@ -3037,10 +3038,10 @@ namespace StarSalvager
 
                 float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
 
-                if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
+                /*if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {
                     toDetach.RemoveAt(i);
-                }
+                }*/
             }
         }
 
