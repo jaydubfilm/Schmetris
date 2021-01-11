@@ -439,19 +439,19 @@ namespace StarSalvager
                 //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
                 //----------------------------------------------------------------------------------------------------//
 
-                if (!m_offGridMovingObstacles[i].isVisible &&
-                    m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (ObstacleInCameraRect(checkShape))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-
-                        if(HintManager.CanShowHint(HINT.BONUS))
-                            HintManager.TryShowHint(HINT.BONUS, 1.35f);
-                    }
-                }
+                //if (!m_offGridMovingObstacles[i].isVisible &&
+                //    m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                //    m_bonusShapes.Contains(checkShape))
+                //{
+                //    if (ObstacleInCameraRect(checkShape))
+                //    {
+                //        m_offGridMovingObstacles[i].isVisible = true;
+                //        NewShapeOnScreen?.Invoke();
+//
+                //        if(HintManager.CanShowHint(HINT.BONUS))
+                //            HintManager.TryShowHint(HINT.BONUS, 1.35f);
+                //    }
+                //}
 
                 //----------------------------------------------------------------------------------------------------//
             }

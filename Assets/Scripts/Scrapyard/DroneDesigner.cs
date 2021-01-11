@@ -14,14 +14,11 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
 using StarSalvager.UI.Scrapyard;
-using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
-using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
-using Object = System.Object;
 
 namespace StarSalvager
 {
