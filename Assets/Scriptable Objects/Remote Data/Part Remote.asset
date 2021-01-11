@@ -33,7 +33,7 @@ MonoBehaviour:
     burnRate: 1
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 4
       needsBitsToFunction: 1
       minBitLevel: 0
       values:

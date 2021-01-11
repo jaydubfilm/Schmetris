@@ -379,6 +379,20 @@ namespace StarSalvager
 
         private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
         {
+            if (_magnetOverride > 0)
+                return;
+
+            MagnetCount = 0;
+
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out int value))
+            {
+                MagnetCount += value;
+            }
+
+            if (partRemoteData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type), out float floatValue))
+            {
+                MagnetCount += (int)floatValue;
+            }
         }
 
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData)
