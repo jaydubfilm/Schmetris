@@ -211,8 +211,6 @@ namespace StarSalvager
             SetupDrone();
 
             UpdateFloatingMarkers(false);
-
-            /*DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());*/
         }
 
         public void Reset()
@@ -223,12 +221,8 @@ namespace StarSalvager
             }
 
             SelectedBrick = null;
-            //SelectedPartType = null;
-            //SelectedPartLevel = 0;
             SelectedPartRemoveFromStorage = false;
             SelectedPartReturnToStorageIfNotPlaced = false;
-
-            //Camera.onPostRender -= DrawGL;
 
             RecycleDrone();
         }
@@ -338,7 +332,7 @@ namespace StarSalvager
                     }
 
                     _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-                    DroneDesignUi.RefreshScrollViews();
+                    //DroneDesignUi.RefreshScrollViews();
                     
                     ResetSelected();
                     SaveBlockData();
@@ -377,7 +371,7 @@ namespace StarSalvager
                 }
 
 
-                DroneDesignUi.RefreshScrollViews();
+                //DroneDesignUi.RefreshScrollViews();
                 
                 ResetSelected();
                 SaveBlockData();
@@ -400,7 +394,7 @@ namespace StarSalvager
 
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
 
-                DroneDesignUi.RefreshScrollViews();
+                //DroneDesignUi.RefreshScrollViews();
 
                 ResetSelected();
                 SaveBlockData();
@@ -479,110 +473,11 @@ namespace StarSalvager
         public void SaveLayout(string layoutName)
         {
             throw new NotImplementedException();
-
-            /*ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
-            if (saveLayout != null)
-            {
-                saveLayout = new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas());
-            }
-            else
-            {
-                _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas()));
-            }
-            Files.ExportLayoutData(_scrapyardLayouts);*/
         }
 
         public void LoadLayout(string name)
         {
             throw new NotImplementedException();
-
-            /*var tempLayout = _scrapyardLayouts.First(l => l.Name == name);
-
-            if (tempLayout == null)
-                return;
-
-            //Setup your list of available parts by adding storage and parts on bot together into a temp list
-            List<IBlockData> partComparer = new List<IBlockData>();
-            partComparer.AddRange(PlayerDataManager.GetCurrentPartsInStorage());
-            foreach (var attachable in _scrapyardBot.AttachedBlocks)
-            {
-                if (attachable is ScrapyardPart part && part.Type != (int)PART_TYPE.CORE)
-                {
-                    partComparer.Add(part.ToBlockData());
-                }
-            }
-
-            //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-            //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
-
-            //Setup your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
-            List<IBlockData> newLayoutComparer = new List<IBlockData>();
-            newLayoutComparer.AddRange(tempLayout.BlockData);
-
-            for (int i = newLayoutComparer.Count - 1; i >= 0; i--)
-            {
-                if (partComparer.Any(b => b.Equals(newLayoutComparer[i])))
-                {
-                    //BlockData dataToRemove = newLayoutComparer[i];
-                    partComparer.Remove(partComparer.FirstOrDefault(b => b.Equals(newLayoutComparer[i])));
-                    newLayoutComparer.Remove(newLayoutComparer[i]);
-                }
-            }
-
-
-            //Check if you have the resources available to afford the parts you need to purchase.
-            foreach (var partData in newLayoutComparer)
-            {
-                if (partData.Type == (int)PART_TYPE.CORE)
-                    continue;
-
-                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type))
-                {
-                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type);
-                }
-                else
-                {
-                    //CANT AFFORD LAYOUT
-                    Debug.Log("CANT AFFORD LAYOUT");
-                    return;
-                }
-            }
-
-            //Swap to new layout
-            _currentLayout = tempLayout;
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
-            }
-            PlayerDataManager.SetCurrentPartsInStorage(partComparer);
-
-            for (int i = _scrapyardBot.AttachedBlocks.Count - 1; i >= 0; i--)
-            {
-                if (_scrapyardBot.AttachedBlocks[i].Coordinate != Vector2Int.zero)
-                {
-                    _scrapyardBot.TryRemoveAttachableAt(_scrapyardBot.AttachedBlocks[i].Coordinate, false);
-                }
-            }
-
-            foreach (var attachable in tempLayout.BlockData.ImportBlockDatas(true))
-            {
-                _scrapyardBot.AttachNewBit(attachable.Coordinate, attachable);
-            }
-            DroneDesignUi.UpdateBotResourceElements();
-            DroneDesignUi.RefreshScrollViews();
-            SaveBlockData();*/
         }
 
         #endregion //Layouts
@@ -794,7 +689,7 @@ namespace StarSalvager
 
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
-            DroneDesignUi.UpdateBotResourceElements();
+            //DroneDesignUi.UpdateBotResourceElements();
 
             //Show the final alert to the player
             ShowAlertInfo(botBlockData, processedResources, wastedResources);
@@ -979,10 +874,6 @@ namespace StarSalvager
                     return default;
                 case HINT.DAMAGE:
                     throw new Exception("Unhandled case for HINT.DAMAGE hover in DroneDesigner");
-                    /*return new object[]
-                    {
-                        _repairHover.bounds
-                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

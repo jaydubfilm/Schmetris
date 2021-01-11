@@ -99,11 +99,11 @@ namespace StarSalvager.UI
             {
                 case HINT.NONE:
                     return null;
-                case HINT.HOME:
+                /*case HINT.HOME:
                     return new object[]
                     {
                         _shipwreckButtonRectTransform 
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

@@ -67,18 +67,18 @@ namespace StarSalvager.Values
         private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
         {
             [HINT.GUN] = false,
-            [HINT.FUEL] = false,
-            [HINT.HOME] = false,
+            //[HINT.FUEL] = false,
+            //[HINT.HOME] = false,
             [HINT.BONUS] = false,
             [HINT.MAGNET] = false,
             
-            [HINT.GEARS] = false,
-            [HINT.PATCH_POINT] = false,
-            [HINT.CRAFT_PART] = false,
+            //[HINT.GEARS] = false,
+            //[HINT.PATCH_POINT] = false,
+            //[HINT.CRAFT_PART] = false,
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            [HINT.COMPONENT] = false,
+            //[HINT.COMPONENT] = false,
             
         };
 
