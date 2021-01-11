@@ -23,17 +23,11 @@ namespace StarSalvager.UI.Scrapyard
     {
         public bool CanAffordRepair { get; private set; }
 
-        [SerializeField, Required] 
-        private TMP_Text flightDataText;
-        
         [SerializeField, Required]
         private PointerEvents repairButtonPointerEvents;
 
         //====================================================================================================================//
         
-        /*[SerializeField, BoxGroup("Resource UI")]
-        private ResourceUIElementScrollView liquidResourceContentView;*/
-
         [SerializeField] 
         private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
 
@@ -88,7 +82,6 @@ namespace StarSalvager.UI.Scrapyard
         {
             InitButtons();
 
-            //UpdateBotResourceElements();
             _scrollViewsSetup = true;
 
             _currentlyOverwriting = false;
@@ -101,22 +94,12 @@ namespace StarSalvager.UI.Scrapyard
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
             _droneDesigner.SetupDrone();
-
-            /*if (_scrollViewsSetup)
-                RefreshScrollViews();
-            
-            PlayerDataManager.OnValuesChanged += UpdateBotResourceElements;
-            PlayerDataManager.OnCapacitiesChanged += UpdateBotResourceElements;*/
-
         }
 
         private void OnDisable()
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
             _droneDesigner.RecycleDrone();
-
-            /*PlayerDataManager.OnValuesChanged -= UpdateBotResourceElements;
-            PlayerDataManager.OnCapacitiesChanged -= UpdateBotResourceElements;*/
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -192,80 +175,7 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        /*public void RefreshScrollViews()
-        {
-            UpdateBotResourceElements();
-        }*/
-
-        /*public void UpdateBotResourceElements()
-        {
-            //liquidResourceContentView
-            foreach (BIT_TYPE _bitType in Constants.BIT_ORDER)
-            {
-                if (_bitType == BIT_TYPE.WHITE /*|| _bitType == BIT_TYPE.BLUE#1#)
-                    continue;
-                
-                if (DroneDesigner._scrapyardBot == null)
-                    continue;
-                
-                PlayerResource playerResource = PlayerDataManager.GetResource(_bitType);
-
-                var data = new ResourceAmount
-                {
-                    amount = (int)playerResource.liquid,
-                    capacity = playerResource.liquidCapacity,
-                    type = _bitType,
-                };
-
-                /*if (_bitType == BIT_TYPE.YELLOW)
-                    System.Console.WriteLine("");#1#
-
-                var element = liquidResourceContentView.AddElement(data, $"{_bitType}_UIElement");
-                element.Init(data, true);
-                
-                element.gameObject.SetActive(DroneDesigner._scrapyardBot.UsedResourceTypes.Contains(_bitType));
-            }
-
-            UpdateFlightDataUI();
-            
-            //UpdateRepairButton();
-        }*/
-
         #endregion //Scroll Views
-
-        //============================================================================================================//
-
-        /*#region Flight Data UI
-
-        private void UpdateFlightDataUI()
-        {
-            //--------------------------------------------------------------------------------------------------------//
-            if (_droneDesigner?._scrapyardBot is null)
-            {
-                flightDataText.text = "Flight Data:\nPower Draw: 0.0 KW/s\nTotal Power: Infinite";
-                return;
-            }
-            
-            var partCapacity = _droneDesigner._scrapyardBot.PartCapacity;
-
-            
-            var powerDraw = _droneDesigner._scrapyardBot.PowerDraw;
-            var availablePower =
-                Mathf.Clamp(
-                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquid, 0,
-                    PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
-
-            string powerTime = "infinite";
-            if(powerDraw > 0)
-                powerTime = TimeSpan.FromSeconds(availablePower / powerDraw).ToString(@"mm\:ss") + "s";
-
-            flightDataText.text = $"Flight Data:\nParts: {partCapacity}\nPower Draw: {powerDraw:0.0} KW/s\nTotal Power: {powerTime}";
-
-            //Temporarily remove flight data from screen
-            flightDataText.gameObject.SetActive(false);
-        }
-
-        #endregion //Flight Data UI*/
 
         //====================================================================================================================//
         

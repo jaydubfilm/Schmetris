@@ -25,21 +25,6 @@ namespace StarSalvager.UI
 {
     public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
-        /*[Serializable]
-        private struct SliderCover
-        {
-            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
-            public GameObject Slider;
-            [Required, HorizontalGroup("Row 1"), LabelWidth(40)]
-            public GameObject Cover;
-
-            public void SetHidden(bool hidden)
-            {
-                Slider.SetActive(!hidden);
-                Cover.SetActive(hidden);
-            }
-        }*/
-        
         [Serializable]
         public struct SmartWeaponV2
         {
@@ -145,21 +130,6 @@ namespace StarSalvager.UI
         [SerializeField]
         private RectTransform viewableAreaTransform;
 
-        /*[SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image redSliderGlow;
-
-        [SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image greenSliderGlow;
-
-        [SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image greySliderGlow;
-
-        [SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image blueSliderGlow;
-
-        [SerializeField, Required, FoldoutGroup("Slider Glows")]
-        private Image yellowSliderGlow;*/
-
         //Top Left Window
         //============================================================================================================//
 
@@ -190,24 +160,6 @@ namespace StarSalvager.UI
 
         //Bottom Left Window
         //============================================================================================================//
-
-        /*[SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderCover[] sliderCovers;
-        
-        [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText fuelSlider;
-
-        [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText repairSlider;
-
-        [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText ammoSlider;
-        
-        [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText waterSlider;
-        [SerializeField, Required, FoldoutGroup("BL Window")]
-        private SliderText powerSlider;*/
-        
 
 
         //Right Window
@@ -334,23 +286,10 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            //InitSliderText();
-
-            //vignetteImage.gameObject.SetActive(useVignette);
 
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
             
             InitValues();
-
-            /*glowImages = new[]
-            {
-                redSliderGlow,
-                blueSliderGlow,
-                greenSliderGlow,
-                greySliderGlow,
-                yellowSliderGlow,
-                //heatSliderGlow
-            };*/
         }
 
         private void OnEnable()
@@ -361,24 +300,6 @@ namespace StarSalvager.UI
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
         }
-
-        /*private void LateUpdate()
-        {
-            var value = 1f / (speed);
-
-            _alpha = Mathf.PingPong(Time.time, value) / value;
-
-            foreach (var image in glowImages)
-            {
-                if (!image.enabled)
-                    continue;
-
-                var color = image.color;
-                color.a = _alpha;
-
-                image.color = color;
-            }
-        }*/
 
         private void OnDisable()
         {
@@ -421,12 +342,6 @@ namespace StarSalvager.UI
                     {
                         magnetFlash.transform as RectTransform 
                     };
-                case HINT.FUEL:
-                    return null;
-                    /*return new object[]
-                    {
-                        GetSliderCover(BIT_TYPE.RED).Cover.transform as RectTransform
-                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -440,42 +355,22 @@ namespace StarSalvager.UI
             InitSmartWeaponUI();
             ResetIcons();
 
-            /*SetWaterValue(0f);
-            SetPowerValue(0f);*/
 
             SetCarryCapacity(0f, 1);
             
             SetHealthValue(1f);
-
-            /*SetFuelValue(0f);
-            SetRepairValue(0f);
-            SetAmmoValue(0f);*/
-
             SetProgressValue(0f);
-            //SetTimeString("0:00");
+
             
             SetPlayerPatchPoints(0);
             SetPlayerGearsProgress((0, 0));
             ShowAbortWindow(false);
-
-            //ShowLiquidSliders(null);
 
             OutlineMagnet(false);
 
             SetDancersActive(false);
             FadeBackground(false, true);
         }
-
-        /*private void InitSliderText()
-        {
-            fuelSlider.Init();
-            repairSlider.Init();
-            ammoSlider.Init();
-            
-            waterSlider.Init();
-            powerSlider.Init();
-
-        }*/
 
         private void InitSmartWeaponUI()
         {
@@ -503,17 +398,6 @@ namespace StarSalvager.UI
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
-
-            /*SetResourceSliderBounds(BIT_TYPE.RED, 0, PlayerDataManager.GetResource(BIT_TYPE.RED).liquidCapacity);
-            SetResourceSliderBounds(BIT_TYPE.GREEN, 0, PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquidCapacity);
-            SetResourceSliderBounds(BIT_TYPE.GREY, 0, PlayerDataManager.GetResource(BIT_TYPE.GREY).liquidCapacity);
-
-            SetResourceSliderBounds(BIT_TYPE.BLUE, 0, PlayerDataManager.GetResource(BIT_TYPE.BLUE).liquidCapacity);
-            SetResourceSliderBounds(BIT_TYPE.YELLOW, 0, PlayerDataManager.GetResource(BIT_TYPE.YELLOW).liquidCapacity);
-
-            SetFuelValue(PlayerDataManager.GetResource(BIT_TYPE.RED).liquid);
-            SetRepairValue(PlayerDataManager.GetResource(BIT_TYPE.GREEN).liquid);
-            SetAmmoValue(PlayerDataManager.GetResource(BIT_TYPE.GREY).liquid);*/
 
             SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
         }
@@ -602,144 +486,6 @@ namespace StarSalvager.UI
         {
             patchPointsText.text = $"{points}";
         }
-
-        /*public void SetResourceSliderBounds(BIT_TYPE type, int min, int max)
-        {
-            switch (type)
-            {
-                case BIT_TYPE.GREEN:
-                    repairSlider.SetBounds(min, max);
-                    break;
-                case BIT_TYPE.GREY:
-                    ammoSlider.SetBounds(min, max);
-                    break;
-                case BIT_TYPE.RED:
-                    fuelSlider.SetBounds(min, max);
-                    break;
-                case BIT_TYPE.YELLOW:
-                    powerSlider.SetBounds(min, max);
-                    break;
-                case BIT_TYPE.BLUE:
-                    waterSlider.SetBounds(min, max);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-        }*/
-
-
-        /*private bool _flashingFuelMeter;
-        public void SetFuelValue(float value)
-        {
-            bool hasBitAttached = false;
-            bool isGlowActive = false;
-
-            //FIXME This is inefficient, and I want to find a better way of reducing the calls here
-            if (LevelManager.Instance != null && LevelManager.Instance.BotObject)
-            {
-                hasBitAttached = LevelManager.Instance.BotObject.attachedBlocks.HasBitAttached(BIT_TYPE.RED);
-            }
-            
-            fuelSlider.value = value;
-
-            //Only if there are not any bits attached
-            if (!hasBitAttached)
-            {
-                isGlowActive = CheckActivateGlow(fuelSlider, redSliderGlow);
-
-                if (HintManager.CanShowHint(HINT.FUEL) && value <= 0f && GameManager.IsState(GameState.LevelActive))
-                    HintManager.TryShowHint(HINT.FUEL);
-            }
-            //If we have bits, just make sure we're no longer flashing
-            else
-            {
-                _flashingFuelMeter = false;
-                //FIXME I think this should have a dedicated function as to not become confusing
-                redSliderGlow.enabled = false;
-            }
-
-            //If we're glowing and we weren't before, play resource warning sound
-            if (isGlowActive && _flashingFuelMeter == false)
-            {
-                AudioController.PlaySound(SOUND.RESOURCE_WARNING);
-            }
-
-            _flashingFuelMeter = isGlowActive;
-        }
-
-        public void SetRepairValue(float value)
-        {
-            repairSlider.value = value;
-            CheckActivateGlow(repairSlider, greenSliderGlow);
-        }
-
-        public void SetAmmoValue(float value)
-        {
-            ammoSlider.value = value;
-            CheckActivateGlow(ammoSlider, greySliderGlow);
-        }
-        
-        public void SetWaterValue(float value)
-        {
-            
-            waterSlider.value = value;
-
-            CheckActivateGlow(waterSlider, blueSliderGlow);
-        }
-
-        public void SetPowerValue(float value)
-        {
-            powerSlider.value = value;
-            CheckActivateGlow(powerSlider, yellowSliderGlow);
-        }*/
-
-
-        //====================================================================================================================//
-
-        /*public void ShowLiquidSliders(IEnumerable<BIT_TYPE> types)
-        {
-            foreach (var sliderCover in sliderCovers)
-            {
-                sliderCover.SetHidden(true);
-            }
-            
-            if(types.IsNullOrEmpty())
-                return;
-
-            foreach (var bitType in types)
-            {
-                UncoverSlider(bitType);
-            }
-            
-        }*/
-
-        /*private void UncoverSlider(BIT_TYPE bitType)
-        {
-            var sliderCover = GetSliderCover(bitType);
-            
-            sliderCover.SetHidden(false);
-        }
-
-        private SliderCover GetSliderCover(BIT_TYPE bitType)
-        {
-            switch (bitType)
-            {
-                case BIT_TYPE.BLUE:
-                    return sliderCovers[4];
-                case BIT_TYPE.GREEN:
-                    return sliderCovers[2];
-                case BIT_TYPE.GREY:
-                    return sliderCovers[1];
-                case BIT_TYPE.RED:
-                    return sliderCovers[0];
-                case BIT_TYPE.YELLOW:
-                    return sliderCovers[3];
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-            }
-        }*/
-
-        //============================================================================================================//
 
 
         public void SetProgressValue(float value)
@@ -1015,29 +761,6 @@ namespace StarSalvager.UI
         
 
 
-        //====================================================================================================================//
-        
-
-
-        /*private static bool CheckActivateGlow(SliderText slider, Behaviour glowSlider)
-        {
-            return CheckActivateGlow(slider.Slider, glowSlider);
-        }
-
-        private static bool CheckActivateGlow(Slider slider, Behaviour glowSlider)
-        {
-            var value = slider.value / slider.maxValue;
-            var glowing = value <= Globals.GameUIResourceThreshold;
-            glowSlider.enabled = glowing;
-
-            return glowing;
-        }*/
-
-        /*private static void CheckActivateGlowInverse(Slider slider, Behaviour glowSlider)
-        {
-            glowSlider.enabled = slider.value / slider.maxValue >= 0.75f;
-        }*/
-
         //Patch point Effect
         //====================================================================================================================//
 
@@ -1060,9 +783,7 @@ namespace StarSalvager.UI
 
             
             var botWorldPosition = LevelManager.Instance.BotObject.transform.position;
-            
-            /*var viewportPoint = CameraController.Camera.WorldToViewportPoint(botWorldPosition);
-            var canvasPoint = effectArea.sizeDelta * viewportPoint;*/
+
             var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
             
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -1073,10 +794,10 @@ namespace StarSalvager.UI
 
             StartCoroutine(PatchPointEffectCoroutine(newPosition, patchSprite, count));
 
-            if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
+            /*if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
             {
                 HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
-            }
+            }*/
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)

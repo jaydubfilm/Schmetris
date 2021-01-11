@@ -1613,16 +1613,9 @@ namespace StarSalvager
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
                 _needToCheckMagnet = true;
-                //var check = CheckHasMagnetOverage();
-                //if(playSound)
-                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+
             }
 
-            /*if (checkForCombo)
-            {
-                CheckForCombosAround(coordinate);
-                CheckHasMagnetOverage();
-            }*/
 
             if (updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
@@ -1647,42 +1640,9 @@ namespace StarSalvager
                     break;
             }
 
-            /*var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
-
-            if(hasProcessed && part.Type == PART_TYPE.REFINER)
-                PlayRefineSound(bit.Type);*/
 
             CheckForDisconnects();
         }
-
-        /*private void PlayRefineSound(BIT_TYPE bitType)
-        {
-            SOUND sound;
-
-            switch (bitType)
-            {
-                case BIT_TYPE.BLUE:
-                    sound = SOUND.REFINE_BLUE;
-                    break;
-                case BIT_TYPE.GREEN:
-                    sound = SOUND.REFINE_GREEN;
-                    break;
-                case BIT_TYPE.GREY:
-                    sound = SOUND.REFINE_GREY;
-                    break;
-                case BIT_TYPE.RED:
-                    sound = SOUND.REFINE_RED;
-                    break;
-                case BIT_TYPE.YELLOW:
-                    sound = SOUND.REFINE_YELLOW;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-            }
-            AudioController.PlaySound(sound);
-
-        }
-        */
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
         /// <summary>
@@ -1721,8 +1681,6 @@ namespace StarSalvager
             {
                 for (var i = 0; i < directions.Length; i++)
                 {
-                    //if (avoid == directions[i])
-                    //    continue;
 
                     var check = coordinate + (directions[i] * dist);
                     if (attachedBlocks.Any(x => x.Coordinate == check))
@@ -2783,14 +2741,14 @@ namespace StarSalvager
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //Show the gears hint, after the third time
-                    if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+                    /*if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
                     {
                         var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
 
                         Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
 
                         HintManager.TryShowHint(HINT.GEARS, iHasBounds);
-                    }
+                    }*/
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (closestToCore)

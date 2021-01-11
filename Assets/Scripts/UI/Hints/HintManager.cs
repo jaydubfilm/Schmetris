@@ -189,19 +189,19 @@ namespace StarSalvager.UI.Hints
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.FUEL:
+                /*case HINT.FUEL:
                     objectsToHighlight = GameUI.Instance.GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.HOME:
+                /*case HINT.HOME:
                     var hasBits = PlayerDataManager.GetBlockDatas().Any(x => x.ClassType.Equals(nameof(Bit)));
                     if (!hasBits)
                         return;
                     
                     objectsToHighlight = FindObjectOfType<UniverseMap>().GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.CRAFT_PART:
+                /*case HINT.CRAFT_PART:
                     var hasPart = PlayerDataManager.GetCurrentPartsInStorage()
                         .Any(x => x.ClassType.Equals(nameof(Part)));
 
@@ -209,7 +209,7 @@ namespace StarSalvager.UI.Hints
                         return;
 
                     objectsToHighlight = FindObjectOfType<StorageUI>().GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.DAMAGE:
                     objectsToHighlight = FindObjectOfType<DroneDesigner>().GetHintElements(hint);
