@@ -187,6 +187,8 @@ namespace StarSalvager
                 var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
+                part.Disabled = !partData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partData.partGrade.Type));
+
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Disabled)
                     continue;

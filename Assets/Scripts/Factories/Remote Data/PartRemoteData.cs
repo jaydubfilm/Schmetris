@@ -153,6 +153,20 @@ namespace StarSalvager.Factories.Data
             value = partGrade.values[index];
             return true;
         }
+
+        public bool HasPartGrade(in int maxBitLevel)
+        {
+            if (partGrade.minBitLevel > maxBitLevel)
+            {
+                if (!partGrade.needsBitsToFunction)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return true;
+        }
     }
 }
 

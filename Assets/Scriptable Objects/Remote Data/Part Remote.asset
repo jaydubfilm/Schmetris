@@ -34,9 +34,10 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 4
-      needsBitsToFunction: 1
+      needsBitsToFunction: 0
       minBitLevel: 0
       values:
+      - 0
       - 4
       - 7
       - 7
