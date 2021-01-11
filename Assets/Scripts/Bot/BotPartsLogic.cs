@@ -208,11 +208,17 @@ namespace StarSalvager
                             MagnetCount += value;
                         }
 
+                        if (partData.HasPartGrade(partData.GetMaxBitLevel(), out float floatValue))
+                        {
+                            MagnetCount += (int)floatValue;
+                        }
+
                         break;
                     case PART_TYPE.MAGNET:
 
                         if (_magnetOverride > 0)
                             break;
+
                         if (partData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             MagnetCount += value;

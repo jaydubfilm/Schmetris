@@ -10,6 +10,14 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class PartRemoteData: RemoteDataBase
     {
+        [Serializable]
+        public struct PartGrade
+        {
+            public BIT_TYPE Type;
+            public int minBitLevel;
+            public float[] values;
+        }
+
         [FoldoutGroup("$name")]
         public string name;
         
@@ -42,6 +50,9 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")] 
         public int PatchSockets = 2;
+
+        [FoldoutGroup("$name")]
+        public PartGrade partGrade;
 
 
         //This only compares Type and not all individual properties
@@ -118,9 +129,22 @@ namespace StarSalvager.Factories.Data
 
             return true;
         }
+
+        public int GetMaxBitLevel()
+        {
+            return 0;
+        }
+
+        public bool HasPartGrade(in int maxBitLevel, out float value)
+        {
+            //This assumes we're getting the max bit level somewhere else
+            value = 0.0f;
+            if (partGrade.minBitLevel > maxBitLevel)
+                return false;
+            value = partGrade.values[maxBitLevel];
+            return true;
+        }
     }
-
-
 }
 
 
