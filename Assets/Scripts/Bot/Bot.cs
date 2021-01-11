@@ -1257,9 +1257,18 @@ namespace StarSalvager
             if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
 
-            //FIXME Need to incorporate bot health here
-            if (!(closestAttachable is IHealth closestHealth))
-                return;
+            IHealth closestHealth;
+
+            switch (closestAttachable)
+            {
+                case Part _:
+                    closestHealth = this;
+                    break;
+                default:
+                    closestHealth = (IHealth) closestAttachable;
+                    break;
+            }
+            
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -3613,7 +3622,8 @@ namespace StarSalvager
 
             yield return new WaitForSeconds(0.3f);
 
-            //TODO I think I can utilize this function in the extensions, just need to offset for coordinate location
+            //FIXME Need to determine what the new death animations will be
+            /*//TODO I think I can utilize this function in the extensions, just need to offset for coordinate location
             while (true)
             {
                 var toDestroy = attachedBlocks.GetAttachablesAroundInRadius<IAttachable>(Vector2Int.zero, index);
@@ -3632,14 +3642,14 @@ namespace StarSalvager
                             break;
                         /*case Part part:
                             part.ChangeHealth(-10000);
-                            break;*/
+                            break;#1#
                     }
                 }
 
                 yield return new WaitForSeconds(0.35f);
 
                 index++;
-            }
+            }*/
 
             OnBotDied?.Invoke(this, deathMethod);
         }
