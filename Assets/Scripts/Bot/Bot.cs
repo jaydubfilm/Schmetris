@@ -1115,6 +1115,7 @@ namespace StarSalvager
                         //AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
 
                         CompositeCollider2D.GenerateGeometry();
+                        AttachedChanged();
 
                         break;
                     default:
@@ -1489,6 +1490,8 @@ namespace StarSalvager
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
 
+            AttachedChanged();
+
             return true;
         }
 
@@ -1539,6 +1542,8 @@ namespace StarSalvager
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
@@ -1601,6 +1606,7 @@ namespace StarSalvager
                     if(existingAttachable is Part part)
                         TryAutoProcessBit(bit, part);
 
+                    AttachedChanged();
                     break;
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
@@ -1742,6 +1748,8 @@ namespace StarSalvager
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord,
@@ -1903,6 +1911,7 @@ namespace StarSalvager
             CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
+            AttachedChanged();
 
         }
 
@@ -1946,6 +1955,7 @@ namespace StarSalvager
 
             CompositeCollider2D.GenerateGeometry();
             CheckForBonusShapeMatches();
+            AttachedChanged();
         }
 
         public void DestroyAttachable(IAttachable attachable)
@@ -1980,6 +1990,8 @@ namespace StarSalvager
             CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         #endregion //Detach Bits
@@ -1989,6 +2001,31 @@ namespace StarSalvager
             attachedBlocks.Remove(attachable);
 
             CheckForDisconnects();
+        }
+
+        private void AttachedChanged()
+        {
+            var bitTypes = new[]
+            {
+                BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                BIT_TYPE.GREY,
+                BIT_TYPE.BLUE
+            };
+
+            BotPartsLogic.PopulatePartsList();
+            var outData = new Dictionary<BIT_TYPE, int>();
+            foreach (var bitType in bitTypes)
+            {
+                var level = attachedBlocks.GetHighestLevelBit(bitType);
+                
+                if(level < 0)
+                    continue;
+                
+                outData.Add(bitType, level);
+            }
+            
+            GameUi.SetBitLevelImages(outData);
         }
 
         //============================================================================================================//
@@ -2764,6 +2801,7 @@ namespace StarSalvager
                     CheckForBonusShapeMatches();
 
                     OnCombo?.Invoke();
+                    AttachedChanged();
                 }));
 
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.UI.Hints;
@@ -16,9 +15,8 @@ using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Input = UnityEngine.Input;
+
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -278,6 +276,13 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        [SerializeField]
+        private RectTransform[] bitLevelContainerTransforms;
+
+        private List<Image[]> _bitLevelImages;
+
+        //====================================================================================================================//
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
@@ -351,6 +356,9 @@ namespace StarSalvager.UI
         
         private void InitValues()
         {
+            SetupBitLevelImages();
+            
+            SetBitLevelImages(new Dictionary<BIT_TYPE, int>());
             
             InitSmartWeaponUI();
             ResetIcons();
@@ -394,12 +402,81 @@ namespace StarSalvager.UI
         
 
         //============================================================================================================//
-
+        
+        readonly BIT_TYPE[] _bitTypes = {
+            BIT_TYPE.RED,
+            BIT_TYPE.YELLOW,
+            BIT_TYPE.GREY,
+            BIT_TYPE.BLUE
+        };
+        
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
 
             SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
+        }
+
+        
+        private void SetupBitLevelImages()
+        {
+            _bitLevelImages = new List<Image[]>();
+            foreach (var bitLevelContainerTransform in bitLevelContainerTransforms)
+            {
+                var images = bitLevelContainerTransform.GetComponentsInChildren<Image>();
+                
+                _bitLevelImages.Add(images);
+            }
+
+            for (int i = 0; i < _bitTypes.Length; i++)
+            {
+                var bitType = _bitTypes[i];
+
+                for (int ii = 0; ii < _bitLevelImages[i].Length; ii++)
+                {
+                    var level = 4 - ii;
+                    var sprite = FactoryManager.Instance.BitProfileData.GetProfile(bitType).GetSprite(level);
+                    var image = _bitLevelImages[i][ii];
+                    
+                    image.gameObject.name = sprite.name;
+                    image.sprite = sprite;
+                    image.enabled = false;
+                }
+            }
+            
+        }
+
+        //====================================================================================================================//
+
+        public void SetBitLevelImages(Dictionary<BIT_TYPE, int> bitLevels)
+        {
+            foreach (var bitLevel in bitLevels)
+            {
+                SetBitLevelImages(bitLevel.Key, bitLevel.Value);
+            }
+        }
+        
+        //Uses levels 0-4
+        public void SetBitLevelImages(in BIT_TYPE type, in int level)
+        {
+            var bitType = type;
+            var index = _bitTypes.ToList().FindIndex(x => x == bitType);
+
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+
+            var images = _bitLevelImages[index];
+
+            for (var i = 0; i < images.Length; i++)
+            {
+                var active = (4 - i) <= level;
+                
+                //TODO Need to set the color depending on the level
+                images[i].color = (4 - i) == level ? Color.white : Color.gray;
+                images[i].enabled = active;
+
+            }
+
         }
 
         //============================================================================================================//
