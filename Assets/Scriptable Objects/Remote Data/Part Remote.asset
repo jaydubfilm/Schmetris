@@ -25,15 +25,22 @@ MonoBehaviour:
     powerDraw: 0
     dataTest:
     - key: Magnet
-      value: 9
-    - key: Capacity
-      value: 60
+      value: 8
     - key: SMRTCapacity
       value: 2
     - key: PartCapacity
       value: 12
     burnRate: 1
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values:
+      - 0
+      - 4
+      - 7
+      - 7
+      - 7
   - name: Magnet
     partType: 1
     lockRotation: 0
@@ -48,6 +55,10 @@ MonoBehaviour:
       value: 3
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Repairer
     partType: 2
     lockRotation: 0
@@ -63,6 +74,10 @@ MonoBehaviour:
       value: 1
     burnRate: 1
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Armor
     partType: 3
     lockRotation: 0
@@ -75,6 +90,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Gun
     partType: 4
     lockRotation: 0
@@ -93,6 +112,10 @@ MonoBehaviour:
       value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
     burnRate: 0.1
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Triple Shot
     partType: 12
     lockRotation: 1
@@ -111,6 +134,10 @@ MonoBehaviour:
       value: 00c01728-210c-4944-b1a3-0c3bf2183d42
     burnRate: 0.5
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Shield
     partType: 5
     lockRotation: 0
@@ -127,6 +154,10 @@ MonoBehaviour:
       value: 3
     burnRate: 1
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Bomb
     partType: 7
     lockRotation: 0
@@ -143,6 +174,10 @@ MonoBehaviour:
       value: 50
     burnRate: 5
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Container
     partType: 8
     lockRotation: 0
@@ -157,6 +192,10 @@ MonoBehaviour:
       value: 10
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Fuel Tank
     partType: 9
     lockRotation: 0
@@ -170,6 +209,10 @@ MonoBehaviour:
       value: 20
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Plasma Drum
     partType: 10
     lockRotation: 0
@@ -183,6 +226,10 @@ MonoBehaviour:
       value: 20
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Magazine
     partType: 11
     lockRotation: 0
@@ -196,6 +243,10 @@ MonoBehaviour:
       value: 20
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Battery
     partType: 13
     lockRotation: 0
@@ -209,6 +260,10 @@ MonoBehaviour:
       value: 20
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Missile
     partType: 14
     lockRotation: 0
@@ -226,6 +281,10 @@ MonoBehaviour:
       value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
     burnRate: 0.2
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Sniper
     partType: 15
     lockRotation: 0
@@ -241,6 +300,10 @@ MonoBehaviour:
       value: 3
     burnRate: 0.1
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Blaster
     partType: 16
     lockRotation: 0
@@ -252,6 +315,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Auto-Refiner
     partType: 17
     lockRotation: 0
@@ -264,6 +331,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Range Boost
     partType: 23
     lockRotation: 0
@@ -275,6 +346,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Overclock
     partType: 24
     lockRotation: 0
@@ -286,6 +361,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Offense
     partType: 25
     lockRotation: 0
@@ -297,6 +376,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Defense
     partType: 26
     lockRotation: 0
@@ -308,6 +391,10 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
   - name: Freeze
     partType: 6
     lockRotation: 0
@@ -320,3 +407,7 @@ MonoBehaviour:
     dataTest: []
     burnRate: 0
     PatchSockets: 2
+    partGrade:
+      Type: 0
+      minBitLevel: 0
+      values: []
