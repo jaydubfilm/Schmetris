@@ -27,8 +27,8 @@ namespace StarSalvager.UI.Scrapyard
         private PointerEvents repairButtonPointerEvents;
 
         //====================================================================================================================//
-        
-        [SerializeField] 
+
+        [SerializeField]
         private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
 
         //============================================================================================================//
@@ -37,15 +37,15 @@ namespace StarSalvager.UI.Scrapyard
         private Button repairButton;
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private FadeUIImage repairButtonGlow;
-        
+
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button launchButton;
-        
+
         private TMP_Text _repairButtonText;
 
         [SerializeField]
         private CameraController CameraController;
-        
+
 
         public static Action CheckBlueprintNewAlertUpdate;
 
@@ -93,7 +93,6 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
-            _droneDesigner.SetupDrone();
         }
 
         private void OnDisable()
@@ -113,13 +112,13 @@ namespace StarSalvager.UI.Scrapyard
         private void InitButtons()
         {
             _repairButtonText = repairButton.GetComponentInChildren<TMP_Text>();
-            
+
             repairButton.onClick.AddListener(() =>
             {
                 /*DroneDesigner.RepairParts();
                 PreviewRepairCost(false);*/
             });
-            
+
             launchButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
@@ -167,7 +166,7 @@ namespace StarSalvager.UI.Scrapyard
                     }
                 }
             };
-            
+
             foreach (var t in patches)
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
@@ -178,7 +177,7 @@ namespace StarSalvager.UI.Scrapyard
         #endregion //Scroll Views
 
         //====================================================================================================================//
-        
+
         #region Other
 
         public void DisplayInsufficientResources()
