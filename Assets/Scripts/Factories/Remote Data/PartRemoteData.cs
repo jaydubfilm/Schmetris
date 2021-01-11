@@ -8,12 +8,13 @@ using UnityEngine;
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
-    public class PartRemoteData: RemoteDataBase
+    public class PartRemoteData : RemoteDataBase
     {
         [Serializable]
         public struct PartGrade
         {
             public BIT_TYPE Type;
+            public bool needsBitsToFunction;
             public int minBitLevel;
             public float[] values;
         }
@@ -130,18 +131,26 @@ namespace StarSalvager.Factories.Data
             return true;
         }
 
-        public int GetMaxBitLevel()
-        {
-            return 0;
-        }
-
         public bool HasPartGrade(in int maxBitLevel, out float value)
         {
-            //This assumes we're getting the max bit level somewhere else
             value = 0.0f;
             if (partGrade.minBitLevel > maxBitLevel)
+            {
+                if (!partGrade.needsBitsToFunction)
+                {
+                    value = partGrade.values[0];
+                    return true;
+                }
                 return false;
-            value = partGrade.values[maxBitLevel];
+            }
+
+            int index = maxBitLevel - partGrade.minBitLevel;
+            if (!partGrade.needsBitsToFunction)
+            {
+                index++;
+            }
+
+            value = partGrade.values[index];
             return true;
         }
     }

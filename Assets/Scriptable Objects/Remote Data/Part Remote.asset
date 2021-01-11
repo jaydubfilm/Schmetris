@@ -34,10 +34,11 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 1
       minBitLevel: 0
       values:
-      - 0
       - 4
+      - 7
       - 7
       - 7
       - 7
@@ -57,6 +58,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Repairer
@@ -75,9 +77,15 @@ MonoBehaviour:
     burnRate: 1
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 3
+      needsBitsToFunction: 1
       minBitLevel: 0
-      values: []
+      values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
   - name: Armor
     partType: 3
     lockRotation: 0
@@ -91,9 +99,16 @@ MonoBehaviour:
     burnRate: 0
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 3
+      needsBitsToFunction: 0
       minBitLevel: 0
-      values: []
+      values:
+      - 10
+      - 20
+      - 30
+      - 40
+      - 50
+      - 60
   - name: Gun
     partType: 4
     lockRotation: 0
@@ -113,9 +128,15 @@ MonoBehaviour:
     burnRate: 0.1
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 4
+      needsBitsToFunction: 1
       minBitLevel: 0
-      values: []
+      values:
+      - 1
+      - 1.25
+      - 1.5
+      - 2
+      - 3
   - name: Triple Shot
     partType: 12
     lockRotation: 1
@@ -136,6 +157,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Shield
@@ -156,8 +178,13 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
-      minBitLevel: 0
-      values: []
+      needsBitsToFunction: 1
+      minBitLevel: 1
+      values:
+      - 2
+      - 3
+      - 4
+      - 5
   - name: Bomb
     partType: 7
     lockRotation: 0
@@ -175,9 +202,13 @@ MonoBehaviour:
     burnRate: 5
     PatchSockets: 2
     partGrade:
-      Type: 0
-      minBitLevel: 0
-      values: []
+      Type: 5
+      needsBitsToFunction: 1
+      minBitLevel: 2
+      values:
+      - 1
+      - 2
+      - 3
   - name: Container
     partType: 8
     lockRotation: 0
@@ -194,6 +225,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Fuel Tank
@@ -211,6 +243,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Plasma Drum
@@ -228,6 +261,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Magazine
@@ -245,6 +279,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Battery
@@ -262,6 +297,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Missile
@@ -283,6 +319,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Sniper
@@ -301,9 +338,14 @@ MonoBehaviour:
     burnRate: 0.1
     PatchSockets: 2
     partGrade:
-      Type: 0
-      minBitLevel: 0
-      values: []
+      Type: 4
+      needsBitsToFunction: 1
+      minBitLevel: 1
+      values:
+      - 1
+      - 1.5
+      - 2
+      - 3
   - name: Blaster
     partType: 16
     lockRotation: 0
@@ -317,6 +359,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Auto-Refiner
@@ -333,6 +376,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Range Boost
@@ -348,6 +392,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Overclock
@@ -363,6 +408,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Offense
@@ -378,6 +424,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Defense
@@ -393,6 +440,7 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Type: 0
+      needsBitsToFunction: 0
       minBitLevel: 0
       values: []
   - name: Freeze
@@ -408,6 +456,11 @@ MonoBehaviour:
     burnRate: 0
     PatchSockets: 2
     partGrade:
-      Type: 0
-      minBitLevel: 0
-      values: []
+      Type: 5
+      needsBitsToFunction: 1
+      minBitLevel: 1
+      values:
+      - 2
+      - 3
+      - 4
+      - 5

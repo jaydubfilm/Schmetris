@@ -208,7 +208,7 @@ namespace StarSalvager
                             MagnetCount += value;
                         }
 
-                        if (partData.HasPartGrade(partData.GetMaxBitLevel(), out float floatValue))
+                        if (partData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partData.partGrade.Type), out float floatValue))
                         {
                             MagnetCount += (int)floatValue;
                         }
@@ -713,7 +713,13 @@ namespace StarSalvager
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
-            
+            if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER)
+                && partRemoteData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type), out float multiplier))
+            {
+                damage *= multiplier;
+            }
+
+
             var position = part.transform.position;
             var shootDirection = ShouldUseGunTurret(partRemoteData)
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
@@ -855,11 +861,20 @@ namespace StarSalvager
                 _bombTimers[part] = cooldown;
             }
 
+            
+
             //Damage all the enemies
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
+            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
             {
-                EnemyManager.DamageAllEnemies(damage);
+                return;
             }
+
+            if (partRemoteData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type), out float multiplier))
+            {
+                damage *= multiplier;
+            }
+
+            EnemyManager.DamageAllEnemies(damage);
 
             CreateBombEffect(part, 50f);
 
@@ -882,6 +897,11 @@ namespace StarSalvager
                 .GetRemoteData(part.Type);
 
 
+            if (!partRemoteData.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type), out float freezeTime))
+            {
+                return;
+            }
+
             //Set the cooldown time
             if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
             {
@@ -889,7 +909,6 @@ namespace StarSalvager
             }
 
             partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius);
-            partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float freezeTime);
 
             var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
 
