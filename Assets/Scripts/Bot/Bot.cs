@@ -2020,9 +2020,6 @@ namespace StarSalvager
             {
                 var level = attachedBlocks.GetHighestLevelBit(bitType);
                 
-                if(level < 0)
-                    continue;
-                
                 outData.Add(bitType, level);
             }
             
