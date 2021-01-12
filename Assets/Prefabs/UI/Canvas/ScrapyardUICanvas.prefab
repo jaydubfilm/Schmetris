@@ -887,7 +887,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000019073486}
+  m_AnchoredPosition: {x: 0, y: 0.0000641346}
   m_SizeDelta: {x: -2.4867249, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5847174558947841976
@@ -1377,6 +1377,7 @@ GameObject:
   - component: {fileID: 8705783567555146779}
   - component: {fileID: 9018956446845370667}
   - component: {fileID: 8556861860124146528}
+  - component: {fileID: 3909701566306135782}
   - component: {fileID: 981852984589887438}
   - component: {fileID: 981852984589887425}
   - component: {fileID: 981852984589887424}
@@ -1433,6 +1434,7 @@ MonoBehaviour:
   musicVolumeSlider: {fileID: 3995423345440799691}
   sfxVolumeSlider: {fileID: 4729650533385568040}
   testingFeaturesToggle: {fileID: 2763418762775772421}
+  partChoiceWindow: {fileID: 1125545500320533298}
   menuButton: {fileID: 6917187541537215067}
   backButton: {fileID: 3014656808333230058}
   CameraController: {fileID: 0}
@@ -1478,6 +1480,24 @@ MonoBehaviour:
     contentTransform: {fileID: 634039289175169279}
     contentPrefab: {fileID: 4592388245425557676, guid: f7c48e8860a72074d86c43e881a34b5d,
       type: 3}
+--- !u!114 &3909701566306135782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 981852984589887427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae061f2198f5a1448ac0af9a5a983fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  partChoice: {fileID: 0}
+  partChoiceWindow: {fileID: 1125545500320533298}
+  buttonOptionOne: {fileID: 3022345197846459975}
+  buttonOptionTwo: {fileID: 7866102790926395354}
+  buttonImageOptionOne: {fileID: 5663149632000906482}
+  buttonImageOptionTwo: {fileID: 5751303708056805613}
 --- !u!223 &981852984589887438
 Canvas:
   m_ObjectHideFlags: 0
@@ -1573,7 +1593,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00008010864}
+  m_AnchoredPosition: {x: 0, y: 0.0001373291}
   m_SizeDelta: {x: -2.4867249, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3578792136447759751
@@ -5802,7 +5822,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000038146973}
+  m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: -2.4867249, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2450561989589625850
@@ -6570,7 +6590,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1716551435691160883}
   m_HandleRect: {fileID: 392026533084429763}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

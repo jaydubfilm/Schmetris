@@ -3,6 +3,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -37,6 +38,21 @@ namespace StarSalvager.Factories
         public PartProfile GetProfileData(PART_TYPE partType)
         {
             return factoryProfile.GetProfile(partType);
+        }
+
+        public PART_TYPE GetWreckPartTypeOption()
+        {
+            List<PART_TYPE> partType = new List<PART_TYPE>();
+
+            partType.Add(PART_TYPE.GUN);
+            partType.Add(PART_TYPE.SNIPER);
+            partType.Add(PART_TYPE.BOMB);
+            partType.Add(PART_TYPE.FREEZE);
+            partType.Add(PART_TYPE.ARMOR);
+            partType.Add(PART_TYPE.SHIELD);
+            partType.Add(PART_TYPE.REPAIR);
+
+            return partType[Random.Range(0, partType.Count)];
         }
 
         //============================================================================================================//
