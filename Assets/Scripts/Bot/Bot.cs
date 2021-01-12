@@ -1608,8 +1608,8 @@ namespace StarSalvager
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
 
-                    if(existingAttachable is Part part)
-                        TryAutoProcessBit(bit, part);
+                    /*if(existingAttachable is Part part)
+                        TryAutoProcessBit(bit, part);*/
 
                     AttachedChanged();
                     break;
@@ -1633,7 +1633,7 @@ namespace StarSalvager
         }
 
 
-        private void TryAutoProcessBit(Bit bit, IPart part)
+        /*private void TryAutoProcessBit(Bit bit, IPart part)
         {
             switch (part.Type)
             {
@@ -1653,7 +1653,7 @@ namespace StarSalvager
 
 
             CheckForDisconnects();
-        }
+        }*/
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
         /// <summary>

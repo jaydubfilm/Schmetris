@@ -466,13 +466,13 @@ namespace StarSalvager
                             MAXParts = intValue;
                         }
                         break;
-                    case PART_TYPE.MAGNET:
+                    /*case PART_TYPE.MAGNET:
 
                         if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
-                        break;
+                        break;*/
                     //Determine if we need to setup the shield elements for the bot
                     //FIXME I'll need a way of disposing of the shield visual object
                     case PART_TYPE.SHIELD:

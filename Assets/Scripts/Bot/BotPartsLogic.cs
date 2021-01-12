@@ -216,7 +216,7 @@ namespace StarSalvager
                         }
 
                         break;
-                    case PART_TYPE.MAGNET:
+                    /*case PART_TYPE.MAGNET:
 
                         if (_magnetOverride > 0)
                             break;
@@ -226,7 +226,7 @@ namespace StarSalvager
                             MagnetCount += value;
                         }
 
-                        break;
+                        break;*/
                     //Determine if we need to setup the shield elements for the bot
                     //FIXME I'll need a way of disposing of the shield visual object
                     case PART_TYPE.SHIELD:
@@ -284,9 +284,9 @@ namespace StarSalvager
                             CreateTurretEffect(part);
                         break;
                     
-                    case PART_TYPE.BOOSTRATE:
+                    /*case PART_TYPE.BOOSTRATE:
                         CreateBoostRateEffect(part);
-                        break;
+                        break;*/
                 }
             }
 
@@ -505,7 +505,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
+            //cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
             if (_projectileTimers[part] < cooldown)
             {
@@ -809,9 +809,9 @@ namespace StarSalvager
             if (range == 0f)
                 return 100 * Constants.gridCellSize;
 
-            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
+            //var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
 
-            return range * rangeBoost;
+            return range;//* rangeBoost;
         }
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)

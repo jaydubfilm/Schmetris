@@ -43,25 +43,6 @@ MonoBehaviour:
       - 7
       - 7
       - 7
-  - name: Magnet
-    partType: 1
-    lockRotation: 0
-    canSell: 1
-    description: Enhances the basic magnetism strength of your core, to allow the
-      collection of additional materials and components in the field.
-    priority: 75
-    burnType: 5
-    powerDraw: 0
-    dataTest:
-    - key: Magnet
-      value: 3
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
   - name: Repairer
     partType: 2
     lockRotation: 0
@@ -210,99 +191,8 @@ MonoBehaviour:
       - 1
       - 2
       - 3
-  - name: Container
-    partType: 8
-    lockRotation: 0
-    canSell: 1
-    description: This multi-purpose container provides extra on-board storage for
-      all resource types.
-    priority: 50
-    burnType: 0
-    powerDraw: 0
-    dataTest:
-    - key: Capacity
-      value: 10
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Fuel Tank
-    partType: 9
-    lockRotation: 0
-    canSell: 1
-    description: Provides extra on-board fuel storage.
-    priority: 50
-    burnType: 0
-    powerDraw: 0
-    dataTest:
-    - key: Capacity
-      value: 20
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Plasma Drum
-    partType: 10
-    lockRotation: 0
-    canSell: 1
-    description: Provides extra on-board plasma storage.
-    priority: 50
-    burnType: 0
-    powerDraw: 0
-    dataTest:
-    - key: Capacity
-      value: 20
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Magazine
-    partType: 11
-    lockRotation: 0
-    canSell: 1
-    description: 'Provides extra on-board storage for refined scrap metal. '
-    priority: 0
-    burnType: 0
-    powerDraw: 0
-    dataTest:
-    - key: Capacity
-      value: 20
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Battery
-    partType: 13
-    lockRotation: 0
-    canSell: 1
-    description: Provides extra on-board storage for power.
-    priority: 100
-    burnType: 5
-    powerDraw: 0
-    dataTest:
-    - key: Capacity
-      value: 20
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
   - name: Missile
-    partType: 14
+    partType: 13
     lockRotation: 0
     canSell: 1
     description: This medium-range heat-seeking projectile almost always hits.
@@ -324,7 +214,7 @@ MonoBehaviour:
       minBitLevel: 0
       values: []
   - name: Sniper
-    partType: 15
+    partType: 14
     lockRotation: 0
     canSell: 0
     description: A long range, very accurate weapon with a slow rate of fire.
@@ -348,93 +238,12 @@ MonoBehaviour:
       - 2
       - 3
   - name: Blaster
-    partType: 16
+    partType: 15
     lockRotation: 0
     canSell: 1
     description: Destroys asteroids, extracting valuable minerals.
     priority: 0
     burnType: 2
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Auto-Refiner
-    partType: 17
-    lockRotation: 0
-    canSell: 1
-    description: 'This part automatically refines any bit that lands on it, sending
-      the resources into the drone core. '
-    priority: 0
-    burnType: 0
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Range Boost
-    partType: 23
-    lockRotation: 0
-    canSell: 1
-    description: Boosts the range of any immediately adjacent part.
-    priority: 50
-    burnType: 2
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Overclock
-    partType: 24
-    lockRotation: 0
-    canSell: 1
-    description: Boosts the rate of fire of any immediately adjacent part.
-    priority: 50
-    burnType: 5
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Offense
-    partType: 25
-    lockRotation: 0
-    canSell: 1
-    description: Boosts the damage of any immediately adjacent weapon.
-    priority: 50
-    burnType: 4
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 2
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
-  - name: Defense
-    partType: 26
-    lockRotation: 0
-    canSell: 1
-    description: Boosts the HP of any immediately adjacent part.
-    priority: 50
-    burnType: 1
     powerDraw: 0
     dataTest: []
     burnRate: 0
@@ -465,3 +274,19 @@ MonoBehaviour:
       - 3
       - 4
       - 5
+  - name: Vampire
+    partType: 33
+    lockRotation: 0
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 0
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
+    PatchSockets: 2
+    partGrade:
+      Type: 0
+      needsBitsToFunction: 0
+      minBitLevel: 0
+      values: []
