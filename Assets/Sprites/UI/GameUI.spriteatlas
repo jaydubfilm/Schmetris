@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 4408957
+    totalSpriteSurfaceArea: 4392573
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -73,6 +73,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 71078829fd57283469f49a96bc8d5421, type: 3}
   - {fileID: 21300000, guid: f95757399fd3fa044b8d40691bb6a3b1, type: 3}
   - {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
+  - {fileID: 21300000, guid: adc7e8ba4c36ebc4f8238217ff7090e0, type: 3}
   - {fileID: 21300000, guid: a97b6deafe7ba7e48a083aee2360d6ac, type: 3}
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
@@ -115,6 +116,7 @@ SpriteAtlas:
   - ui_REDSCREEN_0_v1
   - ui_CRACKS2_0_v3
   - ui_GPATCHPOINT_0_v4
+  - ui_ACTIVESHIELD_0_v1
   - ui_CRACKS3_0_v3
   - ui_MATERIALCOVER_0_v1
   - ui_LEVELPROGRESS_0_v1

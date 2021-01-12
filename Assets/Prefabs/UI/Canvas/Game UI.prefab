@@ -7208,12 +7208,14 @@ MonoBehaviour:
   sectorText: {fileID: 1175717952744243424}
   abortWindow: {fileID: 4288876180579022212}
   abortButton: {fileID: 6551748476459518498}
-  SmartWeaponIcons:
+  triggerPartIcons:
   - Type: 7
     UISprite: {fileID: 21300000, guid: b596599e27c9172498c4390f67d5d714, type: 3}
   - Type: 6
     UISprite: {fileID: 21300000, guid: 5c5b7c93d749b454681c16805bbc892b, type: 3}
-  SmartWeaponsUI:
+  - Type: 5
+    UISprite: {fileID: 21300000, guid: adc7e8ba4c36ebc4f8238217ff7090e0, type: 3}
+  triggerPartUI:
   - buttonObject: {fileID: 1966375923839619654}
     buttonImage: {fileID: 7094315207460690041}
     iconImage: {fileID: 5848928046534450142}
