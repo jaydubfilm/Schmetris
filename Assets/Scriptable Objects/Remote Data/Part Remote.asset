@@ -26,8 +26,6 @@ MonoBehaviour:
     dataTest:
     - key: Magnet
       value: 8
-    - key: SMRTCapacity
-      value: 2
     - key: PartCapacity
       value: 12
     burnRate: 1
@@ -159,7 +157,7 @@ MonoBehaviour:
     burnRate: 1
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 1
       needsBitsToFunction: 1
       minBitLevel: 1
       values:

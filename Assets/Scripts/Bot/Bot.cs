@@ -1278,9 +1278,9 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            //Don't want to apply shields to the Enemy
+            /*//Don't want to apply shields to the Enemy
             if (!(closestAttachable is EnemyAttachable))
-                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);*/
 
             if (damage <= 0f)
                 return;
