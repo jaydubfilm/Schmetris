@@ -1264,6 +1264,7 @@ namespace StarSalvager
             {
                 case Part _:
                     closestHealth = this;
+                    BotPartsLogic.TryAdjustDamage(ref damage);
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
