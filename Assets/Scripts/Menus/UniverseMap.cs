@@ -74,9 +74,6 @@ namespace StarSalvager.UI
         [SerializeField]
         private RectTransform botDisplayRectTransform;
 
-        [SerializeField]
-        private TMP_Text resourceText;
-
         private RectTransform _shipwreckButtonRectTransform;
 
         #endregion //Properties
@@ -138,8 +135,6 @@ namespace StarSalvager.UI
             DrawMap();
 
             PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
-
-            resourceText.text = GetPreviewResources(PlayerDataManager.GetBlockDatas());
         }
 
         public void Reset()

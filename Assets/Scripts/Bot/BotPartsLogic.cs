@@ -216,7 +216,7 @@ namespace StarSalvager
                         }
 
                         break;
-                    case PART_TYPE.MAGNET:
+                    /*case PART_TYPE.MAGNET:
 
                         if (_magnetOverride > 0)
                             break;
@@ -226,7 +226,7 @@ namespace StarSalvager
                             MagnetCount += value;
                         }
 
-                        break;
+                        break;*/
                     //Determine if we need to setup the shield elements for the bot
                     //FIXME I'll need a way of disposing of the shield visual object
                     case PART_TYPE.SHIELD:
@@ -284,9 +284,9 @@ namespace StarSalvager
                             CreateTurretEffect(part);
                         break;
                     
-                    case PART_TYPE.BOOSTRATE:
+                    /*case PART_TYPE.BOOSTRATE:
                         CreateBoostRateEffect(part);
-                        break;
+                        break;*/
                 }
             }
 
@@ -505,7 +505,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
+            //cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
             if (_projectileTimers[part] < cooldown)
             {
@@ -809,9 +809,9 @@ namespace StarSalvager
             if (range == 0f)
                 return 100 * Constants.gridCellSize;
 
-            var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
+            //var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
 
-            return range * rangeBoost;
+            return range;//* rangeBoost;
         }
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
@@ -947,22 +947,30 @@ namespace StarSalvager
         
         #region Armor
 
-        public bool TryAdjustDamage(ref float damage)
+        public bool TryHitArmor(ref float damage)
         {
-            bool hasAdjustedDamage = false;
-            int numArmorParts = bot.attachedBlocks.FindAll(b => b is Part part && part.Type == PART_TYPE.ARMOR && !part.Disabled).Count;
+            var armors = bot.attachedBlocks
+                .OfType<Part>()
+                .Where(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false)
+                .ToArray();
 
-            for (int i = 0; i < numArmorParts; i++)
+            if (armors.IsNullOrEmpty())
+                return false;
+            
+            var armorRemote = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(PART_TYPE.ARMOR);
+            
+            var highestLevelBit = bot.attachedBlocks.GetHighestLevelBit(armorRemote.partGrade.Type);
+
+            if (!armorRemote.HasPartGrade(highestLevelBit, out var multiplier))
+                return false;
+
+            for (int i = 0; i < armors.Length; i++)
             {
-                PartRemoteData armorRemote = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.ARMOR);
-                if (armorRemote.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(armorRemote.partGrade.Type), out float multiplier))
-                {
-                    damage *= 1.0f - multiplier;
-                    hasAdjustedDamage = true;
-                }
+                damage *= 1.0f - multiplier;
             }
 
-            return hasAdjustedDamage;
+            return true;
         }
 
         #endregion 

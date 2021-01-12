@@ -794,8 +794,12 @@ namespace StarSalvager
                     //Check if its legal to attach (Within threshold of connection)
                     switch (bit.Type)
                     {
-                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREEN:
+                            ChangeHealth(Globals.GreenHealAmount);
+                            
+                            Recycler.Recycle<Bit>(bit);
+                            return false;
+                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
@@ -1264,7 +1268,7 @@ namespace StarSalvager
             {
                 case Part _:
                     closestHealth = this;
-                    BotPartsLogic.TryAdjustDamage(ref damage);
+                    BotPartsLogic.TryHitArmor(ref damage);
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
@@ -1604,8 +1608,8 @@ namespace StarSalvager
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
 
-                    if(existingAttachable is Part part)
-                        TryAutoProcessBit(bit, part);
+                    /*if(existingAttachable is Part part)
+                        TryAutoProcessBit(bit, part);*/
 
                     AttachedChanged();
                     break;
@@ -1629,7 +1633,7 @@ namespace StarSalvager
         }
 
 
-        private void TryAutoProcessBit(Bit bit, IPart part)
+        /*private void TryAutoProcessBit(Bit bit, IPart part)
         {
             switch (part.Type)
             {
@@ -1649,7 +1653,7 @@ namespace StarSalvager
 
 
             CheckForDisconnects();
-        }
+        }*/
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
         /// <summary>

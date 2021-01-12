@@ -1,8 +1,10 @@
 ﻿using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,9 +28,14 @@ namespace StarSalvager.UI.Scrapyard
         private Image buttonImageOptionOne;
         [SerializeField]
         private Image buttonImageOptionTwo;
+        [SerializeField]
+        private TMP_Text partTextOptionOne;
+        [SerializeField]
+        private TMP_Text partTextOptionTwo;
 
         private PART_TYPE partTypeOptionOne;
         private PART_TYPE partTypeOptionTwo;
+
 
         // Start is called before the first frame update
         void Start()
@@ -55,8 +62,16 @@ namespace StarSalvager.UI.Scrapyard
             partTypeOptionOne = partAttachableFactory.GetWreckPartTypeOption();
             partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption();
 
+            while (partTypeOptionOne == partTypeOptionTwo)
+            {
+                partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption();
+            }
+
             buttonImageOptionOne.sprite = partAttachableFactory.GetProfileData(partTypeOptionOne).Sprite;
             buttonImageOptionTwo.sprite = partAttachableFactory.GetProfileData(partTypeOptionTwo).Sprite;
+
+            partTextOptionOne.text = $"{partTypeOptionOne}";
+            partTextOptionTwo.text = $"{partTypeOptionTwo}";
         }
 
         private void InitButtons()
@@ -68,6 +83,7 @@ namespace StarSalvager.UI.Scrapyard
                     Type = (int)partTypeOptionOne
                 };
                 PlayerDataManager.AddPartToStorage(blockData);
+                Globals.PartChoiceAvailable = false;
                 partChoiceWindow.SetActive(false);
             });
 
@@ -78,6 +94,7 @@ namespace StarSalvager.UI.Scrapyard
                     Type = (int)partTypeOptionTwo
                 };
                 PlayerDataManager.AddPartToStorage(blockData);
+                Globals.PartChoiceAvailable = false;
                 partChoiceWindow.SetActive(false);
             });
         }

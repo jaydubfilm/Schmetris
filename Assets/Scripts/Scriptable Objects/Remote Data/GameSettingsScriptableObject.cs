@@ -68,6 +68,8 @@ namespace StarSalvager.ScriptableObjects
         
         [BoxGroup("Bot")]
         public float botHealth = 100f;
+        [BoxGroup("Bot")]
+        public float greenHealAmount = 10f;
         
         [BoxGroup("Bot")]
         public float botEnterScreenMaxSize = 1.5f;
