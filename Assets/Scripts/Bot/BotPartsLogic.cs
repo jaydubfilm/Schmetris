@@ -333,8 +333,11 @@ namespace StarSalvager
             //Be careful to not use return here
             foreach (var part in _parts)
             {
+                if (part.Disabled)
+                    continue;
+                
                 var partRemoteData = GetPartData(part);
-
+                
                 //Used to measure total consumption of parts over time
                 float resourcesConsumed = 0f;
 
