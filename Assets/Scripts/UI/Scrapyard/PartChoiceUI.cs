@@ -76,26 +76,29 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-            buttonOptionOne.onClick.AddListener(() =>
+            void CreatePart(PART_TYPE partType)
             {
-                PartData blockData = new PartData
+                var patchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).PatchSockets;
+                
+                var partData = new PartData
                 {
-                    Type = (int)partTypeOptionOne
+                    Type = (int)partTypeOptionOne,
+                    Patches = new PatchData[patchCount]
                 };
-                PlayerDataManager.AddPartToStorage(blockData);
+                
+                PlayerDataManager.AddPartToStorage(partData);
                 Globals.PartChoiceAvailable = false;
                 partChoiceWindow.SetActive(false);
+            }
+            
+            buttonOptionOne.onClick.AddListener(() =>
+            {
+                CreatePart(partTypeOptionOne);
             });
 
             buttonOptionTwo.onClick.AddListener(() =>
             {
-                PartData blockData = new PartData
-                {
-                    Type = (int)partTypeOptionTwo
-                };
-                PlayerDataManager.AddPartToStorage(blockData);
-                Globals.PartChoiceAvailable = false;
-                partChoiceWindow.SetActive(false);
+                CreatePart(partTypeOptionTwo);
             });
         }
 
