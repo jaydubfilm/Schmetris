@@ -10,6 +10,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -58,6 +59,9 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
+        [SerializeField, Required, FoldoutGroup("Gears Indicator")]
+        private TMP_Text gearsNumber;
+
         //====================================================================================================================//
 
         [SerializeField]
@@ -95,6 +99,11 @@ namespace StarSalvager.UI.Scrapyard
             InitSettings();
 
             SetWindowActive(Window.Workbench);
+        }
+
+        private void Update()
+        {
+            gearsNumber.text = $"{PlayerDataManager.GetGears()}";
         }
 
         private void OnEnable()

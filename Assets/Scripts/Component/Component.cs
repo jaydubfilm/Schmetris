@@ -1,6 +1,7 @@
 ﻿using System;
 using Recycling;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace StarSalvager
             }
 
             PlayerDataManager.AddComponent(FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained());
+            FloatingText.Create($"+{FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained()}", transform.position, Color.green);
 
             Recycler.Recycle<Component>(this);
 
