@@ -104,12 +104,12 @@ MonoBehaviour:
       needsBitsToFunction: 0
       minBitLevel: 0
       values:
-      - 10
-      - 20
-      - 30
-      - 40
-      - 50
-      - 60
+      - 0.1
+      - 0.2
+      - 0.3
+      - 0.4
+      - 0.5
+      - 0.6
   - name: Gun
     partType: 4
     lockRotation: 0

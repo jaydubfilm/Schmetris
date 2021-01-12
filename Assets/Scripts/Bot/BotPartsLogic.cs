@@ -941,6 +941,30 @@ namespace StarSalvager
         #endregion
 
         //============================================================================================================//
+        
+        #region Armor
+
+        public bool TryAdjustDamage(ref float damage)
+        {
+            bool hasAdjustedDamage = false;
+            int numArmorParts = bot.attachedBlocks.FindAll(b => b is Part part && part.Type == PART_TYPE.ARMOR && !part.Disabled).Count;
+
+            for (int i = 0; i < numArmorParts; i++)
+            {
+                PartRemoteData armorRemote = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(PART_TYPE.ARMOR);
+                if (armorRemote.HasPartGrade(bot.attachedBlocks.GetHighestLevelBit(armorRemote.partGrade.Type), out float multiplier))
+                {
+                    damage *= 1.0f - multiplier;
+                    hasAdjustedDamage = true;
+                }
+            }
+
+            return hasAdjustedDamage;
+        }
+
+        #endregion 
+
+        //============================================================================================================//
 
         #region Shield
 
