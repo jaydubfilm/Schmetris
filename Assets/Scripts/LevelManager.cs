@@ -362,6 +362,7 @@ namespace StarSalvager
 
                 GameManager.SetCurrentGameState(GameState.UniverseMap);
                 ProcessScrapyardUsageBeginAnalytics();
+                Globals.PartChoiceAvailable = true;
 
                 ScreenFade.Fade(() =>
                 {

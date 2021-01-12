@@ -47,6 +47,11 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Settings Window")]
         private Toggle testingFeaturesToggle;
 
+        //====================================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Part Choice Window")]
+        private GameObject partChoiceWindow;
+
         //============================================================================================================//
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
@@ -60,6 +65,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private DroneDesigner _droneDesigner;
 
+        private PartChoiceUI _partChoice;
+
         private GameObject[] _windows;
         private enum Window
         {
@@ -70,10 +77,12 @@ namespace StarSalvager.UI.Scrapyard
         //============================================================================================================//
 
 
+
         // Start is called before the first frame update
         private void Start()
         {
             _droneDesigner = FindObjectOfType<DroneDesigner>();
+            _partChoice = FindObjectOfType<PartChoiceUI>();
 
             _windows = new[]
             {
@@ -94,6 +103,16 @@ namespace StarSalvager.UI.Scrapyard
             CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
 
             backButton.onClick?.Invoke();
+
+            partChoiceWindow.SetActive(Globals.PartChoiceAvailable);
+            if (Globals.PartChoiceAvailable)
+            {
+                if (_partChoice == null)
+                {
+                    _partChoice = FindObjectOfType<PartChoiceUI>();
+                }
+                _partChoice.Init();
+            }
 
         }
 
