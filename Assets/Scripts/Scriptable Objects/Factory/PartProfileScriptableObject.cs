@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using StarSalvager.Factories.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -10,6 +11,10 @@ namespace StarSalvager.ScriptableObjects
     {
         [SerializeField, PropertyOrder(-100)]
         private Sprite[] damagedSprites;
+
+        public Sprite EmptySprite => emptySprite;
+        [SerializeField, PropertyOrder(-10)]
+        private Sprite emptySprite;
 
         public Sprite GetDamageSprite(int level)
         {
