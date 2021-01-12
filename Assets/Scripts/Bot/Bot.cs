@@ -794,8 +794,12 @@ namespace StarSalvager
                     //Check if its legal to attach (Within threshold of connection)
                     switch (bit.Type)
                     {
-                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREEN:
+                            ChangeHealth(Globals.GreenHealAmount);
+                            
+                            Recycler.Recycle<Bit>(bit);
+                            return false;
+                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
