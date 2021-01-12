@@ -15,6 +15,7 @@ using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 using Random = UnityEngine.Random;
@@ -24,7 +25,7 @@ namespace StarSalvager.UI
     public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
         [Serializable]
-        public struct SmartWeaponV2
+        public struct TriggerPartUI
         {
             [Required, FoldoutGroup("$NAME")]
             public Button buttonObject;
@@ -50,6 +51,7 @@ namespace StarSalvager.UI
                 SetFill(1f);
                 //SetHasResource(true);
                 SetActive(false);
+                SetInteractable(buttonObject.interactable);
             }
 
             public void SetActive(bool state)
@@ -67,12 +69,18 @@ namespace StarSalvager.UI
             {
                 Slider.value = val;
                 
-                buttonObject.interactable = val >= 1f;
+                //buttonObject.interactable = val >= 1f;
+                //SetInteractable(val >= 1f);
+            }
+
+            public void SetInteractable(in bool interactable)
+            {
+                buttonObject.interactable = interactable;
             }
         }
 
         [Serializable]
-        public struct SmartWeaponIcon
+        public struct TriggerPartIcon
         {
             #if UNITY_EDITOR
             private string NAME => Type.ToString();
@@ -163,12 +171,13 @@ namespace StarSalvager.UI
         //Right Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        private SmartWeaponIcon[] SmartWeaponIcons;
+        [SerializeField, Required, FoldoutGroup("Trigger Parts")]
+        [FormerlySerializedAs("SmartWeaponIcons")] 
+        private TriggerPartIcon[] triggerPartIcons;
 
-        [SerializeField, Required, FoldoutGroup("Smart Weapons")]
-        //private SmartWeapon[] SmartWeaponsUI;
-        private SmartWeaponV2[] SmartWeaponsUI;
+         [SerializeField, Required, FoldoutGroup("Trigger Parts")]
+         [FormerlySerializedAs("SmartWeaponsUI")]
+        private TriggerPartUI[] triggerPartUI;
         
 
 
@@ -383,16 +392,16 @@ namespace StarSalvager.UI
         private void InitSmartWeaponUI()
         {
 
-            for (var i = 0; i < SmartWeaponsUI.Length; i++)
+            for (var i = 0; i < triggerPartUI.Length; i++)
             {
                 int index = i;
-                var temp = SmartWeaponsUI[i];
+                var temp = triggerPartUI[i];
 
                 //temp.sprites = sprites;
 
-                SmartWeaponsUI[i] = temp;
-                SmartWeaponsUI[i].buttonObject.onClick.RemoveAllListeners();
-                SmartWeaponsUI[i].buttonObject.onClick.AddListener(() =>
+                triggerPartUI[i] = temp;
+                triggerPartUI[i].buttonObject.onClick.RemoveAllListeners();
+                triggerPartUI[i].buttonObject.onClick.AddListener(() =>
                 {
                     InputManager.Instance.TriggerSmartWeapon(index);
                 });
@@ -618,41 +627,47 @@ namespace StarSalvager.UI
         {
             if (index < 0) return;
 
-            var smartWeaponIcon = SmartWeaponIcons.FirstOrDefault(x => x.Type == partType);
+            var triggerPartIcon = triggerPartIcons.FirstOrDefault(x => x.Type == partType);
 
-            if (smartWeaponIcon.UISprite != null)
+            if (triggerPartIcon.UISprite != null)
             {
-                var color = smartWeaponIcon.Color;
-                SmartWeaponsUI[index].buttonImage.color = color;
+                var color = triggerPartIcon.Color;
+                triggerPartUI[index].buttonImage.color = color;
                 
-                SmartWeaponsUI[index].iconImage.color = color;
-                SmartWeaponsUI[index].iconImage.sprite = smartWeaponIcon.UISprite;
+                triggerPartUI[index].iconImage.color = color;
+                triggerPartUI[index].iconImage.sprite = triggerPartIcon.UISprite;
 
                 return;
             }
             
-            SmartWeaponsUI[index].buttonImage.color = Color.white;
-            SmartWeaponsUI[index].iconImage.sprite = null;
+            triggerPartUI[index].buttonImage.color = Color.white;
+            triggerPartUI[index].iconImage.sprite = null;
         }
         public void ShowIcon(int index, bool state)
         {
             if (index < 0) return;
-            SmartWeaponsUI[index].SetActive(state);
+            triggerPartUI[index].SetActive(state);
+        }
+        
+        public void SetInteractable(int index, bool state)
+        {
+            if (index < 0) return;
+            triggerPartUI[index].SetInteractable(state);
         }
 
         public void SetFill(int index, float fillValue)
         {
             if (index < 0) return;
-            SmartWeaponsUI[index].SetFill(fillValue);
+            triggerPartUI[index].SetFill(fillValue);
         }
 
         public void ResetIcons()
         {
-            for (var i = 0; i < SmartWeaponsUI.Length; i++)
+            for (var i = 0; i < triggerPartUI.Length; i++)
             {
                 //FIXME Need to determine if we're still using the number text here
                 /*SmartWeaponsUI[i].keyText.text = $"{i + 1}";*/
-                SmartWeaponsUI[i].Reset();
+                triggerPartUI[i].Reset();
             }
         }
 

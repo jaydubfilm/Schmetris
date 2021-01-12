@@ -150,10 +150,8 @@ MonoBehaviour:
     burnType: 1
     powerDraw: 0.1
     dataTest:
-    - key: Absorb
-      value: .3
-    - key: Radius
-      value: 3
+    - key: Cooldown
+      value: 15
     burnRate: 1
     PatchSockets: 2
     partGrade:
