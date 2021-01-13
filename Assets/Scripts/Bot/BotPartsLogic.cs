@@ -99,6 +99,7 @@ namespace StarSalvager
         //==============================================================================================================//
 
         private bool _shieldActive;
+        private bool _vampirismActive;
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -114,6 +115,7 @@ namespace StarSalvager
         private Dictionary<Part, float> _triggerPartTimers;
         
         private Dictionary<Part, float> _shieldTimers;
+        private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -145,7 +147,8 @@ namespace StarSalvager
                 .Where(p =>
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
-                    p.Type == PART_TYPE.SHIELD)
+                    p.Type == PART_TYPE.SHIELD || 
+                    p.Type == PART_TYPE.VAMPIRE)
                 .ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
@@ -230,6 +233,15 @@ namespace StarSalvager
                             break;
                         
                         _shieldTimers.Add(part, 0f);                        
+                        break;
+                    case PART_TYPE.VAMPIRE:
+                        if (_vampireTimers == null)
+                            _vampireTimers = new Dictionary<Part, float>();
+
+                        if (_vampireTimers.ContainsKey(part))
+                            break;
+                        
+                        _vampireTimers.Add(part, 0f);                        
                         break;
                     
                     case PART_TYPE.REPAIR:
@@ -319,6 +331,9 @@ namespace StarSalvager
                         ShieldUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.VAMPIRE:
+                        VampireUpdate(part, partRemoteData, deltaTime);
+                        break;
                 }
             }
 
@@ -377,6 +392,21 @@ namespace StarSalvager
                 _shieldActive = false;
 
             _shieldTimers[part] = timer;
+        }
+        
+        private void VampireUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            if (!_vampirismActive)
+                return;
+
+            var timer = _vampireTimers[part];
+
+            timer -= deltaTime;
+
+            if (timer <= 0f)
+                _vampirismActive = false;
+
+            _vampireTimers[part] = timer;
         }
         
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -759,6 +789,9 @@ namespace StarSalvager
                 case PART_TYPE.SHIELD:
                     TriggerShield(part);
                     break;
+                case PART_TYPE.VAMPIRE:
+                    TriggerVampire(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -847,8 +880,41 @@ namespace StarSalvager
             CreateFreezeEffect(part, radius * 2f);
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
-        
+
         private void TriggerShield(in Part part)
+        {
+            if (_triggerPartTimers.IsNullOrEmpty())
+                return;
+
+            //If the bomb is still recharging, we tell the player that its unavailable
+            if (_triggerPartTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+
+            if (!HasPartGrade(partRemoteData, out var seconds))
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            //Set the cooldown time
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
+            {
+                _triggerPartTimers[part] = cooldown;
+            }
+
+            //Set the shielded time
+            _shieldTimers[part] = seconds;
+
+            _shieldActive = true;
+        }
+
+        private void TriggerVampire(in Part part)
         {
             if (_triggerPartTimers.IsNullOrEmpty())
                 return;
@@ -875,10 +941,10 @@ namespace StarSalvager
                 _triggerPartTimers[part] = cooldown;
             }
 
-            //Set the shielded time
-            _shieldTimers[part] = seconds;
+            //Set the vampirism time
+            _vampireTimers[part] = seconds;
 
-            _shieldActive = true;
+            _vampirismActive = true;
         }
 
         #endregion

@@ -278,12 +278,14 @@ MonoBehaviour:
     priority: 0
     burnType: 0
     powerDraw: 0
-    dataTest: []
+    dataTest:
+    - key: Cooldown
+      value: 15
     burnRate: 0
     PatchSockets: 2
     partGrade:
       Type: 1
-      needsBitsToFunction: 0
+      needsBitsToFunction: 1
       minBitLevel: 2
       values:
       - 0

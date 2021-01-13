@@ -7215,6 +7215,8 @@ MonoBehaviour:
     UISprite: {fileID: 21300000, guid: 5c5b7c93d749b454681c16805bbc892b, type: 3}
   - Type: 5
     UISprite: {fileID: 21300000, guid: adc7e8ba4c36ebc4f8238217ff7090e0, type: 3}
+  - Type: 33
+    UISprite: {fileID: 0}
   triggerPartUI:
   - buttonObject: {fileID: 1966375923839619654}
     buttonImage: {fileID: 7094315207460690041}
