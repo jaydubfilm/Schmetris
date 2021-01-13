@@ -24,24 +24,6 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
-        /*private class ShieldData
-        {
-            public readonly float waitTime;
-            public int radius;
-
-            public float currentHp;
-            public float timer;
-
-            public Shield shield;
-
-            public GameObject gameObject => shield.gameObject;
-
-            public ShieldData(float waitTime)
-            {
-                this.waitTime = waitTime;
-            }
-        }*/
-
         #region Properties
 
         public List<BIT_TYPE> CurrentlyUsedBitTypes => _currentlyUsedBitTypes;
@@ -76,21 +58,7 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Magnets")] public bool useMagnet = true;
         [SerializeField, BoxGroup("Magnets")] public MAGNET currentMagnet = MAGNET.DEFAULT;
 
-        /*//Bit Refining Properties
-        //====================================================================================================================//
-        
-        
-        [SerializeField, BoxGroup("Bit Refining")]
-        private AnimationCurve refineScaleCurve = new AnimationCurve();
-
-        [SerializeField, BoxGroup("Bit Refining")]
-        private AnimationCurve moveSpeedCurve = new AnimationCurve();*/
-
         //==============================================================================================================//
-
-        //FIXME I don't think this is the best way of preventing using resouces. Should consider another way
-        /*[SerializeField, BoxGroup("BurnRates")]
-        private bool useBurnRate = true;*/
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int MagnetCount { get; private set; }
@@ -354,7 +322,7 @@ namespace StarSalvager
         //Individual Part Functions
         //====================================================================================================================//
         
-        #region Parts
+        #region Part Updates
 
         private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
         {
@@ -679,7 +647,7 @@ namespace StarSalvager
             GameUI.SetInteractable(uiIndex, fill >= 1f && hasPartGrade);
         }
 
-        #endregion //Parts
+        #endregion //Part Updates
 
         //====================================================================================================================//
 
