@@ -13539,6 +13539,7 @@ MonoBehaviour:
   testingFeaturesToggle: {fileID: 6790900989700234147}
   settingsBackButton: {fileID: 5546545121109810659}
   layoutChoiceWindowObject: {fileID: 2051969100114165149}
+  layoutBotPreviewContainers: []
 --- !u!223 &8017945059100664149
 Canvas:
   m_ObjectHideFlags: 0
