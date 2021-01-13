@@ -99,6 +99,7 @@ namespace StarSalvager
         //==============================================================================================================//
 
         private bool _shieldActive;
+        private bool _vampirismActive;
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -114,6 +115,7 @@ namespace StarSalvager
         private Dictionary<Part, float> _triggerPartTimers;
         
         private Dictionary<Part, float> _shieldTimers;
+        private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -145,7 +147,8 @@ namespace StarSalvager
                 .Where(p =>
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
-                    p.Type == PART_TYPE.SHIELD)
+                    p.Type == PART_TYPE.SHIELD || 
+                    p.Type == PART_TYPE.VAMPIRE)
                 .ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
@@ -165,7 +168,7 @@ namespace StarSalvager
             }
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
-            _repairTarget = new Dictionary<Part, Part>();
+            _repairTarget = new Dictionary<Part, Bit>();
 
             TryClearPartDictionaries();
             CheckShouldRecycleEffects();
@@ -234,6 +237,15 @@ namespace StarSalvager
                             break;
                         
                         _shieldTimers.Add(part, 0f);                        
+                        break;
+                    case PART_TYPE.VAMPIRE:
+                        if (_vampireTimers == null)
+                            _vampireTimers = new Dictionary<Part, float>();
+
+                        if (_vampireTimers.ContainsKey(part))
+                            break;
+                        
+                        _vampireTimers.Add(part, 0f);                        
                         break;
                     
                     case PART_TYPE.REPAIR:
@@ -305,7 +317,7 @@ namespace StarSalvager
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.REPAIR:
-                        RepairUpdate(part, partRemoteData);
+                        RepairUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
@@ -323,6 +335,9 @@ namespace StarSalvager
                         ShieldUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.VAMPIRE:
+                        VampireUpdate(part, partRemoteData, deltaTime);
+                        break;
                 }
             }
 
@@ -363,9 +378,69 @@ namespace StarSalvager
             }
         }
 
-        private void RepairUpdate(in Part part, in PartRemoteData partRemoteData)
+        private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
+            var repairTarget = _repairTarget[part];
 
+
+            //FIXME I don't think using linq here, especially twice is the best option
+            //TODO This needs to fire every x Seconds
+            IHealth toRepair = bot.attachedBlocks.OfType<Bit>()
+                .Where(p => p.CurrentHealth < p.StartingHealth)
+                .Select(x => new KeyValuePair<Bit, float>(x, x.level / (x.CurrentHealth / x.StartingHealth)))
+                .OrderByDescending(x => x.Value)
+                .FirstOrDefault().Key;
+
+            //Repair Effect Confirm
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (repairTarget && repairTarget != (Bit) toRepair)
+            {
+                _repairEffects[repairTarget].SetActive(false);
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+            //If we weren't able to find a part, see if the repairer needs to be fixed
+            if (toRepair is null)
+                return;
+
+            //Repair Effect Setup
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var bitToRepair = (Bit) toRepair;
+
+            if (repairTarget != bitToRepair)
+            {
+                _repairTarget[part] = bitToRepair;
+                
+                if (_repairEffects.IsNullOrEmpty())
+                    _repairEffects = new Dictionary<Bit, GameObject>();
+            
+                if (!_repairEffects.TryGetValue(bitToRepair, out var effectObject))
+                {
+                    CreateRepairEffect(bitToRepair);
+                }
+                else
+                {
+                    effectObject.SetActive(true);
+                }
+            }
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (!HasPartGrade(partRemoteData, out var repairAmount))
+            {
+                return;
+            }
+
+            if (repairAmount == 0)
+                return;
+            
+
+            //Increase the health of this part depending on the current level of the repairer
+            toRepair.ChangeHealth(repairAmount * deltaTime);
+
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
         }
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -381,6 +456,21 @@ namespace StarSalvager
                 _shieldActive = false;
 
             _shieldTimers[part] = timer;
+        }
+        
+        private void VampireUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            if (!_vampirismActive)
+                return;
+
+            var timer = _vampireTimers[part];
+
+            timer -= deltaTime;
+
+            if (timer <= 0f)
+                _vampirismActive = false;
+
+            _vampireTimers[part] = timer;
         }
         
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -648,6 +738,8 @@ namespace StarSalvager
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
+            var vampireCaster = _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
+
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
                 .CreateObjects<Projectile>(
@@ -658,6 +750,7 @@ namespace StarSalvager
                     damage * damageBoost,
                     rangeBoost,
                     collisionTag,
+                    vampireCaster,
                     true);
         }
 
@@ -760,6 +853,9 @@ namespace StarSalvager
                 case PART_TYPE.SHIELD:
                     TriggerShield(part);
                     break;
+                case PART_TYPE.VAMPIRE:
+                    TriggerVampire(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -848,8 +944,41 @@ namespace StarSalvager
             CreateFreezeEffect(part, radius * 2f);
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
-        
+
         private void TriggerShield(in Part part)
+        {
+            if (_triggerPartTimers.IsNullOrEmpty())
+                return;
+
+            //If the bomb is still recharging, we tell the player that its unavailable
+            if (_triggerPartTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+
+            if (!HasPartGrade(partRemoteData, out var seconds))
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            //Set the cooldown time
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
+            {
+                _triggerPartTimers[part] = cooldown;
+            }
+
+            //Set the shielded time
+            _shieldTimers[part] = seconds;
+
+            _shieldActive = true;
+        }
+
+        private void TriggerVampire(in Part part)
         {
             if (_triggerPartTimers.IsNullOrEmpty())
                 return;
@@ -876,10 +1005,10 @@ namespace StarSalvager
                 _triggerPartTimers[part] = cooldown;
             }
 
-            //Set the shielded time
-            _shieldTimers[part] = seconds;
+            //Set the vampirism time
+            _vampireTimers[part] = seconds;
 
-            _shieldActive = true;
+            _vampirismActive = true;
         }
 
         #endregion
@@ -1204,6 +1333,19 @@ namespace StarSalvager
                 partDictionary.Remove(data.Key);
             }
         }
+        private static void CheckShouldRecycle<T>(ref Dictionary<Bit, T> partDictionary, Action<T> OnRecycleCallback)
+        {
+            if (partDictionary.IsNullOrEmpty())
+                return;
+
+            var copy = new Dictionary<Bit, T>(partDictionary);
+            foreach (var data in copy.Where(data => data.Key.IsRecycled /*|| data.Key.Destroyed*/))
+            {
+                OnRecycleCallback?.Invoke(data.Value);
+                
+                partDictionary.Remove(data.Key);
+            }
+        }
         private static void CheckShouldRecycle<T>(ref Dictionary<Part, T> partDictionary, Action<Part> OnRecycleCallback)
         {
             if (partDictionary.IsNullOrEmpty())
@@ -1248,8 +1390,8 @@ namespace StarSalvager
 
         #region Effects
         
-        private Dictionary<Part, Part> _repairTarget;
-        private Dictionary<Part, GameObject> _repairEffects;
+        private Dictionary<Part, Bit> _repairTarget;
+        private Dictionary<Bit, GameObject> _repairEffects;
         
         private FlashSprite GetAlertIcon(Part part)
         {
@@ -1338,20 +1480,20 @@ namespace StarSalvager
             Destroy(effect, effectComponent.AnimationTime);
         }*/
 
-        private void CreateRepairEffect(in Part part)
+        private void CreateRepairEffect(in Bit bit)
         {
             if(_repairEffects.IsNullOrEmpty())
-                _repairEffects = new Dictionary<Part, GameObject>();
+                _repairEffects = new Dictionary<Bit, GameObject>();
 
-            if (_repairEffects.ContainsKey(part))
+            if (_repairEffects.ContainsKey(bit))
                 return;
             
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreatePartEffect(EffectFactory.PART_EFFECT.REPAIR);
             
-            effect.transform.SetParent(part.transform, false);
+            effect.transform.SetParent(bit.transform, false);
             
-            _repairEffects.Add(part, effect);
+            _repairEffects.Add(bit, effect);
         }
         
         /*private void CreateBoostRateEffect(in Part part)
@@ -1394,7 +1536,7 @@ namespace StarSalvager
                 {
                     Destroy(repair);
                 }
-                _repairEffects = new Dictionary<Part, GameObject>();
+                _repairEffects = new Dictionary<Bit, GameObject>();
             }
             
             /*if (!_boostEffects.IsNullOrEmpty())
@@ -1431,6 +1573,19 @@ namespace StarSalvager
         #endregion //Effects
 
         //============================================================================================================//
+
+        public float GetVampireValue()
+        {
+            var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
+            
+            if (part == null || part.Disabled)
+                return 0f;
+
+            return !HasPartGrade(part, out var value) ? 0f : value;
+        }
+
+        //====================================================================================================================//
+        
 
         private bool HasPartGrade(in Part part, out float value)
         {

@@ -218,7 +218,8 @@ namespace StarSalvager.AI
                     shootDirection, /*m_mostRecentMovementDirection * m_enemyData.MovementSpeed,*/
                     m_enemyData.AttackDamage,
                     1f,
-                    "Player");
+                    "Player",
+                    null);
 
             /*List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)

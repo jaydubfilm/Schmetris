@@ -292,13 +292,19 @@ MonoBehaviour:
     canSell: 1
     description: 
     priority: 0
-    burnType: 0
+    burnType: 1
     powerDraw: 0
-    dataTest: []
+    dataTest:
+    - key: Cooldown
+      value: 15
     burnRate: 0
     PatchSockets: 2
     partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
+      Type: 1
+      needsBitsToFunction: 1
+      minBitLevel: 2
+      values:
+      - 0
+      - 0.06
+      - 0.08
+      - 0.1
