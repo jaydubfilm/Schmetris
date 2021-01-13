@@ -195,6 +195,10 @@ namespace StarSalvager
             int value;
             foreach (var part in _parts)
             {
+                if (part.Type == PART_TYPE.EMPTY)
+                {
+                    continue;
+                }
 
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);

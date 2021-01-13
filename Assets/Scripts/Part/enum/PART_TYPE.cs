@@ -3,7 +3,7 @@
     public enum PART_TYPE 
     {
         CORE = 0,
-        //MAGNET = 1,
+        EMPTY = 1,
         REPAIR = 2,
         ARMOR = 3,
         GUN = 4,
@@ -43,6 +43,8 @@
         RECOVERY = 32,
         
         VAMPIRE = 33,
+
+        //MAGNET = 34
 
     } 
 }

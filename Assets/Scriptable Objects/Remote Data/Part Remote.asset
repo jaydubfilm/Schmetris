@@ -41,6 +41,22 @@ MonoBehaviour:
       - 7
       - 7
       - 7
+  - name: Empty Part
+    partType: 1
+    lockRotation: 0
+    canSell: 1
+    description: 
+    priority: 0
+    burnType: 0
+    powerDraw: 0
+    dataTest: []
+    burnRate: 0
+    PatchSockets: 0
+    partGrade:
+      Type: 0
+      needsBitsToFunction: 0
+      minBitLevel: 0
+      values: []
   - name: Repairer
     partType: 2
     lockRotation: 0

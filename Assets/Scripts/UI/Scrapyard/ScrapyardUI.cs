@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Update()
         {
-            gearsNumber.text = $"{PlayerDataManager.GetGears()}";
+            gearsNumber.text = $"{PlayerDataManager.GetComponents()}";
         }
 
         private void OnEnable()
