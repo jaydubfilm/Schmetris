@@ -376,11 +376,11 @@ namespace StarSalvager.UI
             SetCarryCapacity(0f, 1);
             
             SetHealthValue(1f);
-            SetProgressValue(0f);
+            SetLevelProgressSlider(0f);
 
             
-            SetPlayerPatchPoints(0);
-            SetPlayerGearsProgress((0, 0));
+            SetPlayerComponents(0);
+            SetPlayerXP(0);
             ShowAbortWindow(false);
 
             OutlineMagnet(false);
@@ -423,7 +423,8 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
+            SetPlayerXP(0);
+            SetPlayerComponents(PlayerDataManager.GetComponents());
         }
 
         
@@ -552,29 +553,24 @@ namespace StarSalvager.UI
         //TODO I should look into the NotifyPropertyChanged for setting up this functionality
         private void UpdatePlayerGearsLevel()
         {
-            SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
+            //SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
 
             //TODO Need to add the Patch Points connection here
-            SetPlayerPatchPoints(PlayerDataManager.GetAvailablePatchPoints());
+            SetPlayerComponents(PlayerDataManager.GetComponents());
         }
 
-        public void SetPlayerGearsProgress((int, int) patchPointProgress)
+        public void SetPlayerXP(int xp)
         {
-            gearsSlider.minValue = 0;
-            gearsSlider.maxValue = patchPointProgress.Item2;
-            gearsSlider.value = patchPointProgress.Item1;
-            
-            //levelText.text = $"lvl {}";
-            gearsText.text = $"{patchPointProgress.Item1} / {patchPointProgress.Item2}";
+            gearsText.text = $"{xp} XP";
         }
 
-        public void SetPlayerPatchPoints(int points)
+        public void SetPlayerComponents(int points)
         {
             patchPointsText.text = $"{points}";
         }
 
 
-        public void SetProgressValue(float value)
+        public void SetLevelProgressSlider(float value)
         {
             progressSlider.value = value;
         }

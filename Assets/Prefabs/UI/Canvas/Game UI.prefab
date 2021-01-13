@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 700894598670079947}
   - component: {fileID: 6721245867798066853}
   m_Layer: 5
-  m_Name: GearsWindowImage
+  m_Name: XPWindowImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2846,7 +2846,7 @@ RectTransform:
   m_Children:
   - {fileID: 663954944263077385}
   m_Father: {fileID: 8645391839655384342}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4939,7 +4939,7 @@ GameObject:
   - component: {fileID: 2814564052378802447}
   - component: {fileID: 5374709108120177117}
   m_Layer: 5
-  m_Name: PatchPointIcon
+  m_Name: GearsIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4991,7 +4991,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
+  m_Sprite: {fileID: -2232892330106914469, guid: 7dc358839dd853e4e94558a968dd764a,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -6948,7 +6949,7 @@ GameObject:
   - component: {fileID: 2245425903388905736}
   - component: {fileID: 7000769246103363991}
   m_Layer: 5
-  m_Name: PatchPointsWindowImage
+  m_Name: ComponentsWindowImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7216,7 +7217,7 @@ MonoBehaviour:
   - Type: 5
     UISprite: {fileID: 21300000, guid: adc7e8ba4c36ebc4f8238217ff7090e0, type: 3}
   - Type: 33
-    UISprite: {fileID: 0}
+    UISprite: {fileID: 21300000, guid: 82a52a3938bf3f74e9aea27a71f606c6, type: 3}
   triggerPartUI:
   - buttonObject: {fileID: 1966375923839619654}
     buttonImage: {fileID: 7094315207460690041}
@@ -8927,7 +8928,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7283267699626848704}
-  - {fileID: 3708495479933199793}
   - {fileID: 2011656970323274838}
   m_Father: {fileID: 700894598670079947}
   m_RootOrder: 0
@@ -9086,7 +9086,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.582, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10290,12 +10290,12 @@ GameObject:
   - component: {fileID: 7283267699626848704}
   - component: {fileID: 7672449283540133666}
   m_Layer: 5
-  m_Name: GearsSlider
+  m_Name: XPSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7283267699626848704
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12882,81 +12882,6 @@ RectTransform:
   m_AnchoredPosition: {x: 960, y: -540}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &9161339503199839514
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3708495479933199793}
-  - component: {fileID: 8584649138176865571}
-  - component: {fileID: 7556856842028194565}
-  m_Layer: 5
-  m_Name: GearIcon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &3708495479933199793
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9161339503199839514}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8645391839655384342}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 24, y: 0}
-  m_SizeDelta: {x: 45.13768, y: 42.855057}
-  m_Pivot: {x: 0, y: 0.5}
---- !u!222 &8584649138176865571
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9161339503199839514}
-  m_CullTransparentMesh: 0
---- !u!114 &7556856842028194565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9161339503199839514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: -8878431553829851933, guid: eedae858e3908f241a937a3fa16b0504,
-    type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &9203935421309276238
 GameObject:
   m_ObjectHideFlags: 0
