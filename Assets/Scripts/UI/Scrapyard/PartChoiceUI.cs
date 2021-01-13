@@ -76,7 +76,7 @@ namespace StarSalvager.UI.Scrapyard
                 
                 var partData = new PartData
                 {
-                    Type = (int)partTypeOptionOne,
+                    Type = (int)partType,
                     Patches = new PatchData[patchCount]
                 };
                 

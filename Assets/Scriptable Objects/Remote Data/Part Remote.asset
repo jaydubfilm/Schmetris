@@ -276,7 +276,7 @@ MonoBehaviour:
     canSell: 1
     description: 
     priority: 0
-    burnType: 0
+    burnType: 1
     powerDraw: 0
     dataTest:
     - key: Cooldown
