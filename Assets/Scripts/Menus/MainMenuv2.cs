@@ -142,6 +142,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
         private GameObject layoutChoiceWindowObject;
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private RectTransform[] layoutBotPreviewContainers;
 
         //====================================================================================================================//
 
