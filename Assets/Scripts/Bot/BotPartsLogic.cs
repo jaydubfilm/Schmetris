@@ -644,6 +644,8 @@ namespace StarSalvager
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
+            var vampireCaster = _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
+
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
                 .CreateObjects<Projectile>(
@@ -654,6 +656,7 @@ namespace StarSalvager
                     damage * damageBoost,
                     rangeBoost,
                     collisionTag,
+                    vampireCaster,
                     true);
         }
 
@@ -1427,6 +1430,19 @@ namespace StarSalvager
         #endregion //Effects
 
         //============================================================================================================//
+
+        public float GetVampireValue()
+        {
+            var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
+            
+            if (part == null || part.Disabled)
+                return 0f;
+
+            return !HasPartGrade(part, out var value) ? 0f : value;
+        }
+
+        //====================================================================================================================//
+        
 
         private bool HasPartGrade(in Part part, out float value)
         {

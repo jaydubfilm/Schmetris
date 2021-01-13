@@ -282,7 +282,11 @@ MonoBehaviour:
     burnRate: 0
     PatchSockets: 2
     partGrade:
-      Type: 0
+      Type: 1
       needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
+      minBitLevel: 2
+      values:
+      - 0
+      - 0.06
+      - 0.08
+      - 0.1
