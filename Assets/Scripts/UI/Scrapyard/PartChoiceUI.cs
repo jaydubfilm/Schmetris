@@ -81,7 +81,7 @@ namespace StarSalvager.UI.Scrapyard
                 };
                 
                 PlayerDataManager.AddPartToStorage(partData);
-                Globals.PartChoiceAvailable = false;
+                Globals.CanChoosePart = false;
                 partChoiceWindow.SetActive(false);
             }
             
