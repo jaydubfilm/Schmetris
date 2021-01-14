@@ -19,7 +19,7 @@ namespace StarSalvager.Values
 
 
         public static bool UsingTutorial;
-        
+
         //Values that change throughout gameplay - only set defaults here
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         //FIXME I no longer like how this is implemented
@@ -30,17 +30,17 @@ namespace StarSalvager.Values
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
         public static int CameraScaleSize = 51;
-        public static bool CanChoosePart = true;
+        public static bool CanChoosePart = false;
         public static bool DownGradeBits;
 
 
         //FIXME This is a mess, and must be organized
         //Game Settings Values
         //====================================================================================================================//
-        
+
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
-        
+
         public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
@@ -71,7 +71,7 @@ namespace StarSalvager.Values
 
         public static float AsteroidSpawnDisableTimeBeforeWaveEnd => m_gameSettings.asteroidSpawnDisableTimeBeforeWaveEnd;
         public static float TimeAfterWaveEndFlyOut => m_gameSettings.timeAfterWaveEndFlyOut;
-        
+
         public static float BitShiftTime => m_gameSettings.bitShiftTime;
         public static float ComboMergeTime => m_gameSettings.comboMergeTime;
         public static bool UnmergeLargeBitsOnRefine => m_gameSettings.unmergeLargeBitsOnRefine;
@@ -82,7 +82,7 @@ namespace StarSalvager.Values
         public static float AsteroidFallTimer;
 
         //====================================================================================================================//
-        
+
 
         public static ORIENTATION Orientation
         {
@@ -115,18 +115,18 @@ namespace StarSalvager.Values
             TestingFeatures = m_gameSettings.testingFeatures;
             AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
-        
+
         public static void ScaleCamera(float cameraZoomScalerValue)
         {
             if (!CameraController.Camera)
                 return;
-            
+
             ColumnsOnScreen = (int)cameraZoomScalerValue;
             if (ColumnsOnScreen % 2 == 0)
                 ColumnsOnScreen += 1;
 
             var cameraController = Object.FindObjectOfType<CameraController>();
-            
+
             if(cameraController)
                 cameraController.SetOrthographicSize(Constants.gridCellSize * ColumnsOnScreen, Vector3.zero);
 
@@ -141,5 +141,3 @@ namespace StarSalvager.Values
         }
     }
 }
-
-

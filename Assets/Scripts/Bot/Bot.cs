@@ -487,6 +487,25 @@ namespace StarSalvager
 
             AttachNewBlock(Vector2Int.zero, core);
 
+            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            for (int i = 0; i < botLayout.Count; i++)
+            {
+                if (_attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
+                {
+                    continue;
+                }
+
+                var emptyPart = partFactory.CreateObject<Part>(
+                    new PartData
+                    {
+                        Type = (int)PART_TYPE.EMPTY,
+                        Coordinate = botLayout[i],
+                        Patches = new PatchData[patchSockets]
+                    });
+
+                AttachNewBlock(botLayout[i], emptyPart);
+            }
+
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
 
             GameUi.SetHealthValue(1f);

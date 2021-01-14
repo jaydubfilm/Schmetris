@@ -29,6 +29,7 @@ namespace StarSalvager.UI
             ACCOUNT_MENU,
             RUN,
             SETTINGS,
+            LAYOUT_CHOICE
         }
 
         private enum GAME_TYPE
@@ -139,6 +140,11 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private GameObject layoutChoiceWindowObject;
+
+        //====================================================================================================================//
+
         private GAME_TYPE _selectedGameType;
         private int _selectedAccountIndex = -1;
         
@@ -195,6 +201,9 @@ namespace StarSalvager.UI
                     break;
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
+                    break;
+                case WINDOW.LAYOUT_CHOICE:
+                    SetupLayoutChoiceWindow();
                     break;
                 /*case WINDOW.RUN:
                     SetupRunMenuWindow();
@@ -301,7 +310,15 @@ namespace StarSalvager.UI
             EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
             
         }
-        
+
+        //Setup Layout Choice Window
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupLayoutChoiceWindow()
+        {
+
+        }
+
         //Setup Run Window
         //------------------------------------------------------------------------------------------------------------//
 

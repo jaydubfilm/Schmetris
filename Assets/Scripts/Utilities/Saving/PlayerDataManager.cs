@@ -64,6 +64,11 @@ namespace StarSalvager.Utilities.Saving
         //Run Data Functions
         //====================================================================================================================//
 
+        public static List<Vector2Int> GetBotLayout()
+        {
+            return PlayerRunData._botLayout;
+        }
+
         public static int GetCurrentNode()
         {
             return PlayerRunData.CurrentNode;
