@@ -69,6 +69,10 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return false;
 
+            //Make sure we're not competing for the screen space
+            if (GameManager.IsState(GameState.LevelActiveEndSequence))
+                return false;
+
             if (hint == HINT.NONE)
                 return false;
             

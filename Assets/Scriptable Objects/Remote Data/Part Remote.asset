@@ -13,27 +13,37 @@ MonoBehaviour:
   m_Name: Part Remote
   m_EditorClassIdentifier: 
   partRemoteData:
+  - name: Empty Part
+    partType: 1
+    lockRotation: 0
+    description: 
+    burnType: 0
+    dataTest: []
+    PatchSockets: 0
+    partGrade:
+      Types: 
+      Type: 0
+      minBitLevel: 0
+      needsBitsToFunction: 0
+      values: []
   - name: Core
     partType: 0
     lockRotation: 0
-    canSell: 0
     description: The heart and soul of your bot.  The core contains a powerful electro-magnet
       that attracts raw materials, as well as a limited storage capacity for refined
       resources.  Protect it at all costs!
-    priority: 200
     burnType: 4
-    powerDraw: 0
     dataTest:
     - key: Magnet
       value: 8
     - key: PartCapacity
       value: 12
-    burnRate: 1
     PatchSockets: 2
     partGrade:
-      Type: 4
-      needsBitsToFunction: 0
+      Types: 00000000
+      Type: 0
       minBitLevel: 0
+      needsBitsToFunction: 0
       values:
       - 0
       - 4
@@ -41,41 +51,22 @@ MonoBehaviour:
       - 7
       - 7
       - 7
-  - name: Empty Part
-    partType: 1
-    lockRotation: 0
-    canSell: 1
-    description: 
-    priority: 0
-    burnType: 0
-    powerDraw: 0
-    dataTest: []
-    burnRate: 0
-    PatchSockets: 0
-    partGrade:
-      Type: 0
-      needsBitsToFunction: 0
-      minBitLevel: 0
-      values: []
   - name: Repairer
     partType: 2
     lockRotation: 0
-    canSell: 1
     description: Uses plasma to repair damaged parts within range.
-    priority: 50
     burnType: 3
-    powerDraw: 0.1
     dataTest:
     - key: Heal
       value: 2
     - key: Radius
       value: 1
-    burnRate: 1
     PatchSockets: 2
     partGrade:
+      Types: 03000000
       Type: 3
-      needsBitsToFunction: 1
       minBitLevel: 1
+      needsBitsToFunction: 1
       values:
       - 0
       - 10
@@ -86,19 +77,16 @@ MonoBehaviour:
   - name: Armor
     partType: 3
     lockRotation: 0
-    canSell: 1
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
-    priority: 25
     burnType: 0
-    powerDraw: 0
     dataTest: []
-    burnRate: 0
     PatchSockets: 2
     partGrade:
+      Types: 03000000
       Type: 3
-      needsBitsToFunction: 0
       minBitLevel: 0
+      needsBitsToFunction: 0
       values:
       - 0.1
       - 0.2
@@ -109,12 +97,9 @@ MonoBehaviour:
   - name: Gun
     partType: 4
     lockRotation: 0
-    canSell: 1
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
-    priority: 75
     burnType: 3
-    powerDraw: 0
     dataTest:
     - key: Damage
       value: 7
@@ -122,12 +107,12 @@ MonoBehaviour:
       value: 0.5
     - key: Projectile
       value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
-    burnRate: 0.1
     PatchSockets: 2
     partGrade:
+      Types: 04000000
       Type: 4
-      needsBitsToFunction: 1
       minBitLevel: 0
+      needsBitsToFunction: 1
       values:
       - 1
       - 1.25
@@ -137,12 +122,9 @@ MonoBehaviour:
   - name: Triple Shot
     partType: 12
     lockRotation: 1
-    canSell: 1
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
-    priority: 50
     burnType: 3
-    powerDraw: 0.15
     dataTest:
     - key: Damage
       value: 15
@@ -150,31 +132,28 @@ MonoBehaviour:
       value: 0.5
     - key: Projectile
       value: 00c01728-210c-4944-b1a3-0c3bf2183d42
-    burnRate: 0.5
     PatchSockets: 2
     partGrade:
+      Types: 
       Type: 0
-      needsBitsToFunction: 0
       minBitLevel: 0
+      needsBitsToFunction: 0
       values: []
   - name: Shield
     partType: 5
     lockRotation: 0
-    canSell: 1
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
-    priority: 0
     burnType: 1
-    powerDraw: 0.1
     dataTest:
     - key: Cooldown
       value: 15
-    burnRate: 1
     PatchSockets: 2
     partGrade:
+      Types: 01000000
       Type: 1
-      needsBitsToFunction: 1
       minBitLevel: 1
+      needsBitsToFunction: 1
       values:
       - 2
       - 3
@@ -183,23 +162,20 @@ MonoBehaviour:
   - name: Bomb
     partType: 7
     lockRotation: 0
-    canSell: 1
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
-    priority: 50
     burnType: 4
-    powerDraw: 0.15
     dataTest:
     - key: Cooldown
       value: 5
     - key: Damage
       value: 50
-    burnRate: 5
     PatchSockets: 2
     partGrade:
+      Types: 05000000
       Type: 5
-      needsBitsToFunction: 1
       minBitLevel: 2
+      needsBitsToFunction: 1
       values:
       - 1
       - 2
@@ -207,11 +183,8 @@ MonoBehaviour:
   - name: Missile
     partType: 13
     lockRotation: 0
-    canSell: 1
     description: This medium-range heat-seeking projectile almost always hits.
-    priority: 50
     burnType: 3
-    powerDraw: 0.15
     dataTest:
     - key: Damage
       value: 5
@@ -219,32 +192,29 @@ MonoBehaviour:
       value: 1
     - key: Projectile
       value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
-    burnRate: 0.2
     PatchSockets: 2
     partGrade:
+      Types: 
       Type: 0
-      needsBitsToFunction: 0
       minBitLevel: 0
+      needsBitsToFunction: 0
       values: []
   - name: Sniper
     partType: 14
     lockRotation: 0
-    canSell: 0
     description: A long range, very accurate weapon with a slow rate of fire.
-    priority: 50
     burnType: 3
-    powerDraw: 0.15
     dataTest:
     - key: Damage
       value: 50
     - key: Cooldown
       value: 3
-    burnRate: 0.1
     PatchSockets: 2
     partGrade:
+      Types: 04000000
       Type: 4
-      needsBitsToFunction: 1
       minBitLevel: 1
+      needsBitsToFunction: 1
       values:
       - 1
       - 1.5
@@ -253,35 +223,29 @@ MonoBehaviour:
   - name: Blaster
     partType: 15
     lockRotation: 0
-    canSell: 1
     description: Destroys asteroids, extracting valuable minerals.
-    priority: 0
     burnType: 2
-    powerDraw: 0
     dataTest: []
-    burnRate: 0
     PatchSockets: 2
     partGrade:
+      Types: 
       Type: 0
-      needsBitsToFunction: 0
       minBitLevel: 0
+      needsBitsToFunction: 0
       values: []
   - name: Freeze
     partType: 6
     lockRotation: 0
-    canSell: 1
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
-    priority: 50
     burnType: 1
-    powerDraw: 0
     dataTest: []
-    burnRate: 0
     PatchSockets: 2
     partGrade:
+      Types: 05000000
       Type: 5
-      needsBitsToFunction: 1
       minBitLevel: 1
+      needsBitsToFunction: 1
       values:
       - 2
       - 3
@@ -290,20 +254,17 @@ MonoBehaviour:
   - name: Vampire
     partType: 33
     lockRotation: 0
-    canSell: 1
     description: 
-    priority: 0
     burnType: 1
-    powerDraw: 0
     dataTest:
     - key: Cooldown
       value: 15
-    burnRate: 0
     PatchSockets: 2
     partGrade:
+      Types: 01000000
       Type: 1
-      needsBitsToFunction: 1
       minBitLevel: 2
+      needsBitsToFunction: 1
       values:
       - 0
       - 0.06
