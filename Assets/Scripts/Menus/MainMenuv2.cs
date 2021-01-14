@@ -497,14 +497,15 @@ namespace StarSalvager.UI
                         SetupAccountMenuWindow();
                     });
             });
-            tutorialButton.onClick.AddListener(() =>
+            tutorialButton.interactable = false;
+            /*tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
                 Globals.CurrentSector = FactoryManager.Instance.SectorRemoteData.Count - 1;
                 Globals.CurrentWave = 0;
                 
                 LeaveMenu(SceneLoader.LEVEL);
-            });
+            });*/
         }
 
         //Setup Run Buttons
