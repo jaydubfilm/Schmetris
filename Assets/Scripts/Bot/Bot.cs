@@ -223,6 +223,8 @@ namespace StarSalvager
             CurrentHealth += amount;
 
             //TODO Need to update UI
+            
+            GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
             if (CurrentHealth > 0)
                 return;

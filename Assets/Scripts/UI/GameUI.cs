@@ -186,7 +186,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        private Image heatFillImage;
+        [FormerlySerializedAs("heatFillImage")] 
+        private Image botHealthBarImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
@@ -691,7 +692,11 @@ namespace StarSalvager.UI
             {
                 crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
             }
-            
+
+
+            botHealthBarImage.color = Color.Lerp(Color.red, Color.green, value);
+            botHealthBarImage.fillAmount = value;
+
         }
         
         //Wave Summary Window Functions
