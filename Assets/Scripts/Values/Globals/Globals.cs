@@ -30,6 +30,7 @@ namespace StarSalvager.Values
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
         public static int CameraScaleSize = 51;
+        public static float TimeForAsteroidToFallOneSquare;
 
 
         //FIXME This is a mess, and must be organized
@@ -41,7 +42,6 @@ namespace StarSalvager.Values
         
         public static float BotStartingHealth => m_gameSettings.botHealth;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
-        public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
         public static float ObstacleMass => m_gameSettings.obstacleMass;
@@ -80,6 +80,11 @@ namespace StarSalvager.Values
 
         //====================================================================================================================//
         
+
+        public static void Init()
+        {
+            TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+        }
 
         public static ORIENTATION Orientation
         {

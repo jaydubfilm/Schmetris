@@ -159,7 +159,8 @@ namespace StarSalvager.UI
         private void Start()
         {
             //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-            
+
+            Globals.Init();
             SetupWindows();
             SetupButtons();
         }
