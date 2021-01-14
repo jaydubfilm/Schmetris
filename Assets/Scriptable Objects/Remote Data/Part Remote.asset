@@ -22,7 +22,6 @@ MonoBehaviour:
     PatchSockets: 0
     partGrade:
       Types: 
-      Type: 0
       minBitLevel: 0
       needsBitsToFunction: 0
       values: []
@@ -41,7 +40,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 00000000
-      Type: 0
       minBitLevel: 0
       needsBitsToFunction: 0
       values:
@@ -64,7 +62,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 03000000
-      Type: 3
       minBitLevel: 1
       needsBitsToFunction: 1
       values:
@@ -84,7 +81,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 03000000
-      Type: 3
       minBitLevel: 0
       needsBitsToFunction: 0
       values:
@@ -110,7 +106,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 04000000
-      Type: 4
       minBitLevel: 0
       needsBitsToFunction: 1
       values:
@@ -135,7 +130,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 
-      Type: 0
       minBitLevel: 0
       needsBitsToFunction: 0
       values: []
@@ -151,7 +145,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 01000000
-      Type: 1
       minBitLevel: 1
       needsBitsToFunction: 1
       values:
@@ -173,7 +166,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 05000000
-      Type: 5
       minBitLevel: 2
       needsBitsToFunction: 1
       values:
@@ -195,7 +187,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 
-      Type: 0
       minBitLevel: 0
       needsBitsToFunction: 0
       values: []
@@ -212,7 +203,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 04000000
-      Type: 4
       minBitLevel: 1
       needsBitsToFunction: 1
       values:
@@ -229,7 +219,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 
-      Type: 0
       minBitLevel: 0
       needsBitsToFunction: 0
       values: []
@@ -243,7 +232,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 05000000
-      Type: 5
       minBitLevel: 1
       needsBitsToFunction: 1
       values:
@@ -262,7 +250,6 @@ MonoBehaviour:
     PatchSockets: 2
     partGrade:
       Types: 01000000
-      Type: 1
       minBitLevel: 2
       needsBitsToFunction: 1
       values:
