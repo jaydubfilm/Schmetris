@@ -86,6 +86,27 @@ namespace StarSalvager.Values
             TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
         }
 
+        public static void ResetFallSpeed()
+        {
+            TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+        }
+
+        public static void IncreaseFallSpeed()
+        {
+            if (TimeForAsteroidToFallOneSquare >= m_gameSettings.timeForAsteroidToFallOneSquare / 3.0f)
+            {
+                TimeForAsteroidToFallOneSquare *= (3.0f / 4.0f);
+            }
+        }
+
+        public static void DecreaseFallSpeed()
+        {
+            if (TimeForAsteroidToFallOneSquare < m_gameSettings.timeForAsteroidToFallOneSquare)
+            {
+                TimeForAsteroidToFallOneSquare *= (4.0f / 3.0f);
+            }
+        }
+
         public static ORIENTATION Orientation
         {
             get => _orientation;

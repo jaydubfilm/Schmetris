@@ -1010,10 +1010,10 @@ namespace StarSalvager.Utilities
             switch(split[1].ToLower())
             {
                 case "increase":
-                    Globals.TimeForAsteroidToFallOneSquare *= (3.0f / 4.0f);
+                    Globals.IncreaseFallSpeed();
                     break;
                 case "decrease":
-                    Globals.TimeForAsteroidToFallOneSquare *= (4.0f / 3.0f);
+                    Globals.DecreaseFallSpeed();
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
