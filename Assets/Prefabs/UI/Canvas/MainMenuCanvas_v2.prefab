@@ -3311,7 +3311,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3468855207854563723
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13539,7 +13539,28 @@ MonoBehaviour:
   testingFeaturesToggle: {fileID: 6790900989700234147}
   settingsBackButton: {fileID: 5546545121109810659}
   layoutChoiceWindowObject: {fileID: 2051969100114165149}
-  layoutBotPreviewContainers: []
+  layoutChoiceButtons:
+  - {fileID: 3028440926841411546}
+  - {fileID: 6611450781413303794}
+  - {fileID: 9039011568878668892}
+  - {fileID: 6350546482195187742}
+  - {fileID: 2459984460619842693}
+  - {fileID: 9087075577557810117}
+  - {fileID: 1495427521575359653}
+  - {fileID: 786248058157232049}
+  - {fileID: 7343382911669056034}
+  - {fileID: 1483889089147993278}
+  layoutBotPreviewContainers:
+  - {fileID: 5171487986008703191}
+  - {fileID: 8077362489210154604}
+  - {fileID: 968807094372829316}
+  - {fileID: 643330815373128919}
+  - {fileID: 4548494585201401508}
+  - {fileID: 3368926820655123393}
+  - {fileID: 3276619042388676113}
+  - {fileID: 2072200010651218799}
+  - {fileID: 8488123510775056051}
+  - {fileID: 190310878145550568}
 --- !u!223 &8017945059100664149
 Canvas:
   m_ObjectHideFlags: 0

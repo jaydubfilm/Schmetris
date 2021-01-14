@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Recycling;
+using StarSalvager.Factories;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.Extensions
 {
@@ -89,6 +93,95 @@ namespace StarSalvager.Utilities.Extensions
             }
 
             return true;
+        }
+
+        public static void CreateBotPreview(this List<Vector2Int> coordinates, in RectTransform containerRect)
+        {
+            Transform[] allChildren = containerRect.GetComponentsInChildren<Transform>();
+            if (allChildren.Length > 0)
+            {
+                for (int i = allChildren.Length - 1; i >= 0; i--)
+                {
+                    if (allChildren[i] == containerRect.transform)
+                    {
+                        continue;
+                    }
+
+                    Image image = allChildren[i].GetComponent<Image>();
+                    if (image != null)
+                    {
+                        Recycler.Recycle<Image>(image);
+                    }
+                    else
+                    {
+                        GameObject.Destroy(allChildren[i]);
+                    }
+                }
+            }
+
+            if (coordinates == null)
+            {
+                return;
+            }
+
+            Image CreateImageObject(object className, object typeName, object extra = null)
+            {
+                var temp = new GameObject($"{className}_{typeName}{(extra != null ? $"_{extra}" : string.Empty)}");
+                return temp.AddComponent<Image>();
+            }
+
+            void BotDisplaySetPosition(RectTransform newImageRect, int xOffset, int yOffset)
+            {
+                newImageRect.pivot = new Vector2(0.5f, 0.5f);
+                newImageRect.anchoredPosition = new Vector2Int(xOffset * 50, yOffset * 50);
+                newImageRect.sizeDelta = new Vector2(50, 50);
+                newImageRect.localScale = Vector3.one;
+            }
+
+            Image imageObject;
+            RectTransform rect;
+            Transform botDisplayRectTransform = containerRect.transform;
+
+            var damageProfile = FactoryManager.Instance.DamageProfile;
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+
+            foreach (var coordinate in coordinates)
+            {
+                if (!Recycler.TryGrab(out imageObject))
+                {
+                    imageObject = CreateImageObject(typeof(Part), typeof(PART_TYPE));
+                }
+
+                rect = (RectTransform)imageObject.transform;
+                rect.SetParent(botDisplayRectTransform, false);
+
+                BotDisplaySetPosition(rect, coordinate.x, coordinate.y);
+
+                if (coordinate == Vector2Int.zero)
+                {
+                    imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
+                }
+                else
+                {
+                    imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
+                }
+            }
+
+            if (coordinates.Count > 0)
+                return;
+
+            if (!Recycler.TryGrab(out imageObject))
+            {
+                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
+            }
+
+            rect = (RectTransform)imageObject.transform;
+            rect.SetParent(botDisplayRectTransform, false);
+
+            BotDisplaySetPosition(rect, 0, 0);
+
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
         }
     }
 }

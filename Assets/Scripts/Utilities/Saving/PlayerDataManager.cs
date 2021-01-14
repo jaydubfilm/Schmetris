@@ -28,6 +28,125 @@ namespace StarSalvager.Utilities.Saving
 
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
+        public static List<List<Vector2Int>> botLayoutOptions = new List<List<Vector2Int>>()
+        {
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(1, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, -1),
+                new Vector2Int(-2, 1),
+                new Vector2Int(-2, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, 2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, -1),
+                new Vector2Int(0, -2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(-2, -1),
+                new Vector2Int(-2, -2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(1, 2),
+                new Vector2Int(2, 2),
+                new Vector2Int(-1, 2),
+                new Vector2Int(-2, 2),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 0),
+                new Vector2Int(-2, 1),
+                new Vector2Int(-2, 0)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, -1),
+                new Vector2Int(1, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(1, 1),
+                new Vector2Int(0, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(1, -1),
+                new Vector2Int(0, -1),
+                new Vector2Int(-1, -1),
+                new Vector2Int(0, -2)
+            }
+        };
 
         //====================================================================================================================//
 
@@ -61,13 +180,19 @@ namespace StarSalvager.Utilities.Saving
             Files.ExportPlayerSaveAccountData(PlayerAccountData, saveSlotIndex);
         }
 
-        //Run Data Functions
-        //====================================================================================================================//
-
         public static List<Vector2Int> GetBotLayout()
         {
-            return PlayerRunData._botLayout;
+            return PlayerAccountData._botLayout;
         }
+
+        public static void SetBotLayout(int index)
+        {
+            PlayerAccountData._botLayout = botLayoutOptions[index];
+        }
+
+
+        //Run Data Functions
+        //====================================================================================================================//
 
         public static int GetCurrentNode()
         {

@@ -129,6 +129,12 @@ namespace StarSalvager.Values
             24
         };
 
+
+        public List<Vector2Int> _botLayout = new List<Vector2Int>()
+        {
+
+        };
+
         //====================================================================================================================//
 
         public void ResetPlayerRunData()
@@ -138,6 +144,7 @@ namespace StarSalvager.Values
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
+
             data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
             GearsAtRunBeginning = Gears;
