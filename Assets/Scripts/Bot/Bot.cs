@@ -226,6 +226,8 @@ namespace StarSalvager
             
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
+            FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+
             if (CurrentHealth > 0)
                 return;
             

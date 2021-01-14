@@ -280,7 +280,9 @@ namespace StarSalvager
             if (_partDragImage == null)
             {
                 _partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                _partDragImage.sortingLayerName = LayerHelper.ACTORS;
                 _partDragImage.sortingOrder = 1;
+                
             }
             _partDragImage.gameObject.SetActive(true);
             _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).GetSprite();
@@ -595,7 +597,7 @@ namespace StarSalvager
 
         #region Sell Bits & Components
 
-        private void SellBits()
+        /*private void SellBits()
         {
             var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
@@ -628,7 +630,7 @@ namespace StarSalvager
                             amount = blockData.Level * 3;
 
                         PlayerDataManager.AddComponent(componentType, amount, false);
-                        break;*/
+                        break;#1#
                     //------------------------------------------------------------------------------------------------//
                     case BitData bitData:
                         /*var bitType = (BIT_TYPE) bitData.Type;
@@ -643,7 +645,7 @@ namespace StarSalvager
                                 false);
 
                         TryIncrementDict(bitType, amount, ref processedResources);
-                        TryIncrementDict(bitType, wastedResource, ref wastedResources);*/
+                        TryIncrementDict(bitType, wastedResource, ref wastedResources);#1#
 
 
                         break;
@@ -706,7 +708,7 @@ namespace StarSalvager
 
             //Show the final alert to the player
             ShowAlertInfo(botBlockData, processedResources, wastedResources);
-        }
+        }*/
 
 
 
