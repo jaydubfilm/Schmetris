@@ -1565,8 +1565,22 @@ namespace StarSalvager
         
         private bool HasPartGrade(in PartRemoteData partRemoteData, out float value)
         {
-            var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
-            var active = partRemoteData.HasPartGrade(bitLevel, out value);
+            var types = partRemoteData.partGrade.Types;
+            var count = types.Count;
+            
+            var levels = new int[count];
+
+            for (var i = 0; i < count; i++)
+            {
+                levels[i] = types[i] == BIT_TYPE.NONE
+                    ? bot.attachedBlocks.GetHighestLevelBit()
+                    : bot.attachedBlocks.GetHighestLevelBit(types[i]);
+            }
+
+            var minLevel = levels.Min();
+            
+            //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
+            var active = partRemoteData.HasPartGrade(minLevel, out value);
 
             return active;
         }

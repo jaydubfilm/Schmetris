@@ -13,9 +13,12 @@ namespace StarSalvager.Factories.Data
         [Serializable]
         public struct PartGrade
         {
-            public BIT_TYPE Type;
-            public bool needsBitsToFunction;
+            public List<BIT_TYPE> Types;
+            
+            //public BIT_TYPE Type;
             public int minBitLevel;
+            
+            public bool needsBitsToFunction;
             public float[] values;
         }
 
@@ -28,26 +31,14 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$name")]
         public bool lockRotation;
 
-        [FoldoutGroup("$name")]
-        public bool canSell = true;
-
         [TextArea, FoldoutGroup("$name")]
         public string description;
-        
-        [FoldoutGroup("$name")]
-        public int priority;
 
         [FoldoutGroup("$name")]
         public BIT_TYPE burnType;
 
         [FoldoutGroup("$name")]
-        public float powerDraw;
-
-        [FoldoutGroup("$name")]
         public PartProperties[] dataTest;
-
-        [FoldoutGroup("$name")] 
-        public float burnRate;
 
         [FoldoutGroup("$name")] 
         public int PatchSockets = 2;
