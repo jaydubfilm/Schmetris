@@ -31,15 +31,6 @@ namespace StarSalvager.Utilities.Saving
             new PlayerResource(BIT_TYPE.YELLOW, 0, 0)
         };
 
-        public List<Vector2Int> _botLayout = new List<Vector2Int>()
-        {
-            new Vector2Int(0,0),
-            new Vector2Int(1,0),
-            new Vector2Int(0,1),
-            new Vector2Int(-1,0),
-            new Vector2Int(0,-1)
-        };
-
         public int RationCapacity = 500;
 
         [JsonIgnore]
@@ -71,6 +62,8 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         public bool firstFlight = true;
 
         public string PlaythroughID = string.Empty;
+
+        public bool CanChoosePart = false;
 
         [JsonIgnore]
         public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;

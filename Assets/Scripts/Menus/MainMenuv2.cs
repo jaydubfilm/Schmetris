@@ -142,6 +142,10 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
         private GameObject layoutChoiceWindowObject;
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private List<Button> layoutChoiceButtons;
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private RectTransform[] layoutBotPreviewContainers;
 
         //====================================================================================================================//
 
@@ -268,6 +272,11 @@ namespace StarSalvager.UI
                 accountButtons[i].onClick.RemoveAllListeners();
                 accountButtons[i].onClick.AddListener(() =>
                 {
+                    if (Files.TryImportPlayerSaveAccountData(index) == null)
+                    {
+                        SetupLayoutChoiceWindow();
+                    }
+
                     _selectedAccountIndex = index;
                     PlayerDataManager.SetCurrentSaveSlotIndex(index);
                     SetupAccountMenuWindow();
@@ -316,7 +325,20 @@ namespace StarSalvager.UI
 
         private void SetupLayoutChoiceWindow()
         {
+            layoutChoiceWindowObject.SetActive(true);
 
+            for (int i = 0; i < layoutBotPreviewContainers.Length; i++)
+            {
+                if (PlayerDataManager.botLayoutOptions.Count <= i)
+                {
+                    layoutChoiceWindowObject.SetActive(false);
+                    continue;
+                }
+                layoutChoiceWindowObject.SetActive(true);
+
+                List<Vector2Int> layoutPositions = PlayerDataManager.botLayoutOptions[i];
+                layoutPositions.CreateBotPreview(layoutBotPreviewContainers[i]);
+            }
         }
 
         //Setup Run Window
@@ -365,6 +387,7 @@ namespace StarSalvager.UI
             SetupAccountMenuButtons();
             SetupRunMenuButtons();
             SetupSettingsButtons();
+            SetupLayoutChoiceButtons();
         }
 
         //Setup Main Menu Buttons
@@ -547,10 +570,27 @@ namespace StarSalvager.UI
             settingsBackButton.onClick.AddListener(CloseOpenWindow);
         }
 
+        //Setup Layout Choice Buttons
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupLayoutChoiceButtons()
+        {
+            for (int i = 0; i < layoutChoiceButtons.Count; i++)
+            {
+                int index = i;
+                layoutChoiceButtons[i].onClick.AddListener(() =>
+                {
+                    PlayerDataManager.SetBotLayout(index);
+                    PlayerDataManager.ResetPlayerRunData();
+                    layoutChoiceWindowObject.SetActive(false);
+                });
+            }
+        }
+
         #endregion //Buttons
 
         //====================================================================================================================//
-        
+
         #region Windows
 
         private void SetupWindows()

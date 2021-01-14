@@ -26,11 +26,9 @@ namespace StarSalvager.Values
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         public static int CurrentSector = 0;
         public static int CurrentWave = 0;
-        public static bool SectorComplete = false;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
         public static int CameraScaleSize = 51;
-        public static bool CanChoosePart = false;
         public static bool DownGradeBits;
 
 

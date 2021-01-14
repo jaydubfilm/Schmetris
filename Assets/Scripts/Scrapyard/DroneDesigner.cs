@@ -389,7 +389,7 @@ namespace StarSalvager
                 SaveBlockData();
             }
             //If there is an attachable at location
-            else
+            else if (SelectedPartPreviousGridPosition.HasValue)
             {
                 if (!(SelectedBrick is PartData partData))
                     throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
