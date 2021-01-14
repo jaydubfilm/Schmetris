@@ -47,7 +47,7 @@ MonoBehaviour:
     canSell: 1
     description: Uses plasma to repair damaged parts within range.
     priority: 50
-    burnType: 2
+    burnType: 3
     powerDraw: 0.1
     dataTest:
     - key: Heal
@@ -59,13 +59,14 @@ MonoBehaviour:
     partGrade:
       Type: 3
       needsBitsToFunction: 1
-      minBitLevel: 0
+      minBitLevel: 1
       values:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - 0
+      - 10
+      - 20
+      - 30
+      - 40
+      - 50
   - name: Armor
     partType: 3
     lockRotation: 0

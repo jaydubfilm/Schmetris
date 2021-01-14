@@ -207,7 +207,9 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            DowngradeAllBits(1);
+            if(Globals.DownGradeBits)
+                DowngradeAllBits(1);
+            
             //SellBits();
             SetupDrone();
 
@@ -799,6 +801,7 @@ namespace StarSalvager
             }
            
             PlayerDataManager.SetBlockData(droneBlockData);
+            Globals.DownGradeBits = false;
         }
 
         //====================================================================================================================//

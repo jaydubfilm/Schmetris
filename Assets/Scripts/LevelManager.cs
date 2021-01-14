@@ -362,7 +362,8 @@ namespace StarSalvager
 
                 GameManager.SetCurrentGameState(GameState.UniverseMap);
                 ProcessScrapyardUsageBeginAnalytics();
-                Globals.PartChoiceAvailable = true;
+                Globals.CanChoosePart = true;
+                Globals.DownGradeBits = true;
 
                 ScreenFade.Fade(() =>
                 {

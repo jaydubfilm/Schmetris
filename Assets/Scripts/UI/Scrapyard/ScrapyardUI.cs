@@ -113,8 +113,11 @@ namespace StarSalvager.UI.Scrapyard
 
             backButton.onClick?.Invoke();
 
-            partChoiceWindow.SetActive(Globals.PartChoiceAvailable);
-            if (Globals.PartChoiceAvailable)
+            partChoiceWindow.SetActive(Globals.CanChoosePart);
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (Globals.CanChoosePart)
             {
                 if (_partChoice == null)
                 {
