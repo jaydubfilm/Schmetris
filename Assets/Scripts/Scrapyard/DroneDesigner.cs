@@ -780,6 +780,8 @@ namespace StarSalvager
 
         private void DowngradeAllBits(int removeBelowLevel)
         {
+            Debug.Log("DOWNGRADING DISABLED");
+            return;
             var droneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
             
             var attachedBits = droneBlockData.OfType<BitData>().Where(x => x.Level < removeBelowLevel).ToArray();

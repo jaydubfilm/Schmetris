@@ -701,12 +701,29 @@ namespace StarSalvager.Utilities.Extensions
         public static int GetHighestLevelBit(this IEnumerable<IAttachable> attachedBlocks, BIT_TYPE bitType)
         {
             var bits = attachedBlocks.OfType<Bit>().ToArray();
+
             if (bits.IsNullOrEmpty())
                 return -1;
-            var selected = bits.FirstOrDefault(x => x.Type == bitType);
+
+            Bit selected = null;
+            var maxLevel = -999;
+            foreach (var bit in bits)
+            {
+                if(bit.Type != bitType)
+                    continue;
+                
+                if(bit.level < maxLevel)
+                    continue;
+
+                maxLevel = bit.level;
+                selected = bit;
+
+            }
+            
             if (selected is null)
                 return -1;
-            return selected.level;
+            
+            return maxLevel;
         }
 
 
