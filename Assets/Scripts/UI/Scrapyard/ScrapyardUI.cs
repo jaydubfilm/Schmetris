@@ -113,11 +113,11 @@ namespace StarSalvager.UI.Scrapyard
 
             backButton.onClick?.Invoke();
 
-            partChoiceWindow.SetActive(Globals.CanChoosePart);
+            partChoiceWindow.SetActive(PlayerDataManager.GetCanChoosePart());
             
             //--------------------------------------------------------------------------------------------------------//
             
-            if (Globals.CanChoosePart)
+            if (PlayerDataManager.GetCanChoosePart())
             {
                 if (_partChoice == null)
                 {
@@ -251,13 +251,6 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
-
-            if (Globals.SectorComplete)
-            {
-                Globals.SectorComplete = false;
-            }
-
-
 
             ScreenFade.Fade(() =>
             {

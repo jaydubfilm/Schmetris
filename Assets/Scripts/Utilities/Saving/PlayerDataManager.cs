@@ -155,6 +155,16 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.Version;
         }
 
+        public static bool GetCanChoosePart()
+        {
+            return PlayerRunData.CanChoosePart;
+        }
+
+        public static void SetCanChoosePart(bool canChoosePart)
+        {
+            PlayerRunData.CanChoosePart = canChoosePart;
+        }
+
         public static bool GetHasRunStarted()
         {
             return HasPlayerRunData() && PlayerRunData.runStarted;
