@@ -40,6 +40,18 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
+        public PART_TYPE GetBasicWreckPartTypeOption()
+        {
+            List<PART_TYPE> partType = new List<PART_TYPE>();
+
+            partType.Add(PART_TYPE.GUN);
+            partType.Add(PART_TYPE.SNIPER);
+            partType.Add(PART_TYPE.ARMOR);
+            partType.Add(PART_TYPE.REPAIR);
+
+            return partType[Random.Range(0, partType.Count)];
+        }
+
         public PART_TYPE GetWreckPartTypeOption()
         {
             List<PART_TYPE> partType = new List<PART_TYPE>();
