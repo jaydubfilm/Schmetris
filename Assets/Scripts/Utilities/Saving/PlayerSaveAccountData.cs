@@ -105,28 +105,28 @@ namespace StarSalvager.Values
             new Vector2Int(26, 21),
             new Vector2Int(23, 22),
             new Vector2Int(24, 23),
-            new Vector2Int(25, 24),
-            new Vector2Int(26, 25),
+            new Vector2Int(26, 24),
 
             new Vector2Int(5, 0),
             new Vector2Int(10, 5),
             new Vector2Int(15, 10),
             new Vector2Int(20, 15),
+            new Vector2Int(25, 20),
         };
 
         [JsonIgnore]
         public List<int> WreckNodes = new List<int>()
         {
-            2,
-            4,
-            7,
-            9,
-            12,
-            14,
-            17,
-            19,
-            22,
-            24
+            1,
+            3,
+            6,
+            8,
+            11,
+            13,
+            16,
+            18,
+            21,
+            23
         };
 
 
@@ -162,6 +162,7 @@ namespace StarSalvager.Values
             TotalRuns++;
 
             PlayerRunData = data;
+            PlayerDataManager.SetCanChoosePart(true);
             PlayerDataManager.SavePlayerAccountData();
         }
 
