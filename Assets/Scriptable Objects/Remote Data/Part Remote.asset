@@ -247,6 +247,8 @@ MonoBehaviour:
     dataTest:
     - key: Cooldown
       value: 15
+    - key: Time
+      value: 2
     PatchSockets: 2
     partGrade:
       Types: 01000000

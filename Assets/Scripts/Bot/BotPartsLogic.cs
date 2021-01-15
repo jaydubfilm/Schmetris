@@ -961,10 +961,15 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
             
-            if (!HasPartGrade(partRemoteData, out var seconds))
+            if (!HasPartGrade(partRemoteData, out _))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
+            }
+            if (partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float seconds))
+            {
+                //Set the vampirism time
+                _vampireTimers[part] = seconds;
             }
 
             //Set the cooldown time
@@ -973,8 +978,6 @@ namespace StarSalvager
                 _triggerPartTimers[part] = cooldown;
             }
 
-            //Set the vampirism time
-            _vampireTimers[part] = seconds;
 
             _vampirismActive = true;
         }

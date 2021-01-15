@@ -92,6 +92,8 @@ namespace StarSalvager
 
         private void Update()
         {
+            CheckForMousePartHover();
+                
             if (_partDragImage == null || !_partDragImage.gameObject.activeSelf)
                 return;
 
@@ -195,6 +197,9 @@ namespace StarSalvager
             PlayerDataManager.RemovePatchFromStorageAtIndex(_draggingPatch.data.storageIndex);
 
             StorageUI.UpdateStorage();
+            
+            _draggingPatch.ResetInScrollview();
+            _draggingPatch = null;
         }
 
         //============================================================================================================//
@@ -477,6 +482,38 @@ namespace StarSalvager
 
         private void OnRightMouseButtonUp()
         {
+        }
+
+        private void CheckForMousePartHover()
+        {
+            var show = TryHoverPart(out var partData);
+
+            DroneDesignUi.ShowPartDetails(show, partData);
+        }
+
+        private bool TryHoverPart(out ScrapyardPart scrapyardPart)
+        {
+            scrapyardPart = null;
+            
+            if(_draggingPatch || _isDragging)
+                return false;
+            
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
+                return false;
+
+            if (_scrapyardBot == null || SelectedBrick != null)
+                return false;
+
+            var partAtCoords = _scrapyardBot.AttachedBlocks
+                .OfType<ScrapyardPart>()
+                .FirstOrDefault(x => x.Type != PART_TYPE.EMPTY && x.Coordinate == mouseCoordinate);
+
+            if (partAtCoords is null)
+                return false;
+
+            scrapyardPart = partAtCoords;
+            
+            return true;
         }
 
         #endregion //User Input
@@ -930,6 +967,18 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
+        }
+        
+        [Button]
+        public void ShowPart()
+        {
+            var corePartData = _scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>()
+                .FirstOrDefault(x => x.Type == PART_TYPE.GUN);
+
+            if (!corePartData)
+                return;
+            
+            DroneDesignUi.ShowPartDetails(true, corePartData);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += CheckCanAfford;
+            CheckCanAfford();
         }
 
         private void OnDisable()
