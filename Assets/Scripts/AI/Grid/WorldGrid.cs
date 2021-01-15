@@ -274,11 +274,9 @@ namespace StarSalvager
 
         #region Enemy Spawn Positions
 
-        public Vector2 GetLocalPositionOfSpawnPositionForEnemy(ENEMY_MOVETYPE moveType)
+        public Vector2 GetLocalPositionOfSpawnPositionForEnemy(Enemy enemy)
         {
-            if (moveType == ENEMY_MOVETYPE.Horizontal ||
-                moveType == ENEMY_MOVETYPE.HorizontalDescend ||
-                moveType == ENEMY_MOVETYPE.OscillateHorizontal)
+            if (enemy.SpawnHorizontal)
             {
                 //Spawn to the edges of the screen
                 return GetHorizontalSpawnPositionForEnemy();

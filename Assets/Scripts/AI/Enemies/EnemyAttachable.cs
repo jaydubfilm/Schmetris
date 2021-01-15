@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
+    public abstract class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -72,9 +72,11 @@ namespace StarSalvager.AI
                     HintManager.TryShowHint(HINT.PARASITE, 1f, this);
                 }
             }
+
+            ProcessFireLogic();
             
             
-            if (FreezeTime > 0)
+            /*if (FreezeTime > 0)
             {
                 FreezeTime -= Time.deltaTime;
                 return;
@@ -102,7 +104,7 @@ namespace StarSalvager.AI
 
             m_fireTimer -= 1 / m_enemyData.RateOfFire;
             
-            FireAttack();
+            FireAttack();*/
             
         }
 
@@ -216,13 +218,13 @@ namespace StarSalvager.AI
             TryUpdateTarget();
         }
 
-        protected override void FireAttack()
+        /*protected override void FireAttack()
         {
             if (!_attachedBot || !Attached)
                 return;
             
             _attachedBot.TryHitAt(_target, m_enemyData.AttackDamage);
-        }
+        }*/
 
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
         {

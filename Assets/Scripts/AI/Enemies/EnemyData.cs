@@ -26,8 +26,6 @@ namespace StarSalvager
 
         public float RateOfFire { get; }
 
-        public ENEMY_MOVETYPE MovementType { get; }
-
         public FIRE_TYPE FireType { get; }
         public bool FireAtTarget { get; }
 
@@ -38,15 +36,15 @@ namespace StarSalvager
         public Sprite Sprite { get; }
         public AnimationControllerScriptableObject AnimationController { get; }
 
-        public float OscillationsPerSecond { get; }
+        //public float OscillationsPerSecond { get; }
 
-        public float OscillationAngleRange { get; }
+        //public float OscillationAngleRange { get; }
 
-        public float OrbitRadius { get; }
+        //public float OrbitRadius { get; }
 
-        public float OrbitRadiusSqr => OrbitRadius * OrbitRadius;
+        //public float OrbitRadiusSqr => OrbitRadius * OrbitRadius;
 
-        public float NumberCellsDescend { get; }
+        //public float NumberCellsDescend { get; }
 
         public bool AddVelocityToProjectiles { get; }
 
@@ -79,15 +77,14 @@ namespace StarSalvager
             IsAttachable                = enemyProfileData.IsAttachable;
             AttackDamage                = enemyRemoteData.AttackDamage;
             RateOfFire                  = enemyRemoteData.RateOfFire;
-            MovementType                = enemyProfileData.MovementType;
             IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType              = enemyProfileData.ProjectileType;
             Sprite                      = enemyProfileData.Sprite;
             AnimationController         = enemyProfileData.AnimationController;
-            OscillationsPerSecond       = enemyProfileData.OscillationsPerSeconds;
+            /*OscillationsPerSecond       = enemyProfileData.OscillationsPerSeconds;
             OscillationAngleRange       = enemyProfileData.OscillationAngleRange;
             OrbitRadius                 = enemyProfileData.OrbitRadius;
-            NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
+            NumberCellsDescend          = enemyProfileData.NumberCellsDescend;*/
             Dimensions                  = enemyRemoteData.Dimensions;
 
             rdsTable = new RDSTable();

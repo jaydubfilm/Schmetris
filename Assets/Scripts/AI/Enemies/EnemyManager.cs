@@ -153,8 +153,10 @@ namespace StarSalvager
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];
-                    
-                if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
+
+                enemy.ProcessMovement();
+
+                /*if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {
                     continue;
                 }
@@ -206,7 +208,7 @@ namespace StarSalvager
                 }
                 sumDirection.Normalize();
 
-                enemy.ProcessMovement(sumDirection);
+                enemy.ProcessMovement(sumDirection);*/
             }
 
             /*if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
@@ -341,7 +343,7 @@ namespace StarSalvager
                 m_enemies.Add(newEnemy);
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
             newEnemy.SetHorizontalMovementYLevel();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
@@ -354,7 +356,7 @@ namespace StarSalvager
             
             m_enemies.Add(newEnemy);
             ReParentEnemy(newEnemy);
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
         }
 
         public void RemoveEnemy(Enemy newEnemy)
@@ -511,10 +513,10 @@ namespace StarSalvager
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
 
-            for (int i = 0; i < m_enemies.Count; i++)
+            /*for (int i = 0; i < m_enemies.Count; i++)
             {
                 m_enemies[i].m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
-            }
+            }*/
         }
 
         public void RecycleAllEnemies()

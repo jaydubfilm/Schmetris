@@ -18,22 +18,11 @@ using StarSalvager.Utilities.Particles;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
     {
-        public bool IsAttachable => m_enemyData.IsAttachable;
-        public bool IgnoreObstacleAvoidance => m_enemyData.IgnoreObstacleAvoidance;
-        public ENEMY_MOVETYPE MovementType
-        {
-            get
-            {
-                if (m_enemyMovetypeOverride != null)
-                {
-                    return m_enemyMovetypeOverride.Value;
-                }
-
-                return m_enemyData.MovementType;
-            }
-        }
+        public abstract bool IsAttachable { get; }
+        public abstract bool IgnoreObstacleAvoidance { get; }
+        public abstract bool SpawnHorizontal { get; }
 
         public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
         public string EnemyName => m_enemyData.Name;
@@ -48,13 +37,10 @@ namespace StarSalvager.AI
         
         protected EnemyData m_enemyData;
 
-        public ENEMY_MOVETYPE? m_enemyMovetypeOverride = null;
-
-        protected float m_fireTimer;
+        /*protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
         private List<Vector3> m_positions = new List<Vector3>();
-        
-        
+
         private Vector3 m_currentHorizontalMovementDirection = Vector3.right;
         private float m_horizontalMovementYLevel;
         private float m_horizontalMovementYLevelOrigin;
@@ -62,8 +48,9 @@ namespace StarSalvager.AI
 
         private float horizontalFarLeftX;
         private float horizontalFarRightX;
-        private float verticalLowestAllowed;
+        private float verticalLowestAllowed;*/
 
+        [NonSerialized]
         public Vector3 m_mostRecentMovementDirection = Vector3.zero;
 
         public bool Disabled { get; protected set; }
@@ -99,24 +86,26 @@ namespace StarSalvager.AI
         {
             SetupPositions();
 
-            m_horizontalMovementYLevel = transform.position.y;
+            /*m_horizontalMovementYLevel = transform.position.y;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
         }
 
         public void SetHorizontalMovementYLevel()
         {
-            m_horizontalMovementYLevel = transform.position.y;
+            /*m_horizontalMovementYLevel = transform.position.y;
             m_horizontalMovementYLevelOrigin = m_horizontalMovementYLevel;
             verticalLowestAllowed = m_horizontalMovementYLevel / 2;
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
         }
 
         protected virtual void Update()
         {
+            ProcessFireLogic();
+
             //Count down fire timer. If ready to fire, call fireAttack()
-            if (m_enemyData.FireType == FIRE_TYPE.NONE)
+            /*if (m_enemyData.FireType == FIRE_TYPE.NONE)
                 return;
 
             if (FreezeTime > 0)
@@ -134,7 +123,7 @@ namespace StarSalvager.AI
                 return;
 
             m_fireTimer -= 1 / m_enemyData.RateOfFire;
-            FireAttack();
+            FireAttack();*/
         }
 
         //============================================================================================================//
@@ -153,13 +142,13 @@ namespace StarSalvager.AI
 
         private void SetupPositions()
         {
-            for (float i = 0; i < m_enemyData.Dimensions.x; i++)
+            /*for (float i = 0; i < m_enemyData.Dimensions.x; i++)
             {
                 for (float k = 0; k < m_enemyData.Dimensions.y; k++)
                 {
                     m_positions.Add(new Vector3(i - ((float)m_enemyData.Dimensions.x - 1) / 2, k - ((float)m_enemyData.Dimensions.y - 1) / 2, 0));
                 }
-            }
+            }*/
         }
 
         public void SetFrozen(float time)
@@ -168,16 +157,15 @@ namespace StarSalvager.AI
         }
 
         //============================================================================================================//
-        
-        #region Firing
-        
-        protected virtual void FireAttack()
-        {
-            /*var distance = Vector3.Distance(transform.position, LevelManager.Instance.BotGameObject.transform.position);
-            //TODO Determine if this fires at all times or just when bot is in range
-            if (distance >= 100 * Constants.gridCellSize)
-                return;*/
 
+        #region Firing
+
+        protected abstract void ProcessFireLogic();
+
+        protected abstract void FireAttack();
+
+        /*protected virtual void FireAttack()
+        {
             //Vector3 screenPoint = Camera.main.WorldToViewportPoint();
             //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
@@ -188,22 +176,6 @@ namespace StarSalvager.AI
                 : Vector3.right * 50;
 
             Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
-            
-            /*switch (m_enemyData.FireType)
-            {
-                case FIRE_TYPE.SPIRAL:
-                    targetLocation = Vector2.down;
-                    break;
-                case FIRE_TYPE.FORWARD:
-                    ;
-                    break;
-                case FIRE_TYPE.RANDOM_SPRAY:
-                case FIRE_TYPE.FIXED_SPRAY:
-                    targetLocation = playerLocation;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.FireType), m_enemyData.FireType, null);
-            }*/
 
             Vector2 shootDirection = m_enemyData.FireAtTarget
                 ? (targetLocation - (Vector2) transform.position).normalized
@@ -215,33 +187,13 @@ namespace StarSalvager.AI
                     m_enemyData.ProjectileType, 
                     transform.position,
                     targetLocation,
-                    shootDirection, /*m_mostRecentMovementDirection * m_enemyData.MovementSpeed,*/
+                    shootDirection,
                     m_enemyData.AttackDamage,
                     1f,
                     "Player");
-
-            /*List<Vector2> fireLocations = GetFireDirection();
-            foreach (Vector2 fireLocation in fireLocations)
-            {
-                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                    .CreateObject<Projectile>(
-                        m_enemyData.ProjectileType, 
-                        fireLocation,
-                        m_enemyData.AttackDamage,
-                        "Player");
-
-                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
-                newProjectile.transform.position = transform.position;
-                if (m_enemyData.AddVelocityToProjectiles)
-                {
-                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
-                }
-
-                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
-            }*/
             
             AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
-        }
+        }*/
 
         //Check what attack style this enemy uses, and use the appropriate method to get the firing location
         /*private List<Vector2> GetFireDirection()
@@ -301,14 +253,18 @@ namespace StarSalvager.AI
 
             return m_spiralAttackDirection;
         }*/
-        
+
         #endregion Firing
 
         //============================================================================================================//
 
         #region Movement
-        
-        public Vector3 GetDestination()
+
+        public abstract void ProcessMovement();
+
+        public abstract Vector3 GetDestination();
+
+        /*public Vector3 GetDestination()
         {
             Vector3 playerLocation = LevelManager.Instance.BotObject != null
                 ? LevelManager.Instance.BotObject.transform.position
@@ -348,10 +304,10 @@ namespace StarSalvager.AI
             }
 
             return playerLocation;
-        }
+        }*/
         
         //Determine whether this horizontal mover is going left or right
-        public Vector3 SetHorizontalDirection(Vector3 playerLocation, bool isDescending = false)
+        /*public Vector3 SetHorizontalDirection(Vector3 playerLocation, bool isDescending = false)
         {
             if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
             {
@@ -449,7 +405,7 @@ namespace StarSalvager.AI
                 positions.Add(transform.position + position);
             }
             return positions;
-        }
+        }*/
 
         #endregion
 
@@ -546,7 +502,6 @@ namespace StarSalvager.AI
 
             //m_mostRecentMovementDirection = Vector3.zero;
 
-            m_enemyMovetypeOverride = null;
             FreezeTime = 0f;
             Disabled = false;
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
