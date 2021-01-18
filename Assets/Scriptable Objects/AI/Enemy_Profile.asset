@@ -15,7 +15,7 @@ MonoBehaviour:
   m_enemyDecoy: {fileID: 2872490251766154883, guid: 418c04d3512abf54eb0379640ed526b8,
     type: 3}
   m_enemyProfileData:
-  - EnemyName: Fly
+  - EnemyName: Junk Fly
     m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: 4ed71d54470c9b941ac7a7a192f79791,
@@ -25,8 +25,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
     m_projectileType: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
-    m_ignoreObstacleAvoidance: 0
-  - EnemyName: Parasite
+  - EnemyName: Data Leech
     m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 8322691194490933072, guid: 0f1dfe6066df21841a7226f6d733b11a,
@@ -36,8 +35,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-    m_ignoreObstacleAvoidance: 0
-  - EnemyName: Ball Head
+  - EnemyName: Moon Miner
     m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: d70704a85df94da40a769f2b524939d4,
@@ -47,8 +45,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
     m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
-    m_ignoreObstacleAvoidance: 0
-  - EnemyName: Mosquito
+  - EnemyName: Volt
     m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: 024fbffb30921ee4aa3c52839ca7cee2,
@@ -58,8 +55,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 0dd910dbe7dbc1c4e84db8fb870ec59d,
       type: 2}
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
-    m_ignoreObstacleAvoidance: 0
-  - EnemyName: Squid
+  - EnemyName: Squart
     m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: 91d308a1a4e3b1e429f938d809c4bff2,
@@ -68,8 +64,7 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
-    m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
-    m_ignoreObstacleAvoidance: 1
+    m_projectileType: d76d5226-688c-4147-af1d-6ce99705d0cf
   - EnemyName: SuperFly
     m_sprite: {fileID: 3787744228566037905, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -79,7 +74,6 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 446291ec9ed73e6418a018ced6f7ad02,
       type: 2}
     m_projectileType: 80e17eca-2642-4846-b12f-02a08cab40e9
-    m_ignoreObstacleAvoidance: 1
   - EnemyName: SuperParasite
     m_sprite: {fileID: -3508925452205065965, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -89,7 +83,6 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 3903fc5d3dbeb7b49bc057538dc5a108,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-    m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperBallHead
     m_sprite: {fileID: 1891743719956422442, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -99,7 +92,6 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 7fdddd0f22a6ea046ace70dd834d78de,
       type: 2}
     m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
-    m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperMosquito
     m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -109,7 +101,6 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 35ace3357adf4084a801238a91a2057c,
       type: 2}
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
-    m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperSquid
     m_sprite: {fileID: 8003291971850495877, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -119,4 +110,3 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 113ce255ed058ea4ca8226a09235ac66,
       type: 2}
     m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
-    m_ignoreObstacleAvoidance: 1

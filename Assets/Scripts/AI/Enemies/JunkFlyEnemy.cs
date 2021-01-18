@@ -17,7 +17,6 @@ namespace StarSalvager.AI
         //Temp variables
         private Vector2 m_currentHorizontalMovementDirection = Vector2.right;
         private float m_horizontalMovementYLevel;
-        private float m_horizontalMovementYLevelOrigin;
 
         private float horizontalFarLeftX;
         private float horizontalFarRightX;
@@ -32,7 +31,6 @@ namespace StarSalvager.AI
             base.LateInit();
 
             m_horizontalMovementYLevel = transform.position.y;
-            m_horizontalMovementYLevelOrigin = m_horizontalMovementYLevel;
             verticalLowestAllowed = m_horizontalMovementYLevel - (Constants.gridCellSize * m_numberCellsDescend * m_numberTimesDescend);
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
@@ -96,28 +94,6 @@ namespace StarSalvager.AI
                     1f,
                     "Player",
                     null);
-
-            /*List<Vector2> fireLocations = GetFireDirection();
-            foreach (Vector2 fireLocation in fireLocations)
-            {
-                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                    .CreateObject<Projectile>(
-                        m_enemyData.ProjectileType, 
-                        fireLocation,
-                        m_enemyData.AttackDamage,
-                        "Player");
-
-                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
-                newProjectile.transform.position = transform.position;
-                if (m_enemyData.AddVelocityToProjectiles)
-                {
-                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
-                }
-
-                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
-            }
-            
-            AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);*/
         }
 
         #endregion
