@@ -216,6 +216,8 @@ namespace StarSalvager
         {
             CurrentHealth = currentHealth;
             StartingHealth = startingHealth;
+            
+            GameUi.SetHealthValue(CurrentHealth / StartingHealth);
         }
 
         public void ChangeHealth(float amount)
@@ -3369,7 +3371,7 @@ namespace StarSalvager
             CompositeCollider2D.enabled = false;
             GameUi.ShowAbortWindow(false);
 
-            StartCoroutine(DestroyCoroutine(deathMethod));
+             StartCoroutine(DestroyCoroutine(deathMethod));
         }
 
         #endregion //Destroy Bot
