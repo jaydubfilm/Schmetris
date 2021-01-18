@@ -87,25 +87,25 @@ namespace StarSalvager.Values
             new Vector2Int(1, 0),
             new Vector2Int(2, 1),
             new Vector2Int(3, 2),
-            new Vector2Int(4, 3),
-            new Vector2Int(6, 4),
+            new Vector2Int(6, 3),
             new Vector2Int(7, 6),
             new Vector2Int(8, 7),
-            new Vector2Int(9, 8),
-            new Vector2Int(11, 9),
+            new Vector2Int(11, 8),
             new Vector2Int(12, 11),
             new Vector2Int(13, 12),
-            new Vector2Int(14, 13),
-            new Vector2Int(16, 14),
+            new Vector2Int(16, 13),
             new Vector2Int(17, 16),
             new Vector2Int(18, 17),
-            new Vector2Int(19, 18),
-            new Vector2Int(21, 19),
-            new Vector2Int(22, 21),
+            new Vector2Int(21, 18),
             new Vector2Int(26, 21),
-            new Vector2Int(23, 22),
-            new Vector2Int(24, 23),
-            new Vector2Int(26, 24),
+
+            new Vector2Int(4, 0),
+            new Vector2Int(9, 4),
+            new Vector2Int(14, 9),
+            new Vector2Int(19, 14),
+            new Vector2Int(24, 19),
+            new Vector2Int(23, 24),
+            new Vector2Int(22, 23),
 
             new Vector2Int(5, 0),
             new Vector2Int(10, 5),
@@ -118,15 +118,10 @@ namespace StarSalvager.Values
         public List<int> WreckNodes = new List<int>()
         {
             1,
-            3,
             6,
-            8,
             11,
-            13,
             16,
-            18,
             21,
-            23
         };
 
 
