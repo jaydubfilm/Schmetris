@@ -101,7 +101,6 @@ namespace StarSalvager.AI
                     transform.position,
                     targetLocation,
                     shootDirection,
-                    m_enemyData.AttackDamage,
                     1f,
                     "Player",
                     null);
