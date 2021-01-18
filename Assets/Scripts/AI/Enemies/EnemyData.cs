@@ -75,7 +75,7 @@ namespace StarSalvager
             Health                      = enemyRemoteData.Health;
             MovementSpeed               = enemyRemoteData.MovementSpeed;
             IsAttachable                = enemyProfileData.IsAttachable;
-            AttackDamage                = enemyRemoteData.AttackDamage;
+            //AttackDamage                = enemyRemoteData.AttackDamage;
             RateOfFire                  = enemyRemoteData.RateOfFire;
             //IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType              = enemyProfileData.ProjectileType;

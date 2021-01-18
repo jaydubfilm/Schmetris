@@ -1,4 +1,6 @@
-﻿using StarSalvager.Values;
+﻿using StarSalvager.Cameras;
+using StarSalvager.Factories;
+using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -77,14 +79,54 @@ namespace StarSalvager.AI
 
         #region Firing
 
-        protected override void ProcessFireLogic()
-        {
-            //throw new System.NotImplementedException();
-        }
-
         protected override void FireAttack()
         {
-            //throw new System.NotImplementedException();
+            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
+                return;
+
+            Vector2 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
+                : Vector3.right * 50;
+
+            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
+
+            Vector2 shootDirection = m_enemyData.FireAtTarget
+                ? (targetLocation - (Vector2)transform.position).normalized
+                : Vector2.down;
+
+
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    m_enemyData.ProjectileType,
+                    transform.position,
+                    targetLocation,
+                    shootDirection,
+                    m_enemyData.AttackDamage,
+                    1f,
+                    "Player",
+                    null);
+
+            /*List<Vector2> fireLocations = GetFireDirection();
+            foreach (Vector2 fireLocation in fireLocations)
+            {
+                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                    .CreateObject<Projectile>(
+                        m_enemyData.ProjectileType, 
+                        fireLocation,
+                        m_enemyData.AttackDamage,
+                        "Player");
+
+                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
+                newProjectile.transform.position = transform.position;
+                if (m_enemyData.AddVelocityToProjectiles)
+                {
+                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
+                }
+
+                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
+            }
+            
+            AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);*/
         }
 
         #endregion

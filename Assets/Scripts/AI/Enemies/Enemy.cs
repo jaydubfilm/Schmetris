@@ -37,6 +37,8 @@ namespace StarSalvager.AI
         
         protected EnemyData m_enemyData;
 
+        protected float m_fireTimer;
+
         /*protected float m_fireTimer;
         private Vector3 m_spiralAttackDirection = Vector3.down;
         private List<Vector3> m_positions = new List<Vector3>();
@@ -165,7 +167,29 @@ namespace StarSalvager.AI
 
         #region Firing
 
-        protected abstract void ProcessFireLogic();
+        protected virtual void ProcessFireLogic()
+        {
+            //Count down fire timer. If ready to fire, call fireAttack()
+            if (m_enemyData.FireType == FIRE_TYPE.NONE)
+                return;
+
+            if (FreezeTime > 0)
+            {
+                FreezeTime -= Time.deltaTime;
+                return;
+            }
+            
+            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
+                return;
+            
+            m_fireTimer += Time.deltaTime;
+
+            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
+                return;
+
+            m_fireTimer -= 1 / m_enemyData.RateOfFire;
+            FireAttack();
+        }
 
         protected abstract void FireAttack();
 
