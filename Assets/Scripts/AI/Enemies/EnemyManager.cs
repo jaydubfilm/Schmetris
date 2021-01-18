@@ -130,7 +130,7 @@ namespace StarSalvager
         {
             Vector3 gridMovement = Vector3.zero;
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            
+
             /*if (m_distanceHorizontal != 0)
             {
                 if (m_distanceHorizontal > 0)
@@ -147,14 +147,14 @@ namespace StarSalvager
                 }
             }*/
 
-
+            Vector3 playerBotPosition = LevelManager.Instance.BotObject.transform.position;
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];
 
-                enemy.ProcessMovement();
+                enemy.ProcessMovement(playerBotPosition);
 
                 /*if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {
@@ -344,7 +344,8 @@ namespace StarSalvager
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
             newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
-            newEnemy.SetHorizontalMovementYLevel();
+
+            newEnemy.LateInit();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
         }

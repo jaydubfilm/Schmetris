@@ -11,10 +11,6 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Enemy_Profile", menuName = "Star Salvager/Scriptable Objects/Enemy Profile")]
     public class EnemyProfileScriptableObject : ScriptableObject
     {
-        [SerializeField, Required] public GameObject m_prefab;
-
-        [SerializeField, Required] public GameObject m_attachablePrefab;
-
         [SerializeField, Required] public GameObject m_enemyDecoy;
 
         [SerializeField]

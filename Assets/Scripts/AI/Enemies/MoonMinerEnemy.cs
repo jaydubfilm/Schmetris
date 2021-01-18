@@ -15,12 +15,12 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void ProcessMovement()
+        public override void ProcessMovement(Vector2 playerlocation)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Vector3 GetDestination()
+        public override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             throw new System.NotImplementedException();
         }

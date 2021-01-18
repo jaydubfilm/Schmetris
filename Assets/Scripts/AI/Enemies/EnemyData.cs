@@ -77,7 +77,7 @@ namespace StarSalvager
             IsAttachable                = enemyProfileData.IsAttachable;
             AttackDamage                = enemyRemoteData.AttackDamage;
             RateOfFire                  = enemyRemoteData.RateOfFire;
-            IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
+            //IgnoreObstacleAvoidance     = enemyProfileData.IgnoreObstacleAvoidance;
             ProjectileType              = enemyProfileData.ProjectileType;
             Sprite                      = enemyProfileData.Sprite;
             AnimationController         = enemyProfileData.AnimationController;

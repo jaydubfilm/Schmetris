@@ -143,7 +143,6 @@ namespace StarSalvager
         public Dictionary<BIT_TYPE, float> LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
         public int WaterAtBeginningOfWave;
         public int NumWavesInRow;
-        public Dictionary<ENEMY_TYPE, int> EnemiesKilledInWave = new Dictionary<ENEMY_TYPE, int>();
 
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
@@ -394,8 +393,6 @@ namespace StarSalvager
             EnemyManager.SetEnemiesInert(false);
             EnemyManager.RecycleAllEnemies();
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
-
-            EnemiesKilledInWave.Clear();
             
             ProjectileManager.CleanProjectiles();
             Globals.ResetFallSpeed();

@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c491dd903d253844990b12794e409f0, type: 3}
   m_Name: Enemy_Profile
   m_EditorClassIdentifier: 
-  m_prefab: {fileID: 6795578211728555506, guid: 6c7e3580e3ea810439e76c98bbd9c53b,
-    type: 3}
-  m_attachablePrefab: {fileID: 8322691194490933072, guid: c44443b8f080634429618fd876f5c62f,
-    type: 3}
   m_enemyDecoy: {fileID: 2872490251766154883, guid: 418c04d3512abf54eb0379640ed526b8,
     type: 3}
   m_enemyProfileData:
@@ -29,7 +25,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
     m_projectileType: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
-    m_ignoreObstacleAvoidance: 1
+    m_ignoreObstacleAvoidance: 0
   - EnemyName: Parasite
     m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}

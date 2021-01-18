@@ -48,10 +48,10 @@ namespace StarSalvager.Factories.Data
         private float m_orbitRadius;
 
         [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.HorizontalDescend)]
-        private float m_numberCellsDescend;*/
+        private float m_numberCellsDescend;
 
         [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private bool m_ignoreObstacleAvoidance;
+        private bool m_ignoreObstacleAvoidance;*/
 
         //====================================================================================================================//
 
@@ -73,9 +73,9 @@ namespace StarSalvager.Factories.Data
 
         public float OrbitRadius => m_orbitRadius;
 
-        public float NumberCellsDescend => m_numberCellsDescend;*/
+        public float NumberCellsDescend => m_numberCellsDescend;
 
-        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;
+        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;*/
 
         #if UNITY_EDITOR
 

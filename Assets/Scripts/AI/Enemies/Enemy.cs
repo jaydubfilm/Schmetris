@@ -128,7 +128,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public void Init(EnemyData enemyData)
+        public virtual void Init(EnemyData enemyData)
         {
             m_enemyData = enemyData;
             
@@ -138,6 +138,11 @@ namespace StarSalvager.AI
             StateAnimator.SetController(m_enemyData?.AnimationController);
             
             RegisterCanBeSeen();
+        }
+
+        public virtual void LateInit()
+        {
+
         }
 
         private void SetupPositions()
@@ -260,9 +265,27 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public abstract void ProcessMovement();
+        public abstract void ProcessMovement(Vector2 playerLocation);
 
-        public abstract Vector3 GetDestination();
+        public Vector2 GetMovementNormalized(Vector2 playerLocation)
+        {
+            Vector2 movementDirection = GetMovementDirection(playerLocation).normalized;
+
+            if (IgnoreObstacleAvoidance)
+            {
+                return movementDirection;
+            }
+
+            Vector2 force = LevelManager.Instance.AIObstacleAvoidance.CalculateForceAtPoint(transform.position, IsAttachable);
+            movementDirection += force;
+
+            movementDirection.Normalize();
+
+            return movementDirection;
+        }
+
+        public abstract Vector2 GetMovementDirection(Vector2 playerLocation);
+
 
         /*public Vector3 GetDestination()
         {
