@@ -9,7 +9,7 @@
                     "name": "Side Movement",
                     "type": "Value",
                     "id": "5c466441-94f9-4d6e-b37d-7a2cfeddb5ee",
-                    "expectedControlType": "Digital",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
                 },
@@ -162,6 +162,39 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "RightHand",
+                    "id": "53558e0d-11c7-45bf-957c-a0f4c041f8a4",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "1fbdcfa2-2e94-4a0c-af95-998bed01db96",
+                    "path": "<Keyboard>/comma",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "ef360742-7bff-4a79-a93d-78adceefc884",
+                    "path": "<Keyboard>/slash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Side Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "WS",
                     "id": "459661cc-fd75-406a-a631-9109f238873f",
                     "path": "1DAxis",
@@ -220,6 +253,39 @@
                     "name": "positive",
                     "id": "db9226e5-b073-4578-8dad-b8ba9558290a",
                     "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "RightHand",
+                    "id": "2478723c-69fa-4600-9f65-321e6a164736",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "5b6be539-a10b-4158-af09-9a9858a2fb33",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "d7851392-7d49-4c5c-8eec-343312cdf2fa",
+                    "path": "<Keyboard>/semicolon",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
