@@ -418,6 +418,25 @@ namespace StarSalvager
                             }
 
                             break;
+                        case JunkBit junktBit:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<JunkBit>(junktBit);
+                            }
+                            else
+                            {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].Extend();
+                                    continue;
+                                }
+
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
+                                PlaceMovableOnGridSpecific(junktBit, m_offGridMovingObstacles[i].EndPosition);
+                                junktBit.SetColliderActive(true);
+                            }
+
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(OffGridMovement.Obstacle),
                                 m_offGridMovingObstacles[i].Obstacle, null);
