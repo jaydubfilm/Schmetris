@@ -1231,6 +1231,7 @@ namespace StarSalvager
                 case Bit _:
                 case Asteroid _:
                 case Component _:
+                case JunkBit _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
                 case Shape shape:

@@ -584,7 +584,8 @@ namespace StarSalvager
                     var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
                                      part.transform.position).normalized;
 
-                    var lineShrink = FactoryManager.Instance.GetFactory<EffectFactory>()
+                    var lineShrink = FactoryManager.Instance
+                        .GetFactory<EffectFactory>()
                         .CreateObject<LineShrink>();
 
                     var chance = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Probability);
