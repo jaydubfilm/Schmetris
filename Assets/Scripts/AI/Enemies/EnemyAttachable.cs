@@ -196,8 +196,8 @@ namespace StarSalvager.AI
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
             {
-                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
+                //Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
+                //SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
 

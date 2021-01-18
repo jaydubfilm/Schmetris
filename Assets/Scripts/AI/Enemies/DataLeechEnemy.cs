@@ -7,7 +7,7 @@ namespace StarSalvager.AI
     public class DataLeechEnemy : EnemyAttachable
     {
         public override bool IsAttachable => true;
-        public override bool IgnoreObstacleAvoidance => false;
+        public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => false;
 
 
