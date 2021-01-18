@@ -195,7 +195,28 @@ namespace StarSalvager.AI
                     shootDirection,
                     m_enemyData.AttackDamage,
                     1f,
-                    "Player");
+                    "Player",
+                    null);
+
+            /*List<Vector2> fireLocations = GetFireDirection();
+            foreach (Vector2 fireLocation in fireLocations)
+            {
+                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                    .CreateObject<Projectile>(
+                        m_enemyData.ProjectileType, 
+                        fireLocation,
+                        m_enemyData.AttackDamage,
+                        "Player");
+
+                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
+                newProjectile.transform.position = transform.position;
+                if (m_enemyData.AddVelocityToProjectiles)
+                {
+                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
+                }
+
+                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
+            }
             
             AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
         }*/

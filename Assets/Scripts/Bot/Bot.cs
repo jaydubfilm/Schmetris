@@ -223,6 +223,10 @@ namespace StarSalvager
             CurrentHealth += amount;
 
             //TODO Need to update UI
+            
+            GameUi.SetHealthValue(CurrentHealth / StartingHealth);
+
+            FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
 
             if (CurrentHealth > 0)
                 return;
@@ -486,6 +490,25 @@ namespace StarSalvager
                 });
 
             AttachNewBlock(Vector2Int.zero, core);
+
+            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            for (int i = 0; i < botLayout.Count; i++)
+            {
+                if (_attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
+                {
+                    continue;
+                }
+
+                var emptyPart = partFactory.CreateObject<Part>(
+                    new PartData
+                    {
+                        Type = (int)PART_TYPE.EMPTY,
+                        Coordinate = botLayout[i],
+                        Patches = new PatchData[patchSockets]
+                    });
+
+                AttachNewBlock(botLayout[i], emptyPart);
+            }
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
 
@@ -794,8 +817,12 @@ namespace StarSalvager
                     //Check if its legal to attach (Within threshold of connection)
                     switch (bit.Type)
                     {
-                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREEN:
+                            ChangeHealth(Globals.GreenHealAmount);
+                            
+                            Recycler.Recycle<Bit>(bit);
+                            return false;
+                        case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
@@ -1115,6 +1142,7 @@ namespace StarSalvager
                         //AudioController.PlaySound(CheckHasMagnetOverage() ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
 
                         CompositeCollider2D.GenerateGeometry();
+                        AttachedChanged();
 
                         break;
                     default:
@@ -1263,6 +1291,7 @@ namespace StarSalvager
             {
                 case Part _:
                     closestHealth = this;
+                    BotPartsLogic.TryHitArmor(ref damage);
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
@@ -1272,9 +1301,9 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            //Don't want to apply shields to the Enemy
+            /*//Don't want to apply shields to the Enemy
             if (!(closestAttachable is EnemyAttachable))
-                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);
+                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);*/
 
             if (damage <= 0f)
                 return;
@@ -1489,6 +1518,8 @@ namespace StarSalvager
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
 
+            AttachedChanged();
+
             return true;
         }
 
@@ -1539,6 +1570,8 @@ namespace StarSalvager
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
@@ -1598,9 +1631,10 @@ namespace StarSalvager
                     if (checkForCombo)
                         CheckForCombosAround<BIT_TYPE>(coordinate);
 
-                    if(existingAttachable is Part part)
-                        TryAutoProcessBit(bit, part);
+                    /*if(existingAttachable is Part part)
+                        TryAutoProcessBit(bit, part);*/
 
+                    AttachedChanged();
                     break;
                 case Part _ when updatePartList:
                     BotPartsLogic.PopulatePartsList();
@@ -1613,23 +1647,16 @@ namespace StarSalvager
             if (newAttachable.CountTowardsMagnetism && checkMagnet)
             {
                 _needToCheckMagnet = true;
-                //var check = CheckHasMagnetOverage();
-                //if(playSound)
-                //    AudioController.PlaySound(check ? SOUND.BIT_RELEASE : SOUND.BIT_SNAP);
+
             }
 
-            /*if (checkForCombo)
-            {
-                CheckForCombosAround(coordinate);
-                CheckHasMagnetOverage();
-            }*/
 
             if (updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
         }
 
 
-        private void TryAutoProcessBit(Bit bit, IPart part)
+        /*private void TryAutoProcessBit(Bit bit, IPart part)
         {
             switch (part.Type)
             {
@@ -1647,41 +1674,9 @@ namespace StarSalvager
                     break;
             }
 
-            var hasProcessed = BotPartsLogic.ProcessBit((Part)part, bit) > 0;
-
-            if(hasProcessed && part.Type == PART_TYPE.REFINER)
-                PlayRefineSound(bit.Type);
 
             CheckForDisconnects();
-        }
-
-        private void PlayRefineSound(BIT_TYPE bitType)
-        {
-            SOUND sound;
-
-            switch (bitType)
-            {
-                case BIT_TYPE.BLUE:
-                    sound = SOUND.REFINE_BLUE;
-                    break;
-                case BIT_TYPE.GREEN:
-                    sound = SOUND.REFINE_GREEN;
-                    break;
-                case BIT_TYPE.GREY:
-                    sound = SOUND.REFINE_GREY;
-                    break;
-                case BIT_TYPE.RED:
-                    sound = SOUND.REFINE_RED;
-                    break;
-                case BIT_TYPE.YELLOW:
-                    sound = SOUND.REFINE_YELLOW;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-            }
-            AudioController.PlaySound(sound);
-
-        }
+        }*/
 
         //FIXME Ensure that I have a version of this function without the desiredDirection, and one that accounts for corners
         /// <summary>
@@ -1720,8 +1715,6 @@ namespace StarSalvager
             {
                 for (var i = 0; i < directions.Length; i++)
                 {
-                    //if (avoid == directions[i])
-                    //    continue;
 
                     var check = coordinate + (directions[i] * dist);
                     if (attachedBlocks.Any(x => x.Coordinate == check))
@@ -1783,6 +1776,8 @@ namespace StarSalvager
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, Vector2Int startCoord,
@@ -1944,6 +1939,7 @@ namespace StarSalvager
             CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
+            AttachedChanged();
 
         }
 
@@ -1987,6 +1983,7 @@ namespace StarSalvager
 
             CompositeCollider2D.GenerateGeometry();
             CheckForBonusShapeMatches();
+            AttachedChanged();
         }
 
         public void DestroyAttachable(IAttachable attachable)
@@ -2021,6 +2018,8 @@ namespace StarSalvager
             CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
+
+            AttachedChanged();
         }
 
         #endregion //Detach Bits
@@ -2030,6 +2029,28 @@ namespace StarSalvager
             attachedBlocks.Remove(attachable);
 
             CheckForDisconnects();
+        }
+
+        private void AttachedChanged()
+        {
+            var bitTypes = new[]
+            {
+                BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                BIT_TYPE.GREY,
+                BIT_TYPE.BLUE
+            };
+
+            BotPartsLogic.PopulatePartsList();
+            var outData = new Dictionary<BIT_TYPE, int>();
+            foreach (var bitType in bitTypes)
+            {
+                var level = attachedBlocks.GetHighestLevelBit(bitType);
+                
+                outData.Add(bitType, level);
+            }
+            
+            GameUi.SetBitLevelImages(outData);
         }
 
         //============================================================================================================//
@@ -2782,14 +2803,14 @@ namespace StarSalvager
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
                     //Show the gears hint, after the third time
-                    if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+                    /*if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
                     {
                         var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
 
                         Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
 
                         HintManager.TryShowHint(HINT.GEARS, iHasBounds);
-                    }
+                    }*/
 
                     //We need to update the positions and level before we move them in case we interact with bits while they're moving
                     switch (closestToCore)
@@ -2805,6 +2826,7 @@ namespace StarSalvager
                     CheckForBonusShapeMatches();
 
                     OnCombo?.Invoke();
+                    AttachedChanged();
                 }));
 
 
@@ -3037,10 +3059,10 @@ namespace StarSalvager
 
                 float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
 
-                if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
+                /*if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {
                     toDetach.RemoveAt(i);
-                }
+                }*/
             }
         }
 

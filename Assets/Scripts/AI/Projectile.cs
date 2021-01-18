@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
+using System.Linq;
 using Recycling;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -23,6 +24,8 @@ namespace StarSalvager.AI
         protected CollidableBase _target;
 
         protected TrailRenderer _trailRenderer;
+
+        private IHealth _vampirismCaster;
 
         //============================================================================================================//
 
@@ -53,7 +56,8 @@ namespace StarSalvager.AI
             float damage,
             float rangeBoost,
             Vector2 direction, 
-            Vector2 velocity)
+            Vector2 velocity,
+            IHealth vampirismCaster)
         {
             ProjectileData = profileData;
 
@@ -79,6 +83,8 @@ namespace StarSalvager.AI
             {
                 CreateTrailEffect(ProjectileData.Color);
             }
+
+            _vampirismCaster = vampirismCaster;
         }
 
         private void CheckLifeTime()
@@ -157,8 +163,38 @@ namespace StarSalvager.AI
             if (!ProjectileData.CanHitAsteroids && canBeHit is Asteroid)
                 return;
 
-            if (canBeHit.TryHitAt(transform.position, _damageAmount))
-                Recycler.Recycle<Projectile>(this);
+            if (!canBeHit.TryHitAt(transform.position, _damageAmount)) 
+                return;
+            
+            SolveVampirism(_damageAmount);
+            Recycler.Recycle<Projectile>(this);
+        }
+
+        private void SolveVampirism(/*in ICanBeHit hitTarget, */in float damage)
+        {
+            if (_vampirismCaster is null)
+                return;
+
+            float stealAmount;
+            switch (CollisionTag)
+            {
+                case "Player":
+                    throw new NotImplementedException("Enemies using vampirism not yet implemented");
+                    break;
+                case "Enemy":
+                    //Make sure that we hit the player
+                    if (!(_vampirismCaster is Bot bot))
+                        return;
+
+                    stealAmount = bot.BotPartsLogic.GetVampireValue();
+                    break;
+                default:
+                    return;
+            }
+
+            var stolenHealth = stealAmount * damage;
+
+            _vampirismCaster.ChangeHealth(stolenHealth);
         }
 
         //====================================================================================================================//
@@ -208,6 +244,8 @@ namespace StarSalvager.AI
             _lifeTime = 0f;
 
             renderer.flipX = renderer.flipY = false;
+
+            _vampirismCaster = null;
 
             if (_trailRenderer)
                 Destroy(_trailRenderer);

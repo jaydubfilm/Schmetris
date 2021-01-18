@@ -67,18 +67,18 @@ namespace StarSalvager.Values
         private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
         {
             [HINT.GUN] = false,
-            [HINT.FUEL] = false,
-            [HINT.HOME] = false,
+            //[HINT.FUEL] = false,
+            //[HINT.HOME] = false,
             [HINT.BONUS] = false,
             [HINT.MAGNET] = false,
             
-            [HINT.GEARS] = false,
-            [HINT.PATCH_POINT] = false,
-            [HINT.CRAFT_PART] = false,
+            //[HINT.GEARS] = false,
+            //[HINT.PATCH_POINT] = false,
+            //[HINT.CRAFT_PART] = false,
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            [HINT.COMPONENT] = false,
+            //[HINT.COMPONENT] = false,
             
         };
 
@@ -105,28 +105,34 @@ namespace StarSalvager.Values
             new Vector2Int(26, 21),
             new Vector2Int(23, 22),
             new Vector2Int(24, 23),
-            new Vector2Int(25, 24),
-            new Vector2Int(26, 25),
+            new Vector2Int(26, 24),
 
             new Vector2Int(5, 0),
             new Vector2Int(10, 5),
             new Vector2Int(15, 10),
             new Vector2Int(20, 15),
+            new Vector2Int(25, 20),
         };
 
         [JsonIgnore]
         public List<int> WreckNodes = new List<int>()
         {
-            2,
-            4,
-            7,
-            9,
-            12,
-            14,
-            17,
-            19,
-            22,
-            24
+            1,
+            3,
+            6,
+            8,
+            11,
+            13,
+            16,
+            18,
+            21,
+            23
+        };
+
+
+        public List<Vector2Int> _botLayout = new List<Vector2Int>()
+        {
+
         };
 
         //====================================================================================================================//
@@ -138,6 +144,7 @@ namespace StarSalvager.Values
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
+
             data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
             GearsAtRunBeginning = Gears;
@@ -155,6 +162,7 @@ namespace StarSalvager.Values
             TotalRuns++;
 
             PlayerRunData = data;
+            PlayerDataManager.SetCanChoosePart(true);
             PlayerDataManager.SavePlayerAccountData();
         }
 
@@ -304,11 +312,11 @@ namespace StarSalvager.Values
                     case PART_TYPE.LASER:
                     case PART_TYPE.GRENADE:
                     case PART_TYPE.CATAPULT:
-                    case PART_TYPE.LIGHTNING:
+                    /*case PART_TYPE.LIGHTNING:
                     case PART_TYPE.BOOSTRANGE:
                     case PART_TYPE.BOOSTRATE:
                     case PART_TYPE.BOOSTDAMAGE:
-                    case PART_TYPE.BOOSTDEFENSE:
+                    case PART_TYPE.BOOSTDEFENSE:*/
                     case PART_TYPE.STACKER:
                     case PART_TYPE.CLOAK:
                     case PART_TYPE.SONAR:

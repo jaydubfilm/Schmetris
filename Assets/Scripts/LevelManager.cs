@@ -358,7 +358,7 @@ namespace StarSalvager
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
 
-            GameUi.SetProgressValue(1f);
+            GameUi.SetLevelProgressSlider(1f);
             SavePlayerData();
             GameTimer.SetPaused(true);
             
@@ -373,6 +373,8 @@ namespace StarSalvager
 
                 GameManager.SetCurrentGameState(GameState.UniverseMap);
                 ProcessScrapyardUsageBeginAnalytics();
+                PlayerDataManager.SetCanChoosePart(true);
+                Globals.DownGradeBits = true;
 
                 ScreenFade.Fade(() =>
                 {
@@ -440,7 +442,7 @@ namespace StarSalvager
             var duration = CurrentWaveData.GetWaveDuration();
             var timeLeft = duration - m_waveTimer;
             
-            GameUi.SetProgressValue(1f - timeLeft / duration);
+            GameUi.SetLevelProgressSlider(1f - timeLeft / duration);
 
         }
 

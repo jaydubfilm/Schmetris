@@ -402,7 +402,7 @@ namespace StarSalvager.Utilities.Inputs
                 return;
             
             //FIXME Need to ensure that I map appropriate inputs to associated bots
-            _bots[0].BotPartsLogic.TryTriggerSmartWeapon(index);
+            _bots[0].BotPartsLogic.TryTriggerPart(index);
         }
 
         private void SelfDestruct(InputAction.CallbackContext ctx)

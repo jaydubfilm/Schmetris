@@ -63,6 +63,8 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         public string PlaythroughID = string.Empty;
 
+        public bool CanChoosePart = false;
+
         [JsonIgnore]
         public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
         [JsonProperty]

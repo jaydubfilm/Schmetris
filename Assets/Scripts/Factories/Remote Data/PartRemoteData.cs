@@ -8,8 +8,20 @@ using UnityEngine;
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
-    public class PartRemoteData: RemoteDataBase
+    public class PartRemoteData : RemoteDataBase
     {
+        [Serializable]
+        public struct PartGrade
+        {
+            public List<BIT_TYPE> Types;
+            
+            //public BIT_TYPE Type;
+            public int minBitLevel;
+            
+            public bool needsBitsToFunction;
+            public float[] values;
+        }
+
         [FoldoutGroup("$name")]
         public string name;
         
@@ -19,29 +31,20 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$name")]
         public bool lockRotation;
 
-        [FoldoutGroup("$name")]
-        public bool canSell = true;
-
         [TextArea, FoldoutGroup("$name")]
         public string description;
-        
-        [FoldoutGroup("$name")]
-        public int priority;
 
         [FoldoutGroup("$name")]
         public BIT_TYPE burnType;
 
         [FoldoutGroup("$name")]
-        public float powerDraw;
-
-        [FoldoutGroup("$name")]
         public PartProperties[] dataTest;
 
         [FoldoutGroup("$name")] 
-        public float burnRate;
-
-        [FoldoutGroup("$name")] 
         public int PatchSockets = 2;
+
+        [FoldoutGroup("$name")]
+        public PartGrade partGrade;
 
 
         //This only compares Type and not all individual properties
@@ -118,9 +121,44 @@ namespace StarSalvager.Factories.Data
 
             return true;
         }
+
+        public bool HasPartGrade(in int maxBitLevel, out float value)
+        {
+            value = 0.0f;
+            if (partGrade.minBitLevel > maxBitLevel)
+            {
+                if (!partGrade.needsBitsToFunction)
+                {
+                    value = partGrade.values[0];
+                    return true;
+                }
+                return false;
+            }
+
+            int index = maxBitLevel - partGrade.minBitLevel;
+            if (!partGrade.needsBitsToFunction)
+            {
+                index++;
+            }
+
+            value = partGrade.values[index];
+            return true;
+        }
+
+        public bool HasPartGrade(in int maxBitLevel)
+        {
+            if (partGrade.minBitLevel > maxBitLevel)
+            {
+                if (!partGrade.needsBitsToFunction)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return true;
+        }
     }
-
-
 }
 
 

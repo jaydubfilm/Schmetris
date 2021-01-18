@@ -695,7 +695,62 @@ namespace StarSalvager.Utilities.Extensions
             }
 
         }
+
+        //Get Highest Level Bit
+        //====================================================================================================================//
+        public static int GetHighestLevelBit(this IEnumerable<IAttachable> attachedBlocks, BIT_TYPE bitType)
+        {
+            var bits = attachedBlocks.OfType<Bit>().ToArray();
+
+            if (bits.IsNullOrEmpty())
+                return -1;
+
+            Bit selected = null;
+            var maxLevel = -999;
+            foreach (var bit in bits)
+            {
+                if(bit.Type != bitType)
+                    continue;
+                
+                if(bit.level < maxLevel)
+                    continue;
+
+                maxLevel = bit.level;
+                selected = bit;
+
+            }
+            
+            if (selected is null)
+                return -1;
+            
+            return maxLevel;
+        }
         
+        public static int GetHighestLevelBit(this IEnumerable<IAttachable> attachedBlocks)
+        {
+            var bits = attachedBlocks.OfType<Bit>().ToArray();
+
+            if (bits.IsNullOrEmpty())
+                return -1;
+
+            Bit selected = null;
+            var maxLevel = -999;
+            foreach (var bit in bits)
+            {
+                if(bit.level < maxLevel)
+                    continue;
+
+                maxLevel = bit.level;
+                selected = bit;
+
+            }
+            
+            if (selected is null)
+                return -1;
+            
+            return maxLevel;
+        }
+
 
         //Get All Connected Detachables
         //====================================================================================================================//

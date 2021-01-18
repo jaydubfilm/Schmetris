@@ -63,11 +63,12 @@ namespace StarSalvager.Factories
             Vector2 shootDirection,
             float damage, 
             float rangeBoost,
-            string collisionTag
-            , bool shouldFlipSprite = false)
+            string collisionTag,
+            IHealth vampirismCaster,
+            bool shouldFlipSprite = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection, damage,
-                rangeBoost, collisionTag, shouldFlipSprite);
+                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -78,6 +79,7 @@ namespace StarSalvager.Factories
             float damage, 
             float rangeBoost, 
             string collisionTag, 
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
@@ -129,7 +131,8 @@ namespace StarSalvager.Factories
                     damage,
                     rangeBoost,
                     travelDirection.normalized,
-                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
+                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    vampirismCaster);
 
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
@@ -152,10 +155,11 @@ namespace StarSalvager.Factories
             float damage, 
             float rangeBoost, 
             string collisionTag,
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, target, shootDirection, Vector2.zero, damage,
-                rangeBoost, collisionTag, shouldFlipSprite);
+                rangeBoost, collisionTag,vampirismCaster, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -165,7 +169,8 @@ namespace StarSalvager.Factories
             Vector2 currentVelocity, 
             float damage,
             float rangeBoost, 
-            string collisionTag, 
+            string collisionTag,
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
@@ -193,7 +198,6 @@ namespace StarSalvager.Factories
                     projectile.FlipSpriteY(true);
 
                 LevelManager.Instance.ObstacleManager.AddTransformToRoot(projectileTransform);
-                //projectileTransform.SetParent(LevelManager.Instance.transform);
                 projectileTransform.transform.position = fromPosition;
 
                 projectile.Init(projectileProfile,
@@ -202,7 +206,8 @@ namespace StarSalvager.Factories
                     damage,
                     rangeBoost,
                     travelDirection.normalized,
-                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
+                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    vampirismCaster);
 
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(projectile);

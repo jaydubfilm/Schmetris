@@ -92,6 +92,8 @@ namespace StarSalvager
 
         private void Update()
         {
+            CheckForMousePartHover();
+                
             if (_partDragImage == null || !_partDragImage.gameObject.activeSelf)
                 return;
 
@@ -195,6 +197,9 @@ namespace StarSalvager
             PlayerDataManager.RemovePatchFromStorageAtIndex(_draggingPatch.data.storageIndex);
 
             StorageUI.UpdateStorage();
+            
+            _draggingPatch.ResetInScrollview();
+            _draggingPatch = null;
         }
 
         //============================================================================================================//
@@ -207,12 +212,13 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            SellBits();
+            if(Globals.DownGradeBits)
+                DowngradeAllBits(1);
+            
+            //SellBits();
             SetupDrone();
 
             UpdateFloatingMarkers(false);
-
-            /*DroneDesignUi.ShowRepairCost(GetRepairCost(), GetReplacementCost());*/
         }
 
         public void Reset()
@@ -223,12 +229,8 @@ namespace StarSalvager
             }
 
             SelectedBrick = null;
-            //SelectedPartType = null;
-            //SelectedPartLevel = 0;
             SelectedPartRemoveFromStorage = false;
             SelectedPartReturnToStorageIfNotPlaced = false;
-
-            //Camera.onPostRender -= DrawGL;
 
             RecycleDrone();
         }
@@ -263,8 +265,9 @@ namespace StarSalvager
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
             if (attachableAtCoordinates == null ||
-                !(attachableAtCoordinates is ScrapyardPart partAtCoordinates))
+                !(attachableAtCoordinates is ScrapyardPart partAtCoordinates && partAtCoordinates.Type != PART_TYPE.EMPTY))
                 return;
+
             var type = partAtCoordinates.Type;
 
             Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
@@ -282,11 +285,22 @@ namespace StarSalvager
             if (_partDragImage == null)
             {
                 _partDragImage = new GameObject().AddComponent<SpriteRenderer>();
+                _partDragImage.sortingLayerName = LayerHelper.ACTORS;
                 _partDragImage.sortingOrder = 1;
+                
             }
             _partDragImage.gameObject.SetActive(true);
             _partDragImage.sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData(type).GetSprite();
             _partDragImage.transform.position = currentAttachablePosition;
+
+            var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(new PartData
+            {
+                Type = (int)PART_TYPE.EMPTY,
+                Coordinate = mouseCoordinate,
+                Patches = new PatchData[0]
+            });
+
+            _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
         }
 
         private void OnLeftMouseButtonUp()
@@ -337,8 +351,8 @@ namespace StarSalvager
                         PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                     }
 
+                    _scrapyardBot.TryRemoveAttachableAt(SelectedPartPreviousGridPosition.Value);
                     _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-                    DroneDesignUi.RefreshScrollViews();
                     
                     ResetSelected();
                     SaveBlockData();
@@ -352,15 +366,15 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
-            
-            //Check if there mouse coordinates are empty
-            if (attachableAtCoordinates == null)
+
+            if (attachableAtCoordinates is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.EMPTY)
             {
                 if (!(SelectedBrick is PartData partData))
                     throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
 
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
+                _scrapyardBot.TryRemoveAttachableAt(mouseGridCoordinate);
                 _scrapyardBot.AttachNewBit(mouseGridCoordinate, attachable);
 
                 //Check if part should be removed from storage
@@ -376,14 +390,11 @@ namespace StarSalvager
                     SelectedBrick.Coordinate = SelectedPartPreviousGridPosition.Value;
                 }
 
-
-                DroneDesignUi.RefreshScrollViews();
-                
                 ResetSelected();
                 SaveBlockData();
             }
             //If there is an attachable at location
-            else if (SelectedPartPreviousGridPosition != null)
+            else if (SelectedPartPreviousGridPosition.HasValue)
             {
                 if (!(SelectedBrick is PartData partData))
                     throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
@@ -398,17 +409,11 @@ namespace StarSalvager
                     PlayerDataManager.RemovePartFromStorageAtIndex(SelectedIndex);
                 }
 
+                _scrapyardBot.TryRemoveAttachableAt(SelectedPartPreviousGridPosition.Value);
                 _scrapyardBot.AttachNewBit(SelectedPartPreviousGridPosition.Value, attachable);
-
-                DroneDesignUi.RefreshScrollViews();
 
                 ResetSelected();
                 SaveBlockData();
-            }
-            else if (SelectedPartPreviousGridPosition == null/* && attachableAtCoordinates != null*/)
-            {
-                SelectedBrick = null;
-                return;
             }
 
 
@@ -436,7 +441,7 @@ namespace StarSalvager
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
 
-            if (attachableAtCoordinates is ScrapyardPart scrapPart)
+            if (attachableAtCoordinates is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY)
             {
                 //Don't want to be able to remove the core
                 if (scrapPart.Type == PART_TYPE.CORE)
@@ -459,6 +464,15 @@ namespace StarSalvager
                 
                 PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
 
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(new PartData
+                {
+                    Type = (int)PART_TYPE.EMPTY,
+                    Coordinate = mouseCoordinate,
+                    Patches = new PatchData[0]
+                });
+
+                _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+
                 SaveBlockData();
             }
 
@@ -470,6 +484,38 @@ namespace StarSalvager
         {
         }
 
+        private void CheckForMousePartHover()
+        {
+            var show = TryHoverPart(out var partData);
+
+            DroneDesignUi.ShowPartDetails(show, partData);
+        }
+
+        private bool TryHoverPart(out ScrapyardPart scrapyardPart)
+        {
+            scrapyardPart = null;
+            
+            if(_draggingPatch || _isDragging)
+                return false;
+            
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
+                return false;
+
+            if (_scrapyardBot == null || SelectedBrick != null)
+                return false;
+
+            var partAtCoords = _scrapyardBot.AttachedBlocks
+                .OfType<ScrapyardPart>()
+                .FirstOrDefault(x => x.Type != PART_TYPE.EMPTY && x.Coordinate == mouseCoordinate);
+
+            if (partAtCoords is null)
+                return false;
+
+            scrapyardPart = partAtCoords;
+            
+            return true;
+        }
+
         #endregion //User Input
 
         //============================================================================================================//
@@ -479,110 +525,11 @@ namespace StarSalvager
         public void SaveLayout(string layoutName)
         {
             throw new NotImplementedException();
-
-            /*ScrapyardLayout saveLayout = _scrapyardLayouts.FirstOrDefault(l => l.Name == layoutName);
-            if (saveLayout != null)
-            {
-                saveLayout = new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas());
-            }
-            else
-            {
-                _scrapyardLayouts.Add(new ScrapyardLayout(layoutName, _scrapyardBot.GetBlockDatas()));
-            }
-            Files.ExportLayoutData(_scrapyardLayouts);*/
         }
 
         public void LoadLayout(string name)
         {
             throw new NotImplementedException();
-
-            /*var tempLayout = _scrapyardLayouts.First(l => l.Name == name);
-
-            if (tempLayout == null)
-                return;
-
-            //Setup your list of available parts by adding storage and parts on bot together into a temp list
-            List<IBlockData> partComparer = new List<IBlockData>();
-            partComparer.AddRange(PlayerDataManager.GetCurrentPartsInStorage());
-            foreach (var attachable in _scrapyardBot.AttachedBlocks)
-            {
-                if (attachable is ScrapyardPart part && part.Type != (int)PART_TYPE.CORE)
-                {
-                    partComparer.Add(part.ToBlockData());
-                }
-            }
-
-            //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<BIT_TYPE, int> resourceComparer = new Dictionary<BIT_TYPE, int>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                resourceComparer.Add(_bitType, PlayerDataManager.GetResource(_bitType).resource);
-            }
-            //Setup your list of available resources by putting player resources into a temp list
-            Dictionary<COMPONENT_TYPE, int> componentComparer = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
-
-            //Setup your list of parts needing to be purchasing by comparing the list of parts in the layout to the list of available parts.
-            List<IBlockData> newLayoutComparer = new List<IBlockData>();
-            newLayoutComparer.AddRange(tempLayout.BlockData);
-
-            for (int i = newLayoutComparer.Count - 1; i >= 0; i--)
-            {
-                if (partComparer.Any(b => b.Equals(newLayoutComparer[i])))
-                {
-                    //BlockData dataToRemove = newLayoutComparer[i];
-                    partComparer.Remove(partComparer.FirstOrDefault(b => b.Equals(newLayoutComparer[i])));
-                    newLayoutComparer.Remove(newLayoutComparer[i]);
-                }
-            }
-
-
-            //Check if you have the resources available to afford the parts you need to purchase.
-            foreach (var partData in newLayoutComparer)
-            {
-                if (partData.Type == (int)PART_TYPE.CORE)
-                    continue;
-
-                if (PlayerDataManager.CanAffordPart((PART_TYPE)partData.Type))
-                {
-                    PlayerDataManager.SubtractPartCosts((PART_TYPE)partData.Type);
-                }
-                else
-                {
-                    //CANT AFFORD LAYOUT
-                    Debug.Log("CANT AFFORD LAYOUT");
-                    return;
-                }
-            }
-
-            //Swap to new layout
-            _currentLayout = tempLayout;
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-            {
-                if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                PlayerDataManager.GetResource(_bitType).SetResource(resourceComparer[_bitType]);
-            }
-            PlayerDataManager.SetCurrentPartsInStorage(partComparer);
-
-            for (int i = _scrapyardBot.AttachedBlocks.Count - 1; i >= 0; i--)
-            {
-                if (_scrapyardBot.AttachedBlocks[i].Coordinate != Vector2Int.zero)
-                {
-                    _scrapyardBot.TryRemoveAttachableAt(_scrapyardBot.AttachedBlocks[i].Coordinate, false);
-                }
-            }
-
-            foreach (var attachable in tempLayout.BlockData.ImportBlockDatas(true))
-            {
-                _scrapyardBot.AttachNewBit(attachable.Coordinate, attachable);
-            }
-            DroneDesignUi.UpdateBotResourceElements();
-            DroneDesignUi.RefreshScrollViews();
-            SaveBlockData();*/
         }
 
         #endregion //Layouts
@@ -687,7 +634,7 @@ namespace StarSalvager
 
         #region Sell Bits & Components
 
-        private void SellBits()
+        /*private void SellBits()
         {
             var bitAttachableFactory = FactoryManager.Instance.GetFactory<BitAttachableFactory>();
 
@@ -720,7 +667,7 @@ namespace StarSalvager
                             amount = blockData.Level * 3;
 
                         PlayerDataManager.AddComponent(componentType, amount, false);
-                        break;*/
+                        break;#1#
                     //------------------------------------------------------------------------------------------------//
                     case BitData bitData:
                         /*var bitType = (BIT_TYPE) bitData.Type;
@@ -735,7 +682,7 @@ namespace StarSalvager
                                 false);
 
                         TryIncrementDict(bitType, amount, ref processedResources);
-                        TryIncrementDict(bitType, wastedResource, ref wastedResources);*/
+                        TryIncrementDict(bitType, wastedResource, ref wastedResources);#1#
 
 
                         break;
@@ -794,11 +741,11 @@ namespace StarSalvager
 
             //Update all relevant parties
             PlayerDataManager.OnValuesChanged?.Invoke();
-            DroneDesignUi.UpdateBotResourceElements();
+            //DroneDesignUi.UpdateBotResourceElements();
 
             //Show the final alert to the player
             ShowAlertInfo(botBlockData, processedResources, wastedResources);
-        }
+        }*/
 
 
 
@@ -870,6 +817,44 @@ namespace StarSalvager
 
         #endregion //Sell Bits & Components
 
+        private void DowngradeAllBits(int removeBelowLevel)
+        {
+            Debug.Log("DOWNGRADING DISABLED");
+            return;
+            var droneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
+            
+            var attachedBits = droneBlockData.OfType<BitData>().Where(x => x.Level < removeBelowLevel).ToArray();
+
+            for (int i = 0; i < attachedBits.Length; i++)
+            {
+                var bitData = attachedBits[i];
+                
+                var orphanData = new List<OrphanMoveBlockData>();
+                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
+
+                droneBlockData.Remove(bitData);
+                for (int ii = 0; ii < orphanData.Count; ii++)
+                {
+                    var data = orphanData[ii];
+                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
+                    
+                    droneBlockData[index].Coordinate = data.intendedCoordinates;
+                }
+            }
+            
+            for (int i = 0; i < droneBlockData.Count; i++)
+            {
+                if(!(droneBlockData[i] is BitData bitData) || bitData.Level < removeBelowLevel)
+                    continue;
+
+                bitData.Level -= 1;
+                droneBlockData[i] = bitData;
+            }
+           
+            PlayerDataManager.SetBlockData(droneBlockData);
+            Globals.DownGradeBits = false;
+        }
+
         //====================================================================================================================//
 
         public void RotateBots(float direction)
@@ -898,7 +883,7 @@ namespace StarSalvager
             }
             _availablePointMarkers.Clear();
 
-            if (showAvailable && _scrapyardBot != null)
+            /*if (showAvailable && _scrapyardBot != null)
             {
                 foreach (var attached in _scrapyardBot.AttachedBlocks)
                 {
@@ -954,7 +939,7 @@ namespace StarSalvager
                         _floatingPartWarnings.Add(newWarning);
                     }
                 }
-            }
+            }*/
         }
 
         public bool IsFullyConnected()
@@ -979,13 +964,21 @@ namespace StarSalvager
                     return default;
                 case HINT.DAMAGE:
                     throw new Exception("Unhandled case for HINT.DAMAGE hover in DroneDesigner");
-                    /*return new object[]
-                    {
-                        _repairHover.bounds
-                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
+        }
+        
+        [Button]
+        public void ShowPart()
+        {
+            var corePartData = _scrapyardBot.AttachedBlocks.OfType<ScrapyardPart>()
+                .FirstOrDefault(x => x.Type == PART_TYPE.GUN);
+
+            if (!corePartData)
+                return;
+            
+            DroneDesignUi.ShowPartDetails(true, corePartData);
         }
     }
 }
