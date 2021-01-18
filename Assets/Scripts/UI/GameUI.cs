@@ -965,6 +965,11 @@ namespace StarSalvager.UI
 
         }
 
+        public static void ClearEventSelected()
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+
 
         //====================================================================================================================//
         
