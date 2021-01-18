@@ -10,6 +10,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -47,11 +48,19 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Settings Window")]
         private Toggle testingFeaturesToggle;
 
+        //====================================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Part Choice Window")]
+        private GameObject partChoiceWindow;
+
         //============================================================================================================//
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button menuButton;
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
+
+        [SerializeField, Required, FoldoutGroup("Gears Indicator")]
+        private TMP_Text gearsNumber;
 
         //====================================================================================================================//
 
@@ -59,6 +68,8 @@ namespace StarSalvager.UI.Scrapyard
         private CameraController CameraController;
 
         private DroneDesigner _droneDesigner;
+
+        private PartChoiceUI _partChoice;
 
         private GameObject[] _windows;
         private enum Window
@@ -70,10 +81,12 @@ namespace StarSalvager.UI.Scrapyard
         //============================================================================================================//
 
 
+
         // Start is called before the first frame update
         private void Start()
         {
             _droneDesigner = FindObjectOfType<DroneDesigner>();
+            _partChoice = FindObjectOfType<PartChoiceUI>();
 
             _windows = new[]
             {
@@ -88,12 +101,30 @@ namespace StarSalvager.UI.Scrapyard
             SetWindowActive(Window.Workbench);
         }
 
+        private void Update()
+        {
+            gearsNumber.text = $"{PlayerDataManager.GetComponents()}";
+        }
+
         private void OnEnable()
         {
             CameraController.CameraOffset(Vector3.zero, true);
             CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
 
             backButton.onClick?.Invoke();
+
+            partChoiceWindow.SetActive(PlayerDataManager.GetCanChoosePart());
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (PlayerDataManager.GetCanChoosePart())
+            {
+                if (_partChoice == null)
+                {
+                    _partChoice = FindObjectOfType<PartChoiceUI>();
+                }
+                _partChoice.Init();
+            }
 
         }
 
@@ -220,13 +251,6 @@ namespace StarSalvager.UI.Scrapyard
         private void Launch()
         {
             _droneDesigner.ProcessScrapyardUsageEndAnalytics();
-
-            if (Globals.SectorComplete)
-            {
-                Globals.SectorComplete = false;
-            }
-
-
 
             ScreenFade.Fade(() =>
             {

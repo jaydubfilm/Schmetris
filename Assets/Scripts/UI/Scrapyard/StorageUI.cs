@@ -114,12 +114,12 @@ namespace StarSalvager.UI.Scrapyard
             {
                 case HINT.NONE:
                     return null;
-                case HINT.CRAFT_PART:
+                /*case HINT.CRAFT_PART:
                     return new object[]
                     {
                         storageUiElementScrollView.Elements.FirstOrDefault(x =>
                             x.data.blockData.ClassType.Equals(nameof(Part)))?.transform
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

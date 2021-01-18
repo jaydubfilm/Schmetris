@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 8e2642d260cfec648b49f64ac830cdc5, type: 3}
-    totalSpriteSurfaceArea: 4408957
+    totalSpriteSurfaceArea: 4429692
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -63,6 +63,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 666c0f753a99c7c449261b69b9028156, type: 3}
   - {fileID: 21300000, guid: 27c990e54a2b8ed4ea9ab3510f218e73, type: 3}
   - {fileID: 21300000, guid: e2f6235697d43cb41a5cb52b013b4e4e, type: 3}
+  - {fileID: 21300000, guid: cca66266f25c0064b831f378e444a5f5, type: 3}
   - {fileID: 21300000, guid: b78008d6fca3a2f469050019e5184fbc, type: 3}
   - {fileID: 21300000, guid: 0870bd779634c3848b123d62721184f5, type: 3}
   - {fileID: 21300000, guid: 00129fd765c363b45b10597dd4de122f, type: 3}
@@ -72,7 +73,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c9c3f9787dcdfdb4fb8653f3a7be1657, type: 3}
   - {fileID: 21300000, guid: 71078829fd57283469f49a96bc8d5421, type: 3}
   - {fileID: 21300000, guid: f95757399fd3fa044b8d40691bb6a3b1, type: 3}
+  - {fileID: 21300000, guid: 82a52a3938bf3f74e9aea27a71f606c6, type: 3}
   - {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
+  - {fileID: 21300000, guid: adc7e8ba4c36ebc4f8238217ff7090e0, type: 3}
   - {fileID: 21300000, guid: a97b6deafe7ba7e48a083aee2360d6ac, type: 3}
   - {fileID: 21300000, guid: 2104671b5e2062249a7f123576510b98, type: 3}
   - {fileID: 21300000, guid: 415ca0cbb641f7e4c9f8348aa48572f8, type: 3}
@@ -105,6 +108,7 @@ SpriteAtlas:
   - ui_MEGNETISMFILLBAR_0_v1
   - wavesummary_WIRE_0_v1
   - ui_TEMPBACK_0_v1
+  - ui_TEMPGAUGEBW_0_v2
   - screen_BORDER_1_v2
   - ui_TEMPGAUGE_0_v1
   - ui_OUTOFFUELBUTTON_0_v4
@@ -114,7 +118,9 @@ SpriteAtlas:
   - ui_ORANGESCREEN_0_v1
   - ui_REDSCREEN_0_v1
   - ui_CRACKS2_0_v3
+  - ui_ACTIVEVAMPIRE_0_v1
   - ui_GPATCHPOINT_0_v4
+  - ui_ACTIVESHIELD_0_v1
   - ui_CRACKS3_0_v3
   - ui_MATERIALCOVER_0_v1
   - ui_LEVELPROGRESS_0_v1

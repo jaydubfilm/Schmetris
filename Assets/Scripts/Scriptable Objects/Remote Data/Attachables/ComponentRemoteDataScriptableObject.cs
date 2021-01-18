@@ -14,7 +14,7 @@ namespace StarSalvager.ScriptableObjects
         public int NumComponentsGained => _numComponentsGained;
 
         [SerializeField]
-        private int _numComponentsGained = 3;
+        private int _numComponentsGained;
     }
 }
 

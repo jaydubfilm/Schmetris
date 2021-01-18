@@ -25,7 +25,7 @@ MonoBehaviour:
       Properties:
       - key: Multiplier
         value: 0.2
-    allowedParts: 040000001000000007000000
+    allowedParts: 04000000070000000e00000007000000
   - name: RANGE
     type: 2
     description: 
@@ -38,7 +38,7 @@ MonoBehaviour:
       Properties:
       - key: Multiplier
         value: 0.2
-    allowedParts: 
+    allowedParts: 040000000700000006000000
   - name: FIRE RATE
     type: 3
     description: 
@@ -51,7 +51,7 @@ MonoBehaviour:
       Properties:
       - key: Multiplier
         value: 0.2
-    allowedParts: 
+    allowedParts: 040000000e000000
   - name: EFFECIENCY
     type: 4
     description: 
@@ -69,7 +69,7 @@ MonoBehaviour:
     type: 5
     description: 
     Levels: []
-    allowedParts: 
+    allowedParts: 07000000060000002100000005000000
   - name: CRITCAL
     type: 6
     description: 
