@@ -29,7 +29,7 @@ namespace StarSalvager.Values
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
         public static int CameraScaleSize = 51;
-        public static bool DownGradeBits;
+        public static bool StripBits;
         public static float TimeForAsteroidToFallOneSquare;
 
         //FIXME This is a mess, and must be organized
