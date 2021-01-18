@@ -30,7 +30,7 @@ namespace StarSalvager.Values
         public static int GridSizeY;
         public static int CameraScaleSize = 51;
         public static bool DownGradeBits;
-
+        public static float TimeForAsteroidToFallOneSquare;
 
         //FIXME This is a mess, and must be organized
         //Game Settings Values
@@ -42,7 +42,6 @@ namespace StarSalvager.Values
         public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
-        public static float TimeForAsteroidToFallOneSquare => m_gameSettings.timeForAsteroidToFallOneSquare;
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
         public static float ObstacleMass => m_gameSettings.obstacleMass;
@@ -81,6 +80,32 @@ namespace StarSalvager.Values
 
         //====================================================================================================================//
 
+
+        public static void Init()
+        {
+            TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+        }
+
+        public static void ResetFallSpeed()
+        {
+            TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+        }
+
+        public static void IncreaseFallSpeed()
+        {
+            if (TimeForAsteroidToFallOneSquare >= m_gameSettings.timeForAsteroidToFallOneSquare / 3.0f)
+            {
+                TimeForAsteroidToFallOneSquare *= (3.0f / 4.0f);
+            }
+        }
+
+        public static void DecreaseFallSpeed()
+        {
+            if (TimeForAsteroidToFallOneSquare < m_gameSettings.timeForAsteroidToFallOneSquare)
+            {
+                TimeForAsteroidToFallOneSquare *= (4.0f / 3.0f);
+            }
+        }
 
         public static ORIENTATION Orientation
         {

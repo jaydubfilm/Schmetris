@@ -188,6 +188,18 @@ namespace StarSalvager
                 return;
             }
 
+            if (GameManager.IsState(GameState.LEVEL_ACTIVE))
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
+                {
+                    Globals.DecreaseFallSpeed();
+                }
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.E))
+                {
+                    Globals.IncreaseFallSpeed();
+                }
+            }
+
             CheckBotPositions();
 
             if (Globals.UsingTutorial)
@@ -388,6 +400,7 @@ namespace StarSalvager
             EnemiesKilledInWave.Clear();
             
             ProjectileManager.CleanProjectiles();
+            Globals.ResetFallSpeed();
         }
 
         //FIXME This will need to be cleaned up

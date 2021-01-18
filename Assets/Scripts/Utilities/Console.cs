@@ -92,7 +92,10 @@ namespace StarSalvager.Utilities
             "\n",
             "T0",
             "T1",
-            "P"
+            "P",
+            "\n",
+            string.Concat("FALLSPEED ", "INCREASE"),
+            string.Concat("FALLSPEED ", "DECREASE")
         };
 
         //============================================================================================================//
@@ -232,6 +235,9 @@ namespace StarSalvager.Utilities
                     break;
                 case "p":
                     GameTimer.SetPaused(!GameTimer.IsPaused);
+                    break;
+                case "fallspeed":
+                    ParseFallspeedCommand(split);
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[0]);
@@ -997,6 +1003,22 @@ namespace StarSalvager.Utilities
                     break;
             }
 
+        }
+
+        private void ParseFallspeedCommand(string[] split)
+        {
+            switch(split[1].ToLower())
+            {
+                case "increase":
+                    Globals.IncreaseFallSpeed();
+                    break;
+                case "decrease":
+                    Globals.DecreaseFallSpeed();
+                    break;
+                default:
+                    _consoleDisplay += UnrecognizeCommand(split[1]);
+                    break;
+            }
         }
 
         private string GetHelpString()
