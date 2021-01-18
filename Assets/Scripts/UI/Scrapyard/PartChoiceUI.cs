@@ -90,6 +90,7 @@ namespace StarSalvager.UI.Scrapyard
                 
                 PlayerDataManager.AddPartToStorage(partData);
                 PlayerDataManager.SetCanChoosePart(false);
+                
                 partChoiceWindow.SetActive(false);
             }
             

@@ -495,7 +495,7 @@ namespace StarSalvager
         {
             scrapyardPart = null;
             
-            if(_draggingPatch || _isDragging)
+            if(_draggingPatch || _isDragging || PlayerDataManager.GetCanChoosePart())
                 return false;
             
             if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))

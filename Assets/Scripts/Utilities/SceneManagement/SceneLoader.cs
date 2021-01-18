@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.UI;
 using StarSalvager.Utilities.Inputs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -100,7 +101,9 @@ namespace StarSalvager.Utilities.SceneManagement
             _currentScene = sceneName;
             
             
+            GameUI.ClearEventSelected();
             SetSceneObjectsActive(sceneNameToDeload, false);
+            
             
             return SetSceneObjectsActive(sceneName, true);
         }
