@@ -200,6 +200,8 @@ MonoBehaviour:
       value: 50
     - key: Cooldown
       value: 3
+    - key: Probability
+      value: 0.7
     PatchSockets: 2
     partGrade:
       Types: 04000000
