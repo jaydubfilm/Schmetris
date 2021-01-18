@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
@@ -73,6 +74,8 @@ namespace StarSalvager.AI
                 }
             }
             
+            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
+                return;
             
             if (FreezeTime > 0)
             {
@@ -81,9 +84,6 @@ namespace StarSalvager.AI
             }
             
             if (!Attached)
-                return;
-
-            if (Disabled)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave))
