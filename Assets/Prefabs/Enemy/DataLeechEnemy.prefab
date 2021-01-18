@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!1001 &3300749208336839330
 PrefabInstance:
   m_ObjectHideFlags: 0

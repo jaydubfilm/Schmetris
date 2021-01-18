@@ -9,6 +9,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Interfaces;
@@ -195,8 +196,8 @@ namespace StarSalvager.AI
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
             {
-                /*Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);*/
+                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
+                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
 

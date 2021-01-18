@@ -42,14 +42,6 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void ProcessMovement(Vector2 playerlocation)
-        {
-            Vector3 movementDirection = GetMovementNormalized(playerlocation);
-            movementDirection.Normalize();
-
-            gameObject.transform.position = gameObject.transform.position + (movementDirection * m_enemyData.MovementSpeed * Time.deltaTime);
-        }
-
         public override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             if (m_horizontalMovementYLevel <= verticalLowestAllowed)

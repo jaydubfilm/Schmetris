@@ -310,7 +310,13 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public abstract void ProcessMovement(Vector2 playerLocation);
+        public virtual void ProcessMovement(Vector2 playerLocation)
+        {
+            Vector3 movementDirection = GetMovementNormalized(playerLocation);
+            movementDirection.Normalize();
+
+            gameObject.transform.position = gameObject.transform.position + (movementDirection * m_enemyData.MovementSpeed * Time.deltaTime);
+        }
 
         public Vector2 GetMovementNormalized(Vector2 playerLocation)
         {
