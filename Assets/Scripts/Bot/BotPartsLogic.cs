@@ -602,7 +602,7 @@ namespace StarSalvager
                         var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
                         if (fireTarget is ICanBeHit iCanBeHit)
                         {
-                            iCanBeHit.TryHitAt(target.transform.position, damage);
+                            iCanBeHit.TryHitAt(fireTarget.transform.position, damage);
                         }
                     }
 
