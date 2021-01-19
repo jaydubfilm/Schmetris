@@ -69,33 +69,6 @@ namespace StarSalvager.AI
 
         #region Firing
 
-        protected override void FireAttack()
-        {
-            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
-                return;
-
-            Vector2 playerLocation = LevelManager.Instance.BotObject != null
-                ? LevelManager.Instance.BotObject.transform.position
-                : Vector3.right * 50;
-
-            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
-
-            Vector2 shootDirection = m_enemyData.FireAtTarget
-                ? (targetLocation - (Vector2)transform.position).normalized
-                : Vector2.down;
-
-
-            FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                .CreateObjects<Projectile>(
-                    m_enemyData.ProjectileType,
-                    transform.position,
-                    targetLocation,
-                    shootDirection,
-                    1f,
-                    "Player",
-                    null);
-        }
-
         #endregion
 
         //============================================================================================================//
