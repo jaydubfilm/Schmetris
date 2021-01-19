@@ -212,8 +212,8 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            if(Globals.StripBits)
-                DowngradeAllBits(1, false);
+            //if(Globals.StripBits)
+            //    DowngradeAllBits(1, false);
             
             //SellBits();
             SetupDrone();
@@ -816,46 +816,6 @@ namespace StarSalvager
         }
 
         #endregion //Sell Bits & Components
-
-        private void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
-        {
-            var droneBlockData = new List<IBlockData>(PlayerDataManager.GetBlockDatas());
-            
-            var attachedBits = droneBlockData.OfType<BitData>().Where(x => x.Level < removeBelowLevel).ToArray();
-
-            for (int i = 0; i < attachedBits.Length; i++)
-            {
-                var bitData = attachedBits[i];
-                
-                var orphanData = new List<OrphanMoveBlockData>();
-                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
-
-                droneBlockData.Remove(bitData);
-                for (int ii = 0; ii < orphanData.Count; ii++)
-                {
-                    var data = orphanData[ii];
-                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
-                    
-                    droneBlockData[index].Coordinate = data.intendedCoordinates;
-                }
-            }
-
-            if (downgradeBits)
-            {
-                for (int i = 0; i < droneBlockData.Count; i++)
-                {
-                    if(!(droneBlockData[i] is BitData bitData) || bitData.Level < removeBelowLevel)
-                        continue;
-
-                    bitData.Level -= 1;
-                    droneBlockData[i] = bitData;
-                }
-            }
-
-           
-            PlayerDataManager.SetBlockData(droneBlockData);
-            Globals.StripBits = false;
-        }
 
         //====================================================================================================================//
 
