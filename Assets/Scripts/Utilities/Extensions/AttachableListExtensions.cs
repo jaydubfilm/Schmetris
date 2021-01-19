@@ -831,6 +831,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
         /// <returns></returns>
+        [Obsolete]
         public static bool ComboCountAlgorithm<T>(this IEnumerable<ICanCombo> canCombos, T type, int level,
             Vector2Int coordinate, Vector2Int direction,
             ref List<ICanCombo> iCanCombos) where T : Enum
@@ -857,6 +858,37 @@ namespace StarSalvager.Utilities.Extensions
 
             //Keep checking in this direction
             return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
+        }
+        
+        public static bool ComboCountAlgorithm(this IEnumerable<Bot.DataTest> canCombos,
+            BIT_TYPE type, 
+            int level,
+            Vector2Int coordinate, 
+            Vector2Int direction,
+            ref List<Bot.DataTest> outData)
+        {
+            var nextCoords = coordinate + direction;
+
+            //Try and get the attachableBase Bit at the new Coordinate
+            var combos = canCombos.ToArray();
+            var nextData = combos.FirstOrDefault(a => a.Coordinate == nextCoords);
+            
+            if (nextData.Type == BIT_TYPE.NONE)
+                return false;
+
+            //We only care about bits that share the same type
+            if (!nextData.Type.Equals(type))
+                return false;
+
+            //We only care about bits that share the same level
+            if (nextData.Level != level)
+                return false;
+
+            //Add the bit to our combo check list
+            outData.Add(nextData);
+
+            //Keep checking in this direction
+            return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref outData);
         }
 
         //Attachable List Matching
