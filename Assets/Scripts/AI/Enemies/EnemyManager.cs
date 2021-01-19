@@ -333,7 +333,7 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnEnemy(string enemyType)
+        public void SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
 
@@ -343,7 +343,15 @@ namespace StarSalvager
                 m_enemies.Add(newEnemy);
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
+
+            if (spawnLocationOverride.HasValue)
+            {
+                newEnemy.transform.localPosition = spawnLocationOverride.Value;
+            }
+            else
+            {
+                newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
+            }
 
             newEnemy.LateInit();
 

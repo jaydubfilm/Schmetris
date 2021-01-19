@@ -312,10 +312,18 @@ namespace StarSalvager.AI
 
         public virtual void ProcessMovement(Vector2 playerLocation)
         {
+            if (Disabled || Frozen)
+            {
+                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
+                transform.position -= fallAmount;
+                return;
+            }
+
             Vector3 movementDirection = GetMovementNormalized(playerLocation);
             movementDirection.Normalize();
+            m_mostRecentMovementDirection = movementDirection;
 
-            gameObject.transform.position = gameObject.transform.position + (movementDirection * m_enemyData.MovementSpeed * Time.deltaTime);
+            transform.position = gameObject.transform.position + (movementDirection * m_enemyData.MovementSpeed * Time.deltaTime);
         }
 
         public Vector2 GetMovementNormalized(Vector2 playerLocation)
@@ -574,7 +582,7 @@ namespace StarSalvager.AI
             //horizontalFarLeftX = 0.0f;
             //horizontalFarRightX = 0.0f;
 
-            //m_mostRecentMovementDirection = Vector3.zero;
+            m_mostRecentMovementDirection = Vector3.zero;
 
             FreezeTime = 0f;
             Disabled = false;

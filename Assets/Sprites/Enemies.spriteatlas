@@ -31,16 +31,28 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 699a5a3d9a1b3864dbd7fa4531cfb259, type: 3}
-    totalSpriteSurfaceArea: 243395
+    totalSpriteSurfaceArea: 660049
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 5074050927133369148, guid: b5386671a00ee86428886a0c1e9fcc31, type: 3}
   - {fileID: 21300000, guid: e8efd2a2d1434f745a014103ec3401fc, type: 3}
+  - {fileID: 21300000, guid: 210967634eedcf941bfcc088d7037dff, type: 3}
+  - {fileID: 21300000, guid: 4a41edd30de15794585b46656e93b721, type: 3}
+  - {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf, type: 3}
   - {fileID: 21300000, guid: bf7a10c42f7256b42af2c07c561e93e6, type: 3}
+  - {fileID: -7907493562552774039, guid: e39fc475f37ab474e86c256fc9072631, type: 3}
+  - {fileID: -1846019054644241930, guid: f4d5f736a41c2f547bebbabafdcdeb7f, type: 3}
   - {fileID: 21300000, guid: a1a6060a50d17f94182fe9ee1edc138b, type: 3}
   m_PackedSpriteNamesToIndex:
+  - Spike_Blue_0
   - enemy_SENTRIE_0_v1
+  - GarbageCan_Blue
+  - TieFighterRed
+  - MAMA_GreenPink_0
   - enemy_MINE_0_v1
+  - Theif_Blue_0
+  - AstroidSnake_GreenYellow_0
   - enemy_TRIPLESENTRIE_0_v1
   m_Tag: Enemies
   m_IsVariant: 0

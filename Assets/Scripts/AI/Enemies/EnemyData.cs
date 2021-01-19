@@ -22,8 +22,6 @@ namespace StarSalvager
 
         public bool IsAttachable { get; }
 
-        public float AttackDamage { get; }
-
         public float RateOfFire { get; }
 
         public FIRE_TYPE FireType { get; }

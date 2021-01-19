@@ -246,3 +246,20 @@ MonoBehaviour:
     m_towType: 1
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2
+    m_sprite: {fileID: 0}
+    m_projectileType: Data Leech Nibble
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    m_projectileDamage: 2
+    m_projectileSpeed: 0
+    m_projectileRange: 0
+    m_requiredRotate: 0
+    fireType: 2
+    fireTowardsTarget: 0
+    m_spreadAngle: 0
+    m_sprayCount: 0
+    m_isTow: 0
+    m_towType: 0
+    m_canHitAsteroids: 0
+    m_addVelocityToProjectiles: 0

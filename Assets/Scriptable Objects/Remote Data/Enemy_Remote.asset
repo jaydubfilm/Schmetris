@@ -193,3 +193,59 @@ MonoBehaviour:
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 1
       isAlwaysSpawn: 1
+  - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
+    m_name: ToughMother
+    m_health: 100
+    m_movementSpeed: 5
+    m_rateOfFire: 0.15
+    m_dimensions: {x: 1, y: 1}
+    m_maxDrops: 3
+    m_rdsEnemyData:
+    - rdsData: 0
+      type: 3
+      amount: 0
+      level: 1
+      probability: 3
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 0
+      amount: 100
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 1
+  - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    m_name: Shard
+    m_health: 20
+    m_movementSpeed: 5
+    m_rateOfFire: 0
+    m_dimensions: {x: 1, y: 1}
+    m_maxDrops: 3
+    m_rdsEnemyData:
+    - rdsData: 0
+      type: 3
+      amount: 0
+      level: 1
+      probability: 3
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 0
+    - rdsData: 3
+      type: 0
+      amount: 100
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 1

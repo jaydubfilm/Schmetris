@@ -16,7 +16,7 @@ namespace StarSalvager
         private GridSquare[] m_gridArray;
         private Vector2 m_anchorPoint;
         private Vector2 m_adjustToMiddleOfGridSquare = new Vector2(0.5f, 0.5f);
-        private Vector2Int m_screenGridCellRange;
+        public Vector2Int m_screenGridCellRange { get; private set; }
         private Vector2Int m_botGridPosition;
 
         private int m_gridSizeX;

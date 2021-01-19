@@ -34,7 +34,7 @@ MonoBehaviour:
     m_isAttachable: 1
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
-    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+    m_projectileType: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2
   - EnemyName: MoonMiner
     m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -65,3 +65,21 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
     m_projectileType: d76d5226-688c-4147-af1d-6ce99705d0cf
+  - EnemyName: ToughMother
+    m_sprite: {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf,
+      type: 3}
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: 12fcfecdb9b7bf34dbe568eea74386df,
+      type: 3}
+    m_enemyTypeID: e53a480e-724c-41a2-acd4-ca8e1683d2ea
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 0}
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+  - EnemyName: Shard
+    m_sprite: {fileID: 5074050927133369148, guid: b5386671a00ee86428886a0c1e9fcc31,
+      type: 3}
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: a0936226dbbe28640ac0190ae7ee6c78,
+      type: 3}
+    m_enemyTypeID: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 0}
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
