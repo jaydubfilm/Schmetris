@@ -85,7 +85,11 @@ namespace StarSalvager.Utilities.Extensions
 
 
                 if (travelDirection == DIRECTION.NULL)
-                    throw new Exception();
+                {
+                    Debug.Log($"POTENTIAL [{nameof(CheckForOrphansFromProcessing)}] ISSUE MOVING {targetBit.Coordinate} - {closest.Coordinate} = {dif}");
+                    //throw new Exception();
+                    continue;
+                }
 
                 var travelDistInt = (int) travelDistance;
 

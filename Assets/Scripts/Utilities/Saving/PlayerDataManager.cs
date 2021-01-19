@@ -11,6 +11,7 @@ using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
@@ -259,6 +260,46 @@ namespace StarSalvager.Utilities.Saving
         public static void SetBlockData(List<IBlockData> blockData)
         {
             PlayerRunData.SetShipBlockData(blockData);
+        }
+        
+        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
+        {
+            var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            
+            var attachedBits = droneBlockData.OfType<BitData>().Where(x => x.Level < removeBelowLevel).ToArray();
+
+            for (int i = 0; i < attachedBits.Length; i++)
+            {
+                var bitData = attachedBits[i];
+                
+                var orphanData = new List<OrphanMoveBlockData>();
+                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
+
+                droneBlockData.Remove(bitData);
+                for (int ii = 0; ii < orphanData.Count; ii++)
+                {
+                    var data = orphanData[ii];
+                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
+                    
+                    droneBlockData[index].Coordinate = data.intendedCoordinates;
+                }
+            }
+
+            if (downgradeBits)
+            {
+                for (int i = 0; i < droneBlockData.Count; i++)
+                {
+                    if(!(droneBlockData[i] is BitData bitData) || bitData.Level < removeBelowLevel)
+                        continue;
+
+                    bitData.Level -= 1;
+                    droneBlockData[i] = bitData;
+                }
+            }
+
+           
+            SetBlockData(droneBlockData);
+            Globals.StripBits = false;
         }
 
         //============================================================================================================//
