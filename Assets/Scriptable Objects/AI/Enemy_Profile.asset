@@ -15,7 +15,7 @@ MonoBehaviour:
   m_enemyDecoy: {fileID: 2872490251766154883, guid: 418c04d3512abf54eb0379640ed526b8,
     type: 3}
   m_enemyProfileData:
-  - EnemyName: Junk Fly
+  - EnemyName: JunkFly
     m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: 4ed71d54470c9b941ac7a7a192f79791,
@@ -25,7 +25,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
     m_projectileType: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
-  - EnemyName: Data Leech
+  - EnemyName: DataLeech
     m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 8322691194490933072, guid: 0f1dfe6066df21841a7226f6d733b11a,
@@ -35,7 +35,7 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: Moon Miner
+  - EnemyName: MoonMiner
     m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyPrefab: {fileID: 6795578211728555506, guid: d70704a85df94da40a769f2b524939d4,
@@ -65,48 +65,3 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
     m_projectileType: d76d5226-688c-4147-af1d-6ce99705d0cf
-  - EnemyName: SuperFly
-    m_sprite: {fileID: 3787744228566037905, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 0}
-    m_enemyTypeID: 29b4a36e-47f7-47a4-8922-f7de5f531383
-    m_isAttachable: 0
-    m_enemyAnimationController: {fileID: 11400000, guid: 446291ec9ed73e6418a018ced6f7ad02,
-      type: 2}
-    m_projectileType: 80e17eca-2642-4846-b12f-02a08cab40e9
-  - EnemyName: SuperParasite
-    m_sprite: {fileID: -3508925452205065965, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 0}
-    m_enemyTypeID: 599761cf-c12a-45b0-bbab-918008384f28
-    m_isAttachable: 0
-    m_enemyAnimationController: {fileID: 11400000, guid: 3903fc5d3dbeb7b49bc057538dc5a108,
-      type: 2}
-    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: SuperBallHead
-    m_sprite: {fileID: 1891743719956422442, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 0}
-    m_enemyTypeID: 842a2d03-61be-4bc2-8391-ae25826a30af
-    m_isAttachable: 0
-    m_enemyAnimationController: {fileID: 11400000, guid: 7fdddd0f22a6ea046ace70dd834d78de,
-      type: 2}
-    m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
-  - EnemyName: SuperMosquito
-    m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 0}
-    m_enemyTypeID: e90054ce-9f64-4b84-9aab-5c6808cf3c67
-    m_isAttachable: 0
-    m_enemyAnimationController: {fileID: 11400000, guid: 35ace3357adf4084a801238a91a2057c,
-      type: 2}
-    m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
-  - EnemyName: SuperSquid
-    m_sprite: {fileID: 8003291971850495877, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 0}
-    m_enemyTypeID: 1f78cb36-17d7-48d7-8e1c-a44536df7949
-    m_isAttachable: 0
-    m_enemyAnimationController: {fileID: 11400000, guid: 113ce255ed058ea4ca8226a09235ac66,
-      type: 2}
-    m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
