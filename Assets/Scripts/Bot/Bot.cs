@@ -1387,9 +1387,31 @@ namespace StarSalvager
             //------------------------------------------------------------------------------------------------//
         }
 
+        public void TryAOEDamageFrom(in Vector2 worldPosition, in float radius, in float damage)
+        {
+            var blocksToDamage = attachedBlocks.GetAttachablesWhichIntersectCircle(worldPosition, radius);
+
+            if (blocksToDamage.IsNullOrEmpty())
+                return;
+
+            //Dont want to stack damage for parts, so just pick the first part
+            var botPiece = blocksToDamage.OfType<Part>().FirstOrDefault();
+            var bits = blocksToDamage.OfType<Bit>();
+            
+            foreach (var bit in bits)
+            {
+                TryHitAt(bit, damage);
+            }
+
+            if (botPiece != null)
+                TryHitAt(botPiece, damage);
+        }
+        
+
+        [Obsolete]
         public void TryMineExplosionAt(Vector2 minePosition, MINE_TYPE mineType)
         {
-            Debug.Log("MINE EXPLODE");
+            /*Debug.Log("MINE EXPLODE");
 
 
             float maxDamage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
@@ -1403,7 +1425,7 @@ namespace StarSalvager
                 }
 
                 TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
-            }
+            }*/
         }
 
 

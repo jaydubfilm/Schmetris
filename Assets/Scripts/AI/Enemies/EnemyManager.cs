@@ -154,7 +154,7 @@ namespace StarSalvager
             {
                 Enemy enemy = m_enemies[i];
 
-                enemy.ProcessMovement(playerBotPosition);
+                enemy.UpdateEnemy(playerBotPosition);
 
                 /*if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {

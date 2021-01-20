@@ -2,7 +2,7 @@
 
 namespace StarSalvager
 {
-    [Serializable]
+    [Serializable, Obsolete]
     public enum MINE_TYPE : int
     {
         Damage

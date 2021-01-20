@@ -17,26 +17,40 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void ProcessMovement(Vector2 playerlocation)
+        public override void UpdateEnemy(Vector2 playerlocation)
         {
-            if (Attached)
-            {
-                return;
-            }
-
-            base.ProcessMovement(playerlocation);
+            StateUpdate();
         }
 
-        public override Vector2 GetMovementDirection(Vector2 playerLocation)
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             return playerLocation - (Vector2)transform.position;
         }
 
         #endregion
 
+
+        //====================================================================================================================//
+
+        #region States
+
+        protected override void StateChanged(STATE newState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void StateUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion //States
+
         //============================================================================================================//
 
         #region Firing
+
+
 
         protected override void ProcessFireLogic()
         {

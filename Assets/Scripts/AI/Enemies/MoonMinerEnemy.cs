@@ -36,9 +36,10 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void ProcessMovement(Vector2 playerLocation)
+        public override void UpdateEnemy(Vector2 playerLocation)
         {
-            if (m_pauseMovement)
+            StateUpdate();
+            /*if (m_pauseMovement)
             {
                 m_pauseMovementTimer -= Time.deltaTime;
                 if (m_pauseMovementTimer <= 0.0f)
@@ -48,12 +49,12 @@ namespace StarSalvager.AI
                     FireAttack();
                 }
                 return;
-            }
-            
-            base.ProcessMovement(playerLocation);
+            }*/
+
+            //base.ProcessState(playerLocation);
         }
 
-        public override Vector2 GetMovementDirection(Vector2 playerLocation)
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             if (Vector2.Distance(transform.position, currentDestination) <= 0.1f)
             {
@@ -70,6 +71,22 @@ namespace StarSalvager.AI
         }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region States
+
+        protected override void StateChanged(STATE newState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void StateUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion //States
 
         //============================================================================================================//
 

@@ -19,9 +19,10 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void ProcessMovement(Vector2 playerLocation)
+        public override void UpdateEnemy(Vector2 playerLocation)
         {
-            if (CameraController.IsPointInCameraRect(transform.position, 0.6f))
+            StateUpdate();
+            /*if (CameraController.IsPointInCameraRect(transform.position, 0.6f))
             {
                 if (!m_isAccelerating)
                 {
@@ -38,15 +39,31 @@ namespace StarSalvager.AI
             }
 
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare) * (1.0f + m_accelerationAmount);
-            transform.position -= fallAmount;
+            transform.position -= fallAmount;*/
         }
 
-        public override Vector2 GetMovementDirection(Vector2 playerLocation)
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             return Vector2.down;
         }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region States
+
+        protected override void StateChanged(STATE newState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void StateUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion //States
 
         //============================================================================================================//
 

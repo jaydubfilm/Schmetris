@@ -84,52 +84,6 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        protected virtual void Start()
-        {
-            SetupPositions();
-
-            /*m_horizontalMovementYLevel = transform.position.y;
-            horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
-        }
-
-        public void SetHorizontalMovementYLevel()
-        {
-            /*m_horizontalMovementYLevel = transform.position.y;
-            m_horizontalMovementYLevelOrigin = m_horizontalMovementYLevel;
-            verticalLowestAllowed = m_horizontalMovementYLevel / 2;
-            horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
-        }
-
-        protected virtual void Update()
-        {
-            ProcessFireLogic();
-
-            //Count down fire timer. If ready to fire, call fireAttack()
-            /*if (m_enemyData.FireType == FIRE_TYPE.NONE)
-                return;
-
-            if (FreezeTime > 0)
-            {
-                FreezeTime -= Time.deltaTime;
-                return;
-            }
-            
-            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
-                return;
-            
-            m_fireTimer += Time.deltaTime;
-
-            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
-                return;
-
-            m_fireTimer -= 1 / m_enemyData.RateOfFire;
-            FireAttack();*/
-        }
-
-        //============================================================================================================//
-
         public virtual void Init(EnemyData enemyData)
         {
             m_enemyData = enemyData;
@@ -143,32 +97,44 @@ namespace StarSalvager.AI
         }
 
         public virtual void LateInit()
-        {
-
-        }
-
-        private void SetupPositions()
-        {
-            /*for (float i = 0; i < m_enemyData.Dimensions.x; i++)
-            {
-                for (float k = 0; k < m_enemyData.Dimensions.y; k++)
-                {
-                    m_positions.Add(new Vector3(i - ((float)m_enemyData.Dimensions.x - 1) / 2, k - ((float)m_enemyData.Dimensions.y - 1) / 2, 0));
-                }
-            }*/
-        }
+        { }
 
         public void SetFrozen(float time)
         {
             FreezeTime = time;
         }
 
+        //States
+        //====================================================================================================================//
+        
+        protected STATE currrentState {get; private set;}= STATE.NONE;
+        protected STATE previousState {get; private set;}= STATE.NONE;
+        
+        
+        protected void SetState(STATE newState)
+        {
+            previousState = currrentState;
+
+            currrentState = newState;
+
+            StateChanged(currrentState);
+        }
+
+        protected abstract void StateChanged(STATE newState);
+
+        protected abstract void StateUpdate();
+
+        protected virtual void CleanStateData()
+        {
+            currrentState = previousState = STATE.NONE;
+        }
+
         //============================================================================================================//
 
         #region Firing
 
-        protected virtual void ProcessFireLogic()
-        {
+        protected virtual void ProcessFireLogic() { }
+        /*{
             //Count down fire timer. If ready to fire, call fireAttack()
             if (m_enemyData.FireType == FIRE_TYPE.NONE)
                 return;
@@ -189,10 +155,10 @@ namespace StarSalvager.AI
 
             m_fireTimer -= 1 / m_enemyData.RateOfFire;
             FireAttack();
-        }
+        }*/
 
-        protected virtual void FireAttack()
-        {
+        protected virtual void FireAttack() { }
+        /*{
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
 
@@ -216,117 +182,6 @@ namespace StarSalvager.AI
                     1f,
                     "Player",
                     null);
-        }
-
-        /*protected virtual void FireAttack()
-        {
-            //Vector3 screenPoint = Camera.main.WorldToViewportPoint();
-            //bool onScreen = screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
-                return;
-            
-            Vector2 playerLocation = LevelManager.Instance.BotObject != null
-                ? LevelManager.Instance.BotObject.transform.position
-                : Vector3.right * 50;
-
-            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
-
-            Vector2 shootDirection = m_enemyData.FireAtTarget
-                ? (targetLocation - (Vector2) transform.position).normalized
-                : Vector2.down;
-
-            
-            FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                .CreateObjects<Projectile>(
-                    m_enemyData.ProjectileType, 
-                    transform.position,
-                    targetLocation,
-                    shootDirection,
-                    m_enemyData.AttackDamage,
-                    1f,
-                    "Player",
-                    null);
-
-            /*List<Vector2> fireLocations = GetFireDirection();
-            foreach (Vector2 fireLocation in fireLocations)
-            {
-                Projectile newProjectile = FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                    .CreateObject<Projectile>(
-                        m_enemyData.ProjectileType, 
-                        fireLocation,
-                        m_enemyData.AttackDamage,
-                        "Player");
-
-                newProjectile.transform.parent = LevelManager.Instance.gameObject.transform;
-                newProjectile.transform.position = transform.position;
-                if (m_enemyData.AddVelocityToProjectiles)
-                {
-                    newProjectile.m_enemyVelocityModifier = m_mostRecentMovementDirection * m_enemyData.MovementSpeed;
-                }
-
-                LevelManager.Instance.ProjectileManager.AddProjectile(newProjectile);
-            }
-            
-            AudioController.PlayEnemyFireSound(m_enemyData.EnemyType, 1f);
-        }*/
-
-        //Check what attack style this enemy uses, and use the appropriate method to get the firing location
-        /*private List<Vector2> GetFireDirection()
-        {
-            //Firing styles are based on the player location. For now, hardcode this
-            Vector3 playerLocation = LevelManager.Instance.BotObject != null
-                ? LevelManager.Instance.BotObject.transform.position
-                : Vector3.right * 50;
-
-            List<Vector2> fireDirections = new List<Vector2>();
-
-            switch (m_enemyData.AttackType)
-            {
-                case ENEMY_ATTACKTYPE.Forward:
-                    fireDirections.Add(GetDestination() - transform.position);
-                    break;
-                case ENEMY_ATTACKTYPE.AtPlayer:
-                    fireDirections.Add(playerLocation - transform.position);
-                    break;
-                case ENEMY_ATTACKTYPE.AtPlayerCone:
-                    //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
-                    fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position,
-                        Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
-                            m_enemyData.SpreadAngle)) - transform.position);
-                    break;
-                case ENEMY_ATTACKTYPE.Down:
-                    fireDirections.Add(Vector3.down);
-                    break;
-                case ENEMY_ATTACKTYPE.Spray:
-                    //For each shot in the spray, rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
-                    for (int i = 0; i < m_enemyData.SprayCount; i++)
-                    {
-                        fireDirections.Add(GetDestinationForRotatePositionAroundPivot(playerLocation,
-                            transform.position,
-                            Vector3.forward * Random.Range(-m_enemyData.SpreadAngle,
-                                m_enemyData.SpreadAngle)) - transform.position);
-                    }
-
-                    break;
-                case ENEMY_ATTACKTYPE.Spiral:
-                    //Consult spiral formula to get the angle to shoot the next shot at
-                    fireDirections.Add(GetSpiralAttackDirection());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(m_enemyData.AttackType), m_enemyData.AttackType, null);
-            }
-
-            return fireDirections;
-        }
-
-        //Get the location that enemy is firing at, then create the firing projectile from the factory
-        private Vector3 GetSpiralAttackDirection()
-        {
-            m_spiralAttackDirection =
-                GetDestinationForRotatePositionAroundPivot(m_spiralAttackDirection + transform.position,
-                    transform.position, Vector3.forward * 30) - transform.position;
-
-            return m_spiralAttackDirection;
         }*/
 
         #endregion Firing
@@ -335,8 +190,8 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public virtual void ProcessMovement(Vector2 playerLocation)
-        {
+        public abstract void UpdateEnemy(Vector2 playerLocation);
+        /*{
             if (Disabled || Frozen)
             {
                 Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
@@ -348,10 +203,10 @@ namespace StarSalvager.AI
             movementDirection.Normalize();
             m_mostRecentMovementDirection = movementDirection;
 
-            transform.position = gameObject.transform.position + (movementDirection * m_enemyData.MovementSpeed * Time.deltaTime);
-        }
+            transform.position = gameObject.transform.position + (movementDirection * (m_enemyData.MovementSpeed * Time.deltaTime));
+        }*/
 
-        public Vector2 GetMovementNormalized(Vector2 playerLocation)
+        /*private Vector2 GetMovementNormalized(Vector2 playerLocation)
         {
             Vector2 movementDirection = GetMovementDirection(playerLocation).normalized;
 
@@ -366,162 +221,16 @@ namespace StarSalvager.AI
             movementDirection.Normalize();
 
             return movementDirection;
-        }
-
-        public abstract Vector2 GetMovementDirection(Vector2 playerLocation);
-
-
-        /*public Vector3 GetDestination()
-        {
-            Vector3 playerLocation = LevelManager.Instance.BotObject != null
-                ? LevelManager.Instance.BotObject.transform.position
-                 : Vector3.zero;
-
-            switch (MovementType)
-            {
-                case ENEMY_MOVETYPE.Standard:
-                    return playerLocation;
-                case ENEMY_MOVETYPE.Oscillate:
-                    //Find destination by rotating the playerLocation around the enemy position, at the angle output by the oscillate function
-                    return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position,
-                        GetAngleInOscillation());
-                case ENEMY_MOVETYPE.OscillateHorizontal:
-                    //Find destination by determining whether to move left or right and then oscillating at the angle output by the oscillate function
-                    return GetDestinationForRotatePositionAroundPivot(transform.position + SetHorizontalDirection(playerLocation),
-                        transform.position, GetAngleInOscillation());
-                case ENEMY_MOVETYPE.Orbit:
-                    //If outside the orbit radius, move towards the player location. If inside it, get the destination along the edge of the circle to move clockwise around it
-                    float distanceSqr = Vector2.SqrMagnitude(transform.position - playerLocation);
-                    if (distanceSqr > m_enemyData.OrbitRadiusSqr)
-                    {
-                        return playerLocation;
-                    }
-                    else
-                    {
-                        return GetDestinationForRotatePositionAroundPivotAtDistance(transform.position, playerLocation,
-                            Vector3.forward * -5, m_enemyData.OrbitRadius);
-                    }
-                case ENEMY_MOVETYPE.Horizontal:
-                    return transform.position + SetHorizontalDirection(playerLocation);
-                case ENEMY_MOVETYPE.HorizontalDescend:
-                    return transform.position + SetHorizontalDirection(playerLocation, true);
-                case ENEMY_MOVETYPE.Down:
-                    return transform.position + Vector3.down;
-
-            }
-
-            return playerLocation;
         }*/
-        
-        //Determine whether this horizontal mover is going left or right
-        /*public Vector3 SetHorizontalDirection(Vector3 playerLocation, bool isDescending = false)
+
+        protected virtual Vector2 GetMovementDirection(Vector2 playerLocation)
         {
-            if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector3.right)
-            {
-                m_currentHorizontalMovementDirection = Vector3.right;
-                if (isDescending)
-                {
-                    m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
-                    if (m_horizontalMovementYLevel <= verticalLowestAllowed)
-                    {
-                        m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
-                        //m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
-                    }
-                }
-            }
-            else if (transform.position.x >= playerLocation.x + horizontalFarRightX && m_currentHorizontalMovementDirection != Vector3.left)
-            {
-                m_currentHorizontalMovementDirection = Vector3.left;
-                if (isDescending)
-                {
-                    m_horizontalMovementYLevel -= Constants.gridCellSize * m_enemyData.NumberCellsDescend;
-                    if (m_horizontalMovementYLevel <= verticalLowestAllowed)
-                    {
-                        m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
-                        //m_horizontalMovementYLevel = m_horizontalMovementYLevelOrigin;
-                    }
-                }
-            }
-
-            //Modify the vertical level back to the stored horizontalYlevel, so enemies will return to their previous y level after avoiding an obstacle
-            //TODO - this logic should apply to oscillatehorizontal but currently causes a bug with it. Resolve bug and add this functionality back
-            Vector3 addedVertical = Vector3.zero;
-            if (m_enemyData.MovementType != ENEMY_MOVETYPE.OscillateHorizontal)
-            {
-                addedVertical += Vector3.up * (m_horizontalMovementYLevel - transform.position.y);
-            }
-
-            return m_currentHorizontalMovementDirection + addedVertical;
+            return Vector2.zero;
         }
 
-
-        //Calculate the angle to move at for the oscillation movement
-        //Methodology - uses a timer, with the value of the timer modification by the oscillationspersecond value, to see where we are in the zig zag cycle. 
-        //if the modular is 1, 0 is at the far left end of the cycle, 0.5 is at the far right end, 1 goes back to left
-        public Vector3 GetAngleInOscillation()
-        {
-            m_oscillationTimer += Time.deltaTime * m_enemyData.OscillationsPerSecond;
-
-            if (m_oscillationTimer > 1)
-            {
-                m_oscillationTimer -= 1;
-            }
-
-            if (m_oscillationTimer <= 0.5f)
-            {
-                float angleAdjust = m_oscillationTimer * 2;
-                return Vector3.forward * (m_enemyData.OscillationAngleRange * (-0.5f + angleAdjust));
-            }
-            else
-            {
-                float angleAdjust = (m_oscillationTimer - 0.5f) * 2;
-                return Vector3.forward * (m_enemyData.OscillationAngleRange * (0.5f - angleAdjust));
-            }
-        }
-
-        //Rotate point around pivot by angles amount
-        public Vector3 GetDestinationForRotatePositionAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
-        {
-            Vector3 direction = point - pivot;
-            direction = Quaternion.Euler(angles) * direction;
-            return direction + pivot;
-        }
-
-        //Rotate point around pivot by angles amount, while ensuring that the point is a certain distance away from the pivot. Used for the orbit calculations to keep them orbiting on the outside
-        public Vector3 GetDestinationForRotatePositionAroundPivotAtDistance(Vector3 point, Vector3 pivot,
-            Vector3 angles, float distance)
-        {
-            Vector3 direction = point - pivot;
-            direction.Normalize();
-            direction *= distance;
-            direction = Quaternion.Euler(angles) * direction;
-            return direction + pivot;
-        }
-
-        public void ProcessMovement(Vector3 direction)
-        {
-            m_mostRecentMovementDirection = direction;
-            transform.position += direction * (m_enemyData.MovementSpeed * Time.deltaTime);
-        }
-
-        public List<Vector3> GetPositions()
-        {
-            List<Vector3> positions = new List<Vector3>();
-            foreach (var position in m_positions)
-            {
-                positions.Add(transform.position + position);
-            }
-            return positions;
-        }*/
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint) { }
 
         #endregion
-
-        //============================================================================================================//
-
-        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
-        {
-
-        }
 
         //ICanBeHit functions
         //============================================================================================================//
@@ -588,12 +297,14 @@ namespace StarSalvager.AI
             CameraController.UnRegisterCanBeSeen(this);
         }
 
-        public void EnteredCamera()
+        //====================================================================================================================//
+        
+        public void OnEnterCamera()
         {
             AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
-        public void ExitedCamera()
+        public void OnExitCamera()
         {
             AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }
@@ -601,12 +312,8 @@ namespace StarSalvager.AI
 
         public virtual void CustomRecycle(params object[] args)
         {
-            //m_horizontalMovementYLevel = 0.0f;
-            //m_oscillationTimer = 0.0f;
-
-            //horizontalFarLeftX = 0.0f;
-            //horizontalFarRightX = 0.0f;
-
+            CleanStateData();
+            
             m_mostRecentMovementDirection = Vector3.zero;
 
             FreezeTime = 0f;

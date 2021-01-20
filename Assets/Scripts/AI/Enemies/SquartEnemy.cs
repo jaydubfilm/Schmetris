@@ -48,7 +48,13 @@ namespace StarSalvager.AI
             return m_horizontalMovementYLevel + m_sinusoidalModifier * Mathf.Sin(m_sinusoidalValue);
         }
 
-        public override Vector2 GetMovementDirection(Vector2 playerLocation)
+
+        public override void UpdateEnemy(Vector2 playerLocation)
+        {
+            StateUpdate();
+        }
+
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             if (m_numDirectionSwaps >= m_numTotalDirectionSwaps)
             {
@@ -74,6 +80,22 @@ namespace StarSalvager.AI
         }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region States
+
+        protected override void StateChanged(STATE newState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void StateUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion //States
 
         //============================================================================================================//
 

@@ -221,7 +221,7 @@ namespace StarSalvager.Cameras
             if (!_canBeSeens.Contains(canBeSeen))
                 return;
 
-            canBeSeen.ExitedCamera();
+            canBeSeen.OnExitCamera();
             canBeSeen.IsSeen = false;
             
             _canBeSeens.Remove(canBeSeen);
@@ -247,8 +247,8 @@ namespace StarSalvager.Cameras
 
             canBeSeen.IsSeen = seen;
                 
-            if(seen) canBeSeen.EnteredCamera();
-            else canBeSeen.ExitedCamera();
+            if(seen) canBeSeen.OnEnterCamera();
+            else canBeSeen.OnExitCamera();
         }
 
         #endregion //Camera Rect

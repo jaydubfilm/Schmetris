@@ -34,7 +34,12 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override Vector2 GetMovementDirection(Vector2 playerLocation)
+        public override void UpdateEnemy(Vector2 playerLocation)
+        {
+            StateUpdate();
+        }
+
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             if (Vector2.Distance(transform.position, currentDestination) <= 0.1f)
             {
@@ -46,6 +51,22 @@ namespace StarSalvager.AI
         }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region States
+
+        protected override void StateChanged(STATE newState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void StateUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion //States
 
         //============================================================================================================//
 

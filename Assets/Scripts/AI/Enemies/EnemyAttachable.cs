@@ -65,7 +65,7 @@ namespace StarSalvager.AI
         //Unity Functions
         //============================================================================================================//
 
-        protected override void Update()
+        protected void Update()
         {
             if (HintManager.CanShowHint(HINT.PARASITE))
             {
