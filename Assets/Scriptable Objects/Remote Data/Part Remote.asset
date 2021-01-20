@@ -261,3 +261,32 @@ MonoBehaviour:
       - 0.06
       - 0.08
       - 0.1
+  - name: Upgrader
+    partType: 34
+    lockRotation: 0
+    description: 
+    burnType: 0
+    dataTest: []
+    PatchSockets: 0
+    partGrade:
+      Types: 
+      minBitLevel: 0
+      needsBitsToFunction: 0
+      values: []
+  - name: Wild Card
+    partType: 35
+    lockRotation: 0
+    description: 
+    burnType: 5
+    dataTest: []
+    PatchSockets: 2
+    partGrade:
+      Types: 05000000
+      minBitLevel: 1
+      needsBitsToFunction: 1
+      values:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
