@@ -249,3 +249,19 @@ MonoBehaviour:
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 1
+  - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
+    m_name: Sleeper Mine
+    m_health: 0
+    m_movementSpeed: 0
+    m_rateOfFire: 0
+    m_dimensions: {x: 0, y: 0}
+    m_maxDrops: 0
+    m_rdsEnemyData: []
+  - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
+    m_name: Sensor Mine
+    m_health: 0
+    m_movementSpeed: 0
+    m_rateOfFire: 0
+    m_dimensions: {x: 0, y: 0}
+    m_maxDrops: 0
+    m_rdsEnemyData: []
