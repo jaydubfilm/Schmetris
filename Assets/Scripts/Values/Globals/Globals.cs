@@ -28,7 +28,6 @@ namespace StarSalvager.Values
         public static int CurrentWave = 0;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
-        public static int CameraScaleSize = 51;
         public static bool StripBits;
         public static float TimeForAsteroidToFallOneSquare;
 
@@ -39,6 +38,9 @@ namespace StarSalvager.Values
         private static GameSettingsScriptableObject m_gameSettings = null;
         //Properties from Game Settings - do not give explicit values
 
+        public static int CameraScaleSize => m_gameSettings.columnsOnScreen;
+
+        
         public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;

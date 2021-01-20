@@ -102,12 +102,20 @@ namespace StarSalvager.ScriptableObjects
         
         [BoxGroup("Camera")]
         public bool cameraUseInputMotion = true;
+        [HorizontalGroup("Camera/Row1")]
+        public int columnsOnScreen = 51;
         [ShowIf("cameraUseInputMotion", true)][BoxGroup("Camera")]
         public float cameraSmoothing = 1.0f;
         [ShowIf("cameraUseInputMotion", true)][BoxGroup("Camera")]
         public float cameraOffsetBounds = 0.5f;
 
         //====================================================================================================================//
+
+        [Button("Update"), HorizontalGroup("Camera/Row1"), DisableInEditorMode]
+        private void UpdateCameraScale()
+        {
+            Globals.ScaleCamera(Globals.CameraScaleSize);
+        }
 
         public void SetupGameSettings()
         {
