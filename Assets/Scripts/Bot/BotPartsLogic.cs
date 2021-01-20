@@ -174,7 +174,7 @@ namespace StarSalvager
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
-                part.Disabled = !HasPartGrade(partRemoteData, out _);
+                part.Disabled = !HasPartGrade(part, partRemoteData, out _);
 
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Disabled)
@@ -191,7 +191,7 @@ namespace StarSalvager
                             MagnetCount += value;
                         }
 
-                        if (HasPartGrade(partRemoteData, out var floatValue))
+                        if (HasPartGrade(part, partRemoteData, out var floatValue))
                         {
                             MagnetCount += (int)floatValue;
                         }
@@ -340,7 +340,7 @@ namespace StarSalvager
                 MagnetCount += value;
             }
 
-            if (HasPartGrade(partRemoteData, out var magnet))
+            if (HasPartGrade(part, partRemoteData, out var magnet))
             {
                 MagnetCount += (int)magnet;
             }
@@ -396,7 +396,7 @@ namespace StarSalvager
             }
             //--------------------------------------------------------------------------------------------------------//
             
-            if (!HasPartGrade(partRemoteData, out var repairAmount))
+            if (!HasPartGrade(part, partRemoteData, out var repairAmount))
             {
                 return;
             }
@@ -696,7 +696,7 @@ namespace StarSalvager
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
             if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
-                HasPartGrade(partRemoteData, out var multiplier))
+                HasPartGrade(part, partRemoteData, out var multiplier))
             {
                 damage *= multiplier;
             }
@@ -845,7 +845,7 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            if (!HasPartGrade(partRemoteData, out var multiplier))
+            if (!HasPartGrade(part, partRemoteData, out var multiplier))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
@@ -888,7 +888,7 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
             
-            if (!HasPartGrade(partRemoteData, out var freezeTime))
+            if (!HasPartGrade(part, partRemoteData, out var freezeTime))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
@@ -929,7 +929,7 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            if (!HasPartGrade(partRemoteData, out var seconds))
+            if (!HasPartGrade(part, partRemoteData, out var seconds))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
@@ -962,7 +962,7 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
             
-            if (!HasPartGrade(partRemoteData, out _))
+            if (!HasPartGrade(part, partRemoteData, out _))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
@@ -1007,13 +1007,11 @@ namespace StarSalvager
             
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
 
-            if (!HasPartGrade(partRemoteData, out var multiplier))
+            foreach (var armor in armors)
             {
-                return false;
-            }
-
-            for (int i = 0; i < armors.Length; i++)
-            {
+                if (!HasPartGrade(armor, partRemoteData, out var multiplier))
+                    continue;
+                
                 damage *= 1.0f - multiplier;
             }
 
@@ -1557,6 +1555,18 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+        //FIXME Constantly calling this can be expensive, might be better doing a count at the start/Part Setup
+        private int GetUpgradersAroundPart(in Part part)
+        {
+            return _parts
+                .GetAttachablesAround(part, false)
+                .OfType<Part>()
+                .Count(x => x.Type == PART_TYPE.UPGRADER);
+        }
+
+        //====================================================================================================================//
+        
         
 
         private bool HasPartGrade(in Part part, out float value)
@@ -1564,13 +1574,15 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            return HasPartGrade(partRemoteData, out value);
+            return HasPartGrade(part, partRemoteData, out value);
         }
         
-        private bool HasPartGrade(in PartRemoteData partRemoteData, out float value)
+        private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
         {
             var types = partRemoteData.partGrade.Types;
             var count = types.Count;
+            var upgradersNextTo = GetUpgradersAroundPart(part);
+            
             
             var levels = new int[count];
 
@@ -1582,6 +1594,8 @@ namespace StarSalvager
             }
 
             var minLevel = levels.Min();
+
+            minLevel = Mathf.Clamp(minLevel + upgradersNextTo, -1, 5);
             
             //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
             var active = partRemoteData.HasPartGrade(minLevel, out value);

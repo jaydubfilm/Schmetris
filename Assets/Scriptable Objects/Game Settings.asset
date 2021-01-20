@@ -15,29 +15,19 @@ MonoBehaviour:
   testingFeatures: 0
   asteroidDamage: 10
   gameUIResourceThreshold: 0.33
-  missionReminderFrequency: 1
-  numCurrentTrackedMissionMax: 3
   patchPointBaseCost: 500
   patchPointIncrementCost: 50
   blueprintInitialData:
   - type: 4
-    level: 0
   - type: 9
-    level: 0
   - type: 1
-    level: 0
-  facilityInitialData: []
-  facilityInitialBlueprintData: []
   gridWidth: 100
   gridHeightRelativeToScreen: 1.25
   timeForAsteroidToFallOneSquare: 0.32
-  allowAccessToUnlockedLaterWaves: 1
   levelResourceDropReductionAmount: 0.854
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
-  onlyGetWaveLootOnce: 1
-  recoveryOfDroneLocksHorizontalMovement: 1
-  shortcutJumpToAfter: 1
+  waveMessageReminderFrequency: 10
   bonusShapeSpeed: 22
   bonusShapeGearsRewards:
   - numCells: 2
@@ -102,8 +92,12 @@ MonoBehaviour:
     gearsValue: 1000
   asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
+  botHealth: 100
+  greenHealAmount: 10
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
+  unmergeLargeBitsOnRefine: 1
+  sendExcessResourceToBase: 0
   bitsPushThroughParts: 1
   bitShiftTime: 0.15
   comboMergeTime: 0.15
@@ -112,5 +106,6 @@ MonoBehaviour:
   botRotationSpeed: 500
   botContinuousRotationSpeed: 700
   cameraUseInputMotion: 1
+  columnsOnScreen: 51
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2

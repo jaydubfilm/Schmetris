@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.Factories.Data
@@ -125,6 +126,10 @@ namespace StarSalvager.Factories.Data
         public bool HasPartGrade(in int maxBitLevel, out float value)
         {
             value = 0.0f;
+
+            if (partGrade.values.IsNullOrEmpty())
+                return false;
+            
             if (partGrade.minBitLevel > maxBitLevel)
             {
                 if (!partGrade.needsBitsToFunction)
@@ -147,6 +152,9 @@ namespace StarSalvager.Factories.Data
 
         public bool HasPartGrade(in int maxBitLevel)
         {
+            if (partGrade.values.IsNullOrEmpty())
+                return false;
+            
             if (partGrade.minBitLevel > maxBitLevel)
             {
                 if (!partGrade.needsBitsToFunction)

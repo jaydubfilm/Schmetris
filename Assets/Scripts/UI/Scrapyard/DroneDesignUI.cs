@@ -256,10 +256,10 @@ namespace StarSalvager.UI.Scrapyard
             var partType = (PART_TYPE) partData.Type;
             
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            var bitType = partRemote.partGrade.Types[0];
+            var bitType = !partRemote.partGrade.Types.IsNullOrEmpty() ? partRemote.partGrade.Types[0] : BIT_TYPE.NONE;
             
             var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
-            var bitProfile = FactoryManager.Instance.BitProfileData.GetProfile(bitType);
+            var bitProfile = bitType == BIT_TYPE.NONE ? new BitProfile() : FactoryManager.Instance.BitProfileData.GetProfile(bitType);
 
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
 
@@ -338,6 +338,10 @@ namespace StarSalvager.UI.Scrapyard
                     return "Bullet Damage";
                 case PART_TYPE.VAMPIRE:
                     return "heals % of damage dealt for 2 seconds";
+                case PART_TYPE.UPGRADER:
+                    return "Increases grade level of adjacent parts";
+                case PART_TYPE.WILDCARD:
+                    return "Completes combos with 2 bits\n(Cannot combine with other wild cards, only works as end pieces)";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partType), partType, null);
             }
@@ -420,6 +424,8 @@ namespace StarSalvager.UI.Scrapyard
                 case PART_TYPE.ARMOR:
                 case PART_TYPE.REPAIR:
                 case PART_TYPE.CORE:
+                case PART_TYPE.UPGRADER: 
+                case PART_TYPE.WILDCARD:
                     return string.Empty;
                 case PART_TYPE.GUN:
                 {

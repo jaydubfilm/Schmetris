@@ -164,6 +164,7 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             RefreshWindow(_currentWindow);
+            Globals.ScaleCamera(Globals.CameraScaleSize);
         }
 
         private void Start()
