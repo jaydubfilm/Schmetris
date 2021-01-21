@@ -177,7 +177,6 @@ namespace StarSalvager.AI
         }
 
         //====================================================================================================================//
-        
 
         public override void CustomRecycle(params object[] args)
         {

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Cameras;
+using StarSalvager.Factories;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,11 +19,18 @@ namespace StarSalvager.AI
         private Vector2 _targetOffset;
         private int _jumpCount;
 
-        private float _anticipationWaitTime = 1f;
-        private float _flySpeed => 10f;
-        private float _minDistance => 7;
-        private float _maxDistance => 10;
+        private float _anticipationWaitTime = 0.5f;
+        private float _flySpeed => 15f;
+        private float _minDistance => 4;
+        private float _maxDistance => 5;
 
+
+        public override void LateInit()
+        {
+            base.LateInit();
+            
+            SetState(STATE.MOVE);
+        }
 
         //============================================================================================================//
 
@@ -48,11 +57,11 @@ namespace StarSalvager.AI
 
                     break;
                 case STATE.MOVE:
-                    _jumpCount = Random.Range(1, 4);
+                    _jumpCount = Random.Range(2, 5);
                     _targetOffset = ChooseOffset(_minDistance, _maxDistance);
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationWaitTime = 1f;
+                    _anticipationWaitTime = 0.5f;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<VoltEnemy>(this);
@@ -97,7 +106,7 @@ namespace StarSalvager.AI
             var targetPosition = _playerLocation + _targetOffset;
             if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
             {
-                transform.position = Vector2.MoveTowards(currentPosition, targetPosition, _flySpeed);
+                transform.position = Vector2.MoveTowards(currentPosition, targetPosition, _flySpeed * Time.deltaTime);
                 return;
             }
 
@@ -132,7 +141,7 @@ namespace StarSalvager.AI
 
         private static Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
-            var pos = Random.insideUnitCircle * maxDist;
+            var pos = Random.insideUnitCircle.normalized * Random.Range(minDist, maxDist);
 
             var checkX = Mathf.Clamp(Mathf.Abs(pos.x), minDist, maxDist);
             var checkY = Mathf.Clamp(Mathf.Abs(pos.y), minDist, maxDist);
@@ -151,7 +160,29 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
-            throw new System.NotImplementedException();
+            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
+                return;
+
+            Vector2 playerLocation = LevelManager.Instance.BotObject != null
+                ? LevelManager.Instance.BotObject.transform.position
+                : Vector3.right * 50;
+
+            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
+
+            Vector2 shootDirection = m_enemyData.FireAtTarget
+                ? (targetLocation - (Vector2) transform.position).normalized
+                : Vector2.down;
+
+
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    m_enemyData.ProjectileType,
+                    transform.position,
+                    targetLocation,
+                    shootDirection,
+                    1f,
+                    "Player",
+                    null);
         }
 
         #endregion
