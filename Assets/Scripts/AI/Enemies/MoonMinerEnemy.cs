@@ -1,4 +1,5 @@
-﻿using StarSalvager.Cameras;
+﻿using System;
+using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace StarSalvager.AI
             //base.ProcessState(playerLocation);
         }
 
-        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
+        /*protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             if (Vector2.Distance(transform.position, currentDestination) <= 0.1f)
             {
@@ -68,7 +69,7 @@ namespace StarSalvager.AI
             }
 
             return currentDestination - (Vector2)transform.position;
-        }
+        }*/
 
         #endregion
 
@@ -78,12 +79,77 @@ namespace StarSalvager.AI
 
         protected override void StateChanged(STATE newState)
         {
-            throw new System.NotImplementedException();
+            switch (newState)
+            {
+                case STATE.NONE:
+                    return;
+                case STATE.MOVE:
+                    break;
+                case STATE.FLEE:
+                    break;
+                case STATE.ANTICIPATION:
+                    break;
+                case STATE.ATTACK:
+                    break;
+                case STATE.DEATH:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+            }
         }
 
         protected override void StateUpdate()
         {
-            throw new System.NotImplementedException();
+            switch (currrentState)
+            {
+                case STATE.NONE:
+                case STATE.DEATH:
+                    return;
+                case STATE.MOVE:
+                    MoveState();
+                    break;
+                case STATE.FLEE:
+                    FleeState();
+                    break;
+                case STATE.ANTICIPATION:
+                    AnticipationState();
+                    break;
+                case STATE.ATTACK:
+                    AttackState();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(currrentState), currrentState, null);
+            }
+        }
+
+        private Vector2 _targetLocation;
+        private float _anticipationTime;
+        private float _attackTime;
+
+        private void MoveState()
+        {
+            //TODO Move towards target position
+            //TODO If within threshold, move to anticipation state
+        }
+
+        private void FleeState()
+        {
+            //TODO Move off screen
+            
+            //TODO When no longer visible, recycle this
+        }
+
+        private void AnticipationState()
+        {
+            //TODO Wait x Seconds
+            //TODO Switch to Attack State
+        }
+
+        private void AttackState()
+        {
+            //TODO Spawn the laser beam
+            //TODO Wait x Seconds
+            //TODO Set to MoveState
         }
 
         #endregion //States
