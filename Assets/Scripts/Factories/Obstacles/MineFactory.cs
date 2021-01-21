@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Recycling;
 using StarSalvager.AI;
@@ -11,10 +12,11 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Factories
 {
+    [Obsolete]
     //FIXME This needs to be cleaned up, feels messy
-    public class MineFactory : FactoryBase
+    public class MineFactory //: FactoryBase
     {
-        private readonly GameObject _prefab;
+        /*private readonly GameObject _prefab;
 
         private readonly MineRemoteDataScriptableObject _mineRemote;
 
@@ -56,7 +58,7 @@ namespace StarSalvager.Factories
             var temp = CreateGameObject();
 
             return temp.GetComponent<T>();
-        }
+        }*/
         
         //============================================================================================================//
     }

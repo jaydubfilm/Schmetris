@@ -85,15 +85,17 @@ MonoBehaviour:
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
   - EnemyName: Sleeper Mine
     m_sprite: {fileID: 21300000, guid: ea4b6755f70e570469d74520f7a49c15, type: 3}
-    m_enemyPrefab: {fileID: 0}
+    m_enemyPrefab: {fileID: 7101777928287725812, guid: 3acddc667667a244b8ffd1c5e3e17236,
+      type: 3}
     m_enemyTypeID: 603bd8a5-ca60-4089-95bd-680be431941a
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
-    m_projectileType: 
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
   - EnemyName: Sensor Mine
     m_sprite: {fileID: 21300000, guid: f973c4f91ba92864289522853488cfb8, type: 3}
-    m_enemyPrefab: {fileID: 0}
+    m_enemyPrefab: {fileID: 5323334717173405649, guid: e1260dbdcf05a514e913b58af98213ce,
+      type: 3}
     m_enemyTypeID: 9ac61077-b742-47af-890b-545efdc00870
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
-    m_projectileType: 
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8

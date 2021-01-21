@@ -1,22 +1,34 @@
 ﻿using System;
+using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
+using StarSalvager.Prototype;
+using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class SensorMineEnemy  : Enemy
+    public class SensorMineEnemy  : Enemy, IOverrideRecycleType
     {
         // Start is called before the first frame update
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => true;
 
-        public float Damage;
-        public float Radius;
+        //public float Damage;
+        //public float Radius;
 
         private Vector2 _playerPosition;
+
+        public override void LateInit()
+        {
+            base.LateInit();
+            
+            SetState(STATE.SEARCH);
+        }
 
         //State Functions
         //====================================================================================================================//
@@ -35,17 +47,19 @@ namespace StarSalvager.AI
                     //TODO Change animation to Anticipation Animation
                     break;
                 case STATE.ATTACK:
-                    var damage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
-                    var radius = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDistance();
+                    var worldPosition = transform.position;
+                    var damage = FactoryManager.Instance.MineRemoteData.MineMaxDamage;
+                    var radius = FactoryManager.Instance.MineRemoteData.MineMaxDistance;
                     //TODO Spawn explosion effect
-                    
+
+                    CreateFreezeEffect(worldPosition, radius * 2);
                     //Do damage to relevant blocks
-                    LevelManager.Instance.BotObject.TryAOEDamageFrom(transform.position, radius, damage);
+                    LevelManager.Instance.BotObject.TryAOEDamageFrom(worldPosition, radius, 0, true);
                     SetState(STATE.DEATH);
                     break;
                 case STATE.DEATH:
                     //Recycle ya boy
-                    Recycler.Recycle<SleeperMineEnemy>(this);
+                    Recycler.Recycle<SensorMineEnemy>(this);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -118,6 +132,50 @@ namespace StarSalvager.AI
 
         #endregion
 
+        //Effects
+        //====================================================================================================================//
+        
+        private void CreateFreezeEffect(in Vector2 worldPosition, in float range)
+        {
+           
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.FREEZE);
+
+            effect.transform.position = worldPosition;
+            
+            var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
+            
+            effectAnimationComponent.SetSimulationSize(range);
+            
+            Destroy(effect, effectAnimationComponent.AnimationTime);
+        }
+
+        //IHealth Overrides
+        //====================================================================================================================//
+        
+        public override void ChangeHealth(float amount)
+        {
+            CurrentHealth += amount;
+
+            if (amount < 0)
+            {
+                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
+            }
+
+            if (CurrentHealth > 0) 
+                return;
+            
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+            
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+            
+            SetState(STATE.ATTACK);
+        }
+
         //====================================================================================================================//
         
 
@@ -128,6 +186,12 @@ namespace StarSalvager.AI
             base.CustomRecycle(args);
         }
 
-        //============================================================================================================//
+        public Type GetOverrideType()
+        {
+            return typeof(SensorMineEnemy);
+        }
+
+        //====================================================================================================================//
+        
     }
 }

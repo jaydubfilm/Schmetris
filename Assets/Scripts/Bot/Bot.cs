@@ -1387,24 +1387,30 @@ namespace StarSalvager
             //------------------------------------------------------------------------------------------------//
         }
 
-        public void TryAOEDamageFrom(in Vector2 worldPosition, in float radius, in float damage)
+        public void TryAOEDamageFrom(in Vector2 worldPosition, in float radius, in float damage, in bool partsOnly = false)
         {
             var blocksToDamage = attachedBlocks.GetAttachablesWhichIntersectCircle(worldPosition, radius);
 
             if (blocksToDamage.IsNullOrEmpty())
                 return;
 
-            //Dont want to stack damage for parts, so just pick the first part
-            var botPiece = blocksToDamage.OfType<Part>().FirstOrDefault();
-            var bits = blocksToDamage.OfType<Bit>();
-            
-            foreach (var bit in bits)
+            if (partsOnly)
             {
-                TryHitAt(bit, damage);
+                var parts = blocksToDamage.OfType<Part>();
+                foreach (var part in parts)
+                {
+                    TryHitAt(part, damage);
+                }
+
+                return;
             }
 
-            if (botPiece != null)
-                TryHitAt(botPiece, damage);
+            //Dont want to stack damage for parts, so just pick the first part
+            foreach (var attachable in blocksToDamage)
+            {
+                TryHitAt(attachable, damage);
+            }
+
         }
         
 
