@@ -4,23 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Cameras;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class DataLeechEnemy : EnemyAttachable
+    public class BorrowerEnemy  : EnemyAttachable
     {
         public override bool IsAttachable => true;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => false;
 
 
-        private int m_dataLeechDamage = 1;
+        //private int m_dataLeechDamage = 1;
 
+        private float _anticipationTime;
         private Vector2 _playerLocation;
+        private Bit _carryingBit;
+        private Bit _attachTarget;
 
         public override void LateInit()
         {
@@ -32,10 +37,22 @@ namespace StarSalvager.AI
 
         #region EnemyAttachable Overrides
 
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
+        {
+            if (currrentState != STATE.PURSUE)
+                return;
+            
+            base.OnCollide(gameObject, worldHitPoint);
+        }
+
         public override void SetAttached(bool isAttached)
         {
             base.SetAttached(isAttached);
-            SetState(Attached ? STATE.ATTACK : STATE.PURSUE);
+            
+            if (currrentState != STATE.PURSUE)
+                return;
+            
+            SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
         }
 
         public override void ChangeHealth(float amount)
@@ -95,6 +112,33 @@ namespace StarSalvager.AI
             return playerLocation - (Vector2)transform.position;
         }
 
+        private Bit FindClosestBitOnBot()
+        {
+            var bot = LevelManager.Instance.BotInLevel;
+            var bits = bot.attachedBlocks.OfType<Bit>().ToArray();
+
+            if (bits.IsNullOrEmpty())
+                return null;
+
+            var currentPosition = transform.position;
+
+            var minDist = 999f;
+            Bit selectedBit = null;
+            
+            foreach (var bit in bits)
+            {
+                var dist = Vector2.Distance(currentPosition, bit.transform.position);
+                
+                if(dist >= minDist)
+                    continue;
+
+                minDist = dist;
+                selectedBit = bit;
+            }
+
+            return selectedBit;
+        }
+
         #endregion
 
         //====================================================================================================================//
@@ -110,10 +154,29 @@ namespace StarSalvager.AI
                 case STATE.IDLE:
                     break;
                 case STATE.PURSUE:
+                    //Try to Find a Bit on the bot
+                    _attachTarget = FindClosestBitOnBot();
+                    break;
+                case STATE.ANTICIPATION:
+                    _anticipationTime = 1f;
                     break;
                 case STATE.ATTACK:
                     break;
+                case STATE.FLEE:
+                    Target = null;
+                    AttachedBot?.ForceDetach(this);
+                    AttachedBot = null;
+                    break;
                 case STATE.DEATH:
+                    //Drop the attached bit
+                    if (_carryingBit)
+                    {
+                        _carryingBit.SetAttached(false);
+                        _carryingBit.collider.enabled = true;
+                        _carryingBit.transform.parent = null;
+                        _carryingBit = null;
+                    }
+                    
                     Recycler.Recycle<DataLeechEnemy>(this);
                     break;
                 default:
@@ -126,21 +189,29 @@ namespace StarSalvager.AI
             switch (currrentState)
             {
                 case STATE.NONE:
-                    break;
+                    return;
                 case STATE.IDLE:
                     IdleState();
                     break;
                 case STATE.PURSUE:
                     PursueState();
                     break;
+                case STATE.ANTICIPATION:
+                    AnticipationState();
+                    break;
                 case STATE.ATTACK:
                     AttackState();
+                    break;
+                case STATE.FLEE:
+                    FleeState();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(currrentState), currrentState, null);
             }
         }
 
+        //====================================================================================================================//
+        
         private void IdleState()
         {
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
@@ -149,51 +220,90 @@ namespace StarSalvager.AI
 
         private void PursueState()
         {
+            //IF there is not a bit on the bot,
+            if (_attachTarget is null)
+            {
+                _attachTarget = FindClosestBitOnBot();
+                return;
+            }
+            
+            //Fly towards a specific Bit on the bot
             var currentPosition = transform.position;
-            currentPosition = Vector3.MoveTowards(currentPosition, _playerLocation,
+            var targetPosition = _attachTarget.transform.position;
+
+            currentPosition = Vector3.MoveTowards(currentPosition, targetPosition,
                 m_enemyData.MovementSpeed * Time.deltaTime);
 
 
             transform.position = currentPosition;
         }
 
+        private void AnticipationState()
+        {
+            //After wait time, move to attack state
+            if (_anticipationTime > 0)
+            {
+                _anticipationTime -= Time.deltaTime;
+                return;
+            }
+            
+            SetState(STATE.ATTACK);
+        }
+
         private void AttackState()
         {
-            //TODO Once attached, attack the player
-            EnsureTargetValidity();
-
-            m_fireTimer += Time.deltaTime;
-
-            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
+            if (!(Target is Bit bit))
                 return;
-
-            m_fireTimer -= 1 / m_enemyData.RateOfFire;
+                
+            //Detach Bit from Bot
+            AttachedBot.ForceDetach(bit);
             
-            FireAttack();
+            //Set Bit Parent to this object & Disable the collider
+            bit.transform.SetParent(transform, false);
+            bit.transform.localPosition = Vector3.down;
+            
+            bit.SetColliderActive(false);
+            bit.SetAttached(true);
+
+            _carryingBit = bit;
+            
+            //Set the State to Flee
+            SetState(STATE.FLEE);
+        }
+
+        private void FleeState()
+        {
+            //If off screen, destroy bit, then set to pursue state
+            if (!CameraController.IsPointInCameraRect(_carryingBit.transform.position))
+            {
+                Recycler.Recycle<Bit>(_carryingBit);
+                _carryingBit = null;
+                
+                SetState(STATE.PURSUE);
+                return;
+            }
+            
+            //Move away from the Bot at half speed, until off screen
+            var currentPosition = (Vector2)transform.position;
+            //Away from the player
+            var direction = (currentPosition - _playerLocation).normalized;
+            var carrySpeed = EnemyMovementSpeed / 2f;
+            
+            currentPosition += direction  * (carrySpeed * Time.deltaTime);
+            
+            transform.position = currentPosition;
+            
+            
         }
 
         #endregion //States
+        
 
         //============================================================================================================//
-
-        #region Firing
-
-        protected override void FireAttack()
-        {
-            if (!AttachedBot || Target == null || !Attached || Disabled)
-            {
-                return;
-            }
-
-            AttachedBot.TryHitAt(Target, m_dataLeechDamage);
-        }
-
-        #endregion
-
-        //============================================================================================================//
+        
         public override Type GetOverrideType()
         {
-            return typeof(DataLeechEnemy);
+            return typeof(BorrowerEnemy);
         }
     }
 }

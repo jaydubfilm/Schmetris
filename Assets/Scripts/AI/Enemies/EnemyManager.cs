@@ -147,7 +147,7 @@ namespace StarSalvager
                 }
             }*/
 
-            Vector3 playerBotPosition = LevelManager.Instance.BotObject.transform.position;
+            Vector3 playerBotPosition = LevelManager.Instance.BotInLevel.transform.position;
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)

@@ -2010,6 +2010,8 @@ namespace StarSalvager
         {
             attachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
+            
+            CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
             CheckForBonusShapeMatches();

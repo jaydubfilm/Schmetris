@@ -163,8 +163,8 @@ namespace StarSalvager.AI
             if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
                 return;
 
-            Vector2 playerLocation = LevelManager.Instance.BotObject != null
-                ? LevelManager.Instance.BotObject.transform.position
+            Vector2 playerLocation = LevelManager.Instance.BotInLevel != null
+                ? LevelManager.Instance.BotInLevel.transform.position
                 : Vector3.right * 50;
 
             Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;

@@ -15,12 +15,12 @@ MonoBehaviour:
   WaveSeed: 0
   BonusShapes: []
   StageRemoteData:
-  - m_stageDuration: 20
+  - m_stageDuration: 1
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
-      m_enemyCount: 20
+    - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+      m_enemyCount: 1
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -80,7 +80,7 @@ MonoBehaviour:
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 25
+  - m_stageDuration: 60
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []

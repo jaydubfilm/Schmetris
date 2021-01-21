@@ -38,7 +38,7 @@ namespace StarSalvager
         #region Properties
 
         private List<Bot> m_bots = new List<Bot>();
-        public Bot BotObject => m_bots.Count > 0 ? m_bots[0] : null;
+        public Bot BotInLevel => m_bots.Count > 0 ? m_bots[0] : null;
 
         [SerializeField, Space(10f)]
         private CameraController m_cameraController;
@@ -260,10 +260,10 @@ namespace StarSalvager
                 if (_t / _enterTime >= 1f)
                 {
                     SetBotEnterScreen(false);
-                    BotObject.IsInvulnerable = Globals.UsingTutorial;
+                    BotInLevel.IsInvulnerable = Globals.UsingTutorial;
 
                     //See if we need to show any hints to the player once the bot is on screen
-                    BotObject.DisplayHints();
+                    BotInLevel.DisplayHints();
                     
                     _t = 0f;
                     _startY = 0f;
@@ -352,9 +352,9 @@ namespace StarSalvager
                 return;
             }
 
-            BotObject.IsInvulnerable = false;
+            BotInLevel.IsInvulnerable = false;
 
-            var botBlockData = BotObject.GetBlockDatas();
+            var botBlockData = BotInLevel.GetBlockDatas();
             SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
             SessionDataProcessor.Instance.EndActiveWave();
 
@@ -487,21 +487,21 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
-            BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
+            BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
             var botDataToLoad = PlayerDataManager.GetBlockDatas();
 
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
-                BotObject.InitBot();
+                BotInLevel.InitBot();
             }
             else
             {
-                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
+                BotInLevel.InitBot(botDataToLoad.ImportBlockDatas(false));
             }
             
-            BotObject.transform.parent = null;
-            SceneManager.MoveGameObjectToScene(BotObject.gameObject, gameObject.scene);
+            BotInLevel.transform.parent = null;
+            SceneManager.MoveGameObjectToScene(BotInLevel.gameObject, gameObject.scene);
             
             
             //Post Bot Setup
@@ -510,9 +510,9 @@ namespace StarSalvager
             InputManager.Instance.InitInput();
             InputManager.Instance.LockRotation = true;
 
-            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotObject.GetBlockDatas());
+            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotInLevel.GetBlockDatas());
             
-            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotObject.transform.position);
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotInLevel.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
             {
                 Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
@@ -609,11 +609,11 @@ namespace StarSalvager
             }
 
             //Prevent the bot from burning anymore resources at the end of a wave
-            if (BotObject.CanUseResources)
+            if (BotInLevel.CanUseResources)
             {
                 GameUi.SetCurrentWaveText("Complete");
                 
-                BotObject.CanUseResources = false;
+                BotInLevel.CanUseResources = false;
             }
             
             
@@ -658,7 +658,7 @@ namespace StarSalvager
             m_waveTimer = 0;
             GameUi.ShowAbortWindow(false);
 
-            BotObject.SetSortingLayer(LayerHelper.OVERLAY, 10000);
+            BotInLevel.SetSortingLayer(LayerHelper.OVERLAY, 10000);
 
 
             Random.InitState(CurrentWaveData.WaveSeed);
@@ -731,8 +731,8 @@ namespace StarSalvager
             if (value)
             {
                 AudioController.PlaySound(SOUND.BOT_ARRIVES);
-                CreateThrustEffect(BotObject);
-                BotObject.IsInvulnerable = true;
+                CreateThrustEffect(BotInLevel);
+                BotInLevel.IsInvulnerable = true;
             }
             else if (_effect)
             {
@@ -758,7 +758,7 @@ namespace StarSalvager
             if (value && !_effect)
             {
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
-                CreateThrustEffect(BotObject);
+                CreateThrustEffect(BotInLevel);
             }
             else if (!value && _effect)
             {

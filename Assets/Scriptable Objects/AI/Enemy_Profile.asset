@@ -99,3 +99,13 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+  - EnemyName: Borrower
+    m_sprite: {fileID: -7907493562552774039, guid: e39fc475f37ab474e86c256fc9072631,
+      type: 3}
+    m_enemyPrefab: {fileID: 552858350625524321, guid: dc178a0596d61e44084739b9385b01ef,
+      type: 3}
+    m_enemyTypeID: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 11400000, guid: 664e16696cc0fe04fb5d099965730870,
+      type: 2}
+    m_projectileType: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2

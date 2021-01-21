@@ -157,7 +157,7 @@ namespace StarSalvager.Tutorial
         
         private IEnumerator IntroStepCoroutine()
         {
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             bot.IsInvulnerable = true;
 
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
@@ -169,7 +169,7 @@ namespace StarSalvager.Tutorial
             //TODO Need to have the bot fly in
             LevelManager.Instance.SetBotEnterScreen(true);
             
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             bot.IsInvulnerable = true;
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[1], false));
@@ -231,7 +231,7 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[3], false));
 
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             bot.OnFullMagnet += SetMagnet;
             bot.OnCombo += SetCombo;
 
@@ -267,7 +267,7 @@ namespace StarSalvager.Tutorial
             yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[6], true, true));
             //SetText(tutorialRemoteData[6], true, true);
 
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             bool magnet = bot.HasFullMagnet;
             
 
@@ -287,7 +287,7 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[7], true));
             
-            LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            LevelManager.Instance.BotInLevel.ForceDisconnectAllDetachables();
             yield return new WaitForSeconds(0.5f);
             
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
@@ -302,7 +302,7 @@ namespace StarSalvager.Tutorial
             //tutorialSteps[5]
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[5], true));
             
-            LevelManager.Instance.BotObject.ForceDisconnectAllDetachables();
+            LevelManager.Instance.BotInLevel.ForceDisconnectAllDetachables();
             
             yield return mono.StartCoroutine(SlideCharacterCoroutine(true));
             SetMagnetGlow(false);
@@ -318,7 +318,7 @@ namespace StarSalvager.Tutorial
 
             bool combo = false;
             bool magnet = false;
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
 
             //TODO need to also wait for magnet, and loop back if that's the case
             void SetCombo()
@@ -360,7 +360,7 @@ namespace StarSalvager.Tutorial
             
             yield return mono.StartCoroutine(WaitShowDialogCoroutine(tutorialRemoteData[10], true, true));
 
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             
             bool bump = false;
 
@@ -384,7 +384,7 @@ namespace StarSalvager.Tutorial
         private IEnumerator FuelStepCoroutine()
         {
             //TODO Set the bot able to use its fuel
-            var bot = LevelManager.Instance.BotObject;
+            var bot = LevelManager.Instance.BotInLevel;
             
             LevelManager.Instance.SetStage(0);
             
@@ -426,7 +426,7 @@ namespace StarSalvager.Tutorial
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
             
             
-            LevelManager.Instance.BotObject.SetColliderActive(false);
+            LevelManager.Instance.BotInLevel.SetColliderActive(false);
             
             
             //TODO Bot needs to fly away
@@ -454,7 +454,7 @@ namespace StarSalvager.Tutorial
                 GameManager.SetCurrentGameState(GameState.AccountMenu);
                 Globals.UsingTutorial = false;
                 LevelManager.Instance.SetBotExitScreen(false);
-                LevelManager.Instance.BotObject.IsInvulnerable = false;
+                LevelManager.Instance.BotInLevel.IsInvulnerable = false;
 
 
                 PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);

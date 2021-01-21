@@ -41,7 +41,7 @@ namespace StarSalvager.UI.Hints
         private void TEST3()
         {
             
-            var core = (Part) LevelManager.Instance.BotObject.attachedBlocks[0];
+            var core = (Part) LevelManager.Instance.BotInLevel.attachedBlocks[0];
             var partBounds = new Bounds
             {
                 center = core.transform.position,

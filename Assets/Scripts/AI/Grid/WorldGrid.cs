@@ -48,7 +48,7 @@ namespace StarSalvager
             float height = CameraController.Camera.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
-            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
+            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotInLevel.transform.position);
             randomPositionFindingLists = new Dictionary<Vector2, List<int>>();
             randomPositionFindingLists.Clear();
         }

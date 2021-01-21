@@ -265,3 +265,11 @@ MonoBehaviour:
     m_dimensions: {x: 0, y: 0}
     m_maxDrops: 0
     m_rdsEnemyData: []
+  - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+    m_name: Borrower
+    m_health: 20
+    m_movementSpeed: 6
+    m_rateOfFire: 2
+    m_dimensions: {x: 1, y: 1}
+    m_maxDrops: 0
+    m_rdsEnemyData: []
