@@ -1502,8 +1502,8 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit bit:
-                    if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
+                case Bit _:
+                    if(checkForCombo) CheckForCombosAround(coordinate);
 
                     break;
                 /*case Component _ when checkForCombo:
@@ -1548,8 +1548,8 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit bit:
-                    if(checkForCombo) CheckForCombosAround<BIT_TYPE>(coordinate);
+                case Bit _:
+                    if(checkForCombo) CheckForCombosAround(coordinate);
                     break;
                 /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -1629,9 +1629,9 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit bit:
+                case Bit _:
                     if (checkForCombo)
-                        CheckForCombosAround<BIT_TYPE>(coordinate);
+                        CheckForCombosAround(coordinate);
 
                     /*if(existingAttachable is Part part)
                         TryAutoProcessBit(bit, part);*/
@@ -1642,7 +1642,8 @@ namespace StarSalvager
                     BotPartsLogic.PopulatePartsList();
                     break;
                 case Crate _ when checkForCombo:
-                    CheckForCombosAround<CRATE_TYPE>(coordinate);
+                    throw new NotImplementedException();
+                    //CheckForCombosAround<CRATE_TYPE>(coordinate);
                     break;
             }
 
@@ -1755,10 +1756,11 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit _ when checkForCombo:
-                    CheckForCombosAround<BIT_TYPE>(newCoord);
+                    CheckForCombosAround(newCoord);
                     break;
                 case Crate _ when checkForCombo:
-                    CheckForCombosAround<CRATE_TYPE>(newCoord);
+                    throw new NotImplementedException();
+                    //CheckForCombosAround<CRATE_TYPE>(newCoord);
                     break;
             }
 
@@ -1811,11 +1813,12 @@ namespace StarSalvager
             switch (newAttachable)
             {
                 case Bit _ when checkForCombo:
-                    CheckForCombosAround<BIT_TYPE>(newCoord);
+                    CheckForCombosAround(newCoord);
 
                     break;
                 case Crate _ when checkForCombo:
-                    CheckForCombosAround<CRATE_TYPE>(newCoord);
+                    throw new NotImplementedException();
+                    //CheckForCombosAround<CRATE_TYPE>(newCoord);
                     break;
             }
 
@@ -2363,7 +2366,7 @@ namespace StarSalvager
 
 
                 //Check for Combos
-                CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+                CheckForCombosAround(attachedBlocks.OfType<Bit>());
                 //CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
 
                 //Call this function again
@@ -2583,54 +2586,88 @@ namespace StarSalvager
         #region Check for Combos from List
         public bool CheckAllForCombos()
         {
-            bool bitCombos = CheckForCombosAround<BIT_TYPE>(attachedBlocks);
-            bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
+            bool bitCombos = CheckForCombosAround(attachedBlocks.OfType<Bit>());
+            //bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
-            return bitCombos || crateCombos;
+            return bitCombos;//|| crateCombos;
         }
 
-        private bool CheckForCombosAround<T>(IEnumerable<IAttachable> iAttachables) where T : Enum
-        {
-            return CheckForCombosAround(iAttachables.OfType<ICanCombo<T>>());
-        }
-        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo> iCanCombos) where T : Enum
-        {
-            return CheckForCombosAround(iCanCombos.OfType<ICanCombo<T>>());
-        }
+        //private bool CheckForCombosAround(IEnumerable<Bit> iAttachables)
+        //{
+        //    return CheckForCombosAround(iAttachables.OfType<ICanCombo<T>>());
+        //}
+        //private bool CheckForCombosAround(IEnumerable<ICanCombo> iCanCombos)
+        //{
+        //    return CheckForCombosAround(iCanCombos.OfType<ICanCombo<T>>());
+        //}
 
-        private bool CheckForCombosAround<T>(IEnumerable<ICanCombo<T>> iCanCombos) where T: Enum
+        private bool CheckForCombosAround(IEnumerable<Bit> bits)
         {
-            List<PendingCombo> pendingCombos = null;
+            List<PendingCombov2> pendingCombos = null;
             bool hasCombos;
 
-
-            foreach (var iCanCombo in iCanCombos)
+            foreach (var bit in bits)
             {
-                if (iCanCombo == null)
+                if (bit == null)
                     continue;
 
-                if (iCanCombo.level >= 4)
+                if (bit.level >= 4)
                     continue;
+                
+                //Get all basic info about bits available to combo
+                //--------------------------------------------------------------------------------------------------------//
+                var bitType = bit.Type;
+                var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
+            
+                var checkData = new List<DataTest>();
+                foreach (var attached in bitsToCheck)
+                {
+                    checkData.Add(new DataTest
+                    {
+                        Attachable = attached,
+                        Type = attached.Type,
+                        Level = attached.level,
+                        Coordinate = attached.Coordinate,
+                    });
+                }
 
-                if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var temp))
+                //Gather any available Wildcards
+                //--------------------------------------------------------------------------------------------------------//
+
+                var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+                if (!wildCards.IsNullOrEmpty())
+                {
+                    foreach (var t in wildCards)
+                    {
+                        var wildCardData = t;
+                        wildCardData.Level = bit.level;
+                        wildCardData.Type = bit.Type;
+                   
+                        checkData.Add(wildCardData);
+                    }
+                }
+            
+                //--------------------------------------------------------------------------------------------------------//
+
+                if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
                     continue;
 
                 if (pendingCombos == null)
-                    pendingCombos = new List<PendingCombo>();
+                    pendingCombos = new List<PendingCombov2>();
 
-                if (pendingCombos.Contains(iCanCombo, out var index))
+                if (pendingCombos.Contains(bit, out var index))
                 {
-                    if (pendingCombos[index].ComboData.points <= temp.comboData.points)
+                    if (pendingCombos[index].ComboData.points <= moveData.ComboData.points)
                         continue;
 
                     pendingCombos.RemoveAt(index);
 
-                    pendingCombos.Add(new PendingCombo(temp));
+                    pendingCombos.Add(new PendingCombov2(moveData));
 
                 }
                 else
                 {
-                    pendingCombos.Add(new PendingCombo(temp));
+                    pendingCombos.Add(new PendingCombov2(moveData));
                 }
             }
 
@@ -2657,35 +2694,77 @@ namespace StarSalvager
 
         #region Check for Combos Around Single
 
-
-
-        private void CheckForCombosAround<T>(Vector2Int coordinate) where T: Enum
+        [SerializeField]
+        public struct DataTest
         {
-            CheckForCombosAround<T>(attachedBlocks
+            public IAttachable Attachable;
+            
+            public BIT_TYPE Type;
+            public int Level;
+            public Vector2Int Coordinate;
+
+            public bool IsEndPiece;
+        }
+
+
+
+        private void CheckForCombosAround(Vector2Int coordinate)
+        {
+            CheckForCombosAround(
+                attachedBlocks
+                .OfType<Bit>()
                 .FirstOrDefault(a => a.Coordinate == coordinate));
         }
 
-        private void CheckForCombosAround<T>(IAttachable iAttachable) where T: Enum
+        private void CheckForCombosAround(in Bit bit)
         {
-            if (!(iAttachable is ICanCombo iCanCombo))
+            if (bit == null)
                 return;
 
-            CheckForCombosAround(iCanCombo as ICanCombo<T>);
-        }
-
-        private void CheckForCombosAround<T>(ICanCombo<T> iCanCombo) where T: Enum
-        {
-            if (iCanCombo == null)
+            if (bit.level >= 4)
                 return;
 
-            if (iCanCombo.level >= 4)
+            //Get all basic info about bits available to combo
+            //--------------------------------------------------------------------------------------------------------//
+            var bitType = bit.Type;
+            var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
+            
+            var checkData = new List<DataTest>();
+            foreach (var attached in bitsToCheck)
+            {
+                checkData.Add(new DataTest
+                {
+                    Attachable = attached,
+                    Type = attached.Type,
+                    Level = attached.level,
+                    Coordinate = attached.Coordinate,
+                });
+            }
+
+            //Gather any available Wildcards
+            //--------------------------------------------------------------------------------------------------------//
+
+            var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+            if (!wildCards.IsNullOrEmpty())
+            {
+                foreach (var t in wildCards)
+                {
+                    var wildCardData = t;
+                    wildCardData.Level = bit.level;
+                    wildCardData.Type = bit.Type;
+                   
+                    checkData.Add(wildCardData);
+                }
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+
+
+            if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
                 return;
 
-            if (!PuzzleChecker.TryGetComboData(this, iCanCombo, out var data))
-                return;
-
-            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, data.toMove.Count);
-            SimpleComboSolver(data.comboData, data.toMove, multiplier);
+            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, moveData.ToMove.Count);
+            SimpleComboSolver(moveData.ComboData, moveData.ToMove, multiplier);
         }
 
         #endregion //Check for Combos Around Single
@@ -2696,7 +2775,7 @@ namespace StarSalvager
 
 
 
-        private void SimpleComboSolver(PendingCombo pendingCombo, float gearMultiplier)
+        private void SimpleComboSolver(PendingCombov2 pendingCombo, float gearMultiplier)
         {
             SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
         }
@@ -2818,10 +2897,11 @@ namespace StarSalvager
                     switch (closestToCore)
                     {
                         case Bit _:
-                            CheckForCombosAround<BIT_TYPE>(attachedBlocks);
+                            CheckForCombosAround(attachedBlocks.OfType<Bit>());
                             break;
                         case Crate _:
-                            CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
+                            throw new NotImplementedException();
+                            //CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
                             break;
                     }
 
@@ -3858,7 +3938,7 @@ namespace StarSalvager
             };
 
             AddMorePieces(blocks, false);
-            CheckForCombosAround<BIT_TYPE>(attachedBlocks.OfType<ICanCombo>().ToList());
+            CheckForCombosAround(attachedBlocks.OfType<Bit>());
         }
 
         private void AddMorePieces(IEnumerable<IBlockData> blocks, bool checkForCombos)
@@ -3896,7 +3976,7 @@ namespace StarSalvager
             }
 
             if(checkForCombos)
-                CheckForCombosAround<BIT_TYPE>(attachables);
+                CheckForCombosAround(attachables.OfType<Bit>());
         }
 
         [Button]
@@ -3940,7 +4020,33 @@ namespace StarSalvager
         //====================================================================================================================//
 
     }
+    public struct PendingCombov2
+    {
+        public readonly ComboRemoteData ComboData;
+        public readonly List<Bit> ToMove;
 
+        public PendingCombov2(ComboRemoteData comboData, List<Bit> toMove)
+        {
+            ComboData = comboData;
+            ToMove = toMove;
+        }
+        public PendingCombov2(PuzzleChecker.MoveData moveData)
+        {
+            //var (comboData, toMove) = data;
+            ComboData = moveData.ComboData;
+            ToMove = moveData.ToMove;
+        }
+
+        public bool Contains(ICanCombo canCombo)
+        {
+            if (ToMove == null || ToMove.Count == 0)
+                return false;
+
+            return ToMove.Contains(canCombo);
+        }
+
+    }
+    [Obsolete]
     public struct PendingCombo
     {
         public readonly ComboRemoteData ComboData;
@@ -3970,11 +4076,34 @@ namespace StarSalvager
 
     public static class PendingComboListExtensions
     {
-        public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
+        public static bool Contains(this IEnumerable<PendingCombov2> list, ICanCombo canCombo)
         {
             return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
         }
 
+        public static bool Contains(this List<PendingCombov2> list, ICanCombo canCombo, out int index)
+        {
+            index = -1;
+
+            var temp = list.ToArray();
+            for (var i = 0; i < temp.Length; i++)
+            {
+                if (!temp[i].Contains(canCombo))
+                    continue;
+
+                index = i;
+                return true;
+            }
+
+            return false;
+        }
+        
+        [Obsolete]
+        public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
+        {
+            return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
+        }
+        [Obsolete]
         public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo, out int index)
         {
             index = -1;

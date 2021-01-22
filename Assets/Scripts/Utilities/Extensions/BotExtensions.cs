@@ -161,11 +161,23 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="target"></param>
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
+        [Obsolete]
         public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<ICanCombo> iCanCombos) where T: Enum
         {
             var combo = bot.attachedBlocks.OfType<ICanCombo>();
             combo.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref iCanCombos);
+        }
+        
+        public static void ComboCount(this IEnumerable<Bot.DataTest> dataToCheck, Bit origin, DIRECTION direction, ref List<Bot.DataTest> outData)
+        {
+            //var combo = bot.attachedBlocks.OfType<ICanCombo>();
+            dataToCheck.ComboCountAlgorithm(
+                origin.Type,
+                origin.level, 
+                origin.Coordinate,
+                direction.ToVector2Int(),
+                ref outData);
         }
 
 
