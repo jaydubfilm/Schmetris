@@ -14,6 +14,8 @@ namespace StarSalvager.AI
     public class SensorMineEnemy  : Enemy, IOverrideRecycleType
     {
         public float anticipationTime = 1f;
+        public float triggerDistance = 5f;
+        
         //====================================================================================================================//
         
         public override bool IsAttachable => false;
@@ -103,7 +105,7 @@ namespace StarSalvager.AI
         {
             var distance = Vector2.Distance(transform.position, _playerPosition);
 
-            if (distance > 5)
+            if (distance > triggerDistance)
                 return;
             
             SetState(STATE.ANTICIPATION);
