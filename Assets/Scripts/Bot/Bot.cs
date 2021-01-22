@@ -3877,62 +3877,56 @@ namespace StarSalvager
         {
             var blocks = new List<IBlockData>
             {
-                /*new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1, 0),
-                    Level = 1,
+                    Coordinate = new Vector2Int(1, 1),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.RED,
+                    Health = 50
+                },
+                new BitData
+                {
+                    Coordinate = new Vector2Int(1, 2),
+                    Level = 0,
                     Type = (int) BIT_TYPE.GREY,
                     Health = 50
                 },
-                new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,0),
-                    Level = 1,
-                    Type = (int) BIT_TYPE.GREEN,
+                    Coordinate = new Vector2Int(1, 3),
+                    Level = 0,
+                    Type = (int) BIT_TYPE.YELLOW,
                     Health = 50
                 },
-                new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(2,1),
-                    Level = 1,
-                    Type = (int) BIT_TYPE.GREY,
-                    Health = 50
-                },
-                new BlockData
-                {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1,1),
+                    Coordinate = new Vector2Int(1, 4),
                     Level = 0,
                     Type = (int) BIT_TYPE.BLUE,
                     Health = 50
                 },
-                new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(1,2),
+                    Coordinate = new Vector2Int(2, 4),
                     Level = 0,
-                    Type = (int) BIT_TYPE.GREEN,
+                    Type = (int) BIT_TYPE.GREY,
                     Health = 50
                 },
-                new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(3, 1),
+                    Coordinate = new Vector2Int(3, 4),
                     Level = 0,
-                    Type = (int) BIT_TYPE.BLUE,
+                    Type = (int) BIT_TYPE.GREY,
                     Health = 50
                 },
-                new BlockData
+                new BitData
                 {
-                    ClassType = nameof(Bit),
-                    Coordinate = new Vector2Int(4, 1),
+                    Coordinate = new Vector2Int(4, 4),
                     Level = 1,
-                    Type = (int) BIT_TYPE.GREEN,
+                    Type = (int) BIT_TYPE.YELLOW,
                     Health = 50
-                },*/
+                }
+
 
 
             };

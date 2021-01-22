@@ -264,18 +264,32 @@ namespace StarSalvager.Utilities.Saving
         
         public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
+            void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
+            {
+                var data = coordinate;
+                var index = blockDatas.FindIndex(x => x.Coordinate == data);
+
+                blockDatas.RemoveAt(index);
+            }
+            
             var droneBlockData = new List<IBlockData>(GetBlockDatas());
             
-            var attachedBits = droneBlockData.OfType<BitData>().Where(x => x.Level < removeBelowLevel).ToArray();
+            var bitsToRemove = droneBlockData
+                .OfType<BitData>()
+                .Where(x => x.Level < removeBelowLevel)
+                .OrderBy(x => x.Coordinate.magnitude)
+                .ToList();
 
-            for (int i = 0; i < attachedBits.Length; i++)
+            for (int i = bitsToRemove.Count - 1; i >= 0; i--)
             {
-                var bitData = attachedBits[i];
+                var bitData = bitsToRemove[i];
                 
                 var orphanData = new List<OrphanMoveBlockData>();
                 droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
 
-                droneBlockData.Remove(bitData);
+                //droneBlockData.Remove(bitData);
+                RemoveBit(ref droneBlockData, bitData.Coordinate);
+                bitsToRemove.RemoveAt(i);
                 for (int ii = 0; ii < orphanData.Count; ii++)
                 {
                     var data = orphanData[ii];
