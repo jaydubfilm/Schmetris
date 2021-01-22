@@ -15,6 +15,10 @@ namespace StarSalvager.AI
 {
     public class MoonMinerEnemy : Enemy
     {
+        public float anticipationTime = 1f;
+        
+        //====================================================================================================================//
+        
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => true;
@@ -148,7 +152,7 @@ namespace StarSalvager.AI
                 case STATE.FLEE:
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationTime = 1f;
+                    _anticipationTime = anticipationTime;
                     break;
                 case STATE.ATTACK:
                     beamObject.SetActive(true);

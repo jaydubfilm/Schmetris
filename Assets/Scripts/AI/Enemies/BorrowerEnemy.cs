@@ -10,18 +10,23 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.AI
 {
     public class BorrowerEnemy  : EnemyAttachable
     {
+        public float anticipationTime = 1f;
+
+        //====================================================================================================================//
+        
         public override bool IsAttachable => true;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => false;
 
 
-        //private int m_dataLeechDamage = 1;
-
+        //====================================================================================================================//
+        
         private float _anticipationTime;
         private Vector2 _playerLocation;
         private Bit _carryingBit;
@@ -158,7 +163,7 @@ namespace StarSalvager.AI
                     _attachTarget = FindClosestBitOnBot();
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationTime = 1f;
+                    _anticipationTime = anticipationTime;
                     break;
                 case STATE.ATTACK:
                     break;

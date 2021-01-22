@@ -12,17 +12,29 @@ namespace StarSalvager.AI
 {
     public class VoltEnemy : Enemy
     {
+        public float anticipationTime = 0.5f;
+        
+        //====================================================================================================================//
+        
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => true;
 
+        //====================================================================================================================//
+        
         private Vector2 _playerLocation;
         private Vector2 _targetOffset;
         private int _jumpCount;
 
-        private float _anticipationWaitTime = 0.5f;
+        //====================================================================================================================//
+        
+
+        private float _anticipationTime;
         private float _minDistance => 4;
         private float _maxDistance => 5;
+
+        //====================================================================================================================//
+        
 
 
         public override void LateInit()
@@ -61,7 +73,7 @@ namespace StarSalvager.AI
                     _targetOffset = ChooseOffset(_minDistance, _maxDistance);
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationWaitTime = 0.5f;
+                    _anticipationTime = anticipationTime;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<VoltEnemy>(this);
@@ -123,9 +135,9 @@ namespace StarSalvager.AI
 
         private void AnticipationState()
         {
-            if (_anticipationWaitTime > 0f)
+            if (_anticipationTime > 0f)
             {
-                _anticipationWaitTime -= Time.deltaTime;
+                _anticipationTime -= Time.deltaTime;
                 return;
             }
             

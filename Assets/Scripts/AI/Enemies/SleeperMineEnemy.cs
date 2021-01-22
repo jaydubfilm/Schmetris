@@ -13,13 +13,20 @@ namespace StarSalvager.AI
 {
     public class SleeperMineEnemy : Enemy, IOverrideRecycleType
     {
-        // Start is called before the first frame update
+        public float anticipationTime = 1f;
+
+        //====================================================================================================================//
+
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnHorizontal => true;
 
-        //public float Damage;
-        //public float Radius;
+
+        //====================================================================================================================//
+        
+        private float _anticipationTime;
+
+        //====================================================================================================================//
         
         public override void LateInit()
         {
@@ -34,7 +41,6 @@ namespace StarSalvager.AI
 
         #region State Functions
 
-        private float AnticipationWaitTime = 1f;
 
         protected override void StateChanged(STATE newState)
         {
@@ -89,16 +95,16 @@ namespace StarSalvager.AI
         protected override void CleanStateData()
         {
             base.CleanStateData();
-            AnticipationWaitTime = 1f;
+            _anticipationTime = anticipationTime;
         }
 
         //====================================================================================================================//
         
         private void AnticipationState()
         {
-            if (AnticipationWaitTime > 0f)
+            if (_anticipationTime > 0f)
             {
-                AnticipationWaitTime -= Time.deltaTime;
+                _anticipationTime -= Time.deltaTime;
                 return;
             }
             
