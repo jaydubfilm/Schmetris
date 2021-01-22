@@ -54,7 +54,7 @@ namespace StarSalvager.AI
 
                     CreateFreezeEffect(worldPosition, radius * 2);
                     //Do damage to relevant blocks
-                    LevelManager.Instance.BotInLevel.TryAOEDamageFrom(worldPosition, radius, 0, true);
+                    LevelManager.Instance.BotInLevel.TryAOEDamageFrom(worldPosition, radius, damage, true);
                     SetState(STATE.DEATH);
                     break;
                 case STATE.DEATH:
