@@ -66,7 +66,7 @@ namespace StarSalvager
             }
             CheckSpawns();
 
-            HandleEnemyMovement();
+            HandleEnemyUpdate();
         }
 
         private void LateUpdate()
@@ -126,7 +126,7 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        private void HandleEnemyMovement()
+        private void HandleEnemyUpdate()
         {
             Vector3 gridMovement = Vector3.zero;
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
@@ -154,6 +154,10 @@ namespace StarSalvager
             {
                 Enemy enemy = m_enemies[i];
 
+                //Check to see if the enemy can Move
+                if (!enemy.CanMove())
+                    continue;
+                
                 enemy.UpdateEnemy(playerBotPosition);
 
                 /*if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)

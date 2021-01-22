@@ -4,6 +4,7 @@ using StarSalvager.Values;
 using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using UnityEngine;
@@ -91,9 +92,12 @@ namespace StarSalvager.AI
 
         #region Movement
 
+        
+
         public override void UpdateEnemy(Vector2 playerLocation)
         {
             StateUpdate();
+            
             /*if (m_pauseMovement)
             {
                 m_pauseMovementTimer -= Time.deltaTime;

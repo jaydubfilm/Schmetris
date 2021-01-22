@@ -189,6 +189,20 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
         #region Movement
+        
+        public bool CanMove()
+        {
+            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
+                return false;
+            
+            if (FreezeTime > 0)
+            {
+                FreezeTime -= Time.deltaTime;
+                return false;
+            }
+
+            return true;
+        }
 
         public abstract void UpdateEnemy(Vector2 playerLocation);
         /*{
