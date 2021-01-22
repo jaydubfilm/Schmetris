@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -19,7 +20,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class MainMenuv2 : MonoBehaviour
+    public class MainMenuv2 : MonoBehaviour, IReset
     {
         private enum WINDOW
         {
@@ -164,7 +165,6 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             RefreshWindow(_currentWindow);
-            Globals.ScaleCamera(Globals.CameraScaleSize);
         }
 
         private void Start()
@@ -174,6 +174,18 @@ namespace StarSalvager.UI
             Globals.Init();
             SetupWindows();
             SetupButtons();
+        }
+
+        //IReset Functions
+        //====================================================================================================================//
+        
+        public void Activate()
+        {
+            Globals.ScaleCamera(Globals.CameraScaleSize);
+        }
+
+        public void Reset()
+        {
         }
 
         //MainMenuV2 Functions
@@ -692,6 +704,7 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
+
+
     }
 }
