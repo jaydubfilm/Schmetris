@@ -1560,9 +1560,37 @@ namespace StarSalvager
         private int GetUpgradersAroundPart(in Part part)
         {
             return _parts
-                .GetAttachablesAround(part, false)
+                .GetAttachablesAround(part)
                 .OfType<Part>()
                 .Count(x => x.Type == PART_TYPE.UPGRADER);
+        }
+
+        public List<Bot.DataTest> GetWildcardParts(in int level)
+        {
+            var wildCards = _parts.Where(x => x.Type == PART_TYPE.WILDCARD).ToArray();
+
+            if (wildCards.IsNullOrEmpty())
+                return null;
+
+            var bitsToCheck = bot.attachedBlocks.OfType<Bit>().ToArray();
+
+            var outList = new List<Bot.DataTest>();
+            foreach (var wildCard in wildCards)
+            {
+                if(!HasPartGrade(wildCard, out var lvl))
+                    continue;
+
+                if (level > lvl)
+                    continue;
+                
+                outList.Add(new Bot.DataTest
+                {
+                    Coordinate = wildCard.Coordinate,
+                    IsEndPiece = bitsToCheck.GetAttachablesAround(wildCard).Count == 1
+                });
+            }
+
+            return outList;
         }
 
         //====================================================================================================================//

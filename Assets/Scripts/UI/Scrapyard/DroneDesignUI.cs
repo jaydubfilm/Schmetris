@@ -377,6 +377,8 @@ namespace StarSalvager.UI.Scrapyard
                     return $"{Mathf.RoundToInt(damage * value)}\ndmg";
                 case PART_TYPE.VAMPIRE:
                     return $"{(int)(value * 100f)}%";
+                case PART_TYPE.WILDCARD:
+                    return $"{(int)value}";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partRemoteData.partType), partRemoteData.partType, null);
             }
