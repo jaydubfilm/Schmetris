@@ -228,7 +228,10 @@ namespace StarSalvager
             
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
-            FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+            //Here we check to make sure to not display tiny values of damage
+            var check = Mathf.Abs(amount);
+            if(!(check > 0 && check < 1f))
+                FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
 
             if (CurrentHealth > 0)
                 return;
@@ -1501,6 +1504,13 @@ namespace StarSalvager
         }
 
         #endregion //Asteroid Collision
+
+        public List<IAttachable> GetAttachablesInColumn(in Vector2 worldHitPoint)
+        {
+            var column = attachedBlocks.GetClosestAttachable(worldHitPoint)?.Coordinate.x;
+
+            return column.HasValue ? attachedBlocks.Where(x => x.Coordinate.x == column.Value).ToList() : null;
+        }
 
         //============================================================================================================//
 

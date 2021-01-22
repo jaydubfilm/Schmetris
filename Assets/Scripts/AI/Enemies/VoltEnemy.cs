@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Values;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,7 +21,6 @@ namespace StarSalvager.AI
         private int _jumpCount;
 
         private float _anticipationWaitTime = 0.5f;
-        private float _flySpeed => 15f;
         private float _minDistance => 4;
         private float _maxDistance => 5;
 
@@ -106,7 +106,7 @@ namespace StarSalvager.AI
             var targetPosition = _playerLocation + _targetOffset;
             if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
             {
-                transform.position = Vector2.MoveTowards(currentPosition, targetPosition, _flySpeed * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(currentPosition, targetPosition, EnemyMovementSpeed * Time.deltaTime);
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
-            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
+            if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
 
             Vector2 playerLocation = LevelManager.Instance.BotInLevel != null

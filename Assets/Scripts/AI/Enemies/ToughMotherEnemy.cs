@@ -79,7 +79,7 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
-            if (!CameraController.IsPointInCameraRect(transform.position, 0.6f))
+            if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
 
             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("DataLeech");
