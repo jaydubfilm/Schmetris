@@ -229,8 +229,12 @@ MonoBehaviour:
     lockRotation: 0
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
-    burnType: 1
-    dataTest: []
+    burnType: 5
+    dataTest:
+    - key: Cooldown
+      value: 15
+    - key: Radius
+      value: 15
     PatchSockets: 2
     partGrade:
       Types: 05000000

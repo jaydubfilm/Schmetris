@@ -217,6 +217,7 @@ namespace StarSalvager
             
             //SellBits();
             SetupDrone();
+            StorageUI.UpdateStorage();
 
             UpdateFloatingMarkers(false);
         }
