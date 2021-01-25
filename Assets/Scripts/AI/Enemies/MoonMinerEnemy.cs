@@ -314,7 +314,7 @@ namespace StarSalvager.AI
             return new Vector2
             {
                 x = Mathf.Lerp(xBounds.x, xBounds.y, Random.Range(0.3f, 0.7f)),
-                y = Mathf.Lerp(yBounds.x, yBounds.y, 0.9f)
+                y = Mathf.Lerp(yBounds.x, yBounds.y, Random.Range(0.4f, 0.85f))
             };
         }
 
