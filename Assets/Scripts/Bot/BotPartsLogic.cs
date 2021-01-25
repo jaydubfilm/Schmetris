@@ -68,6 +68,8 @@ namespace StarSalvager
 
         private bool _shieldActive;
         private bool _vampirismActive;
+
+        private GameObject _shieldObject;
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -421,7 +423,10 @@ namespace StarSalvager
             timer -= deltaTime;
 
             if (timer <= 0f)
+            {
                 _shieldActive = false;
+                _shieldObject.SetActive(false);
+            }
 
             _shieldTimers[part] = timer;
         }
@@ -621,6 +626,10 @@ namespace StarSalvager
                 return;
 
             if (timer <= 0f)
+                return;
+
+            //Wait for the shield to be inactive before the cooldown can begin
+            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
                 return;
             
             //Find the index of the ui element to show cooldown
@@ -916,6 +925,32 @@ namespace StarSalvager
 
         private void TriggerShield(in Part part)
         {
+            void SetShieldSize()
+            {
+                if (_shieldObject == null)
+                    CreateShieldEffect();
+                
+                _shieldObject.SetActive(true);
+            
+                //TODO Set the shield Size
+                var coordinates = bot.attachedBlocks
+                    .Select(x => new
+                    {
+                        x = Mathf.Abs(x.Coordinate.x),
+                        y = Mathf.Abs(x.Coordinate.y)
+                    })
+                    .ToArray();
+                
+                var max = Mathf.Max(
+                    coordinates.Max(x => x.x),
+                    coordinates.Max(x => x.y)) + 1;
+
+                max *= 2;
+                max--;
+                
+                _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
+            }
+            
             if (_triggerPartTimers.IsNullOrEmpty())
                 return;
 
@@ -945,6 +980,8 @@ namespace StarSalvager
             _shieldTimers[part] = seconds;
 
             _shieldActive = true;
+
+            SetShieldSize();
         }
 
         private void TriggerVampire(in Part part)
@@ -1481,6 +1518,17 @@ namespace StarSalvager
             
             _boostEffects.Add(part, effect);
         }*/
+        
+        private void CreateShieldEffect()
+        {
+            var shield = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.SHIELD).transform;
+            
+            shield.SetParent(bot.transform, false);
+            shield.localPosition = Vector3.zero;
+
+            _shieldObject = shield.gameObject;
+        }
 
         private void CleanEffects()
         {
@@ -1508,6 +1556,9 @@ namespace StarSalvager
                 }
                 _repairEffects = new Dictionary<Bit, GameObject>();
             }
+            
+            if(_shieldObject != null)
+                Destroy(_shieldObject);
             
             /*if (!_boostEffects.IsNullOrEmpty())
             {
