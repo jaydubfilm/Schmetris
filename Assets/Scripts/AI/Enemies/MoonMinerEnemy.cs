@@ -146,7 +146,6 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     return;
                 case STATE.MOVE:
-                   
                     _targetLocation = GetNewPosition();
                     break;
                 case STATE.FLEE:
@@ -202,9 +201,7 @@ namespace StarSalvager.AI
         {
             //TODO Move towards target position
             var currentPosition = transform.position;
-            
-            Debug.DrawLine(currentPosition, _targetLocation, Color.cyan);
-            
+
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
             {
                 transform.position = Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
