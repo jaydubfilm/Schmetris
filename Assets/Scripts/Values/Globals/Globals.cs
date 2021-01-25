@@ -30,6 +30,7 @@ namespace StarSalvager.Values
         public static int GridSizeY;
         public static bool StripBits;
         public static float TimeForAsteroidToFallOneSquare;
+        public static float TimeForAsteroidToFallOneSquareOriginal;
 
         //FIXME This is a mess, and must be organized
         //Game Settings Values
@@ -86,16 +87,17 @@ namespace StarSalvager.Values
         public static void Init()
         {
             TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+            TimeForAsteroidToFallOneSquareOriginal = m_gameSettings.timeForAsteroidToFallOneSquare;
         }
 
         public static void ResetFallSpeed()
         {
-            TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
+            TimeForAsteroidToFallOneSquare = TimeForAsteroidToFallOneSquareOriginal;
         }
 
         public static void IncreaseFallSpeed()
         {
-            if (TimeForAsteroidToFallOneSquare >= m_gameSettings.timeForAsteroidToFallOneSquare / 3.0f)
+            if (TimeForAsteroidToFallOneSquare >= TimeForAsteroidToFallOneSquareOriginal / 2.0f)
             {
                 TimeForAsteroidToFallOneSquare *= (3.0f / 4.0f);
             }
@@ -103,7 +105,7 @@ namespace StarSalvager.Values
 
         public static void DecreaseFallSpeed()
         {
-            if (TimeForAsteroidToFallOneSquare < m_gameSettings.timeForAsteroidToFallOneSquare)
+            if (TimeForAsteroidToFallOneSquare < TimeForAsteroidToFallOneSquareOriginal * 2.0f)
             {
                 TimeForAsteroidToFallOneSquare *= (4.0f / 3.0f);
             }
