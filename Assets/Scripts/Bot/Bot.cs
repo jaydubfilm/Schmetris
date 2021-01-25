@@ -1238,6 +1238,7 @@ namespace StarSalvager
                 //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
                 case Bit _:
                 case EnemyAttachable _:
+                case JunkBit _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
                 /*case Component _:
