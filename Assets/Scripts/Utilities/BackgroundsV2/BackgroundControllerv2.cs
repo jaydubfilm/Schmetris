@@ -173,7 +173,7 @@ namespace StarSalvager.Utilities.Backgrounds
                 var distSpeed = background.distance / globalSpeedOffset;
 
                 var xSpeed = (_delta.x / Globals.BotHorizontalSpeed) / distSpeed;
-                var ySpeed = Globals.TimeForAsteroidToFallOneSquare / distSpeed;
+                var ySpeed = Globals.TimeForAsteroidToFallOneSquareOriginal / distSpeed;
 
                 switch (background.type)
                 {
