@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbea9ecde00f6be479496e8d220f2a07, type: 3}
   m_Name: Effect_Profile
   m_EditorClassIdentifier: 
-  shieldPrototypePrefab: {fileID: 7381917469761121646, guid: b5a0b72d2da99e9468bd4f2b9034d44f,
-    type: 3}
   alertIconPrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
     type: 3}
   damageEffectPrefab: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,
@@ -58,6 +56,8 @@ MonoBehaviour:
   freezeShockwaveEffectPrefab: {fileID: 6011450431445295622, guid: d3cd62f3df4f65644b28833cd394f055,
     type: 3}
   bombShockwaveEffectPrefab: {fileID: 8983489692315965813, guid: fe1611459a1a8074392e3ac9454ea520,
+    type: 3}
+  shieldEffectPrefab: {fileID: 3990854963412026446, guid: 45a308316be118c4f9df8b089090ec93,
     type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}
