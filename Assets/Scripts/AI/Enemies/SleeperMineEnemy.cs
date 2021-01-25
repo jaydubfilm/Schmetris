@@ -77,7 +77,7 @@ namespace StarSalvager.AI
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
             transform.position -= fallAmount;
             
-            switch (currrentState)
+            switch (currentState)
             {
                 case STATE.NONE: 
                 case STATE.IDLE:

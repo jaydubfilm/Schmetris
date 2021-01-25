@@ -107,17 +107,17 @@ namespace StarSalvager.AI
         //States
         //====================================================================================================================//
         
-        protected STATE currrentState {get; private set;}= STATE.NONE;
+        protected STATE currentState {get; private set;}= STATE.NONE;
         protected STATE previousState {get; private set;}= STATE.NONE;
         
         
         protected void SetState(STATE newState)
         {
-            previousState = currrentState;
+            previousState = currentState;
 
-            currrentState = newState;
+            currentState = newState;
 
-            StateChanged(currrentState);
+            StateChanged(currentState);
         }
 
         protected abstract void StateChanged(STATE newState);
@@ -126,7 +126,7 @@ namespace StarSalvager.AI
 
         protected virtual void CleanStateData()
         {
-            currrentState = previousState = STATE.NONE;
+            currentState = previousState = STATE.NONE;
         }
 
         //============================================================================================================//

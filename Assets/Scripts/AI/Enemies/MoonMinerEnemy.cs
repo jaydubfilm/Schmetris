@@ -167,7 +167,7 @@ namespace StarSalvager.AI
 
         protected override void StateUpdate()
         {
-            switch (currrentState)
+            switch (currentState)
             {
                 case STATE.NONE:
                 case STATE.DEATH:
@@ -185,7 +185,7 @@ namespace StarSalvager.AI
                     AttackState();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(currrentState), currrentState, null);
+                    throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
             }
         }
 

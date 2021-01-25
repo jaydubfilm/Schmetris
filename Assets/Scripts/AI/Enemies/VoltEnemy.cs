@@ -85,7 +85,7 @@ namespace StarSalvager.AI
 
         protected override void StateUpdate()
         {
-            switch (currrentState)
+            switch (currentState)
             {
                 case STATE.NONE:
                 case STATE.DEATH:

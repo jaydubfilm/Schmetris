@@ -44,7 +44,7 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            if (currrentState != STATE.PURSUE)
+            if (currentState != STATE.PURSUE)
                 return;
             
             base.OnCollide(gameObject, worldHitPoint);
@@ -54,7 +54,7 @@ namespace StarSalvager.AI
         {
             base.SetAttached(isAttached);
             
-            if (currrentState != STATE.PURSUE)
+            if (currentState != STATE.PURSUE)
                 return;
             
             SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
@@ -191,7 +191,7 @@ namespace StarSalvager.AI
 
         protected override void StateUpdate()
         {
-            switch (currrentState)
+            switch (currentState)
             {
                 case STATE.NONE:
                     return;
@@ -211,7 +211,7 @@ namespace StarSalvager.AI
                     FleeState();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(currrentState), currrentState, null);
+                    throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
             }
         }
 

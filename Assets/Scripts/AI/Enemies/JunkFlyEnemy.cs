@@ -1,6 +1,8 @@
-﻿using StarSalvager.Cameras;
+﻿using Recycling;
+using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +28,8 @@ namespace StarSalvager.AI
         private int m_numberCellsDescend = 2;
         private int m_numberTimesDescend = 4;
 
+        private Vector2 _playerLocation;
+
         public override void LateInit()
         {
             base.LateInit();
@@ -34,6 +38,8 @@ namespace StarSalvager.AI
             verticalLowestAllowed = m_horizontalMovementYLevel - (Constants.gridCellSize * m_numberCellsDescend * m_numberTimesDescend);
             horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
+
+            SetState(STATE.MOVE);
         }
 
         //============================================================================================================//
@@ -42,6 +48,7 @@ namespace StarSalvager.AI
 
         public override void UpdateEnemy(Vector2 playerLocation)
         {
+            _playerLocation = playerLocation;
             StateUpdate();
         }
 
@@ -76,12 +83,60 @@ namespace StarSalvager.AI
 
         protected override void StateChanged(STATE newState)
         {
-            throw new System.NotImplementedException();
+            switch (newState)
+            {
+                case STATE.NONE:
+                case STATE.ATTACK:
+                case STATE.MOVE:
+
+                    break;
+                case STATE.DEATH:
+                    Recycler.Recycle<VoltEnemy>(this);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override void StateUpdate()
         {
-            throw new System.NotImplementedException();
+            switch (currentState)
+            {
+                case STATE.NONE:
+                case STATE.DEATH:
+                    return;
+                case STATE.MOVE:
+                    MoveState();
+                    break;
+                case STATE.ATTACK:
+                    AttackState();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void MoveState()
+        {
+            Vector3 movementDirection = GetMovementDirection(_playerLocation).normalized;
+
+            transform.position += (movementDirection * (m_enemyData.MovementSpeed * Time.deltaTime));
+
+            m_fireTimer += Time.deltaTime;
+
+            if (m_fireTimer < 1 / m_enemyData.RateOfFire)
+                return;
+
+            m_fireTimer -= 1 / m_enemyData.RateOfFire;
+
+            SetState(STATE.ATTACK);
+        }
+
+        private void AttackState()
+        {
+            FireAttack();
+
+            SetState(STATE.MOVE);
         }
 
         #endregion //States
@@ -89,6 +144,33 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
         #region Firing
+
+        protected override void FireAttack()
+        {
+            if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
+                return;
+
+            Vector2 playerLocation = LevelManager.Instance.BotInLevel != null
+                ? LevelManager.Instance.BotInLevel.transform.position
+                : Vector3.right * 50;
+
+            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
+
+            Vector2 shootDirection = m_enemyData.FireAtTarget
+                ? (targetLocation - (Vector2)transform.position).normalized
+                : Vector2.down;
+
+
+            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+                .CreateObjects<Projectile>(
+                    m_enemyData.ProjectileType,
+                    transform.position,
+                    targetLocation,
+                    shootDirection,
+                    1f,
+                    "Player",
+                    null);
+        }
 
         #endregion
 
