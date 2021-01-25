@@ -40,19 +40,28 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public PART_TYPE GetBasicWreckPartTypeOption()
+        public PART_TYPE GetBasicWreckPartTypeOption(PART_TYPE? exclusionType = null)
         {
             List<PART_TYPE> partType = new List<PART_TYPE>();
 
             partType.Add(PART_TYPE.GUN);
             partType.Add(PART_TYPE.SNIPER);
-            partType.Add(PART_TYPE.ARMOR);
-            partType.Add(PART_TYPE.REPAIR);
+
+            if (exclusionType.HasValue)
+            {
+                partType.Remove(exclusionType.Value);
+            }
+
+            if (partType.Count == 0)
+            {
+                Debug.LogError("No valid part types to return");
+                return PART_TYPE.GUN;
+            }
 
             return partType[Random.Range(0, partType.Count)];
         }
 
-        public PART_TYPE GetWreckPartTypeOption()
+        public PART_TYPE GetWreckPartTypeOption(PART_TYPE? exclusionType = null)
         {
             List<PART_TYPE> partType = new List<PART_TYPE>();
 
@@ -63,6 +72,17 @@ namespace StarSalvager.Factories
             partType.Add(PART_TYPE.ARMOR);
             partType.Add(PART_TYPE.SHIELD);
             partType.Add(PART_TYPE.REPAIR);
+
+            if (exclusionType.HasValue)
+            {
+                partType.Remove(exclusionType.Value);
+            }
+
+            if (partType.Count == 0)
+            {
+                Debug.LogError("No valid part types to return");
+                return PART_TYPE.GUN;
+            }
 
             return partType[Random.Range(0, partType.Count)];
         }
