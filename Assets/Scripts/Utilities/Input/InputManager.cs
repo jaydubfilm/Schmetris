@@ -435,10 +435,23 @@ namespace StarSalvager.Utilities.Inputs
                     break;
             }
         }
-        
+
+        public Vector2 TEST_Input;
         private void SideMovement(InputAction.CallbackContext ctx)
         {
-            _currentMoveInput = ctx.ReadValue<float>();
+            _currentMoveInput = ctx.ReadValue<Vector2>().x;
+
+            if (Mathf.Abs(_currentMoveInput) < 0.9f)
+                _currentMoveInput = 0f;
+
+            if (_currentMoveInput < 0)
+                _currentMoveInput = -1f;
+            else if (_currentMoveInput > 0)
+                _currentMoveInput = 1f;
+            
+            
+            TEST_Input = ctx.ReadValue<Vector2>();
+
             ProcessMovementInput(_currentMoveInput);
         }
 
