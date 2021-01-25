@@ -153,6 +153,11 @@ namespace StarSalvager.AI
 
         private static Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
+            /*Vector2 angleBetweenBotAndEnemy = ((Vector2)transform.position - _playerLocation).normalized;
+            Vector2 rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -70)) * angleBetweenBotAndEnemy;
+            
+            var pos = rotatedAngle * Random.Range(minDist, maxDist);*/
+            
             var pos = Random.insideUnitCircle.normalized * Random.Range(minDist, maxDist);
 
             var checkX = Mathf.Clamp(Mathf.Abs(pos.x), minDist, maxDist);
