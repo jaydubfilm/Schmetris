@@ -12,63 +12,40 @@ namespace StarSalvager
     [Serializable]
     public class RDSLootData : IEquatable<RDSLootData>
     {
-        public enum TYPE
+        public enum DROP_TYPE
         {
             Bit,
-            ResourcesRefined,
             Asteroid,
-            Component,
-            Blueprint,
             Gears,
             Null
         }
 
         [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
-        public TYPE rdsData;
+        public DROP_TYPE dropType;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Null)]
+        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("dropType", DROP_TYPE.Gears), HideIf("dropType", DROP_TYPE.Null)]
         public int type;
 
-        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined), ShowIf("rdsData", TYPE.Component)]
+        [FoldoutGroup("$Name"), ShowIf("dropType", DROP_TYPE.Gears)]
         public int amount;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid),
-         HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        [FoldoutGroup("$Name"), ShowIf("dropType", DROP_TYPE.Bit)]
         public int level;
 
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
+        [SerializeField, FoldoutGroup("$Name")]
         private int probability;
 
         public int Probability => probability;
 
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
-        private bool isGearRange;
-
-        public bool IsGearRange => isGearRange;
-
-        bool showGearValue => rdsData == TYPE.Gears && isGearRange == false;
-
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearValue"), HideIf("rdsData", TYPE.Null)]
-        private int gearValue;
-
-        public int GearValue => gearValue;
-
-        bool showGearRange => rdsData == TYPE.Gears && isGearRange == true;
-
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearRange"), HideIf("rdsData", TYPE.Null)]
-        private Vector2Int gearDropRange;
-
-        public Vector2Int GearDropRange => gearDropRange;
-
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        /*[SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isUniqueSpawn;
 
-        public bool IsUniqueSpawn => isUniqueSpawn || rdsData == TYPE.Gears;
+        public bool IsUniqueSpawn => isUniqueSpawn || type == TYPE.Gears;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isAlwaysSpawn;
 
-        public bool IsAlwaysSpawn => isAlwaysSpawn || rdsData == TYPE.Gears;
+        public bool IsAlwaysSpawn => isAlwaysSpawn || type == TYPE.Gears;*/
 
         //This only compares Type and not all individual properties
 
@@ -81,7 +58,7 @@ namespace StarSalvager
         /// <returns></returns>
         public bool Equals(RDSLootData other)
         {
-            return type == other.type && rdsData == other.rdsData;
+            return type == other.type && type == other.type;
         }
 
         /// <summary>
@@ -114,32 +91,23 @@ namespace StarSalvager
         private string GetName()
         {
             var value = string.Empty;
-            switch (rdsData)
+            switch (dropType)
             {
-                case TYPE.Bit:
-                case TYPE.ResourcesRefined:
-                    value = $"{(BIT_TYPE) type}";
-                    break;
-                case TYPE.Asteroid:
+                case DROP_TYPE.Bit:
+                case DROP_TYPE.Asteroid:
                     value = $"{(ASTEROID_SIZE) type}";
                     break;
-                case TYPE.Component:
-                    value = "Components";
-                    break;
-                case TYPE.Blueprint:
-                    value = $"{(PART_TYPE) type}";
-                    break;
-                case TYPE.Gears:
+                case DROP_TYPE.Gears:
                     value = "Gears";
                     break;
-                case TYPE.Null:
+                case DROP_TYPE.Null:
                     value = "Null";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $"{rdsData} - {value} - {Probability}";
+            return $"{type} - {value} - {Probability}";
         }
 
         private IEnumerable GetTypes()
@@ -147,21 +115,16 @@ namespace StarSalvager
             var types = new ValueDropdownList<int>();
 
             Type valueType;
-            switch (rdsData)
+            switch (dropType)
             {
-                case TYPE.Bit:
-                case TYPE.ResourcesRefined:
+                case DROP_TYPE.Bit:
                     valueType = typeof(BIT_TYPE);
                     break;
-                case TYPE.Asteroid:
+                case DROP_TYPE.Asteroid:
                     valueType = typeof(ASTEROID_SIZE);
                     break;
-                case TYPE.Blueprint:
-                    valueType = typeof(PART_TYPE);
-                    break;
-                case TYPE.Component:
-                case TYPE.Gears:
-                case TYPE.Null:
+                case DROP_TYPE.Gears:
+                case DROP_TYPE.Null:
                     return null;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -172,17 +135,6 @@ namespace StarSalvager
             foreach (var value in Enum.GetValues(valueType))
             {
                 var name = Convert.ChangeType(value, valueType).ToString();
-                
-                if (rdsData == TYPE.ResourcesRefined && value is BIT_TYPE bitType)
-                {
-                    if(bitType == BIT_TYPE.WHITE)
-                        continue;
-                    
-                    name = Object.FindObjectOfType<FactoryManager>().BitsRemoteData.GetRemoteData(bitType)
-                        .refinedName;
-                    
-                    types.Add(name, (int)value);
-                }
                 
                 types.Add(name, (int)value);
             }

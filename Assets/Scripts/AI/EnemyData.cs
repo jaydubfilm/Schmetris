@@ -7,6 +7,7 @@ using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories;
 using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Extensions;
+using System.Collections.Generic;
 
 namespace StarSalvager
 {
@@ -60,7 +61,7 @@ namespace StarSalvager
 
         public Vector2Int Dimensions { get; }
 
-        public RDSTable rdsTable { get; }
+        public List<RDSTable> RDSTables { get; }
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
@@ -90,8 +91,19 @@ namespace StarSalvager
             NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
             Dimensions                  = enemyRemoteData.Dimensions;
 
-            rdsTable = new RDSTable();
-            rdsTable.SetupRDSTable(enemyRemoteData.MaxDrops, enemyRemoteData.rdsEnemyData);
+            RDSTables = new List<RDSTable>();
+            for (int i = 0; i < enemyRemoteData.RDSTableData.Count; i++)
+            {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > enemyRemoteData.RDSTableData[i].DropChance)
+                {
+                    continue;
+                }
+                
+                RDSTable rdsTable = new RDSTable();
+                rdsTable.SetupRDSTable(enemyRemoteData.RDSTableData[i].NumDrops, enemyRemoteData.RDSTableData[i].RDSLootDatas, enemyRemoteData.RDSTableData[i].EvenWeighting);
+                RDSTables.Add(rdsTable);
+            }
         }
 
         /*public EnemyData(string enemyType, string name, int health, float movementSpeed, bool isAttachable,
