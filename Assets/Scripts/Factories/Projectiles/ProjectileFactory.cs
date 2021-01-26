@@ -85,7 +85,7 @@ namespace StarSalvager.Factories
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
-            var travelDirections = GetFireDirections(projectileProfile, fromPosition, targetPosition, shootDirection);
+            var travelDirections = GetFireDirections(projectileProfile, fromPosition, /*targetPosition,*/ shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
@@ -177,7 +177,7 @@ namespace StarSalvager.Factories
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
             var travelDirections =
-                GetFireDirections(projectileProfile, fromPosition, target.transform.position, shootDirection);
+                GetFireDirections(projectileProfile, fromPosition, /*target.transform.position,*/ shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
@@ -223,7 +223,7 @@ namespace StarSalvager.Factories
 
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
-            Vector2 targetPosition,
+            /*Vector2 targetPosition,*/
             Vector2 shootDirection)
         {
             var spreadAngle = profileData.SpreadAngle;

@@ -44,7 +44,9 @@
         
         VAMPIRE = 33,
         UPGRADER = 34,
-        WILDCARD = 35
+        WILDCARD = 35,
+        
+        RAILGUN = 36,
 
         //MAGNET = 34
 

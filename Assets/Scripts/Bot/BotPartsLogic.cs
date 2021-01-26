@@ -118,7 +118,8 @@ namespace StarSalvager
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
                     p.Type == PART_TYPE.SHIELD || 
-                    p.Type == PART_TYPE.VAMPIRE)
+                    p.Type == PART_TYPE.VAMPIRE || 
+                    p.Type == PART_TYPE.RAILGUN)
                 .ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
@@ -834,6 +835,9 @@ namespace StarSalvager
                 case PART_TYPE.VAMPIRE:
                     TriggerVampire(part);
                     break;
+                case PART_TYPE.RAILGUN:
+                    TriggerRailgun(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1018,6 +1022,34 @@ namespace StarSalvager
 
 
             _vampirismActive = true;
+        }
+        
+        private void TriggerRailgun(in Part part)
+        {
+            if (bot.Rotating)
+                return;
+            
+            if (_triggerPartTimers.IsNullOrEmpty())
+                return;
+            
+            if (_triggerPartTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+            
+            if (!HasPartGrade(part, partRemoteData, out var cooldown))
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            _triggerPartTimers[part] = cooldown;
+            
+            CreateProjectile(part, partRemoteData, null);
+
         }
 
         #endregion

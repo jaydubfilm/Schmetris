@@ -179,7 +179,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""RightHand"",
                     ""id"": ""53558e0d-11c7-45bf-957c-a0f4c041f8a4"",
-                    ""path"": ""1DAxis"",
+                    ""path"": ""2DVector"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
@@ -188,8 +188,8 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
-                    ""id"": ""1fbdcfa2-2e94-4a0c-af95-998bed01db96"",
+                    ""name"": ""Left"",
+                    ""id"": ""206a2499-5381-4ff7-849b-24c601012475"",
                     ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -199,8 +199,8 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
-                    ""id"": ""ef360742-7bff-4a79-a93d-78adceefc884"",
+                    ""name"": ""Right"",
+                    ""id"": ""952d9430-6dab-4d9e-97b7-be6895f6c366"",
                     ""path"": ""<Keyboard>/slash"",
                     ""interactions"": """",
                     ""processors"": """",

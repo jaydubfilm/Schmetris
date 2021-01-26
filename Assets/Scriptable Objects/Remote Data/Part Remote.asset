@@ -293,3 +293,26 @@ MonoBehaviour:
       - 2
       - 3
       - 4
+  - name: Railgun
+    partType: 36
+    lockRotation: 0
+    description: 
+    burnType: 5
+    dataTest:
+    - key: Damage
+      value: 50
+    - key: Projectile
+      value: f4741159-a277-4dc0-97ca-849327e73192
+    - key: Cooldown
+      value: 0.8
+    PatchSockets: 2
+    partGrade:
+      Types: 05000000
+      minBitLevel: 0
+      needsBitsToFunction: 1
+      values:
+      - 0.8
+      - 0.4
+      - 0.2
+      - 0.1
+      - 0.05
