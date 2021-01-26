@@ -38,7 +38,7 @@ namespace StarSalvager.Utilities
         private readonly string[] COMMANDS =
         {
             string.Concat("add ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
-            string.Concat("add ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
+            string.Concat("add ", "components ", "[uint]").ToUpper(),
             string.Concat("add ", "gears ", "[uint]").ToUpper(),
             string.Concat("add ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("add ", "patchpoints ", "[uint]").ToUpper(),
@@ -270,7 +270,7 @@ namespace StarSalvager.Utilities
 
             switch (split[1].ToLower())
             {
-                case "component":
+                case "components":
                     if (!int.TryParse(split[2], out var compAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);

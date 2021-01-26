@@ -417,7 +417,8 @@ namespace StarSalvager.UI
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
             BIT_TYPE.GREY,
-            BIT_TYPE.BLUE
+            BIT_TYPE.BLUE,
+            BIT_TYPE.GREEN
         };
         
         private void SetupPlayerValues()

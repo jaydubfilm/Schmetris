@@ -12,6 +12,7 @@
         ELECTRIC,
         CORROSIVE,
         REINFORCED,
-        SPECIALIST
+        SPECIALIST,
+        GRADE
     }
 }

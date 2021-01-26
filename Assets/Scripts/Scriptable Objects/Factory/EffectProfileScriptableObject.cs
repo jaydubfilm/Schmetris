@@ -9,8 +9,7 @@ namespace StarSalvager.ScriptableObjects
         //Bot Effect Prefabs
         //====================================================================================================================//
         
-        [SerializeField, Required, BoxGroup("Bot")]
-        public GameObject shieldPrototypePrefab;
+
         [SerializeField, Required, BoxGroup("Bot")]
         public GameObject alertIconPrefab;
 
@@ -77,6 +76,9 @@ namespace StarSalvager.ScriptableObjects
         public GameObject freezeShockwaveEffectPrefab;
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject bombShockwaveEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Part Effects")]
+        public GameObject shieldEffectPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//

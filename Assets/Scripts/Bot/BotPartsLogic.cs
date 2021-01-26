@@ -68,6 +68,8 @@ namespace StarSalvager
 
         private bool _shieldActive;
         private bool _vampirismActive;
+
+        private GameObject _shieldObject;
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -116,7 +118,8 @@ namespace StarSalvager
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
                     p.Type == PART_TYPE.SHIELD || 
-                    p.Type == PART_TYPE.VAMPIRE)
+                    p.Type == PART_TYPE.VAMPIRE || 
+                    p.Type == PART_TYPE.RAILGUN)
                 .ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
@@ -421,7 +424,10 @@ namespace StarSalvager
             timer -= deltaTime;
 
             if (timer <= 0f)
+            {
                 _shieldActive = false;
+                _shieldObject.SetActive(false);
+            }
 
             _shieldTimers[part] = timer;
         }
@@ -622,6 +628,10 @@ namespace StarSalvager
 
             if (timer <= 0f)
                 return;
+
+            //Wait for the shield to be inactive before the cooldown can begin
+            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
+                return;
             
             //Find the index of the ui element to show cooldown
             var tempPart = part;
@@ -707,7 +717,7 @@ namespace StarSalvager
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
-            var vampireCaster = _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
+            var vampireCaster = _vampirismActive && _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
 
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
@@ -825,6 +835,9 @@ namespace StarSalvager
                 case PART_TYPE.VAMPIRE:
                     TriggerVampire(part);
                     break;
+                case PART_TYPE.RAILGUN:
+                    TriggerRailgun(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -916,6 +929,32 @@ namespace StarSalvager
 
         private void TriggerShield(in Part part)
         {
+            void SetShieldSize()
+            {
+                if (_shieldObject == null)
+                    CreateShieldEffect();
+                
+                _shieldObject.SetActive(true);
+            
+                //TODO Set the shield Size
+                var coordinates = bot.attachedBlocks
+                    .Select(x => new
+                    {
+                        x = Mathf.Abs(x.Coordinate.x),
+                        y = Mathf.Abs(x.Coordinate.y)
+                    })
+                    .ToArray();
+                
+                var max = Mathf.Max(
+                    coordinates.Max(x => x.x),
+                    coordinates.Max(x => x.y)) + 1;
+
+                max *= 2;
+                max--;
+                
+                _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
+            }
+            
             if (_triggerPartTimers.IsNullOrEmpty())
                 return;
 
@@ -945,6 +984,8 @@ namespace StarSalvager
             _shieldTimers[part] = seconds;
 
             _shieldActive = true;
+
+            SetShieldSize();
         }
 
         private void TriggerVampire(in Part part)
@@ -981,6 +1022,34 @@ namespace StarSalvager
 
 
             _vampirismActive = true;
+        }
+        
+        private void TriggerRailgun(in Part part)
+        {
+            if (bot.Rotating)
+                return;
+            
+            if (_triggerPartTimers.IsNullOrEmpty())
+                return;
+            
+            if (_triggerPartTimers[part] > 0f)
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .GetRemoteData(part.Type);
+            
+            if (!HasPartGrade(part, partRemoteData, out var cooldown))
+            {
+                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return;
+            }
+
+            _triggerPartTimers[part] = cooldown;
+            
+            CreateProjectile(part, partRemoteData, null);
+
         }
 
         #endregion
@@ -1481,6 +1550,17 @@ namespace StarSalvager
             
             _boostEffects.Add(part, effect);
         }*/
+        
+        private void CreateShieldEffect()
+        {
+            var shield = FactoryManager.Instance.GetFactory<EffectFactory>()
+                .CreatePartEffect(EffectFactory.PART_EFFECT.SHIELD).transform;
+            
+            shield.SetParent(bot.transform, false);
+            shield.localPosition = Vector3.zero;
+
+            _shieldObject = shield.gameObject;
+        }
 
         private void CleanEffects()
         {
@@ -1508,6 +1588,9 @@ namespace StarSalvager
                 }
                 _repairEffects = new Dictionary<Bit, GameObject>();
             }
+            
+            if(_shieldObject != null)
+                Destroy(_shieldObject);
             
             /*if (!_boostEffects.IsNullOrEmpty())
             {
@@ -1594,7 +1677,11 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-        
+
+        private static int GetPatchUpgradersSum(in PatchData[] patchDatas)
+        {
+            return patchDatas.Where(x => x.Type == (int) PATCH_TYPE.GRADE).Sum(x => x.Level + 1);
+        }
         
 
         private bool HasPartGrade(in Part part, out float value)
@@ -1610,6 +1697,7 @@ namespace StarSalvager
             var types = partRemoteData.partGrade.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
+            var upgradePatchSum = GetPatchUpgradersSum(part.Patches);
             
             
             var levels = new int[count];
@@ -1623,7 +1711,7 @@ namespace StarSalvager
 
             var minLevel = levels.Min();
 
-            minLevel = Mathf.Clamp(minLevel + upgradersNextTo, -1, 5);
+            minLevel = Mathf.Clamp(minLevel + upgradersNextTo + upgradePatchSum, -1, 5);
             
             //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
             var active = partRemoteData.HasPartGrade(minLevel, out value);

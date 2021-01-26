@@ -23,7 +23,6 @@ MonoBehaviour:
     m_projectileType: Basic Projectile
     useTrail: 0
     color: {r: 1, g: 0.56078434, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1
@@ -40,7 +39,6 @@ MonoBehaviour:
     m_projectileType: Better Projectile
     useTrail: 0
     color: {r: 0.93725497, g: 0.7294118, b: 0.8705883, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -57,7 +55,6 @@ MonoBehaviour:
     m_projectileType: Best Projectile
     useTrail: 0
     color: {r: 0.95294124, g: 0.5568628, b: 0.29803923, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 15
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -75,7 +72,6 @@ MonoBehaviour:
     m_projectileType: Fly Needle
     useTrail: 1
     color: {r: 1, g: 0.3921569, b: 0.039215688, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 14
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -92,7 +88,6 @@ MonoBehaviour:
     m_projectileType: Ballhead Blast
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 6
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -110,7 +105,6 @@ MonoBehaviour:
     m_projectileType: Mosquito Zap
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 18
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -128,7 +122,6 @@ MonoBehaviour:
     m_projectileType: Squid Ball
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 12
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -146,7 +139,6 @@ MonoBehaviour:
     m_projectileType: Gun Bullet
     useTrail: 1
     color: {r: 0.76470596, g: 0.75294125, b: 0.7490196, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 12
     m_projectileRange: 12
     m_requiredRotate: 1
@@ -164,7 +156,6 @@ MonoBehaviour:
     m_projectileType: Triple
     useTrail: 0
     color: {r: 1, g: 0.60784316, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 12
     m_requiredRotate: 1
@@ -182,7 +173,6 @@ MonoBehaviour:
     m_projectileType: Missile
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 20
     m_requiredRotate: 0
@@ -200,7 +190,6 @@ MonoBehaviour:
     m_projectileType: Blaster
     useTrail: 0
     color: {r: 1, g: 0.63529414, b: 0.48235297, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 1
@@ -217,7 +206,6 @@ MonoBehaviour:
     m_projectileType: Junk Bit
     useTrail: 0
     color: {r: 0.764151, g: 0.61636704, b: 0.61636704, a: 1}
-    m_projectileDamage: 0
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -234,7 +222,6 @@ MonoBehaviour:
     m_projectileType: Mine
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 10
     m_projectileSpeed: 10
     m_projectileRange: 0
     m_requiredRotate: 0
@@ -246,14 +233,14 @@ MonoBehaviour:
     m_towType: 1
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
-  - m_projectileTypeID: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2
-    m_sprite: {fileID: 0}
-    m_projectileType: Data Leech Nibble
+  - m_projectileTypeID: f4741159-a277-4dc0-97ca-849327e73192
+    m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileType: Railgun Projectile
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 2
-    m_projectileSpeed: 0
-    m_projectileRange: 0
+    m_projectileSpeed: 20
+    m_projectileRange: 1000
     m_requiredRotate: 0
     fireType: 2
     fireTowardsTarget: 0

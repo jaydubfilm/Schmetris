@@ -823,10 +823,6 @@ namespace StarSalvager
                     switch (bit.Type)
                     {
                         case BIT_TYPE.GREEN:
-                            ChangeHealth(Globals.GreenHealAmount);
-                            
-                            Recycler.Recycle<Bit>(bit);
-                            return false;
                         case BIT_TYPE.BLUE:
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
@@ -1246,6 +1242,7 @@ namespace StarSalvager
                 //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
                 case Bit _:
                 case EnemyAttachable _:
+                case JunkBit _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
                 /*case Component _:
@@ -2088,7 +2085,8 @@ namespace StarSalvager
                 BIT_TYPE.RED,
                 BIT_TYPE.YELLOW,
                 BIT_TYPE.GREY,
-                BIT_TYPE.BLUE
+                BIT_TYPE.BLUE,
+                BIT_TYPE.GREEN
             };
 
             BotPartsLogic.PopulatePartsList();
