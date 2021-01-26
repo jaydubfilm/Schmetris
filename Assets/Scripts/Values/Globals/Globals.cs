@@ -39,7 +39,9 @@ namespace StarSalvager.Values
         //Properties from Game Settings - do not give explicit values
 
         public static int CameraScaleSize => m_gameSettings.columnsOnScreen;
-
+        public static int DashDistance => m_gameSettings.dashDistance;
+        public static float DashSpeed => m_gameSettings.dashSpeed;
+        public static float DashCooldown => m_gameSettings.dashCooldown;
         
         public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;

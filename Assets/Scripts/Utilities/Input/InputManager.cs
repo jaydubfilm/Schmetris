@@ -351,6 +351,9 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.SpeedChange, SpeedChange
+                },
+                {
+                    Input.Actions.Default.Dash, Dash
                 }
             };
             
@@ -439,6 +442,25 @@ namespace StarSalvager.Utilities.Inputs
             {
                 Globals.IncreaseFallSpeed();
             }
+        }
+        
+        private void Dash(InputAction.CallbackContext ctx)
+        {
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
+                return;
+            
+            var direction = ctx.ReadValue<float>();
+            
+            _bots[0].Dash(direction);
+            
+            /*if (direction < 0)
+            {
+                Globals.DecreaseFallSpeed();
+            }
+            else if (direction > 0)
+            {
+                Globals.IncreaseFallSpeed();
+            }*/
         }
 
         private void MovementDelegator(InputAction.CallbackContext ctx)

@@ -207,6 +207,8 @@ namespace StarSalvager
         private float previousDirection;
         private bool isContinuousRotation;
 
+        private float _dashCooldown;
+
         //IHealth Test
         //====================================================================================================================//
 
@@ -334,6 +336,11 @@ namespace StarSalvager
             {
                 Move(m_currentInput);
             }
+
+            if (_dashCooldown > 0)
+            {
+                _dashCooldown -= Time.deltaTime;
+            }
         }
 
         private void LateUpdate()
@@ -403,10 +410,20 @@ namespace StarSalvager
                 ? DIRECTION.NULL
                 : direction;
 
+            if (_isDashing && Globals.MovingDirection == DIRECTION.NULL)
+            {
+                _isDashing = false;
+                CanBeDamaged = true;
+                SetColliderActive(true);
+                _dashCooldown = Globals.DashCooldown;
+            }
+
             if (!canMove)
                 return;
 
-            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            var moveSpeed = _isDashing ? Globals.DashSpeed : Globals.BotHorizontalSpeed;
+
+            var toMove = Mathf.Min(distHorizontal, moveSpeed * Time.deltaTime);
 
             var moveDirection = direction.ToVector2();
 
@@ -461,8 +478,34 @@ namespace StarSalvager
 
             m_currentInput = direction;
 
+            if (_isDashing)
+                return;
+            
             m_distanceHorizontal += direction * Constants.gridCellSize;
         }
+
+        private bool _isDashing;
+        
+        public void Dash(float direction)
+        {
+            if (_isDashing)
+                return;
+
+            if (_dashCooldown > 0f)
+                return;
+            
+            _isDashing = true;
+            CanBeDamaged = false;
+            SetColliderActive(false);
+            
+            m_distanceHorizontal += direction * Constants.gridCellSize * Globals.DashDistance;
+        }
+
+        private void SetColliderActive(bool state)
+        {
+            attachedBlocks.OfType<CollidableBase>().ToList().ForEach(x => x.SetColliderActive(state));
+        }
+        
 
         #endregion //IMoveOnInput Functions
 

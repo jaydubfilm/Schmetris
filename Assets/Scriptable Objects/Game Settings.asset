@@ -105,6 +105,8 @@ MonoBehaviour:
   botHorizontalSpeed: 30
   botRotationSpeed: 500
   botContinuousRotationSpeed: 700
+  dashDistance: 5
+  dashSpeed: 60
   cameraUseInputMotion: 1
   columnsOnScreen: 61
   cameraSmoothing: 1
