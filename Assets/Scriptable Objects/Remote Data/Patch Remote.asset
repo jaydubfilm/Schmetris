@@ -25,7 +25,7 @@ MonoBehaviour:
       Properties:
       - key: Multiplier
         value: 0.2
-    allowedParts: 04000000070000000e00000007000000
+    allowedParts: 04000000070000000e0000000700000024000000
   - name: RANGE
     type: 2
     description: 
@@ -95,3 +95,12 @@ MonoBehaviour:
     description: 
     Levels: []
     allowedParts: 
+  - name: Grade
+    type: 11
+    description: 
+    Levels:
+    - level: 1
+      Properties: []
+    - level: 2
+      Properties: []
+    allowedParts: 00000000040000000e0000000600000007000000020000000300000021000000050000002300000024000000

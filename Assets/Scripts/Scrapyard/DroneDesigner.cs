@@ -452,7 +452,7 @@ namespace StarSalvager
                 blockData.Coordinate = mouseCoordinate;
                 _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate);
 
-                for (int i = 0; i < scrapPart.Patches.Length; i++)
+                /*for (int i = 0; i < scrapPart.Patches.Length; i++)
                 {
                     var patchData = scrapPart.Patches[i];
                     
@@ -461,7 +461,7 @@ namespace StarSalvager
                     
                     PlayerDataManager.AddPatchToStorage(patchData);
                     scrapPart.Patches[i] = default;
-                }
+                }*/
                 
                 PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
 

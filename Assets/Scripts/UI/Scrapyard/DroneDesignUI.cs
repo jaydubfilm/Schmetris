@@ -212,6 +212,15 @@ namespace StarSalvager.UI.Scrapyard
                         Level = 0,
                         Type = (int) PATCH_TYPE.FIRE_RATE
                     }
+                },
+                new Purchase_PatchData
+                {
+                    cost = 10,
+                    PatchData = new PatchData
+                    {
+                        Level = 0,
+                        Type = (int) PATCH_TYPE.GRADE
+                    }
                 }
             };
 

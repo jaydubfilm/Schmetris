@@ -1677,7 +1677,11 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-        
+
+        private static int GetPatchUpgradersSum(in PatchData[] patchDatas)
+        {
+            return patchDatas.Where(x => x.Type == (int) PATCH_TYPE.GRADE).Sum(x => x.Level + 1);
+        }
         
 
         private bool HasPartGrade(in Part part, out float value)
@@ -1693,6 +1697,7 @@ namespace StarSalvager
             var types = partRemoteData.partGrade.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
+            var upgradePatchSum = GetPatchUpgradersSum(part.Patches);
             
             
             var levels = new int[count];
@@ -1706,7 +1711,7 @@ namespace StarSalvager
 
             var minLevel = levels.Min();
 
-            minLevel = Mathf.Clamp(minLevel + upgradersNextTo, -1, 5);
+            minLevel = Mathf.Clamp(minLevel + upgradersNextTo + upgradePatchSum, -1, 5);
             
             //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
             var active = partRemoteData.HasPartGrade(minLevel, out value);
