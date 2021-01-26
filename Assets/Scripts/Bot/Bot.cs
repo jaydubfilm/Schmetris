@@ -977,6 +977,11 @@ namespace StarSalvager
             return true;
         }
 
+        public IAttachable GetClosestAttachable(Vector2 location, float maxDistance = 999f)
+        {
+            return GetClosestAttachable(location.ToVector2Int(), maxDistance);
+        }
+
         public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
         {
             IAttachable selected = null;

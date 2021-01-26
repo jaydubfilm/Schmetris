@@ -12,7 +12,7 @@ namespace StarSalvager.AI
 {
     public class VoltEnemy : Enemy
     {
-        public float anticipationTime = 0.5f;
+        public float anticipationTime = 0.75f;
         
         //====================================================================================================================//
         
@@ -33,14 +33,21 @@ namespace StarSalvager.AI
         private float _minDistance => 4;
         private float _maxDistance => 5;
 
+        private float _repositionMinDistance => 1;
+        private float _repositionMaxDistance => 2;
+
+        [SerializeField]
+        private LayerMask collisionMask;
+
         //====================================================================================================================//
-        
+
 
 
         public override void LateInit()
         {
             base.LateInit();
-            
+
+            _targetOffset = ChooseOffset(_minDistance, _maxDistance);
             SetState(STATE.MOVE);
         }
 
@@ -69,8 +76,7 @@ namespace StarSalvager.AI
 
                     break;
                 case STATE.MOVE:
-                    _jumpCount = Random.Range(2, 5);
-                    _targetOffset = ChooseOffset(_minDistance, _maxDistance);
+                    _jumpCount = Random.Range(4, 7);
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
@@ -108,7 +114,7 @@ namespace StarSalvager.AI
         {
             base.CleanStateData();
             
-            _targetOffset = Vector2.zero;
+            //_targetOffset = Vector2.zero;
             _jumpCount = 0;
         }
 
@@ -130,7 +136,7 @@ namespace StarSalvager.AI
                 return;
             }
 
-            _targetOffset = ChooseOffset(_minDistance, _maxDistance);
+            _targetOffset += ChooseOffset(_repositionMinDistance, _repositionMaxDistance);
         }
 
         private void AnticipationState()
@@ -151,20 +157,20 @@ namespace StarSalvager.AI
             SetState(STATE.MOVE);
         }
 
-        private static Vector2 ChooseOffset(in float minDist, in float maxDist)
+        private Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
-            /*Vector2 angleBetweenBotAndEnemy = ((Vector2)transform.position - _playerLocation).normalized;
-            Vector2 rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -70)) * angleBetweenBotAndEnemy;
+            Vector2 angleBetweenBotAndEnemy = ((Vector2)transform.position - _playerLocation).normalized;
+            Vector2 rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -90)) * angleBetweenBotAndEnemy;
             
-            var pos = rotatedAngle * Random.Range(minDist, maxDist);*/
+            var pos = rotatedAngle * Random.Range(minDist, maxDist);
             
-            var pos = Random.insideUnitCircle.normalized * Random.Range(minDist, maxDist);
+            //var pos = Random.insideUnitCircle.normalized * Random.Range(minDist, maxDist);
 
-            var checkX = Mathf.Clamp(Mathf.Abs(pos.x), minDist, maxDist);
+            /*var checkX = Mathf.Clamp(Mathf.Abs(pos.x), minDist, maxDist);
             var checkY = Mathf.Clamp(Mathf.Abs(pos.y), minDist, maxDist);
 
             pos.x = pos.x < 0 ? checkX * -1f : checkX;
-            pos.y = pos.y < 0 ? checkY * -1f : checkY;
+            pos.y = pos.y < 0 ? checkY * -1f : checkY;*/
 
             return pos;
         }
@@ -190,8 +196,38 @@ namespace StarSalvager.AI
                 ? (targetLocation - (Vector2) transform.position).normalized
                 : Vector2.down;
 
+            var raycastHit = Physics2D.Raycast(transform.position, shootDirection, 100, collisionMask.value);
 
-            FactoryManager.Instance.GetFactory<ProjectileFactory>()
+            if (raycastHit.collider == null)
+            {
+                return;
+            }
+
+            if (!(raycastHit.transform.GetComponent<Bot>() is Bot bot))
+                throw new Exception();
+
+            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.transform.position) is Bit)
+            {
+                return;
+            }
+
+            var lineShrink = FactoryManager.Instance
+                .GetFactory<EffectFactory>()
+                .CreateObject<LineShrink>();
+
+            var didHitTarget = true;
+
+
+            lineShrink.Init(transform.position, targetLocation);
+
+            if (didHitTarget)
+            {
+                var damage = 10;
+                LevelManager.Instance.BotInLevel.TryHitAt(targetLocation, damage);
+            }
+
+
+            /*FactoryManager.Instance.GetFactory<ProjectileFactory>()
                 .CreateObjects<Projectile>(
                     m_enemyData.ProjectileType,
                     transform.position,
@@ -199,7 +235,7 @@ namespace StarSalvager.AI
                     shootDirection,
                     1f,
                     "Player",
-                    null);
+                    null);*/
         }
 
         #endregion
