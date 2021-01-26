@@ -62,11 +62,13 @@ namespace StarSalvager
         {
             ProjectileProfileData projectileProfileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(enemyProfileData.ProjectileType);
 
-            FireType = projectileProfileData.FireType;
-            FireAtTarget = projectileProfileData.FireAtTarget;
-            AddVelocityToProjectiles = projectileProfileData.AddVelocityToProjectiles;
-            SpreadAngle = projectileProfileData.SpreadAngle;
-            m_sprayCount = projectileProfileData.SprayCount;
+            if (projectileProfileData != null)
+            {
+                FireType = projectileProfileData.FireType;
+                AddVelocityToProjectiles = projectileProfileData.AddVelocityToProjectiles;
+                SpreadAngle = projectileProfileData.SpreadAngle;
+                m_sprayCount = projectileProfileData.SprayCount;
+            }
 
             EnemyType                   = enemyRemoteData.EnemyID;
             Name                        = enemyRemoteData.Name;
