@@ -22,7 +22,7 @@ namespace StarSalvager.Utilities.Inputs
             ""actions"": [
                 {
                     ""name"": ""Side Movement"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""5c466441-94f9-4d6e-b37d-7a2cfeddb5ee"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
