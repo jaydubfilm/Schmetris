@@ -107,6 +107,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""SpeedChange"",
+                    ""type"": ""Value"",
+                    ""id"": ""f6122248-cde6-4de5-a88f-144268190a85"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -549,6 +557,50 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""SelfDestruct"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""QE"",
+                    ""id"": ""30c66add-9c1b-4b7b-a904-86673e2733c8"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpeedChange"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""3ea6f926-b4dd-4001-8448-58c652579f1e"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpeedChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""1e9404c9-0ce9-4b1b-8575-0541cbb69e42"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpeedChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""888c49cb-81d8-45fc-86ff-6b5dc3e7a132"",
+                    ""path"": ""<Gamepad>/dpad/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpeedChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -893,6 +945,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
             m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
+            m_Default_SpeedChange = m_Default.FindAction("SpeedChange", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -963,6 +1016,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction4;
         private readonly InputAction m_Default_Continue;
         private readonly InputAction m_Default_SelfDestruct;
+        private readonly InputAction m_Default_SpeedChange;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -978,6 +1032,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
             public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
+            public InputAction @SpeedChange => m_Wrapper.m_Default_SpeedChange;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1020,6 +1075,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
+                    @SpeedChange.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
+                    @SpeedChange.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
+                    @SpeedChange.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1057,6 +1115,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started += instance.OnSelfDestruct;
                     @SelfDestruct.performed += instance.OnSelfDestruct;
                     @SelfDestruct.canceled += instance.OnSelfDestruct;
+                    @SpeedChange.started += instance.OnSpeedChange;
+                    @SpeedChange.performed += instance.OnSpeedChange;
+                    @SpeedChange.canceled += instance.OnSpeedChange;
                 }
             }
         }
@@ -1163,6 +1224,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction4(InputAction.CallbackContext context);
             void OnContinue(InputAction.CallbackContext context);
             void OnSelfDestruct(InputAction.CallbackContext context);
+            void OnSpeedChange(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {
