@@ -11,19 +11,5 @@ namespace StarSalvager.ScriptableObjects
     public class PlayerLevelRemoteData
     {
         public int GearsToLevelUp;
-
-        [SerializeField]
-        private int maxDrops;
-
-        [SerializeField]
-        private List<RDSLootData> RDSLevelUpLoot = new List<RDSLootData>();
-
-        //public RDSTable rdsTable;
-
-        public void ConfigureLootTable()
-        {
-            //rdsTable = new RDSTable();
-            //rdsTable.SetupRDSTable(maxDrops, RDSLevelUpLoot);
-        }
     }
 }
