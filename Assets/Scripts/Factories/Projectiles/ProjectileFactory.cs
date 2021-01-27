@@ -64,10 +64,11 @@ namespace StarSalvager.Factories
             float rangeBoost,
             string collisionTag,
             IHealth vampirismCaster,
-            bool shouldFlipSprite = false)
+            bool shouldFlipSprite = false,
+            bool shouldAlignToGridY = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection,
-                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite);
+                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite, shouldAlignToGridY);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -78,10 +79,18 @@ namespace StarSalvager.Factories
             float rangeBoost, 
             string collisionTag, 
             IHealth vampirismCaster,
-            bool shouldFlipSprite = false)
+            bool shouldFlipSprite = false,
+            bool shouldAlignToGridY = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
+
+            if (shouldAlignToGridY)
+            {
+                fromPosition = new Vector2(
+                    LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtLocalPosition(fromPosition).x,
+                    fromPosition.y);
+            }
 
             var travelDirections = GetFireDirections(projectileProfile, fromPosition, /*targetPosition,*/ shootDirection);
 
