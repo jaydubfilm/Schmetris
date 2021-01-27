@@ -6,6 +6,10 @@ using StarSalvager.AI;
 using System.Collections;
 using Sirenix.OdinInspector;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace StarSalvager.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Enemy_Remote", menuName = "Star Salvager/Scriptable Objects/Enemy Remote Data")]
@@ -30,6 +34,7 @@ namespace StarSalvager.ScriptableObjects
         }
         
 #if UNITY_EDITOR
+        
 
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
         {
@@ -53,6 +58,13 @@ namespace StarSalvager.ScriptableObjects
                 enemyTypes.Add(enemyName, enemyID);
             }
             return enemyTypes;
+        }
+
+        [Button, PropertyOrder(-100)]
+        private void SaveData()
+        {
+            AssetDatabase.Refresh();
+            AssetDatabase.SaveAssets();
         }
 
 #endif

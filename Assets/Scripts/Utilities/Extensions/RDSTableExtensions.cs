@@ -21,10 +21,10 @@ namespace StarSalvager.Utilities.Extensions
                 }
                 else
                 {
-                    probability = rdsData.Probability;
+                    probability = rdsData.Weight;
                 }
 
-                if (rdsData.dropType == RDSLootData.DROP_TYPE.Bit)
+                if (rdsData.lootType == RDSLootData.DROP_TYPE.Bit)
                 {
                     BlockData bitBlockData = new BlockData
                     {
@@ -34,15 +34,15 @@ namespace StarSalvager.Utilities.Extensions
                     };
                     rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, false, false, true));
                 }
-                else if (rdsData.dropType == RDSLootData.DROP_TYPE.Asteroid)
+                else if (rdsData.lootType == RDSLootData.DROP_TYPE.Asteroid)
                 {
                     rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, false, false, true));
                 }
-                else if (rdsData.dropType == RDSLootData.DROP_TYPE.Gears)
+                else if (rdsData.lootType == RDSLootData.DROP_TYPE.Gears)
                 {
-                    rdsTable.AddEntry(new RDSValue<int>(rdsData.amount, probability, false, false, true));
+                    rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, false, false, true));
                 }
-                else if (rdsData.dropType == RDSLootData.DROP_TYPE.Null)
+                else if (rdsData.lootType == RDSLootData.DROP_TYPE.Null)
                 {
                     rdsTable.AddEntry(new RDSNullValue(probability));
                 }

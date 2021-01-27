@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Factories;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager
@@ -20,22 +21,26 @@ namespace StarSalvager
             Null
         }
 
-        [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
-        public DROP_TYPE dropType;
+        [HideInInspector]
+        public bool showProbability;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("dropType", DROP_TYPE.Gears), HideIf("dropType", DROP_TYPE.Null)]
+        [FormerlySerializedAs("dropType")] [/*FoldoutGroup("$Name"), */ValueDropdown("DropTypeValues"), LabelWidth(75), OnValueChanged("UpdateValue"), TableColumnWidth(75)]
+        public DROP_TYPE lootType;
+
+        [/*FoldoutGroup("$Name"), */ShowIf("lootType", DROP_TYPE.Bit)]
+        public int level;
+        
+        [/*FoldoutGroup("$Name"), */ValueDropdown("GetTypes"), HideIf("lootType", DROP_TYPE.Gears), HideIf("lootType", DROP_TYPE.Null), TableColumnWidth(75)]
         public int type;
 
-        [FoldoutGroup("$Name"), ShowIf("dropType", DROP_TYPE.Gears)]
-        public int amount;
+        [FormerlySerializedAs("amount")] [/*FoldoutGroup("$Name"), */ShowIf("lootType", DROP_TYPE.Gears)]
+        public int value;
 
-        [FoldoutGroup("$Name"), ShowIf("dropType", DROP_TYPE.Bit)]
-        public int level;
+        [FormerlySerializedAs("probability")] 
+        [SerializeField, /*FoldoutGroup("$Name"),*/ ShowIf("showProbability")]
+        private int weight = 1;
 
-        [SerializeField, FoldoutGroup("$Name")]
-        private int probability = 1;
-
-        public int Probability => probability;
+        public int Weight => weight;
 
         /*[SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isUniqueSpawn;
@@ -83,6 +88,13 @@ namespace StarSalvager
         #endregion //IEquatable
 
         #region UNITY_EDITOR
+        
+        private IEnumerable DropTypeValues = new ValueDropdownList<DROP_TYPE>
+        {
+            { "Bit", DROP_TYPE.Bit },
+            { "Asteroid", DROP_TYPE.Asteroid },
+            { "Gears", DROP_TYPE.Gears },
+        };
 
 #if UNITY_EDITOR
 
@@ -91,7 +103,7 @@ namespace StarSalvager
         private string GetName()
         {
             var value = string.Empty;
-            switch (dropType)
+            switch (lootType)
             {
                 case DROP_TYPE.Bit:
                 case DROP_TYPE.Asteroid:
@@ -107,7 +119,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $"{type} - {value} - {Probability}";
+            return $"{type} - {value} - {Weight}";
         }
 
         private IEnumerable GetTypes()
@@ -115,7 +127,7 @@ namespace StarSalvager
             var types = new ValueDropdownList<int>();
 
             Type valueType;
-            switch (dropType)
+            switch (lootType)
             {
                 case DROP_TYPE.Bit:
                     valueType = typeof(BIT_TYPE);
@@ -134,6 +146,9 @@ namespace StarSalvager
             
             foreach (var value in Enum.GetValues(valueType))
             {
+                if(valueType == typeof(BIT_TYPE) && (BIT_TYPE)value == BIT_TYPE.NONE)
+                    continue;
+                
                 var name = Convert.ChangeType(value, valueType).ToString();
                 
                 types.Add(name, (int)value);
