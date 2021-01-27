@@ -47,6 +47,8 @@ namespace StarSalvager.Utilities.Inputs
         //====================================================================================================================//
 
         #region Properties
+        
+        private readonly bool[] _triggersPressed = new bool[4];
 
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
@@ -157,6 +159,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             DasChecksMovement();
             DasChecksRotate();
+
+            TryUpdateTriggers();
         }
 
         private void OnEnable()
@@ -387,17 +391,24 @@ namespace StarSalvager.Utilities.Inputs
             TriggerSmartWeapon(ctx, 3);
         }
 
+        
         private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
+        {
+            _triggersPressed[index] = ctx.ReadValue<float>() == 1f;
+        }
+
+        private void TryUpdateTriggers()
         {
             if (Console.Open)
                 return;
-            
-            if (ctx.ReadValue<float>() != 1f)
-                return;
 
+            for (int i = 0; i < _triggersPressed.Length; i++)
+            {
+                if (_triggersPressed[i] == false)
+                    continue;
 
-            TriggerSmartWeapon(index);
-
+                TriggerSmartWeapon(i);
+            }
         }
 
         public void TriggerSmartWeapon(int index)
@@ -476,9 +487,9 @@ namespace StarSalvager.Utilities.Inputs
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
 
-            /*//If the current movement is set to max, and we're trying to stop, do so immediately
+            //If the current movement is set to max, and we're trying to stop, do so immediately
             if (Mathf.Abs(_currentMoveInput) > 0.9f && Mathf.Abs(newValue) < 0.9f)
-                _currentMoveInput = 0f;*/
+                _currentMoveInput = 0f;
 
             if (newValue < 0)
                 _currentMoveInput = -1f;
