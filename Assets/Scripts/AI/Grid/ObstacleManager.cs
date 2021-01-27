@@ -1016,7 +1016,7 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
+                    Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
                     //AddObstacleToList(newComponent);
                     PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                 }

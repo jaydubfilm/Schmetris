@@ -10,6 +10,8 @@ namespace StarSalvager
     public class Component : CollidableBase, IObstacle
     {
         
+        public int GearNum { get; set; }
+
         //IObstacle Properties
         //============================================================================================================//
 
@@ -29,8 +31,8 @@ namespace StarSalvager
                 return;
             }
 
-            PlayerDataManager.AddComponent(FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained());
-            FloatingText.Create($"+{FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained()}", transform.position, Color.green);
+            PlayerDataManager.AddComponent(GearNum);
+            FloatingText.Create($"+{GearNum}", transform.position, Color.green);
 
             Recycler.Recycle<Component>(this);
 

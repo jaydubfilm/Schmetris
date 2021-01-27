@@ -36,6 +36,18 @@ namespace StarSalvager.Factories
             {
                 gameObject = Object.Instantiate(_prefab);
             }
+            gameObject.GetComponent<Component>().GearNum = _remoteData.NumComponentsGained;
+
+            return gameObject;
+        }
+
+        public GameObject CreateGameObject(int gearNum)
+        {
+            if (!Recycler.TryGrab<Component>(out GameObject gameObject))
+            {
+                gameObject = Object.Instantiate(_prefab);
+            }
+            gameObject.GetComponent<Component>().GearNum = gearNum;
 
             return gameObject;
         }
@@ -43,6 +55,11 @@ namespace StarSalvager.Factories
         public override T CreateObject<T>()
         {
             return CreateGameObject().GetComponent<T>();
+        }
+
+        public T CreateObject<T>(int gearNum)
+        {
+            return CreateGameObject(gearNum).GetComponent<T>();
         }
     }
 }
