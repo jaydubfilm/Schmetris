@@ -60,9 +60,20 @@ namespace StarSalvager.Factories
 
             temp.SetRadius(Mathf.Max(sprite.bounds.size.x / 2, sprite.bounds.size.y / 2));
 
-            temp.rdsTable = new RDSTable();
-            temp.rdsTable.SetupRDSTable(remote.MaxDrops, remote.rdsAsteroidData);
-            
+            temp.RDSTables = new List<RDSTable>();
+            for (int i = 0; i < remote.RDSTableData.Count; i++)
+            {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > remote.RDSTableData[i].DropChance)
+                {
+                    continue;
+                }
+
+                RDSTable rdsTable = new RDSTable();
+                rdsTable.SetupRDSTable(remote.RDSTableData[i].NumDrops, remote.RDSTableData[i].RDSLootDatas, remote.RDSTableData[i].EvenWeighting);
+                temp.RDSTables.Add(rdsTable);
+            }
+
             temp.gameObject.name = $"{nameof(Asteroid)}_{asteroidSize}_[{Mathf.RoundToInt(sprite.bounds.size.x)},{Mathf.RoundToInt(sprite.bounds.size.y)}]";
 
             return temp.GetComponent<T>();

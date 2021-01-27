@@ -981,19 +981,6 @@ namespace StarSalvager
 
         public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
-            for (int i = rdsObjects.Count - 1; i >= 0; i--)
-            {
-                switch (rdsObjects[i])
-                {
-                    case RDSValue<Blueprint> rdsValueBlueprint:
-                        Debug.LogError("Blueprint in SpawnBitExplosion");
-                        break;
-                    case RDSValue<Vector2Int> rdsValueGears:
-                        Debug.LogError("Gears in SpawnBitExplosion");
-                        break;
-                }
-            }
-
             Vector2Int[] bitExplosionPositions =
                 LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 15, 6);
 
@@ -1031,6 +1018,10 @@ namespace StarSalvager
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
                     PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                }
+                else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
+                {
+                    //TODO: Spawn Gears
                 }
                 else
                 {

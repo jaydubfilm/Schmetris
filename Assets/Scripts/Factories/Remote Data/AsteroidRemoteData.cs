@@ -15,15 +15,10 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$asteroidSize")]
         public float health;
 
-        [SerializeField, FoldoutGroup("$asteroidSize")]
-        private int m_maxDrops;
+        [SerializeField, FoldoutGroup("$Name"), LabelText("Loot Tables")]
+        private List<RDSTableData> m_rdsTableData;
 
-        [SerializeField, FoldoutGroup("$asteroidSize"), LabelText("Loot Drops")]
-        private List<RDSLootData> m_rdsAsteroidData;
-
-        public int MaxDrops => m_maxDrops;
-
-        public List<RDSLootData> rdsAsteroidData => m_rdsAsteroidData;
+        public List<RDSTableData> RDSTableData => m_rdsTableData;
 
         #region IEquatable
 

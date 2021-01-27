@@ -495,8 +495,11 @@ namespace StarSalvager.AI
 
             if (CurrentHealth > 0) 
                 return;
-            
-            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            for (int i = 0; i < m_enemyData.RDSTables.Count; i++)
+            {
+                LevelManager.Instance.DropLoot(m_enemyData.RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
+            }
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

@@ -18,12 +18,12 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField]
         private List<RDSLootData> RDSLevelUpLoot = new List<RDSLootData>();
 
-        public RDSTable rdsTable;
+        //public RDSTable rdsTable;
 
         public void ConfigureLootTable()
         {
-            rdsTable = new RDSTable();
-            rdsTable.SetupRDSTable(maxDrops, RDSLevelUpLoot);
+            //rdsTable = new RDSTable();
+            //rdsTable.SetupRDSTable(maxDrops, RDSLevelUpLoot);
         }
     }
 }

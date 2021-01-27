@@ -33,7 +33,7 @@ namespace StarSalvager
         public int level;
 
         [SerializeField, FoldoutGroup("$Name")]
-        private int probability;
+        private int probability = 1;
 
         public int Probability => probability;
 

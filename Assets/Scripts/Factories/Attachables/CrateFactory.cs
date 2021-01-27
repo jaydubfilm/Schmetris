@@ -19,7 +19,7 @@ namespace StarSalvager.Factories
 
         private readonly CrateRemoteDataScriptableObject _crateRemoteDataScriptableObject;
 
-        private RDSTable rdsTable = new RDSTable();
+        public List<RDSTable> RDSTables { get; set; }
 
         //============================================================================================================//
 
@@ -39,13 +39,24 @@ namespace StarSalvager.Factories
             return _crateRemoteDataScriptableObject.CrateLevelSprites[level];
         }
 
-        public List<IRDSObject> GetCrateLoot()
+        /*public List<IRDSObject> GetCrateLoot()
         {
-            rdsTable = new RDSTable();
-            rdsTable.SetupRDSTable(_crateRemoteDataScriptableObject.MaxDrops, _crateRemoteDataScriptableObject.rdsLootData);
+            temp.RDSTables = new List<RDSTable>();
+            for (int i = 0; i < remote.RDSTableData.Count; i++)
+            {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > remote.RDSTableData[i].DropChance)
+                {
+                    continue;
+                }
+
+                RDSTable rdsTable = new RDSTable();
+                rdsTable.SetupRDSTable(remote.RDSTableData[i].NumDrops, remote.RDSTableData[i].RDSLootDatas, remote.RDSTableData[i].EvenWeighting);
+                temp.RDSTables.Add(rdsTable);
+            }
 
             return rdsTable.rdsResult.ToList();
-        }
+        }*/
 
         //============================================================================================================//
 
