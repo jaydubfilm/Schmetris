@@ -348,6 +348,9 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.SelfDestruct, SelfDestruct
+                },
+                {
+                    Input.Actions.Default.SpeedChange, SpeedChange
                 }
             };
             
@@ -420,6 +423,23 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Movement
+        
+        private void SpeedChange(InputAction.CallbackContext ctx)
+        {
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
+                return;
+            
+            var direction = ctx.ReadValue<float>();
+            
+            if (direction < 0)
+            {
+                Globals.DecreaseFallSpeed();
+            }
+            else if (direction > 0)
+            {
+                Globals.IncreaseFallSpeed();
+            }
+        }
 
         private void MovementDelegator(InputAction.CallbackContext ctx)
         {

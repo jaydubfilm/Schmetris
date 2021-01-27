@@ -187,7 +187,7 @@ namespace StarSalvager
                 return;
             }
 
-            if (GameManager.IsState(GameState.LEVEL_ACTIVE))
+            /*if (GameManager.IsState(GameState.LEVEL_ACTIVE))
             {
                 if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
                 {
@@ -197,7 +197,7 @@ namespace StarSalvager
                 {
                     Globals.IncreaseFallSpeed();
                 }
-            }
+            }*/
 
             CheckBotPositions();
 
