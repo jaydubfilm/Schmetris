@@ -460,8 +460,9 @@ namespace StarSalvager
             }
 
             m_currentInput = direction;
+            var toAdd = direction * Constants.gridCellSize;
 
-            m_distanceHorizontal += direction * Constants.gridCellSize;
+            m_distanceHorizontal += toAdd;
         }
 
         #endregion //IMoveOnInput Functions
