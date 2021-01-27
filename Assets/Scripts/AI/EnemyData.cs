@@ -61,6 +61,8 @@ namespace StarSalvager
 
         public Vector2Int Dimensions { get; }
 
+        public List<int> RDSTableOdds { get; }
+
         public List<RDSTable> RDSTables { get; }
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
@@ -91,17 +93,14 @@ namespace StarSalvager
             NumberCellsDescend          = enemyProfileData.NumberCellsDescend;
             Dimensions                  = enemyRemoteData.Dimensions;
 
+            RDSTableOdds = new List<int>();
             RDSTables = new List<RDSTable>();
             for (int i = 0; i < enemyRemoteData.RDSTableData.Count; i++)
             {
-                int randomRoll = Random.Range(1, 101);
-                if (randomRoll > enemyRemoteData.RDSTableData[i].DropChance)
-                {
-                    continue;
-                }
-                
                 RDSTable rdsTable = new RDSTable();
                 rdsTable.SetupRDSTable(enemyRemoteData.RDSTableData[i].NumDrops, enemyRemoteData.RDSTableData[i].RDSLootDatas, enemyRemoteData.RDSTableData[i].EvenWeighting);
+
+                RDSTableOdds.Add(enemyRemoteData.RDSTableData[i].DropChance);
                 RDSTables.Add(rdsTable);
             }
         }

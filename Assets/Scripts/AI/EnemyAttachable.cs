@@ -401,6 +401,12 @@ namespace StarSalvager.AI
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
             for (int i = 0; i < m_enemyData.RDSTables.Count; i++)
             {
+                int randomRoll = UnityEngine.Random.Range(1, 101);
+                if (randomRoll > m_enemyData.RDSTableOdds[i])
+                {
+                    continue;
+                }
+
                 LevelManager.Instance.DropLoot(m_enemyData.RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
             }
 

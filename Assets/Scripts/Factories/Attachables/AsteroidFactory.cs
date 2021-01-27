@@ -60,17 +60,14 @@ namespace StarSalvager.Factories
 
             temp.SetRadius(Mathf.Max(sprite.bounds.size.x / 2, sprite.bounds.size.y / 2));
 
+            temp.RDSTableOdds = new List<int>();
             temp.RDSTables = new List<RDSTable>();
             for (int i = 0; i < remote.RDSTableData.Count; i++)
             {
-                int randomRoll = Random.Range(1, 101);
-                if (randomRoll > remote.RDSTableData[i].DropChance)
-                {
-                    continue;
-                }
-
                 RDSTable rdsTable = new RDSTable();
                 rdsTable.SetupRDSTable(remote.RDSTableData[i].NumDrops, remote.RDSTableData[i].RDSLootDatas, remote.RDSTableData[i].EvenWeighting);
+
+                temp.RDSTableOdds.Add(remote.RDSTableData[i].DropChance);
                 temp.RDSTables.Add(rdsTable);
             }
 

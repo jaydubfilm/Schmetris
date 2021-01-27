@@ -1004,11 +1004,6 @@ namespace StarSalvager
                             //AddObstacleToList(newAsteroid);
                             PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
-                        case nameof(Component):
-                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
-                            //AddObstacleToList(newComponent);
-                            PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
-                            break;
                         default:
                             Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
                             break;
@@ -1021,7 +1016,9 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    //TODO: Spawn Gears
+                    Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
+                    //AddObstacleToList(newComponent);
+                    PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                 }
                 else
                 {

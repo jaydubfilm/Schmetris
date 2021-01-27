@@ -23,7 +23,7 @@ MonoBehaviour:
     m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-    m_movementType: 5
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
@@ -31,8 +31,8 @@ MonoBehaviour:
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
-    m_numberCellsDescend: 4
-    m_ignoreObstacleAvoidance: 1
+    m_numberCellsDescend: 0
+    m_ignoreObstacleAvoidance: 0
   - EnemyName: Parasite
     m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -42,10 +42,10 @@ MonoBehaviour:
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-    m_oscillationsPerSeconds: 1
-    m_oscillationAngleRange: 60
-    m_orbitRadius: 15
-    m_numberCellsDescend: 2
+    m_oscillationsPerSeconds: 0
+    m_oscillationAngleRange: 0
+    m_orbitRadius: 0
+    m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
   - EnemyName: Ball Head
     m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
@@ -65,35 +65,35 @@ MonoBehaviour:
     m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
-    m_movementType: 3
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 0dd910dbe7dbc1c4e84db8fb870ec59d,
       type: 2}
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
-    m_orbitRadius: 12
+    m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
   - EnemyName: Squid
     m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 71b8347a-1d17-4ade-81d4-85930af8210e
-    m_movementType: 1
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
     m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
-    m_oscillationsPerSeconds: 1
-    m_oscillationAngleRange: 180
+    m_oscillationsPerSeconds: 0
+    m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
-    m_ignoreObstacleAvoidance: 1
+    m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperFly
     m_sprite: {fileID: 3787744228566037905, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 29b4a36e-47f7-47a4-8922-f7de5f531383
-    m_movementType: 5
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 446291ec9ed73e6418a018ced6f7ad02,
       type: 2}
@@ -101,8 +101,8 @@ MonoBehaviour:
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
     m_orbitRadius: 0
-    m_numberCellsDescend: 4
-    m_ignoreObstacleAvoidance: 1
+    m_numberCellsDescend: 0
+    m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperParasite
     m_sprite: {fileID: -3508925452205065965, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -135,27 +135,27 @@ MonoBehaviour:
     m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: e90054ce-9f64-4b84-9aab-5c6808cf3c67
-    m_movementType: 3
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 35ace3357adf4084a801238a91a2057c,
       type: 2}
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_oscillationsPerSeconds: 0
     m_oscillationAngleRange: 0
-    m_orbitRadius: 12
+    m_orbitRadius: 0
     m_numberCellsDescend: 0
     m_ignoreObstacleAvoidance: 0
   - EnemyName: SuperSquid
     m_sprite: {fileID: 8003291971850495877, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 1f78cb36-17d7-48d7-8e1c-a44536df7949
-    m_movementType: 1
+    m_movementType: 0
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 113ce255ed058ea4ca8226a09235ac66,
       type: 2}
     m_projectileType: 30aba478-81d5-4d02-a410-9c321a671732
-    m_oscillationsPerSeconds: 1
-    m_oscillationAngleRange: 180
+    m_oscillationsPerSeconds: 0
+    m_oscillationAngleRange: 0
     m_orbitRadius: 0
     m_numberCellsDescend: 0
-    m_ignoreObstacleAvoidance: 1
+    m_ignoreObstacleAvoidance: 0

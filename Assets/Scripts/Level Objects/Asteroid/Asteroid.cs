@@ -44,6 +44,8 @@ namespace StarSalvager
         //Asteroid Properties
         //====================================================================================================================//
 
+        public List<int> RDSTableOdds { get; set; }
+
         public List<RDSTable> RDSTables { get; set; }
 
         public float Radius { get; private set; }
@@ -93,6 +95,12 @@ namespace StarSalvager
             //Spawns loot
             for (int i = 0; i < RDSTables.Count; i++)
             {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > RDSTableOdds[i])
+                {
+                    continue;
+                }
+
                 LevelManager.Instance.DropLoot(RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
             }
             
