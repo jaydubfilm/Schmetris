@@ -103,7 +103,7 @@ MonoBehaviour:
   comboMergeTime: 0.17
   DASTime: 0.15
   botHorizontalSpeed: 30
-  botRotationSpeed: 500
+  botRotationSpeed: 650
   botContinuousRotationSpeed: 700
   cameraUseInputMotion: 1
   columnsOnScreen: 61
