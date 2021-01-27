@@ -22,9 +22,9 @@ namespace StarSalvager.Utilities.Inputs
             ""actions"": [
                 {
                     ""name"": ""Side Movement"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""5c466441-94f9-4d6e-b37d-7a2cfeddb5ee"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -129,7 +129,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""AD"",
                     ""id"": ""c605e376-3012-4fda-a851-1f3c6b9565fd"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
@@ -138,7 +138,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Left"",
+                    ""name"": ""Negative"",
                     ""id"": ""da475843-ecbe-4efd-a322-8570837b1da2"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
@@ -149,7 +149,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Right"",
+                    ""name"": ""Positive"",
                     ""id"": ""bd20b2b4-c1c7-4108-8ccb-5f0b1bb650c3"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
@@ -162,7 +162,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""Arrows"",
                     ""id"": ""d9f5e109-d46a-411f-b4c8-b353b2d244da"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
@@ -171,7 +171,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Left"",
+                    ""name"": ""Negative"",
                     ""id"": ""534165d2-92c7-4b0b-82fd-482e9c50e3ab"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
@@ -182,7 +182,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Right"",
+                    ""name"": ""Positive"",
                     ""id"": ""64b310c6-b817-413e-aab9-5e4029411c5d"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
@@ -195,7 +195,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""RightHand"",
                     ""id"": ""53558e0d-11c7-45bf-957c-a0f4c041f8a4"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
@@ -204,7 +204,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Left"",
+                    ""name"": ""Negative"",
                     ""id"": ""206a2499-5381-4ff7-849b-24c601012475"",
                     ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
@@ -215,7 +215,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Right"",
+                    ""name"": ""Positive"",
                     ""id"": ""952d9430-6dab-4d9e-97b7-be6895f6c366"",
                     ""path"": ""<Keyboard>/slash"",
                     ""interactions"": """",
@@ -226,20 +226,9 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""3dba1ef6-a2f9-4bb2-baa1-3bfb4e467266"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""D-Pad"",
                     ""id"": ""1135902d-d7e1-4c58-81e6-27dcd1fec064"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
@@ -248,7 +237,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""left"",
+                    ""name"": ""Negative"",
                     ""id"": ""81e53de8-46cb-41cb-8619-7e7837959b9a"",
                     ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
@@ -259,7 +248,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
+                    ""name"": ""Positive"",
                     ""id"": ""94f163f2-aff0-47fb-9d38-84b08bcd58b8"",
                     ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
@@ -268,6 +257,17 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""626d3d1b-580b-4cf2-b8a6-d8305cd616b2"",
+                    ""path"": ""<Gamepad>/leftStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""WS"",

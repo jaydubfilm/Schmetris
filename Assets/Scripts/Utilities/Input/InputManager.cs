@@ -283,6 +283,7 @@ namespace StarSalvager.Utilities.Inputs
             {
                 func.Key.Enable();
                 func.Key.performed += func.Value;
+                func.Key.canceled += func.Value;
             }
             
             //--------------------------------------------------------------------------------------------------------//
@@ -478,22 +479,34 @@ namespace StarSalvager.Utilities.Inputs
             }
         }
 
-        public Vector2 TEST_Input;
+        public float TEST_Input;
         private void SideMovement(InputAction.CallbackContext ctx)
         {
-            _currentMoveInput = ctx.ReadValue<Vector2>().x;
+            var newValue = ctx.ReadValue<float>();
+            
+            //Rounding for Joystick Clamping. Helps prevent overshooting while moving
+            if (newValue < -0.5f)
+                newValue = -1f;
+            else if (newValue > 0.5f)
+                newValue = 1f;
+            else
+                newValue = 0f;
+            
+            TEST_Input = newValue;
 
-            if (Mathf.Abs(_currentMoveInput) < 0.9f)
-                _currentMoveInput = 0f;
+            //If the input is already set to the updated value, we can ignore it.
+            if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
+                return;
 
-            if (_currentMoveInput < 0)
+            /*//If the current movement is set to max, and we're trying to stop, do so immediately
+            if (Mathf.Abs(_currentMoveInput) > 0.9f && Mathf.Abs(newValue) < 0.9f)
+                _currentMoveInput = 0f;*/
+
+            if (newValue < 0)
                 _currentMoveInput = -1f;
-            else if (_currentMoveInput > 0)
+            else if (newValue > 0)
                 _currentMoveInput = 1f;
             
-            
-            TEST_Input = ctx.ReadValue<Vector2>();
-
             ProcessMovementInput(_currentMoveInput);
         }
 
