@@ -29,39 +29,48 @@ MonoBehaviour:
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_rdsTableData:
-    - m_dropChance: 100
+    - Name: Loot Drop
+      AlwaysDrops: 0
+      m_dropChance: 100
       m_numDrops: 3
       m_weightingType: 0
       m_rdsLootDatas:
-      - dropType: 0
+      - showProbability: 0
+        lootType: 0
+        level: 2
         type: 1
-        amount: 0
+        value: 0
+        weight: 1
+      - showProbability: 0
+        lootType: 0
         level: 2
-        probability: 1
-      - dropType: 0
         type: 5
-        amount: 0
-        level: 2
-        probability: 1
-    - m_dropChance: 50
+        value: 0
+        weight: 1
+    - Name: Loot Drop
+      AlwaysDrops: 0
+      m_dropChance: 50
       m_numDrops: 3
       m_weightingType: 0
       m_rdsLootDatas:
-      - dropType: 2
-        type: 0
-        amount: 5
+      - showProbability: 0
+        lootType: 2
         level: 0
-        probability: 1
-      - dropType: 2
         type: 0
-        amount: 10
+        value: 5
+        weight: 1
+      - showProbability: 0
+        lootType: 2
         level: 1
-        probability: 1
-      - dropType: 2
         type: 0
-        amount: 25
+        value: 10
+        weight: 1
+      - showProbability: 0
+        lootType: 2
         level: 0
-        probability: 1
+        type: 0
+        value: 25
+        weight: 1
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: Ball Head
     m_health: 35
