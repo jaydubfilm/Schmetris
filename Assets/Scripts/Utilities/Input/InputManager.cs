@@ -304,12 +304,6 @@ namespace StarSalvager.Utilities.Inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
                 {
-                    Input.Actions.Default.Shuffle_Left, DoubleShuffleLeft
-                },
-                {
-                    Input.Actions.Default.Shuffle_Right, DoubleShuffleRight
-                },
-                {
                     Input.Actions.Default.ShuffleAlt, ShuffleInput
                 },
                 {
@@ -542,24 +536,6 @@ namespace StarSalvager.Utilities.Inputs
 
         #endregion //Movement
 
-        //Double Side Shuffle
-        //====================================================================================================================//
-        
-        private void DoubleShuffleLeft(InputAction.CallbackContext ctx)
-        {
-            if (Globals.UseShuffleDance)
-                return;
-            
-            _bots[0].CoreShuffle(DIRECTION.LEFT);
-        }
-        private void DoubleShuffleRight(InputAction.CallbackContext ctx)
-        {
-            if (Globals.UseShuffleDance)
-                return;
-            
-            _bots[0].CoreShuffle(DIRECTION.RIGHT);
-        }
-
         //Side Shuffle
         //====================================================================================================================//
 
@@ -639,10 +615,10 @@ namespace StarSalvager.Utilities.Inputs
                 switch (direction)
                 {
                     case -1:
-                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
+                        _bots[0].CoreShuffle(DIRECTION.LEFT);
                         break;
                     case 1:
-                        _bots[0].CoreShuffle(DIRECTION.LEFT);
+                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
                         break;
                 }
             }

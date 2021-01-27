@@ -94,22 +94,6 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "Shuffle_Left",
-                    "type": "Button",
-                    "id": "441fe924-9cd5-4731-83a1-fab6e04ca3c3",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press"
-                },
-                {
-                    "name": "Shuffle_Right",
-                    "type": "Button",
-                    "id": "3242e052-34b3-468c-ae82-eea25cbf222d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press"
-                },
-                {
                     "name": "ShuffleAlt",
                     "type": "Button",
                     "id": "4db48088-98b6-4d2a-a958-eb58e20a7b4c",
@@ -123,7 +107,7 @@
                     "name": "Arrows",
                     "id": "d9f5e109-d46a-411f-b4c8-b353b2d244da",
                     "path": "1DAxis",
-                    "interactions": "Hold(duration=0.1)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Side Movement",
@@ -156,7 +140,7 @@
                     "name": "AD",
                     "id": "8b981256-905a-401f-a7af-2911351a11ef",
                     "path": "1DAxis",
-                    "interactions": "Hold(duration=0.1)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Side Movement",
@@ -384,26 +368,70 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "59b17e95-f79d-4d51-a525-3804612ef44e",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "MultiTap(tapDelay=0.1)",
+                    "name": "AD",
+                    "id": "e309292a-6841-4c54-b939-52c8dac97b4a",
+                    "path": "1DAxis",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shuffle_Left",
-                    "isComposite": false,
+                    "action": "ShuffleAlt",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "6d229c9c-92ac-4d02-a298-712d7cb26276",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "MultiTap(tapDelay=0.1)",
+                    "name": "negative",
+                    "id": "861ed4f5-2fa5-467c-9e09-512029a0958a",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shuffle_Right",
+                    "action": "ShuffleAlt",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "93fea74b-cbfe-4051-b832-2d1e3fb71593",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Joystick",
+                    "id": "a88522b8-75ed-4c2c-9216-2f81e8f4181f",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "f55b0a97-b126-4758-a35c-52779c342619",
+                    "path": "<Gamepad>/leftStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "954c9f1c-fdba-4e69-9ed5-cbce1dfb972b",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShuffleAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

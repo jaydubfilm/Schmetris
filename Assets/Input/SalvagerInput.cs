@@ -109,22 +109,6 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""Shuffle_Left"",
-                    ""type"": ""Button"",
-                    ""id"": ""441fe924-9cd5-4731-83a1-fab6e04ca3c3"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press""
-                },
-                {
-                    ""name"": ""Shuffle_Right"",
-                    ""type"": ""Button"",
-                    ""id"": ""3242e052-34b3-468c-ae82-eea25cbf222d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press""
-                },
-                {
                     ""name"": ""ShuffleAlt"",
                     ""type"": ""Button"",
                     ""id"": ""4db48088-98b6-4d2a-a958-eb58e20a7b4c"",
@@ -138,7 +122,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""name"": ""Arrows"",
                     ""id"": ""d9f5e109-d46a-411f-b4c8-b353b2d244da"",
                     ""path"": ""1DAxis"",
-                    ""interactions"": ""Hold(duration=0.1)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Side Movement"",
@@ -171,7 +155,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""name"": ""AD"",
                     ""id"": ""8b981256-905a-401f-a7af-2911351a11ef"",
                     ""path"": ""1DAxis"",
-                    ""interactions"": ""Hold(duration=0.1)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Side Movement"",
@@ -399,26 +383,70 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""59b17e95-f79d-4d51-a525-3804612ef44e"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": ""MultiTap(tapDelay=0.1)"",
+                    ""name"": ""AD"",
+                    ""id"": ""e309292a-6841-4c54-b939-52c8dac97b4a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Shuffle_Left"",
-                    ""isComposite"": false,
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""6d229c9c-92ac-4d02-a298-712d7cb26276"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": ""MultiTap(tapDelay=0.1)"",
+                    ""name"": ""negative"",
+                    ""id"": ""861ed4f5-2fa5-467c-9e09-512029a0958a"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Shuffle_Right"",
+                    ""action"": ""ShuffleAlt"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""93fea74b-cbfe-4051-b832-2d1e3fb71593"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Joystick"",
+                    ""id"": ""a88522b8-75ed-4c2c-9216-2f81e8f4181f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""f55b0a97-b126-4758-a35c-52779c342619"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""954c9f1c-fdba-4e69-9ed5-cbce1dfb972b"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -730,8 +758,6 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
             m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
-            m_Default_Shuffle_Left = m_Default.FindAction("Shuffle_Left", throwIfNotFound: true);
-            m_Default_Shuffle_Right = m_Default.FindAction("Shuffle_Right", throwIfNotFound: true);
             m_Default_ShuffleAlt = m_Default.FindAction("ShuffleAlt", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
@@ -803,8 +829,6 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction4;
         private readonly InputAction m_Default_Continue;
         private readonly InputAction m_Default_SelfDestruct;
-        private readonly InputAction m_Default_Shuffle_Left;
-        private readonly InputAction m_Default_Shuffle_Right;
         private readonly InputAction m_Default_ShuffleAlt;
         public struct DefaultActions
         {
@@ -821,8 +845,6 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
             public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
-            public InputAction @Shuffle_Left => m_Wrapper.m_Default_Shuffle_Left;
-            public InputAction @Shuffle_Right => m_Wrapper.m_Default_Shuffle_Right;
             public InputAction @ShuffleAlt => m_Wrapper.m_Default_ShuffleAlt;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
@@ -866,12 +888,6 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
-                    @Shuffle_Left.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Left;
-                    @Shuffle_Left.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Left;
-                    @Shuffle_Left.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Left;
-                    @Shuffle_Right.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Right;
-                    @Shuffle_Right.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Right;
-                    @Shuffle_Right.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffle_Right;
                     @ShuffleAlt.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
                     @ShuffleAlt.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
                     @ShuffleAlt.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
@@ -912,12 +928,6 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started += instance.OnSelfDestruct;
                     @SelfDestruct.performed += instance.OnSelfDestruct;
                     @SelfDestruct.canceled += instance.OnSelfDestruct;
-                    @Shuffle_Left.started += instance.OnShuffle_Left;
-                    @Shuffle_Left.performed += instance.OnShuffle_Left;
-                    @Shuffle_Left.canceled += instance.OnShuffle_Left;
-                    @Shuffle_Right.started += instance.OnShuffle_Right;
-                    @Shuffle_Right.performed += instance.OnShuffle_Right;
-                    @Shuffle_Right.canceled += instance.OnShuffle_Right;
                     @ShuffleAlt.started += instance.OnShuffleAlt;
                     @ShuffleAlt.performed += instance.OnShuffleAlt;
                     @ShuffleAlt.canceled += instance.OnShuffleAlt;
@@ -1027,8 +1037,6 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction4(InputAction.CallbackContext context);
             void OnContinue(InputAction.CallbackContext context);
             void OnSelfDestruct(InputAction.CallbackContext context);
-            void OnShuffle_Left(InputAction.CallbackContext context);
-            void OnShuffle_Right(InputAction.CallbackContext context);
             void OnShuffleAlt(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
