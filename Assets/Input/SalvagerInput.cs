@@ -29,6 +29,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""ShuffleAlt"",
+                    ""type"": ""Value"",
+                    ""id"": ""dcdd96b4-c1c4-46a4-9532-531c6da2734d"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Rotate"",
                     ""type"": ""Button"",
                     ""id"": ""38e421be-ede4-4746-a637-d75216c445b7"",
@@ -601,6 +609,149 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""AD"",
+                    ""id"": ""f0162b97-0ca2-4ef5-9676-71181ce6fc83"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""34697abf-9327-4784-957f-3c9d1722a3fe"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""6ed2d63b-3514-44f6-a53f-11723bc71925"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""c7115f32-171a-405e-a3c7-71823f16b834"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""805a178a-849f-4f8c-aabc-fa7a20e18310"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""9f29c9ad-d93a-420b-a0f3-c4dd37866678"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""RightHand"",
+                    ""id"": ""d2d35a80-4ad7-4ab4-8820-efe0e2bfbed2"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""257e04bb-72e1-42f0-b712-0924c07dab58"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""b3552e85-ccaa-478a-a9ca-76e69c2fc9d7"",
+                    ""path"": ""<Keyboard>/slash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""D-Pad"",
+                    ""id"": ""edc88d3b-77e0-42fe-9260-a790ad5313d8"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""4302842d-f6cf-43cd-82e7-78e3c3e9fea2"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""b1d0820f-65fb-49ff-bc3a-6f8eaf953ec1"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""87ec43b1-f50a-4f8a-a3e5-06a96db4ec8b"",
+                    ""path"": ""<Gamepad>/leftStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShuffleAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -935,6 +1086,7 @@ namespace StarSalvager.Utilities.Inputs
             // Default
             m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
             m_Default_SideMovement = m_Default.FindAction("Side Movement", throwIfNotFound: true);
+            m_Default_ShuffleAlt = m_Default.FindAction("ShuffleAlt", throwIfNotFound: true);
             m_Default_Rotate = m_Default.FindAction("Rotate", throwIfNotFound: true);
             m_Default_LeftClick = m_Default.FindAction("Left Click", throwIfNotFound: true);
             m_Default_RightClick = m_Default.FindAction("Right Click", throwIfNotFound: true);
@@ -1006,6 +1158,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputActionMap m_Default;
         private IDefaultActions m_DefaultActionsCallbackInterface;
         private readonly InputAction m_Default_SideMovement;
+        private readonly InputAction m_Default_ShuffleAlt;
         private readonly InputAction m_Default_Rotate;
         private readonly InputAction m_Default_LeftClick;
         private readonly InputAction m_Default_RightClick;
@@ -1022,6 +1175,7 @@ namespace StarSalvager.Utilities.Inputs
             private @SalvagerInput m_Wrapper;
             public DefaultActions(@SalvagerInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @SideMovement => m_Wrapper.m_Default_SideMovement;
+            public InputAction @ShuffleAlt => m_Wrapper.m_Default_ShuffleAlt;
             public InputAction @Rotate => m_Wrapper.m_Default_Rotate;
             public InputAction @LeftClick => m_Wrapper.m_Default_LeftClick;
             public InputAction @RightClick => m_Wrapper.m_Default_RightClick;
@@ -1045,6 +1199,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SideMovement.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSideMovement;
                     @SideMovement.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSideMovement;
                     @SideMovement.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSideMovement;
+                    @ShuffleAlt.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
+                    @ShuffleAlt.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
+                    @ShuffleAlt.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
                     @Rotate.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
                     @Rotate.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
                     @Rotate.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnRotate;
@@ -1085,6 +1242,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SideMovement.started += instance.OnSideMovement;
                     @SideMovement.performed += instance.OnSideMovement;
                     @SideMovement.canceled += instance.OnSideMovement;
+                    @ShuffleAlt.started += instance.OnShuffleAlt;
+                    @ShuffleAlt.performed += instance.OnShuffleAlt;
+                    @ShuffleAlt.canceled += instance.OnShuffleAlt;
                     @Rotate.started += instance.OnRotate;
                     @Rotate.performed += instance.OnRotate;
                     @Rotate.canceled += instance.OnRotate;
@@ -1214,6 +1374,7 @@ namespace StarSalvager.Utilities.Inputs
         public interface IDefaultActions
         {
             void OnSideMovement(InputAction.CallbackContext context);
+            void OnShuffleAlt(InputAction.CallbackContext context);
             void OnRotate(InputAction.CallbackContext context);
             void OnLeftClick(InputAction.CallbackContext context);
             void OnRightClick(InputAction.CallbackContext context);

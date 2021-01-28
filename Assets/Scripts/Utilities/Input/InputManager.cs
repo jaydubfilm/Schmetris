@@ -487,6 +487,7 @@ namespace StarSalvager.Utilities.Inputs
             else
                 newValue = 0f;
 
+
             TEST_Input = newValue;
 
             //If the input is already set to the updated value, we can ignore it.
@@ -621,8 +622,17 @@ namespace StarSalvager.Utilities.Inputs
             if (!Globals.UseShuffleDance)
                 return;
 
-            var value = ctx.ReadValue<float>();
-            TrySideShuffleDance(Mathf.RoundToInt(value));
+            var newValue = ctx.ReadValue<float>();
+
+            //Rounding for Joystick Clamping. Helps prevent overshooting while moving
+            if (newValue < -0.5f)
+                newValue = -1f;
+            else if (newValue > 0.5f)
+                newValue = 1f;
+            else
+                newValue = 0f;
+            
+            TrySideShuffleDance(Mathf.RoundToInt(newValue));
         }
 
         private void UpdateShuffleCountdown()
