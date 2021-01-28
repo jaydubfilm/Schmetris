@@ -14,6 +14,12 @@ namespace StarSalvager.ScriptableObjects
         public GameObject AnimatedPrefab;
 
         [Required]
+        public GameObject JunkPrefab;
+
+        [Required]
+        public Sprite JunkSprite;
+
+        [Required]
         public GameObject ScrapyardPrefab;
     }
     

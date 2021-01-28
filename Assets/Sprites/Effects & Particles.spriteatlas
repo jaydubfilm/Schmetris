@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 93c8087663718784c984c9fb3415ef4f, type: 3}
-    totalSpriteSurfaceArea: 3563935
+    totalSpriteSurfaceArea: 3580319
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -51,6 +51,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d7313290ef5193a40aea0cae6134a68d, type: 3}
   - {fileID: -5207891248487718059, guid: d2a4d6f0defc4984e9dca3e03fd7ed1e, type: 3}
   - {fileID: 21300000, guid: 3b3259715e32b27448f86364c71be6a6, type: 3}
+  - {fileID: 21300000, guid: 849b44f12bbd8944ab1e28f32973a4a9, type: 3}
   - {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
   - {fileID: 21300000, guid: 26e262320d543da40864dfed3d6bfdde, type: 3}
   - {fileID: 21300000, guid: 5e3a49924a96fdd4ebb64106715f5940, type: 3}
@@ -89,6 +90,7 @@ SpriteAtlas:
   - effect_WELDPards_2_v1
   - effect_THRUSTERBACK_1_v1_0
   - juicypart_REFINERWHITE_1_v1
+  - Circle
   - juicyparts_TRIPLE_1_v1
   - effect_EXPLODEBALL_1_v1
   - effect_EXPLODOVERGLOW_1_v1

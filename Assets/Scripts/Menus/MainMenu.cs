@@ -248,7 +248,7 @@ namespace StarSalvager.UI
                     FactoryManager.Instance.currentModularDataIndex = 0;
                     PlayerDataManager.SetRunStarted();
 
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
                 }
             });
 
@@ -318,7 +318,6 @@ namespace StarSalvager.UI
              {
                  OpenMenu(MENU.MAIN);
                  PlayerPersistentData.SetCurrentSaveFile(0);
-                 MissionManager.SetCurrentSaveFile();
                  PlayerPersistentData.IsNewFile = false;
                  SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
              });
@@ -327,7 +326,6 @@ namespace StarSalvager.UI
              {
                  OpenMenu(MENU.MAIN);
                  PlayerPersistentData.SetCurrentSaveFile(1);
-                 MissionManager.SetCurrentSaveFile();
                  PlayerPersistentData.IsNewFile = false;
                  SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
              });
@@ -337,7 +335,6 @@ namespace StarSalvager.UI
              {
                  OpenMenu(MENU.MAIN);
                  PlayerPersistentData.SetCurrentSaveFile(2);
-                 MissionManager.SetCurrentSaveFile();
                  PlayerPersistentData.IsNewFile = false;
                  SceneLoader.ActivateScene("UniverseMapScene", "MainMenuScene");
              });

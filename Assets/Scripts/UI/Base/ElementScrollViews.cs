@@ -17,10 +17,6 @@ namespace StarSalvager.UI
     [System.Serializable]
     public class ResourceUIElementScrollView: UIElementContentScrollView<ResourceUIElement, ResourceAmount>
     {}
-    
-    [System.Serializable]
-    public class CostUIElementScrollView: UIElementContentScrollView<CostUIElement, CraftCost>
-    {}
 
     [System.Serializable]
     public class BotShapeDataElementScrollView : UIElementContentScrollView<BotLoadListUIElement, EditorGeneratorDataBase>

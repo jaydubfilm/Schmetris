@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using StarSalvager.Factories.Data;
 using System;
+using System.Linq;
 using Recycling;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -12,22 +13,24 @@ namespace StarSalvager.AI
     //TODO: Handle proper setting of the collision tag
     public class Projectile : CollidableBase, ICustomRecycle
     {
-        private Vector3 TravelDirectionNormalized { get; set; }
-        private Vector3 EnemyVelocityModifier { get; set; }
-        private ProjectileProfileData ProjectileData { get; set; }
+        protected Vector3 TravelDirectionNormalized { get; set; }
+        protected Vector3 EnemyVelocityModifier { get; set; }
+        protected ProjectileProfileData ProjectileData { get; set; }
 
-        private float _damageAmount;
+        protected float _damageAmount;
 
-        private bool _hasRange;
-        private float _lifeTime;
-        private CollidableBase _target;
+        protected bool _hasRange;
+        protected float _lifeTime;
+        protected CollidableBase _target;
 
-        private TrailRenderer _trailRenderer;
+        protected TrailRenderer _trailRenderer;
+
+        private IHealth _vampirismCaster;
 
         //============================================================================================================//
 
         // Update is called once per frame
-        private void Update()
+        protected virtual void Update()
         {
             if (GameTimer.IsPaused)
                 return;
@@ -53,7 +56,8 @@ namespace StarSalvager.AI
             float damage,
             float rangeBoost,
             Vector2 direction, 
-            Vector2 velocity)
+            Vector2 velocity,
+            IHealth vampirismCaster)
         {
             ProjectileData = profileData;
 
@@ -79,6 +83,8 @@ namespace StarSalvager.AI
             {
                 CreateTrailEffect(ProjectileData.Color);
             }
+
+            _vampirismCaster = vampirismCaster;
         }
 
         private void CheckLifeTime()
@@ -92,7 +98,7 @@ namespace StarSalvager.AI
             Recycler.Recycle<Projectile>(this);
         }
 
-        private void ApplyMovement()
+        protected virtual void ApplyMovement()
         {
             var newPosition = transform.position;
 
@@ -104,6 +110,8 @@ namespace StarSalvager.AI
                 case FIRE_TYPE.RANDOM_SPRAY:
                 case FIRE_TYPE.SPIRAL:
                 case FIRE_TYPE.FIXED_SPRAY:
+                case FIRE_TYPE.FOUR_ANGLES:
+                case FIRE_TYPE.FOUR_ANGLES_DIAGONAL:
                     newPosition +=
                         (EnemyVelocityModifier + TravelDirectionNormalized * ProjectileData.ProjectileSpeed) *
                         Time.deltaTime;
@@ -155,8 +163,38 @@ namespace StarSalvager.AI
             if (!ProjectileData.CanHitAsteroids && canBeHit is Asteroid)
                 return;
 
-            if (canBeHit.TryHitAt(transform.position, _damageAmount))
-                Recycler.Recycle<Projectile>(this);
+            if (!canBeHit.TryHitAt(transform.position, _damageAmount)) 
+                return;
+            
+            SolveVampirism(_damageAmount);
+            Recycler.Recycle<Projectile>(this);
+        }
+
+        private void SolveVampirism(/*in ICanBeHit hitTarget, */in float damage)
+        {
+            if (_vampirismCaster is null)
+                return;
+
+            float stealAmount;
+            switch (CollisionTag)
+            {
+                case "Player":
+                    throw new NotImplementedException("Enemies using vampirism not yet implemented");
+                    break;
+                case "Enemy":
+                    //Make sure that we hit the player
+                    if (!(_vampirismCaster is Bot bot))
+                        return;
+
+                    stealAmount = bot.BotPartsLogic.GetVampireValue();
+                    break;
+                default:
+                    return;
+            }
+
+            var stolenHealth = stealAmount * damage;
+
+            _vampirismCaster.ChangeHealth(stolenHealth);
         }
 
         //====================================================================================================================//
@@ -198,7 +236,7 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public void CustomRecycle(params object[] args)
+        public virtual void CustomRecycle(params object[] args)
         {
             transform.rotation = Quaternion.identity;
             _target = null;
@@ -206,6 +244,8 @@ namespace StarSalvager.AI
             _lifeTime = 0f;
 
             renderer.flipX = renderer.flipY = false;
+
+            _vampirismCaster = null;
 
             if (_trailRenderer)
                 Destroy(_trailRenderer);

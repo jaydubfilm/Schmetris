@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
-using StarSalvager.Missions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Saving;
 using System;
@@ -62,265 +61,86 @@ namespace StarSalvager.Values
 
         public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
-        public MissionsCurrentData missionsCurrentData = null;
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityRanks => _facilityRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityRanks = new Dictionary<FACILITY_TYPE, int>();
-
-        [JsonIgnore]
-        public IReadOnlyDictionary<FACILITY_TYPE, int> facilityBlueprintRanks => _facilityBlueprintRanks;
-        [JsonProperty]
-        private Dictionary<FACILITY_TYPE, int> _facilityBlueprintRanks = new Dictionary<FACILITY_TYPE, int>();
-
         [JsonIgnore]
         public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
         [JsonProperty]
         private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
         {
             [HINT.GUN] = false,
-            [HINT.FUEL] = false,
-            [HINT.HOME] = false,
+            //[HINT.FUEL] = false,
+            //[HINT.HOME] = false,
             [HINT.BONUS] = false,
             [HINT.MAGNET] = false,
             
-            [HINT.GEARS] = false,
-            [HINT.PATCH_POINT] = false,
-            [HINT.CRAFT_PART] = false,
+            //[HINT.GEARS] = false,
+            //[HINT.PATCH_POINT] = false,
+            //[HINT.CRAFT_PART] = false,
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            [HINT.COMPONENT] = false,
+            //[HINT.COMPONENT] = false,
             
         };
 
-        private List<List<Vector2Int>> LevelRingConnectionsJson = new List<List<Vector2Int>>
+        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
-            new List<Vector2Int>
-            {
-                new Vector2Int(2, 0),
-                new Vector2Int(1, 2),
-                new Vector2Int(4, 0),
-                new Vector2Int(3, 4),
-                new Vector2Int(5, 4),
-                new Vector2Int(6, 2),
-                new Vector2Int(7, 2),
-                new Vector2Int(8, 3),
-                new Vector2Int(10, 4),
-                new Vector2Int(9, 10),
-                new Vector2Int(11, 6),
-                new Vector2Int(12, 11),
-                new Vector2Int(13, 8),
-                new Vector2Int(15, 9),
-                new Vector2Int(14, 15),
-                new Vector2Int(14, 15),
-                new Vector2Int(16, 11),
-                new Vector2Int(17, 13),
-                new Vector2Int(18, 17),
-                new Vector2Int(19, 14),
-                new Vector2Int(20, 19),
-                new Vector2Int(21, 16),
-                new Vector2Int(22, 16),
-                new Vector2Int(23, 17),
-                new Vector2Int(24, 18),
-                new Vector2Int(25, 20),
-                new Vector2Int(26, 22),
-                new Vector2Int(26, 24),
-            },
-            new List<Vector2Int>
-            {
-                new Vector2Int(2, 0),
-                new Vector2Int(1, 2),
-                new Vector2Int(3, 2),
-                new Vector2Int(7, 2),
-                new Vector2Int(5, 0),
-                new Vector2Int(4, 5),
-                new Vector2Int(6, 1),
-                new Vector2Int(8, 3),
-                new Vector2Int(10, 4),
-                new Vector2Int(11, 6),
-                new Vector2Int(13, 8),
-                new Vector2Int(12, 13),
-                new Vector2Int(15, 10),
-                new Vector2Int(14, 15),
-                new Vector2Int(16, 12),
-                new Vector2Int(17, 12),
-                new Vector2Int(18, 14),
-                new Vector2Int(19, 15),
-                new Vector2Int(20, 19),
-                new Vector2Int(21, 16),
-                new Vector2Int(26, 21),
-                new Vector2Int(23, 17),
-                new Vector2Int(22, 23),
-                new Vector2Int(24, 19),
-                new Vector2Int(26, 24),
-                new Vector2Int(25, 20),
-            },
-            new List<Vector2Int>
-            {
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(6, 1),
-                new Vector2Int(3, 2),
-                new Vector2Int(7, 2),
-                new Vector2Int(4, 3),
-                new Vector2Int(8, 3),
-                new Vector2Int(5, 4),
-                new Vector2Int(10, 4),
-                new Vector2Int(12, 6),
-                new Vector2Int(11, 12),
-                new Vector2Int(13, 8),
-                new Vector2Int(14, 8),
-                new Vector2Int(15, 10),
-                new Vector2Int(16, 11),
-                new Vector2Int(17, 11),
-                new Vector2Int(18, 14),
-                new Vector2Int(19, 14),
-                new Vector2Int(22, 16),
-                new Vector2Int(21, 22),
-                new Vector2Int(23, 17),
-                new Vector2Int(20, 19),
-                new Vector2Int(24, 19),
-                new Vector2Int(25, 19),
-                new Vector2Int(26, 22),
-                new Vector2Int(26, 25),
-            },
-            new List<Vector2Int>
-            {
-                new Vector2Int(3, 0),
-                new Vector2Int(5, 0),
-                new Vector2Int(2, 3),
-                new Vector2Int(1, 2),
-                new Vector2Int(7, 1),
-                new Vector2Int(6, 7),
-                new Vector2Int(8, 3),
-                new Vector2Int(4, 5),
-                new Vector2Int(9, 5),
-                new Vector2Int(10, 5),
-                new Vector2Int(11, 7),
-                new Vector2Int(12, 7),
-                new Vector2Int(13, 8),
-                new Vector2Int(14, 9),
-                new Vector2Int(15, 10),
-                new Vector2Int(16, 11),
-                new Vector2Int(17, 11),
-                new Vector2Int(18, 14),
-                new Vector2Int(19, 15),
-                new Vector2Int(22, 17),
-                new Vector2Int(21, 22),
-                new Vector2Int(26, 21),
-                new Vector2Int(23, 17),
-                new Vector2Int(24, 18),
-                new Vector2Int(20, 19),
-                new Vector2Int(25, 19),
-                new Vector2Int(26, 25),
-            },
-            new List<Vector2Int>
-            {
-                new Vector2Int(2, 0),
-                new Vector2Int(3, 0),
-                new Vector2Int(1, 2),
-                new Vector2Int(6, 1),
-                new Vector2Int(7, 3),
-                new Vector2Int(8, 3),
-                new Vector2Int(4, 3),
-                new Vector2Int(5, 4),
-                new Vector2Int(9, 4),
-                new Vector2Int(10, 5),
-                new Vector2Int(12, 6),
-                new Vector2Int(14, 8),
-                new Vector2Int(15, 10),
-                new Vector2Int(11, 12),
-                new Vector2Int(13, 12),
-                new Vector2Int(16, 11),
-                new Vector2Int(17, 11),
-                new Vector2Int(19, 15),
-                new Vector2Int(20, 15),
-                new Vector2Int(18, 17),
-                new Vector2Int(21, 17),
-                new Vector2Int(22, 17),
-                new Vector2Int(25, 20),
-                new Vector2Int(23, 22),
-                new Vector2Int(24, 23),
-                new Vector2Int(26, 24),
-                new Vector2Int(26, 25),
-            }
+            new Vector2Int(1, 0),
+            new Vector2Int(2, 1),
+            new Vector2Int(3, 2),
+            new Vector2Int(6, 3),
+            new Vector2Int(7, 6),
+            new Vector2Int(8, 7),
+            new Vector2Int(11, 8),
+            new Vector2Int(12, 11),
+            new Vector2Int(13, 12),
+            new Vector2Int(16, 13),
+            new Vector2Int(17, 16),
+            new Vector2Int(18, 17),
+            new Vector2Int(21, 18),
+            new Vector2Int(26, 21),
+
+            new Vector2Int(4, 0),
+            new Vector2Int(9, 4),
+            new Vector2Int(14, 9),
+            new Vector2Int(19, 14),
+            new Vector2Int(24, 19),
+            new Vector2Int(23, 24),
+            new Vector2Int(22, 23),
+
+            new Vector2Int(5, 0),
+            new Vector2Int(10, 5),
+            new Vector2Int(15, 10),
+            new Vector2Int(20, 15),
+            new Vector2Int(25, 20),
         };
 
         [JsonIgnore]
-        public List<List<int>> ShortcutNodes = new List<List<int>>()
+        public List<int> WreckNodes = new List<int>()
         {
-            new List<int>
-            { 
-                4,
-                6,
-                8,
-                15,
-                16,
-                17,
-                19,
-                24,
-            },
-            new List<int>
-            {
-                3,
-                4,
-                6,
-                13,
-                15,
-                16,
-                17,
-                24,
-            },
-            new List<int>
-            {
-                3,
-                6,
-                10,
-                13,
-                14,
-                16,
-                17,
-                25,
-            },
-            new List<int>
-            {
-                1,
-                3,
-                9,
-                10,
-                11,
-                18,
-                19,
-                22,
-            },
-            new List<int>
-            {
-                1,
-                4,
-                8,
-                10,
-                12,
-                17,
-                23,
-                25,
-            },
+            1,
+            6,
+            11,
+            16,
+            21,
+        };
+
+
+        public List<Vector2Int> _botLayout = new List<Vector2Int>()
+        {
+
         };
 
         //====================================================================================================================//
 
         public void ResetPlayerRunData()
         {
-            int randomIndex = UnityEngine.Random.Range(0, 5);
-
             PlayerSaveRunData data = new PlayerSaveRunData()
             {
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false
             };
-            data.SetupMap(LevelRingConnectionsJson[randomIndex], ShortcutNodes[randomIndex]);
-            data.FacilityEffectsOnNewAccount();
+
+            data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
             GearsAtRunBeginning = Gears;
             CoreDeathsAtRunBeginning = CoreDeaths;
@@ -337,7 +157,7 @@ namespace StarSalvager.Values
             TotalRuns++;
 
             PlayerRunData = data;
-            //MissionManager.LoadMissionData();
+            PlayerDataManager.SetCanChoosePart(true);
             PlayerDataManager.SavePlayerAccountData();
         }
 
@@ -362,13 +182,6 @@ namespace StarSalvager.Values
             AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
             
             LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                level = newTotalPatchPoints
-            };
-
-            MissionManager.ProcessMissionData(typeof(PlayerLevelMission), missionProgressEventData);
         }
 
         public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
@@ -455,14 +268,6 @@ namespace StarSalvager.Values
 
         //====================================================================================================================//
 
-        public bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
-        {
-            if (_facilityRanks.TryGetValue(type, out var rank))
-                return rank >= level;
-
-            return false;
-        }
-
         public void UnlockBlueprint(Blueprint blueprint)
         {
             if (unlockedBlueprints.All(b => b.name != blueprint.name))
@@ -479,13 +284,12 @@ namespace StarSalvager.Values
             }
         }
 
-        public void UnlockBlueprint(PART_TYPE partType, int level)
+        public void UnlockBlueprint(PART_TYPE partType)
         {
             Blueprint blueprint = new Blueprint
             {
-                name = partType + " " + level,
-                partType = partType,
-                level = level
+                name = $"{partType}",
+                partType = partType
             };
             UnlockBlueprint(blueprint);
         }
@@ -494,130 +298,36 @@ namespace StarSalvager.Values
         {
             foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
             {
-                for (int i = 0; i < partRemoteData.levels.Count; i++)
+                //TODO Add these back in when we're ready!
+                switch (partRemoteData.partType)
                 {
-                    //TODO Add these back in when we're ready!
-                    switch (partRemoteData.partType)
-                    {
-                        //Still want to be able to upgrade the core, just don't want to buy new ones?
-                        case PART_TYPE.CORE when i == 0:
-                        case PART_TYPE.SPIKES:
-                        case PART_TYPE.LASER:
-                        case PART_TYPE.GRENADE:
-                        case PART_TYPE.CATAPULT:
-                        case PART_TYPE.LIGHTNING:
-                        case PART_TYPE.BOOSTRANGE:
-                        case PART_TYPE.BOOSTRATE:
-                        case PART_TYPE.BOOSTDAMAGE:
-                        case PART_TYPE.BOOSTDEFENSE:
-                        case PART_TYPE.STACKER:
-                        case PART_TYPE.CLOAK:
-                        case PART_TYPE.SONAR:
-                        case PART_TYPE.DECOY:
-                        case PART_TYPE.RETRACTOR:
-                        case PART_TYPE.HOOVER:
-                        case PART_TYPE.FREEZE:
-                            continue;
-                    }
-
-                    Blueprint blueprint = new Blueprint
-                    {
-                        name = partRemoteData.partType + " " + i,
-                        partType = partRemoteData.partType,
-                        level = i
-                    };
-                    UnlockBlueprint(blueprint);
+                    //Still want to be able to upgrade the core, just don't want to buy new ones?
+                    case PART_TYPE.CORE:
+                    case PART_TYPE.SPIKES:
+                    case PART_TYPE.LASER:
+                    case PART_TYPE.GRENADE:
+                    case PART_TYPE.CATAPULT:
+                    /*case PART_TYPE.LIGHTNING:
+                    case PART_TYPE.BOOSTRANGE:
+                    case PART_TYPE.BOOSTRATE:
+                    case PART_TYPE.BOOSTDAMAGE:
+                    case PART_TYPE.BOOSTDEFENSE:*/
+                    case PART_TYPE.STACKER:
+                    case PART_TYPE.CLOAK:
+                    case PART_TYPE.SONAR:
+                    case PART_TYPE.DECOY:
+                    case PART_TYPE.RETRACTOR:
+                    case PART_TYPE.HOOVER:
+                    case PART_TYPE.FREEZE:
+                        continue;
                 }
-            }
-        }
 
-        public void UnlockFacilityLevel(FACILITY_TYPE type, int level, bool triggerMissionCheck = true)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(type);
-            if (_facilityRanks.ContainsKey(type) && _facilityRanks[type] < level)
-            {
-                _facilityRanks[type] = level;
-            }
-            else if (!_facilityRanks.ContainsKey(type))
-            {
-                _facilityRanks.Add(type, level);
-            }
-
-            if (triggerMissionCheck)
-            {
-                MissionProgressEventData missionProgressEventData = new MissionProgressEventData
+                Blueprint blueprint = new Blueprint
                 {
-                    facilityType = type,
-                    level = level
+                    name = $"{partRemoteData.partType}",
+                    partType = partRemoteData.partType
                 };
-
-                MissionManager.ProcessMissionData(typeof(FacilityUpgradeMission), missionProgressEventData);
-            }
-
-            int increaseAmount = remoteData.levels[level].increaseAmount;
-            int previousAmount = 0;
-            if (level > 0)
-            {
-                previousAmount = remoteData.levels[level - 1].increaseAmount;
-            }
-            switch (type)
-            {
-                case FACILITY_TYPE.FREEZER:
-                    PlayerRunData.RationCapacity += increaseAmount;
-                    break;
-                case FACILITY_TYPE.STORAGEELECTRICITY:
-                    PlayerRunData.GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEFUEL:
-                    PlayerRunData.GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEPLASMA:
-                    PlayerRunData.GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGESCRAP:
-                    PlayerRunData.GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-                case FACILITY_TYPE.STORAGEWATER:
-                    PlayerRunData.GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount - previousAmount);
-                    break;
-            }
-
-            //Debug.Log(_rationCapacity);
-            PlayerDataManager.OnCapacitiesChanged?.Invoke();
-            PlayerDataManager.OnValuesChanged?.Invoke();
-        }
-
-        public void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
-        {
-            UnlockFacilityBlueprintLevel(facilityBlueprint.facilityType, facilityBlueprint.level);
-        }
-
-        public void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level)
-        {
-            FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityType);
-            string blueprintUnlockString = $"{remoteData.displayName} lvl {level + 1}";
-
-            if (_facilityBlueprintRanks.ContainsKey(facilityType))
-            {
-                if (_facilityBlueprintRanks[facilityType] < level)
-                {
-                    _facilityBlueprintRanks[facilityType] = level;
-
-                    //FIXME This may benefit from the use of a callback instead of a direct call
-                    if (LevelManager.Instance.WaveEndSummaryData != null)
-                    {
-                        LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
-                    }
-                }
-            }
-            else
-            {
-                _facilityBlueprintRanks.Add(facilityType, level);
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprintUnlockString);
-                }
+                UnlockBlueprint(blueprint);
             }
         }
 

@@ -34,7 +34,8 @@ namespace StarSalvager.Factories
             GUN,
             TRIPLE_SHOT,
             BOMB,
-            FREEZE
+            FREEZE,
+            SHIELD
         }
         
         private readonly EffectProfileScriptableObject _effectProfileScriptableObject;
@@ -83,9 +84,9 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(Damage):
                     gameObject = CreateObject<T>(_effectProfileScriptableObject.damageEffectPrefab);
                     break;
-                case bool _ when type == typeof(Shield):
+                /*case bool _ when type == typeof(Shield):
                     gameObject = CreateObject<T>(_effectProfileScriptableObject.shieldPrototypePrefab);
-                    break;
+                    break;*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -198,6 +199,9 @@ namespace StarSalvager.Factories
                     break;
                 case PART_EFFECT.FREEZE:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.freezeShockwaveEffectPrefab);
+                    break;
+                case PART_EFFECT.SHIELD:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.shieldEffectPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partEffect), partEffect, null);

@@ -375,7 +375,7 @@ namespace StarSalvager.Tutorial
             
             bot.OnBitShift -= SetBump;
             
-            bot.CanUseResources = false;
+            bot.CanUseResources = true;
             PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
@@ -421,9 +421,10 @@ namespace StarSalvager.Tutorial
 
         private IEnumerator EndStepCoroutine()
         {
+            yield return new WaitForSeconds(4f);
+            
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
-
-            yield return new WaitForSeconds(5f);
+            
             
             LevelManager.Instance.BotObject.SetColliderActive(false);
             

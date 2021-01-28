@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5619828295085332751}
   - component: {fileID: 6003791000872513411}
+  - component: {fileID: 4362305043830795055}
   - component: {fileID: 5182901841678242745}
   - component: {fileID: 8737504642421490146}
   m_Layer: 9
@@ -45,9 +46,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e2817eb9616bd43936c229ba6aea4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 256
+--- !u!114 &4362305043830795055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338614340111776972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d11ab68ae14d4c469af361068a5e9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 5182901841678242745}
+  speed: 1
+  playOnAwake: 1
+  animation: {fileID: 11400000, guid: a8b4218ac0ca6dd41b37a53d4889c4be, type: 2}
 --- !u!212 &5182901841678242745
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -87,7 +101,7 @@ SpriteRenderer:
   m_SortingLayerID: 1579873703
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3680335508457511949, guid: f9d1bee348604c049920eaebab6d26f1,
+  m_Sprite: {fileID: -1898356965268507749, guid: 862bb916985978d4f88cee2b8cd29d02,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

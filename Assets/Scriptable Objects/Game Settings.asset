@@ -11,24 +11,26 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   useShuffleDance: 1
   allowAccessToUnlockedLaterWaves: 1
   testingFeatures: 0
-  bitsPushThroughParts: 1
-  gridWidth: 100
-  timeForAsteroidToFallOneSquare: 0.32
-  DASTime: 0.15
+  asteroidDamage: 10
+  gameUIResourceThreshold: 0.33
+  patchPointBaseCost: 500
+  patchPointIncrementCost: 50
+  blueprintInitialData:
+  - type: 4
+  - type: 9
+  - type: 1
+  gridWidth: 50
   gridHeightRelativeToScreen: 1.25
+  timeForAsteroidToFallOneSquare: 0.32
+  levelResourceDropReductionAmount: 0.854
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
-  botHorizontalSpeed: 30
-  botRotationSpeed: 500
-  botContinuousRotationSpeed: 700
-  missionReminderFrequency: 1
+  waveMessageReminderFrequency: 10
   bonusShapeSpeed: 22
-  levelResourceDropReductionAmount: 0.854
-  asteroidDamage: 10
   bonusShapeGearsRewards:
   - numCells: 2
     numColours: 1
@@ -90,26 +92,22 @@ MonoBehaviour:
   - numCells: 5
     numColours: 5
     gearsValue: 1000
-  patchPointBaseCost: 500
-  patchPointIncrementCost: 50
-  botEnterScreenMaxSize: 1.5
-  botExitScreenMaxSize: 2
-  cameraUseInputMotion: 1
-  cameraSmoothing: 1
-  cameraOffsetBounds: 0.2
-  gameUIResourceThreshold: 0.33
-  numCurrentTrackedMissionMax: 3
-  onlyGetWaveLootOnce: 1
-  recoveryOfDroneLocksHorizontalMovement: 1
-  shortcutJumpToAfter: 1
-  blueprintInitialData:
-  - type: 4
-    level: 0
-  - type: 9
-    level: 0
-  - type: 1
-    level: 0
-  facilityInitialData: []
-  facilityInitialBlueprintData: []
   asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
+  botHealth: 100
+  greenHealAmount: 10
+  botEnterScreenMaxSize: 1.5
+  botExitScreenMaxSize: 2
+  unmergeLargeBitsOnRefine: 1
+  sendExcessResourceToBase: 0
+  bitsPushThroughParts: 1
+  bitShiftTime: 0.17
+  comboMergeTime: 0.17
+  DASTime: 0.15
+  botHorizontalSpeed: 30
+  botRotationSpeed: 650
+  botContinuousRotationSpeed: 700
+  cameraUseInputMotion: 1
+  columnsOnScreen: 61
+  cameraSmoothing: 1
+  cameraOffsetBounds: 0.2

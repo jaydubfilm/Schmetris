@@ -53,21 +53,6 @@ namespace StarSalvager.Editor
 
             }
         }
-        [Serializable]
-        private class ComponentAtlasData : AtlasDataBase<COMPONENT_TYPE>
-        {
-            protected override string GetName()
-            {
-                var factory = FindObjectOfType<FactoryManager>();
-
-                if (factory is null)
-                    return type.ToString();
-
-                var remoteData = factory.componentRemoteData.GetRemoteData(type);
-
-                return remoteData is null ? type.ToString() : remoteData.name;
-            }
-        }
 
         //SpriteAtlasEditor Properties
         //====================================================================================================================//
@@ -116,15 +101,11 @@ namespace StarSalvager.Editor
         
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
         private List<BitAtlasData> bitAtlasDatas;
-        
-        //[SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, DrawScrollView = false), FoldoutGroup("Bits")]
-        private List<ComponentAtlasData> componentAtlasDatas;
 
         private void SetupLists()
         {
             partAtlasDatas = SetupList<PartAtlasData, PART_TYPE>();
             bitAtlasDatas = SetupList<BitAtlasData, BIT_TYPE>();
-            //componentAtlasDatas = SetupList<ComponentAtlasData, COMPONENT_TYPE>();
         }
         
         private static List<T> SetupList<T, TE>() where TE: Enum where T: AtlasDataBase<TE>, new()
@@ -194,37 +175,18 @@ namespace StarSalvager.Editor
             }
             
             //--------------------------------------------------------------------------------------------------------//
-            
-            /*foreach (var componentAtlasData in componentAtlasDatas)
-            {
-                SpriteAtlasSettings.UpdatePath(componentAtlasData.type, componentAtlasData.selectedVersion);
-
-                index = factoryManager.ComponentProfile.GetProfileIndex(componentAtlasData.type);
-                if (index < 0) 
-                    continue;
-
-                var profile = factoryManager.ComponentProfile.profiles[index];
-                componentAtlasData.Sprites.CopyTo(profile.Sprites, 0);
-
-                factoryManager.ComponentProfile.profiles[index] = profile;
-            }*/
-            
-            //--------------------------------------------------------------------------------------------------------//
 
             #endregion //Clunky Updates that I dont like...
 
             /*UpdateData<PartAtlasData, PART_TYPE>(partAtlasDatas);*/
             
-            //Update the Part/Bit/Component Profiles
+            //Update the Part/Bit Profiles
             EditorUtility.SetDirty(factoryManager.PartsProfileData);
             EditorUtility.SetDirty(factoryManager.BitProfileData);
-            //EditorUtility.SetDirty(factoryManager.ComponentProfile);
             
             //Update the Part/Bit Atlases
             UpdateSpriteAtlas<PartAtlasData, PART_TYPE>(SpriteAtlasSettings.partsAtlas, partAtlasDatas);
             UpdateSpriteAtlas<BitAtlasData, BIT_TYPE>(SpriteAtlasSettings.bitsAtlas, bitAtlasDatas);
-            //TODO Need to Update Component Atlas
-            //UpdateSpriteAtlas<ComponentAtlasData, COMPONENT_TYPE>(SpriteAtlasSettings., partAtlasDatas);
             
             
             EditorUtility.SetDirty(SpriteAtlasSettings);
@@ -246,9 +208,6 @@ namespace StarSalvager.Editor
                     break;
                 case bool _ when typeof(TE) == typeof(BIT_TYPE):
                     profileData = factoryManager.BitProfileData ;
-                    break;
-                case bool _ when typeof(TE) == typeof(COMPONENT_TYPE):
-                    profileData = factoryManager.ComponentProfile;
                     break;
             }
         }

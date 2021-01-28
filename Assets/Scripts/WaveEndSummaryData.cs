@@ -21,8 +21,6 @@ public class WaveEndSummaryData
     private readonly Dictionary<string, int> _dictTotalEnemiesSpawned;
 
     private readonly List<string> _blueprintsUnlockedStrings;
-    private readonly List<string> _missionCompletedStrings;
-    private readonly List<string> _missionUnlockedStrings;
 
     private readonly Dictionary<BIT_TYPE, float> _resourcesConsumed;
     
@@ -44,8 +42,6 @@ public class WaveEndSummaryData
         NumGearsGained = 0;
         NumLevelsGained = 0;
         _blueprintsUnlockedStrings = new List<string>();
-        _missionCompletedStrings = new List<string>();
-        _missionUnlockedStrings = new List<string>();
         _resourcesConsumed = new Dictionary<BIT_TYPE, float>();
     }
 
@@ -79,16 +75,6 @@ public class WaveEndSummaryData
         if (_blueprintsUnlockedStrings.Count > 0)
         {
             outStringList.Add($"{GetAsTitle("Blueprints Unlocked")} {string.Join(", ", _blueprintsUnlockedStrings)}");
-        }
-
-        if (_missionCompletedStrings.Count > 0)
-        {
-            outStringList.Add($"{GetAsTitle("Missions Completed")} {string.Join(", ", _missionCompletedStrings)}");
-        }
-
-        if (_missionUnlockedStrings.Count > 0)
-        {
-            outStringList.Add($"{GetAsTitle("Missions Unlocked")} {string.Join(", ", _missionUnlockedStrings)}");
         }
 
         if (_resourcesConsumed. Count > 0)
@@ -145,16 +131,6 @@ public class WaveEndSummaryData
         _blueprintsUnlockedStrings.Add(bluePrintName);
     }
 
-    public void AddCompletedMission(string missionName)
-    {
-        _missionCompletedStrings.Add(missionName);
-    }
-
-    public void AddUnlockedMission(string missionName)
-    {
-        _missionUnlockedStrings.Add(missionName);
-    }
-
     public void AddConsumedBit(BIT_TYPE type, float amount)
     {
         if (amount == 0f)
@@ -190,9 +166,7 @@ public class WaveEndSummaryData
             {AnalyticsManager.EnemiesKilledPercentage, enemiesKilledPercentage },
             {AnalyticsManager.BonusShapesMatched, NumBonusShapesMatched },
             {AnalyticsManager.BonusShapesMatchedPercentage, bonusShapesPercentage },
-            {AnalyticsManager.BlueprintsUnlocked, _blueprintsUnlockedStrings.Count },
-            {AnalyticsManager.MissionsCompleted, _missionCompletedStrings.Count },
-            {AnalyticsManager.MissionsUnlocked, _missionUnlockedStrings.Count }
+            {AnalyticsManager.BlueprintsUnlocked, _blueprintsUnlockedStrings.Count }
         };
     }
     

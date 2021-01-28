@@ -5,8 +5,8 @@ using System.Net.Mail;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
-using StarSalvager.Missions;
 using StarSalvager.Utilities.Analytics.Data;
+using StarSalvager.Utilities.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
@@ -18,14 +18,13 @@ namespace StarSalvager.Utilities.FileIO
     public static class Files
     {
         private const string PLAYER_PATTERN = "*.player";
-        private const string MISSION_PATTERN = "*.mission";
-        
+
         private const string BUILDDATA_PATH = "BuildData";
-        private const string REMOTE_PATH = "RemoteData"; 
-        private const string ADDTOBUILD_PATH = "AddToBuild"; 
-        
+        private const string REMOTE_PATH = "RemoteData";
+        private const string ADDTOBUILD_PATH = "AddToBuild";
+
         private const string BOTSHAPEEDITOR_FILE = "BotShapeEditorData.txt";
-        
+
         #if UNITY_EDITOR
         private static readonly string PARENT_DIRECTORY = new DirectoryInfo(Application.dataPath).Parent.FullName;
         #elif UNITY_STANDALONE_WIN
@@ -51,10 +50,10 @@ namespace StarSalvager.Utilities.FileIO
             var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
                 "Sessions");
 #endif
-            
+
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
-            
+
 
                 return Path.Combine(directory, "error.log");
             }
@@ -62,7 +61,7 @@ namespace StarSalvager.Utilities.FileIO
 
         //Player Data Directory
         //====================================================================================================================//
-        
+
         private const string GAME_META_FILE = "GameMetaData.player";
 
         private static readonly string
@@ -82,11 +81,10 @@ namespace StarSalvager.Utilities.FileIO
         }
 
         //====================================================================================================================//
-        
-        private const string MISSION_MASTER_FILE = "MissionsMasterData.mission";
+
         public const string SCRAPYARD_LAYOUT_FILE = "ScrapyardLayoutData.txt";
 
-        
+
         //Bot Shape Editor Remote Data
         //====================================================================================================================//
 
@@ -106,17 +104,17 @@ namespace StarSalvager.Utilities.FileIO
 #endif
             var jsonToExport = JsonConvert.SerializeObject(editorData, Formatting.None);
 
-            
+
             File.WriteAllText(path, jsonToExport);
 
-            
+
             return jsonToExport;
         }
 
         public static EditorBotShapeGeneratorData ImportBotShapeRemoteData()
         {
-            
-            
+
+
 #if UNITY_EDITOR
             var path = Path.Combine(REMOTE_DIRECTORY, ADDTOBUILD_PATH, BOTSHAPEEDITOR_FILE);
 #elif UNITY_STANDALONE_WIN
@@ -124,13 +122,13 @@ namespace StarSalvager.Utilities.FileIO
 #elif UNITY_STANDALONE_OSX
             var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
-            
+
             if (!File.Exists(path))
             {
                 return new EditorBotShapeGeneratorData();
             }
 
-            return ImportJsonData<EditorBotShapeGeneratorData>(path);
+            return ImportJsonData<EditorBotShapeGeneratorData>(path, new IBlockDataArrayConverter());
         }
 
         #endregion //Bot Shape Editor
@@ -139,7 +137,7 @@ namespace StarSalvager.Utilities.FileIO
         //====================================================================================================================//
 
         #region Player Data
-        
+
         public static bool DoesSaveExist(int index)
         {
             if (!Directory.Exists(REMOTE_DIRECTORY))
@@ -175,7 +173,7 @@ namespace StarSalvager.Utilities.FileIO
             Debug.Log("No available save slots, using slot 0");
             return 0;
         }
-        
+
         public static GameMetadata ImportGameMetaData()
         {
             if (!Directory.Exists(GAME_META_PATH))
@@ -189,7 +187,7 @@ namespace StarSalvager.Utilities.FileIO
 
             return ImportJsonData<GameMetadata>(GAME_META_PATH);
         }
-        
+
         public static string ExportGameMetaData(GameMetadata editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
@@ -208,12 +206,9 @@ namespace StarSalvager.Utilities.FileIO
                 return null;
             }
 
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                ObjectCreationHandling = ObjectCreationHandling.Replace
-            };
-
-            var loaded = JsonConvert.DeserializeObject<PlayerSaveAccountData>(File.ReadAllText(PlayerAccountSavePaths[saveSlotIndex]), settings);
+            var loaded = ImportJsonData<PlayerSaveAccountData>(
+                PlayerAccountSavePaths[saveSlotIndex],
+                new IBlockDataArrayConverter());
 
             if (loaded.PlayerRunData.PlaythroughID != "")
             {
@@ -237,57 +232,14 @@ namespace StarSalvager.Utilities.FileIO
         {
             if (!Directory.Exists(REMOTE_DIRECTORY))
                 return;
-            
+
             if(!File.Exists(PlayerAccountSavePaths[index]))
                 return;
-            
+
             File.Delete(PlayerAccountSavePaths[index]);
         }
-        
+
         #endregion //Player Data
-
-        //Mission Data
-        //====================================================================================================================//
-
-        #region Mission Data
-
-        public static string ExportMissionsMasterRemoteData(MissionsMasterData editorData)
-        {
-            editorData.SaveMissionData();
-
-            if (!Directory.Exists(REMOTE_DIRECTORY))
-                Directory.CreateDirectory(REMOTE_DIRECTORY);
-
-            
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            File.WriteAllText(Path.Combine(REMOTE_DIRECTORY, MISSION_MASTER_FILE), export);
-
-            return export;
-        }
-
-        public static MissionsMasterData ImportMissionsMasterRemoteData()
-        {
-            if (!Directory.Exists(REMOTE_DIRECTORY))
-                Directory.CreateDirectory(REMOTE_DIRECTORY);
-
-            var path = Path.Combine(REMOTE_DIRECTORY, MISSION_MASTER_FILE);
-
-            if (!File.Exists(path))
-            {
-                MissionsMasterData masterData = new MissionsMasterData();
-                foreach (var mission in FactoryManager.Instance.MissionRemoteData.GenerateMissionData())
-                {
-                    masterData.m_missionsMasterData.Add(mission.ToMissionData());
-                }
-                return masterData;
-            }
-
-            var loaded = JsonConvert.DeserializeObject<MissionsMasterData>(File.ReadAllText(path));
-
-            return loaded;
-        }
-
-        #endregion //Mission Data
 
         //Drone Design Data
         //====================================================================================================================//
@@ -297,7 +249,7 @@ namespace StarSalvager.Utilities.FileIO
         public static string ExportLayoutData(List<ScrapyardLayout> editorData)
         {
             var export = JsonConvert.SerializeObject(editorData, Formatting.None);
-            
+
             File.WriteAllText(Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE), export);
 
             return export;
@@ -306,15 +258,15 @@ namespace StarSalvager.Utilities.FileIO
         public static List<ScrapyardLayout> ImportLayoutData()
         {
             var path = Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE);
-            
-            return !File.Exists(path) ? new List<ScrapyardLayout>() : ImportJsonData<List<ScrapyardLayout>>(path);
+
+            return !File.Exists(path) ? new List<ScrapyardLayout>() : ImportJsonData<List<ScrapyardLayout>>(path, new IBlockDataArrayConverter());
         }
 
         #endregion //Drone Data
 
         //Session Summary Data
         //====================================================================================================================//
-        
+
         //TODO Move this to the Files location
         public static void ExportSessionData(string playerID, SessionData sessionData)
         {
@@ -333,12 +285,12 @@ namespace StarSalvager.Utilities.FileIO
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
-            
+
 
             var path = Path.Combine(directory, $"{fileName}.session");
 
             var json = JsonConvert.SerializeObject(sessionData, Formatting.Indented);
-            
+
             File.WriteAllText(path, json);
 
 
@@ -352,7 +304,7 @@ namespace StarSalvager.Utilities.FileIO
         {
             var from = Base64.Decode("YW5hbHl0aWNzQGFnYW1lc3R1ZGlvcy5jYQ==");
             var to = Base64.Decode("");
-            
+
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient("mail.agamestudios.ca");
             mail.From = new MailAddress(from);
@@ -369,25 +321,24 @@ namespace StarSalvager.Utilities.FileIO
 
             SmtpServer.Send(mail);
         }
-        
+
         //Clearing Remote Data
         //====================================================================================================================//
-        
+
         public static void ClearRemoteData()
         {
             var directory = new DirectoryInfo(REMOTE_DIRECTORY);
-            
+
             //FIXME This should be using persistent file names
             var files = new List<FileInfo>();
             files.AddRange(directory.GetFiles(PLAYER_PATTERN));
-            files.AddRange(directory.GetFiles(MISSION_PATTERN));
 
 
             foreach (var file in files)
             {
                 if(file == null)
                     continue;
-                
+
                 File.Delete(file.FullName);
             }
 
@@ -412,9 +363,9 @@ namespace StarSalvager.Utilities.FileIO
             var data = string.Join("\n", loggedErrors);
 
             var path = LOG_DIRECTORY;
-            
+
             File.WriteAllText(path, data);
-            
+
             return new FileInfo(path);
         }
 
@@ -430,12 +381,30 @@ namespace StarSalvager.Utilities.FileIO
 
             return false;
         }
-        
+
         private static T ImportJsonData<T>(string path)
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            var jsonData = File.ReadAllText(path);
+            
+            var settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+            };
+            
+            return JsonConvert.DeserializeObject<T>(jsonData, settings);
         }
-        
+        private static T ImportJsonData<T>(string path, params JsonConverter[] converters)
+        {
+            var jsonData = File.ReadAllText(path);
+            
+            var settings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                Converters = converters
+            };
+            
+            return JsonConvert.DeserializeObject<T>(jsonData, settings);
+        }
     }
 
 }

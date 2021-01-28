@@ -80,7 +80,7 @@ namespace StarSalvager.UI.Scrapyard
             _canShowSticker = canShowSticker;
             //craftButtonImage = craftButton.GetComponent<Image>();
 
-            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
+            craftButton.interactable = true;
             stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
 
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
@@ -108,11 +108,11 @@ namespace StarSalvager.UI.Scrapyard
                     image.sprite = FactoryManager.Instance
                         .GetFactory<PartAttachableFactory>()
                         .GetProfileData(data.partType)
-                        .GetSprite(data.level);
+                        .GetSprite();
             }
             catch (NullReferenceException)
             {
-                Debug.LogError($"Cannot find profile or sprite for {data.partType} of level {data.level}");
+                Debug.LogError($"Cannot find profile or sprite for {data.partType}");
                 throw;
             }
         }
@@ -126,7 +126,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void UpdateUI()
         {
-            craftButton.interactable = Globals.TestingFeatures || data.CanAfford;
+            craftButton.interactable = true;
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
             else

@@ -17,37 +17,43 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         public bool runStarted;
+        public int CurrentNode = 0;
 
         //TEMP
-        public List<Dictionary<int, int>> sectorWaveIndexConverter = new List<Dictionary<int, int>>();
         public bool hasSetupConverter;
 
         [JsonProperty]
         private List<PlayerResource> _playerResources = new List<PlayerResource>() {
-            new PlayerResource(BIT_TYPE.BLUE, 75, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.GREEN, 0, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.GREY, 0, 300, 0, 0, 0, 0),
-            new PlayerResource(BIT_TYPE.RED, 100, 300, 30, 0, 30, 0),
-            new PlayerResource(BIT_TYPE.YELLOW, 0, 300, 0, 0, 0, 0)
+            new PlayerResource(BIT_TYPE.BLUE, 0, 0),
+            new PlayerResource(BIT_TYPE.GREEN, 0, 0),
+            new PlayerResource(BIT_TYPE.GREY, 0, 0),
+            new PlayerResource(BIT_TYPE.RED, 30, 0),
+            new PlayerResource(BIT_TYPE.YELLOW, 0, 0)
         };
 
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public Dictionary<COMPONENT_TYPE, int> Components => _components;
-        [JsonProperty]
-        private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
-        {
-            {COMPONENT_TYPE.FUSOR, 0},
-            {COMPONENT_TYPE.CHIP, 0},
-            {COMPONENT_TYPE.NUT, 0},
-            {COMPONENT_TYPE.BOLT, 0},
-            {COMPONENT_TYPE.COIL, 0}
-        };
+        public int Components => _components;
 
-        public List<BlockData> mainDroneBlockData = new List<BlockData>();
-        public List<BlockData> recoveryDroneBlockData = new List<BlockData>();
-        public List<BlockData> partsInStorageBlockData = new List<BlockData>();
+        [JsonProperty] private int _components;
+
+/*[JsonIgnore]
+public Dictionary<COMPONENT_TYPE, int> Components => _components;
+[JsonProperty]
+private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
+{
+    {COMPONENT_TYPE.FUSOR, 0},
+    {COMPONENT_TYPE.CHIP, 0},
+    {COMPONENT_TYPE.NUT, 0},
+    {COMPONENT_TYPE.BOLT, 0},
+    {COMPONENT_TYPE.COIL, 0}
+};*/
+
+        public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
+        public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
+
+        public List<PatchData> patchesInStorage = new List<PatchData>();
 
         public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
@@ -57,20 +63,22 @@ namespace StarSalvager.Utilities.Saving
 
         public string PlaythroughID = string.Empty;
 
+        public bool CanChoosePart = false;
+
         [JsonIgnore]
         public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
-        [JsonProperty] 
+        [JsonProperty]
         private List<string> _dontShowAgainKeys = new List<string>();
 
         [JsonIgnore]
-        public LevelRingNodeTree LevelRingNodeTree = new LevelRingNodeTree();
-        [JsonProperty]
+        public LevelNodeTree LevelRingNodeTree = new LevelNodeTree();
+        [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
 
         };
 
-        public List<int> ShortcutNodes = new List<int>()
+        public List<int> WreckNodes = new List<int>()
         {
 
         };
@@ -82,99 +90,21 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> shortcutNodes = null)
+        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
         {
-            //TEMP
-            if (!hasSetupConverter)
-            {
-                for (int i = 0; i < FactoryManager.Instance.SectorRemoteData.Count; i++)
-                {
-                    List<int> availableIndexes = new List<int>();
-                    sectorWaveIndexConverter.Add(new Dictionary<int, int>());
-
-                    int numOptions = FactoryManager.Instance.SectorRemoteData[i].GetNumberOfWaves();
-
-                    for (int k = 0; k < numOptions; k++)
-                    {
-                        availableIndexes.Add(k);
-                    }
-
-                    for (int k = 0; k < numOptions; k++)
-                    {
-                        //int randomIndex = availableIndexes[UnityEngine.Random.Range(0, availableIndexes.Count)];
-                        //availableIndexes.Remove(randomIndex);
-                        //sectorWaveIndexConverter[i].Add(k, randomIndex);
-
-                        sectorWaveIndexConverter[i].Add(k, k);
-                    }
-                }
-                hasSetupConverter = true;
-            }
-            //ENDTEMP
-
             if (levelRingConnectionsJson != null)
             {
                 LevelRingConnectionsJson.Clear();
                 LevelRingConnectionsJson.AddRange(levelRingConnectionsJson);
             }
-            if (shortcutNodes != null)
+
+            if (wreckNodes != null)
             {
-                ShortcutNodes.AddRange(shortcutNodes);
+                WreckNodes.Clear();
+                WreckNodes.AddRange(wreckNodes);
             }
-            
-            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson);
-        }
 
-        public void FacilityEffectsOnNewAccount()
-        {
-            var facilityTypes = Enum.GetValues(typeof(FACILITY_TYPE)).Cast<FACILITY_TYPE>().ToList();
-
-            for (int i = 0; i < facilityTypes.Count; i++)
-            {
-                if (PlayerDataManager.CheckHasFacility(facilityTypes[i]))
-                {
-                    int level = PlayerDataManager.GetFacilityRanks()[facilityTypes[i]];
-                    FacilityRemoteData remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteData(facilityTypes[i]);
-                    int increaseAmount = remoteData.levels[level].increaseAmount;
-
-                    switch (facilityTypes[i])
-                    {
-                        case FACILITY_TYPE.FREEZER:
-                            RationCapacity += increaseAmount;
-                            break;
-                        case FACILITY_TYPE.STORAGEELECTRICITY:
-                            GetResource(BIT_TYPE.YELLOW).AddResourceCapacity(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STORAGEFUEL:
-                            GetResource(BIT_TYPE.RED).AddResourceCapacity(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STORAGEPLASMA:
-                            GetResource(BIT_TYPE.GREEN).AddResourceCapacity(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STORAGESCRAP:
-                            GetResource(BIT_TYPE.GREY).AddResourceCapacity(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STORAGEWATER:
-                            GetResource(BIT_TYPE.BLUE).AddResourceCapacity(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STARTINGELECTRICITY:
-                            GetResource(BIT_TYPE.YELLOW).AddResource(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STARTINGFUEL:
-                            GetResource(BIT_TYPE.RED).AddResource(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STARTINGPLASMA:
-                            GetResource(BIT_TYPE.GREEN).AddResource(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STARTINGSCRAP:
-                            GetResource(BIT_TYPE.GREY).AddResource(increaseAmount);
-                            break;
-                        case FACILITY_TYPE.STARTINGWATER:
-                            GetResource(BIT_TYPE.BLUE).AddResource(increaseAmount);
-                            break;
-                    }
-                }
-            }
+            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
         }
 
         //============================================================================================================//
@@ -193,29 +123,29 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetComponents(COMPONENT_TYPE type, int value)
+        public void SetComponents(int value)
         {
-            _components[type] = value;
+            _components = value;
         }
 
-        public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
+        /*public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
         {
             foreach (var value in liquidValues)
             {
                 _components[value.Key] = value.Value;
             }
-        }
+        }*/
 
         //============================================================================================================//
 
-        public void AddComponent(COMPONENT_TYPE type, int amount)
+        public void AddComponent(int amount)
         {
-            _components[type] += Mathf.Abs(amount);
+            _components += Mathf.Abs(amount);
         }
 
-        public void SubtractComponent(COMPONENT_TYPE type, int amount)
+        public void SubtractComponent(int amount)
         {
-            _components[type] -= Mathf.Abs(amount);
+            _components -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//
@@ -289,49 +219,38 @@ namespace StarSalvager.Utilities.Saving
         }
 
         //====================================================================================================================//
-        
-        public List<BlockData> GetCurrentBlockData()
+
+        public List<IBlockData> GetCurrentBlockData()
         {
             return mainDroneBlockData;
         }
 
-        public void SetShipBlockData(List<BlockData> blockData)
+        public void SetShipBlockData(List<IBlockData> blockData)
         {
             mainDroneBlockData.Clear();
             mainDroneBlockData.AddRange(blockData);
         }
 
-        public List<BlockData> GetRecoveryDroneBlockData()
-        {
-            return recoveryDroneBlockData;
-        }
-
-        public void SetRecoveryDroneBlockData(List<BlockData> blockData)
-        {
-            recoveryDroneBlockData.Clear();
-            recoveryDroneBlockData.AddRange(blockData);
-        }
-
-        public List<BlockData> GetCurrentPartsInStorage()
+        public List<IBlockData> GetCurrentPartsInStorage()
         {
             return partsInStorageBlockData;
         }
 
-        public void SetCurrentPartsInStorage(List<BlockData> blockData)
+        public void SetCurrentPartsInStorage(List<IBlockData> blockData)
         {
             partsInStorageBlockData.Clear();
             partsInStorageBlockData.AddRange(blockData);
         }
 
-        public void AddPartToStorage(BlockData blockData)
+        public void AddPartToStorage(IBlockData blockData)
         {
             partsInStorageBlockData.Add(blockData);
             PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
-        public void RemovePartFromStorage(BlockData blockData)
+        public void RemovePartFromStorage(IBlockData blockData)
         {
-            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Level == blockData.Level && b.Type == blockData.Type));
+            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Type == blockData.Type));
         }
 
         public void RemovePartFromStorageAtIndex(int index)
@@ -341,6 +260,40 @@ namespace StarSalvager.Utilities.Saving
                 partsInStorageBlockData.RemoveAt(index);
             }
         }
+
+        //Patches
+        //====================================================================================================================//
+        public List<PatchData> GetCurrentPatchesInStorage()
+        {
+            return patchesInStorage;
+        }
+
+        public void AddPatchToStorage(PatchData patchData)
+        {
+            patchesInStorage.Add(patchData);
+            PlayerDataManager.OnValuesChanged?.Invoke();
+        }
+
+        public void RemovePatchFromStorage(PatchData patchData)
+        {
+            var index = patchesInStorage.FindIndex(b => b.Type == patchData.Type);
+
+            if (index < 0)
+                throw new ArgumentException();
+
+            patchesInStorage.RemoveAt(index);
+        }
+
+        public void RemovePatchFromStorageAtIndex(int index)
+        {
+            if (index >= patchesInStorage.Count)
+                return;
+
+            patchesInStorage.RemoveAt(index);
+        }
+
+        //====================================================================================================================//
+
 
         public void SaveData()
         {

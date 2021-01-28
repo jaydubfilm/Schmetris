@@ -46,19 +46,9 @@ namespace StarSalvager.Utilities.Extensions
                     Blueprint blueprintData = new Blueprint
                     {
                         name = (PART_TYPE)rdsData.type + " " + rdsData.level,
-                        partType = (PART_TYPE)rdsData.type,
-                        level = rdsData.level
+                        partType = (PART_TYPE)rdsData.type
                     };
                     rdsTable.AddEntry(new RDSValue<Blueprint>(blueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
-                }
-                else if (rdsData.rdsData == RDSLootData.TYPE.FacilityBlueprint)
-                {
-                    FacilityBlueprint facilityBlueprintData = new FacilityBlueprint
-                    {
-                        facilityType = (FACILITY_TYPE)rdsData.type,
-                        level = rdsData.level
-                    };
-                    rdsTable.AddEntry(new RDSValue<FacilityBlueprint>(facilityBlueprintData, rdsData.Probability, rdsData.IsUniqueSpawn, rdsData.IsAlwaysSpawn, true));
                 }
                 else if (rdsData.rdsData == RDSLootData.TYPE.Gears)
                 {

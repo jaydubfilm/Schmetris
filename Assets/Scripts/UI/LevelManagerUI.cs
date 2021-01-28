@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
-using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
@@ -28,7 +27,7 @@ namespace StarSalvager.UI
         [SerializeField, Required]
         private TMP_Text deathText;
         [SerializeField, Required]
-        private TMP_Text scrollingMissionsText;
+        private TMP_Text scrollingText;
 
         //============================================================================================================//
 
@@ -77,10 +76,10 @@ namespace StarSalvager.UI
                     var levelManagerUI = FindObjectOfType<LevelManagerUI>();
 
                     var canvasWidth = levelManagerUI.m_canvasRect.rect.width / 2;
-                    var scrollingWidth = levelManagerUI.scrollingMissionsText.rectTransform.rect.width / 2;
+                    var scrollingWidth = levelManagerUI.scrollingText.rectTransform.rect.width / 2;
                     
-                    levelManagerUI.scrollingMissionsText.rectTransform.anchoredPosition = Vector3.right * (canvasWidth + scrollingWidth);
-                    levelManagerUI.m_isMissionReminderScrolling = false;
+                    levelManagerUI.scrollingText.rectTransform.anchoredPosition = Vector3.right * (canvasWidth + scrollingWidth);
+                    levelManagerUI.m_isWaveMessageReminderScrolling = false;
                 }
 
                 _overrideText = value;
@@ -88,16 +87,14 @@ namespace StarSalvager.UI
         }
         private static string _overrideText;
 
-        private float m_missionReminderTimer = 0.0f;
-        private bool m_isMissionReminderScrolling = false;
+        private float m_waveMessageReminderTimer = 0.0f;
+        private bool m_isWaveMessageReminderScrolling = false;
 
         private Vector3 _startScrollPosition, _endScrollPosition;
         private float _scrollPosition;
 
         private LevelManager m_levelManager;
         private RectTransform m_canvasRect;
-
-        private Mission curMissionReminder = null;
 
         //====================================================================================================================//
         
@@ -131,9 +128,9 @@ namespace StarSalvager.UI
         private void OnDisable()
         {
             SetPosition(_scrollPosition = 0f);
-            m_missionReminderTimer = 0;
-            m_isMissionReminderScrolling = false;
-            scrollingMissionsText.text = "";
+            m_waveMessageReminderTimer = 0;
+            m_isWaveMessageReminderScrolling = false;
+            scrollingText.text = "";
         }
 
         private void Update()
@@ -146,10 +143,10 @@ namespace StarSalvager.UI
                 return;
             }
             
-            if(m_isMissionReminderScrolling)
-                MoveMissionReminder();
+            if(m_isWaveMessageReminderScrolling)
+                MoveWaveMessageReminder();
             else
-                CheckShowMissionReminder();
+                CheckShowWaveMessageReminder();
         }
 
         //============================================================================================================//
@@ -158,7 +155,7 @@ namespace StarSalvager.UI
         {
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
-                GameManager.SetCurrentGameState(GameState.UniverseMapBetweenWaves);
+                GameManager.SetCurrentGameState(GameState.UniverseMap);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
@@ -208,8 +205,6 @@ namespace StarSalvager.UI
                             LevelManager.Instance.BotObject.IsInvulnerable = false;
                         }
 
-                        GameUI.Instance.ShowRecoveryBanner(false);
-                        Globals.IsRecoveryBot = false;
                         PlayerDataManager.ResetPlayerRunData();
                         PlayerDataManager.SavePlayerAccountData();
 
@@ -240,7 +235,7 @@ namespace StarSalvager.UI
             resumeButton.onClick.AddListener(() =>
             {
                 GameTimer.SetPaused(false);
-                InputManager.SwitchCurrentActionMap("Default");
+                InputManager.SwitchCurrentActionMap(ACTION_MAP.DEFAULT);
             });
             
             ToggleBetweenWavesUIActive(false);
@@ -254,10 +249,10 @@ namespace StarSalvager.UI
                 return;
             
             var canvasWidth = m_canvasRect.rect.width / 2;
-            var scrollMissionWidth = scrollingMissionsText.rectTransform.rect.width / 2;
+            var scrollTextWidth = scrollingText.rectTransform.rect.width / 2;
             
-            _startScrollPosition = Vector3.right * (canvasWidth + scrollMissionWidth);
-            _endScrollPosition = Vector3.left * (canvasWidth + scrollMissionWidth);
+            _startScrollPosition = Vector3.right * (canvasWidth + scrollTextWidth);
+            _endScrollPosition = Vector3.left * (canvasWidth + scrollTextWidth);
             
             SetPosition(0f);
         }
@@ -265,76 +260,47 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        private void CheckShowMissionReminder()
+        private void CheckShowWaveMessageReminder()
         {
-            if (m_missionReminderTimer > 0)
+            if (m_waveMessageReminderTimer > 0)
             {
-                m_missionReminderTimer -= Time.deltaTime;
+                m_waveMessageReminderTimer -= Time.deltaTime;
                 return;
             }
             
-            PlayMissionReminder();
+            PlayWaveMessageReminder();
         }
         
-        private void MoveMissionReminder()
+        private void MoveWaveMessageReminder()
         {
             if (_scrollPosition >= 1f)
             {
                 SetPosition(_scrollPosition = 0f);
-                m_isMissionReminderScrolling = false;
+                m_isWaveMessageReminderScrolling = false;
                 return;
-            }
-
-            if (curMissionReminder != null)
-            {
-                scrollingMissionsText.text = curMissionReminder.missionName + curMissionReminder.GetMissionProgressString();
             }
             
             _scrollPosition += Time.deltaTime * SCROLL_SPEED;
             SetPosition(_scrollPosition);
         }
         
-        private void PlayMissionReminder()
+        private void PlayWaveMessageReminder()
         {
             if (Globals.UsingTutorial)
                 return;
-            
-            if(MissionManager.MissionsCurrentData == null || MissionManager.MissionsCurrentData.CurrentTrackedMissions == null)
-                return;
-            
-            if (MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count <= 0 && string.IsNullOrEmpty(OverrideText)) 
-                return;
-            
-            string missionReminderText;
+
             if (string.IsNullOrEmpty(OverrideText))
-            {
-                Mission curMission = MissionManager.MissionsCurrentData
-                    .CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList()[
-                        Random.Range(0, MissionManager.MissionsCurrentData.CurrentTrackedMissions.Where(m => !m.MissionComplete()).ToList().Count)];
+                return;
 
-                //Not ideal line, temporarily handling a bug until mission system gets reworked to now have duplicate data
-                curMission = MissionManager.MissionsCurrentData.CurrentMissions.FirstOrDefault(m => m.missionName == curMission.missionName);
-
-                curMissionReminder = curMission;
-
-                missionReminderText = curMission.missionName + curMission.GetMissionProgressString();
-            }
-            else
-            {
-                missionReminderText = OverrideText;
-                curMissionReminder = null;
-            }
-
-            var multiplier = string.IsNullOrEmpty(OverrideText) ? 1f : 0.2f;
-            m_missionReminderTimer = Globals.MissionReminderFrequency * multiplier;
+            m_waveMessageReminderTimer = Globals.WaveMessageReminderFrequency;
             
-            scrollingMissionsText.text = missionReminderText;
-            m_isMissionReminderScrolling = true;
+            scrollingText.text = OverrideText;
+            m_isWaveMessageReminderScrolling = true;
         }
         
         private void SetPosition(float normalizedT)
         {
-            scrollingMissionsText.rectTransform.anchoredPosition =
+            scrollingText.rectTransform.anchoredPosition =
                 Vector3.Lerp(_startScrollPosition, _endScrollPosition, normalizedT);
         }
         
@@ -351,7 +317,7 @@ namespace StarSalvager.UI
             }
             else
             {
-                List<LevelRingNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
+                List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
                 betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
             }
 

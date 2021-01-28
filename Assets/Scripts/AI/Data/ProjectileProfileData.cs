@@ -8,6 +8,12 @@ namespace StarSalvager.Factories.Data
     [System.Serializable]
     public class ProjectileProfileData
     {
+        public enum TowType : int
+        {
+            JunkBit,
+            Mine
+        }
+        
         public string ProjectileType => m_projectileType;
 
         public string ProjectileTypeID => m_projectileTypeID;
@@ -30,6 +36,8 @@ namespace StarSalvager.Factories.Data
 
         public int SprayCount => m_sprayCount;
 
+        public bool IsTow => m_isTow;
+        public TowType TowObjectType => m_towType;
         public bool CanHitAsteroids => m_canHitAsteroids;
         public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
 
@@ -98,6 +106,12 @@ namespace StarSalvager.Factories.Data
         [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
          ShowIf(nameof(showSprayCount))]
         private int m_sprayCount;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool m_isTow;
+
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf("m_isTow")]
+        private TowType m_towType;
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_canHitAsteroids;

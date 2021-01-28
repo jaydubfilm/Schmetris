@@ -15,7 +15,6 @@ using StarSalvager.Utilities.JsonDataTypes;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
-using StarSalvager.Missions;
 using StarSalvager.Prototype;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
@@ -36,8 +35,6 @@ namespace StarSalvager
         private List<Shape> m_bonusShapes;
         private List<Shape> m_notFullyInGridShapes;
         private List<OffGridMovement> m_offGridMovingObstacles;
-        public GameObject RecoveredBotFalling = null;
-        public bool RecoveredBotTowing = false;
 
         public List<Asteroid> Asteroids { get; private set; }
 
@@ -194,6 +191,18 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case SpaceJunk spaceJunk:
+                        Recycler.Recycle<SpaceJunk>(spaceJunk);
+                        break;
+                    case JunkBit junkBit:
+                        Recycler.Recycle<JunkBit>(junkBit);
+                        break;
+                    case Mine mine:
+                        Recycler.Recycle<Mine>(mine);
+                        break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
                     case MoveWithObstacles _:
                         break;
                     default:
@@ -229,6 +238,20 @@ namespace StarSalvager
                             recycleBits = false
                         });
                         break;
+                    case SpaceJunk spaceJunk:
+                        Recycler.Recycle<SpaceJunk>(spaceJunk);
+                        break;
+                    case JunkBit junkBit:
+                        Recycler.Recycle<JunkBit>(junkBit);
+                        break;
+                    case Mine mine:
+                        Recycler.Recycle<Mine>(mine);
+                        break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
+                    case MoveWithObstacles _:
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -261,6 +284,20 @@ namespace StarSalvager
                         case Shape shape:
                             Recycler.Recycle<Shape>(shape);
                             break;
+                        case SpaceJunk spaceJunk:
+                            Recycler.Recycle<SpaceJunk>(spaceJunk);
+                            break;
+                        case JunkBit junkBit:
+                            Recycler.Recycle<JunkBit>(junkBit);
+                            break;
+                        case Mine mine:
+                            Recycler.Recycle<Mine>(mine);
+                            break;
+                        case BlackHole blackHole:
+                            Recycler.Recycle<BlackHole>(blackHole);
+                            break;
+                        case MoveWithObstacles _:
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                     }
@@ -278,13 +315,6 @@ namespace StarSalvager
                 Recycler.Recycle<Shape>(m_bonusShapes[i].gameObject);
                 m_bonusShapes.RemoveAt(i);
             }
-
-            if (RecoveredBotFalling != null)
-            {
-                GameObject.Destroy(RecoveredBotFalling);
-                RecoveredBotFalling = null;
-            }
-            RecoveredBotTowing = false;
 
             m_bonusShapes.Clear();
             previousShapesInLevel.Clear();
@@ -388,6 +418,25 @@ namespace StarSalvager
                             }
 
                             break;
+                        case JunkBit junktBit:
+                            if (m_offGridMovingObstacles[i].DespawnOnEnd)
+                            {
+                                Recycler.Recycle<JunkBit>(junktBit);
+                            }
+                            else
+                            {
+                                if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
+                                {
+                                    m_offGridMovingObstacles[i].Extend();
+                                    continue;
+                                }
+
+                                AddObstacleToList(m_offGridMovingObstacles[i].Obstacle);
+                                PlaceMovableOnGridSpecific(junktBit, m_offGridMovingObstacles[i].EndPosition);
+                                junktBit.SetColliderActive(true);
+                            }
+
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(OffGridMovement.Obstacle),
                                 m_offGridMovingObstacles[i].Obstacle, null);
@@ -409,19 +458,19 @@ namespace StarSalvager
                 //Determines if a new bonus shape is now visible on screen, notifies those who care about the change
                 //----------------------------------------------------------------------------------------------------//
 
-                if (!m_offGridMovingObstacles[i].isVisible &&
-                    m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
-                    m_bonusShapes.Contains(checkShape))
-                {
-                    if (ObstacleInCameraRect(checkShape))
-                    {
-                        m_offGridMovingObstacles[i].isVisible = true;
-                        NewShapeOnScreen?.Invoke();
-
-                        if(HintManager.CanShowHint(HINT.BONUS))
-                            HintManager.TryShowHint(HINT.BONUS, 1.35f);
-                    }
-                }
+                //if (!m_offGridMovingObstacles[i].isVisible &&
+                //    m_offGridMovingObstacles[i].Obstacle is Shape checkShape &&
+                //    m_bonusShapes.Contains(checkShape))
+                //{
+                //    if (ObstacleInCameraRect(checkShape))
+                //    {
+                //        m_offGridMovingObstacles[i].isVisible = true;
+                //        NewShapeOnScreen?.Invoke();
+//
+                //        if(HintManager.CanShowHint(HINT.BONUS))
+                //            HintManager.TryShowHint(HINT.BONUS, 1.35f);
+                //    }
+                //}
 
                 //----------------------------------------------------------------------------------------------------//
             }
@@ -465,12 +514,9 @@ namespace StarSalvager
                             m_obstacles[i] = null;
                             break;
                         case Component component:
-                            if (!component.Attached)
-                            {
-                                component.IsRegistered = false;
-                                Recycler.Recycle<Component>(component);
-                                m_obstacles[i] = null;
-                            }
+                            component.IsRegistered = false;
+                            Recycler.Recycle<Component>(component);
+                            m_obstacles[i] = null;
 
                             break;
                         case Shape shape:
@@ -485,7 +531,33 @@ namespace StarSalvager
                             m_obstacles[i].IsRegistered = false;
                             m_obstacles[i] = null;
                             break;
+                        case SpaceJunk spaceJunk:
+                            spaceJunk.IsRegistered = false;
+                            Recycler.Recycle<SpaceJunk>(spaceJunk);
+                            m_obstacles[i] = null;
+                            break;
                         case MoveWithObstacles _:
+                            break;
+                        case JunkBit junkBit:
+                            if (!junkBit.Attached)
+                            {
+                                junkBit.IsRegistered = false;
+                                Recycler.Recycle<JunkBit>(junkBit);
+                                m_obstacles[i] = null;
+                            }
+
+                            break;
+                        case Crate crate:
+                            if (!crate.Attached)
+                            {
+                                crate.IsRegistered = false;
+                                Recycler.Recycle<Crate>(crate);
+                                m_obstacles[i] = null;
+                            }
+
+                            break;
+                        case BlackHole blackHole:
+                            Recycler.Recycle<BlackHole>(blackHole);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
@@ -502,14 +574,6 @@ namespace StarSalvager
                     rotate.transform.localRotation *=
                         Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
-            }
-
-            if (RecoveredBotFalling != null && !RecoveredBotTowing)
-            {
-                var pos = RecoveredBotFalling.transform.localPosition;
-                pos -= amountShift;
-
-                RecoveredBotFalling.transform.localPosition = pos;
             }
 
             /*if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
@@ -573,6 +637,29 @@ namespace StarSalvager
             //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
             LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
         }*/
+
+        public List<BlackHole> GetAllBlackHoles()
+        {
+            List<BlackHole> blackHoles = new List<BlackHole>();
+
+            for (int i = 0; i < m_obstacles.Count; i++)
+            {
+                if (m_obstacles[i] is BlackHole blackHole)
+                {
+                    blackHoles.Add(blackHole);
+                }
+            }
+
+            for (int i = 0; i < m_offGridMovingObstacles.Count; i++)
+            {
+                if (m_obstacles[i] is BlackHole blackHole)
+                {
+                    blackHoles.Add(blackHole);
+                }
+            }
+
+            return blackHoles;
+        }
 
         public void IncreaseSpeedAllOffGridMoving(float speedModifier)
         {
@@ -931,8 +1018,7 @@ namespace StarSalvager
                             PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
                         case nameof(Component):
-                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentAttachableFactory>()
-                                .CreateObject<Component>((COMPONENT_TYPE) rdsValueBlockData.rdsValue.Type);
+                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
                             //AddObstacleToList(newComponent);
                             PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
                             break;
@@ -944,7 +1030,6 @@ namespace StarSalvager
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                    //AddObstacleToList(newAsteroid);
                     PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
                 }
                 else
@@ -953,24 +1038,6 @@ namespace StarSalvager
                 }
             }
         }
-
-
-        //Used to benchmark spawn rates
-        /*[SerializeField, ReadOnly]
-        private bool startedCheck;
-        private float timeStart;
-
-        private int spawned;
-
-        [SerializeField, ReadOnly]
-        private List<float> test;
-        
-        //[ShowInInspector]
-        private float totalPerMin => startedCheck ? (spawned / (Time.time - timeStart)) * 60f : 0f;
-
-        [ShowInInspector]
-        private float Average => test.IsNullOrEmpty() ? 0f : test.Average();*/
-        
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
             ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
@@ -991,13 +1058,6 @@ namespace StarSalvager
                         LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
 
                     AddObstacleToList(newObstacle);
-                    if (newObstacle is Shape newShape)
-                    {
-                        foreach (Bit bit in newShape.AttachedBits)
-                        {
-                            AddObstacleToList(bit);
-                        }
-                    }
 
                     obstacle = newObstacle;
                     break;
@@ -1011,40 +1071,12 @@ namespace StarSalvager
                         LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
 
                     AddObstacleToList(newObstacle);
-                    if (newObstacle is Shape newShape)
-                    {
-                        foreach (Bit bit in newShape.AttachedBits)
-                        {
-                            AddObstacleToList(bit);
-                        }
-                    }
-                    
-                    //Used to benchmark spawn rates
-                    /*if (!startedCheck)
-                    {
-                        startedCheck = true;
-                        timeStart = Time.time;
-                        test = new List<float>();
-                    }
-                    else if (startedCheck && Time.time - timeStart >= 1f)
-                    {
-                        test.Add(totalPerMin);
-                        timeStart = Time.time;
-                        spawned = 0;
-                    }
-                    else
-                        spawned++;*/
                     
                     obstacle = newObstacle;
                     break;
                 }
                 case SELECTION_TYPE.ASTEROID:
                 {
-                    if (LevelManager.Instance.WaveTimer + Globals.AsteroidSpawnDisableTimeBeforeWaveEnd >= LevelManager.Instance.CurrentWaveData.GetWaveDuration())
-                    {
-                        return;
-                    }
-
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                         .CreateAsteroid<Asteroid>(asteroidSize);
                     AddObstacleToList(newAsteroid);
@@ -1077,11 +1109,10 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
 
-
             PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
         }
 
-        public void AddOrphanToObstacles(IObstacle obstacle)
+        public void AddObstacleToListAndParentToWorldRoot(IObstacle obstacle)
         {
             obstacle.transform.parent = WorldElementsRoot.transform;
             AddObstacleToList(obstacle);
@@ -1094,6 +1125,14 @@ namespace StarSalvager
                 return;
 
             m_obstacles.Add(obstacle);
+            if (obstacle is Shape newShape)
+            {
+                foreach (Bit bit in newShape.AttachedBits)
+                {
+                    AddObstacleToList(bit);
+                }
+            }
+
             obstacle.IsRegistered = true;
         }
 
@@ -1139,6 +1178,9 @@ namespace StarSalvager
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
                         break;
+                    case BlackHole blackHole:
+                        Recycler.Recycle<BlackHole>(blackHole);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(obstacle), obstacle, null);
                 }
@@ -1155,6 +1197,8 @@ namespace StarSalvager
                 case Bit _:
                 case Asteroid _:
                 case Component _:
+                case SpaceJunk _:
+                case BlackHole _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
                 case Shape shape:
@@ -1187,6 +1231,7 @@ namespace StarSalvager
                 case Bit _:
                 case Asteroid _:
                 case Component _:
+                case JunkBit _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
                 case Shape shape:
@@ -1198,14 +1243,25 @@ namespace StarSalvager
         }
 
         private float m_bounceTravelDistance = 20.0f;
-        private float m_bounceSpeedAdjustment = 0.5f;
+        private float m_bounceSpeedAdjustment = 1.0f;
 
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
+            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
+            
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);
             float bounceTravelDistance = m_bounceTravelDistance * randomFactor;
+            float bounceSpeedAdjustment = 1.0f;
+
+            if (isBumper)
+            {
+                bounceTravelDistance *= 5;
+                bounceSpeedAdjustment /= 5;
+                despawnOnEnd = true;
+                Debug.Log("Bounce Bumper");
+            }
 
             var localPosition = obstacle.transform.localPosition;
             Vector2 destination = (Vector2) localPosition + direction * bounceTravelDistance;
@@ -1216,7 +1272,7 @@ namespace StarSalvager
 
             PlaceMovableOffGrid(obstacle, localPosition, destination,
                 Vector2.Distance(localPosition, destination) /
-                (bounceTravelDistance * m_bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
+                (bounceTravelDistance * bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,
@@ -1228,6 +1284,7 @@ namespace StarSalvager
             PlaceMovableOffGrid(obstacle, startingPosition, endPosition, lerpSpeed, spinSpeed, despawnOnEnd, spinning,
                 arc, parentToGrid);
         }
+
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)
@@ -1250,7 +1307,7 @@ namespace StarSalvager
 
         #region Bonus Shapes
 
-        List<List<BlockData>> previousShapesInLevel = new List<List<BlockData>>();
+        List<List<BitData>> previousShapesInLevel = new List<List<BitData>>();
 
         private void SpawnBonusShape(SELECTION_TYPE selectionType, string shapeName, string category, int numRotations)
         {
@@ -1276,7 +1333,7 @@ namespace StarSalvager
 
             if (newObstacle is Shape shape)
             {
-                List<BlockData> newObstacleData = new List<BlockData>();
+                List<BitData> newObstacleData = new List<BitData>();
                 for (int i = 0; i < shape.AttachedBits.Count; i++)
                 {
                     newObstacleData.Add(shape.AttachedBits[i].ToBlockData());
@@ -1324,17 +1381,48 @@ namespace StarSalvager
                 s.Obstacle is Shape offGridShape && offGridShape == shape));
             Recycler.Recycle<Shape>(shape);
             LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched++;
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                intAmount = LevelManager.Instance.WaveEndSummaryData.NumBonusShapesMatched
-            };
-
-            MissionManager.ProcessMissionData(typeof(ChainBonusShapesMission), missionProgressEventData);
         }
 
         #endregion //Bonus Shapes
 
+
+        //====================================================================================================================//
+
+        public CollidableBase GetClosestDestructableCollidable(Vector2 position, float range)
+        {
+            var shortestDist = 999f;
+            CollidableBase closestDestructableObstacle = null;
+            foreach (var obstacle in m_obstacles)
+            {
+                if (obstacle == null)
+                    continue;
+
+                if (!(obstacle is CollidableBase collidableBase))
+                {
+                    continue;
+                }
+
+                if (!(obstacle is SpaceJunk))
+                {
+                    continue;
+                }
+
+                if (!CameraController.IsPointInCameraRect(collidableBase.transform.position))
+                    continue;
+
+                var dist = Vector2.Distance(position, collidableBase.transform.position);
+
+                if (dist > range)
+                    continue;
+                if (dist > shortestDist)
+                    continue;
+
+                shortestDist = dist;
+                closestDestructableObstacle = collidableBase;
+            }
+
+            return closestDestructableObstacle;
+        }
 
         //====================================================================================================================//
 

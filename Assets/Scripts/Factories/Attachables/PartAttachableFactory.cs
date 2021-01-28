@@ -3,6 +3,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarSalvager.Factories
@@ -23,14 +24,8 @@ namespace StarSalvager.Factories
         {
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
-            
-            part.SetLevel(level);
-            part.SetSprite(sprite);
-        }
 
-        public bool CheckLevelExists(PART_TYPE partType, int level)
-        {
-            return factoryProfile.GetProfile(partType).Sprites.Length > level;
+            part.SetSprite(sprite);
         }
 
         //============================================================================================================//
@@ -39,23 +34,50 @@ namespace StarSalvager.Factories
         {
             return remotePartData.GetRemoteData(partType);
         }
-        
+
         public PartProfile GetProfileData(PART_TYPE partType)
         {
             return factoryProfile.GetProfile(partType);
         }
-        
+
+        public PART_TYPE GetBasicWreckPartTypeOption()
+        {
+            List<PART_TYPE> partType = new List<PART_TYPE>();
+
+            partType.Add(PART_TYPE.GUN);
+            partType.Add(PART_TYPE.SNIPER);
+            partType.Add(PART_TYPE.ARMOR);
+            partType.Add(PART_TYPE.REPAIR);
+
+            return partType[Random.Range(0, partType.Count)];
+        }
+
+        public PART_TYPE GetWreckPartTypeOption()
+        {
+            List<PART_TYPE> partType = new List<PART_TYPE>();
+
+            partType.Add(PART_TYPE.GUN);
+            partType.Add(PART_TYPE.SNIPER);
+            partType.Add(PART_TYPE.BOMB);
+            partType.Add(PART_TYPE.FREEZE);
+            partType.Add(PART_TYPE.ARMOR);
+            partType.Add(PART_TYPE.SHIELD);
+            partType.Add(PART_TYPE.REPAIR);
+
+            return partType[Random.Range(0, partType.Count)];
+        }
+
         //============================================================================================================//
 
-        public GameObject CreateGameObject(BlockData blockData)
+        public GameObject CreateGameObject(PartData partData)
         {
-            var type = (PART_TYPE) blockData.Type;
+            var type = (PART_TYPE) partData.Type;
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(blockData.Level);
-            var startingHealth = remote.levels[blockData.Level].health;//.health[blockData.Level];
+            var sprite = profile.GetSprite(0);
+            //var startingHealth = remote.levels[partData.Level].health;//.health[blockData.Level];
 
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
             Part temp;
@@ -66,11 +88,11 @@ namespace StarSalvager.Factories
                 {
                     anim = CreateAnimatedObject<AnimatedPart>();
                 }
-                
+
                 anim.SimpleAnimator.SetAnimation(profile.animation);
                 temp = anim;
 
-                temp.gameObject.name = $"{nameof(AnimatedPart)}_{type}_lvl{blockData.Level}";
+                temp.gameObject.name = $"{nameof(AnimatedPart)}_{type}";
             }
             else
             {
@@ -78,27 +100,22 @@ namespace StarSalvager.Factories
                 {
                     temp = CreateObject<Part>();
                 }
-                
-                temp.gameObject.name = $"{nameof(Part)}_{type}_lvl{blockData.Level}";
+
+                temp.gameObject.name = $"{nameof(Part)}_{type}";
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
-            //var temp = Object.Instantiate(factoryProfile.Prefab).GetComponent<Part>();
             temp.SetSprite(sprite);
-            temp.LoadBlockData(blockData);
+            temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
 
-
-            //temp.StartingHealth =
-            temp.SetupHealthValues(startingHealth, blockData.Health);
-
-            temp.gameObject.name = $"{temp.Type}_{temp.level}";
+            temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
         }
-        public T CreateObject<T>(BlockData blockData)
+        public T CreateObject<T>(PartData partData)
         {
-            var temp = CreateGameObject(blockData);
+            var temp = CreateGameObject(partData);
 
             return temp.GetComponent<T>();
 
@@ -106,62 +123,52 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateGameObject(PART_TYPE partType, int level = 0)
+        public GameObject CreateGameObject(PART_TYPE partType)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
-            var blockData = new BlockData
+            var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
+            var blockData = new PartData
             {
-                Level = level,
                 Type = (int) partType,
-                Health = startingHealth
+                Patches = new PatchData[patchSockets]
             };
 
             return CreateGameObject(blockData);
         }
 
-        public T CreateObject<T>(PART_TYPE partType, int level = 0)
+        public T CreateObject<T>(PART_TYPE partType)
         {
-            var temp = CreateGameObject(partType, level);
+            var temp = CreateGameObject(partType);
 
             return temp.GetComponent<T>();
         }
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(BlockData blockData)
+        public GameObject CreateScrapyardGameObject(PartData partData)
         {
-            var profileData = (PartProfileScriptableObject)factoryProfile;
-            
-            var remote = remotePartData.GetRemoteData((PART_TYPE)blockData.Type);
-            var profile = factoryProfile.GetProfile((PART_TYPE)blockData.Type);
-            var sprite = profile.GetSprite(blockData.Level);
-            var startingHealth = remote.levels[blockData.Level].health;
-            
-            //var temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardPart>();
+            var profile = factoryProfile.GetProfile((PART_TYPE)partData.Type);
+            var sprite = profile.GetSprite(0);
+
 
             if (!Recycler.TryGrab(out ScrapyardPart temp))
             {
                 temp = CreateScrapyardObject<ScrapyardPart>();
             }
-            
-            temp.LoadBlockData(blockData);
-            temp.SetSprite(temp.Destroyed ? profileData.GetDamageSprite(blockData.Level) : sprite);
-            temp.SetupHealthValues(startingHealth, blockData.Health);
 
+            temp.LoadBlockData(partData);
+            temp.SetSprite(sprite);
 
             var gameObject = temp.gameObject;
-            gameObject.name = $"{temp.Type}_{temp.level}";
-            
+            gameObject.name = $"{temp.Type}";
+
             return gameObject;
         }
 
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
-            if (toOverride.Destroyed)
-                return;
-            
+
             var profile = factoryProfile.GetProfile(overrideType);
-            var sprite = profile.GetSprite(toOverride.level);
+            var sprite = profile.GetSprite(0);
 
             //TODO This should be the same function
             switch (toOverride)
@@ -173,46 +180,45 @@ namespace StarSalvager.Factories
                     scrapyardPart.SetSprite(sprite);
                     break;
             }
-            
-            
+
+
         }
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(PART_TYPE partType, int level = 0)
+        public GameObject CreateScrapyardGameObject(PART_TYPE partType)
         {
-            var startingHealth = remotePartData.GetRemoteData(partType).levels[level].health;
-            var blockData = new BlockData
+            var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
+            var blockData = new PartData
             {
-                Level = level,
                 Type = (int)partType,
-                Health = startingHealth
+                Patches = new PatchData[patchSockets]
             };
 
             return CreateScrapyardGameObject(blockData);
         }
 
-        public T CreateScrapyardObject<T>(PART_TYPE partType, int level = 0)
+        public T CreateScrapyardObject<T>(PART_TYPE partType)
         {
-            var temp = CreateScrapyardGameObject(partType, level);
+            var temp = CreateScrapyardGameObject(partType);
 
             return temp.GetComponent<T>();
         }
-        
-        public T CreateScrapyardObject<T>(BlockData blockData)
+
+        public T CreateScrapyardObject<T>(PartData partData)
         {
-            var temp = CreateScrapyardGameObject(blockData);
+            var temp = CreateScrapyardGameObject(partData);
 
             return temp.GetComponent<T>();
         }
-        
+
         //============================================================================================================//
-        
+
         public GameObject CreateScrapyardGameObject()
         {
             return Object.Instantiate(factoryProfile.ScrapyardPrefab);
         }
-        
+
         public T CreateScrapyardObject<T>()
         {
             var temp = CreateScrapyardGameObject();
@@ -226,14 +232,14 @@ namespace StarSalvager.Factories
         {
             return Object.Instantiate(factoryProfile.AnimatedPrefab);
         }
-        
+
         public T CreateAnimatedObject<T>()
         {
             var temp = CreateAnimatedGameObject();
 
             return temp.GetComponent<T>();
         }
-        
+
         public override GameObject CreateGameObject()
         {
             return Object.Instantiate(factoryProfile.Prefab);

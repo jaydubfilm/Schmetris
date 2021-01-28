@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardBit : MonoBehaviour, IAttachable, IBit, ISaveable
+    public class ScrapyardBit : MonoBehaviour, IAttachable, IBit, ISaveable<BitData>
     {
         protected new SpriteRenderer renderer
         {
@@ -71,22 +72,24 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public BitData ToBlockData()
         {
-            return new BlockData
+            return new BitData
             {
-                ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
                 Level = level
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
         {
-            Coordinate = blockData.Coordinate;
-            Type = (BIT_TYPE)blockData.Type;
-            level = blockData.Level;
+            if (!(blockData is BitData bitData))
+                throw new Exception();
+            
+            Coordinate = bitData.Coordinate;
+            Type = (BIT_TYPE)bitData.Type;
+            level = bitData.Level;
         }
 
         //============================================================================================================//
@@ -109,5 +112,9 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

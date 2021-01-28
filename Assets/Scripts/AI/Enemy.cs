@@ -6,7 +6,6 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Animations;
-using StarSalvager.Missions;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
@@ -219,7 +218,8 @@ namespace StarSalvager.AI
                     shootDirection, /*m_mostRecentMovementDirection * m_enemyData.MovementSpeed,*/
                     m_enemyData.AttackDamage,
                     1f,
-                    "Player");
+                    "Player",
+                    null);
 
             /*List<Vector2> fireLocations = GetFireDirection();
             foreach (Vector2 fireLocation in fireLocations)
@@ -320,15 +320,12 @@ namespace StarSalvager.AI
                 case ENEMY_MOVETYPE.Standard:
                     return playerLocation;
                 case ENEMY_MOVETYPE.Oscillate:
-                    //Find destination by rotating the playerLocation around the enemy position, at the angle output by the oscillate function
                     return GetDestinationForRotatePositionAroundPivot(playerLocation, transform.position,
                         GetAngleInOscillation());
                 case ENEMY_MOVETYPE.OscillateHorizontal:
-                    //Find destination by determining whether to move left or right and then oscillating at the angle output by the oscillate function
                     return GetDestinationForRotatePositionAroundPivot(transform.position + SetHorizontalDirection(playerLocation),
                         transform.position, GetAngleInOscillation());
                 case ENEMY_MOVETYPE.Orbit:
-                    //If outside the orbit radius, move towards the player location. If inside it, get the destination along the edge of the circle to move clockwise around it
                     float distanceSqr = Vector2.SqrMagnitude(transform.position - playerLocation);
                     if (distanceSqr > m_enemyData.OrbitRadiusSqr)
                     {
@@ -500,13 +497,6 @@ namespace StarSalvager.AI
                 return;
             
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                enemyTypeString = m_enemyData.EnemyType,
-                intAmount = 1
-            };
-            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

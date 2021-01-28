@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -19,7 +20,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class MainMenuv2 : MonoBehaviour
+    public class MainMenuv2 : MonoBehaviour, IReset
     {
         private enum WINDOW
         {
@@ -29,6 +30,7 @@ namespace StarSalvager.UI
             ACCOUNT_MENU,
             RUN,
             SETTINGS,
+            LAYOUT_CHOICE
         }
 
         private enum GAME_TYPE
@@ -139,6 +141,15 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private GameObject layoutChoiceWindowObject;
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private List<Button> layoutChoiceButtons;
+        [SerializeField, Required, FoldoutGroup("Layout Choice Window")]
+        private RectTransform[] layoutBotPreviewContainers;
+
+        //====================================================================================================================//
+
         private GAME_TYPE _selectedGameType;
         private int _selectedAccountIndex = -1;
         
@@ -159,9 +170,22 @@ namespace StarSalvager.UI
         private void Start()
         {
             //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-            
+
+            Globals.Init();
             SetupWindows();
             SetupButtons();
+        }
+
+        //IReset Functions
+        //====================================================================================================================//
+        
+        public void Activate()
+        {
+            Globals.ScaleCamera(Globals.CameraScaleSize);
+        }
+
+        public void Reset()
+        {
         }
 
         //MainMenuV2 Functions
@@ -195,6 +219,9 @@ namespace StarSalvager.UI
                     break;
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
+                    break;
+                case WINDOW.LAYOUT_CHOICE:
+                    SetupLayoutChoiceWindow();
                     break;
                 /*case WINDOW.RUN:
                     SetupRunMenuWindow();
@@ -259,6 +286,11 @@ namespace StarSalvager.UI
                 accountButtons[i].onClick.RemoveAllListeners();
                 accountButtons[i].onClick.AddListener(() =>
                 {
+                    if (Files.TryImportPlayerSaveAccountData(index) == null)
+                    {
+                        SetupLayoutChoiceWindow();
+                    }
+
                     _selectedAccountIndex = index;
                     PlayerDataManager.SetCurrentSaveSlotIndex(index);
                     SetupAccountMenuWindow();
@@ -276,7 +308,7 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                List<BlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
+                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
                 blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes
@@ -301,7 +333,28 @@ namespace StarSalvager.UI
             EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
             
         }
-        
+
+        //Setup Layout Choice Window
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupLayoutChoiceWindow()
+        {
+            layoutChoiceWindowObject.SetActive(true);
+
+            for (int i = 0; i < layoutBotPreviewContainers.Length; i++)
+            {
+                if (PlayerDataManager.botLayoutOptions.Count <= i)
+                {
+                    layoutChoiceWindowObject.SetActive(false);
+                    continue;
+                }
+                layoutChoiceWindowObject.SetActive(true);
+
+                List<Vector2Int> layoutPositions = PlayerDataManager.botLayoutOptions[i];
+                layoutPositions.CreateBotPreview(layoutBotPreviewContainers[i]);
+            }
+        }
+
         //Setup Run Window
         //------------------------------------------------------------------------------------------------------------//
 
@@ -348,6 +401,7 @@ namespace StarSalvager.UI
             SetupAccountMenuButtons();
             SetupRunMenuButtons();
             SetupSettingsButtons();
+            SetupLayoutChoiceButtons();
         }
 
         //Setup Main Menu Buttons
@@ -439,7 +493,7 @@ namespace StarSalvager.UI
                 AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
                 PlayerDataManager.SetRunStarted();
-                LeaveMenu(SceneLoader.SCRAPYARD);
+                LeaveMenu(SceneLoader.UNIVERSE_MAP);
             });
             abandonRunButton.onClick.AddListener(() =>
             {
@@ -457,14 +511,15 @@ namespace StarSalvager.UI
                         SetupAccountMenuWindow();
                     });
             });
-            tutorialButton.onClick.AddListener(() =>
+            tutorialButton.interactable = false;
+            /*tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
                 Globals.CurrentSector = FactoryManager.Instance.SectorRemoteData.Count - 1;
                 Globals.CurrentWave = 0;
                 
                 LeaveMenu(SceneLoader.LEVEL);
-            });
+            });*/
         }
 
         //Setup Run Buttons
@@ -530,10 +585,27 @@ namespace StarSalvager.UI
             settingsBackButton.onClick.AddListener(CloseOpenWindow);
         }
 
+        //Setup Layout Choice Buttons
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupLayoutChoiceButtons()
+        {
+            for (int i = 0; i < layoutChoiceButtons.Count; i++)
+            {
+                int index = i;
+                layoutChoiceButtons[i].onClick.AddListener(() =>
+                {
+                    PlayerDataManager.SetBotLayout(index);
+                    PlayerDataManager.ResetPlayerRunData();
+                    layoutChoiceWindowObject.SetActive(false);
+                });
+            }
+        }
+
         #endregion //Buttons
 
         //====================================================================================================================//
-        
+
         #region Windows
 
         private void SetupWindows()
@@ -632,6 +704,7 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
+
+
     }
 }

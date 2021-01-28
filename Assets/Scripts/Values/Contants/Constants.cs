@@ -4,7 +4,7 @@ namespace StarSalvager.Values
 {
     public static class Constants
     {
-        public static readonly Version VERSION = new Version(1, 9, 0, 0);
+        public static readonly Version VERSION = new Version(1, 14, 0, 0);
 
         public const float VISIBLE_GAME_AREA = 0.55f;
         
@@ -20,8 +20,9 @@ namespace StarSalvager.Values
             BIT_TYPE.RED,
             BIT_TYPE.GREY,
             BIT_TYPE.GREEN,
+            BIT_TYPE.BLUE,
             BIT_TYPE.YELLOW,
-            BIT_TYPE.BLUE
+            
         };
     }
 }

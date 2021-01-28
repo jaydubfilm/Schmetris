@@ -56,7 +56,7 @@ namespace StarSalvager.UI.Hints
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
-        private string _previousInputActionGroup;
+        private ACTION_MAP _previousInputActionGroup;
 
         //HintManager Functions
         //====================================================================================================================//
@@ -67,6 +67,10 @@ namespace StarSalvager.UI.Hints
                 return false;
             
             if (Instance == null)
+                return false;
+
+            //Make sure we're not competing for the screen space
+            if (GameManager.IsState(GameState.LevelActiveEndSequence))
                 return false;
 
             if (hint == HINT.NONE)
@@ -189,19 +193,19 @@ namespace StarSalvager.UI.Hints
                     };
                     break;
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.FUEL:
+                /*case HINT.FUEL:
                     objectsToHighlight = GameUI.Instance.GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.HOME:
+                /*case HINT.HOME:
                     var hasBits = PlayerDataManager.GetBlockDatas().Any(x => x.ClassType.Equals(nameof(Bit)));
                     if (!hasBits)
                         return;
                     
                     objectsToHighlight = FindObjectOfType<UniverseMap>().GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
-                case HINT.CRAFT_PART:
+                /*case HINT.CRAFT_PART:
                     var hasPart = PlayerDataManager.GetCurrentPartsInStorage()
                         .Any(x => x.ClassType.Equals(nameof(Part)));
 
@@ -209,7 +213,7 @@ namespace StarSalvager.UI.Hints
                         return;
 
                     objectsToHighlight = FindObjectOfType<StorageUI>().GetHintElements(hint);
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.DAMAGE:
                     objectsToHighlight = FindObjectOfType<DroneDesigner>().GetHintElements(hint);
@@ -217,7 +221,7 @@ namespace StarSalvager.UI.Hints
                     var canAfford = FindObjectOfType<DroneDesignUI>().CanAffordRepair;
                     var textIndex = canAfford ? 0 : 1;
                     
-                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault(), canAfford));
+                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));
                     return;
                 //----------------------------------------------------------------------------------------------------//
                 //----------------------------------------------------------------------------------------------------//
@@ -259,7 +263,7 @@ namespace StarSalvager.UI.Hints
             ShowingHint = true;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
             var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
@@ -290,15 +294,17 @@ namespace StarSalvager.UI.Hints
                 ShowHintText(hintData.hintTexts[i]);
 
                 //TODO Need to also include waiting for button Press
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
                 
                 buttonPressed = false;
+
+                yield return null;
             }
 
             PlayerDataManager.SetHint(hint, true);
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
-            _previousInputActionGroup = string.Empty;
+            _previousInputActionGroup = ACTION_MAP.NULL;
             
             Time.timeScale = 1f;
             ShowingHint = false;
@@ -323,7 +329,7 @@ namespace StarSalvager.UI.Hints
             ShowingHint = true;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap("Menu Controls");
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
             var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
@@ -350,13 +356,13 @@ namespace StarSalvager.UI.Hints
             ShowHintText(text);
 
             //TODO Need to also include waiting for button Press
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || buttonPressed);
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
 
             if(setHint)
                 PlayerDataManager.SetHint(hint, setHint);
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
-            _previousInputActionGroup = string.Empty;
+            _previousInputActionGroup = ACTION_MAP.NULL;
             
             Time.timeScale = 1f;
             ShowingHint = false;

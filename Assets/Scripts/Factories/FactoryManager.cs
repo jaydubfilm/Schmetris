@@ -13,16 +13,7 @@ namespace StarSalvager.Factories
     public class FactoryManager : Singleton<FactoryManager>
     {
         [SerializeField, Required, BoxGroup("Temporary")]
-        private MissionRemoteDataScriptableObject missionRemoteData;
-        public MissionRemoteDataScriptableObject MissionRemoteData => missionRemoteData;
-
-        [SerializeField, Required, BoxGroup("Temporary")]
         private List<SectorModularData> m_sectorRemoteData;
-
-        //[SerializeField, Required, BoxGroup("Temporary")]
-        //private BitProfileScriptableObject[] _bitProfileScriptableObjects;
-        //[SerializeField, Required, BoxGroup("Temporary")]
-        //private PartProfileScriptableObject[] _partProfileScriptableObjects;
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
@@ -34,6 +25,8 @@ namespace StarSalvager.Factories
 
         public int ModularDataCount => m_sectorRemoteData.Count;
 
+
+        public Sprite PatchSprite;
 
         //====================================================================================================================//
         public DamageProfileScriptableObject DamageProfile => damageProfile;
@@ -50,17 +43,17 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Attachables/Bits")]
         private BitRemoteDataScriptableObject bitRemoteData;
-        
+
         //============================================================================================================//
-        
-        public ComponentProfileScriptableObject ComponentProfile => componentProfile as ComponentProfileScriptableObject;
-        
+
         [SerializeField, Required, BoxGroup("Attachables/Components")]
-        private AttachableProfileScriptableObject componentProfile;
-        
+        private GameObject componentPrefab;
+
         [SerializeField, Required, BoxGroup("Attachables/Components")]
         public ComponentRemoteDataScriptableObject componentRemoteData;
 
+        [SerializeField, Required, BoxGroup("Attachables/Components")]
+        public Sprite componentSprite;
 
         
         //============================================================================================================//
@@ -90,6 +83,12 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Projectiles")]
         private ProjectileProfileScriptableObject projectileProfile;
         public ProjectileProfileScriptableObject ProjectileProfile => projectileProfile;
+        
+        //============================================================================================================//
+        
+        [SerializeField, Required, BoxGroup("Patches")]
+        private PatchRemoteDataScriptableObject patchRemoteData;
+        public PatchRemoteDataScriptableObject PatchRemoteData => patchRemoteData;
         
         //============================================================================================================//
         
@@ -148,10 +147,35 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public FacilityRemoteDataScriptableObject FacilityRemote => facilityRemote;
-        [SerializeField, Required, BoxGroup("Facilities")]
-        private FacilityRemoteDataScriptableObject facilityRemote;
-        
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private SpaceJunkRemoteDataScriptableObject spaceJunkRemote;
+
+        [SerializeField, Required, BoxGroup("Space Junk")]
+        private GameObject spaceJunkPrefab;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Crate")]
+        private CrateRemoteDataScriptableObject crateRemote;
+
+        [SerializeField, Required, BoxGroup("Crate")]
+        private GameObject cratePrefab;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Mine")]
+        private MineRemoteDataScriptableObject mineRemote;
+
+        [SerializeField, Required, BoxGroup("Mine")]
+        private GameObject minePrefab;
+
+        //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Black Hole")]
+        private BlackHoleRemoteDataScriptableObject blackHoleRemote;
+
+        [SerializeField, Required, BoxGroup("Black Hole")]
+        private GameObject blackHolePrefab;        
 
         //============================================================================================================//
 
@@ -225,8 +249,8 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(PartAttachableFactory):
                     return new PartAttachableFactory(partProfile, partRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
-                case bool _ when type == typeof(ComponentAttachableFactory):
-                    return new ComponentAttachableFactory(componentProfile, componentRemoteData) as T;
+                case bool _ when type == typeof(ComponentFactory):
+                    return new ComponentFactory(componentPrefab, componentRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(ShapeFactory):
                     return new ShapeFactory(shapePrefab, EditorBotShapeData.GetEditorShapeData()) as T;
@@ -245,6 +269,18 @@ namespace StarSalvager.Factories
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(EffectFactory):
                     return new EffectFactory(EffectProfileScriptableObject) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(SpaceJunkFactory):
+                    return new SpaceJunkFactory(spaceJunkPrefab, spaceJunkRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(CrateFactory):
+                    return new CrateFactory(cratePrefab, crateRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(MineFactory):
+                    return new MineFactory(minePrefab, mineRemote) as T;
+                //----------------------------------------------------------------------------------------------------//
+                case bool _ when type == typeof(BlackHoleFactory):
+                    return new BlackHoleFactory(blackHolePrefab, blackHoleRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type.Name, null);

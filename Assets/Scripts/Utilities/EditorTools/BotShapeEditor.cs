@@ -10,6 +10,7 @@ using StarSalvager.UI;
 using UnityEngine.InputSystem;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.Utilities.FileIO;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using StarSalvager.Utilities.Saving;
 
@@ -97,14 +98,15 @@ namespace StarSalvager
             if (ctx.ReadValue<float>() == 1f)
                 return;
 
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (_shape != null && _shape.AttachedBits.All(b => b.Coordinate != mouseCoordinate))
             {
-                if (SelectedBrick.Value.ClassType.Equals(nameof(Bit)))
+                if (SelectedBrick is BitData bitData)
                 {
-                    _shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(SelectedBrick.Value), mouseCoordinate);
+                    _shape.PushNewBit(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitData), mouseCoordinate);
+
                 }
             }
 
@@ -116,25 +118,27 @@ namespace StarSalvager
                 IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
                 if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                 {
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level + 1, ref partAtCoordinates);
+                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, 1, ref partAtCoordinates);
                 }
             }
             else
             {
-                if (!SelectedBrick.HasValue)
+                if (SelectedBrick is null)
                     return;
 
-                switch (SelectedBrick.Value.ClassType)
+                switch (SelectedBrick)
                 {
-                    case nameof(Part):
-                        var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(SelectedBrick.Value);
-                        _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+                    case PartData partData:
+                        var part = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<IAttachable>(partData);
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, part);
                         break;
-                    case nameof(Bit):
-                        _scrapyardBot.AttachNewBit(mouseCoordinate, FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(SelectedBrick.Value));
+                    case BitData bitData:
+                        var bit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                            .CreateScrapyardObject<ScrapyardBit>(bitData);
+                        _scrapyardBot.AttachNewBit(mouseCoordinate, bit);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(SelectedBrick.Value.ClassType), SelectedBrick.Value.ClassType, null);
+                        throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, null);
                 }
             }
         }
@@ -148,7 +152,7 @@ namespace StarSalvager
             if (ctx.ReadValue<float>() == 0f)
                 return;
             
-            if (!TryGetMouseCoordinate(out Vector2Int mouseCoordinate))
+            if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
 
             if (mouseCoordinate.x != 0 || mouseCoordinate.y != 0)
@@ -156,13 +160,13 @@ namespace StarSalvager
                 if (_scrapyardBot != null)
                 {
                     IAttachable attachable = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
-                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE && partAtCoordinates.level > 0)
+                    if (attachable != null && attachable is ScrapyardPart partAtCoordinates && partAtCoordinates.Type == PART_TYPE.CORE)
                     {
-                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, partAtCoordinates.level - 1, ref partAtCoordinates);
+                        FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(partAtCoordinates.Type, 0, ref partAtCoordinates);
                         return;
                     }
 
-                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(mouseCoordinate);
                 } 
             }
                 
@@ -288,7 +292,7 @@ namespace StarSalvager
 
                 foreach (var remove in toRemove)
                 {
-                    _scrapyardBot.TryRemoveAttachableAt(remove.Coordinate, false);
+                    _scrapyardBot.TryRemoveAttachableAt(remove.Coordinate);
                 }
             }
 

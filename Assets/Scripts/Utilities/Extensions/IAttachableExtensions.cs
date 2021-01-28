@@ -78,7 +78,7 @@ namespace StarSalvager.Utilities.Extensions
                 directionBounce.Normalize();
             }
 
-            float rotation = 360.0f;
+            float rotation = 720.0f;
             if (directionBounce.x >= 0)
             {
                 rotation *= -1;
@@ -94,7 +94,7 @@ namespace StarSalvager.Utilities.Extensions
         
         public static void Bounce(this IObstacle obstacle, Vector2 contactPoint, Vector2 contactCenterPosition, ROTATION rotation)
         {
-            float degrees = 360.0f;
+            float degrees = 720.0f;
             if (rotation == ROTATION.CW)
             {
                 degrees *= -1;

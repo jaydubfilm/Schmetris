@@ -190,9 +190,8 @@ namespace StarSalvager.Utilities.Analytics.Editor
                 case nameof(ScrapyardBit):
                 case nameof(Bit):
                     return Object.FindObjectOfType<FactoryManager>().BitProfileData.GetProfile((BIT_TYPE)blockData.Type).GetSprite(blockData.Level);
-                case nameof(ScrapyardComponent):
                 case nameof(Component):
-                    return Object.FindObjectOfType<FactoryManager>().ComponentProfile.GetProfile((COMPONENT_TYPE)blockData.Type).GetSprite(0);
+                    return Object.FindObjectOfType<FactoryManager>().componentSprite;
                 case nameof(ScrapyardPart):
                 case nameof(Part):
                     return Object.FindObjectOfType<FactoryManager>().PartsProfileData.GetProfile((PART_TYPE)blockData.Type).GetSprite(blockData.Level);

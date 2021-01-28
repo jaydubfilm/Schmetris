@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -87,21 +88,21 @@ namespace StarSalvager.Utilities.Extensions
         }
         public static void ImportLayout(this Bot bot, string jsonLayout)
         {
-            var loadedBlocks = JsonConvert.DeserializeObject<List<BlockData>>(jsonLayout);
+            var loadedBlocks = JsonConvert.DeserializeObject<List<IBlockData>>(jsonLayout);
 
             foreach (var block in loadedBlocks)
             {
                 IAttachable attachable;
-                switch (block.ClassType)
+                switch (block)
                 {
-                    case nameof(Bit):
-                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<IAttachable>(block);
+                    case BitData bitData:
+                        attachable = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<IAttachable>(bitData);
                         break;
-                    case nameof(Part):
-                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(block);
+                    case PartData partData:
+                        attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<IAttachable>(partData);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(block.ClassType), block.ClassType, null);
+                        throw new ArgumentOutOfRangeException(nameof(block), block, null);
                 }
                 
                 bot.AttachNewBlock(attachable.Coordinate, attachable);
@@ -113,9 +114,9 @@ namespace StarSalvager.Utilities.Extensions
         
         //============================================================================================================//
         
-        public static List<BlockData> GetBlockDatas(this Bot bot)
+        public static List<IBlockData> GetBlockDatas(this Bot bot)
         {
-            var blockDatas = new List<BlockData>();
+            var blockDatas = new List<IBlockData>();
             
             var attachables = new List<IAttachable>(bot.attachedBlocks);
             //var ignoreAttachables = bot.PendingDetach == null
@@ -133,9 +134,9 @@ namespace StarSalvager.Utilities.Extensions
             return blockDatas;
         }
 
-        public static List<BlockData> GetBlockDatas(this ScrapyardBot bot)
+        public static List<IBlockData> GetBlockDatas(this ScrapyardBot bot)
         {
-            var blockDatas = new List<BlockData>();
+            var blockDatas = new List<IBlockData>();
 
             var attachables = new List<IAttachable>(bot.AttachedBlocks);
 
@@ -160,11 +161,23 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="target"></param>
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
+        [Obsolete]
         public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<ICanCombo> iCanCombos) where T: Enum
         {
             var combo = bot.attachedBlocks.OfType<ICanCombo>();
             combo.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref iCanCombos);
+        }
+        
+        public static void ComboCount(this IEnumerable<Bot.DataTest> dataToCheck, Bit origin, DIRECTION direction, ref List<Bot.DataTest> outData)
+        {
+            //var combo = bot.attachedBlocks.OfType<ICanCombo>();
+            dataToCheck.ComboCountAlgorithm(
+                origin.Type,
+                origin.level, 
+                origin.Coordinate,
+                direction.ToVector2Int(),
+                ref outData);
         }
 
 
@@ -183,7 +196,7 @@ namespace StarSalvager.Utilities.Extensions
 
         public static void MoveOrphanPieces(this Bot bot,IReadOnlyList<OrphanMoveData> orphans, Action onFinishedCallback)
         {
-            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, bot.TEST_MergeTime, onFinishedCallback));
+            bot.StartCoroutine(MoveOrphanPiecesCoroutine(bot, orphans, Globals.BitShiftTime, onFinishedCallback));
         }
         
         private static IEnumerator MoveOrphanPiecesCoroutine(Bot bot,

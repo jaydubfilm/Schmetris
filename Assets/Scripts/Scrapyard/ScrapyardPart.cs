@@ -1,4 +1,5 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable, IPart, IHealth, ICustomRecycle
+    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable<PartData>, IPart, ICustomRecycle
     {
         protected new SpriteRenderer renderer
         {
@@ -33,15 +34,6 @@ namespace StarSalvager
             }
         }
         private Transform _transform;
-        
-        private Damage _damage;
-
-        //IHealth Properties
-        //====================================================================================================================//
-        
-        public float StartingHealth { get; private set; }
-        [ShowInInspector, ReadOnly, ProgressBar(0, nameof(StartingHealth))]
-        public float CurrentHealth { get; private set; }
 
 
         //IAttachable Properties
@@ -51,7 +43,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public bool Attached { get; set; }
 
-        public bool CountAsConnectedToCore => !Destroyed;
+        public bool CountAsConnectedToCore => true;
         public bool CanDisconnect => false;
 
         [ShowInInspector, ReadOnly]
@@ -61,13 +53,45 @@ namespace StarSalvager
 
         //Part Properties
         //============================================================================================================//
-        public bool Destroyed => CurrentHealth <= 0f;
+
         public bool Disabled => false;
 
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
-        [ShowInInspector, ReadOnly]
-        public int level { get; private set; }
+
+        public PatchData[] Patches { get; set; }
+
+        //IPart Functions
+        //====================================================================================================================//
+        
+        public void AddPatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
+                    continue;
+
+                Patches[i] = patchData;
+                return;
+            }
+
+            throw new Exception("No available space for new patch");
+        }
+
+        public void RemovePatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(!Patches[i].Equals(patchData))
+                    continue;
+
+                Patches[i] = default;
+                
+                return;
+            }
+
+            throw new Exception($"No Patch found matching {(PATCH_TYPE)patchData.Type}[{patchData.Level}]");
+        }
 
         //IAttachable Functions
         //============================================================================================================//
@@ -77,61 +101,30 @@ namespace StarSalvager
             Attached = isAttached;
         }
 
-        //IHealth Functions
-        //====================================================================================================================//
-        
-        public void SetupHealthValues(float startingHealth, float currentHealth)
-        {
-            StartingHealth = startingHealth;
-            CurrentHealth = currentHealth;
-
-            if (startingHealth == currentHealth && _damage == null)
-                return;
-
-            if(!Destroyed)
-                UpdateDamage();
-        }
-
-        private void UpdateDamage()
-        {
-            if (_damage == null)
-            {
-                _damage = FactoryManager.Instance.GetFactory<EffectFactory>().CreateObject<Damage>();
-                _damage.transform.SetParent(transform, false);
-            }
-                
-            _damage.SetHealth(CurrentHealth/StartingHealth); 
-        }
-
-        public void ChangeHealth(float amount)
-        {
-            CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, StartingHealth);
-            
-            if(!Destroyed)
-                UpdateDamage();
-        }
-
         //ISaveable Functions
         //============================================================================================================//
 
-        public BlockData ToBlockData()
+        public PartData ToBlockData()
         {
-            return new BlockData
+            return new PartData
             {
-                ClassType = GetType().Name,
+                //ClassType = GetType().Name,
                 Coordinate = Coordinate,
                 Type = (int)Type,
-                Level = level,
-                Health = CurrentHealth
+                Patches =  Patches
             };
         }
 
-        public void LoadBlockData(BlockData blockData)
+        public void LoadBlockData(IBlockData blockData)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void LoadBlockData(PartData blockData)
         {
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
-            level = blockData.Level;
-            CurrentHealth = blockData.Health;
+            Patches = blockData.Patches;
         }
 
         //============================================================================================================//
@@ -141,21 +134,12 @@ namespace StarSalvager
             renderer.sprite = sprite;
         }
 
-        public void SetLevel(int newLevel)
-        {
-            level = newLevel;
-        }
-
         //ICustomRecycle Functions
         //====================================================================================================================//
         
         public void CustomRecycle(params object[] args)
         {
-            if (!_damage) 
-                return;
-            
-            Recycler.Recycle<Damage>(_damage);
-            _damage = null;
+
         }
         
         //IHasBounds Functions
@@ -171,5 +155,9 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+        IBlockData ISaveable.ToBlockData()
+        {
+            return ToBlockData();
+        }
     }
 }

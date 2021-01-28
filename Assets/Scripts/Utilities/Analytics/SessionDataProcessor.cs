@@ -59,7 +59,7 @@ namespace StarSalvager.Utilities.Analytics
 
         //====================================================================================================================//
         
-        public void StartNewWave(int sector, int wave, IEnumerable<BlockData> initialBot)
+        public void StartNewWave(int sector, int wave, IEnumerable<IBlockData> initialBot)
         {
             if (_currentWave.HasValue)
             {
@@ -67,7 +67,7 @@ namespace StarSalvager.Utilities.Analytics
                 EndActiveWave();
             }
 
-            var botAtStart = new List<BlockData>(initialBot);
+            var botAtStart = new List<IBlockData>(initialBot);
             _currentWave = new WaveData(botAtStart, sector, wave);
             
             
@@ -124,14 +124,14 @@ namespace StarSalvager.Utilities.Analytics
             _currentWave = wave;
         }
 
-        public void SetEndingLayout(IEnumerable<BlockData> botLayout)
+        public void SetEndingLayout(IEnumerable<IBlockData> botLayout)
         {
             if (!_currentWave.HasValue)
                 return;
 
             var wave = _currentWave.Value;
 
-            wave.botAtEnd = new List<BlockData>(botLayout);
+            wave.botAtEnd = new List<IBlockData>(botLayout);
             _currentWave = wave;
         }
 
@@ -241,20 +241,20 @@ namespace StarSalvager.Utilities.Analytics
             _currentWave = wave;
         }
 
-        public void ComponentCollected(COMPONENT_TYPE type)
+        public void ComponentCollected(int amount)
         {
-            if (!_currentWave.HasValue)
+            /*if (!_currentWave.HasValue)
                 return;
 
             var wave = _currentWave.Value;
             
-            /*if(wave.componentsCollected == null)
+            if(wave.componentsCollected == null)
                 wave.componentsCollected = new Dictionary<COMPONENT_TYPE, int>();
 
             if (!wave.componentsCollected.ContainsKey(type))
                 wave.componentsCollected.Add(type, 1);
             else
-                wave.componentsCollected[type]++;*/
+                wave.componentsCollected[type]++;
             if(wave.ComponentSummaryData == null)
                 wave.ComponentSummaryData = new List<ComponentSummaryData>();
 
@@ -274,7 +274,7 @@ namespace StarSalvager.Utilities.Analytics
                 wave.ComponentSummaryData[summaryIndex] = tempData;
             }
             
-            _currentWave = wave;
+            _currentWave = wave;*/
         }
 
         public void EnemyKilled(string enemyId)

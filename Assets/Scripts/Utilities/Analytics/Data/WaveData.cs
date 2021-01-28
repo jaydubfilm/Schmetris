@@ -38,9 +38,9 @@ namespace StarSalvager.Utilities.Analytics.Data
         public float totalDamageReceived;
         
         [HorizontalGroup("Row1")]
-        public List<BlockData> botAtStart;
+        public List<IBlockData> botAtStart;
         [HorizontalGroup("Row1")]
-        public List<BlockData> botAtEnd;
+        public List<IBlockData> botAtEnd;
 
         [TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
         public List<BitSummaryData> BitSummaryData;
@@ -51,7 +51,7 @@ namespace StarSalvager.Utilities.Analytics.Data
         public List<EnemySummaryData> enemiesKilledData;
         //TODO Need to add value for combos
 
-        public WaveData(List<BlockData> botAtStart, int sectorNumber, int waveNumber)
+        public WaveData(List<IBlockData> botAtStart, int sectorNumber, int waveNumber)
         {
             this.botAtStart = botAtStart;
             this.sectorNumber = sectorNumber;
@@ -65,7 +65,7 @@ namespace StarSalvager.Utilities.Analytics.Data
             
             date = DateTime.UtcNow;
 
-            botAtEnd = new List<BlockData>();
+            botAtEnd = new List<IBlockData>();
             BitSummaryData = new List<BitSummaryData>();
             ComponentSummaryData = new List<ComponentSummaryData>();
             enemiesKilledData = new List<EnemySummaryData>();

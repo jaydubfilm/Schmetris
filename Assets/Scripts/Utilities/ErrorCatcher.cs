@@ -42,6 +42,24 @@ namespace StarSalvager.Utilities
             }
         }
 
+        private void OnDestroy()
+        {
+            if (Instance != this)
+                return;
+            
+            _isExceptionHandlingSetup = false;
+            Application.logMessageReceived -= HandleException;
+        }
+
+        private void OnDisable()
+        {
+            if (Instance != this)
+                return;
+            
+            _isExceptionHandlingSetup = false;
+            Application.logMessageReceived -= HandleException;
+        }
+
         //============================================================================================================//
 
         private static void SetupExceptionHandling()

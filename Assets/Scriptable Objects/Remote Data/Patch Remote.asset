@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ade67e9c6a64a949965ee394a0a8979, type: 3}
+  m_Name: Patch Remote
+  m_EditorClassIdentifier: 
+  patchRemoteData:
+  - name: DAMAGE
+    type: 1
+    description: 
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
+    allowedParts: 04000000070000000e0000000700000024000000
+  - name: RANGE
+    type: 2
+    description: 
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
+    allowedParts: 040000000700000006000000
+  - name: FIRE RATE
+    type: 3
+    description: 
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
+    allowedParts: 040000000e000000
+  - name: EFFECIENCY
+    type: 4
+    description: 
+    Levels:
+    - level: 1
+      Properties:
+      - key: Multiplier
+        value: 0.1
+    - level: 2
+      Properties:
+      - key: Multiplier
+        value: 0.2
+    allowedParts: 
+  - name: DURATION
+    type: 5
+    description: 
+    Levels: []
+    allowedParts: 07000000060000002100000005000000
+  - name: CRITCAL
+    type: 6
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: ELECTRIC
+    type: 7
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: CORROSIVE
+    type: 8
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: REINFORCED
+    type: 9
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: SPECIALIST
+    type: 10
+    description: 
+    Levels: []
+    allowedParts: 
+  - name: Grade
+    type: 11
+    description: 
+    Levels:
+    - level: 1
+      Properties: []
+    - level: 2
+      Properties: []
+    allowedParts: 00000000040000000e0000000600000007000000020000000300000021000000050000002300000024000000

@@ -12,7 +12,7 @@ namespace StarSalvager.UI
     {
         private static BitAttachableFactory _bitAttachableFactory;
         private static PartAttachableFactory _partAttachableFactory;
-        private static ComponentAttachableFactory _componentAttachableFactory;
+        private static ComponentFactory _componentAttachableFactory;
 
         //[SerializeField, Required] private TMP_Text resourceAmountText;
         [SerializeField, Required] private Image resourceImage;

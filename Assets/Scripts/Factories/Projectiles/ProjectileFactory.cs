@@ -14,6 +14,7 @@ namespace StarSalvager.Factories
     public class ProjectileFactory : FactoryBase
     {
         private readonly GameObject m_prefab;
+        private readonly GameObject m_towPrefab;
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
 
         //============================================================================================================//
@@ -22,6 +23,7 @@ namespace StarSalvager.Factories
         {
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
+            m_towPrefab = projectileProfile.m_towPrefab;
         }
 
         //============================================================================================================//
@@ -38,7 +40,17 @@ namespace StarSalvager.Factories
 
         public override T CreateObject<T>()
         {
-            return Recycler.TryGrab(out T newObject) ? newObject : CreateGameObject().GetComponent<T>();
+            if (Recycler.TryGrab(out T newObject))
+            {
+                return newObject;
+            }
+
+            if (typeof(T) == typeof(ProjectileTowObject))
+            {
+                return Object.Instantiate(m_towPrefab).GetComponent<T>();
+            }
+
+            return CreateGameObject().GetComponent<T>();
         }
 
         //Static Target position functions
@@ -51,11 +63,12 @@ namespace StarSalvager.Factories
             Vector2 shootDirection,
             float damage, 
             float rangeBoost,
-            string collisionTag
-            , bool shouldFlipSprite = false)
+            string collisionTag,
+            IHealth vampirismCaster,
+            bool shouldFlipSprite = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection, damage,
-                rangeBoost, collisionTag, shouldFlipSprite);
+                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -66,16 +79,41 @@ namespace StarSalvager.Factories
             float damage, 
             float rangeBoost, 
             string collisionTag, 
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
-            var travelDirections = GetFireDirections(projectileProfile, fromPosition, targetPosition, shootDirection);
+            var travelDirections = GetFireDirections(projectileProfile, fromPosition, /*targetPosition,*/ shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
-                var projectile = CreateObject<Projectile>();
+                Projectile projectile;
+                if (projectileProfile.IsTow)
+                {
+                    ProjectileTowObject projectileTowObject = CreateObject<ProjectileTowObject>();
+                    GameObject towObject;
+                    switch(projectileProfile.TowObjectType)
+                    {
+                        case ProjectileProfileData.TowType.JunkBit:
+                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
+                            break;
+                        case ProjectileProfileData.TowType.Mine:
+                            towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
+                            break;
+                        default:
+                            throw new Exception("Missing data for towObject");
+                    }
+                    projectileTowObject.towObject = towObject;
+                    projectileTowObject.towObjectIRecycledReference = towObject.GetComponent<Actor2DBase>();
+
+                    projectile = projectileTowObject;
+                }
+                else
+                {
+                    projectile = CreateObject<Projectile>();
+                }
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
@@ -93,7 +131,8 @@ namespace StarSalvager.Factories
                     damage,
                     rangeBoost,
                     travelDirection.normalized,
-                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
+                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    vampirismCaster);
 
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
@@ -116,10 +155,11 @@ namespace StarSalvager.Factories
             float damage, 
             float rangeBoost, 
             string collisionTag,
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, target, shootDirection, Vector2.zero, damage,
-                rangeBoost, collisionTag, shouldFlipSprite);
+                rangeBoost, collisionTag,vampirismCaster, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -129,18 +169,27 @@ namespace StarSalvager.Factories
             Vector2 currentVelocity, 
             float damage,
             float rangeBoost, 
-            string collisionTag, 
+            string collisionTag,
+            IHealth vampirismCaster,
             bool shouldFlipSprite = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
 
             var travelDirections =
-                GetFireDirections(projectileProfile, fromPosition, target.transform.position, shootDirection);
+                GetFireDirections(projectileProfile, fromPosition, /*target.transform.position,*/ shootDirection);
 
             foreach (var travelDirection in travelDirections)
             {
-                var projectile = CreateObject<Projectile>();
+                Projectile projectile;
+                if (projectileProfile.IsTow)
+                {
+                    projectile = CreateObject<ProjectileTowObject>();
+                }
+                else
+                {
+                    projectile = CreateObject<Projectile>();
+                }
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
@@ -149,7 +198,6 @@ namespace StarSalvager.Factories
                     projectile.FlipSpriteY(true);
 
                 LevelManager.Instance.ObstacleManager.AddTransformToRoot(projectileTransform);
-                //projectileTransform.SetParent(LevelManager.Instance.transform);
                 projectileTransform.transform.position = fromPosition;
 
                 projectile.Init(projectileProfile,
@@ -158,7 +206,8 @@ namespace StarSalvager.Factories
                     damage,
                     rangeBoost,
                     travelDirection.normalized,
-                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero);
+                    projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    vampirismCaster);
 
 
                 LevelManager.Instance.ProjectileManager.AddProjectile(projectile);
@@ -174,7 +223,7 @@ namespace StarSalvager.Factories
 
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
-            Vector2 targetPosition,
+            /*Vector2 targetPosition,*/
             Vector2 shootDirection)
         {
             var spreadAngle = profileData.SpreadAngle;
@@ -197,10 +246,6 @@ namespace StarSalvager.Factories
                     //Rotate player position around enemy position slightly by a random angle to shoot somewhere in a cone around the player
                     fireDirections.Add(GetDestinationForRotatePositionAroundPivot(targetPosition, fromPosition,
                         Vector3.forward * Random.Range(-spreadAngle, spreadAngle)) - (Vector3) fromPosition);
-                    break;*/
-                //----------------------------------------------------------------------------------------------------//
-                /*case FIRE_TYPE.Down:
-                    fireDirections.Add(Vector3.down);
                     break;*/
                 //----------------------------------------------------------------------------------------------------//
                 case FIRE_TYPE.RANDOM_SPRAY:
@@ -233,6 +278,20 @@ namespace StarSalvager.Factories
                     //Consult spiral formula to get the angle to shoot the next shot at
                     //fireDirections.Add(GetSpiralAttackDirection(fromPosition, ref TEMP_SPIRAL));
                     throw new NotImplementedException("This needs work, consult Alex's if attempting to use this");
+                //----------------------------------------------------------------------------------------------------//
+                case FIRE_TYPE.FOUR_ANGLES:
+                    fireDirections.Add(Vector2.left);
+                    fireDirections.Add(Vector2.right);
+                    fireDirections.Add(Vector2.up);
+                    fireDirections.Add(Vector2.down);
+                    break;
+                //----------------------------------------------------------------------------------------------------//
+                case FIRE_TYPE.FOUR_ANGLES_DIAGONAL:
+                    fireDirections.Add(Vector2.left + Vector2.up);
+                    fireDirections.Add(Vector2.right + Vector2.up);
+                    fireDirections.Add(Vector2.left + Vector2.down);
+                    fireDirections.Add(Vector2.right + Vector2.down);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(fireType), fireType, null);

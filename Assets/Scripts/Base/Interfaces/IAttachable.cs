@@ -9,7 +9,7 @@ namespace StarSalvager
         Transform transform { get; }
         GameObject gameObject { get; }
 
-        bool Attached { get; set; }
+        bool Attached { get;}
         bool CountAsConnectedToCore { get; }
         //bool CanDisconnect { get; }
         bool CanShift { get; }

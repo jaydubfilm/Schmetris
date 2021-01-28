@@ -202,12 +202,12 @@ namespace StarSalvager.Utilities.Extensions
 
         #region Get Block Data
 
-        public static List<BlockData> GetBlockDatas<T>(this IEnumerable<T> attachables) where T : IAttachable
+        public static List<IBlockData> GetBlockDatas<T>(this IEnumerable<T> attachables) where T : IAttachable
         {
             return attachables.OfType<ISaveable>().GetBlockDatas();
         }
 
-        public static List<BlockData> GetBlockDatas(this IEnumerable<ISaveable> saveables)
+        public static List<IBlockData> GetBlockDatas(this IEnumerable<ISaveable> saveables)
         {
             return saveables.Select(x => x.ToBlockData()).ToList();
         }
@@ -312,7 +312,7 @@ namespace StarSalvager.Utilities.Extensions
 
         #region Get Closest Attachable
 
-        public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool ignoreDestroyed = false) where T : IAttachable
+        public static T GetClosestAttachable<T>(this List<T> blocks, Vector2 checkPosition, bool onlyFindParts = false) where T : IAttachable
         {
             if (blocks.Count == 1)
                 return blocks[0];
@@ -323,7 +323,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (var attached in blocks)
             {
-                if(ignoreDestroyed && attached is Part part && part.Destroyed)
+                if(onlyFindParts && !(attached is Part part))
                     continue;
                 //attached.SetColor(Color.white);
 
@@ -695,7 +695,62 @@ namespace StarSalvager.Utilities.Extensions
             }
 
         }
+
+        //Get Highest Level Bit
+        //====================================================================================================================//
+        public static int GetHighestLevelBit(this IEnumerable<IAttachable> attachedBlocks, BIT_TYPE bitType)
+        {
+            var bits = attachedBlocks.OfType<Bit>().ToArray();
+
+            if (bits.IsNullOrEmpty())
+                return -1;
+
+            Bit selected = null;
+            var maxLevel = -999;
+            foreach (var bit in bits)
+            {
+                if(bit.Type != bitType)
+                    continue;
+                
+                if(bit.level < maxLevel)
+                    continue;
+
+                maxLevel = bit.level;
+                selected = bit;
+
+            }
+            
+            if (selected is null)
+                return -1;
+            
+            return maxLevel;
+        }
         
+        public static int GetHighestLevelBit(this IEnumerable<IAttachable> attachedBlocks)
+        {
+            var bits = attachedBlocks.OfType<Bit>().ToArray();
+
+            if (bits.IsNullOrEmpty())
+                return -1;
+
+            Bit selected = null;
+            var maxLevel = -999;
+            foreach (var bit in bits)
+            {
+                if(bit.level < maxLevel)
+                    continue;
+
+                maxLevel = bit.level;
+                selected = bit;
+
+            }
+            
+            if (selected is null)
+                return -1;
+            
+            return maxLevel;
+        }
+
 
         //Get All Connected Detachables
         //====================================================================================================================//
@@ -776,6 +831,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="direction"></param>
         /// <param name="iCanCombos"></param>
         /// <returns></returns>
+        [Obsolete]
         public static bool ComboCountAlgorithm<T>(this IEnumerable<ICanCombo> canCombos, T type, int level,
             Vector2Int coordinate, Vector2Int direction,
             ref List<ICanCombo> iCanCombos) where T : Enum
@@ -803,6 +859,37 @@ namespace StarSalvager.Utilities.Extensions
             //Keep checking in this direction
             return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
         }
+        
+        public static bool ComboCountAlgorithm(this IEnumerable<Bot.DataTest> canCombos,
+            BIT_TYPE type, 
+            int level,
+            Vector2Int coordinate, 
+            Vector2Int direction,
+            ref List<Bot.DataTest> outData)
+        {
+            var nextCoords = coordinate + direction;
+
+            //Try and get the attachableBase Bit at the new Coordinate
+            var combos = canCombos.ToArray();
+            var nextData = combos.FirstOrDefault(a => a.Coordinate == nextCoords);
+            
+            if (nextData.Type == BIT_TYPE.NONE)
+                return false;
+
+            //We only care about bits that share the same type
+            if (!nextData.Type.Equals(type))
+                return false;
+
+            //We only care about bits that share the same level
+            if (nextData.Level != level)
+                return false;
+
+            //Add the bit to our combo check list
+            outData.Add(nextData);
+
+            //Keep checking in this direction
+            return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref outData);
+        }
 
         //Attachable List Matching
         //============================================================================================================//
@@ -819,9 +906,11 @@ namespace StarSalvager.Utilities.Extensions
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
         public static bool Contains<T>(this List<IAttachable> attachables, IEnumerable<T> comparison, out List<Vector2Int> upgrading)
-            where T : IAttachable, ISaveable
+            where T : IAttachable, ISaveable<BitData>
         {
-            return attachables.Contains<T>(comparison.OfType<ISaveable>().GetBlockDatas(), out upgrading);
+            return attachables.Contains<T>(
+                comparison.GetBlockDatas().ToList(),
+                out upgrading);
         }
 
         /// <summary>
@@ -833,14 +922,15 @@ namespace StarSalvager.Utilities.Extensions
         /// <param name="upgrading"></param>
         /// <typeparam name="T">Constrain search to this ISaveable type</typeparam>
         /// <returns>Does the list contain the passed shape</returns>
-        public static bool Contains<T>(this List<IAttachable> attachables, IReadOnlyList<BlockData> comparison, out List<Vector2Int> upgrading)
-            where T : IAttachable, ISaveable
+        public static bool Contains<T>(this List<IAttachable> attachables,
+            IReadOnlyList<IBlockData> comparison, 
+            out List<Vector2Int> upgrading) where T : IAttachable, ISaveable<BitData>
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            List<BlockData> ResetLevels(IReadOnlyList<BlockData> data)
+            List<BitData> ResetLevels(IReadOnlyList<BitData> data)
             {
-                var newList = new List<BlockData>(data);
+                var newList = new List<BitData>(data);
                 for (var i = 0; i < data.Count; i++)
                 {
                     var temp = data[i];
@@ -868,8 +958,8 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var _original = ResetLevels(original);
-            var _compare = ResetLevels(comparison);
+            var _original = ResetLevels(original.OfType<BitData>().ToList());
+            var _compare = ResetLevels(comparison.OfType<BitData>().ToList());
 
             var startingPoints = _original.Where(x => x.Equals(_compare[0])).ToList();
 
@@ -892,11 +982,11 @@ namespace StarSalvager.Utilities.Extensions
 
         private static bool TraversalContains(
             Vector2Int startingCoordinate, 
-            BlockData toCompare,
+            IBlockData toCompare,
             Vector2Int currentCoordinate,
             DIRECTION currentDirection,
-            IReadOnlyCollection<BlockData> originalList,
-            IReadOnlyCollection<BlockData> compareList,
+            IReadOnlyCollection<BitData> originalList,
+            IReadOnlyCollection<BitData> compareList,
             ref List<Vector2Int> traversedCompared,
             ref List<Vector2Int> upgrading)
         {

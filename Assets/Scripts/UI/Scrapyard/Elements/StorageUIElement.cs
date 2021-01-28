@@ -13,20 +13,20 @@ namespace StarSalvager.UI.Scrapyard
     {
         private static ScrapyardBot _scrapyardBot;
 
-        
+
         [SerializeField] private Image itemImage;
         private RectTransform _canvasTr;
         private RectTransform partDragImageTransform;
 
         private Image _damageImage;
-        
+
         //============================================================================================================//
-        
+
         public override void Init(TEST_Storage data, Action<TEST_Storage> onPressedCallback)
         {
             if (!_scrapyardBot)
                 _scrapyardBot = FindObjectOfType<ScrapyardBot>();
-            
+
             this.data = data;
 
             itemImage.sprite = data.sprite;
@@ -36,25 +36,25 @@ namespace StarSalvager.UI.Scrapyard
 
             //Only want to be able to select parts
             button.interactable = isPart && _scrapyardBot != null && !_scrapyardBot.AtPartCapacity;
-            
+
             if (!button.interactable)
                 return;
 
-            if (isPart)
-                SetupDamageSprite();
-            
+            /*if (isPart)
+                SetupDamageSprite();*/
+
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
             {
                 onPressedCallback?.Invoke(data);
             });
         }
-        
+
         //============================================================================================================//
 
-        private void SetupDamageSprite()
+        /*private void SetupDamageSprite()
         {
-            var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
+            /*var maxHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) data.blockData.Type)
                 .levels[data.blockData.Level].health;
             //Add Damage Overlay
             var healthValue = data.blockData.Health / maxHealth;
@@ -75,25 +75,25 @@ namespace StarSalvager.UI.Scrapyard
 
             _damageImage = temp;
             _damageImage.sprite = sprite;
-        }
-        
+        }*/
+
         //====================================================================================================================//
-        
+
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (!button.interactable)
                 return;
-            
+
             _canvasTr = GetComponentInParent<Canvas>()?.transform as RectTransform;
-            
+
             Debug.Log($"Canvas: {_canvasTr.gameObject.name}", _canvasTr.gameObject);
-            
+
             if (partDragImageTransform == null)
             {
                 var image = new GameObject("Test").AddComponent<Image>();
                 image.sprite = data.sprite;
-                
+
                 partDragImageTransform = image.transform as RectTransform;
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
 
@@ -108,15 +108,15 @@ namespace StarSalvager.UI.Scrapyard
 
             partDragImageTransform.anchoredPosition = eventData.position - (Vector2)_canvasTr.position;
             partDragImageTransform.gameObject.SetActive(true);
-            
+
             button.onClick.Invoke();
         }
-        
+
         public void OnDrag(PointerEventData eventData)
         {
             if (!button.interactable)
                 return;
-            
+
             if (partDragImageTransform == null)
                 return;
 
@@ -127,27 +127,27 @@ namespace StarSalvager.UI.Scrapyard
         {
             if (partDragImageTransform == null)
                 return;
-            
+
             partDragImageTransform.gameObject.SetActive(false);
         }
-        
+
         //============================================================================================================//
 
         public override void CustomRecycle(params object[] args)
         {
             if (partDragImageTransform != null && partDragImageTransform.gameObject != null)
                 GameObject.Destroy(partDragImageTransform.gameObject);
-            
+
             if(_damageImage)
                 Destroy(_damageImage.gameObject);
         }
     }
-    
+
     public class TEST_Storage : IEquatable<TEST_Storage>
     {
         public string name;
         public Sprite sprite;
-        public BlockData blockData;
+        public IBlockData blockData;
         public int storageIndex;
 
         public bool Equals(TEST_Storage other)
@@ -171,4 +171,3 @@ namespace StarSalvager.UI.Scrapyard
         }
     }
 }
-

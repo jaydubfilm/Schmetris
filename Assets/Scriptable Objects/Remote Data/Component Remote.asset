@@ -12,19 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8e4bb5ff08e0f4fb1bf1c886f88658, type: 3}
   m_Name: Component Remote
   m_EditorClassIdentifier: 
-  ComponentRemoteData:
-  - name: Nut
-    componentType: 0
-    health: 50
-  - name: Bolt
-    componentType: 1
-    health: 50
-  - name: Thingy
-    componentType: 2
-    health: 50
-  - name: Chip
-    componentType: 3
-    health: 50
-  - name: Fusor
-    componentType: 4
-    health: 50
+  _numComponentsGained: 10

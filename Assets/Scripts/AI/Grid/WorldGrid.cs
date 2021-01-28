@@ -156,37 +156,25 @@ namespace StarSalvager
 
         private GridSquare GetGridSquareAtCoordinates(Vector2Int gridPosition)
         {
-            if (gridPosition.x >= m_gridSizeX)
-                gridPosition.x -= m_gridSizeX;
-            else if (gridPosition.x < 0)
-                gridPosition.x += m_gridSizeX;
-
-            if (gridPosition.y >= m_gridSizeY)
-            {
-                gridPosition.y = m_gridSizeY - 1;
-            }
-
-            if (gridPosition.y < 0)
-            {
-                gridPosition.y = 0;
-            }
-
-            return m_gridArray[gridPosition.x + (gridPosition.y * m_gridSizeX)];
+            return GetGridSquareAtCoordinates(gridPosition.x, gridPosition.y);
         }
 
         public GridSquare GetGridSquareAtCoordinates(int x, int y)
         {
             if (x >= m_gridSizeX)
-                x -= m_gridSizeX;
+            {
+                x = m_gridSizeX - 1;
+            }
             else if (x < 0)
-                x += m_gridSizeX;
+            {
+                x = 0;
+            }
 
             if (y >= m_gridSizeY)
             {
                 y = m_gridSizeY - 1;
             }
-
-            if (y < 0)
+            else if (y < 0)
             {
                 y = 0;
             }
@@ -416,7 +404,7 @@ namespace StarSalvager
             {
                 if (forceSpawn)
                 {
-                    throw new Exception("Couldn't find position to spawn. Possible overlap occurring in grid region " + allowOverlap + (double)gridRegion.x + ", " + (double)gridRegion.y);
+                    Debug.LogError("Couldn't find position to spawn. Possible overlap occurring in grid region " + allowOverlap + (double)gridRegion.x + ", " + (double)gridRegion.y);
                     return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
                 }
                 else

@@ -5,8 +5,8 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.Missions;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities.Enemies;
@@ -74,6 +74,8 @@ namespace StarSalvager.AI
                 }
             }
             
+            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
+                return;
             
             if (FreezeTime > 0)
             {
@@ -82,9 +84,6 @@ namespace StarSalvager.AI
             }
             
             if (!Attached)
-                return;
-
-            if (Disabled)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave))
@@ -275,23 +274,8 @@ namespace StarSalvager.AI
             switch (_target)
             {
                 case IRecycled recyclable when recyclable.IsRecycled:
-                case Part part when part.Destroyed:
-                    var health = _target as IHealth;
-                
-                    //Here I can assume that a Bit with no health was destroyed, and thus I can move into its position
-                    if (health?.CurrentHealth <= 0)
-                    {
-                        if (TryMoveToTargetPosition())
-                            return;
-                    }
-                    //If the Bit was recycled with a health above 0, I can assume that it was done because of a combo, 
-                    //and the enemy should try and find a new target relative to its current position
-                    else if (health?.CurrentHealth > 0)
-                    {
-                        if(TryUpdateTarget())
-                            return;
-                    }
-
+                case Part _:
+                    return;
                     _target = null;
                     _attachedBot.ForceDetach(this);
                     return;
@@ -348,7 +332,7 @@ namespace StarSalvager.AI
             if (_attachedBot.CoordinateOccupied(_target.Coordinate))
                 return false;
 
-            if (!_attachedBot.TryAttachNewBlock(_target.Coordinate, this, false, true, false))
+            if (!_attachedBot.TryAttachNewBlock(_target.Coordinate, this, false, true))
                 return false;
 
             if (!TryUpdateTarget())
@@ -416,13 +400,6 @@ namespace StarSalvager.AI
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
             LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
-
-            MissionProgressEventData missionProgressEventData = new MissionProgressEventData
-            {
-                enemyTypeString = m_enemyData.EnemyType,
-                intAmount = 1
-            };
-            MissionManager.ProcessMissionData(typeof(EnemyKilledMission), missionProgressEventData);
 
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

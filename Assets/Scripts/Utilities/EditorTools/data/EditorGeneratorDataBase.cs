@@ -13,11 +13,11 @@ namespace StarSalvager.Factories.Data
         private string m_name;
 
         [SerializeField, BoxGroup("Name")]
-        private List<BlockData> m_blockData;
+        private List<IBlockData> m_blockData;
 
         public string m_classType;
 
-        public EditorGeneratorDataBase(string name, List<BlockData> blockData)
+        public EditorGeneratorDataBase(string name, List<IBlockData> blockData)
         {
             m_name = name;
             m_blockData = blockData;
@@ -25,7 +25,7 @@ namespace StarSalvager.Factories.Data
 
         public string Name => m_name;
 
-        public List<BlockData> BlockData => m_blockData;
+        public List<IBlockData> BlockData => m_blockData;
 
         #region IEquatable
 

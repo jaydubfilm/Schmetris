@@ -787,7 +787,7 @@ GameObject:
   m_Component:
   - component: {fileID: 257017012097413314}
   m_Layer: 0
-  m_Name: ScrollingMissionsAnchor
+  m_Name: ScrollingTextAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1138,7 +1138,7 @@ GameObject:
   - component: {fileID: 6635082722733146379}
   - component: {fileID: 7654145164560536635}
   m_Layer: 0
-  m_Name: ScrollingMissionsText
+  m_Name: ScrollingTextText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2181,7 +2181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathText: {fileID: 4507576225948994028}
-  scrollingMissionsText: {fileID: 7654145164560536635}
+  scrollingText: {fileID: 7654145164560536635}
   m_betweenWavesUI: {fileID: 8672333737647323004}
   m_deathUI: {fileID: 8672333737287589470}
   betweenWavesContinueButton: {fileID: 8672333738695047967}
@@ -2939,6 +2939,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8672333738348226050}
     m_Modifications:
+    - target: {fileID: 96587772968023269, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 111127660748732308, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -2967,6 +2972,11 @@ PrefabInstance:
     - target: {fileID: 800483479070117056, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 800483479070117056, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1539132317272696789, guid: a64db1f8fd3dedd4ea281013c4fcb681,
@@ -3378,6 +3388,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973601882894454294, guid: a64db1f8fd3dedd4ea281013c4fcb681,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00035082156
       objectReference: {fileID: 0}
     - target: {fileID: 9103446019988628527, guid: a64db1f8fd3dedd4ea281013c4fcb681,
         type: 3}

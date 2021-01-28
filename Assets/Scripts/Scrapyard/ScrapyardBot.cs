@@ -12,6 +12,8 @@ using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Factories.Data;
+using StarSalvager.Parts.Data;
 
 namespace StarSalvager
 {
@@ -63,42 +65,53 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        #region Init Bot 
+        #region Init Bot
 
         public void InitBot()
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-            
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE).levels[0].health;
+
+            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
-                new BlockData
+                new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
                     Coordinate = Vector2Int.zero,
-                    Level = 0,
-                    Health = startingHealth
+                    Patches = new PatchData[patchSockets]
                 });
 
-            if(Globals.IsRecoveryBot) partFactory.SetOverrideSprite(core, PART_TYPE.RECOVERY);
-            
             AttachNewBit(Vector2Int.zero, core);
+
+            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            for (int i = 0; i < botLayout.Count; i++)
+            {
+                if (_attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
+                {
+                    continue;
+                }
+
+                var emptyPart = partFactory.CreateScrapyardObject<ScrapyardPart>(
+                    new PartData
+                    {
+                        Type = (int)PART_TYPE.EMPTY,
+                        Coordinate = botLayout[i],
+                        Patches = new PatchData[patchSockets]
+                    });
+
+                AttachNewBit(botLayout[i], emptyPart);
+            }
         }
 
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
             foreach (var attachable in botAttachables)
             {
-                if(attachable is Part part && part.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(part, PART_TYPE.RECOVERY);
-                else if(attachable is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.CORE && Globals.IsRecoveryBot)
-                    FactoryManager.Instance.GetFactory<PartAttachableFactory>().SetOverrideSprite(scrapyardPart, PART_TYPE.RECOVERY);
-                
                 AttachNewBit(attachable.Coordinate, attachable);
             }
         }
 
-        #endregion // Init Bot 
+        #endregion // Init Bot
 
         //============================================================================================================//
 
@@ -257,7 +270,7 @@ namespace StarSalvager
                     UpdatePartsList();
                     break;
             }
-                
+
         }
 
         #endregion //Attach Bits
@@ -266,26 +279,13 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void TryRemoveAttachableAt(Vector2Int coordinate, bool refund)
+        public void TryRemoveAttachableAt(Vector2Int coordinate)
         {
             var attachable = AttachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
-            //TODO - think of a better place to handle this selling event
-            if (refund)
-            {
-                switch (attachable)
-                {
-                    case ScrapyardBit _:
-                        throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
-                    case ScrapyardPart scrapyardPart:
-                        PlayerDataManager.AddPartResources(scrapyardPart.Type, scrapyardPart.level, true);
-                        UpdatePartsList();
-                        break;
-                }
-            }
 
             if (attachable is null)
-                return; 
-            
+                return;
+
             DestroyAttachable(attachable);
             UpdatePartsList();
         }
@@ -314,7 +314,7 @@ namespace StarSalvager
                 }
             }
         }
-        
+
         public void RemoveAllComponents()
         {
             for (int i = AttachedBlocks.Count - 1; i >= 0; i--)
@@ -439,26 +439,13 @@ namespace StarSalvager
 
         #region Parts
 
-        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
-        private float coreHeat;
-        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("/s", Overlay = true)]
-        private float coolSpeed;
-        [SerializeField, BoxGroup("Bot Part Data"), DisableInPlayMode, SuffixLabel("s", Overlay = true)]
-        private float coolDelay;
-        [SerializeField, BoxGroup("Bot Part Data"), ReadOnly]
-        private float coolTimer;
-
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
         private int magnetCount;
-
-        public float PowerDraw { get; private set; }
 
         private int MAXParts { get; set; }
 
         public bool AtPartCapacity => _parts.Count >= MAXParts + 1;
         public string PartCapacity => $"{_parts.Count - 1 }/{MAXParts }";
-
-        public List<BIT_TYPE> UsedResourceTypes { get; private set; }
 
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -478,107 +465,40 @@ namespace StarSalvager
         {
             magnetCount = 0;
             MAXParts = 0;
-            PowerDraw = 0f;
-            
-            var liquidCapacities = new Dictionary<BIT_TYPE, int>
-            {
-                {BIT_TYPE.RED, 0},
-                {BIT_TYPE.BLUE, 0},
-                {BIT_TYPE.YELLOW, 0},
-                {BIT_TYPE.GREEN, 0},
-                {BIT_TYPE.GREY, 0},
-            };
-            
-            UsedResourceTypes = new List<BIT_TYPE>();
 
             foreach (var part in _parts)
             {
                 int value;
 
-                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-                var levelData = partData.levels[part.level];
+                var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
 
-                PowerDraw += levelData.powerDraw;
-                
-                if(!UsedResourceTypes.Contains(partData.burnType))
-                    UsedResourceTypes.Add(partData.burnType);
-                
-                if(levelData.powerDraw > 0f && !UsedResourceTypes.Contains(BIT_TYPE.YELLOW))
-                    UsedResourceTypes.Add(BIT_TYPE.YELLOW);
-                
                 switch (part.Type)
-                { 
+                {
                     case PART_TYPE.CORE:
-                        
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.RED] += value;
-                            liquidCapacities[BIT_TYPE.GREEN] += value;
-                            liquidCapacities[BIT_TYPE.GREY] += value;
-                            liquidCapacities[BIT_TYPE.YELLOW] += value;
-                        }
-                        
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
 
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.PartCapacity, out int intValue))
+                        if (partRemoteData.TryGetValue(PartProperties.KEYS.PartCapacity, out int intValue))
                         {
                             MAXParts = intValue;
                         }
                         break;
-                    case PART_TYPE.MAGNET: 
-                    
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Magnet, out value))
+                    /*case PART_TYPE.MAGNET:
+
+                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             magnetCount += value;
                         }
-                        break;
+                        break;*/
                     //Determine if we need to setup the shield elements for the bot
                     //FIXME I'll need a way of disposing of the shield visual object
                     case PART_TYPE.SHIELD:
                         break;
-                    case PART_TYPE.STORE:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.RED] += value;
-                            liquidCapacities[BIT_TYPE.GREEN] += value;
-                            liquidCapacities[BIT_TYPE.GREY] += value;
-                        }
-                        break;
-                    case PART_TYPE.STORERED:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.RED] += value;
-                        }
-                        break;
-                    case PART_TYPE.STOREGREEN:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.GREEN] += value;
-                        }
-                        break;
-                    case PART_TYPE.STOREGREY:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.GREY] += value;
-                        }
-                        break;
-                    case PART_TYPE.STOREYELLOW:
-                        if (levelData.TryGetValue(DataTest.TEST_KEYS.Capacity, out value))
-                        {
-                            liquidCapacities[BIT_TYPE.YELLOW] += value;
-                        }
-                        break;
                 }
             }
 
-            //Force update capacities, once new values determined
-            foreach (var capacity in liquidCapacities)
-            {
-                PlayerDataManager.GetResource(capacity.Key).SetLiquidCapacity(capacity.Value);
-            }
         }
 
         #endregion //Parts

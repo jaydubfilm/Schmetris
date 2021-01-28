@@ -24,8 +24,7 @@ namespace StarSalvager
 
         //================================================================================================================//
 
-        public List<Bit> AttachedBits => attachedBits;
-        private List<Bit> attachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
+        public List<Bit> AttachedBits => _attachedBits ?? (_attachedBits = new List<Bit>());
         private List<Bit> _attachedBits;
 
         public bool CanMove => true;
@@ -64,11 +63,11 @@ namespace StarSalvager
             {
                 bit.transform.parent = transform;
                 bit.transform.localPosition = (Vector2) bit.Coordinate * Constants.gridCellSize;
-                attachedBits.Add(bit);
+                AttachedBits.Add(bit);
             }
 
             CompositeCollider.GenerateGeometry();
-            gameObject.name = $"{nameof(Shape)}_[{attachedBits.Count}]";
+            gameObject.name = $"{nameof(Shape)}_[{AttachedBits.Count}]";
         }
 
         //================================================================================================================//
@@ -79,16 +78,16 @@ namespace StarSalvager
 
             var newCoord = direction.ToVector2Int();
 
-            if (attachedBits.Count == 0)
+            if (AttachedBits.Count == 0)
             {
                 newCoord = Vector2Int.zero;
             }
             else
             {
                 if (fromRandomExisting)
-                    newCoord = attachedBits[Random.Range(0, attachedBits.Count)].Coordinate + direction.ToVector2Int();
+                    newCoord = AttachedBits[Random.Range(0, AttachedBits.Count)].Coordinate + direction.ToVector2Int();
 
-                attachedBits.FindUnoccupiedCoordinate(direction, ref newCoord);
+                AttachedBits.FindUnoccupiedCoordinate(direction, ref newCoord);
 
             }
 
@@ -98,14 +97,14 @@ namespace StarSalvager
             bit.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Constants.gridCellSize);
             bit.transform.SetParent(transform);
 
-            attachedBits.Add(bit);
+            AttachedBits.Add(bit);
 
             GenerateGeometry();
         }
 
         public void PushNewBit(Bit bit, Vector2Int coordinate)
         {
-            if (attachedBits.Any(b => b.Coordinate == coordinate))
+            if (AttachedBits.Any(b => b.Coordinate == coordinate))
                 return;
 
             bit.Coordinate = coordinate;
@@ -113,7 +112,7 @@ namespace StarSalvager
             bit.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);
             bit.transform.SetParent(transform);
 
-            attachedBits.Add(bit);
+            AttachedBits.Add(bit);
 
             GenerateGeometry();
         }
@@ -125,7 +124,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
         private FadeSprite[] _fadeSprites;
-        
+
         public void FlashBits()
         {
             if (_fadeSprites != null && _fadeSprites.Length > 0)
@@ -137,18 +136,18 @@ namespace StarSalvager
                 }
             }
 
-            _fadeSprites = new FadeSprite[attachedBits.Count];
+            _fadeSprites = new FadeSprite[AttachedBits.Count];
 
-            for (var i = 0; i < attachedBits.Count; i++)
+            for (var i = 0; i < AttachedBits.Count; i++)
             {
                 var flashSprite = FadeSprite.Create(
                     transform,
-                    (Vector2) attachedBits[i].Coordinate * Constants.gridCellSize,
+                    (Vector2)AttachedBits[i].Coordinate * Constants.gridCellSize,
                     Color.white);
 
                 _fadeSprites[i] = flashSprite;
             }
-            
+
         }
 
         //================================================================================================================//
@@ -156,12 +155,12 @@ namespace StarSalvager
         //TODO Determine if we need to ensure the validity of the shape after removing a piece
         public void DestroyBit(Bit bit)
         {
-            attachedBits.Remove(bit);
+            AttachedBits.Remove(bit);
 
             bit.SetAttached(false);
             Recycler.Recycle<Bit>(bit.gameObject);
 
-            if (attachedBits.Count > 0)
+            if (AttachedBits.Count > 0)
             {
                 CompositeCollider.GenerateGeometry();
                 return;
@@ -171,17 +170,17 @@ namespace StarSalvager
         }
         public void DestroyBit(Vector2Int coordinate, bool shouldRecycleIfEmpty = true)
         {
-            if (attachedBits.All(b => b.Coordinate != coordinate))
+            if (AttachedBits.All(b => b.Coordinate != coordinate))
                 return;
 
-            Bit bit = attachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
-            
-            attachedBits.Remove(bit);
+            Bit bit = AttachedBits.FirstOrDefault(b => b.Coordinate == coordinate);
+
+            AttachedBits.Remove(bit);
 
             bit.SetAttached(false);
             Recycler.Recycle<Bit>(bit.gameObject);
 
-            if (attachedBits.Count > 0)
+            if (AttachedBits.Count > 0)
             {
                 CompositeCollider.GenerateGeometry();
                 return;
@@ -199,7 +198,7 @@ namespace StarSalvager
         {
             //Its important that I set the children colliders instead of the Composite Collider as it wont reEnable correctly
             //Setting the Bits colliders is the correct way of doing this
-            foreach (var bit in attachedBits)
+            foreach (var bit in AttachedBits)
             {
                 bit.SetColliderActive(state);
             }
@@ -209,10 +208,10 @@ namespace StarSalvager
 
         //Sprite Renderer Functions
         //====================================================================================================================//
-        
+
         public override void SetColor(Color color)
         {
-            foreach (var bit in attachedBits)
+            foreach (var bit in AttachedBits)
             {
                 bit.SetColor(color);
             }
@@ -220,28 +219,28 @@ namespace StarSalvager
 
         public override void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
         {
-            foreach (var attachedBit in attachedBits)
+            foreach (var attachedBit in AttachedBits)
             {
                 attachedBit.SetSortingLayer(sortingLayerName, sortingOrder);
             }
         }
-        
+
         //================================================================================================================//
 
-        
+
         public bool TryHitAt(Vector2 worldPosition, float damage)
         {
-            var closestAttachable = attachedBits.GetClosestAttachable(worldPosition);
+            var closestAttachable = AttachedBits.GetClosestAttachable(worldPosition);
 
             //FIXME Need to see how to fix this
             if (closestAttachable is IHealth closestHealth)
             {
                 closestHealth.ChangeHealth(-damage);
 
-                if (closestHealth.CurrentHealth > 0) 
+                if (closestHealth.CurrentHealth > 0)
                     return true;
             }
-            
+
             DestroyBit(closestAttachable);
 
             return true;
@@ -268,9 +267,9 @@ namespace StarSalvager
 
             //Long ray compensates for the players high speed
             var rayLength = Constants.gridCellSize * 3f;
-            var closestAttachable = attachedBits.GetClosestAttachable(worldHitPoint) as IAttachable;
+            var closestAttachable = AttachedBits.GetClosestAttachable(worldHitPoint) as IAttachable;
 
-            closestAttachable = attachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
+            closestAttachable = AttachedBits.GetAttachableInDirection(closestAttachable, rayDirection);
 
 
             var rayStartPosition = (Vector2) closestAttachable.transform.position + -rayDirection * (rayLength / 2f);
@@ -295,31 +294,11 @@ namespace StarSalvager
             bot.TryAddNewShape(this, closestAttachable, inDirection, hit.point);
         }
 
-        private bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
-        {
-            rayDirection = Vector2.zero;
-            //Returns the opposite direction based on the current players move direction.
-            switch (direction)
-            {
-                case DIRECTION.NULL:
-                    rayDirection = Vector2.down;
-                    return true;
-                case DIRECTION.LEFT:
-                    rayDirection = Vector2.right;
-                    return true;
-                case DIRECTION.RIGHT:
-                    rayDirection = Vector2.left;
-                    return true;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-        }
-
         //================================================================================================================//
 
         private void RecycleBits()
         {
-            foreach (var bit in attachedBits)
+            foreach (var bit in AttachedBits)
             {
                 Recycler.Recycle<Bit>(bit);
             }
@@ -337,8 +316,8 @@ namespace StarSalvager
                 _fadeSprites = null;
             }
 
-            
-            
+
+
             //by Default, I want to assume I'll be recycling the bits.
             var recycleBits = true;
 
@@ -356,26 +335,26 @@ namespace StarSalvager
             if (recycleBits)
                 RecycleBits();
 
-            attachedBits.Clear();
+            AttachedBits.Clear();
         }
 
 
         //IHasBounds Functions
         //====================================================================================================================//
-        
+
         public Bounds GetBounds()
         {
-            var maxY = attachedBits.Max(x => x.Coordinate.y);
-            var maxX = attachedBits.Max(x => x.Coordinate.x);
-            
-            var minY = attachedBits.Min(x => x.Coordinate.y);
-            var minX = attachedBits.Min(x => x.Coordinate.x);
-            
+            var maxY = AttachedBits.Max(x => x.Coordinate.y);
+            var maxX = AttachedBits.Max(x => x.Coordinate.x);
+
+            var minY = AttachedBits.Min(x => x.Coordinate.y);
+            var minX = AttachedBits.Min(x => x.Coordinate.x);
+
             var size = new Vector2(maxX - minX, maxY - minY) * Constants.gridCellSize;
             size += Vector2.one;
 
-            var centerPosition = attachedBits.GetCollectionCenterPosition();
-            
+            var centerPosition = AttachedBits.GetCollectionCenterPosition();
+
             return new Bounds
             {
                 center = centerPosition,

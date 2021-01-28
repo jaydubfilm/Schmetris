@@ -9,6 +9,7 @@ TagManager:
   - DoNotCollideWithBullet
   - Enemy
   - Asteroid
+  - Space Junk
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Projectile
   - Enemy
   - Asteroid
-  - 
+  - Space Junk
   - 
   - 
   - 

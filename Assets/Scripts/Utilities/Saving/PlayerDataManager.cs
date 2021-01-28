@@ -1,5 +1,4 @@
-﻿using StarSalvager.Missions;
-using System;
+﻿using System;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -12,6 +11,7 @@ using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
@@ -29,16 +29,141 @@ namespace StarSalvager.Utilities.Saving
 
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
-
-        //TEMP
-        public static Dictionary<int, int> NumTimesGottenLootTableInSector => PlayerAccountData.numTimesBeatNewWaveInSector;
-        public static List<Dictionary<int, int>> SectorWaveIndexConverter => PlayerRunData.sectorWaveIndexConverter;
+        public static List<List<Vector2Int>> botLayoutOptions = new List<List<Vector2Int>>()
+        {
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(1, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, -1),
+                new Vector2Int(-2, 1),
+                new Vector2Int(-2, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, 2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, -1),
+                new Vector2Int(0, -2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 2),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(-2, -1),
+                new Vector2Int(-2, -2)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(1, 2),
+                new Vector2Int(2, 2),
+                new Vector2Int(-1, 2),
+                new Vector2Int(-2, 2),
+                new Vector2Int(2, 1),
+                new Vector2Int(2, 0),
+                new Vector2Int(-2, 1),
+                new Vector2Int(-2, 0)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(1, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, -1),
+                new Vector2Int(1, -1),
+                new Vector2Int(-1, -1)
+            },
+            new List<Vector2Int>()
+            {
+                new Vector2Int(0, 0),
+                new Vector2Int(1, 0),
+                new Vector2Int(2, 0),
+                new Vector2Int(-1, 0),
+                new Vector2Int(-2, 0),
+                new Vector2Int(1, 1),
+                new Vector2Int(0, 1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(1, -1),
+                new Vector2Int(0, -1),
+                new Vector2Int(-1, -1),
+                new Vector2Int(0, -2)
+            }
+        };
 
         //====================================================================================================================//
 
         public static Version GetVersion()
         {
             return PlayerAccountData.Version;
+        }
+
+        public static bool GetCanChoosePart()
+        {
+            return PlayerRunData.CanChoosePart;
+        }
+
+        public static void SetCanChoosePart(bool canChoosePart)
+        {
+            PlayerRunData.CanChoosePart = canChoosePart;
         }
 
         public static bool GetHasRunStarted()
@@ -66,8 +191,29 @@ namespace StarSalvager.Utilities.Saving
             Files.ExportPlayerSaveAccountData(PlayerAccountData, saveSlotIndex);
         }
 
+        public static List<Vector2Int> GetBotLayout()
+        {
+            return PlayerAccountData._botLayout;
+        }
+
+        public static void SetBotLayout(int index)
+        {
+            PlayerAccountData._botLayout = botLayoutOptions[index];
+        }
+
+
         //Run Data Functions
         //====================================================================================================================//
+
+        public static int GetCurrentNode()
+        {
+            return PlayerRunData.CurrentNode;
+        }
+
+        public static void SetCurrentNode(int node)
+        {
+            PlayerRunData.CurrentNode = node;
+        }
 
         public static List<PlayerResource> GetResources()
         {
@@ -79,26 +225,24 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
+        public static int GetComponents()
         {
             return PlayerRunData.Components;
         }
 
-        public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
+        /*public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
+        {
+            return PlayerRunData.Components;
+        }*/
+
+        /*public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
         {
             return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
-        }
+        }*/
 
-        public static List<BlockData> GetBlockDatas()
+        public static List<IBlockData> GetBlockDatas()
         {
-            if (Globals.IsRecoveryBot)
-            {
-                return PlayerRunData.recoveryDroneBlockData;
-            }
-            else
-            {
-                return PlayerRunData.mainDroneBlockData;
-            }
+            return PlayerRunData.mainDroneBlockData;
         }
 
         public static IReadOnlyList<string> GetDontShowAgainKeys()
@@ -106,189 +250,85 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static MissionsCurrentData GetMissionsCurrentData()
+        public static void SetComponents(int value)
         {
-            return PlayerAccountData.missionsCurrentData;
-        }
-
-        public static void SetComponents(COMPONENT_TYPE type, int value)
-        {
-            PlayerRunData.SetComponents(type, value);
+            PlayerRunData.SetComponents(value);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void SetComponents(Dictionary<COMPONENT_TYPE, int> componentDictionary)
+        public static void SetBlockData(List<IBlockData> blockData)
         {
-            PlayerRunData.SetComponents(componentDictionary);
-
-            OnValuesChanged?.Invoke();
+            PlayerRunData.SetShipBlockData(blockData);
         }
-
-        public static void SetBlockData(List<BlockData> blockData)
+        
+        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
-            if (Globals.IsRecoveryBot)
+            void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
-                PlayerRunData.SetRecoveryDroneBlockData(blockData);
-            }
-            else
-            {
-                PlayerRunData.SetShipBlockData(blockData);
-            }
-        }
+                var data = coordinate;
+                var index = blockDatas.FindIndex(x => x.Coordinate == data);
 
-        public static void SetMissionsCurrentData(MissionsCurrentData missionData)
-        {
-            PlayerAccountData.missionsCurrentData = missionData;
+                blockDatas.RemoveAt(index);
+            }
+            
+            var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            
+            var bitsToRemove = droneBlockData
+                .OfType<BitData>()
+                .Where(x => x.Level < removeBelowLevel)
+                .OrderBy(x => x.Coordinate.magnitude)
+                .ToList();
+
+            for (int i = bitsToRemove.Count - 1; i >= 0; i--)
+            {
+                var bitData = bitsToRemove[i];
+                
+                var orphanData = new List<OrphanMoveBlockData>();
+                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
+
+                //droneBlockData.Remove(bitData);
+                RemoveBit(ref droneBlockData, bitData.Coordinate);
+                bitsToRemove.RemoveAt(i);
+                for (int ii = 0; ii < orphanData.Count; ii++)
+                {
+                    var data = orphanData[ii];
+                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
+                    
+                    droneBlockData[index].Coordinate = data.intendedCoordinates;
+                }
+            }
+
+            if (downgradeBits)
+            {
+                for (int i = 0; i < droneBlockData.Count; i++)
+                {
+                    if(!(droneBlockData[i] is BitData bitData) || bitData.Level < removeBelowLevel)
+                        continue;
+
+                    bitData.Level -= 1;
+                    droneBlockData[i] = bitData;
+                }
+            }
+
+           
+            SetBlockData(droneBlockData);
+            Globals.StripBits = false;
         }
 
         //============================================================================================================//
 
-        public static void AddPartResources(BlockData blockData, bool isRecursive)
+        public static void AddComponent(int amount, bool updateValuesChanged = true)
         {
-            if (!blockData.ClassType.Equals(nameof(Part)))
-                return;
-
-            AddPartResources((PART_TYPE)blockData.Type, blockData.Level, isRecursive);
-        }
-
-        public static void AddPartResources(PART_TYPE partType, int level, bool isRecursive)
-        {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            AddCraftCostResources(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                AddPartResources(partType, level - 1, isRecursive);
-        }
-
-        public static void AddCraftCostResources(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                GetResource((BIT_TYPE)resource.type).AddResource(resource.amount, false);
-            }
-        }
-
-        public static void SubtractPartResources(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
-        {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostResources(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartResources(partType, level - 1, isRecursive, costModifier);
-        }
-
-        public static void SubtractCraftCostResources(List<CraftCost> costs, float costModifier = 1.0f)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                GetResource((BIT_TYPE)resource.type).SubtractResource((int)(resource.amount * costModifier), false);
-            }
-        }
-
-
-        public static void SubtractComponents(IEnumerable<CraftCost> cost)
-        {
-            SubtractCraftCostComponents(cost);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void AddComponent(COMPONENT_TYPE type, int amount, bool updateValuesChanged = true)
-        {
-            PlayerRunData.AddComponent(type, amount);
+            PlayerRunData.AddComponent(amount);
 
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractPartCosts(PART_TYPE partType, int level, bool isRecursive, float costModifier = 1.0f)
+        public static void SubtractComponent(int amount)
         {
-            SubtractPartResources(partType, level, isRecursive, costModifier);
-            SubtractPartComponents(partType, level, isRecursive);
-            SubtractPartPremades(partType, level, isRecursive);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractPartComponents(PART_TYPE partType, int level, bool isRecursive)
-        {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostComponents(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartComponents(partType, level - 1, isRecursive);
-        }
-
-        public static void SubtractCraftCostComponents(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Component)
-                    continue;
-
-                SubtractComponent((COMPONENT_TYPE)resource.type, resource.amount);
-            }
-        }
-
-        public static void SubtractComponent(COMPONENT_TYPE type, int amount)
-        {
-            PlayerRunData.SubtractComponent(type, amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractPartPremades(PART_TYPE partType, int level, bool isRecursive)
-        {
-            var costs = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            SubtractCraftCostPremades(costs);
-
-            if (!isRecursive)
-                return;
-
-            if (level > 0)
-                SubtractPartPremades(partType, level - 1, isRecursive);
-        }
-
-        public static void SubtractCraftCostPremades(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Part)
-                    continue;
-
-                SubtractPremade((PART_TYPE)resource.type, resource.partPrerequisiteLevel, resource.amount);
-            }
-        }
-
-        public static void SubtractPremade(PART_TYPE partType, int level, int amount)
-        {
-            List<BlockData> storedMatches = PlayerRunData.partsInStorageBlockData.FindAll(p => p.Type == (int)partType && p.Level == level);
-
-            if (storedMatches.Count < amount)
-            {
-                Debug.LogError("Tried to subtract premade parts that don't exist");
-            }
-
-            for (int i = 0; i < amount; i++)
-            {
-                PlayerRunData.RemovePartFromStorage(storedMatches[0]);
-            }
+            PlayerRunData.SubtractComponent(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -297,82 +337,6 @@ namespace StarSalvager.Utilities.Saving
         public static void AddDontShowAgainKey(string key)
         {
             PlayerRunData.AddDontShowAgainKey(key);
-        }
-
-        //============================================================================================================//
-
-        public static bool CanAffordPart(PART_TYPE partType, int level, float resourceCostModifier = 1.0f)
-        {
-            bool hasResources;
-            bool hasComponents;
-            bool hasParts;
-
-            var resourceCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasResources = CanAffordCraftCostResources(resourceCosts);
-
-            var componentCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasComponents = CanAffordCraftCostComponents(componentCosts);
-
-            var premadeCosts = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(partType).levels[level].cost;
-            hasParts = CanAffordCraftCostPremades(premadeCosts);
-
-            return hasResources && hasComponents && hasParts;
-        }
-
-        public static bool CanAffordFacilityBlueprint(FacilityBlueprint facilityBlueprint)
-        {
-            return PlayerAccountData.GetAvailablePatchPoints() >= facilityBlueprint.patchCost;
-        }
-
-        public static bool CanAffordCraftCostResources(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Bit)
-                    continue;
-
-                if (GetResource((BIT_TYPE)resource.type).resource < resource.amount)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool CanAffordCraftCostComponents(List<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Component)
-                    continue;
-
-                if (GetComponents()[(COMPONENT_TYPE)resource.type] < resource.amount)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool CanAffordCraftCostPremades(IEnumerable<CraftCost> costs)
-        {
-            foreach (CraftCost resource in costs)
-            {
-                if (resource.resourceType != CraftCost.TYPE.Part)
-                    continue;
-
-                if (resource.type == (int)PART_TYPE.CORE)
-                    continue;
-
-                var partCount = PlayerRunData.partsInStorageBlockData.Count(p => p.Type == resource.type && p.Level == resource.partPrerequisiteLevel);
-
-                if (partCount < resource.amount)
-                    return false;
-            }
-
-            return true;
         }
 
         //====================================================================================================================//
@@ -386,7 +350,7 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static LevelRingNodeTree GetLevelRingNodeTree()
+        public static LevelNodeTree GetLevelRingNodeTree()
         {
             return PlayerRunData.LevelRingNodeTree;
         }
@@ -401,31 +365,33 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.PlayerPreviouslyCompletedNodes;
         }
 
-        public static IReadOnlyList<int> GetShortcutNodes()
+        public static IReadOnlyList<int> GetWreckNodes()
         {
-            return PlayerRunData.ShortcutNodes;
+            return PlayerRunData.WreckNodes;
         }
 
+        
+        //Parts
         //====================================================================================================================//
 
-        public static IReadOnlyList<BlockData> GetCurrentPartsInStorage()
+        public static IReadOnlyList<IBlockData> GetCurrentPartsInStorage()
         {
             return PlayerRunData.GetCurrentPartsInStorage();
         }
 
-        public static void SetCurrentPartsInStorage(List<BlockData> blockData)
+        public static void SetCurrentPartsInStorage(List<IBlockData> blockData)
         {
             PlayerRunData.SetCurrentPartsInStorage(blockData);
         }
 
-        public static void AddPartToStorage(BlockData blockData)
+        public static void AddPartToStorage(IBlockData blockData)
         {
             PlayerRunData.AddPartToStorage(blockData);
 
             OnValuesChanged?.Invoke();
         }
 
-        public static void RemovePartFromStorage(BlockData blockData)
+        public static void RemovePartFromStorage(IBlockData blockData)
         {
             PlayerRunData.RemovePartFromStorage(blockData);
 
@@ -439,7 +405,37 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        //Patches
         //====================================================================================================================//
+
+        public static IReadOnlyList<PatchData> GetCurrentPatchesInStorage()
+        {
+            return PlayerRunData.GetCurrentPatchesInStorage();
+        }
+        
+        public static void AddPatchToStorage(PatchData patchData)
+        {
+            PlayerRunData.AddPatchToStorage(patchData);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void RemovePatchFromStorage(PatchData patchData)
+        {
+            PlayerRunData.RemovePatchFromStorage(patchData);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        public static void RemovePatchFromStorageAtIndex(int index)
+        {
+            PlayerRunData.RemovePatchFromStorageAtIndex(index);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        //====================================================================================================================//
+        
 
         public static float GetLevelResourceModifier(int sector, int wave)
         {
@@ -604,17 +600,6 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RepairsDone += amount;
         }
 
-
-        public static bool CheckHasFacility(FACILITY_TYPE type, int level = 0)
-        {
-            return PlayerAccountData.CheckHasFacility(type, level);
-        }
-
-        public static bool TryGetFacilityValue(FACILITY_TYPE type, out int level)
-        {
-            return PlayerAccountData.facilityRanks.TryGetValue(type, out level);
-        }
-
         public static void UnlockBlueprint(Blueprint blueprint)
         {
             PlayerAccountData.UnlockBlueprint(blueprint);
@@ -622,9 +607,9 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
-        public static void UnlockBlueprint(PART_TYPE partType, int level)
+        public static void UnlockBlueprint(PART_TYPE partType)
         {
-            PlayerAccountData.UnlockBlueprint(partType, level);
+            PlayerAccountData.UnlockBlueprint(partType);
 
             OnValuesChanged?.Invoke();
         }
@@ -639,64 +624,6 @@ namespace StarSalvager.Utilities.Saving
         public static IReadOnlyList<Blueprint> GetUnlockedBlueprints()
         {
             return PlayerAccountData.unlockedBlueprints;
-        }
-
-        public static IReadOnlyDictionary<FACILITY_TYPE, int> GetFacilityRanks()
-        {
-            return PlayerAccountData.facilityRanks;
-        }
-
-        public static IReadOnlyDictionary<FACILITY_TYPE, int> GetFacilityBlueprintRanks()
-        {
-            return PlayerAccountData.facilityBlueprintRanks;
-        }
-
-        public static void UnlockFacilityLevel(FACILITY_TYPE facilityType, int level, bool triggerMissionCheck = true)
-        {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level, triggerMissionCheck);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockFacilityBlueprintLevel(FacilityBlueprint facilityBlueprint)
-        {
-            PlayerAccountData.UnlockFacilityBlueprintLevel(facilityBlueprint);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockFacilityBlueprintLevel(FACILITY_TYPE facilityType, int level, bool triggerMissionCheck = true)
-        {
-            PlayerAccountData.UnlockFacilityLevel(facilityType, level, triggerMissionCheck);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        //====================================================================================================================//
-
-        public static bool CheckHasMissionAlert(Mission mission)
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasMissionAlert(mission);
-        }
-
-        public static bool CheckHasAnyMissionAlerts()
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyMissionAlerts();
-        }
-
-        public static void AddNewMissionAlert(Mission mission)
-        {
-            PlayerAccountData.PlayerNewAlertData.AddNewMissionAlert(mission);
-        }
-
-        public static void ClearNewMissionAlert(Mission mission)
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearNewMissionAlert(mission);
-        }
-
-        public static void ClearAllMissionAlerts()
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearAllMissionAlerts();
         }
 
         //============================================================================================================//
@@ -726,33 +653,6 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
         }
 
-        //============================================================================================================//
-
-        public static bool CheckHasFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static bool CheckHasAnyFacilityBlueprintAlerts()
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyFacilityBlueprintAlerts();
-        }
-
-        public static void AddNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {            
-            PlayerAccountData.PlayerNewAlertData.AddNewFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static void ClearNewFacilityBlueprintAlert(FacilityBlueprint facilityBlueprint)
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearNewFacilityBlueprintAlert(facilityBlueprint);
-        }
-
-        public static void ClearAllFacilityBlueprintAlerts()
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearAllFacilityBlueprintAlerts();
-        }
-
         //====================================================================================================================//
 
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
@@ -766,7 +666,6 @@ namespace StarSalvager.Utilities.Saving
             else
             {
                 PlayerAccountData = tryImportPlayerAccountData;
-                MissionManager.LoadMissionData();
             }
             SavePlayerAccountData();
         }
@@ -782,105 +681,12 @@ namespace StarSalvager.Utilities.Saving
             {
                 Blueprint blueprint = new Blueprint
                 {
-                    name = (PART_TYPE)blueprintData.type + " " + blueprintData.level,
-                    partType = (PART_TYPE)blueprintData.type,
-                    level = blueprintData.level
+                    name = $"{((PART_TYPE)blueprintData.type)}",
+                    partType = (PART_TYPE)blueprintData.type
                 };
                 playerAccountData.UnlockBlueprint(blueprint);
             }
 
-            foreach (var facilityData in Globals.FacilityInitialData)
-            {
-                playerAccountData.UnlockFacilityLevel((FACILITY_TYPE)facilityData.type, facilityData.level, false);
-                /*FacilityBlueprint facilityBlueprint = new FacilityBlueprint
-                {
-                    name = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayName,
-                    facilityType = (FACILITY_TYPE)facilityData.type,
-                    description = FactoryManager.Instance.FacilityRemote.GetRemoteData((FACILITY_TYPE)facilityData.type).displayDescription,
-                    level = facilityData.level
-                };
-                PlayerDataManager.AddNewFacilityBlueprintAlert(facilityBlueprint);*/
-            }
-
-            List<FacilityRemoteData> remoteData = FactoryManager.Instance.FacilityRemote.GetRemoteDatas();
-            foreach (var facilityData in remoteData)
-            {
-                playerAccountData.UnlockFacilityBlueprintLevel((FACILITY_TYPE)facilityData.type, facilityData.levels.Count - 1);
-            }
-
-            foreach (var facilityRemoteData in FactoryManager.Instance.FacilityRemote.GetRemoteDatas())
-            {
-                if (facilityRemoteData.hideInFacilityMenu)
-                {
-                    continue;
-                }
-
-                FACILITY_TYPE type = facilityRemoteData.type;
-                bool containsFacilityKey = PlayerDataManager.GetFacilityRanks().ContainsKey(type);
-                bool containsFacilityBlueprintKey = PlayerDataManager.GetFacilityBlueprintRanks().ContainsKey(type);
-
-                if (!containsFacilityBlueprintKey)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i <= PlayerDataManager.GetFacilityBlueprintRanks()[type]; i++)
-                //for (int i = 0; i < facilityRemoteData.levels.Count; i++)
-                {
-                    if (containsFacilityKey && PlayerDataManager.GetFacilityRanks()[type] >= i)
-                    {
-                        continue;
-                    }
-
-                    if (!containsFacilityKey && i > 0)
-                    {
-                        continue;
-                    }
-
-                    string description = facilityRemoteData.displayDescription;
-                    description = description.Replace("*", facilityRemoteData.levels[i].increaseAmount.ToString());
-
-                    FacilityBlueprint newBlueprint = new FacilityBlueprint
-                    {
-                        name = facilityRemoteData.displayName + " " + (facilityRemoteData.levels[i].level + 1),
-                        description = description,
-                        facilityType = type,
-                        level = i,
-                        patchCost = facilityRemoteData.levels[i].patchCost
-                    };
-
-                    bool hasPrereqs = true;
-                    for (int k = 0; k < facilityRemoteData.levels[i].facilityPrerequisites.Count; k++)
-                    {
-                        if (PlayerDataManager.GetFacilityRanks().ContainsKey(facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType) &&
-                            PlayerDataManager.GetFacilityRanks()[facilityRemoteData.levels[i].facilityPrerequisites[k].facilityType] >= facilityRemoteData.levels[i].facilityPrerequisites[k].level)
-                        {
-                            continue;
-                        }
-
-                        hasPrereqs = false;
-                        break;
-                    }
-
-                    bool craftButtonInteractable = hasPrereqs &&
-                        ((containsFacilityKey && i == PlayerDataManager.GetFacilityRanks()[type] + 1) ||
-                        (!containsFacilityKey && i == 0));
-
-                    if (!craftButtonInteractable)
-                    {
-                        continue;
-                    }
-
-                    if (facilityRemoteData.hideInFacilityMenu)
-                    {
-                        continue;
-                    }
-
-                    PlayerDataManager.AddNewFacilityBlueprintAlert(newBlueprint);
-                }
-            }
-
-            MissionManager.LoadMissionData();
             SavePlayerAccountData();
         }
 
@@ -1079,56 +885,6 @@ namespace StarSalvager.Utilities.Saving
         private static string GetAsTitle(in string value)
         {
             return $"<b><color=white>{value}</color></b>";
-        }
-        
-        public static float GetRefineryMultiplier()
-        {
-            float refineryMultiplier = 1.0f;
-            if (!GetFacilityRanks().ContainsKey(FACILITY_TYPE.REFINERY)) 
-                return refineryMultiplier;
-            
-            int refineryRank = GetFacilityRanks()[FACILITY_TYPE.REFINERY];
-            float increaseAmount = FactoryManager.Instance.FacilityRemote.GetRemoteData(FACILITY_TYPE.REFINERY)
-                .levels[refineryRank].increaseAmount;
-            
-            refineryMultiplier = 1 + increaseAmount / 100;
-            
-            Debug.Log("REFINERY MULTIPLIER: " + refineryMultiplier);
-
-            return refineryMultiplier;
-        }
-        
-        public static float GetFacilityMultiplier(BIT_TYPE bitType)
-        {
-            FACILITY_TYPE facilityType;
-            switch (bitType)
-            {
-                case BIT_TYPE.BLUE:
-                    facilityType = FACILITY_TYPE.EVAPORATOR;
-                    break;
-                case BIT_TYPE.YELLOW:
-                    facilityType = FACILITY_TYPE.ALTERNATOR;
-                    break;
-                case BIT_TYPE.RED:
-                    facilityType = FACILITY_TYPE.SEPARATOR;
-                    break;
-                case BIT_TYPE.GREEN:
-                    facilityType = FACILITY_TYPE.CENTRIFUGE;
-                    break;
-                case BIT_TYPE.GREY:
-                    facilityType = FACILITY_TYPE.SMELTER;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-            }
-            
-            if (TryGetFacilityValue(facilityType, out var facilityValue))
-            {
-                return 1 + (float) FactoryManager.Instance.FacilityRemote
-                    .GetRemoteData(facilityType).levels[facilityValue].increaseAmount / 100;
-            }
-
-            return 1f;
         }
     }
 }

@@ -24,9 +24,9 @@ namespace StarSalvager.Utilities.Inputs
                     ""name"": ""Side Movement"",
                     ""type"": ""Value"",
                     ""id"": ""5c466441-94f9-4d6e-b37d-7a2cfeddb5ee"",
-                    ""expectedControlType"": ""Digital"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""Rotate"",
@@ -109,53 +109,20 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""ShuffleAlt"",
-                    ""type"": ""Button"",
-                    ""id"": ""4db48088-98b6-4d2a-a958-eb58e20a7b4c"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""SpeedChange"",
+                    ""type"": ""Value"",
+                    ""id"": ""f6122248-cde6-4de5-a88f-144268190a85"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)""
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""Arrows"",
-                    ""id"": ""d9f5e109-d46a-411f-b4c8-b353b2d244da"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""93c05d85-d9f0-4f4a-8f1a-b4a42a125793"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""e570be30-c752-4bd6-a80f-99988102bb3f"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""AD"",
-                    ""id"": ""8b981256-905a-401f-a7af-2911351a11ef"",
+                    ""id"": ""c605e376-3012-4fda-a851-1f3c6b9565fd"",
                     ""path"": ""1DAxis"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Side Movement"",
@@ -163,8 +130,8 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
-                    ""id"": ""cde95940-befa-43d1-9833-9c095e775854"",
+                    ""name"": ""Negative"",
+                    ""id"": ""da475843-ecbe-4efd-a322-8570837b1da2"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -174,13 +141,156 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
-                    ""id"": ""b02cb09a-713a-41b3-8700-adf0c245e265"",
+                    ""name"": ""Positive"",
+                    ""id"": ""bd20b2b4-c1c7-4108-8ccb-5f0b1bb650c3"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Arrows"",
+                    ""id"": ""d9f5e109-d46a-411f-b4c8-b353b2d244da"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""534165d2-92c7-4b0b-82fd-482e9c50e3ab"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""64b310c6-b817-413e-aab9-5e4029411c5d"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""RightHand"",
+                    ""id"": ""53558e0d-11c7-45bf-957c-a0f4c041f8a4"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""206a2499-5381-4ff7-849b-24c601012475"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""952d9430-6dab-4d9e-97b7-be6895f6c366"",
+                    ""path"": ""<Keyboard>/slash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""D-Pad"",
+                    ""id"": ""1135902d-d7e1-4c58-81e6-27dcd1fec064"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""81e53de8-46cb-41cb-8619-7e7837959b9a"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""94f163f2-aff0-47fb-9d38-84b08bcd58b8"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""626d3d1b-580b-4cf2-b8a6-d8305cd616b2"",
+                    ""path"": ""<Gamepad>/leftStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Side Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WS"",
+                    ""id"": ""459661cc-fd75-406a-a631-9109f238873f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""9f532104-7c58-4287-8df5-9159e146cfb1"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""2df4da74-6936-45c1-afd1-9251a201d14b"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -218,8 +328,8 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""WS"",
-                    ""id"": ""fb229206-cb0f-47b5-a4f8-b78cadd10068"",
+                    ""name"": ""RightHand"",
+                    ""id"": ""2478723c-69fa-4600-9f65-321e6a164736"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -230,8 +340,8 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": ""negative"",
-                    ""id"": ""afd08917-be30-4092-b715-3fc9a93ac503"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""id"": ""5b6be539-a10b-4158-af09-9a9858a2fb33"",
+                    ""path"": ""<Keyboard>/k"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -241,8 +351,41 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": ""positive"",
-                    ""id"": ""f2171887-d7b0-4cb4-a4bd-bd0fbe7bc6a1"",
-                    ""path"": ""<Keyboard>/w"",
+                    ""id"": ""d7851392-7d49-4c5c-8eec-343312cdf2fa"",
+                    ""path"": ""<Keyboard>/semicolon"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Controller"",
+                    ""id"": ""eec1d48d-7c8f-4d8f-a2ef-c702a84a0be3"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""c7144637-5793-4411-b6d2-bb6d1140244d"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""6a0341ce-58a4-43ba-a98b-67a2d1b4b9c3"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -285,8 +428,30 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""d541f7ab-000a-4249-8fee-45ac0fa6475a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5ce964b7-0b1f-4db0-809a-fa6ba2389678"",
                     ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b1ba9bc-b466-44d1-9a15-89f064727662"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -307,8 +472,30 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""55433e3b-dc06-4c82-ad9f-0a89ef36ac77"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""cdecaf24-137c-46af-9e5a-d7bcfc13c852"",
                     ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f26edeed-e68a-4ce7-9db8-866a810b401a"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -329,8 +516,30 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cca2e7d1-5007-4001-977d-3336d5c6c41e"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SmartAction4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""c0473a48-657d-427c-a202-de8357cf1539"",
                     ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Continue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d8bd2909-177f-4910-a084-f640d886dd37"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -350,103 +559,48 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Arrows"",
-                    ""id"": ""9b106529-c53e-4de5-b3b0-48a251f3e5c5"",
+                    ""name"": ""QE"",
+                    ""id"": ""30c66add-9c1b-4b7b-a904-86673e2733c8"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
+                    ""action"": ""SpeedChange"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""negative"",
-                    ""id"": ""e88e20c5-3b21-40de-97d7-27e9d911c933"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""id"": ""3ea6f926-b4dd-4001-8448-58c652579f1e"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
+                    ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""positive"",
-                    ""id"": ""e16f2229-03a3-42b9-841f-004dfcb88b97"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""id"": ""1e9404c9-0ce9-4b1b-8575-0541cbb69e42"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
+                    ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""AD"",
-                    ""id"": ""e309292a-6841-4c54-b939-52c8dac97b4a"",
-                    ""path"": ""1DAxis"",
+                    ""name"": """",
+                    ""id"": ""888c49cb-81d8-45fc-86ff-6b5dc3e7a132"",
+                    ""path"": ""<Gamepad>/dpad/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": true,
+                    ""action"": ""SpeedChange"",
+                    ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""861ed4f5-2fa5-467c-9e09-512029a0958a"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""93fea74b-cbfe-4051-b832-2d1e3fb71593"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Joystick"",
-                    ""id"": ""a88522b8-75ed-4c2c-9216-2f81e8f4181f"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""f55b0a97-b126-4758-a35c-52779c342619"",
-                    ""path"": ""<Gamepad>/leftStick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""954c9f1c-fdba-4e69-9ed5-cbce1dfb972b"",
-                    ""path"": ""<Gamepad>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ShuffleAlt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -698,6 +852,17 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""d9154608-8fc3-4c9f-97a9-1cfd9f9987af"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5ca4f60e-ba11-4bdf-b080-e9d315691738"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
@@ -709,8 +874,30 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""a5701a6d-2b31-4e7a-a101-8ef61c877ded"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""160e9409-2c47-4c39-ace1-f90c28aefef9"",
                     ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c01a7d74-1259-4e4f-93e1-b00d97736602"",
+                    ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -758,7 +945,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SmartAction4 = m_Default.FindAction("SmartAction4", throwIfNotFound: true);
             m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
-            m_Default_ShuffleAlt = m_Default.FindAction("ShuffleAlt", throwIfNotFound: true);
+            m_Default_SpeedChange = m_Default.FindAction("SpeedChange", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -829,7 +1016,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SmartAction4;
         private readonly InputAction m_Default_Continue;
         private readonly InputAction m_Default_SelfDestruct;
-        private readonly InputAction m_Default_ShuffleAlt;
+        private readonly InputAction m_Default_SpeedChange;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -845,7 +1032,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SmartAction4 => m_Wrapper.m_Default_SmartAction4;
             public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
-            public InputAction @ShuffleAlt => m_Wrapper.m_Default_ShuffleAlt;
+            public InputAction @SpeedChange => m_Wrapper.m_Default_SpeedChange;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -888,9 +1075,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
                     @SelfDestruct.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSelfDestruct;
-                    @ShuffleAlt.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
-                    @ShuffleAlt.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
-                    @ShuffleAlt.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnShuffleAlt;
+                    @SpeedChange.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
+                    @SpeedChange.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
+                    @SpeedChange.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -928,9 +1115,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SelfDestruct.started += instance.OnSelfDestruct;
                     @SelfDestruct.performed += instance.OnSelfDestruct;
                     @SelfDestruct.canceled += instance.OnSelfDestruct;
-                    @ShuffleAlt.started += instance.OnShuffleAlt;
-                    @ShuffleAlt.performed += instance.OnShuffleAlt;
-                    @ShuffleAlt.canceled += instance.OnShuffleAlt;
+                    @SpeedChange.started += instance.OnSpeedChange;
+                    @SpeedChange.performed += instance.OnSpeedChange;
+                    @SpeedChange.canceled += instance.OnSpeedChange;
                 }
             }
         }
@@ -1037,7 +1224,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSmartAction4(InputAction.CallbackContext context);
             void OnContinue(InputAction.CallbackContext context);
             void OnSelfDestruct(InputAction.CallbackContext context);
-            void OnShuffleAlt(InputAction.CallbackContext context);
+            void OnSpeedChange(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {
