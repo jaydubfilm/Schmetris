@@ -40,6 +40,12 @@ namespace StarSalvager
         [SerializeField, /*FoldoutGroup("$Name"),*/ ShowIf("showProbability")]
         private int weight = 1;
 
+
+        [ShowInInspector, DisplayAsString]
+        public string Chance => $"{percentChance:P2}";
+        [HideInTables, NonSerialized]
+        public float percentChance;
+
         public int Weight => weight;
 
         /*[SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]

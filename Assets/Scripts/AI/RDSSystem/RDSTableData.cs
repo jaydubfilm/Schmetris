@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -42,7 +43,7 @@ namespace StarSalvager
         [FoldoutGroup("$Name"), SerializeField, OnValueChanged("UpdateWeightType")]
         private WEIGHTING_TYPE m_weightingType;
 
-        [TitleGroup("$Name/Loot Possibilities"), SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true), PropertyOrder(100), Space(10f)]
+        [TitleGroup("$Name/Loot Possibilities"), SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true), PropertyOrder(100), Space(10f), OnValueChanged("UpdateChance")]
         private List<RDSLootData> m_rdsLootDatas;
 
 
@@ -54,15 +55,38 @@ namespace StarSalvager
         private void AddToLootData()
         {
             m_rdsLootDatas.Add(new RDSLootData());
+            UpdateChance();
             
 #if UNITY_EDITOR
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
 #endif
-
+        }
+        [HorizontalGroup("$Name/Loot Possibilities/Row1", Width = 100),Button("Update Chance", ButtonSizes.Small), PropertyOrder(90)]
+        private void UpdateChance()
+        {
+            switch (m_weightingType)
+            {
+                case WEIGHTING_TYPE.Even:
+                    var count = m_rdsLootDatas.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        m_rdsLootDatas[i].percentChance = 1f / count;
+                    }
+                    break;
+                case WEIGHTING_TYPE.Weighted:
+                    var total = m_rdsLootDatas.Sum(x => x.Weight);
+                    for (int i = 0; i < m_rdsLootDatas.Count; i++)
+                    {
+                        m_rdsLootDatas[i].percentChance = (float)m_rdsLootDatas[i].Weight / total;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
 
         }
-
         
         
         private void UpdateWeightType()
