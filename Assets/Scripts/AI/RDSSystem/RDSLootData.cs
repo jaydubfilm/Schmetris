@@ -37,7 +37,7 @@ namespace StarSalvager
         public int value;
 
         [FormerlySerializedAs("probability")] 
-        [SerializeField, /*FoldoutGroup("$Name"),*/ ShowIf("showProbability")]
+        [SerializeField, /*FoldoutGroup("$Name"),*/ ShowIf("showProbability"), OnValueChanged("UpdateChance")]
         private int weight = 1;
 
 
@@ -94,6 +94,18 @@ namespace StarSalvager
         #endregion //IEquatable
 
         #region UNITY_EDITOR
+
+        [NonSerialized]
+        private RDSTableData _parentTable;
+        public void UpdateChance()
+        {
+            _parentTable.UpdateChance();
+        }
+
+        public void EditorSetParentContainer(in RDSTableData parentTable)
+        {
+            _parentTable = parentTable;
+        }
         
         private IEnumerable DropTypeValues = new ValueDropdownList<DROP_TYPE>
         {

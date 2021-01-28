@@ -62,8 +62,7 @@ namespace StarSalvager
             AssetDatabase.SaveAssets();
 #endif
         }
-        [HorizontalGroup("$Name/Loot Possibilities/Row1", Width = 100),Button("Update Chance", ButtonSizes.Small), PropertyOrder(90)]
-        private void UpdateChance()
+        public void UpdateChance()
         {
             switch (m_weightingType)
             {
@@ -95,6 +94,8 @@ namespace StarSalvager
             {
                 m_rdsLootDatas[i].showProbability = m_weightingType == WEIGHTING_TYPE.Weighted;
             }
+
+            UpdateChance();
         }
         
         private void UpdateProbability()
@@ -107,6 +108,16 @@ namespace StarSalvager
             }
 
             m_dropChance = _dropChance;
+        }
+
+        public void EditorUpdateChildren()
+        {
+            for (var i = 0; i < m_rdsLootDatas.Count; i++)
+            {
+                m_rdsLootDatas[i].EditorSetParentContainer(this);
+            }
+            
+            UpdateChance();
         }
 
         #endregion //Unity Editor

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using StarSalvager.Factories.Data;
 using UnityEngine;
 using System.Collections.Generic;
@@ -34,7 +35,39 @@ namespace StarSalvager.ScriptableObjects
         }
         
 #if UNITY_EDITOR
-        
+
+        public void OnEnable()
+        {
+            Selection.selectionChanged += EditorOnSelectionChanged;
+            
+            foreach (var remoteData in m_enemyRemoteData)
+            {
+                remoteData.EditorUpdateChildren();
+            }
+        }
+
+        public void OnDisable()
+        {
+            Selection.selectionChanged -= EditorOnSelectionChanged;
+        }
+
+        private void EditorOnSelectionChanged()
+        {
+            var objects = Selection.objects;
+            
+            if (objects.Length != 1)
+                return;
+            
+            if (!(objects[0] is EnemyRemoteDataScriptableObject enemyRemoteData))
+                return;
+
+            foreach (var remoteData in enemyRemoteData.m_enemyRemoteData)
+            {
+                remoteData.EditorUpdateChildren();
+            }
+            
+            
+        }
 
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
         {
