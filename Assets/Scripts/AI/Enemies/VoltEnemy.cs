@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -50,6 +54,35 @@ namespace StarSalvager.AI
             _targetOffset = ChooseOffset(_minDistance, _maxDistance);
             SetState(STATE.MOVE);
         }
+
+        //============================================================================================================//
+
+        public override void ChangeHealth(float amount)
+        {
+            CurrentHealth += amount;
+
+            if (amount < 0)
+            {
+                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
+            }
+
+            if (CurrentHealth > 0)
+                return;
+
+            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
+
+
+
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+
+            Recycler.Recycle<VoltEnemy>(this);
+        }
+
 
         //============================================================================================================//
 

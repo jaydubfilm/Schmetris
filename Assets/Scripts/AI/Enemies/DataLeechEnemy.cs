@@ -66,6 +66,8 @@ namespace StarSalvager.AI
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
             SetState(STATE.DEATH);
+
+            Recycler.Recycle<DataLeechEnemy>(this);
         }
 
         public override void OnBumped()
