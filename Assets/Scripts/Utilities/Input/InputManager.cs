@@ -615,10 +615,10 @@ namespace StarSalvager.Utilities.Inputs
                 switch (direction)
                 {
                     case -1:
-                        _bots[0].CoreShuffle(DIRECTION.LEFT);
+                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
                         break;
                     case 1:
-                        _bots[0].CoreShuffle(DIRECTION.RIGHT);
+                        _bots[0].CoreShuffle(DIRECTION.LEFT);
                         break;
                 }
             }
