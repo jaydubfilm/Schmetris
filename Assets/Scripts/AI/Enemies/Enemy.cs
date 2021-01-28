@@ -22,7 +22,7 @@ namespace StarSalvager.AI
     {
         public abstract bool IsAttachable { get; }
         public abstract bool IgnoreObstacleAvoidance { get; }
-        public abstract bool SpawnHorizontal { get; }
+        public abstract bool SpawnAboveScreen { get; }
 
         public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
         public string EnemyName => m_enemyData.Name;

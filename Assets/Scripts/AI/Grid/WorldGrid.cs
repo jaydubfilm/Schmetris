@@ -276,15 +276,15 @@ namespace StarSalvager
 
         public Vector2 GetLocalPositionOfSpawnPositionForEnemy(Enemy enemy)
         {
-            if (enemy.SpawnHorizontal)
-            {
-                //Spawn to the edges of the screen
-                return GetHorizontalSpawnPositionForEnemy();
-            }
-            else
+            if (enemy.SpawnAboveScreen)
             {
                 //Spawn above the screen
                 return GetVerticalSpawnPositionForEnemy();
+            }
+            else
+            {
+                //Spawn to the edges of the screen
+                return GetHorizontalSpawnPositionForEnemy();
             }
         }
 

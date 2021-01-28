@@ -10,7 +10,7 @@ namespace StarSalvager.AI
     {
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
-        public override bool SpawnHorizontal => false;
+        public override bool SpawnAboveScreen => true;
 
         private bool m_isAccelerating;
         private float m_accelerationAmount = 0.0f;

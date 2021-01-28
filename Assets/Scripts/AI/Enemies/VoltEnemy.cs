@@ -22,7 +22,7 @@ namespace StarSalvager.AI
         
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
-        public override bool SpawnHorizontal => true;
+        public override bool SpawnAboveScreen => false;
 
         //====================================================================================================================//
         
@@ -193,18 +193,18 @@ namespace StarSalvager.AI
         private Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
             Vector2 angleBetweenBotAndEnemy = ((Vector2)transform.position - _playerLocation).normalized;
-            Vector2 rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -90)) * angleBetweenBotAndEnemy;
+            Vector2 rotatedAngle;
+            if (Vector2.Distance(transform.position, _playerLocation) >= _maxDistance)
+            {
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-140, -100)) * angleBetweenBotAndEnemy;
+            }
+            else
+            {
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-90, -60)) * angleBetweenBotAndEnemy;
+            }
             
             var pos = rotatedAngle * Random.Range(minDist, maxDist);
             
-            //var pos = Random.insideUnitCircle.normalized * Random.Range(minDist, maxDist);
-
-            /*var checkX = Mathf.Clamp(Mathf.Abs(pos.x), minDist, maxDist);
-            var checkY = Mathf.Clamp(Mathf.Abs(pos.y), minDist, maxDist);
-
-            pos.x = pos.x < 0 ? checkX * -1f : checkX;
-            pos.y = pos.y < 0 ? checkY * -1f : checkY;*/
-
             return pos;
         }
 
@@ -219,17 +219,12 @@ namespace StarSalvager.AI
             if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
 
-            Vector2 playerLocation = LevelManager.Instance.BotInLevel != null
-                ? LevelManager.Instance.BotInLevel.transform.position
-                : Vector3.right * 50;
+            Vector2 targetLocation = _playerLocation;
 
-            Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
-
-            Vector2 shootDirection = m_enemyData.FireAtTarget
-                ? (targetLocation - (Vector2) transform.position).normalized
-                : Vector2.down;
+            Vector2 shootDirection = (targetLocation - (Vector2)transform.position).normalized;
 
             var raycastHit = Physics2D.Raycast(transform.position, shootDirection, 100, collisionMask.value);
+            Debug.DrawRay(transform.position, shootDirection * 100, Color.white, 1.0f);
 
             if (raycastHit.collider == null)
             {
@@ -239,7 +234,7 @@ namespace StarSalvager.AI
             if (!(raycastHit.transform.GetComponent<Bot>() is Bot bot))
                 throw new Exception();
 
-            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.transform.position) is Bit)
+            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.point) is Bit)
             {
                 return;
             }

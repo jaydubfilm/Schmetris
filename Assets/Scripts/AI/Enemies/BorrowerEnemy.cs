@@ -22,7 +22,7 @@ namespace StarSalvager.AI
         
         public override bool IsAttachable => true;
         public override bool IgnoreObstacleAvoidance => true;
-        public override bool SpawnHorizontal => false;
+        public override bool SpawnAboveScreen => true;
 
 
         //====================================================================================================================//
