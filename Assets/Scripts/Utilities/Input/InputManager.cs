@@ -539,7 +539,7 @@ namespace StarSalvager.Utilities.Inputs
         //Side Shuffle
         //====================================================================================================================//
 
-        private const float TIMER = 0.3f;
+        //private const float TIMER = 0.3f;
         private float countdown;
         private int direction;
         private int keyCount;
@@ -597,7 +597,7 @@ namespace StarSalvager.Utilities.Inputs
             }
             else if (dir != direction && countdown <= 0f)
             {
-                countdown = TIMER;
+                countdown = Globals.ShuffleTimeThreshold;
             }
 
             if (countdown <= 0f)

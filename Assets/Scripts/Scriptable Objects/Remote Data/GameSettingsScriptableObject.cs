@@ -60,6 +60,9 @@ namespace StarSalvager.ScriptableObjects
         public float asteroidSpawnDisableTimeBeforeWaveEnd = 5.0f;
         public float timeAfterWaveEndFlyOut = 5.0f;
 
+        [Range(0.01f, 1f)]
+        public float shuffleTimeThreshold = 0.3f;
+
         public void SetupGameSettings()
         {
             Globals.SetGameSettings(this);
