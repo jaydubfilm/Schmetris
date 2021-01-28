@@ -10,9 +10,8 @@ namespace StarSalvager.ScriptableObjects
     {
         [BoxGroup("Prototyping")]
         public bool useShuffleDance = true;
-
-        [BoxGroup("Prototyping"), Space(10f)]
-        public bool allowAccessToUnlockedLaterWaves = true;
+        [BoxGroup("Prototyping"), Range(0.01f, 1f)]
+        public float shuffleTimeThreshold = 0.3f;
 
 
         [BoxGroup("Debugging")]
@@ -124,8 +123,7 @@ namespace StarSalvager.ScriptableObjects
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
 
-        [Range(0.01f, 1f)]
-        public float shuffleTimeThreshold = 0.3f;
+
 
         public void SetupGameSettings()
         {

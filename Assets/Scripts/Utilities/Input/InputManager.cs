@@ -324,9 +324,9 @@ namespace StarSalvager.Utilities.Inputs
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
-                {
+                /*{
                     Input.Actions.Default.ShuffleAlt, ShuffleInput
-                },
+                },*/
                 {
                     Input.Actions.Default.SideMovement, MovementDelegator
                 },
@@ -493,6 +493,9 @@ namespace StarSalvager.Utilities.Inputs
             //If the input is already set to the updated value, we can ignore it.
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
+            
+            if(Globals.UseShuffleDance)
+                TrySideShuffleDance(Mathf.RoundToInt(newValue));
 
             //If the current movement is set to max, and we're trying to stop, do so immediately
             if (Mathf.Abs(_currentMoveInput) > 0.9f && Mathf.Abs(newValue) < 0.9f)
@@ -617,7 +620,7 @@ namespace StarSalvager.Utilities.Inputs
         private int direction;
         private int keyCount;
 
-        private void ShuffleInput(InputAction.CallbackContext ctx)
+        /*private void ShuffleInput(InputAction.CallbackContext ctx)
         {
             if (!Globals.UseShuffleDance)
                 return;
@@ -632,8 +635,12 @@ namespace StarSalvager.Utilities.Inputs
             else
                 newValue = 0f;
             
-            TrySideShuffleDance(Mathf.RoundToInt(newValue));
-        }
+            //If the input is already set to the updated value, we can ignore it.
+            if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
+                return;
+            
+            
+        }*/
 
         private void UpdateShuffleCountdown()
         {
