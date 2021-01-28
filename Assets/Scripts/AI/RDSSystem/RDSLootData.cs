@@ -24,20 +24,30 @@ namespace StarSalvager
         [HideInInspector]
         public bool showProbability;
 
-        [FormerlySerializedAs("dropType")] [/*FoldoutGroup("$Name"), */ValueDropdown("DropTypeValues"), LabelWidth(75), OnValueChanged("UpdateValue"), TableColumnWidth(75)]
+        [FormerlySerializedAs("dropType")] 
+        [ValueDropdown("DropTypeValues"), LabelWidth(75), OnValueChanged("UpdateValue"), TableColumnWidth(75)]
         public DROP_TYPE lootType;
 
-        [/*FoldoutGroup("$Name"), */ShowIf("lootType", DROP_TYPE.Bit)]
-        public int level;
+        //====================================================================================================================//
         
-        [/*FoldoutGroup("$Name"), */ValueDropdown("GetTypes"), HideIf("lootType", DROP_TYPE.Gears), HideIf("lootType", DROP_TYPE.Null), TableColumnWidth(75)]
-        public int type;
-
-        [FormerlySerializedAs("amount")] [/*FoldoutGroup("$Name"), */ShowIf("lootType", DROP_TYPE.Gears)]
+        [HorizontalGroup("Data")]
+        [FormerlySerializedAs("amount")] 
+        [ShowIf("lootType", DROP_TYPE.Gears), TableColumnWidth(100)]
         public int value;
+        
+        [VerticalGroup("Data/col1")]
+        [ValueDropdown("GetTypes"), HideIf("lootType", DROP_TYPE.Gears), HideIf("lootType", DROP_TYPE.Null), TableColumnWidth(65)]
+        public int type;
+        
+        [FormerlySerializedAs("level")] 
+        [VerticalGroup("Data/col1")]
+        [ShowIf("lootType", DROP_TYPE.Bit)]
+        public int lvl;
 
+        //====================================================================================================================//
+        
         [FormerlySerializedAs("probability")] 
-        [SerializeField, /*FoldoutGroup("$Name"),*/ ShowIf("showProbability"), OnValueChanged("UpdateChance")]
+        [SerializeField, ShowIf("showProbability"), OnValueChanged("UpdateChance")]
         private int weight = 1;
 
 
@@ -46,6 +56,19 @@ namespace StarSalvager
         [HideInTables, NonSerialized]
         public float percentChance;
 
+        //====================================================================================================================//
+        
+        [HorizontalGroup("Count"), LabelWidth(22)]
+        public bool rng;
+        [HorizontalGroup("Count"), HideIf("rng"), TableColumnWidth(100), HideLabel]
+        public int count = 1;
+        [VerticalGroup("Count/rng"), LabelWidth(25), ShowIf("rng")]
+        public int min;
+        [VerticalGroup("Count/rng"), LabelWidth(25), ShowIf("rng")]
+        public int max;
+
+        //====================================================================================================================//
+        
         public int Weight => weight;
 
         /*[SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]

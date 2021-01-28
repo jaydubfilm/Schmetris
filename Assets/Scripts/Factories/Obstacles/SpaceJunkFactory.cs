@@ -43,7 +43,9 @@ namespace StarSalvager.Factories
                 }
 
                 RDSTable rdsTable = new RDSTable();
-                rdsTable.SetupRDSTable(_spaceJunkRemote.RDSTableData[i].NumDrops, _spaceJunkRemote.RDSTableData[i].RDSLootDatas, _spaceJunkRemote.RDSTableData[i].EvenWeighting);
+                rdsTable.SetupRDSTable(_spaceJunkRemote.RDSTableData[i].NumDrops,
+                    _spaceJunkRemote.RDSTableData[i].RDSLootDatas,
+                    _spaceJunkRemote.RDSTableData[i].EvenWeighting);
 
                 spaceJunk.RDSTableOdds.Add(_spaceJunkRemote.RDSTableData[i].DropChance);
                 spaceJunk.RDSTables.Add(rdsTable);

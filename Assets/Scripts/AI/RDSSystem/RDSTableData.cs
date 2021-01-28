@@ -22,7 +22,7 @@ namespace StarSalvager
 
         public int DropChance => m_dropChance;
 
-        public int NumDrops => m_numDrops;
+        public Vector2 NumDrops => m_numDrops;
 
         public bool EvenWeighting => m_weightingType == WEIGHTING_TYPE.Even;
 
@@ -37,8 +37,8 @@ namespace StarSalvager
         private int m_dropChance;
         
 
-        [FoldoutGroup("$Name"), SerializeField, LabelText("Drop Count")]
-        private int m_numDrops;
+        [FoldoutGroup("$Name"),MinMaxSlider(1, 20, true), SerializeField, LabelText("Drop Count")]
+        private Vector2Int m_numDrops;
 
         [FoldoutGroup("$Name"), SerializeField, OnValueChanged("UpdateWeightType")]
         private WEIGHTING_TYPE m_weightingType;

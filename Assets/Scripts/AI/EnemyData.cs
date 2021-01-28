@@ -98,7 +98,9 @@ namespace StarSalvager
             for (int i = 0; i < enemyRemoteData.RDSTableData.Count; i++)
             {
                 RDSTable rdsTable = new RDSTable();
-                rdsTable.SetupRDSTable(enemyRemoteData.RDSTableData[i].NumDrops, enemyRemoteData.RDSTableData[i].RDSLootDatas, enemyRemoteData.RDSTableData[i].EvenWeighting);
+                rdsTable.SetupRDSTable(enemyRemoteData.RDSTableData[i].NumDrops,
+                    enemyRemoteData.RDSTableData[i].RDSLootDatas,
+                    enemyRemoteData.RDSTableData[i].EvenWeighting);
 
                 RDSTableOdds.Add(enemyRemoteData.RDSTableData[i].DropChance);
                 RDSTables.Add(rdsTable);

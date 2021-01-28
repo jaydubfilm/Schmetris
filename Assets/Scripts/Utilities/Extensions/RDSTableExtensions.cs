@@ -8,9 +8,9 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class RDSTableExtensions
     {
-        public static void SetupRDSTable(this RDSTable rdsTable, int rdsCount, List<RDSLootData> rdsLootDatas, bool isEvenWeighting)
+        public static void SetupRDSTable(this RDSTable rdsTable, Vector2 rdsCount, List<RDSLootData> rdsLootDatas, bool isEvenWeighting)
         {
-            rdsTable.rdsCount = rdsCount;
+            rdsTable.rdsCount = Random.Range((int) rdsCount.x, (int) rdsCount.y);
 
             foreach (var rdsData in rdsLootDatas)
             {
@@ -30,7 +30,7 @@ namespace StarSalvager.Utilities.Extensions
                     {
                         ClassType = nameof(Bit),
                         Type = rdsData.type,
-                        Level = rdsData.level
+                        Level = rdsData.lvl
                     };
                     rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, false, false, true));
                 }
@@ -40,7 +40,8 @@ namespace StarSalvager.Utilities.Extensions
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Gears)
                 {
-                    rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, false, false, true));
+                    rdsTable.AddEntry(new RDSValue<int>(rdsData.value,
+                        probability, false, false, true));
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Null)
                 {
