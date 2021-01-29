@@ -12,6 +12,7 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using System.Linq;
 using StarSalvager.Prototype;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
@@ -114,21 +115,18 @@ namespace StarSalvager
         //CollidableBase Functions
         //============================================================================================================//
 
+        private new void OnCollisionStay(Collision other) { }
+
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
+            /*if (InputManager.Instance.ForceMoving)
+                return;*/
             //Debug.Break();
             
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot != null)
             {
-
-                /*if (!GameManager.IsState(GameState.LevelActive))
-                {
-                    return;
-                }
-                */
-
 
                 if (bot.Rotating)
                 {
@@ -139,37 +137,41 @@ namespace StarSalvager
                     return;
                 }
 
-                var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
-                var direction = dir.ToDirection();
+                var dir = (worldHitPoint - (Vector2)transform.position).normalized;
+                DIRECTION direction;
 
-                //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
-                switch (direction)
+
+                if (dir.x > 0)
                 {
-                    case DIRECTION.LEFT:
-                    case DIRECTION.RIGHT:
-                        //Only want to move the bot if we're legally allowed
-                        if (bot.TryBounceAt(worldHitPoint, out var destroyed))
-                        {
-                            InputManager.Instance.ForceMove(direction);
+                    direction = DIRECTION.RIGHT;
+                }
+                else if (dir.x < 0)
+                {
+                    direction = DIRECTION.LEFT;
+                }
+                //Zero Condition
+                else
+                {
+                    direction = Random.value < 0.5f ? DIRECTION.LEFT : DIRECTION.RIGHT;
+                }
 
-                            if (destroyed)
-                            {
-                                CreateImpactEffect(worldHitPoint);
-                            }
-                        }
+                Debug.Log($"Hit Direction: {dir} [{direction}]");
 
-                        break;
-                    case DIRECTION.UP:
-                    case DIRECTION.DOWN:
-                        if (bot.TryAsteroidDamageAt(worldHitPoint)) 
-                            CreateImpactEffect(worldHitPoint);
-                        break;
-                        //default:
-                        //    throw new ArgumentOutOfRangeException();
+                //Only want to move the bot if we're legally allowed
+                if (bot.TryAsteroidBounceAt(worldHitPoint, 25, out var destroyed))
+                {
+                    
+                    //InputManager.Instance.ForceMove(direction);
+
+                    if (destroyed)
+                    {
+                        CreateImpactEffect(worldHitPoint);
+                    }
                 }
 
                 return;
             }
+
 
             var projectile = gameObject.GetComponent<Projectile>();
 
@@ -179,7 +181,7 @@ namespace StarSalvager
             }
         }
 
-        //Actor2DBase Functions
+        //Actor2DBase FunctionsB
         //====================================================================================================================//
         
         public override void SetSprite(Sprite sprite)

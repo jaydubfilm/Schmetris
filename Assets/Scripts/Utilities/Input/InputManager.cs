@@ -47,7 +47,10 @@ namespace StarSalvager.Utilities.Inputs
         //====================================================================================================================//
 
         #region Properties
-        
+
+        /*[ShowInInspector]
+        public bool ForceMoving { get; set; }*/
+
         private readonly bool[] _triggersPressed = new bool[4];
 
         private Bot[] _bots;
@@ -239,7 +242,7 @@ namespace StarSalvager.Utilities.Inputs
         }
 
 
-        public void ForceMove(DIRECTION direction)
+        /*public void ForceMove(DIRECTION direction)
         {
             dasMovementTriggered = false;
             dasMovementTimer = 0f;
@@ -255,10 +258,12 @@ namespace StarSalvager.Utilities.Inputs
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+
+            ForceMoving = true;
             
             TryApplyMove(0);
             
-        }
+        }*/
         
         //IInput Functions
         //============================================================================================================//
