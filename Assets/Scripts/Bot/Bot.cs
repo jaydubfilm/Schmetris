@@ -2302,9 +2302,14 @@ namespace StarSalvager
 
             IEnumerable<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
 
+            var botBits = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>();
+            
+
             foreach (var shape in shapesToCheck)
             {
-                if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
+                var shapeBits = shape.AttachedBits.GetBlockDatas<BitData>();
+                
+                if (!botBits.Contains(shapeBits, out var upgrading))
                     continue;
 
                 //Bonus Shape Effects
@@ -3975,7 +3980,7 @@ namespace StarSalvager
         [Button]
         private void TestContains()
         {
-            var testBlockData = new List<IBlockData>
+            var testBlockData = new List<BitData>
             {
                 /*new BlockData
                 {
@@ -4000,7 +4005,7 @@ namespace StarSalvager
                 },*/
             };
 
-            var result =attachedBlocks.Contains<Bit>(testBlockData, out _);
+            var result = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>().Contains(testBlockData, out _);
 
             Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
 
