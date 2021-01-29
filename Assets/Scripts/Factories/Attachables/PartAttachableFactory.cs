@@ -45,9 +45,7 @@ namespace StarSalvager.Factories
             List<PART_TYPE> partType = new List<PART_TYPE>();
 
             partType.Add(PART_TYPE.GUN);
-            partType.Add(PART_TYPE.SNIPER);
-            partType.Add(PART_TYPE.ARMOR);
-            partType.Add(PART_TYPE.REPAIR);
+            partType.Add(PART_TYPE.RAILGUN);
 
             return partType[Random.Range(0, partType.Count)];
         }
@@ -58,6 +56,7 @@ namespace StarSalvager.Factories
 
             partType.Add(PART_TYPE.GUN);
             partType.Add(PART_TYPE.SNIPER);
+            partType.Add(PART_TYPE.RAILGUN);
             partType.Add(PART_TYPE.BOMB);
             partType.Add(PART_TYPE.FREEZE);
             partType.Add(PART_TYPE.ARMOR);
