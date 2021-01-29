@@ -485,8 +485,24 @@ namespace StarSalvager
             m_distanceHorizontal += toAdd;
         }
 
+        public bool IsDashing => _isDashing;
+
         private bool _isDashing;
 
+        public void Dash(in DIRECTION direction)
+        {
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    Dash(-1);
+                    break;
+                case DIRECTION.RIGHT:
+                    Dash(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
         public void Dash(float direction)
         {
             if (_isDashing)

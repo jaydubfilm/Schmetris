@@ -119,13 +119,7 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            /*if (InputManager.Instance.ForceMoving)
-                return;*/
-            //Debug.Break();
-            
-            var bot = gameObject.GetComponent<Bot>();
-
-            if (bot != null)
+            if (gameObject.GetComponent<Bot>() is Bot bot && !bot.IsDashing)
             {
 
                 if (bot.Rotating)
@@ -160,8 +154,8 @@ namespace StarSalvager
                 //Only want to move the bot if we're legally allowed
                 if (bot.TryAsteroidBounceAt(worldHitPoint, 25, out var destroyed))
                 {
-                    
-                    //InputManager.Instance.ForceMove(direction);
+                    //FIXME Will need to consider the map borders to ensure direction is okay
+                    bot.Dash(direction);
 
                     if (destroyed)
                     {
