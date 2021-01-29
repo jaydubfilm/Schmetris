@@ -10,7 +10,7 @@ namespace StarSalvager
 		public RDSBlockData(BlockData value, double probability) : base(value, probability)
 		{ }
 
-		public RDSBlockData(BlockData value, double probability, bool unique, bool always, bool enabled) : base(value, probability, unique, always, enabled)
+		public RDSBlockData(BlockData value, double probability, int count, bool unique, bool always, bool enabled) : base(value, probability, count, unique, always, enabled)
 		{ }
 	}
 }

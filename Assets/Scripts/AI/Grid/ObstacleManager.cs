@@ -988,37 +988,49 @@ namespace StarSalvager
             {
                 if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
                 {
-                    switch (rdsValueBlockData.rdsValue.ClassType)
+                    int count = rdsValueBlockData.rdsCount;
+                    for (int k = 0; k < count; k++)
                     {
-                        case nameof(Bit):
-                            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                .CreateObject<Bit>((BIT_TYPE) rdsValueBlockData.rdsValue.Type,
-                                    rdsValueBlockData.rdsValue.Level);
-                            //AddObstacleToList(newBit);
-                            PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
-                            newBit.IsFromEnemyLoot = isFromEnemyLoot;
-                            break;
-                        case nameof(Asteroid):
-                            Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
-                                .CreateAsteroidRandom<Asteroid>();
-                            //AddObstacleToList(newAsteroid);
-                            PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
-                            break;
-                        default:
-                            Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
-                            break;
+                        switch (rdsValueBlockData.rdsValue.ClassType)
+                        {
+                            case nameof(Bit):
+                                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                                    .CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type,
+                                        rdsValueBlockData.rdsValue.Level);
+                                //AddObstacleToList(newBit);
+                                PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
+                                newBit.IsFromEnemyLoot = isFromEnemyLoot;
+                                break;
+                            case nameof(Asteroid):
+                                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                                    .CreateAsteroidRandom<Asteroid>();
+                                //AddObstacleToList(newAsteroid);
+                                PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                                break;
+                            default:
+                                Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
+                                break;
+                        }
                     }
                 }
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
-                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                    PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                    int count = rdsValueAsteroidSize.rdsCount;
+                    for (int k = 0; k < count; k++)
+                    {
+                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
+                        PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                    }
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
-                    //AddObstacleToList(newComponent);
-                    PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
+                    int count = rdsValueGearsAmount.rdsCount;
+                    for (int k = 0; k < count; k++)
+                    {
+                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
+                        //AddObstacleToList(newComponent);
+                        PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
+                    }
                 }
                 else
                 {

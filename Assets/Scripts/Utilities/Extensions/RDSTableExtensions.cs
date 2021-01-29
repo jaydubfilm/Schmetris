@@ -33,16 +33,16 @@ namespace StarSalvager.Utilities.Extensions
                         Type = rdsData.type,
                         Level = rdsData.lvl
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, false, false, true));
+                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, rdsData.GetCount(), false, false, true));
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Asteroid)
                 {
-                    rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, false, false, true));
+                    rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, rdsData.GetCount(), false, false, true));
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Gears)
                 {
                     rdsTable.AddEntry(new RDSValue<int>(rdsData.value,
-                        probability, false, false, true));
+                        probability, rdsData.GetCount(), false, false, true));
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Null)
                 {

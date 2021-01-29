@@ -30,13 +30,14 @@ namespace StarSalvager
 		public bool rdsAlways { get; set; }
 		public bool rdsEnabled { get; set; }
 		public RDSTable rdsTable { get; set; }
+		public int rdsCount { get; set; }
 
 		//============================================================================================================//
 
-		public RDSValue(T value, double probability) : this(value, probability, false, false, true)
+		public RDSValue(T value, double probability) : this(value, probability, 1, false, false, true)
 		{ }
 
-		public RDSValue(T value, double probability, bool unique, bool always, bool enabled)
+		public RDSValue(T value, double probability, int count, bool unique, bool always, bool enabled)
 		{
 			mvalue = value;
 			rdsProbability = probability;
@@ -44,6 +45,7 @@ namespace StarSalvager
 			rdsAlways = always;
 			rdsEnabled = enabled;
 			rdsTable = null;
+			rdsCount = count;
 		}
 	}
 }
