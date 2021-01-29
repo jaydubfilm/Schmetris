@@ -17,7 +17,7 @@ namespace StarSalvager
 
 		//============================================================================================================//
 
-		public int rdsCount { get; set; }
+		public Vector2Int rdsCount { get; set; }
 
 		public IEnumerable<IRDSObject> rdsContents
 		{
@@ -29,13 +29,13 @@ namespace StarSalvager
 
 		//============================================================================================================//
 
-		public RDSTable() : this(null, 1, 1, false, false, true)
+		public RDSTable() : this(null, new Vector2Int(1, 2), 1, false, false, true)
 		{ }
 
-		public RDSTable(IEnumerable<IRDSObject> contents, int count, double probability) : this(contents, count, probability, false, false, true)
+		public RDSTable(IEnumerable<IRDSObject> contents, Vector2Int count, double probability) : this(contents, count, probability, false, false, true)
 		{ }
 
-		public RDSTable(IEnumerable<IRDSObject> contents, int count, double probability, bool unique, bool always, bool enabled)
+		public RDSTable(IEnumerable<IRDSObject> contents, Vector2Int count, double probability, bool unique, bool always, bool enabled)
 		{
 			if (contents != null)
 				mcontents = contents.ToList();
@@ -146,7 +146,7 @@ namespace StarSalvager
 				//Making always count ones not take away from the max drops
 				//int alwayscnt = mcontents.Count(e => e.rdsAlways && e.rdsEnabled);
 				//int realdropcnt = rdsCount - alwayscnt;
-				int realdropcnt = rdsCount - alwaysDrops;
+				int realdropcnt = Random.Range(rdsCount.x, rdsCount.y) - alwaysDrops;
 
 				// Continue only, if there is a Count left to be processed
 				if (realdropcnt > 0)
