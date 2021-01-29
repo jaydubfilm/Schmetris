@@ -10,6 +10,7 @@ namespace StarSalvager.Utilities.Extensions
     {
         public static void SetupRDSTable(this RDSTable rdsTable, Vector2 rdsCount, List<RDSLootData> rdsLootDatas, bool isEvenWeighting)
         {
+            rdsCount.y = rdsCount.y + 1;
             rdsTable.rdsCount = rdsCount.ToVector2Int();
 
             foreach (var rdsData in rdsLootDatas)
