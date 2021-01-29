@@ -67,18 +67,6 @@ namespace StarSalvager
         [VerticalGroup("Count/rng"), LabelWidth(25), ShowIf("rng")]
         public int max;
 
-        public int GetCount()
-        {
-            if (rng)
-            {
-                return UnityEngine.Random.Range(min, max + 1);
-            }
-            else
-            {
-                return count;
-            }
-        }
-
         //====================================================================================================================//
         
         public int Weight => weight;

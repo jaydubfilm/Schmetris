@@ -33,16 +33,36 @@ namespace StarSalvager.Utilities.Extensions
                         Type = rdsData.type,
                         Level = rdsData.lvl
                     };
-                    rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, rdsData.GetCount(), false, false, true));
+                    if (rdsData.rng)
+                    {
+                        rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, new Vector2Int(rdsData.min, rdsData.max), false, false, true));
+                    }
+                    else
+                    {
+                        rdsTable.AddEntry(new RDSValue<BlockData>(bitBlockData, probability, rdsData.count, false, false, true));
+                    }
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Asteroid)
                 {
-                    rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, rdsData.GetCount(), false, false, true));
+                    if (rdsData.rng)
+                    {
+                        rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, new Vector2Int(rdsData.min, rdsData.max), false, false, true));
+                    }
+                    else
+                    {
+                        rdsTable.AddEntry(new RDSValue<ASTEROID_SIZE>((ASTEROID_SIZE)rdsData.type, probability, rdsData.count, false, false, true));
+                    }
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Gears)
                 {
-                    rdsTable.AddEntry(new RDSValue<int>(rdsData.value,
-                        probability, rdsData.GetCount(), false, false, true));
+                    if (rdsData.rng)
+                    {
+                        rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, new Vector2Int(rdsData.min, rdsData.max), false, false, true));
+                    }
+                    else
+                    {
+                        rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, rdsData.count, false, false, true));
+                    }
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Null)
                 {

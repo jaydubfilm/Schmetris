@@ -988,7 +988,7 @@ namespace StarSalvager
             {
                 if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
                 {
-                    int count = rdsValueBlockData.rdsCount;
+                    int count = rdsValueBlockData.GetCount();
                     for (int k = 0; k < count; k++)
                     {
                         switch (rdsValueBlockData.rdsValue.ClassType)
@@ -1017,7 +1017,7 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
-                    int count = rdsValueAsteroidSize.rdsCount;
+                    int count = rdsValueAsteroidSize.GetCount();
                     for (int k = 0; k < count; k++)
                     {
                         Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
@@ -1027,7 +1027,7 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    int count = rdsValueGearsAmount.rdsCount;
+                    int count = rdsValueGearsAmount.GetCount();
                     for (int k = 0; k < count; k++)
                     {
                         Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);

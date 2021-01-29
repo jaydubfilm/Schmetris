@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace StarSalvager
 {
@@ -31,6 +32,8 @@ namespace StarSalvager
 		public bool rdsEnabled { get; set; }
 		public RDSTable rdsTable { get; set; }
 		public int rdsCount { get; set; }
+		public Vector2Int rdsRange { get; set; }
+		public bool rdsRNG { get; set; }
 
 		//============================================================================================================//
 
@@ -46,6 +49,31 @@ namespace StarSalvager
 			rdsEnabled = enabled;
 			rdsTable = null;
 			rdsCount = count;
+			rdsRNG = false;
+		}
+
+		public RDSValue(T value, double probability, Vector2Int range, bool unique, bool always, bool enabled)
+		{
+			mvalue = value;
+			rdsProbability = probability;
+			rdsUnique = unique;
+			rdsAlways = always;
+			rdsEnabled = enabled;
+			rdsTable = null;
+			rdsRange = range;
+			rdsRNG = true;
+		}
+
+		public int GetCount()
+		{
+			if (rdsRNG)
+			{
+				return UnityEngine.Random.Range(rdsRange.x, rdsRange.y + 1);
+			}
+			else
+			{
+				return rdsCount;
+			}
 		}
 	}
 }
