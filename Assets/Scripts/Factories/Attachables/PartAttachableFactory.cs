@@ -42,26 +42,39 @@ namespace StarSalvager.Factories
 
         public PART_TYPE GetBasicWreckPartTypeOption(PART_TYPE? exclusionType = null)
         {
-            List<PART_TYPE> partType = new List<PART_TYPE>();
+            List<PART_TYPE> partType = new List<PART_TYPE>
+            {
+                PART_TYPE.GUN,
+                PART_TYPE.RAILGUN
+            };
 
-            partType.Add(PART_TYPE.GUN);
-            partType.Add(PART_TYPE.RAILGUN);
+            if (exclusionType.HasValue)
+            {
+                partType.Remove(exclusionType.Value);
+            }
 
-            return partType[Random.Range(0, partType.Count)];
+            if (partType.Count != 0) 
+                return partType[Random.Range(0, partType.Count)];
+            
+            Debug.LogError("No valid part types to return");
+            
+            return PART_TYPE.GUN;
         }
 
         public PART_TYPE GetWreckPartTypeOption(PART_TYPE? exclusionType = null)
         {
-            List<PART_TYPE> partType = new List<PART_TYPE>();
+            List<PART_TYPE> partType = new List<PART_TYPE>
+            {
+                PART_TYPE.GUN,
+                PART_TYPE.SNIPER,
+                PART_TYPE.RAILGUN,
+                PART_TYPE.BOMB,
+                PART_TYPE.FREEZE,
+                PART_TYPE.ARMOR,
+                PART_TYPE.SHIELD,
+                PART_TYPE.REPAIR
+            };
 
-            partType.Add(PART_TYPE.GUN);
-            partType.Add(PART_TYPE.SNIPER);
-            partType.Add(PART_TYPE.RAILGUN);
-            partType.Add(PART_TYPE.BOMB);
-            partType.Add(PART_TYPE.FREEZE);
-            partType.Add(PART_TYPE.ARMOR);
-            partType.Add(PART_TYPE.SHIELD);
-            partType.Add(PART_TYPE.REPAIR);
 
             if (exclusionType.HasValue)
             {
