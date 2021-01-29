@@ -32,45 +32,65 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 0
       m_dropChance: 100
-      m_numDrops: 3
+      m_numDrops: {x: 1, y: 1}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 0
-        level: 2
-        type: 1
         value: 0
+        type: 1
+        lvl: 2
         weight: 1
+        rng: 1
+        count: 3
+        min: 2
+        max: 4
       - showProbability: 0
         lootType: 0
-        level: 2
-        type: 5
         value: 0
+        type: 5
+        lvl: 2
         weight: 1
+        rng: 0
+        count: 2
+        min: 0
+        max: 0
     - Name: Loot Drop
       AlwaysDrops: 0
       m_dropChance: 50
-      m_numDrops: 3
+      m_numDrops: {x: 0, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        level: 0
-        type: 0
         value: 5
+        type: 0
+        lvl: 0
         weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
       - showProbability: 0
         lootType: 2
-        level: 1
-        type: 0
         value: 10
+        type: 0
+        lvl: 1
         weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
       - showProbability: 0
         lootType: 2
-        level: 0
-        type: 0
         value: 25
+        type: 0
+        lvl: 0
         weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: Ball Head
     m_health: 35
