@@ -224,7 +224,7 @@ namespace StarSalvager.AI
             Vector2 shootDirection = (targetLocation - (Vector2)transform.position).normalized;
 
             var raycastHit = Physics2D.Raycast(transform.position, shootDirection, 100, collisionMask.value);
-            Debug.DrawRay(transform.position, shootDirection * 100, Color.white, 1.0f);
+            //Debug.DrawRay(transform.position, shootDirection * 100, Color.blue, 1.0f);
 
             if (raycastHit.collider == null)
             {
@@ -234,7 +234,7 @@ namespace StarSalvager.AI
             if (!(raycastHit.transform.GetComponent<Bot>() is Bot bot))
                 throw new Exception();
 
-            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.point) is Bit)
+            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.point - _playerLocation) is Bit)
             {
                 return;
             }
