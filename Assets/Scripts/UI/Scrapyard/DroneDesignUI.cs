@@ -21,7 +21,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
-{
+ {
     public class DroneDesignUI : MonoBehaviour
     {
         public bool CanAffordRepair { get; private set; }
@@ -229,6 +229,7 @@ namespace StarSalvager.UI.Scrapyard
                 var element = purchasePatchUIElementScrollView.AddElement(t);
                 element.Init(t);
             }
+            
         }
 
         #endregion //Scroll Views
@@ -315,16 +316,19 @@ namespace StarSalvager.UI.Scrapyard
 
                 gradeUis[i].bitImage.enabled = hasSprite;
 
+                //Contain within the bit Level limits
+                var levelOffset = Mathf.Clamp(i + partData.Patches.GetPatchUpgradersSum(), 0, 4);
+
                 if (hasSprite)
                 {
                     gradeUis[i].bitImage.sprite = bitProfile.GetSprite(i);
 
-                    var hasLevel = partRemote.partGrade.minBitLevel <= i;
+                    var hasLevel = partRemote.partGrade.minBitLevel <= levelOffset;
                     gradeUis[i].bitImage.color = hasLevel ? Color.white : Color.grey;
                     gradeUis[i].bitImage.rectTransform.localScale = hasLevel ? Vector3.one : Vector3.one * 0.9f;
                 }
 
-                gradeUis[i].text.text = $"{GetGradeDetails(i, partRemote)}";
+                gradeUis[i].text.text = $"{GetGradeDetails(levelOffset, partRemote, partData.Patches)}";
             }
 
             //====================================================================================================================//
@@ -369,40 +373,46 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-        private string GetGradeDetails(in int level, in PartRemoteData partRemoteData)
+        private static string GetGradeDetails(in int level, in PartRemoteData partRemoteData, in PatchData[] patches)
         {
+            
+            
             if (!partRemoteData.HasPartGrade(level, out var value))
                 return string.Empty;
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
             partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage);
+            var patchMultipliers = patches.GetPatchMultipliers(
+                PATCH_TYPE.DAMAGE, 
+                PATCH_TYPE.RANGE,
+                PATCH_TYPE.FIRE_RATE);
 
 
 
             switch (partRemoteData.partType)
             {
                 case PART_TYPE.CORE:
-                    return $"{(int) value}";
+                    return $"{(int) value}\nBits";
                 case PART_TYPE.REPAIR:
                     return $"{(int) value}hp/s";
                 case PART_TYPE.ARMOR:
                     return $"{(int) (value * 100f)}%";
                 case PART_TYPE.GUN:
-                    return $"{Mathf.RoundToInt(damage * value)}\ndmg";
+                    return $"{Mathf.RoundToInt(damage * value * patchMultipliers[PATCH_TYPE.DAMAGE])}\ndmg";
                 case PART_TYPE.SHIELD:
                     return $"{(int) value}s";
                 case PART_TYPE.FREEZE:
                     return $"{(int) value}s";
                 case PART_TYPE.BOMB:
-                    return $"{Mathf.RoundToInt(damage * value)}\ndmg";
+                    return $"{Mathf.RoundToInt(damage * value* patchMultipliers[PATCH_TYPE.DAMAGE])}\ndmg";
                 case PART_TYPE.SNIPER:
-                    return $"{Mathf.RoundToInt(damage * value)}\ndmg";
+                    return $"{Mathf.RoundToInt(damage * value* patchMultipliers[PATCH_TYPE.DAMAGE])}\ndmg";
                 case PART_TYPE.VAMPIRE:
                     return $"{(int) (value * 100f)}%";
                 case PART_TYPE.WILDCARD:
                     return $"{(int) value}";
                 case PART_TYPE.RAILGUN:
-                    return $"{value:0.0#}s";
+                    return $"{value * patchMultipliers[PATCH_TYPE.FIRE_RATE]:0.0#}s";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partRemoteData.partType), partRemoteData.partType,
                         null);
@@ -411,32 +421,10 @@ namespace StarSalvager.UI.Scrapyard
 
         private string GetAltDetails(in PartData partData, in PartRemoteData partRemoteData)
         {
-            float GetPatchMultiplier(in PatchData[] patches, PATCH_TYPE patchType)
-            {
-
-                var outValue = 1f;
-                var patchDatas = patches.Where(x => x.Type == (int) patchType).ToArray();
-
-                if (patchDatas.IsNullOrEmpty())
-                    return outValue;
-
-                var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-
-
-                foreach (var patchData in patchDatas)
-                {
-                    if (!patchRemoteData.GetRemoteData(patchData.Type).TryGetValue(patchData.Level,
-                        PartProperties.KEYS.Multiplier, out float multiplier))
-                        continue;
-
-                    if (patchType == PATCH_TYPE.FIRE_RATE)
-                        outValue -= multiplier;
-                    else
-                        outValue += multiplier;
-                }
-
-                return outValue;
-            }
+            var multipliers = partData.Patches.GetPatchMultipliers(
+                PATCH_TYPE.DAMAGE,
+                PATCH_TYPE.RANGE,
+                PATCH_TYPE.FIRE_RATE);
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
             partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage);
@@ -460,31 +448,31 @@ namespace StarSalvager.UI.Scrapyard
                     var projectileRange = FactoryManager.Instance.ProjectileProfile
                         .GetProjectileProfileData(projectileID).ProjectileRange;
 
-                    var dps = Mathf.RoundToInt(damage * GetPatchMultiplier(partData.Patches, PATCH_TYPE.DAMAGE) /
-                                               (cooldown * GetPatchMultiplier(partData.Patches, PATCH_TYPE.FIRE_RATE)));
-                    var rng = projectileRange * GetPatchMultiplier(partData.Patches, PATCH_TYPE.RANGE);
+                    var dps = Mathf.RoundToInt(damage * multipliers[PATCH_TYPE.DAMAGE] /
+                                               (cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
+                    var rng = projectileRange * multipliers[PATCH_TYPE.RANGE];
                     return $"dps {dps}\nrng {rng}";
                 }
                 case PART_TYPE.FREEZE:
                 {
-                    var rng = range * GetPatchMultiplier(partData.Patches, PATCH_TYPE.RANGE);
+                    var rng = range * multipliers[PATCH_TYPE.RANGE];
                     return $"rng {rng}\n";
                 }
                 case PART_TYPE.BOMB:
                 {
-                    var rng = range * GetPatchMultiplier(partData.Patches, PATCH_TYPE.RANGE);
+                    var rng = range * multipliers[PATCH_TYPE.RANGE];
                     return $"rng {rng}\n";
                 }
                 case PART_TYPE.SNIPER:
                 {
-                    var dps = Mathf.RoundToInt(damage * GetPatchMultiplier(partData.Patches, PATCH_TYPE.DAMAGE) /
-                                               (cooldown * GetPatchMultiplier(partData.Patches, PATCH_TYPE.FIRE_RATE)));
+                    var dps = Mathf.RoundToInt(damage * multipliers[PATCH_TYPE.DAMAGE] /
+                                               (cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
                     return $"dps {dps}\n";
                 }
                 case PART_TYPE.RAILGUN:
                 {
-                    var dps = Mathf.RoundToInt(damage * GetPatchMultiplier(partData.Patches, PATCH_TYPE.DAMAGE) /
-                                               (cooldown * GetPatchMultiplier(partData.Patches, PATCH_TYPE.FIRE_RATE)));
+                    var dps = Mathf.RoundToInt(damage * multipliers[PATCH_TYPE.DAMAGE] /
+                                               (cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
                     return $"dps {dps}\n";
                 }
                 default:
