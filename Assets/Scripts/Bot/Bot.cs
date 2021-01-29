@@ -976,7 +976,31 @@ namespace StarSalvager
 
         public IAttachable GetClosestAttachable(Vector2 location, float maxDistance = 999f)
         {
-            return GetClosestAttachable(location.ToVector2Int(), maxDistance);
+            IAttachable selected = null;
+
+            var smallestDist = 999f;
+
+            foreach (var attached in attachedBlocks)
+            {
+                //attached.SetColor(Color.white);
+                if (attached.CountAsConnectedToCore == false)
+                    continue;
+
+                var dist = Vector2.Distance(attached.Coordinate, location);
+
+                if (dist > maxDistance)
+                    continue;
+                //TODO: Make a new function for "closest to an attachable" and then remove the second part of this if statement
+                if (dist > smallestDist || dist == 0)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+
+            //selected.SetColor(Color.magenta);
+
+            return selected;
         }
 
         public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
