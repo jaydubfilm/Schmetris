@@ -174,20 +174,24 @@ namespace StarSalvager.AI
                 return;
             }
 
-            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
+            //var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
 
+            var dir = rayDirection.ToDirection();
+
             //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
 
-            if (dir != rayDirection && dir != Vector2Int.zero)
-                return;
+            //if (dir != rayDirection && dir != Vector2Int.zero)
+            //    return;
+
+            TryFindClosestCollision(dir, out var point);
 
             //Long ray compensates for the players high speed
-            var rayLength = Constants.gridCellSize * 3f;
+            /*var rayLength = Constants.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
 
@@ -203,13 +207,13 @@ namespace StarSalvager.AI
             }
 
             Debug.DrawRay(hit.point, Vector2.up, Color.red);
-            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);
+            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);*/
 
             AttachedBot = bot;
             
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
-            var inDirection = (-rayDirection).ToDirection();
-            var attached = bot.TryAddNewAttachable(this, inDirection, hit.point);
+            //var inDirection = (-rayDirection).ToDirection();
+            var attached = bot.TryAddNewAttachable(this, dir.Reflected(), point);
 
             if (!attached)
             {
@@ -235,14 +239,30 @@ namespace StarSalvager.AI
             switch (direction)
             {
                 case DIRECTION.NULL:
-                    rayDirection = new Vector2(
+                    var norm = m_mostRecentMovementDirection.normalized;
+
+                    if (Mathf.Abs(norm.x) > Mathf.Abs(norm.y))
+                    {
+                        rayDirection = norm.x < 0f ? Vector2.left : Vector2.right;
+                    }
+                    else if(norm.y == 0f)
+                    {
+                        rayDirection = Vector2.down;
+                    }
+                    else
+                    {
+                        rayDirection = norm.y < 0f ? Vector2.down : Vector2.up;
+                    }
+                    
+                    
+                    /*rayDirection = new Vector2(
                         Mathf.RoundToInt(m_mostRecentMovementDirection.x),
                         Mathf.RoundToInt(m_mostRecentMovementDirection.y));//-(Vector2)m_mostRecentMovementDirection;
 
                     if(Mathf.Abs(rayDirection.x) > Mathf.Abs(rayDirection.y))
                         rayDirection *= Vector2.right;
                     else
-                        rayDirection *= Vector2.up;
+                        rayDirection *= Vector2.up;*/
 
                     return true;
                 case DIRECTION.LEFT:
@@ -254,6 +274,70 @@ namespace StarSalvager.AI
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+        }
+        
+        private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
+        {
+            const float rayLength = Constants.gridCellSize * 3f;
+            
+            point = Vector2.zero;
+            
+            var currentPosition = (Vector2)transform.position;
+            var vectorDirection = direction.ToVector2();
+            var startOffset = -vectorDirection * (rayLength / 2f);
+            Vector2 positionOffset;
+            
+            switch (direction)
+            {
+                case DIRECTION.RIGHT:
+                case DIRECTION.LEFT:
+                    positionOffset = Vector2.up * 0.33f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    positionOffset = Vector2.right * 0.33f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+            
+            var startPositions = new[]
+            {
+                currentPosition + startOffset,
+                (currentPosition - positionOffset) + startOffset,
+                (currentPosition + positionOffset) + startOffset,
+            };
+
+            var shortestDis = 999f;
+            RaycastHit2D? shortestHit = null;
+            foreach (var rayStartPosition in startPositions)
+            {
+                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
+
+                //If nothing was hit, ray failed, thus no reason to continue
+                if (hit.collider == null)
+                {
+                    //Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.yellow, 1f);
+                    SSDebug.DrawArrowRay(rayStartPosition, vectorDirection * rayLength, Color.yellow);
+                    continue;
+                }
+
+                Debug.DrawRay(hit.point, Vector2.up, Color.red);
+                Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
+
+                if (hit.distance >= shortestDis)
+                    continue;
+                
+                shortestDis = hit.distance;
+                shortestHit = hit;
+            }
+
+            if (!shortestHit.HasValue)
+                return false;
+
+            point = shortestHit.Value.point;
+            
+            return true;
         }
 
         //Attachable Enemy Movement when Attacking

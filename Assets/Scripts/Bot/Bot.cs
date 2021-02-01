@@ -883,7 +883,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     switch (closestAttachable)
                     {
@@ -897,7 +897,7 @@ namespace StarSalvager
                     if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+                    /*legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
 
@@ -906,7 +906,7 @@ namespace StarSalvager
                         //Make sure that the attachable isn't overlapping the bot before we say its impossible to
                         if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
                             return false;
-                    }
+                    }*/
 
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
