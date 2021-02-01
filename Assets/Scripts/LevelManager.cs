@@ -489,6 +489,8 @@ namespace StarSalvager
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
             
+            var startingHealth = Globals.BotStartingHealth;
+
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotObject.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
@@ -497,10 +499,12 @@ namespace StarSalvager
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
                 BotObject.InitBot();
+                BotObject.SetupHealthValues(startingHealth,startingHealth);
             }
             else
             {
                 BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
+                BotObject.SetupHealthValues(startingHealth,PlayerDataManager.GetBotHealth());
             }
             
             BotObject.transform.parent = null;
@@ -820,7 +824,7 @@ namespace StarSalvager
         public void SavePlayerData()
         {
             if (Globals.UsingTutorial)
-                return;
+                return; 
             
             foreach (Bot bot in m_bots)
             {
@@ -828,6 +832,8 @@ namespace StarSalvager
                 if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<IBlockData>();
 
+                
+                PlayerDataManager.SetBotHealth(bot.CurrentHealth);
                 PlayerDataManager.SetBlockData(blockData);
             }
         }

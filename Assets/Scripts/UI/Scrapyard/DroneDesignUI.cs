@@ -54,6 +54,9 @@ namespace StarSalvager.UI.Scrapyard
             public TMP_Text text;
         }
 
+        //====================================================================================================================//
+        
+
         [SerializeField, FoldoutGroup("Part Details Window")]
         private RectTransform partDetailsContainerRectTransform;
 
@@ -79,16 +82,22 @@ namespace StarSalvager.UI.Scrapyard
         //====================================================================================================================//
 
 
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        [SerializeField, Required, BoxGroup("Repairs Buttons")]
         private Button repairButton;
+        [SerializeField, Required, BoxGroup("Repairs Buttons")]
+        private TMP_Text repairButtonText;
 
-        [SerializeField, Required, BoxGroup("Menu Buttons")]
+        [SerializeField, Required, BoxGroup("Repairs Buttons")]
         private FadeUIImage repairButtonGlow;
+
+        [SerializeField, Required, BoxGroup("Health UI")]
+        private SliderText healthSliderText;
+        
 
         [SerializeField, Required, BoxGroup("Menu Buttons")]
         private Button launchButton;
 
-        private TMP_Text _repairButtonText;
+        
 
         [SerializeField] private CameraController CameraController;
 
@@ -127,6 +136,7 @@ namespace StarSalvager.UI.Scrapyard
         private void Start()
         {
             InitButtons();
+            InitHealthBar();
 
             _scrollViewsSetup = true;
 
@@ -141,11 +151,16 @@ namespace StarSalvager.UI.Scrapyard
         private void OnEnable()
         {
             Camera.onPostRender += _droneDesigner.DrawGL;
+            PlayerDataManager.OnValuesChanged += CheckCanRepair;
+
+            UpdateHealthBar();
+            CheckCanRepair();
         }
 
         private void OnDisable()
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
+            PlayerDataManager.OnValuesChanged -= CheckCanRepair;
             _droneDesigner.RecycleDrone();
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
@@ -159,12 +174,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
-            _repairButtonText = repairButton.GetComponentInChildren<TMP_Text>();
-
             repairButton.onClick.AddListener(() =>
             {
-                /*DroneDesigner.RepairParts();
-                PreviewRepairCost(false);*/
+                DroneDesigner.RepairDrone();
+                healthSliderText.value = PlayerDataManager.GetBotHealth();
+
+                CheckCanRepair();
             });
 
             launchButton.onClick.AddListener(() =>
@@ -174,6 +189,12 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+        }
+
+        private void InitHealthBar()
+        {
+            healthSliderText.Init(true);
+            healthSliderText.SetBounds(0f, Globals.BotStartingHealth);
         }
 
         #endregion //Init
@@ -242,6 +263,31 @@ namespace StarSalvager.UI.Scrapyard
         {
             Alert.ShowAlert("Alert!",
                 "You do not have enough resources to purchase this part!", "Okay", null);
+        }
+
+        private void UpdateHealthBar()
+        {
+            var health = PlayerDataManager.GetBotHealth();
+            healthSliderText.value = health;
+        }
+
+        private void CheckCanRepair()
+        {
+            var currentHealth = PlayerDataManager.GetBotHealth();
+            var startingHealth = Globals.BotStartingHealth;
+            
+            var canRepair = currentHealth < startingHealth;
+
+            repairButton.gameObject.SetActive(canRepair);
+
+            if (!canRepair)
+                return;
+
+            var cost = startingHealth - currentHealth;
+            var components = PlayerDataManager.GetComponents();
+
+            repairButtonText.text = $"Repair {cost}";
+            repairButton.interactable = !(cost > components);
         }
 
         #endregion //Other
