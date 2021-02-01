@@ -16,6 +16,9 @@ namespace StarSalvager
     public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<BitData>, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
     {
         public IAttachable iAttachable => this;
+        
+        [SerializeField]
+        private LayerMask collisionMask;
 
         //IAttachable properties
         //============================================================================================================//
@@ -68,6 +71,7 @@ namespace StarSalvager
 
             if (!isAttached) PendingDetach = false;
         }
+
 
         //IRotate Functions
         //============================================================================================================//
@@ -124,6 +128,7 @@ namespace StarSalvager
         //Bit Functions
         //============================================================================================================//
 
+        //FIXME Need to fix the attach location issues
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             //Debug.Break();
@@ -193,7 +198,7 @@ namespace StarSalvager
             RaycastHit2D? shortestHit = null;
             foreach (var rayStartPosition in startPositions)
             {
-                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength);
+                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
 
                 //If nothing was hit, ray failed, thus no reason to continue
                 if (hit.collider == null)
@@ -241,6 +246,7 @@ namespace StarSalvager
 
         public BitData ToBlockData()
         {
+            //throw new NotImplementedException();
             return new BitData
             {
                 Type = (int)BIT_TYPE.NONE,
@@ -251,10 +257,11 @@ namespace StarSalvager
 
         public void LoadBlockData(IBlockData blockData)
         {
-            if (!(blockData is JunkBitData junkBitData))
-                throw new Exception();
+            throw new NotImplementedException();
+            //if (!(blockData is JunkBitData junkBitData))
+            //    throw new Exception();
             
-            Coordinate = junkBitData.Coordinate;
+            //Coordinate = junkBitData.Coordinate;
         }
 
 

@@ -45,12 +45,9 @@ namespace StarSalvager.Factories
                 return newObject;
             }
 
-            if (typeof(T) == typeof(ProjectileTowObject))
-            {
-                return Object.Instantiate(m_towPrefab).GetComponent<T>();
-            }
-
-            return CreateGameObject().GetComponent<T>();
+            return typeof(T) == typeof(ProjectileTowObject)
+                ? Object.Instantiate(m_towPrefab).GetComponent<T>()
+                : CreateGameObject().GetComponent<T>();
         }
 
         //Static Target position functions
@@ -105,6 +102,7 @@ namespace StarSalvager.Factories
                     {
                         case ProjectileProfileData.TowType.JunkBit:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
+                            projectileTowObject.SetColliderActive(false);
                             break;
                         /*case ProjectileProfileData.TowType.Mine:
                             towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
@@ -112,8 +110,10 @@ namespace StarSalvager.Factories
                         default:
                             throw new Exception("Missing data for towObject");
                     }
-                    projectileTowObject.towObject = towObject;
-                    projectileTowObject.towObjectIRecycledReference = towObject.GetComponent<Actor2DBase>();
+                    LevelManager.Instance.ObstacleManager.AddToRoot(towObject);
+                    towObject.transform.position = fromPosition;
+                    
+                    projectileTowObject.towObjectActor = towObject.GetComponent<Actor2DBase>();
 
                     projectile = projectileTowObject;
                 }
@@ -121,6 +121,7 @@ namespace StarSalvager.Factories
                 {
                     projectile = CreateObject<Projectile>();
                 }
+                
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
