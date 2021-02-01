@@ -35,6 +35,9 @@ namespace StarSalvager
 
         protected void ShiftOnGrid(Vector3 shiftValue)
         {
+            if (Obstacle is null)
+                return;
+            
             Obstacle.transform.position += shiftValue;
             StartingPosition += shiftValue;
             EndPosition += shiftValue;

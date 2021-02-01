@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class JunkFlyEnemy : Enemy
+    public class JunkFlyEnemy : Enemy, IOverrideRecycleType
     {
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
@@ -208,5 +208,9 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
+        public Type GetOverrideType()
+        {
+            return typeof(JunkFlyEnemy);
+        }
     }
 }
