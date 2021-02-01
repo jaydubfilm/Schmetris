@@ -21,7 +21,9 @@ namespace StarSalvager
 
         
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
-        {
+        { 
+            Color color = Color.HSVToRGB(0.11944f, 0.94f, 0.98f);
+            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot == null)
@@ -30,7 +32,7 @@ namespace StarSalvager
             }
 
             PlayerDataManager.AddComponent(FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained());
-            FloatingText.Create($"+{FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained()}", transform.position, Color.green);
+            FloatingText.Create($"+{FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained()}", transform.position, color);
 
             Recycler.Recycle<Component>(this);
 
