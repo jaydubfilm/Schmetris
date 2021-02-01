@@ -137,7 +137,7 @@ namespace StarSalvager.Values
             PlayerSaveRunData data = new PlayerSaveRunData()
             {
                 PlaythroughID = Guid.NewGuid().ToString(),
-                runStarted = false
+                runStarted = false,
             };
 
             data.SetupMap(LevelRingConnectionsJson, WreckNodes);

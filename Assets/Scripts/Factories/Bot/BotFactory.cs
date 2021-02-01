@@ -41,16 +41,18 @@ namespace StarSalvager.Factories
         
         public override GameObject CreateGameObject()
         {
-            var outData = !Recycler.TryGrab<Bot>(out GameObject gameObject) ? Object.Instantiate(prefab) : gameObject;
+            var outData = !Recycler.TryGrab<Bot>(out GameObject gameObject) 
+                ? Object.Instantiate(prefab) 
+                : gameObject;
+            
             outData.name = nameof(Bot);
 
-            if (outData.GetComponent<IHealth>() is IHealth iHealth)
+            /*if (outData.GetComponent<IHealth>() is IHealth iHealth)
             {
                 var startingHealth = Globals.BotStartingHealth;
                 iHealth.SetupHealthValues(startingHealth,startingHealth);
-            }
-            
-            
+            }*/
+             
             return outData;
         }
 
@@ -64,7 +66,11 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject()
         {
-            var outData = !Recycler.TryGrab<ScrapyardBot>(out GameObject gameObject) ? Object.Instantiate(scrapyardPrefab) : gameObject;
+            var outData = !Recycler.TryGrab<ScrapyardBot>(out GameObject gameObject)
+                ? Object.Instantiate(scrapyardPrefab)
+                : gameObject;
+            
+            
             outData.name = nameof(ScrapyardBot);
             return outData;
         }
