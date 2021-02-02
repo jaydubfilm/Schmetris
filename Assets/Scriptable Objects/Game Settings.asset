@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   useShuffleDance: 1
+  shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
   testingFeatures: 0
   asteroidDamage: 10
@@ -107,8 +108,9 @@ MonoBehaviour:
   botHorizontalSpeed: 30
   botRotationSpeed: 650
   botContinuousRotationSpeed: 700
-  dashDistance: 5
+  dashDistance: 8
   dashSpeed: 60
+  dashCooldown: 0
   cameraUseInputMotion: 1
   columnsOnScreen: 61
   cameraSmoothing: 1
