@@ -16,7 +16,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
+    public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, IAdditiveMove
     {
 
         //IRotate properties
@@ -25,7 +25,11 @@ namespace StarSalvager
         public bool Rotating { get; private set; }
 
         public int RotateDirection { get; private set; } = 1;
+        
+        //IAdditiveMove
+        //====================================================================================================================//
 
+        public Vector2 AddMove { get; private set; }
 
         //IHealth Properties
         //============================================================================================================//
@@ -121,6 +125,7 @@ namespace StarSalvager
         {
             if (gameObject.GetComponent<Bot>() is Bot bot && !bot.IsDashing)
             {
+                var dir = (worldHitPoint - (Vector2)transform.position).normalized;
 
                 if (bot.Rotating)
                 {
@@ -128,12 +133,12 @@ namespace StarSalvager
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
                     bot.TryHitAt(worldHitPoint, Globals.AsteroidDamage);
+                    
+                    AddMove += -dir/2;
                     return;
                 }
 
-                var dir = (worldHitPoint - (Vector2)transform.position).normalized;
                 DIRECTION direction;
-
 
                 if (dir.x > 0)
                 {
@@ -144,6 +149,7 @@ namespace StarSalvager
                     direction = DIRECTION.LEFT;
                 }
                 //Zero Condition
+                //FIXME Likely want something more deliberate
                 else
                 {
                     direction = Random.value < 0.5f ? DIRECTION.LEFT : DIRECTION.RIGHT;
@@ -160,6 +166,10 @@ namespace StarSalvager
                     if (destroyed)
                     {
                         CreateImpactEffect(worldHitPoint);
+                    }
+                    else
+                    {
+                        AddMove += -dir * 2f;
                     }
                 }
 
@@ -255,5 +265,7 @@ namespace StarSalvager
         }
 
         #endregion //UNITY_EDITOR
+
+
     }
 }
