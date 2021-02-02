@@ -9,7 +9,9 @@ namespace StarSalvager
 {
     public class Component : CollidableBase, IObstacle
     {
-        
+
+        public int GearNum { get; set; }
+
         //IObstacle Properties
         //============================================================================================================//
 
@@ -19,11 +21,11 @@ namespace StarSalvager
 
         public bool IsMarkedOnGrid { get; set; }
 
-        
+
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
-        { 
+        {
             Color color = Color.HSVToRGB(0.11944f, 0.94f, 0.98f);
-            
+
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot == null)
@@ -39,4 +41,3 @@ namespace StarSalvager
         }
     }
 }
-

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Factories;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace StarSalvager
@@ -12,63 +13,73 @@ namespace StarSalvager
     [Serializable]
     public class RDSLootData : IEquatable<RDSLootData>
     {
-        public enum TYPE
+        public enum DROP_TYPE
         {
             Bit,
-            ResourcesRefined,
             Asteroid,
-            Component,
-            Blueprint,
             Gears,
             Null
         }
 
-        [FoldoutGroup("$Name"), EnumToggleButtons, LabelWidth(75), OnValueChanged("UpdateValue")]
-        public TYPE rdsData;
+        [HideInInspector]
+        public bool showProbability;
 
-        [FoldoutGroup("$Name"), ValueDropdown("GetTypes"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Null)]
+        [FormerlySerializedAs("dropType")] 
+        [ValueDropdown("DropTypeValues"), LabelWidth(75), OnValueChanged("UpdateValue"), TableColumnWidth(75)]
+        public DROP_TYPE lootType;
+
+        //====================================================================================================================//
+        
+        [HorizontalGroup("Data")]
+        [FormerlySerializedAs("amount")] 
+        [ShowIf("lootType", DROP_TYPE.Gears), TableColumnWidth(100)]
+        public int value;
+        
+        [VerticalGroup("Data/col1")]
+        [ValueDropdown("GetTypes"), HideIf("lootType", DROP_TYPE.Gears), HideIf("lootType", DROP_TYPE.Null), TableColumnWidth(65)]
         public int type;
+        
+        [FormerlySerializedAs("level")] 
+        [VerticalGroup("Data/col1")]
+        [ShowIf("lootType", DROP_TYPE.Bit)]
+        public int lvl;
 
-        [FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.ResourcesRefined), ShowIf("rdsData", TYPE.Component)]
-        public int amount;
+        //====================================================================================================================//
+        
+        [FormerlySerializedAs("probability")] 
+        [SerializeField, ShowIf("showProbability"), OnValueChanged("UpdateChance")]
+        private int weight = 1;
 
-        [FoldoutGroup("$Name"), HideIf("rdsData", TYPE.ResourcesRefined), HideIf("rdsData", TYPE.Asteroid),
-         HideIf("rdsData", TYPE.Component), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
-        public int level;
 
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears)]
-        private int probability;
+        [ShowInInspector, DisplayAsString]
+        public string Chance => $"{percentChance:P2}";
+        [HideInTables, NonSerialized]
+        public float percentChance;
 
-        public int Probability => probability;
+        //====================================================================================================================//
+        
+        [HorizontalGroup("Count"), LabelWidth(22)]
+        public bool rng;
+        [HorizontalGroup("Count"), HideIf("rng"), TableColumnWidth(100), HideLabel]
+        public int count = 1;
+        [VerticalGroup("Count/rng"), LabelWidth(25), ShowIf("rng")]
+        public int min;
+        [VerticalGroup("Count/rng"), LabelWidth(25), ShowIf("rng")]
+        public int max;
 
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
-        private bool isGearRange;
+        //====================================================================================================================//
+        
+        public int Weight => weight;
 
-        public bool IsGearRange => isGearRange;
-
-        bool showGearValue => rdsData == TYPE.Gears && isGearRange == false;
-
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearValue"), HideIf("rdsData", TYPE.Null)]
-        private int gearValue;
-
-        public int GearValue => gearValue;
-
-        bool showGearRange => rdsData == TYPE.Gears && isGearRange == true;
-
-        [SerializeField, FoldoutGroup("$Name"), ShowIf("showGearRange"), HideIf("rdsData", TYPE.Null)]
-        private Vector2Int gearDropRange;
-
-        public Vector2Int GearDropRange => gearDropRange;
-
-        [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
+        /*[SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isUniqueSpawn;
 
-        public bool IsUniqueSpawn => isUniqueSpawn || rdsData == TYPE.Gears;
+        public bool IsUniqueSpawn => isUniqueSpawn || type == TYPE.Gears;
 
         [SerializeField, FoldoutGroup("$Name"), HideIf("rdsData", TYPE.Gears), HideIf("rdsData", TYPE.Null)]
         private bool isAlwaysSpawn;
 
-        public bool IsAlwaysSpawn => isAlwaysSpawn || rdsData == TYPE.Gears;
+        public bool IsAlwaysSpawn => isAlwaysSpawn || type == TYPE.Gears;*/
 
         //This only compares Type and not all individual properties
 
@@ -81,7 +92,7 @@ namespace StarSalvager
         /// <returns></returns>
         public bool Equals(RDSLootData other)
         {
-            return type == other.type && rdsData == other.rdsData;
+            return type == other.type && type == other.type;
         }
 
         /// <summary>
@@ -107,6 +118,25 @@ namespace StarSalvager
 
         #region UNITY_EDITOR
 
+        [NonSerialized]
+        private RDSTableData _parentTable;
+        public void UpdateChance()
+        {
+            _parentTable.UpdateChance();
+        }
+
+        public void EditorSetParentContainer(in RDSTableData parentTable)
+        {
+            _parentTable = parentTable;
+        }
+        
+        private IEnumerable DropTypeValues = new ValueDropdownList<DROP_TYPE>
+        {
+            { "Bit", DROP_TYPE.Bit },
+            { "Asteroid", DROP_TYPE.Asteroid },
+            { "Gears", DROP_TYPE.Gears },
+        };
+
 #if UNITY_EDITOR
 
         private string Name => GetName();
@@ -114,32 +144,23 @@ namespace StarSalvager
         private string GetName()
         {
             var value = string.Empty;
-            switch (rdsData)
+            switch (lootType)
             {
-                case TYPE.Bit:
-                case TYPE.ResourcesRefined:
-                    value = $"{(BIT_TYPE) type}";
-                    break;
-                case TYPE.Asteroid:
+                case DROP_TYPE.Bit:
+                case DROP_TYPE.Asteroid:
                     value = $"{(ASTEROID_SIZE) type}";
                     break;
-                case TYPE.Component:
-                    value = "Components";
-                    break;
-                case TYPE.Blueprint:
-                    value = $"{(PART_TYPE) type}";
-                    break;
-                case TYPE.Gears:
+                case DROP_TYPE.Gears:
                     value = "Gears";
                     break;
-                case TYPE.Null:
+                case DROP_TYPE.Null:
                     value = "Null";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $"{rdsData} - {value} - {Probability}";
+            return $"{type} - {value} - {Weight}";
         }
 
         private IEnumerable GetTypes()
@@ -147,21 +168,16 @@ namespace StarSalvager
             var types = new ValueDropdownList<int>();
 
             Type valueType;
-            switch (rdsData)
+            switch (lootType)
             {
-                case TYPE.Bit:
-                case TYPE.ResourcesRefined:
+                case DROP_TYPE.Bit:
                     valueType = typeof(BIT_TYPE);
                     break;
-                case TYPE.Asteroid:
+                case DROP_TYPE.Asteroid:
                     valueType = typeof(ASTEROID_SIZE);
                     break;
-                case TYPE.Blueprint:
-                    valueType = typeof(PART_TYPE);
-                    break;
-                case TYPE.Component:
-                case TYPE.Gears:
-                case TYPE.Null:
+                case DROP_TYPE.Gears:
+                case DROP_TYPE.Null:
                     return null;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -171,18 +187,10 @@ namespace StarSalvager
             
             foreach (var value in Enum.GetValues(valueType))
             {
-                var name = Convert.ChangeType(value, valueType).ToString();
+                if(valueType == typeof(BIT_TYPE) && (BIT_TYPE)value == BIT_TYPE.NONE)
+                    continue;
                 
-                if (rdsData == TYPE.ResourcesRefined && value is BIT_TYPE bitType)
-                {
-                    if(bitType == BIT_TYPE.WHITE)
-                        continue;
-                    
-                    name = Object.FindObjectOfType<FactoryManager>().BitsRemoteData.GetRemoteData(bitType)
-                        .refinedName;
-                    
-                    types.Add(name, (int)value);
-                }
+                var name = Convert.ChangeType(value, valueType).ToString();
                 
                 types.Add(name, (int)value);
             }

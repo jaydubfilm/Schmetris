@@ -11,15 +11,10 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Space Junk Remote", menuName = "Star Salvager/Scriptable Objects/Space Junk Remote Data")]
     public class SpaceJunkRemoteDataScriptableObject : ScriptableObject
     {
-        [SerializeField]
-        private int m_maxDrops;
+        [SerializeField, FoldoutGroup("$Name"), LabelText("Loot Tables")]
+        private List<RDSTableData> m_rdsTableData;
 
-        [SerializeField, LabelText("Loot Drops")]
-        private List<RDSLootData> m_rdsLootData;
-
-        public int MaxDrops => m_maxDrops;
-
-        public List<RDSLootData> rdsLootData => m_rdsLootData;
+        public List<RDSTableData> RDSTableData => m_rdsTableData;
     }
 }
 

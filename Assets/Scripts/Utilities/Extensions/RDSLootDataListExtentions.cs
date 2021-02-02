@@ -7,7 +7,7 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class RDSLootDataListExtentions
     {
-        public static string AsDisplayString(this List<RDSLootData> lootDatas)
+        /*public static string AsDisplayString(this List<RDSLootData> lootDatas)
         {
             if (lootDatas.IsNullOrEmpty())
                 return string.Empty;
@@ -22,7 +22,7 @@ namespace StarSalvager.Utilities.Extensions
 
             foreach (var lootData in lootDatas)
             {
-                switch (lootData.rdsData)
+                switch (lootData.type)
                 {
                     case RDSLootData.TYPE.Bit:
                         var bitIcon = TMP_SpriteMap.GetBitSprite((BIT_TYPE) lootData.type, lootData.level);
@@ -56,6 +56,6 @@ namespace StarSalvager.Utilities.Extensions
             }
 
             return string.Join("\n\t", _outString);
-        }
+        }*/
     }
 }

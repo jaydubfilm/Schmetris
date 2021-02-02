@@ -1,10 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using StarSalvager.Factories.Data;
 using UnityEngine;
 using System.Collections.Generic;
 using StarSalvager.AI;
 using System.Collections;
 using Sirenix.OdinInspector;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -31,6 +36,39 @@ namespace StarSalvager.ScriptableObjects
         
 #if UNITY_EDITOR
 
+        public void OnEnable()
+        {
+            Selection.selectionChanged += EditorOnSelectionChanged;
+            
+            foreach (var remoteData in m_enemyRemoteData)
+            {
+                remoteData.EditorUpdateChildren();
+            }
+        }
+
+        public void OnDisable()
+        {
+            Selection.selectionChanged -= EditorOnSelectionChanged;
+        }
+
+        private void EditorOnSelectionChanged()
+        {
+            var objects = Selection.objects;
+            
+            if (objects.Length != 1)
+                return;
+            
+            if (!(objects[0] is EnemyRemoteDataScriptableObject enemyRemoteData))
+                return;
+
+            foreach (var remoteData in enemyRemoteData.m_enemyRemoteData)
+            {
+                remoteData.EditorUpdateChildren();
+            }
+            
+            
+        }
+
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
         {
             var outList = m_enemyRemoteData.Select(x => (x.Name, x.EnemyID)).ToList();
@@ -53,6 +91,13 @@ namespace StarSalvager.ScriptableObjects
                 enemyTypes.Add(enemyName, enemyID);
             }
             return enemyTypes;
+        }
+
+        [Button, PropertyOrder(-100)]
+        private void SaveData()
+        {
+            AssetDatabase.Refresh();
+            AssetDatabase.SaveAssets();
         }
 
 #endif

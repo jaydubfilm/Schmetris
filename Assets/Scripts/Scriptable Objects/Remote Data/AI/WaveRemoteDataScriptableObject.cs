@@ -25,14 +25,14 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField]
         private List<RDSLootData> RDSEndOfWaveLoot = new List<RDSLootData>();
 
-        public RDSTable rdsTable;
+        //public RDSTable rdsTable;
 
         public float BonusShapeFrequency => GetWaveDuration() / (BonusShapes.Count + 1);
 
         public void ConfigureLootTable()
         {
-            rdsTable = new RDSTable();
-            rdsTable.SetupRDSTable(maxDrops, RDSEndOfWaveLoot);
+            //rdsTable = new RDSTable();
+            //rdsTable.SetupRDSTable(maxDrops, RDSEndOfWaveLoot);
         }
 
         public StageRemoteData GetRemoteData(int waveNumber)

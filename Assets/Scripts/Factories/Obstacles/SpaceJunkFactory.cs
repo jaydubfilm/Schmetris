@@ -32,8 +32,24 @@ namespace StarSalvager.Factories
         {
             SpaceJunk spaceJunk = CreateObject<SpaceJunk>();
 
-            spaceJunk.rdsTable = new RDSTable();
-            spaceJunk.rdsTable.SetupRDSTable(_spaceJunkRemote.MaxDrops, _spaceJunkRemote.rdsLootData);
+            spaceJunk.RDSTableOdds = new List<int>();
+            spaceJunk.RDSTables = new List<RDSTable>();
+            for (int i = 0; i < _spaceJunkRemote.RDSTableData.Count; i++)
+            {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > _spaceJunkRemote.RDSTableData[i].DropChance)
+                {
+                    continue;
+                }
+
+                RDSTable rdsTable = new RDSTable();
+                rdsTable.SetupRDSTable(_spaceJunkRemote.RDSTableData[i].NumDrops,
+                    _spaceJunkRemote.RDSTableData[i].RDSLootDatas,
+                    _spaceJunkRemote.RDSTableData[i].EvenWeighting);
+
+                spaceJunk.RDSTableOdds.Add(_spaceJunkRemote.RDSTableData[i].DropChance);
+                spaceJunk.RDSTables.Add(rdsTable);
+            }
 
             return spaceJunk;
         }

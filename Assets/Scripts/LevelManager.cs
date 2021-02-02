@@ -773,7 +773,7 @@ namespace StarSalvager
         //FIXME Does this need to be in the LevelManager?
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
-            for (int i = loot.Count - 1; i >= 0; i--)
+            /*for (int i = loot.Count - 1; i >= 0; i--)
             {
                 switch (loot[i])
                 {
@@ -803,7 +803,7 @@ namespace StarSalvager
                             switch (rdsValueBlockData.rdsValue.ClassType)
                             {
                                 case nameof(Component):
-                                    PlayerDataManager.AddComponent(/*(COMPONENT_TYPE)rdsValueBlockData.rdsValue.Type,*/ 1);
+                                    PlayerDataManager.AddComponent(1);
                                     loot.RemoveAt(i);
                                     break;
                                 default:
@@ -813,7 +813,7 @@ namespace StarSalvager
                         break;
                     }
                 }
-            }
+            }*/
 
             ObstacleManager.SpawnObstacleExplosion(position, loot, isFromEnemyLoot);
         }

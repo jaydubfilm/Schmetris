@@ -7,7 +7,7 @@ namespace StarSalvager
 {
 	public class RDSNullValue : RDSValue<object>
 	{
-		public RDSNullValue(double probability) : base(null, probability, false, false, true) 
+		public RDSNullValue(double probability) : base(null, probability, 1, false, false, true) 
 		{ }
 	}
 }

@@ -990,56 +990,60 @@ namespace StarSalvager
 
         public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
-            for (int i = rdsObjects.Count - 1; i >= 0; i--)
-            {
-                switch (rdsObjects[i])
-                {
-                    case RDSValue<Blueprint> rdsValueBlueprint:
-                        Debug.LogError("Blueprint in SpawnBitExplosion");
-                        break;
-                    case RDSValue<Vector2Int> rdsValueGears:
-                        Debug.LogError("Gears in SpawnBitExplosion");
-                        break;
-                }
-            }
+            List<Vector2Int> bitExplosionPositions =
+                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count * 3, 15, 6).ToList();
 
-            Vector2Int[] bitExplosionPositions =
-                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count, 15, 6);
-
-            for (int i = 0; i < bitExplosionPositions.Length; i++)
+            for (int i = 0; i < rdsObjects.Count; i++)
             {
                 if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
                 {
-                    switch (rdsValueBlockData.rdsValue.ClassType)
+                    int count = rdsValueBlockData.GetCount();
+                    for (int k = 0; k < count; k++)
                     {
-                        case nameof(Bit):
-                            Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                .CreateObject<Bit>((BIT_TYPE) rdsValueBlockData.rdsValue.Type,
-                                    rdsValueBlockData.rdsValue.Level);
-                            //AddObstacleToList(newBit);
-                            PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[i], 0.5f);
-                            newBit.IsFromEnemyLoot = isFromEnemyLoot;
-                            break;
-                        case nameof(Asteroid):
-                            Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
-                                .CreateAsteroidRandom<Asteroid>();
-                            //AddObstacleToList(newAsteroid);
-                            PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
-                            break;
-                        case nameof(Component):
-                            Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>();
-                            //AddObstacleToList(newComponent);
-                            PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[i], 0.5f);
-                            break;
-                        default:
-                            Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
-                            break;
+                        switch (rdsValueBlockData.rdsValue.ClassType)
+                        {
+                            case nameof(Bit):
+                                Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                                    .CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type,
+                                        rdsValueBlockData.rdsValue.Level);
+                                //AddObstacleToList(newBit);
+                                PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
+                                bitExplosionPositions.RemoveAt(0);
+                                newBit.IsFromEnemyLoot = isFromEnemyLoot;
+                                break;
+                            case nameof(Asteroid):
+                                Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                                    .CreateAsteroidRandom<Asteroid>();
+                                //AddObstacleToList(newAsteroid);
+                                PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
+                                bitExplosionPositions.RemoveAt(0);
+                                break;
+                            default:
+                                Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
+                                break;
+                        }
                     }
                 }
                 else if (rdsObjects[i] is RDSValue<ASTEROID_SIZE> rdsValueAsteroidSize)
                 {
-                    Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                    PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[i], 0.5f);
+                    int count = rdsValueAsteroidSize.GetCount();
+                    for (int k = 0; k < count; k++)
+                    {
+                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
+                        PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
+                        bitExplosionPositions.RemoveAt(0);
+                    }
+                }
+                else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
+                {
+                    int count = rdsValueGearsAmount.GetCount();
+                    for (int k = 0; k < count; k++)
+                    {
+                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
+                        //AddObstacleToList(newComponent);
+                        PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
+                        bitExplosionPositions.RemoveAt(0);
+                    }
                 }
                 else
                 {
