@@ -463,8 +463,6 @@ namespace StarSalvager.Utilities.Inputs
         
         private void Dash(InputAction.CallbackContext ctx)
         {
-            Debug.LogError("Currently Disabled for this Branch");
-            return;
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
                 return;
             

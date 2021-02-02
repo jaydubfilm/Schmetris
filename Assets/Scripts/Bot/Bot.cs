@@ -486,7 +486,6 @@ namespace StarSalvager
         }
 
         public bool IsDashing => _isDashing;
-
         private bool _isDashing;
 
         public void Dash(in DIRECTION direction)
@@ -503,6 +502,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
+
         public void Dash(float direction)
         {
             if (_isDashing)

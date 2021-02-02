@@ -563,19 +563,24 @@ namespace StarSalvager
             {
                 return;
             }
-
+            
+            var startingHealth = Globals.BotStartingHealth;
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
+            
 
             var currentBlockData = PlayerDataManager.GetBlockDatas();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
             {
+                
                 _scrapyardBot.InitBot();
+                _scrapyardBot.SetupHealthValues(startingHealth, startingHealth);
             }
             else
             {
                 var importedData = currentBlockData.ImportBlockDatas(true);
                 _scrapyardBot.InitBot(importedData);
+                _scrapyardBot.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
         }
 
@@ -917,6 +922,22 @@ namespace StarSalvager
         }
 
         #endregion //Other
+
+        #region Repair
+
+        public void RepairDrone()
+        {
+            var cost = Globals.BotStartingHealth - PlayerDataManager.GetBotHealth();
+            PlayerDataManager.SubtractComponent((int)cost);
+            
+            var startingHealth = Globals.BotStartingHealth;
+            _scrapyardBot.SetupHealthValues(startingHealth, startingHealth);
+            PlayerDataManager.SetBotHealth(startingHealth);
+            //_scrapyardBot
+        }
+        
+
+        #endregion //Repair
 
         //============================================================================================================//
         public object[] GetHintElements(HINT hint)
