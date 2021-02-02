@@ -545,10 +545,10 @@ namespace StarSalvager.UI
 
         public void AbortPressed()
         {
-            LevelManager.Instance.BotObject.TrySelfDestruct();
+            LevelManager.Instance.BotInLevel.TrySelfDestruct();
                 
             //If the bot was able to be killed, hide this window
-            if(LevelManager.Instance.BotObject.Destroyed)
+            if(LevelManager.Instance.BotInLevel.Destroyed)
                 ShowAbortWindow(false);
         }
 
@@ -866,7 +866,7 @@ namespace StarSalvager.UI
 
         public void CreatePatchPointEffect(int count)
         {
-            if (LevelManager.Instance is null || LevelManager.Instance.BotObject is null)
+            if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
@@ -876,7 +876,7 @@ namespace StarSalvager.UI
             var patchSprite = FactoryManager.Instance.PatchSprite;
 
             
-            var botWorldPosition = LevelManager.Instance.BotObject.transform.position;
+            var botWorldPosition = LevelManager.Instance.BotInLevel.transform.position;
 
             var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
             

@@ -183,7 +183,7 @@ namespace StarSalvager.UI.Hints
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.GUN:
                     var gunPart = LevelManager.Instance
-                        .BotObject
+                        .BotInLevel
                         .attachedBlocks
                         .FirstOrDefault(x => x is Part part && part.Type == PART_TYPE.GUN) as Part;
                     

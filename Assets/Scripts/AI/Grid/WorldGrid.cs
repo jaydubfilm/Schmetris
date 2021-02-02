@@ -16,7 +16,7 @@ namespace StarSalvager
         private GridSquare[] m_gridArray;
         private Vector2 m_anchorPoint;
         private Vector2 m_adjustToMiddleOfGridSquare = new Vector2(0.5f, 0.5f);
-        private Vector2Int m_screenGridCellRange;
+        public Vector2Int m_screenGridCellRange { get; private set; }
         private Vector2Int m_botGridPosition;
 
         private int m_gridSizeX;
@@ -48,7 +48,7 @@ namespace StarSalvager
             float height = CameraController.Camera.orthographicSize * 2.0f;
             float width = height * Screen.width / Screen.height;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
-            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotObject.transform.position);
+            m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotInLevel.transform.position);
             randomPositionFindingLists = new Dictionary<Vector2, List<int>>();
             randomPositionFindingLists.Clear();
         }
@@ -274,19 +274,17 @@ namespace StarSalvager
 
         #region Enemy Spawn Positions
 
-        public Vector2 GetLocalPositionOfSpawnPositionForEnemy(ENEMY_MOVETYPE moveType)
+        public Vector2 GetLocalPositionOfSpawnPositionForEnemy(Enemy enemy)
         {
-            if (moveType == ENEMY_MOVETYPE.Horizontal ||
-                moveType == ENEMY_MOVETYPE.HorizontalDescend ||
-                moveType == ENEMY_MOVETYPE.OscillateHorizontal)
-            {
-                //Spawn to the edges of the screen
-                return GetHorizontalSpawnPositionForEnemy();
-            }
-            else
+            if (enemy.SpawnAboveScreen)
             {
                 //Spawn above the screen
                 return GetVerticalSpawnPositionForEnemy();
+            }
+            else
+            {
+                //Spawn to the edges of the screen
+                return GetHorizontalSpawnPositionForEnemy();
             }
         }
 
@@ -295,7 +293,7 @@ namespace StarSalvager
         {
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(
                 m_botGridPosition.x + ((UnityEngine.Random.Range(0, 2) * 2 - 1) * UnityEngine.Random.Range(m_screenGridCellRange.x / 2, m_screenGridCellRange.x)), 
-                UnityEngine.Random.Range(m_screenGridCellRange.y - 4, m_screenGridCellRange.y - 1));
+                UnityEngine.Random.Range(m_screenGridCellRange.y / 2, (int)(m_screenGridCellRange.y / 1.5f)));
         }
 
         //TODO: When the screen size and camera size and grid cell size systems all start working in a scaling fashion, this will need to adjust

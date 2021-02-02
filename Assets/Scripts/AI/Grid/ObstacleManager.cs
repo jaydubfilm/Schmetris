@@ -336,6 +336,12 @@ namespace StarSalvager
 
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
+                if (m_offGridMovingObstacles[i].Obstacle is null)
+                {
+                    m_offGridMovingObstacles.RemoveAt(i);
+                    continue;
+                }
+                
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed *
                                                          m_offGridMovingObstacles[i].SpeedUpModifier;
 

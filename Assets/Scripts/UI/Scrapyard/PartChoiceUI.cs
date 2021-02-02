@@ -53,20 +53,15 @@ namespace StarSalvager.UI.Scrapyard
 
             PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            if (Globals.CurrentSector == 0)
+            if (Globals.CurrentSector == 0 && Globals.CurrentWave <= 1)
             {
                 partTypeOptionOne = partAttachableFactory.GetBasicWreckPartTypeOption();
-                partTypeOptionTwo = partAttachableFactory.GetBasicWreckPartTypeOption();
+                partTypeOptionTwo = partAttachableFactory.GetBasicWreckPartTypeOption(partTypeOptionOne);
             }
             else
             {
                 partTypeOptionOne = partAttachableFactory.GetWreckPartTypeOption();
-                partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption();
-            }
-
-            while (partTypeOptionOne == partTypeOptionTwo)
-            {
-                partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption();
+                partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption(partTypeOptionTwo);
             }
 
             buttonImageOptionOne.sprite = partAttachableFactory.GetProfileData(partTypeOptionOne).Sprite;

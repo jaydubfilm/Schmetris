@@ -14,6 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class Mine : CollidableBase, IObstacle, ICustomRecycle
     {
         public MINE_TYPE Type;

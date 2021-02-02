@@ -18,8 +18,6 @@ namespace StarSalvager.Factories
     {
         private readonly EnemyProfileScriptableObject m_enemyProfile;
         private readonly EnemyRemoteDataScriptableObject m_enemyRemoteData;
-        private readonly GameObject m_prefab;
-        private readonly GameObject m_attachablePrefab;
 
         private List<EnemyData> enemyDatas = new List<EnemyData>();
 
@@ -29,8 +27,6 @@ namespace StarSalvager.Factories
         {
             m_enemyProfile = enemyProfile;
             m_enemyRemoteData = enemyRemoteData;
-            m_prefab = m_enemyProfile.m_prefab;
-            m_attachablePrefab = m_enemyProfile.m_attachablePrefab;
         }
 
         //============================================================================================================//
@@ -73,38 +69,30 @@ namespace StarSalvager.Factories
         
         public override GameObject CreateGameObject()
         {
-            return Object.Instantiate(m_prefab);
-        }
-
-        public GameObject CreateAttachableGameObject()
-        {
-            return Object.Instantiate(m_attachablePrefab);
+            throw new Exception("This function in enemy factory shouldn't be used, go through CreateObject<T>(string guid) instead");
         }
 
         public override T CreateObject<T>()
         {
-            if (Recycler.TryGrab(out T newObject))
-            {
-                return newObject;
-            }
-
-            Type type = typeof(T);
-
-
-            var enemyComponent = type == typeof(EnemyAttachable)
-                ? CreateAttachableGameObject().GetComponent<T>()
-                : CreateGameObject().GetComponent<T>();
-
-            return enemyComponent;
+            throw new Exception("This function in enemy factory shouldn't be used, go through CreateObject<T>(string guid) instead");
         }
 
         //============================================================================================================//
 
-        public T CreateObject<T>(string guid)
+        public T CreateObject<T>(string guid) where T : MonoBehaviour
         {
+            EnemyProfileData enemyProfileData = m_enemyProfile.GetEnemyProfileData(guid);
             EnemyData enemyData = enemyDatas.FirstOrDefault(p => p.EnemyType == guid) ?? SetupEnemyData(guid);
 
-            Enemy enemy = enemyData.IsAttachable ? CreateObject<EnemyAttachable>() : CreateObject<Enemy>();
+            Enemy enemy;
+            if (Recycler.TryGrab(out T newObject))
+            {
+                enemy = newObject.GetComponent<Enemy>();
+            }
+            else
+            {
+                enemy = Object.Instantiate(enemyProfileData.EnemyPrefab).GetComponent<Enemy>();
+            }
             
             enemy.Init(enemyData);
 
@@ -113,7 +101,7 @@ namespace StarSalvager.Factories
             return enemy.GetComponent<T>();
         }
         
-        public T CreateObjectName<T>(string enemyName)
+        public T CreateObjectName<T>(string enemyName) where T : MonoBehaviour
         {
             var enemyID = m_enemyProfile.GetEnemyProfileDataByName(enemyName).EnemyID;
 

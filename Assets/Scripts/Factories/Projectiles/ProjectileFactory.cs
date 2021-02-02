@@ -45,12 +45,9 @@ namespace StarSalvager.Factories
                 return newObject;
             }
 
-            if (typeof(T) == typeof(ProjectileTowObject))
-            {
-                return Object.Instantiate(m_towPrefab).GetComponent<T>();
-            }
-
-            return CreateGameObject().GetComponent<T>();
+            return typeof(T) == typeof(ProjectileTowObject)
+                ? Object.Instantiate(m_towPrefab).GetComponent<T>()
+                : CreateGameObject().GetComponent<T>();
         }
 
         //Static Target position functions
@@ -61,14 +58,14 @@ namespace StarSalvager.Factories
             Vector2 fromPosition,
             Vector2 targetPosition,
             Vector2 shootDirection,
-            float damage, 
             float rangeBoost,
             string collisionTag,
             IHealth vampirismCaster,
-            bool shouldFlipSprite = false)
+            bool shouldFlipSprite = false,
+            bool shouldAlignToGridY = false)
         {
-            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection, damage,
-                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite);
+            return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection,
+                rangeBoost, collisionTag, vampirismCaster, shouldFlipSprite, shouldAlignToGridY);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -76,14 +73,21 @@ namespace StarSalvager.Factories
             Vector2 targetPosition,
             Vector2 currentVelocity, 
             Vector2 shootDirection,
-            float damage, 
             float rangeBoost, 
             string collisionTag, 
             IHealth vampirismCaster,
-            bool shouldFlipSprite = false)
+            bool shouldFlipSprite = false,
+            bool shouldAlignToGridY = false)
         {
             var projectiles = new List<T>();
             var projectileProfile = m_projectileProfile.GetProjectileProfileData(projectileType);
+
+            if (shouldAlignToGridY)
+            {
+                fromPosition = new Vector2(
+                    LevelManager.Instance.WorldGrid.GetLocalPositionOfCenterOfGridSquareAtLocalPosition(fromPosition).x,
+                    fromPosition.y);
+            }
 
             var travelDirections = GetFireDirections(projectileProfile, fromPosition, /*targetPosition,*/ shootDirection);
 
@@ -98,15 +102,18 @@ namespace StarSalvager.Factories
                     {
                         case ProjectileProfileData.TowType.JunkBit:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
+                            projectileTowObject.SetColliderActive(false);
                             break;
-                        case ProjectileProfileData.TowType.Mine:
+                        /*case ProjectileProfileData.TowType.Mine:
                             towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
-                            break;
+                            break;*/
                         default:
                             throw new Exception("Missing data for towObject");
                     }
-                    projectileTowObject.towObject = towObject;
-                    projectileTowObject.towObjectIRecycledReference = towObject.GetComponent<Actor2DBase>();
+                    LevelManager.Instance.ObstacleManager.AddToRoot(towObject);
+                    towObject.transform.position = fromPosition;
+                    
+                    projectileTowObject.towObjectActor = towObject.GetComponent<Actor2DBase>();
 
                     projectile = projectileTowObject;
                 }
@@ -114,6 +121,7 @@ namespace StarSalvager.Factories
                 {
                     projectile = CreateObject<Projectile>();
                 }
+                
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
@@ -128,7 +136,7 @@ namespace StarSalvager.Factories
                 projectile.Init(projectileProfile,
                     null,
                     collisionTag,
-                    damage,
+                    projectileProfile.ProjectileDamage,
                     rangeBoost,
                     travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,

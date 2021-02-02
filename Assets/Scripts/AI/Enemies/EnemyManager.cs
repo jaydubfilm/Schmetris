@@ -66,7 +66,7 @@ namespace StarSalvager
             }
             CheckSpawns();
 
-            HandleEnemyMovement();
+            HandleEnemyUpdate();
         }
 
         private void LateUpdate()
@@ -126,11 +126,11 @@ namespace StarSalvager
         
         //============================================================================================================//
 
-        private void HandleEnemyMovement()
+        private void HandleEnemyUpdate()
         {
             Vector3 gridMovement = Vector3.zero;
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            
+
             /*if (m_distanceHorizontal != 0)
             {
                 if (m_distanceHorizontal > 0)
@@ -147,14 +147,20 @@ namespace StarSalvager
                 }
             }*/
 
-
+            Vector3 playerBotPosition = LevelManager.Instance.BotInLevel.transform.position;
             //Iterate through all agents, and for each one, add the forces from nearby obstacles to their current direction vector
             //After adding the forces, normalize and multiply by the velocity to ensure consistent speed
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];
-                    
-                if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
+
+                //Check to see if the enemy can Move
+                if (!enemy.CanMove())
+                    continue;
+                
+                enemy.UpdateEnemy(playerBotPosition);
+
+                /*if (enemy is EnemyAttachable enemyAttachable && enemyAttachable.Attached)
                 {
                     continue;
                 }
@@ -206,7 +212,7 @@ namespace StarSalvager
                 }
                 sumDirection.Normalize();
 
-                enemy.ProcessMovement(sumDirection);
+                enemy.ProcessMovement(sumDirection);*/
             }
 
             /*if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
@@ -331,7 +337,7 @@ namespace StarSalvager
             }
         }
 
-        private void SpawnEnemy(string enemyType)
+        public void SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
 
@@ -341,8 +347,17 @@ namespace StarSalvager
                 m_enemies.Add(newEnemy);
             }
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
-            newEnemy.SetHorizontalMovementYLevel();
+
+            if (spawnLocationOverride.HasValue)
+            {
+                newEnemy.transform.localPosition = spawnLocationOverride.Value;
+            }
+            else
+            {
+                newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
+            }
+
+            newEnemy.LateInit();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
         }
@@ -354,7 +369,7 @@ namespace StarSalvager
             
             m_enemies.Add(newEnemy);
             ReParentEnemy(newEnemy);
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy.MovementType);
+            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
         }
 
         public void RemoveEnemy(Enemy newEnemy)
@@ -511,10 +526,10 @@ namespace StarSalvager
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
 
-            for (int i = 0; i < m_enemies.Count; i++)
+            /*for (int i = 0; i < m_enemies.Count; i++)
             {
                 m_enemies[i].m_enemyMovetypeOverride = ENEMY_MOVETYPE.Down;
-            }
+            }*/
         }
 
         public void RecycleAllEnemies()

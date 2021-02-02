@@ -205,7 +205,6 @@ namespace StarSalvager
             Radius = radius;
         }
 
-
         private void UpdatePhysicsShape(in Sprite sprite)
         {
             if (!(collider is PolygonCollider2D polygonCollider))
@@ -240,7 +239,6 @@ namespace StarSalvager
             
             Destroy(effect, time);
         }
-        
         
         //ICustomRecycle Function
         //====================================================================================================================//

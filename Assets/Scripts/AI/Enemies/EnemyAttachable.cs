@@ -9,6 +9,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Interfaces;
@@ -18,7 +19,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
+    public abstract class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");
@@ -55,8 +56,8 @@ namespace StarSalvager.AI
         
         private EnemyDecoy _enemyDecoy;
 
-        private Bot _attachedBot;
-        private IAttachable _target;
+        protected Bot AttachedBot;
+        protected IAttachable Target;
         private Vector2Int _targetCoordinate;
         
         
@@ -64,7 +65,7 @@ namespace StarSalvager.AI
         //Unity Functions
         //============================================================================================================//
 
-        protected override void Update()
+        /*protected void Update()
         {
             if (HintManager.CanShowHint(HINT.PARASITE))
             {
@@ -73,11 +74,13 @@ namespace StarSalvager.AI
                     HintManager.TryShowHint(HINT.PARASITE, 1f, this);
                 }
             }
+
+            ProcessFireLogic();
             
             if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
                 return;
             
-            if (FreezeTime > 0)
+            /*if (FreezeTime > 0)
             {
                 FreezeTime -= Time.deltaTime;
                 return;
@@ -102,16 +105,17 @@ namespace StarSalvager.AI
 
             m_fireTimer -= 1 / m_enemyData.RateOfFire;
             
-            FireAttack();
+            FireAttack();#1#
             
-        }
+        }*/
 
         //IAttachable Functions
         //============================================================================================================//
 
-        public void SetAttached(bool isAttached)
+        public virtual void SetAttached(bool isAttached)
         {
-            if (!isAttached) PendingDetach = false;
+            if (!isAttached) 
+                PendingDetach = false;
             
             //I can't assume that it will always be attached/Detached,as we need to ensure that the move is legal before setting all the values   
             
@@ -126,7 +130,7 @@ namespace StarSalvager.AI
                 if (_enemyDecoy == null)
                     _enemyDecoy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateEnemyDecoy();
                 
-                _enemyDecoy.Setup(this, _attachedBot.Collider);
+                _enemyDecoy.Setup(this, AttachedBot.Collider);
 
                 return;
             }
@@ -141,8 +145,8 @@ namespace StarSalvager.AI
             collider.usedByComposite = false;
             StateAnimator.ChangeState(DEFAULT);
 
-            _target = null;
-            _attachedBot = null;
+            Target = null;
+            AttachedBot = null;
             transform.rotation = Quaternion.identity;
             
             LevelManager.Instance.EnemyManager.ReParentEnemy(this);
@@ -170,20 +174,24 @@ namespace StarSalvager.AI
                 return;
             }
 
-            var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
+            //var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
             if (!TryGetRayDirectionFromBot(Globals.MovingDirection, out var rayDirection))
                 return;
 
+            var dir = rayDirection.ToDirection();
+
             //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
 
-            if (dir != rayDirection && dir != Vector2Int.zero)
-                return;
+            //if (dir != rayDirection && dir != Vector2Int.zero)
+            //    return;
+
+            TryFindClosestCollision(dir, out var point);
 
             //Long ray compensates for the players high speed
-            var rayLength = Constants.gridCellSize * 3f;
+            /*var rayLength = Constants.gridCellSize * 3f;
             var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
 
 
@@ -193,36 +201,36 @@ namespace StarSalvager.AI
             //If nothing was hit, ray failed, thus no reason to continue
             if (hit.collider == null)
             {
-                /*Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);*/
+                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
+                //SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
                 return;
             }
 
-            /*Debug.DrawRay(hit.point, Vector2.up, Color.red);
+            Debug.DrawRay(hit.point, Vector2.up, Color.red);
             Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);*/
 
-            _attachedBot = bot;
+            AttachedBot = bot;
             
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
-            var inDirection = (-rayDirection).ToDirection();
-            var attached = bot.TryAddNewAttachable(this, inDirection, hit.point);
+            //var inDirection = (-rayDirection).ToDirection();
+            var attached = bot.TryAddNewAttachable(this, dir.Reflected(), point);
 
             if (!attached)
             {
-                _attachedBot = null;
+                AttachedBot = null;
                 return;
             }
 
             TryUpdateTarget();
         }
 
-        protected override void FireAttack()
+        /*protected override void FireAttack()
         {
             if (!_attachedBot || !Attached)
                 return;
             
             _attachedBot.TryHitAt(_target, m_enemyData.AttackDamage);
-        }
+        }*/
 
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
         {
@@ -231,14 +239,30 @@ namespace StarSalvager.AI
             switch (direction)
             {
                 case DIRECTION.NULL:
-                    rayDirection = new Vector2(
+                    var norm = m_mostRecentMovementDirection.normalized;
+
+                    if (Mathf.Abs(norm.x) > Mathf.Abs(norm.y))
+                    {
+                        rayDirection = norm.x < 0f ? Vector2.left : Vector2.right;
+                    }
+                    else if(norm.y == 0f)
+                    {
+                        rayDirection = Vector2.down;
+                    }
+                    else
+                    {
+                        rayDirection = norm.y < 0f ? Vector2.down : Vector2.up;
+                    }
+                    
+                    
+                    /*rayDirection = new Vector2(
                         Mathf.RoundToInt(m_mostRecentMovementDirection.x),
                         Mathf.RoundToInt(m_mostRecentMovementDirection.y));//-(Vector2)m_mostRecentMovementDirection;
 
                     if(Mathf.Abs(rayDirection.x) > Mathf.Abs(rayDirection.y))
                         rayDirection *= Vector2.right;
                     else
-                        rayDirection *= Vector2.up;
+                        rayDirection *= Vector2.up;*/
 
                     return true;
                 case DIRECTION.LEFT:
@@ -251,6 +275,70 @@ namespace StarSalvager.AI
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
+        
+        private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
+        {
+            const float rayLength = Constants.gridCellSize * 3f;
+            
+            point = Vector2.zero;
+            
+            var currentPosition = (Vector2)transform.position;
+            var vectorDirection = direction.ToVector2();
+            var startOffset = -vectorDirection * (rayLength / 2f);
+            Vector2 positionOffset;
+            
+            switch (direction)
+            {
+                case DIRECTION.RIGHT:
+                case DIRECTION.LEFT:
+                    positionOffset = Vector2.up * 0.33f;
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    positionOffset = Vector2.right * 0.33f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+            
+            var startPositions = new[]
+            {
+                currentPosition + startOffset,
+                (currentPosition - positionOffset) + startOffset,
+                (currentPosition + positionOffset) + startOffset,
+            };
+
+            var shortestDis = 999f;
+            RaycastHit2D? shortestHit = null;
+            foreach (var rayStartPosition in startPositions)
+            {
+                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
+
+                //If nothing was hit, ray failed, thus no reason to continue
+                if (hit.collider == null)
+                {
+                    //Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.yellow, 1f);
+                    SSDebug.DrawArrowRay(rayStartPosition, vectorDirection * rayLength, Color.yellow);
+                    continue;
+                }
+
+                Debug.DrawRay(hit.point, Vector2.up, Color.red);
+                Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
+
+                if (hit.distance >= shortestDis)
+                    continue;
+                
+                shortestDis = hit.distance;
+                shortestHit = hit;
+            }
+
+            if (!shortestHit.HasValue)
+                return false;
+
+            point = shortestHit.Value.point;
+            
+            return true;
+        }
 
         //Attachable Enemy Movement when Attacking
         //============================================================================================================//
@@ -260,7 +348,7 @@ namespace StarSalvager.AI
             TryUpdateTarget();
         }
 
-        private void EnsureTargetValidity()
+        protected void EnsureTargetValidity()
         {
             //If our target has been destroyed (Killed/Recycled) we want to move to its position
             //This would occur if this wasn't attempted to be detached,
@@ -271,21 +359,21 @@ namespace StarSalvager.AI
 //
             //}
 
-            switch (_target)
+            switch (Target)
             {
                 case IRecycled recyclable when recyclable.IsRecycled:
                 case Part _:
                     return;
-                    _target = null;
-                    _attachedBot.ForceDetach(this);
+                    Target = null;
+                    AttachedBot.ForceDetach(this);
                     return;
             }
 
             //Here we're making sure that the target is still part of what we're attacking
-            if (_target.transform.parent != transform.parent)
+            if (Target.transform.parent != transform.parent)
             {
-                _target = null;
-                _attachedBot.ForceDetach(this);
+                Target = null;
+                AttachedBot.ForceDetach(this);
                 return;
             }
             //TODO Need to account for bits that move due to combo solve
@@ -311,7 +399,7 @@ namespace StarSalvager.AI
                 return;
             }*/
 
-            if (!(_target is EnemyAttachable)) 
+            if (!(Target is EnemyAttachable)) 
                 return;
 
             TryUpdateTarget();
@@ -319,20 +407,20 @@ namespace StarSalvager.AI
 
         private bool TryMoveToTargetPosition()
         {
-            if (_target == null)
+            if (Target == null)
                 return false;
 
             //If the enemy didn't kill the bit, we shouldn't more to its position
             if (!DidIDestroyBit())
                 return false;
 
-            if (!_attachedBot.CoordinateHasPathToCore(_target.Coordinate))
+            if (!AttachedBot.CoordinateHasPathToCore(Target.Coordinate))
                 return false;
 
-            if (_attachedBot.CoordinateOccupied(_target.Coordinate))
+            if (AttachedBot.CoordinateOccupied(Target.Coordinate))
                 return false;
 
-            if (!_attachedBot.TryAttachNewBlock(_target.Coordinate, this, false, true))
+            if (!AttachedBot.TryAttachNewBlock(Target.Coordinate, this, false, true))
                 return false;
 
             if (!TryUpdateTarget())
@@ -343,16 +431,16 @@ namespace StarSalvager.AI
 
         private bool TryUpdateTarget()
         {
-            if (_attachedBot is null)
+            if (AttachedBot is null)
             {
                 SetAttached(false);
                 return false;
             }
             
             //We set the max distance here because we want to ensure we're attacking something right next to us
-            _target = _attachedBot.GetClosestAttachable(Coordinate, 1f);
+            Target = AttachedBot.GetClosestAttachable(Coordinate, 1f);
 
-            if (_target == null)
+            if (Target == null)
             {
                 SetAttached(false);
                 return false;
@@ -361,20 +449,20 @@ namespace StarSalvager.AI
             //TEST_TARGET = target.gameObject;
             //Debug.Log($"{gameObject.name} has new target. TARGET : {TEST_TARGET.gameObject.name}", TEST_TARGET);
 
-            RotateTowardsTarget(_target);
+            RotateTowardsTarget(Target);
 
             return true;
         }
         
         private bool DidIDestroyBit()
         {
-            var health = _target as IHealth;
-            var recyclable = _target as IRecycled; 
+            var health = Target as IHealth;
+            var recyclable = Target as IRecycled; 
             
             if (health?.CurrentHealth > 0)
                 return false;
             
-            return _target.Attached  || !recyclable.IsRecycled;
+            return Target.Attached  || !recyclable.IsRecycled;
         }
 
         //IHealth functions
@@ -392,10 +480,10 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0)
                 return;
 
-            if (_attachedBot)
+            if (AttachedBot)
             {
-                _attachedBot.ForceDetach(this);
-                _attachedBot = null;
+                AttachedBot.ForceDetach(this);
+                AttachedBot = null;
             }
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
@@ -421,7 +509,7 @@ namespace StarSalvager.AI
 
         private void RotateTowardsTarget(IAttachable Target)
         {
-            if (_target == null)
+            if (this.Target == null)
                 return;
             
             var dir = (Target.Coordinate - Coordinate).ToDirection();
@@ -454,7 +542,7 @@ namespace StarSalvager.AI
         //IWasBumped Functions
         //====================================================================================================================//
         
-        public void OnBumped()
+        public virtual void OnBumped()
         {
             if (!Attached || Disabled)
                 return;
@@ -463,8 +551,8 @@ namespace StarSalvager.AI
             //CheckUpdateTarget();
             
             //TODO Need to disable enemy after it was bumped
-            _target = null;
-            _attachedBot.ForceDetach(this);
+            Target = null;
+            AttachedBot.ForceDetach(this);
 
             StateAnimator.ChangeState(StateAnimator.DEFAULT);
             StateAnimator.Pause();
@@ -479,8 +567,8 @@ namespace StarSalvager.AI
             base.CustomRecycle(args);
             
             _enemyDecoy = null;
-            _attachedBot = null;
-            _target = null;
+            AttachedBot = null;
+            Target = null;
             PendingDetach = false;
             SetAttached(false);
         }
@@ -488,11 +576,8 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
 
-        public Type GetOverrideType()
-        {
-            return typeof(EnemyAttachable);
-        }
-        
+        public abstract Type GetOverrideType();
+
         //IHasBounds Functions
         //====================================================================================================================//
         

@@ -16,15 +16,15 @@ namespace StarSalvager.Factories.Data
     {
         [Sirenix.OdinInspector.ReadOnly, FoldoutGroup("$GetEnemyType")]
         public string EnemyName;
-        
+
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$GetEnemyType/row2", 65), VerticalGroup("$GetEnemyType/row2/left"), HideLabel]
         private Sprite m_sprite;
 
+        [SerializeField, VerticalGroup("$GetEnemyType/row2/right")]
+        private GameObject m_enemyPrefab;
+
         [SerializeField, VerticalGroup("$GetEnemyType/row2/right"), ValueDropdown("GetEnemyTypes")]
         private string m_enemyTypeID;
-
-        [SerializeField, VerticalGroup("$GetEnemyType/row2/right")]
-        private ENEMY_MOVETYPE m_movementType;
 
         [SerializeField, VerticalGroup("$GetEnemyType/row2/right")]
         private bool m_isAttachable;
@@ -36,7 +36,7 @@ namespace StarSalvager.Factories.Data
         private string m_projectileType;
 
         //Variables that are only shown based on the EnemyType
-        private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
+        /*private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
         [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("showOscillationsPerSecond")]
         private float m_oscillationsPerSeconds;
 
@@ -51,10 +51,11 @@ namespace StarSalvager.Factories.Data
         private float m_numberCellsDescend;
 
         [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private bool m_ignoreObstacleAvoidance;
+        private bool m_ignoreObstacleAvoidance;*/
 
         //====================================================================================================================//
-               
+
+        public GameObject EnemyPrefab => m_enemyPrefab;
 
         public string EnemyID => m_enemyTypeID;
 
@@ -62,13 +63,11 @@ namespace StarSalvager.Factories.Data
         
         public AnimationControllerScriptableObject AnimationController => m_enemyAnimationController;
 
-        public ENEMY_MOVETYPE MovementType => m_movementType;
-
         public bool IsAttachable => m_isAttachable;
 
         public string ProjectileType => m_projectileType;
 
-        public float OscillationsPerSeconds => m_oscillationsPerSeconds;
+        /*public float OscillationsPerSeconds => m_oscillationsPerSeconds;
 
         public float OscillationAngleRange => m_oscillationAngleRange;
 
@@ -76,7 +75,7 @@ namespace StarSalvager.Factories.Data
 
         public float NumberCellsDescend => m_numberCellsDescend;
 
-        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;
+        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;*/
 
         #if UNITY_EDITOR
 

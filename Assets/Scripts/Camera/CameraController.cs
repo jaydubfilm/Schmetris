@@ -133,6 +133,8 @@ namespace StarSalvager.Cameras
 
         #region Camera Rect
 
+        public static Rect VisibleCameraRect { get; private set; }
+
         private static float _cameraXOffset;
         private static Rect _cameraRect;
         private static Vector2 center;
@@ -178,8 +180,10 @@ namespace StarSalvager.Cameras
             tempRect.x += _cameraXOffset * -1f;
             
             GizmoExtensions.DrawDebugRect(tempRect, Color.red);
+
+            VisibleCameraRect = tempRect;
             
-            return tempRect.Contains(position);
+            return VisibleCameraRect.Contains(position);
         }
         
         private void UpdateRect()
@@ -221,7 +225,7 @@ namespace StarSalvager.Cameras
             if (!_canBeSeens.Contains(canBeSeen))
                 return;
 
-            canBeSeen.ExitedCamera();
+            canBeSeen.OnExitCamera();
             canBeSeen.IsSeen = false;
             
             _canBeSeens.Remove(canBeSeen);
@@ -247,8 +251,8 @@ namespace StarSalvager.Cameras
 
             canBeSeen.IsSeen = seen;
                 
-            if(seen) canBeSeen.EnteredCamera();
-            else canBeSeen.ExitedCamera();
+            if(seen) canBeSeen.OnEnterCamera();
+            else canBeSeen.OnExitCamera();
         }
 
         #endregion //Camera Rect

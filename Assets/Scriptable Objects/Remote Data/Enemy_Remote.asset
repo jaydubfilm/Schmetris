@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
   - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-    m_name: Fly
+    m_name: JunkFly
     m_health: 10
     m_movementSpeed: 9
-    m_attackDamage: 10
     m_rateOfFire: 0.7
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 3
@@ -43,49 +42,37 @@ MonoBehaviour:
       isUniqueSpawn: 0
       isAlwaysSpawn: 1
   - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
-    m_name: Parasite
+    m_name: DataLeech
     m_health: 20
     m_movementSpeed: 6
-    m_attackDamage: 1
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 2
+    m_maxDrops: 4
     m_rdsEnemyData:
-    - rdsData: 5
-      type: 0
-      amount: 0
-      level: 1
-      probability: 1
-      isGearRange: 1
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 3
+    - rdsData: 0
       type: 1
       amount: 0
-      level: 0
-      probability: 1
+      level: 2
+      probability: 5
       isGearRange: 0
       gearValue: 0
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
-      isAlwaysSpawn: 1
-    - rdsData: 0
+      isAlwaysSpawn: 0
+    - rdsData: 6
       type: 0
       amount: 0
       level: 0
-      probability: 0
+      probability: 95
       isGearRange: 0
       gearValue: 0
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
-    m_name: Ball Head
+    m_name: MoonMiner
     m_health: 35
     m_movementSpeed: 3
-    m_attackDamage: 20
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
     m_maxDrops: 5
@@ -111,10 +98,9 @@ MonoBehaviour:
       isUniqueSpawn: 1
       isAlwaysSpawn: 1
   - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
-    m_name: Mosquito
+    m_name: Volt
     m_health: 25
     m_movementSpeed: 4
-    m_attackDamage: 15
     m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
     m_maxDrops: 6
@@ -150,10 +136,9 @@ MonoBehaviour:
       isUniqueSpawn: 0
       isAlwaysSpawn: 0
   - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
-    m_name: Squid
+    m_name: Squart
     m_health: 100
-    m_movementSpeed: 7
-    m_attackDamage: 35
+    m_movementSpeed: 12
     m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
     m_maxDrops: 8
@@ -208,20 +193,19 @@ MonoBehaviour:
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 1
       isAlwaysSpawn: 1
-  - m_enemyType: 29b4a36e-47f7-47a4-8922-f7de5f531383
-    m_name: SuperFly
+  - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
+    m_name: ToughMother
     m_health: 100
-    m_movementSpeed: 10
-    m_attackDamage: 0
-    m_rateOfFire: 1
+    m_movementSpeed: 5
+    m_rateOfFire: 0.15
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 6
+    m_maxDrops: 3
     m_rdsEnemyData:
     - rdsData: 0
       type: 3
       amount: 0
-      level: 2
-      probability: 1
+      level: 1
+      probability: 3
       isGearRange: 0
       gearValue: 0
       gearDropRange: {x: 0, y: 0}
@@ -229,157 +213,63 @@ MonoBehaviour:
       isAlwaysSpawn: 0
     - rdsData: 3
       type: 0
-      amount: 0
+      amount: 100
       level: 0
       probability: 1
       isGearRange: 0
       gearValue: 0
       gearDropRange: {x: 0, y: 0}
       isUniqueSpawn: 0
+      isAlwaysSpawn: 1
+  - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    m_name: Shard
+    m_health: 20
+    m_movementSpeed: 5
+    m_rateOfFire: 0
+    m_dimensions: {x: 1, y: 1}
+    m_maxDrops: 3
+    m_rdsEnemyData:
+    - rdsData: 0
+      type: 3
+      amount: 0
+      level: 1
+      probability: 3
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
       isAlwaysSpawn: 0
-  - m_enemyType: 599761cf-c12a-45b0-bbab-918008384f28
-    m_name: SuperParasite
-    m_health: 100
+    - rdsData: 3
+      type: 0
+      amount: 100
+      level: 0
+      probability: 1
+      isGearRange: 0
+      gearValue: 0
+      gearDropRange: {x: 0, y: 0}
+      isUniqueSpawn: 0
+      isAlwaysSpawn: 1
+  - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
+    m_name: Sleeper Mine
+    m_health: 0
+    m_movementSpeed: 0
+    m_rateOfFire: 0
+    m_dimensions: {x: 0, y: 0}
+    m_maxDrops: 0
+    m_rdsEnemyData: []
+  - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
+    m_name: Sensor Mine
+    m_health: 0
+    m_movementSpeed: 0
+    m_rateOfFire: 0
+    m_dimensions: {x: 0, y: 0}
+    m_maxDrops: 0
+    m_rdsEnemyData: []
+  - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+    m_name: Borrower
+    m_health: 20
     m_movementSpeed: 6
-    m_attackDamage: 2
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 5
-    m_rdsEnemyData:
-    - rdsData: 0
-      type: 1
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 3
-      type: 0
-      amount: 0
-      level: 0
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - m_enemyType: 842a2d03-61be-4bc2-8391-ae25826a30af
-    m_name: SuperBallHead
-    m_health: 125
-    m_movementSpeed: 3
-    m_attackDamage: 25
-    m_rateOfFire: 0.4
-    m_dimensions: {x: 1, y: 2}
-    m_maxDrops: 7
-    m_rdsEnemyData:
-    - rdsData: 0
-      type: 5
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 3
-      type: 3
-      amount: 0
-      level: 0
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - m_enemyType: e90054ce-9f64-4b84-9aab-5c6808cf3c67
-    m_name: SuperMosquito
-    m_health: 125
-    m_movementSpeed: 4
-    m_attackDamage: 15
-    m_rateOfFire: 0.6
-    m_dimensions: {x: 1, y: 1}
-    m_maxDrops: 8
-    m_rdsEnemyData:
-    - rdsData: 0
-      type: 4
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 3
-      type: 1
-      amount: 0
-      level: 0
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-  - m_enemyType: 1f78cb36-17d7-48d7-8e1c-a44536df7949
-    m_name: SuperSquid
-    m_health: 200
-    m_movementSpeed: 7
-    m_attackDamage: 35
-    m_rateOfFire: 1
-    m_dimensions: {x: 2, y: 2}
-    m_maxDrops: 8
-    m_rdsEnemyData:
-    - rdsData: 0
-      type: 1
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 0
-      type: 3
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 0
-      type: 5
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 0
-      type: 4
-      amount: 0
-      level: 2
-      probability: 1
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 0
-      isAlwaysSpawn: 0
-    - rdsData: 3
-      type: 4
-      amount: 0
-      level: 0
-      probability: 4
-      isGearRange: 0
-      gearValue: 0
-      gearDropRange: {x: 0, y: 0}
-      isUniqueSpawn: 1
-      isAlwaysSpawn: 1
+    m_maxDrops: 0
+    m_rdsEnemyData: []

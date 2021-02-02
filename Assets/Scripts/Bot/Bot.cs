@@ -230,7 +230,10 @@ namespace StarSalvager
 
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
-            FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+            //Here we check to make sure to not display tiny values of damage
+            var check = Mathf.Abs(amount);
+            if(!(check > 0 && check < 1f))
+                FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
 
             if (CurrentHealth > 0)
                 return;
@@ -956,7 +959,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint, true);
+                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
                     switch (closestAttachable)
                     {
@@ -970,7 +973,7 @@ namespace StarSalvager
                     if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
 
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
+                    /*legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
 
                     //----------------------------------------------------------------------------------------------------//
 
@@ -979,7 +982,7 @@ namespace StarSalvager
                         //Make sure that the attachable isn't overlapping the bot before we say its impossible to
                         if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
                             return false;
-                    }
+                    }*/
 
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
@@ -1045,6 +1048,35 @@ namespace StarSalvager
             }
 
             return true;
+        }
+
+        public IAttachable GetClosestAttachable(Vector2 location, float maxDistance = 999f)
+        {
+            IAttachable selected = null;
+
+            var smallestDist = 999f;
+
+            foreach (var attached in attachedBlocks)
+            {
+                //attached.SetColor(Color.white);
+                if (attached.CountAsConnectedToCore == false)
+                    continue;
+
+                var dist = Vector2.Distance(attached.Coordinate, location);
+
+                if (dist > maxDistance)
+                    continue;
+                //TODO: Make a new function for "closest to an attachable" and then remove the second part of this if statement
+                if (dist > smallestDist || dist == 0)
+                    continue;
+
+                smallestDist = dist;
+                selected = attached;
+            }
+
+            //selected.SetColor(Color.magenta);
+
+            return selected;
         }
 
         public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
@@ -1464,9 +1496,37 @@ namespace StarSalvager
             //------------------------------------------------------------------------------------------------//
         }
 
+        public void TryAOEDamageFrom(in Vector2 worldPosition, in float radius, in float damage, in bool partsOnly = false)
+        {
+            var blocksToDamage = attachedBlocks.GetAttachablesWhichIntersectCircle(worldPosition, radius);
+
+            if (blocksToDamage.IsNullOrEmpty())
+                return;
+
+            if (partsOnly)
+            {
+                var parts = blocksToDamage.OfType<Part>();
+                foreach (var part in parts)
+                {
+                    TryHitAt(part, damage);
+                }
+
+                return;
+            }
+
+            //Dont want to stack damage for parts, so just pick the first part
+            foreach (var attachable in blocksToDamage)
+            {
+                TryHitAt(attachable, damage);
+            }
+
+        }
+        
+
+        [Obsolete]
         public void TryMineExplosionAt(Vector2 minePosition, MINE_TYPE mineType)
         {
-            Debug.Log("MINE EXPLODE");
+            /*Debug.Log("MINE EXPLODE");
 
 
             float maxDamage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
@@ -1480,7 +1540,7 @@ namespace StarSalvager
                 }
 
                 TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
-            }
+            }*/
         }
 
 
@@ -1565,6 +1625,13 @@ namespace StarSalvager
         }*/
 
         #endregion //Asteroid Collision
+
+        public List<IAttachable> GetAttachablesInColumn(in Vector2 worldHitPoint)
+        {
+            var column = attachedBlocks.GetClosestAttachable(worldHitPoint)?.Coordinate.x;
+
+            return column.HasValue ? attachedBlocks.Where(x => x.Coordinate.x == column.Value).ToList() : null;
+        }
 
         //============================================================================================================//
 
@@ -2077,6 +2144,8 @@ namespace StarSalvager
         {
             attachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
+            
+            CheckForDisconnects();
 
             CompositeCollider2D.GenerateGeometry();
             CheckForBonusShapeMatches();

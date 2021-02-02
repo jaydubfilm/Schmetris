@@ -12,8 +12,8 @@ namespace StarSalvager
         void RegisterCanBeSeen();
         void UnregisterCanBeSeen();
 
-        void EnteredCamera();
-        void ExitedCamera();
+        void OnEnterCamera();
+        void OnExitCamera();
     }
 
 }

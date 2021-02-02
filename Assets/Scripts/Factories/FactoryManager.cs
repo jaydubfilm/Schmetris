@@ -163,11 +163,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
+        public MineRemoteDataScriptableObject MineRemoteData => mineRemote;
+        
         [SerializeField, Required, BoxGroup("Mine")]
         private MineRemoteDataScriptableObject mineRemote;
 
-        [SerializeField, Required, BoxGroup("Mine")]
-        private GameObject minePrefab;
+        /*[SerializeField, Required, BoxGroup("Mine")]
+        private GameObject minePrefab;*/
 
         //============================================================================================================//
 
@@ -276,8 +278,8 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(CrateFactory):
                     return new CrateFactory(cratePrefab, crateRemote) as T;
                 //----------------------------------------------------------------------------------------------------//
-                case bool _ when type == typeof(MineFactory):
-                    return new MineFactory(minePrefab, mineRemote) as T;
+                /*case bool _ when type == typeof(MineFactory):
+                    return new MineFactory(minePrefab, mineRemote) as T;*/
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BlackHoleFactory):
                     return new BlackHoleFactory(blackHolePrefab, blackHoleRemote) as T;

@@ -1,73 +1,79 @@
-﻿using UnityEngine;
-using StarSalvager.Factories.Data;
-using System;
+﻿using System;
 using Recycling;
-using StarSalvager.Cameras;
-using StarSalvager.Factories;
-using StarSalvager.Projectiles;
-using StarSalvager.Utilities;
 using Sirenix.OdinInspector;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Values;
 
 namespace StarSalvager.AI
 {
     //TODO: Handle proper setting of the collision tag
-    public class ProjectileTowObject : Projectile, ICustomRecycle
+    public class ProjectileTowObject : Projectile, IOverrideRecycleType
     {
 
-        public GameObject towObject;
-        public Actor2DBase towObjectIRecycledReference;
+       // public GameObject towObject;
+       [ReadOnly]
+        public Actor2DBase towObjectActor;
         
         protected override void Update()
         {
             base.Update();
 
-            if (this.IsRecycled)
+            if (IsRecycled)
             {
                 return;
             }
 
-            if (towObject == null || towObjectIRecycledReference.IsRecycled)
+            if (towObjectActor is null || towObjectActor.IsRecycled)
             {
-                towObject = null;
-                towObjectIRecycledReference = null;
+                //towObject = null;
+                towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
             }
 
-            IAttachable attachable = towObject.GetComponent<IAttachable>();
-            if (attachable != null && attachable.Attached)
+            //IAttachable attachable = towObject.GetComponent<IAttachable>();
+            if (towObjectActor is IAttachable attachable && attachable.Attached)
             {
-                towObject = null;
-                towObjectIRecycledReference = null;
+                //towObject = null;
+                towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
             }
 
-            towObject.transform.position = transform.position;
+            towObjectActor.transform.position = transform.position;
         }
         
         //============================================================================================================//
 
-        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
+        /*protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             return;
-        }
+        }*/
 
         //============================================================================================================//
 
         public override void CustomRecycle(params object[] args)
         {
-            if (towObject != null && !towObjectIRecycledReference.IsRecycled)
+            //If the towed object has not been recycled, then we can recyle it
+            if (towObjectActor != null && !towObjectActor.IsRecycled)
             {
-                GameObject.Destroy(towObject);
+                switch (towObjectActor)
+                {
+                    case JunkBit junkBit:
+                        Recycler.Recycle<JunkBit>(junkBit);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(towObjectActor), towObjectActor, null);
+                }
             }
 
-            towObject = null;
-            towObjectIRecycledReference = null;
+            //towObject = null;
+            towObjectActor = null;
 
             base.CustomRecycle(args);
+        }
+
+        public Type GetOverrideType()
+        {
+            return typeof(ProjectileTowObject);
         }
     }
 }

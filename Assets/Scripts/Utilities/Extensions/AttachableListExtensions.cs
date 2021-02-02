@@ -4,6 +4,7 @@ using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
@@ -1631,6 +1632,46 @@ namespace StarSalvager.Utilities.Extensions
         public static bool HasPartAttached(this IEnumerable<IAttachable> attachables, PART_TYPE type)
         {
             return attachables.OfType<Part>().Any(x => x.Type == type);
+        }
+
+        //Get Overlaps
+        //====================================================================================================================//
+        
+        public static List<IAttachable> GetAttachablesWhichIntersectCircle(this IEnumerable<IAttachable> attachables, in Vector2 worldPosition, in float radius)
+        {
+            var outList = new List<IAttachable>();
+
+            foreach (var attachable in attachables)
+            {
+                if(!CircleIntersectsBlock(worldPosition, radius, attachable.transform.position))
+                    continue;
+
+                outList.Add(attachable);
+            }
+
+            return outList;
+        }
+        
+        private static bool CircleIntersectsBlock(in Vector2 worldPosition, in float radius, in Vector2 checkWorldPosition)
+        {
+            const float halfSize = Constants.gridCellSize / 2f;
+            
+            var circleDistance = new Vector2
+            {
+                x = Mathf.Abs(worldPosition.x - checkWorldPosition.x), 
+                y = Mathf.Abs(worldPosition.y - checkWorldPosition.y)
+            };
+
+            if (circleDistance.x > halfSize + radius) { return false; }
+            if (circleDistance.y > halfSize + radius) { return false; }
+
+            if (circleDistance.x <= halfSize) { return true; } 
+            if (circleDistance.y <= halfSize) { return true; }
+
+            var cornerDistanceSq =
+                Mathf.Pow(circleDistance.x - halfSize, 2f) + Mathf.Pow(circleDistance.y - halfSize, 2f);
+
+            return cornerDistanceSq <= Mathf.Pow(radius, 2f);
         }
         
 

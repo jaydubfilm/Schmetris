@@ -202,7 +202,7 @@ namespace StarSalvager.UI
                         if (Globals.UsingTutorial)
                         {
                             Globals.UsingTutorial = false;
-                            LevelManager.Instance.BotObject.IsInvulnerable = false;
+                            LevelManager.Instance.BotInLevel.IsInvulnerable = false;
                         }
 
                         PlayerDataManager.ResetPlayerRunData();
