@@ -990,8 +990,9 @@ namespace StarSalvager
 
         public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
-            List<Vector2Int> bitExplosionPositions =
-                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, rdsObjects.Count * 3, 15, 6).ToList();
+            
+
+            List<IObstacle> _obstacles = new List<IObstacle>();
 
             for (int i = 0; i < rdsObjects.Count; i++)
             {
@@ -1007,16 +1008,18 @@ namespace StarSalvager
                                     .CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type,
                                         rdsValueBlockData.rdsValue.Level);
                                 //AddObstacleToList(newBit);
-                                PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
-                                bitExplosionPositions.RemoveAt(0);
+                                /*PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
+                                bitExplosionPositions.RemoveAt(0);*/
                                 newBit.IsFromEnemyLoot = isFromEnemyLoot;
+                                _obstacles.Add(newBit);
                                 break;
                             case nameof(Asteroid):
                                 Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                                     .CreateAsteroidRandom<Asteroid>();
                                 //AddObstacleToList(newAsteroid);
-                                PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
-                                bitExplosionPositions.RemoveAt(0);
+                                /*PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
+                                bitExplosionPositions.RemoveAt(0);*/
+                                _obstacles.Add(newAsteroid);
                                 break;
                             default:
                                 Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
@@ -1030,8 +1033,9 @@ namespace StarSalvager
                     for (int k = 0; k < count; k++)
                     {
                         Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
-                        PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
-                        bitExplosionPositions.RemoveAt(0);
+                        /*PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
+                        bitExplosionPositions.RemoveAt(0);*/
+                        _obstacles.Add(newAsteroid);
                     }
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
@@ -1041,8 +1045,9 @@ namespace StarSalvager
                     {
                         Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
                         //AddObstacleToList(newComponent);
-                        PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
-                        bitExplosionPositions.RemoveAt(0);
+                        /*PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
+                        bitExplosionPositions.RemoveAt(0);*/
+                        _obstacles.Add(newComponent);
                     }
                 }
                 else
@@ -1050,6 +1055,16 @@ namespace StarSalvager
                     Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
                 }
             }
+            
+            
+            var explosionPositions =
+                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, _obstacles.Count, 15, 6);
+
+            for (var i = _obstacles.Count - 1; i >= 0; i--)
+            {
+                PlaceMovableOffGrid(_obstacles[i], startingLocation, explosionPositions[i], 0.5f);
+            }
+            
         }
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
