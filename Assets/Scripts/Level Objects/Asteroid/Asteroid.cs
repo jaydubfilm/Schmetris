@@ -169,7 +169,7 @@ namespace StarSalvager
                 if (bot.TryAsteroidBounceAt(worldHitPoint, 25, out var destroyed))
                 {
                     //FIXME Will need to consider the map borders to ensure direction is okay
-                    bot.Dash(direction);
+                    bot.Dash(direction, Globals.AsteroidBounceDistance);
 
                     if (destroyed)
                     {

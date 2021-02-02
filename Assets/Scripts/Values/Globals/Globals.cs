@@ -47,6 +47,7 @@ namespace StarSalvager.Values
 
         public static int CameraScaleSize => m_gameSettings.columnsOnScreen;
         public static int DashDistance => m_gameSettings.dashDistance;
+        public static int AsteroidBounceDistance => m_gameSettings.bounceDistance;
         public static float DashSpeed => m_gameSettings.dashSpeed;
         public static float DashCooldown => m_gameSettings.dashCooldown;
         

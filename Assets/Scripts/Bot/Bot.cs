@@ -508,22 +508,22 @@ namespace StarSalvager
         public bool IsDashing => _isDashing;
         private bool _isDashing;
 
-        public void Dash(in DIRECTION direction)
+        public void Dash(in DIRECTION direction, in int distance)
         {
             switch (direction)
             {
                 case DIRECTION.LEFT:
-                    Dash(-1);
+                    Dash(-1, distance);
                     break;
                 case DIRECTION.RIGHT:
-                    Dash(1);
+                    Dash(1, distance);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
 
-        public void Dash(float direction)
+        public void Dash(in float direction, in int distance)
         {
             if (_isDashing)
                 return;
@@ -535,7 +535,7 @@ namespace StarSalvager
             CanBeDamaged = false;
             SetColliderActive(false);
 
-            m_distanceHorizontal += direction * Constants.gridCellSize * Globals.DashDistance;
+            m_distanceHorizontal += direction * Constants.gridCellSize * distance;
         }
 
         private void SetColliderActive(bool state)

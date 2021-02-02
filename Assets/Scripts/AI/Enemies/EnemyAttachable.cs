@@ -170,11 +170,8 @@ namespace StarSalvager.AI
 
             if (bot.Rotating)
             {
-                //Recycler.Recycle<Bit>(this);
                 return;
             }
-
-            //var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
@@ -183,31 +180,7 @@ namespace StarSalvager.AI
 
             var dir = rayDirection.ToDirection();
 
-            //Debug.Log($"Direction: {dir}, Ray Direction: {rayDirection}");
-
-            //if (dir != rayDirection && dir != Vector2Int.zero)
-            //    return;
-
-            TryFindClosestCollision(dir, out var point);
-
-            //Long ray compensates for the players high speed
-            /*var rayLength = Constants.gridCellSize * 3f;
-            var rayStartPosition = (Vector2) transform.position + -rayDirection * (rayLength / 2f);
-
-
-            //Checking ray against player layer mask
-            var hit = Physics2D.Raycast(rayStartPosition, rayDirection, rayLength,  collisionMask.value);
-
-            //If nothing was hit, ray failed, thus no reason to continue
-            if (hit.collider == null)
-            {
-                Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.yellow, 1f);
-                //SSDebug.DrawArrowRay(rayStartPosition, rayDirection * rayLength, Color.yellow);
-                return;
-            }
-
-            Debug.DrawRay(hit.point, Vector2.up, Color.red);
-            Debug.DrawRay(rayStartPosition, rayDirection * rayLength, Color.green);*/
+            TryFindClosestCollision(dir, collisionMask, out var point);
 
             AttachedBot = bot;
             
@@ -223,14 +196,6 @@ namespace StarSalvager.AI
 
             TryUpdateTarget();
         }
-
-        /*protected override void FireAttack()
-        {
-            if (!_attachedBot || !Attached)
-                return;
-            
-            _attachedBot.TryHitAt(_target, m_enemyData.AttackDamage);
-        }*/
 
         protected override bool TryGetRayDirectionFromBot(DIRECTION direction, out Vector2 rayDirection)
         {
@@ -253,16 +218,6 @@ namespace StarSalvager.AI
                     {
                         rayDirection = norm.y < 0f ? Vector2.down : Vector2.up;
                     }
-                    
-                    
-                    /*rayDirection = new Vector2(
-                        Mathf.RoundToInt(m_mostRecentMovementDirection.x),
-                        Mathf.RoundToInt(m_mostRecentMovementDirection.y));//-(Vector2)m_mostRecentMovementDirection;
-
-                    if(Mathf.Abs(rayDirection.x) > Mathf.Abs(rayDirection.y))
-                        rayDirection *= Vector2.right;
-                    else
-                        rayDirection *= Vector2.up;*/
 
                     return true;
                 case DIRECTION.LEFT:
@@ -274,70 +229,6 @@ namespace StarSalvager.AI
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
-        }
-        
-        private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
-        {
-            const float rayLength = Constants.gridCellSize * 3f;
-            
-            point = Vector2.zero;
-            
-            var currentPosition = (Vector2)transform.position;
-            var vectorDirection = direction.ToVector2();
-            var startOffset = -vectorDirection * (rayLength / 2f);
-            Vector2 positionOffset;
-            
-            switch (direction)
-            {
-                case DIRECTION.RIGHT:
-                case DIRECTION.LEFT:
-                    positionOffset = Vector2.up * 0.33f;
-                    break;
-                case DIRECTION.UP:
-                case DIRECTION.DOWN:
-                    positionOffset = Vector2.right * 0.33f;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-            
-            var startPositions = new[]
-            {
-                currentPosition + startOffset,
-                (currentPosition - positionOffset) + startOffset,
-                (currentPosition + positionOffset) + startOffset,
-            };
-
-            var shortestDis = 999f;
-            RaycastHit2D? shortestHit = null;
-            foreach (var rayStartPosition in startPositions)
-            {
-                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
-
-                //If nothing was hit, ray failed, thus no reason to continue
-                if (hit.collider == null)
-                {
-                    //Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.yellow, 1f);
-                    SSDebug.DrawArrowRay(rayStartPosition, vectorDirection * rayLength, Color.yellow);
-                    continue;
-                }
-
-                Debug.DrawRay(hit.point, Vector2.up, Color.red);
-                Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
-
-                if (hit.distance >= shortestDis)
-                    continue;
-                
-                shortestDis = hit.distance;
-                shortestHit = hit;
-            }
-
-            if (!shortestHit.HasValue)
-                return false;
-
-            point = shortestHit.Value.point;
-            
-            return true;
         }
 
         //Attachable Enemy Movement when Attacking

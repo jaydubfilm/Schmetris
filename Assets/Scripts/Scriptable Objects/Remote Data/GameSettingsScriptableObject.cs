@@ -87,6 +87,9 @@ namespace StarSalvager.ScriptableObjects
         public bool unmergeLargeBitsOnRefine = true;
         [BoxGroup("Bot")]
         public bool sendExcessResourceToBase = false;
+        
+        [BoxGroup("Bot")]
+        public int bounceDistance = 3;
 
         [FoldoutGroup("Bot/Animations")]
         public bool bitsPushThroughParts;
