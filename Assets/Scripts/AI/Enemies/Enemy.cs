@@ -194,6 +194,14 @@ namespace StarSalvager.AI
         {
             if(GameTimer.IsPaused )
                 return false;
+            
+            if (Disabled)
+            {
+                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
+                transform.position -= fallAmount;
+                
+                return false;
+            }
 
             if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
             {
@@ -203,14 +211,6 @@ namespace StarSalvager.AI
                 
                 currentPosition -= dir * EnemyMovementSpeed;
                 transform.position = currentPosition;
-                
-                return false;
-            }
-            
-            if (Disabled)
-            {
-                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-                transform.position -= fallAmount;
                 
                 return false;
             }
