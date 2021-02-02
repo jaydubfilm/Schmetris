@@ -252,18 +252,19 @@ MonoBehaviour:
     burnType: 1
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 5
     - key: Time
-      value: 2
+      value: 5
     PatchSockets: 2
     partGrade:
       Types: 01000000
-      minBitLevel: 2
+      minBitLevel: 1
       needsBitsToFunction: 1
       values:
-      - 0.06
-      - 0.08
       - 0.1
+      - 0.15
+      - 0.2
+      - 0.25
   - name: Upgrader
     partType: 34
     lockRotation: 0

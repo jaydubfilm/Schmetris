@@ -538,7 +538,7 @@ namespace StarSalvager
 
             //FIXME This now might more sense to count down instead of counting up
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            var cooldownBoost = GetPatchMultiplier(part, PATCH_TYPE.FIRE_RATE);
+            var cooldownBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
 
             if (_projectileTimers[part] < cooldown * cooldownBoost)
             {
@@ -606,9 +606,11 @@ namespace StarSalvager
                     if (didHitTarget)
                     {
                         var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.DAMAGE);
+
                         if (fireTarget is ICanBeHit iCanBeHit)
                         {
-                            iCanBeHit.TryHitAt(fireTarget.transform.position, damage);
+                            iCanBeHit.TryHitAt(fireTarget.transform.position, damage * damageBoost);
                         }
                     }
 
@@ -698,8 +700,9 @@ namespace StarSalvager
 
         private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
         {
-            var rangeBoost = GetPatchMultiplier(part, PATCH_TYPE.RANGE);
-            var damageBoost = GetPatchMultiplier(part, PATCH_TYPE.DAMAGE);
+            var patches = part.Patches;
+            var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
+            var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.DAMAGE);
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
@@ -1225,50 +1228,6 @@ namespace StarSalvager
 
         #endregion //Process Bit
 
-        //Patches
-        //====================================================================================================================//
-
-        private static float GetPatchMultiplier(in Part part, in PATCH_TYPE patchType)
-        {
-            //Find out
-            var pType = (int) patchType;
-            var patches = part.Patches.Where(x => x.Type == pType).ToList().AsReadOnly();
-            
-            if (patches.Count == 0)
-                return 1;
-
-            var remoteData = FactoryManager.Instance.PatchRemoteData;
-            
-            var total = 0f;
-            foreach (var patchData in patches)
-            {
-                var data = remoteData.GetRemoteData(patchType)
-                    .GetDataValue<float>(patchData.Level, PartProperties.KEYS.Probability);
-
-                total += data;
-            }
-
-            switch (patchType)
-            {
-                case PATCH_TYPE.DAMAGE:
-                case PATCH_TYPE.RANGE:
-                    return 1 + total;
-                case PATCH_TYPE.FIRE_RATE:
-                case PATCH_TYPE.EFFICIENCY:
-                    return  1 - total;
-                
-                case PATCH_TYPE.DURATION:
-                case PATCH_TYPE.CRITICAL:
-                case PATCH_TYPE.ELECTRIC:
-                case PATCH_TYPE.CORROSIVE:
-                case PATCH_TYPE.REINFORCED:
-                case PATCH_TYPE.SPECIALIST:
-                    throw new NotImplementedException($"{patchType} not yet implemented");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(patchType), patchType, null);
-            }
-        }
-
         //Boosts
         //====================================================================================================================//
 
@@ -1678,10 +1637,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        private static int GetPatchUpgradersSum(in PatchData[] patchDatas)
-        {
-            return patchDatas.Where(x => x.Type == (int) PATCH_TYPE.GRADE).Sum(x => x.Level + 1);
-        }
+        
         
 
         private bool HasPartGrade(in Part part, out float value)
@@ -1697,7 +1653,7 @@ namespace StarSalvager
             var types = partRemoteData.partGrade.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
-            var upgradePatchSum = GetPatchUpgradersSum(part.Patches);
+            var upgradePatchSum = part.Patches.GetPatchUpgradersSum();
             
             
             var levels = new int[count];

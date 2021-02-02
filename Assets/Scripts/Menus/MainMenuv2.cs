@@ -557,8 +557,9 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
-                        
                     PlayerDataManager.SetRunStarted();
+                    PlayerDataManager.SetBotHealth(Globals.BotStartingHealth);
+                    
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                     IntroScene.gameObject.SetActive(true);
                     gameObject.SetActive(false);

@@ -207,6 +207,11 @@ namespace StarSalvager.Utilities.Extensions
             return attachables.OfType<ISaveable>().GetBlockDatas();
         }
 
+        public static List<T> GetBlockDatas<T>(this IEnumerable<ISaveable> saveables) where T: IBlockData
+        {
+            return saveables.Select(x => x.ToBlockData()).OfType<T>().ToList();
+        }
+        
         public static List<IBlockData> GetBlockDatas(this IEnumerable<ISaveable> saveables)
         {
             return saveables.Select(x => x.ToBlockData()).ToList();
@@ -894,7 +899,7 @@ namespace StarSalvager.Utilities.Extensions
         //Attachable List Matching
         //============================================================================================================//
 
-        #region Attachable List Matching
+        /*#region Attachable List Matching
 
         /// <summary>
         /// Checks to see if the list contains the list of IAttachables/ISaveables.
@@ -909,7 +914,9 @@ namespace StarSalvager.Utilities.Extensions
             where T : IAttachable, ISaveable<BitData>
         {
             return attachables.Contains<T>(
-                comparison.GetBlockDatas().ToList(),
+                comparison
+                    .GetBlockDatas()
+                    .ToList(),
                 out upgrading);
         }
 
@@ -1021,6 +1028,164 @@ namespace StarSalvager.Utilities.Extensions
 
                 //There was no block found in this direction
                 if (traversedCompared.Contains(nextCoordinate) || string.IsNullOrEmpty(nextCheck.ClassType))
+                {
+                    nextDirection = ((int) nextDirection + 1).ClampIntToDirection();
+
+                    if (nextDirection == currentDirection) return false;
+
+                    continue;
+                }
+
+                var result = TraversalContains(
+                    startingCoordinate,
+                    nextCheck,
+                    nextCoordinate,
+                    nextDirection,
+                    originalList,
+                    compareList,
+                    ref traversedCompared,
+                    ref upgrading);
+
+                if (result) return true;
+
+                //Rotate direction after finishing this path
+                nextDirection = ((int)nextDirection + 1).ClampIntToDirection();
+
+                if (nextDirection == currentDirection) return false;
+            }
+        }
+
+        #endregion //Attachable List Matching*/
+        
+        #region BitData List Matching
+
+        /// <summary>
+        /// Checks to see if the list contains the list of IAttachables/ISaveables.
+        /// This assumes that the shape is connected, without any free floating pieces.
+        /// </summary>
+        /// <param name="bitDatas"></param>
+        /// <param name="comparison"></param>
+        /// <param name="upgrading"></param>
+        /// <returns>Does the list contain the passed shape</returns>
+        public static bool Contains(this List<BitData> bitDatas, IEnumerable<BitData> comparison, out List<Vector2Int> upgrading)
+        {
+            return bitDatas.Contains(
+                comparison.ToList(),
+                out upgrading);
+        }
+
+        /// <summary>
+        /// Checks to see if the list contains the list of BlockData
+        /// This assumes that the shape is connected, without any free floating pieces.
+        /// </summary>
+        /// <param name="bitDatas"></param>
+        /// <param name="comparison"></param>
+        /// <param name="upgrading"></param>
+        /// <returns>Does the list contain the passed shape</returns>
+        public static bool Contains(this List<BitData> bitDatas,
+            IReadOnlyList<BitData> comparison, 
+            out List<Vector2Int> upgrading)
+        {
+            //--------------------------------------------------------------------------------------------------------//
+
+            List<BitData> ResetLevels(IReadOnlyList<BitData> data)
+            {
+                var newList = new List<BitData>(data);
+                for (var i = 0; i < data.Count; i++)
+                {
+                    var temp = data[i];
+                    temp.Level = 0;
+                    newList[i] = temp;
+                }
+
+                return newList;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            upgrading = null;
+
+            //Don't bother if the lists are empty
+            if (comparison.Count == 0 || bitDatas.Count == 0)
+                return false;
+
+            var count = bitDatas.Count;
+
+            //Check to see if our filtered list will match our expected count
+            if (count < comparison.Count)
+                return false;
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var _original = ResetLevels(bitDatas);
+            var _compare = ResetLevels(comparison.ToList());
+
+            var startingPoints = _original.Where(x => x.Equals(_compare[0])).ToList();
+
+            foreach (var startingPoint in startingPoints)
+            {
+                var temp1 = new List<Vector2Int>();
+                upgrading = new List<Vector2Int>();
+
+                var check = TraversalContains(startingPoint.Coordinate - _compare[0].Coordinate,
+                    _compare[0],
+                    _compare[0].Coordinate,
+                    DIRECTION.UP,
+                    _original,
+                    _compare,
+                    ref temp1,
+                    ref upgrading);
+
+                if (check)
+                    return true;
+            }
+
+            return false;
+
+            //--------------------------------------------------------------------------------------------------------//
+        }
+
+        private static bool TraversalContains(
+            Vector2Int startingCoordinate, 
+            IBlockData toCompare,
+            Vector2Int currentCoordinate,
+            DIRECTION currentDirection,
+            IReadOnlyCollection<BitData> originalList,
+            IReadOnlyCollection<BitData> compareList,
+            ref List<Vector2Int> traversedCompared,
+            ref List<Vector2Int> upgrading)
+        {
+            //Ensure we haven't already been here, and that we're not storing doubles
+            if (traversedCompared.Contains(currentCoordinate))
+            {
+                //TODO Try a different direction
+                return false;
+            }
+
+            var found = originalList
+                .FirstOrDefault(x => x.Coordinate == startingCoordinate + currentCoordinate && x.Type == toCompare.Type);
+
+            //If no one was at that location, that shapes don't match
+            if (found.Type == (int)BIT_TYPE.NONE)
+                return false;
+
+            traversedCompared.Add(currentCoordinate);
+            upgrading.Add(found.Coordinate);
+
+            //If we've checked everything, we're good to return
+            if (traversedCompared.Count == compareList.Count)
+                return true;
+
+            Vector2Int nextCoordinate;
+            DIRECTION nextDirection = currentDirection;
+            while (true)
+            {
+                nextCoordinate = currentCoordinate + nextDirection.ToVector2Int();
+
+                var nextCheck = compareList.FirstOrDefault(x => x.Coordinate == nextCoordinate);
+
+                //There was no block found in this direction
+                if (nextCheck.Type == (int)BIT_TYPE.NONE || traversedCompared.Contains(nextCoordinate))
                 {
                     nextDirection = ((int) nextDirection + 1).ClampIntToDirection();
 

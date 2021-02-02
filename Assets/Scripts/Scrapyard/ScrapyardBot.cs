@@ -1,24 +1,24 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
-using StarSalvager.AI;
 using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
-using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
 
 namespace StarSalvager
 {
-    public class ScrapyardBot : MonoBehaviour, ICustomRecycle
+    public class ScrapyardBot : MonoBehaviour, ICustomRecycle, IHealth
     {
+        public float StartingHealth { get; private set; }
+        public float CurrentHealth { get; private set; }
+        
         [SerializeField, BoxGroup("PROTOTYPE")]
         public float testRotSpeed;
 
@@ -112,6 +112,20 @@ namespace StarSalvager
         }
 
         #endregion // Init Bot
+
+        //====================================================================================================================//
+        
+
+        public void SetupHealthValues(float startingHealth, float currentHealth)
+        {
+            StartingHealth = startingHealth;
+            CurrentHealth = currentHealth;
+        }
+
+        public void ChangeHealth(float amount)
+        {
+            throw new NotImplementedException();
+        }
 
         //============================================================================================================//
 
@@ -529,5 +543,7 @@ namespace StarSalvager
         }
 
         #endregion //Custom Recycle
+
+
     }
 }

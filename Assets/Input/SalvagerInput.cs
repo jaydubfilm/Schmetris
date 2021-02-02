@@ -115,6 +115,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Value"",
+                    ""id"": ""6254aef2-d093-4fa4-921e-c066d385beb0"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -601,6 +609,72 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""ZC"",
+                    ""id"": ""85f76224-edfc-4b2f-bdb6-18f7ef85d1ab"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""fbc5b469-f65f-4b01-98ac-60e4ba3928ba"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""3401fa36-8f2d-4343-a1ae-cff577c80cd2"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Triggers"",
+                    ""id"": ""6540f3f5-33c7-4313-9d3a-484f074764e2"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""0f419849-2b9b-4838-91c6-ae6021bfae4c"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""7a18a398-64eb-4dfc-8850-f8613f734c85"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -946,6 +1020,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_Continue = m_Default.FindAction("Continue", throwIfNotFound: true);
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
             m_Default_SpeedChange = m_Default.FindAction("SpeedChange", throwIfNotFound: true);
+            m_Default_Dash = m_Default.FindAction("Dash", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -1017,6 +1092,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_Continue;
         private readonly InputAction m_Default_SelfDestruct;
         private readonly InputAction m_Default_SpeedChange;
+        private readonly InputAction m_Default_Dash;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -1033,6 +1109,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @Continue => m_Wrapper.m_Default_Continue;
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
             public InputAction @SpeedChange => m_Wrapper.m_Default_SpeedChange;
+            public InputAction @Dash => m_Wrapper.m_Default_Dash;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1078,6 +1155,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SpeedChange.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
                     @SpeedChange.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
                     @SpeedChange.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSpeedChange;
+                    @Dash.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
+                    @Dash.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
+                    @Dash.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1118,6 +1198,9 @@ namespace StarSalvager.Utilities.Inputs
                     @SpeedChange.started += instance.OnSpeedChange;
                     @SpeedChange.performed += instance.OnSpeedChange;
                     @SpeedChange.canceled += instance.OnSpeedChange;
+                    @Dash.started += instance.OnDash;
+                    @Dash.performed += instance.OnDash;
+                    @Dash.canceled += instance.OnDash;
                 }
             }
         }
@@ -1225,6 +1308,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnContinue(InputAction.CallbackContext context);
             void OnSelfDestruct(InputAction.CallbackContext context);
             void OnSpeedChange(InputAction.CallbackContext context);
+            void OnDash(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {

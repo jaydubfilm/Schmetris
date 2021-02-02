@@ -104,7 +104,13 @@ namespace StarSalvager.ScriptableObjects
         public float botRotationSpeed = 500.0f;
         [FoldoutGroup("Bot/Movement")]
         public float botContinuousRotationSpeed = 700.0f;
-
+        [FoldoutGroup("Bot/Movement")]
+        public int dashDistance = 5;
+        [FoldoutGroup("Bot/Movement")]
+        public float dashSpeed = 60f;
+        [FoldoutGroup("Bot/Movement")]
+        public float dashCooldown = 1f;
+        
         //Camera Properties
         //====================================================================================================================//
 
