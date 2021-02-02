@@ -40,6 +40,7 @@ namespace StarSalvager.Values
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
+        public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
         
         //Properties from Game Settings - do not give explicit values
 
