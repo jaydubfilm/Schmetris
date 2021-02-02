@@ -495,13 +495,13 @@ namespace StarSalvager
 
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
-                BotObject.InitBot();
-                BotObject.SetupHealthValues(startingHealth,startingHealth);
+                BotInLevel.InitBot();
+                BotInLevel.SetupHealthValues(startingHealth,startingHealth);
             }
             else
             {
-                BotObject.InitBot(botDataToLoad.ImportBlockDatas(false));
-                BotObject.SetupHealthValues(startingHealth,PlayerDataManager.GetBotHealth());
+                BotInLevel.InitBot(botDataToLoad.ImportBlockDatas(false));
+                BotInLevel.SetupHealthValues(startingHealth,PlayerDataManager.GetBotHealth());
             }
             
             BotInLevel.transform.parent = null;

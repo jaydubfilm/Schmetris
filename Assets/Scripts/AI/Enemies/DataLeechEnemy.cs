@@ -57,7 +57,7 @@ namespace StarSalvager.AI
             }
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
-            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+            DropLoot();
 
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);

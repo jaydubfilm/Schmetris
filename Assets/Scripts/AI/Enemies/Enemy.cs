@@ -283,8 +283,8 @@ namespace StarSalvager.AI
 
             if (CurrentHealth > 0) 
                 return;
-            
-            LevelManager.Instance.DropLoot(m_enemyData.rdsTable.rdsResult.ToList(), transform.localPosition, true);
+
+            DropLoot();
             
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
@@ -296,6 +296,20 @@ namespace StarSalvager.AI
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 
             Recycler.Recycle<Enemy>(this);
+        }
+
+        protected void DropLoot()
+        {
+            for (int i = 0; i < m_enemyData.RDSTables.Count; i++)
+            {
+                int randomRoll = Random.Range(1, 101);
+                if (randomRoll > m_enemyData.RDSTableOdds[i])
+                {
+                    continue;
+                }
+
+                LevelManager.Instance.DropLoot(m_enemyData.RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
+            }
         }
 
         //ICanBeSeen Functions
