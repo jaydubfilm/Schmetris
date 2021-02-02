@@ -485,7 +485,23 @@ namespace StarSalvager
             m_distanceHorizontal += toAdd;
         }
 
+        public bool IsDashing => _isDashing;
         private bool _isDashing;
+
+        public void Dash(in DIRECTION direction)
+        {
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    Dash(-1);
+                    break;
+                case DIRECTION.RIGHT:
+                    Dash(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
 
         public void Dash(float direction)
         {
@@ -1264,7 +1280,7 @@ namespace StarSalvager
         /// <param name="hitPosition"></param>
         /// <param name="destroyed"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
+        public bool TryAsteroidBounceAt(in Vector2 hitPosition, in float damage, out bool destroyed)
         {
             destroyed = false;
 
@@ -1273,27 +1289,30 @@ namespace StarSalvager
 
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
-            switch (closestAttachable)
+            /*switch (closestAttachable)
             {
                 //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
                 case Bit _:
                 case EnemyAttachable _:
                 case JunkBit _:
-                    AsteroidDamageAt(closestAttachable);
+                    TryHitAt(closestAttachable);
                     return false;
                 /*case Component _:
-                    break;*/
+                    break;#1#
                 case Part _:
-                    /*if (part.Destroyed) return false;*/
+                    /*if (part.Destroyed) return false;#1#
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
-            }
+            }*/
 
-            TryHitAt(closestAttachable, Globals.AsteroidDamage);
+            TryHitAt(closestAttachable, damage);
 
-            if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
-                destroyed = true;
+            if (!(closestAttachable is IHealth iHealth) || iHealth.CurrentHealth > 0) 
+                return true;
+            
+            destroyed = true;
+            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
 
             return true;
         }
@@ -1403,14 +1422,14 @@ namespace StarSalvager
 
                     Destroy("Core Destroyed");
                     break;*/
-                case Part _:
+                /*case Part _:
                     CreateExplosionEffect(closestAttachable.transform.position);
 
                     cinemachineImpulseSource.GenerateImpulse(5);
                     GameUi.FlashBorder();
 
                     BotPartsLogic.PopulatePartsList();
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     RemoveAttachable(closestAttachable);
@@ -1453,7 +1472,7 @@ namespace StarSalvager
 
         #region Asteroid Collision
 
-        public bool TryAsteroidDamageAt(Vector2 collisionPoint)
+        /*public bool TryAsteroidDamageAt(in Vector2 collisionPoint, in float damage)
         {
             if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
@@ -1462,21 +1481,36 @@ namespace StarSalvager
 
             //------------------------------------------------------------------------------------------------//
 
-            switch (closestAttachable)
+            /*switch (closestAttachable)
             {
                 /*case Part part when part.Destroyed:
-                    return false;*/
+                    return false;#2#
                 case Bit _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
+            }#1#
+            
+            TryHitAt(closestAttachable, damage);
+            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
+
+            BIT_TYPE? type = null;
+            switch (closestAttachable)
+            {
+                case Part _ :
+                    FrameStop.Milliseconds(75);
+                    break;
+                case Bit bit:
+                    type = bit.Type;
+                    break;
+                case EnemyAttachable enemyAttachable:
+                    enemyAttachable.SetAttached(false);
+                    break;
             }
 
-
-            AsteroidDamageAt(closestAttachable);
             return true;
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Applies pre-determine asteroid damage to the specified IAttachable
         /// </summary>
         /// <param name="attachable"></param>
@@ -1500,7 +1534,7 @@ namespace StarSalvager
                     break;
             }
 
-            /*//FIXME This value should not be hardcoded
+            /#1#/FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
 
             if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
@@ -1510,8 +1544,8 @@ namespace StarSalvager
             else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
             {
                 Destroy("Core Overheated");
-            }*/
-        }
+            }#1#
+        }*/
 
         #endregion //Asteroid Collision
 

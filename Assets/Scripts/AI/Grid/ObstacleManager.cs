@@ -493,6 +493,9 @@ namespace StarSalvager
                 Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition(pos);
                 pos -= amountShift;
 
+                if (obstacle is IAdditiveMove additiveMove)
+                    pos += (Vector3)additiveMove.AddMove * Time.deltaTime;
+
                 if (gridPosition.y < -4 * Constants.gridCellSize)
                 {
                     var temp = m_obstacles[i];

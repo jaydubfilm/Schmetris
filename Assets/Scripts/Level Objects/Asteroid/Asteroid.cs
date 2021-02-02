@@ -12,10 +12,11 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using System.Linq;
 using StarSalvager.Prototype;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
+    public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, IAdditiveMove
     {
 
         //IRotate properties
@@ -24,7 +25,11 @@ namespace StarSalvager
         public bool Rotating { get; private set; }
 
         public int RotateDirection { get; private set; } = 1;
+        
+        //IAdditiveMove
+        //====================================================================================================================//
 
+        public Vector2 AddMove { get; private set; }
 
         //IHealth Properties
         //============================================================================================================//
@@ -114,21 +119,13 @@ namespace StarSalvager
         //CollidableBase Functions
         //============================================================================================================//
 
+        private new void OnCollisionStay(Collision other) { }
+
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            //Debug.Break();
-            
-            var bot = gameObject.GetComponent<Bot>();
-
-            if (bot != null)
+            if (gameObject.GetComponent<Bot>() is Bot bot && !bot.IsDashing)
             {
-
-                /*if (!GameManager.IsState(GameState.LevelActive))
-                {
-                    return;
-                }
-                */
-
+                var dir = (worldHitPoint - (Vector2)transform.position).normalized;
 
                 if (bot.Rotating)
                 {
@@ -136,40 +133,49 @@ namespace StarSalvager
                     bot.Rotate(bot.MostRecentRotate.Invert());
                     AudioController.PlaySound(SOUND.ASTEROID_BASH);
                     bot.TryHitAt(worldHitPoint, Globals.AsteroidDamage);
+                    
+                    AddMove += -dir/2;
                     return;
                 }
 
-                var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
-                var direction = dir.ToDirection();
+                DIRECTION direction;
 
-                //If the player moves sideways into this asteroid, push them away, and damage them, to give them a chance
-                switch (direction)
+                if (dir.x > 0)
                 {
-                    case DIRECTION.LEFT:
-                    case DIRECTION.RIGHT:
-                        //Only want to move the bot if we're legally allowed
-                        if (bot.TryBounceAt(worldHitPoint, out var destroyed))
-                        {
-                            InputManager.Instance.ForceMove(direction);
+                    direction = DIRECTION.RIGHT;
+                }
+                else if (dir.x < 0)
+                {
+                    direction = DIRECTION.LEFT;
+                }
+                //Zero Condition
+                //FIXME Likely want something more deliberate
+                else
+                {
+                    direction = Random.value < 0.5f ? DIRECTION.LEFT : DIRECTION.RIGHT;
+                }
 
-                            if (destroyed)
-                            {
-                                CreateImpactEffect(worldHitPoint);
-                            }
-                        }
+                Debug.Log($"Hit Direction: {dir} [{direction}]");
 
-                        break;
-                    case DIRECTION.UP:
-                    case DIRECTION.DOWN:
-                        if (bot.TryAsteroidDamageAt(worldHitPoint)) 
-                            CreateImpactEffect(worldHitPoint);
-                        break;
-                        //default:
-                        //    throw new ArgumentOutOfRangeException();
+                //Only want to move the bot if we're legally allowed
+                if (bot.TryAsteroidBounceAt(worldHitPoint, 25, out var destroyed))
+                {
+                    //FIXME Will need to consider the map borders to ensure direction is okay
+                    bot.Dash(direction);
+
+                    if (destroyed)
+                    {
+                        CreateImpactEffect(worldHitPoint);
+                    }
+                    else
+                    {
+                        AddMove += -dir * 2f;
+                    }
                 }
 
                 return;
             }
+
 
             var projectile = gameObject.GetComponent<Projectile>();
 
@@ -179,7 +185,7 @@ namespace StarSalvager
             }
         }
 
-        //Actor2DBase Functions
+        //Actor2DBase FunctionsB
         //====================================================================================================================//
         
         public override void SetSprite(Sprite sprite)
@@ -259,5 +265,7 @@ namespace StarSalvager
         }
 
         #endregion //UNITY_EDITOR
+
+
     }
 }
