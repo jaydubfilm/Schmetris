@@ -341,6 +341,7 @@ namespace StarSalvager
             {
                 _dashCooldown -= Time.deltaTime;
             }
+
         }
 
         private void LateUpdate()
@@ -367,6 +368,22 @@ namespace StarSalvager
         }
 
         #endregion //Unity Functions
+
+        //Core Shuffle Prototype
+        //====================================================================================================================//
+
+        private bool _isShifting;
+
+        public void CoreShuffle(DIRECTION direction)
+        {
+            var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
+
+            //Checks to see if the shuffle will cause a disconnect, and prevents it
+            if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
+                return;
+            
+            TryShift(direction, start);
+        }
 
         //IMoveOnInput
         //============================================================================================================//
@@ -2321,6 +2338,7 @@ namespace StarSalvager
             bool hasDetached = false;
             bool hasCombos = false;
 
+_isShifting = true;
             StartCoroutine(ShiftInDirectionCoroutine(toShift,
                 Globals.BitShiftTime,
                 () =>
@@ -2355,10 +2373,113 @@ namespace StarSalvager
 
                 CheckForBonusShapeMatches();
                 ForceCheckMagnets();
+
+                _isShifting = false;
             }));
 
 
             return true;
+        }
+
+        private struct SimpleShiftData
+        {
+            public Vector2Int StartCoordinate;
+            public Vector2Int TargetCoordinate;
+        }
+        private bool DoesShiftCauseDisconnect(in DIRECTION direction, in IBlockData blockData)
+        {
+            var startBlock = blockData;
+            var blocks = attachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData()).ToList();
+            
+            List<IBlockData> inLine;
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    inLine = blocks.Where(ab => ab.Coordinate.y == startBlock.Coordinate.y).ToList();
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    inLine = blocks.Where(ab => ab.Coordinate.x == startBlock.Coordinate.x).ToList();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var toShift = new List<SimpleShiftData>();
+            var dir = direction.ToVector2Int();
+            var currentCoordinate = blockData.Coordinate;
+
+            for (var i = 0; i < inLine.Count; i++)
+            {
+                var targetBlockData = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate);
+
+                if (targetBlockData == null)
+                    break;
+
+                switch (targetBlockData)
+                {
+                    case PartData _:
+                        currentCoordinate += dir;
+                        continue;
+                    case BitData _:
+                    {
+                        IBlockData nextCheck;
+
+                        var noShiftOffset = 1;
+                        
+                        do
+                        {
+                            var coordinate = currentCoordinate + (dir * noShiftOffset);
+                            //TODO I think that I can combine both the While Loop and the Linq expression
+                            nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
+
+                            if (nextCheck is null || nextCheck is BitData) 
+                                break;
+
+
+                            noShiftOffset++;
+
+                        } while (nextCheck is PartData);
+
+                        currentCoordinate += dir * noShiftOffset;
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetBlockData), targetBlockData, null);
+                }
+
+                toShift.Add(new SimpleShiftData
+                {
+                    StartCoordinate = targetBlockData.Coordinate, 
+                    TargetCoordinate = currentCoordinate
+                });
+            }
+
+            if (toShift.Count == 0)
+                return false;
+            
+            var blocksCopy = new List<IBlockData>(blocks);
+            for (int i = toShift.Count - 1; i >= 0; i--)
+            {
+                var shiftData = toShift[i];
+                var index = blocksCopy.FindIndex(x => x.Coordinate == shiftData.StartCoordinate);
+
+                blocks[index].Coordinate = shiftData.TargetCoordinate;
+            }
+            
+            //Look at all the blocks that can disconnect
+            foreach (var block in blocks.OfType<BitData>())
+            {
+                var hasPathToCore = blocks.HasPathToCore(block);
+
+                if(hasPathToCore)
+                    continue;
+
+                return true;
+            }
+
+            return false;
         }
 
         #endregion //Shifting Bits
