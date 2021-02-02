@@ -207,6 +207,8 @@ namespace StarSalvager
         private float previousDirection;
         private bool isContinuousRotation;
 
+        private float _dashCooldown;
+
         //IHealth Test
         //====================================================================================================================//
 
@@ -216,7 +218,7 @@ namespace StarSalvager
         {
             CurrentHealth = currentHealth;
             StartingHealth = startingHealth;
-            
+
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
         }
 
@@ -225,14 +227,14 @@ namespace StarSalvager
             CurrentHealth += amount;
 
             //TODO Need to update UI
-            
+
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
             FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
 
             if (CurrentHealth > 0)
                 return;
-            
+
             CreateCoreDeathEffect();
 
             cinemachineImpulseSource.GenerateImpulse(5);
@@ -240,7 +242,7 @@ namespace StarSalvager
 
             Destroy("Core Destroyed");
         }
-        
+
         //Particle Tests
         //====================================================================================================================//
 
@@ -314,7 +316,7 @@ namespace StarSalvager
                 return;
 
             TryMovement();
-            
+
             UpdateFollowTarget(transform.position);
 
             if (Rotating)
@@ -333,6 +335,11 @@ namespace StarSalvager
             if (m_currentInput != 0.0f && Mathf.Abs(m_distanceHorizontal) <= 0.2f)
             {
                 Move(m_currentInput);
+            }
+
+            if (_dashCooldown > 0)
+            {
+                _dashCooldown -= Time.deltaTime;
             }
         }
 
@@ -403,10 +410,20 @@ namespace StarSalvager
                 ? DIRECTION.NULL
                 : direction;
 
+            if (_isDashing && Globals.MovingDirection == DIRECTION.NULL)
+            {
+                _isDashing = false;
+                CanBeDamaged = true;
+                SetColliderActive(true);
+                _dashCooldown = Globals.DashCooldown;
+            }
+
             if (!canMove)
                 return;
 
-            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            var moveSpeed = _isDashing ? Globals.DashSpeed : Globals.BotHorizontalSpeed;
+
+            var toMove = Mathf.Min(distHorizontal, moveSpeed * Time.deltaTime);
 
             var moveDirection = direction.ToVector2();
 
@@ -462,8 +479,34 @@ namespace StarSalvager
             m_currentInput = direction;
             var toAdd = direction * Constants.gridCellSize;
 
+            if (_isDashing)
+                return;
+
             m_distanceHorizontal += toAdd;
         }
+
+        private bool _isDashing;
+
+        public void Dash(float direction)
+        {
+            if (_isDashing)
+                return;
+
+            if (_dashCooldown > 0f)
+                return;
+
+            _isDashing = true;
+            CanBeDamaged = false;
+            SetColliderActive(false);
+
+            m_distanceHorizontal += direction * Constants.gridCellSize * Globals.DashDistance;
+        }
+
+        private void SetColliderActive(bool state)
+        {
+            attachedBlocks.OfType<CollidableBase>().ToList().ForEach(x => x.SetColliderActive(state));
+        }
+
 
         #endregion //IMoveOnInput Functions
 
@@ -474,7 +517,7 @@ namespace StarSalvager
         public void InitBot()
         {
             CreateFollowTarget();
-            
+
             _weldDatas = new List<WeldData>();
 
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -525,7 +568,7 @@ namespace StarSalvager
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
             CreateFollowTarget();
-            
+
             _weldDatas = new List<WeldData>();
 
             _isDestroyed = false;
@@ -753,16 +796,16 @@ namespace StarSalvager
         #endregion //Rotation
 
         //====================================================================================================================//
-        
+
         #region Follow Target
 
         private static GameObject _followTarget;
-        
+
         private static void CreateFollowTarget()
         {
             if(_followTarget == null)
                 _followTarget = new GameObject("Bot_Camera-Follow-Target");
-            
+
             _followTarget.transform.position = Vector3.up * 5f;
         }
 
@@ -774,7 +817,7 @@ namespace StarSalvager
         }
 
         #endregion //Follow Target
-        
+
         //============================================================================================================//
 
         #region TryAddNewAttachable
@@ -1297,7 +1340,7 @@ namespace StarSalvager
                     closestHealth = (IHealth) closestAttachable;
                     break;
             }
-            
+
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -1317,7 +1360,7 @@ namespace StarSalvager
 
             /*if (!(closestAttachable is IHealth closestHealth))
                 return;*/
-            
+
             closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
@@ -2050,10 +2093,10 @@ namespace StarSalvager
             foreach (var bitType in bitTypes)
             {
                 var level = attachedBlocks.GetHighestLevelBit(bitType);
-                
+
                 outData.Add(bitType, level);
             }
-            
+
             GameUi.SetBitLevelImages(outData);
         }
 
@@ -2617,12 +2660,12 @@ namespace StarSalvager
 
                 if (bit.level >= 4)
                     continue;
-                
+
                 //Get all basic info about bits available to combo
                 //--------------------------------------------------------------------------------------------------------//
                 var bitType = bit.Type;
                 var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
-            
+
                 var checkData = new List<DataTest>();
                 foreach (var attached in bitsToCheck)
                 {
@@ -2646,11 +2689,11 @@ namespace StarSalvager
                         var wildCardData = t;
                         wildCardData.Level = bit.level;
                         wildCardData.Type = bit.Type;
-                   
+
                         checkData.Add(wildCardData);
                     }
                 }
-            
+
                 //--------------------------------------------------------------------------------------------------------//
 
                 if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
@@ -2702,7 +2745,7 @@ namespace StarSalvager
         public struct DataTest
         {
             public IAttachable Attachable;
-            
+
             public BIT_TYPE Type;
             public int Level;
             public Vector2Int Coordinate;
@@ -2732,7 +2775,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             var bitType = bit.Type;
             var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
-            
+
             var checkData = new List<DataTest>();
             foreach (var attached in bitsToCheck)
             {
@@ -2756,11 +2799,11 @@ namespace StarSalvager
                     var wildCardData = t;
                     wildCardData.Level = bit.level;
                     wildCardData.Type = bit.Type;
-                   
+
                     checkData.Add(wildCardData);
                 }
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
 
@@ -4095,7 +4138,7 @@ namespace StarSalvager
 
             return false;
         }
-        
+
         [Obsolete]
         public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
         {
