@@ -173,6 +173,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SetRunStarted()
         {
+            //PlayerRunData.currentBotHealth = Globals.BotStartingHealth;
             PlayerRunData.runStarted = true;
         }
 
@@ -370,6 +371,18 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.WreckNodes;
         }
 
+        //Bot Health
+        //====================================================================================================================//
+
+        public static float GetBotHealth()
+        {
+            return PlayerRunData.currentBotHealth;
+        }
+
+        public static void SetBotHealth(in float health)
+        {
+            PlayerRunData.currentBotHealth = health;
+        }
         
         //Parts
         //====================================================================================================================//

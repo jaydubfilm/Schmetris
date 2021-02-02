@@ -207,6 +207,8 @@ namespace StarSalvager
         private float previousDirection;
         private bool isContinuousRotation;
 
+        private float _dashCooldown;
+
         //IHealth Test
         //====================================================================================================================//
 
@@ -216,7 +218,7 @@ namespace StarSalvager
         {
             CurrentHealth = currentHealth;
             StartingHealth = startingHealth;
-            
+
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
         }
 
@@ -225,7 +227,7 @@ namespace StarSalvager
             CurrentHealth += amount;
 
             //TODO Need to update UI
-            
+
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
             //Here we check to make sure to not display tiny values of damage
@@ -235,7 +237,7 @@ namespace StarSalvager
 
             if (CurrentHealth > 0)
                 return;
-            
+
             CreateCoreDeathEffect();
 
             cinemachineImpulseSource.GenerateImpulse(5);
@@ -243,7 +245,7 @@ namespace StarSalvager
 
             Destroy("Core Destroyed");
         }
-        
+
         //Particle Tests
         //====================================================================================================================//
 
@@ -317,7 +319,7 @@ namespace StarSalvager
                 return;
 
             TryMovement();
-            
+
             UpdateFollowTarget(transform.position);
 
             if (Rotating)
@@ -337,6 +339,12 @@ namespace StarSalvager
             {
                 Move(m_currentInput);
             }
+
+            if (_dashCooldown > 0)
+            {
+                _dashCooldown -= Time.deltaTime;
+            }
+
         }
 
         private void LateUpdate()
@@ -363,6 +371,22 @@ namespace StarSalvager
         }
 
         #endregion //Unity Functions
+
+        //Core Shuffle Prototype
+        //====================================================================================================================//
+
+        private bool _isShifting;
+
+        public void CoreShuffle(DIRECTION direction)
+        {
+            var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
+
+            //Checks to see if the shuffle will cause a disconnect, and prevents it
+            if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
+                return;
+            
+            TryShift(direction, start);
+        }
 
         //IMoveOnInput
         //============================================================================================================//
@@ -406,10 +430,20 @@ namespace StarSalvager
                 ? DIRECTION.NULL
                 : direction;
 
+            if (_isDashing && Globals.MovingDirection == DIRECTION.NULL)
+            {
+                _isDashing = false;
+                CanBeDamaged = true;
+                SetColliderActive(true);
+                _dashCooldown = Globals.DashCooldown;
+            }
+
             if (!canMove)
                 return;
 
-            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
+            var moveSpeed = _isDashing ? Globals.DashSpeed : Globals.BotHorizontalSpeed;
+
+            var toMove = Mathf.Min(distHorizontal, moveSpeed * Time.deltaTime);
 
             var moveDirection = direction.ToVector2();
 
@@ -465,8 +499,50 @@ namespace StarSalvager
             m_currentInput = direction;
             var toAdd = direction * Constants.gridCellSize;
 
+            if (_isDashing)
+                return;
+
             m_distanceHorizontal += toAdd;
         }
+
+        public bool IsDashing => _isDashing;
+        private bool _isDashing;
+
+        public void Dash(in DIRECTION direction)
+        {
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                    Dash(-1);
+                    break;
+                case DIRECTION.RIGHT:
+                    Dash(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+        }
+
+        public void Dash(float direction)
+        {
+            if (_isDashing)
+                return;
+
+            if (_dashCooldown > 0f)
+                return;
+
+            _isDashing = true;
+            CanBeDamaged = false;
+            SetColliderActive(false);
+
+            m_distanceHorizontal += direction * Constants.gridCellSize * Globals.DashDistance;
+        }
+
+        private void SetColliderActive(bool state)
+        {
+            attachedBlocks.OfType<CollidableBase>().ToList().ForEach(x => x.SetColliderActive(state));
+        }
+
 
         #endregion //IMoveOnInput Functions
 
@@ -477,7 +553,7 @@ namespace StarSalvager
         public void InitBot()
         {
             CreateFollowTarget();
-            
+
             _weldDatas = new List<WeldData>();
 
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -528,7 +604,7 @@ namespace StarSalvager
         public void InitBot(IEnumerable<IAttachable> botAttachables)
         {
             CreateFollowTarget();
-            
+
             _weldDatas = new List<WeldData>();
 
             _isDestroyed = false;
@@ -756,16 +832,16 @@ namespace StarSalvager
         #endregion //Rotation
 
         //====================================================================================================================//
-        
+
         #region Follow Target
 
         private static GameObject _followTarget;
-        
+
         private static void CreateFollowTarget()
         {
             if(_followTarget == null)
                 _followTarget = new GameObject("Bot_Camera-Follow-Target");
-            
+
             _followTarget.transform.position = Vector3.up * 5f;
         }
 
@@ -777,7 +853,7 @@ namespace StarSalvager
         }
 
         #endregion //Follow Target
-        
+
         //============================================================================================================//
 
         #region TryAddNewAttachable
@@ -1253,7 +1329,7 @@ namespace StarSalvager
         /// <param name="hitPosition"></param>
         /// <param name="destroyed"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public bool TryBounceAt(Vector2 hitPosition, out bool destroyed)
+        public bool TryAsteroidBounceAt(in Vector2 hitPosition, in float damage, out bool destroyed)
         {
             destroyed = false;
 
@@ -1262,27 +1338,30 @@ namespace StarSalvager
 
             var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
 
-            switch (closestAttachable)
+            /*switch (closestAttachable)
             {
                 //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
                 case Bit _:
                 case EnemyAttachable _:
                 case JunkBit _:
-                    AsteroidDamageAt(closestAttachable);
+                    TryHitAt(closestAttachable);
                     return false;
                 /*case Component _:
-                    break;*/
+                    break;#1#
                 case Part _:
-                    /*if (part.Destroyed) return false;*/
+                    /*if (part.Destroyed) return false;#1#
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
-            }
+            }*/
 
-            TryHitAt(closestAttachable, Globals.AsteroidDamage);
+            TryHitAt(closestAttachable, damage);
 
-            if (closestAttachable is IHealth iHealth && iHealth.CurrentHealth <= 0)
-                destroyed = true;
+            if (!(closestAttachable is IHealth iHealth) || iHealth.CurrentHealth > 0) 
+                return true;
+            
+            destroyed = true;
+            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
 
             return true;
         }
@@ -1329,7 +1408,7 @@ namespace StarSalvager
                     closestHealth = (IHealth) closestAttachable;
                     break;
             }
-            
+
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -1349,7 +1428,7 @@ namespace StarSalvager
 
             /*if (!(closestAttachable is IHealth closestHealth))
                 return;*/
-            
+
             closestHealth.ChangeHealth(-Mathf.Abs(damage));
 
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
@@ -1392,14 +1471,14 @@ namespace StarSalvager
 
                     Destroy("Core Destroyed");
                     break;*/
-                case Part _:
+                /*case Part _:
                     CreateExplosionEffect(closestAttachable.transform.position);
 
                     cinemachineImpulseSource.GenerateImpulse(5);
                     GameUi.FlashBorder();
 
                     BotPartsLogic.PopulatePartsList();
-                    break;
+                    break;*/
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     RemoveAttachable(closestAttachable);
@@ -1470,7 +1549,7 @@ namespace StarSalvager
 
         #region Asteroid Collision
 
-        public bool TryAsteroidDamageAt(Vector2 collisionPoint)
+        /*public bool TryAsteroidDamageAt(in Vector2 collisionPoint, in float damage)
         {
             if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
@@ -1479,21 +1558,36 @@ namespace StarSalvager
 
             //------------------------------------------------------------------------------------------------//
 
-            switch (closestAttachable)
+            /*switch (closestAttachable)
             {
                 /*case Part part when part.Destroyed:
-                    return false;*/
+                    return false;#2#
                 case Bit _:
                     AsteroidDamageAt(closestAttachable);
                     return false;
+            }#1#
+            
+            TryHitAt(closestAttachable, damage);
+            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
+
+            BIT_TYPE? type = null;
+            switch (closestAttachable)
+            {
+                case Part _ :
+                    FrameStop.Milliseconds(75);
+                    break;
+                case Bit bit:
+                    type = bit.Type;
+                    break;
+                case EnemyAttachable enemyAttachable:
+                    enemyAttachable.SetAttached(false);
+                    break;
             }
 
-
-            AsteroidDamageAt(closestAttachable);
             return true;
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Applies pre-determine asteroid damage to the specified IAttachable
         /// </summary>
         /// <param name="attachable"></param>
@@ -1517,7 +1611,7 @@ namespace StarSalvager
                     break;
             }
 
-            /*//FIXME This value should not be hardcoded
+            /#1#/FIXME This value should not be hardcoded
             BotPartsLogic.AddCoreHeat(20f);
 
             if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
@@ -1527,8 +1621,8 @@ namespace StarSalvager
             else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
             {
                 Destroy("Core Overheated");
-            }*/
-        }
+            }#1#
+        }*/
 
         #endregion //Asteroid Collision
 
@@ -2119,10 +2213,10 @@ namespace StarSalvager
             foreach (var bitType in bitTypes)
             {
                 var level = attachedBlocks.GetHighestLevelBit(bitType);
-                
+
                 outData.Add(bitType, level);
             }
-            
+
             GameUi.SetBitLevelImages(outData);
         }
 
@@ -2313,6 +2407,7 @@ namespace StarSalvager
             bool hasDetached = false;
             bool hasCombos = false;
 
+_isShifting = true;
             StartCoroutine(ShiftInDirectionCoroutine(toShift,
                 Globals.BitShiftTime,
                 () =>
@@ -2347,10 +2442,113 @@ namespace StarSalvager
 
                 CheckForBonusShapeMatches();
                 ForceCheckMagnets();
+
+                _isShifting = false;
             }));
 
 
             return true;
+        }
+
+        private struct SimpleShiftData
+        {
+            public Vector2Int StartCoordinate;
+            public Vector2Int TargetCoordinate;
+        }
+        private bool DoesShiftCauseDisconnect(in DIRECTION direction, in IBlockData blockData)
+        {
+            var startBlock = blockData;
+            var blocks = attachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData()).ToList();
+            
+            List<IBlockData> inLine;
+            switch (direction)
+            {
+                case DIRECTION.LEFT:
+                case DIRECTION.RIGHT:
+                    inLine = blocks.Where(ab => ab.Coordinate.y == startBlock.Coordinate.y).ToList();
+                    break;
+                case DIRECTION.UP:
+                case DIRECTION.DOWN:
+                    inLine = blocks.Where(ab => ab.Coordinate.x == startBlock.Coordinate.x).ToList();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            var toShift = new List<SimpleShiftData>();
+            var dir = direction.ToVector2Int();
+            var currentCoordinate = blockData.Coordinate;
+
+            for (var i = 0; i < inLine.Count; i++)
+            {
+                var targetBlockData = inLine.FirstOrDefault(x => x.Coordinate == currentCoordinate);
+
+                if (targetBlockData == null)
+                    break;
+
+                switch (targetBlockData)
+                {
+                    case PartData _:
+                        currentCoordinate += dir;
+                        continue;
+                    case BitData _:
+                    {
+                        IBlockData nextCheck;
+
+                        var noShiftOffset = 1;
+                        
+                        do
+                        {
+                            var coordinate = currentCoordinate + (dir * noShiftOffset);
+                            //TODO I think that I can combine both the While Loop and the Linq expression
+                            nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
+
+                            if (nextCheck is null || nextCheck is BitData) 
+                                break;
+
+
+                            noShiftOffset++;
+
+                        } while (nextCheck is PartData);
+
+                        currentCoordinate += dir * noShiftOffset;
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(targetBlockData), targetBlockData, null);
+                }
+
+                toShift.Add(new SimpleShiftData
+                {
+                    StartCoordinate = targetBlockData.Coordinate, 
+                    TargetCoordinate = currentCoordinate
+                });
+            }
+
+            if (toShift.Count == 0)
+                return false;
+            
+            var blocksCopy = new List<IBlockData>(blocks);
+            for (int i = toShift.Count - 1; i >= 0; i--)
+            {
+                var shiftData = toShift[i];
+                var index = blocksCopy.FindIndex(x => x.Coordinate == shiftData.StartCoordinate);
+
+                blocks[index].Coordinate = shiftData.TargetCoordinate;
+            }
+            
+            //Look at all the blocks that can disconnect
+            foreach (var block in blocks.OfType<BitData>())
+            {
+                var hasPathToCore = blocks.HasPathToCore(block);
+
+                if(hasPathToCore)
+                    continue;
+
+                return true;
+            }
+
+            return false;
         }
 
         #endregion //Shifting Bits
@@ -2371,9 +2569,14 @@ namespace StarSalvager
 
             IEnumerable<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
 
+            var botBits = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>();
+            
+
             foreach (var shape in shapesToCheck)
             {
-                if (!attachedBlocks.Contains(shape.AttachedBits, out var upgrading))
+                var shapeBits = shape.AttachedBits.GetBlockDatas<BitData>();
+                
+                if (!botBits.Contains(shapeBits, out var upgrading))
                     continue;
 
                 //Bonus Shape Effects
@@ -2681,12 +2884,12 @@ namespace StarSalvager
 
                 if (bit.level >= 4)
                     continue;
-                
+
                 //Get all basic info about bits available to combo
                 //--------------------------------------------------------------------------------------------------------//
                 var bitType = bit.Type;
                 var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
-            
+
                 var checkData = new List<DataTest>();
                 foreach (var attached in bitsToCheck)
                 {
@@ -2710,11 +2913,11 @@ namespace StarSalvager
                         var wildCardData = t;
                         wildCardData.Level = bit.level;
                         wildCardData.Type = bit.Type;
-                   
+
                         checkData.Add(wildCardData);
                     }
                 }
-            
+
                 //--------------------------------------------------------------------------------------------------------//
 
                 if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
@@ -2766,7 +2969,7 @@ namespace StarSalvager
         public struct DataTest
         {
             public IAttachable Attachable;
-            
+
             public BIT_TYPE Type;
             public int Level;
             public Vector2Int Coordinate;
@@ -2796,7 +2999,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             var bitType = bit.Type;
             var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
-            
+
             var checkData = new List<DataTest>();
             foreach (var attached in bitsToCheck)
             {
@@ -2820,11 +3023,11 @@ namespace StarSalvager
                     var wildCardData = t;
                     wildCardData.Level = bit.level;
                     wildCardData.Type = bit.Type;
-                   
+
                     checkData.Add(wildCardData);
                 }
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
 
@@ -4044,7 +4247,7 @@ namespace StarSalvager
         [Button]
         private void TestContains()
         {
-            var testBlockData = new List<IBlockData>
+            var testBlockData = new List<BitData>
             {
                 /*new BlockData
                 {
@@ -4069,7 +4272,7 @@ namespace StarSalvager
                 },*/
             };
 
-            var result =attachedBlocks.Contains<Bit>(testBlockData, out _);
+            var result = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>().Contains(testBlockData, out _);
 
             Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
 
@@ -4159,7 +4362,7 @@ namespace StarSalvager
 
             return false;
         }
-        
+
         [Obsolete]
         public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
         {

@@ -27,7 +27,7 @@ MonoBehaviour:
     m_category: BS_3Cell
     m_rotation: -1
   StageRemoteData:
-  - m_stageDuration: 60
+  - m_stageDuration: 15
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
@@ -135,7 +135,7 @@ MonoBehaviour:
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 30
+  - m_stageDuration: 45
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:

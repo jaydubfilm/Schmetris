@@ -50,6 +50,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
     {COMPONENT_TYPE.COIL, 0}
 };*/
 
+        public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
