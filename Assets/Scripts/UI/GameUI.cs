@@ -9,6 +9,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
@@ -288,8 +289,12 @@ namespace StarSalvager.UI
 
         [SerializeField]
         private RectTransform[] bitLevelContainerTransforms;
-
         private List<Image[]> _bitLevelImages;
+
+        
+        [SerializeField]
+        private RectTransform[] partIconContainerTransforms;
+        private List<Image[]> _partIconImages;
 
         //====================================================================================================================//
 
@@ -314,6 +319,8 @@ namespace StarSalvager.UI
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
+
+            ShowPartIcons();
         }
 
         private void OnDisable()
@@ -367,6 +374,7 @@ namespace StarSalvager.UI
         private void InitValues()
         {
             SetupBitLevelImages();
+            SetupPartIconImages();
             
             SetBitLevelImages(new Dictionary<BIT_TYPE, int>());
             
@@ -456,6 +464,81 @@ namespace StarSalvager.UI
                 }
             }
             
+        }
+
+        private void SetupPartIconImages()
+        {
+            _partIconImages = new List<Image[]>();
+            foreach (var partIconContainerTransform in partIconContainerTransforms)
+            {
+                var images = partIconContainerTransform.GetComponentsInChildren<Image>();
+                
+                _partIconImages.Add(images);
+            }
+        }
+        
+        private void ShowPartIcons()
+        {
+            if (_partIconImages.IsNullOrEmpty())
+                return;
+
+            for (int i = 0; i < _partIconImages.Count; i++)
+            {
+                for (int ii = 0; ii < _partIconImages[i].Length; ii++)
+                {
+                    _partIconImages[i][ii].enabled = false;
+                }
+            }
+            
+            //TODO Get the parts on the bot, determine the colors they're using
+
+            var partProfile = FactoryManager.Instance.PartsProfileData;
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
+            var parts = PlayerDataManager
+                .GetBlockDatas()
+                .OfType<PartData>()
+                .Select(x => (PART_TYPE) x.Type);
+            
+            var bitCategories = new Dictionary<BIT_TYPE, List<Sprite>>();
+
+            foreach (var partType in parts)
+            {
+                var partData = partRemoteData.GetRemoteData(partType);
+                var sprite = partProfile.GetProfile(partType).Sprite;
+                
+                var types = partData.partGrade.Types;
+                
+                if(types.IsNullOrEmpty())
+                    continue;
+
+                if (types[0] == BIT_TYPE.NONE)
+                    types = new List<BIT_TYPE>(_bitTypes);
+
+                foreach (var bitType in types)
+                {
+                    if(!bitCategories.ContainsKey(bitType))
+                        bitCategories.Add(bitType, new List<Sprite>());
+                    
+                    bitCategories[bitType].Add(sprite);
+                }
+            }
+            
+            for (int i = 0; i < _bitTypes.Length; i++)
+            {
+                var bitType = _bitTypes[i];
+
+                if (!bitCategories.ContainsKey(bitType))
+                    continue;
+
+                var sprites = bitCategories[bitType];
+
+                for (int ii = 0; ii < sprites.Count; ii++)
+                {
+                    var image = _partIconImages[i][ii];
+                    image.enabled = true;
+                    image.sprite = sprites[ii];
+                }
+            }
         }
 
         //====================================================================================================================//
