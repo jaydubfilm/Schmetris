@@ -20,7 +20,7 @@ namespace StarSalvager.AI
         private float timeChooseNewPosition => 1.5f;
 
         public float AverageOrbitDistance = 6.5f;
-        public int LaserDamage = 8.0f;
+        public int LaserDamage = 8;
 
         //====================================================================================================================//
 
