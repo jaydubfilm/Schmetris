@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,8 +44,8 @@ namespace StarSalvager.AI
         {
             if (Vector2.Distance(transform.position, currentDestination) <= 0.1f)
             {
-                currentDestination = new Vector2(playerLocation.x + Random.Range(horizontalFarLeftX, horizontalFarRightX),
-                    Random.Range(LevelManager.Instance.WorldGrid.m_screenGridCellRange.y * verticalLowestAllowed, LevelManager.Instance.WorldGrid.m_screenGridCellRange.y));
+                currentDestination = new Vector2(playerLocation.x + UnityEngine.Random.Range(horizontalFarLeftX, horizontalFarRightX),
+                    UnityEngine.Random.Range(LevelManager.Instance.WorldGrid.m_screenGridCellRange.y * verticalLowestAllowed, LevelManager.Instance.WorldGrid.m_screenGridCellRange.y));
             }
 
             return currentDestination - (Vector2)transform.position;
@@ -89,5 +90,10 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
+
+        public override Type GetOverrideType()
+        {
+            return typeof(ToughMotherEnemy);
+        }
     }
 }

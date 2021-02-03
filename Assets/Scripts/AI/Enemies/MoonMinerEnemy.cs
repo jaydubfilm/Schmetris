@@ -315,6 +315,11 @@ namespace StarSalvager.AI
             };
         }
 
+        public override Type GetOverrideType()
+        {
+            return typeof(MoonMinerEnemy);
+        }
+
         //============================================================================================================//
     }
 }

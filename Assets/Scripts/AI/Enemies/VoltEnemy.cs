@@ -292,5 +292,10 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
+
+        public override Type GetOverrideType()
+        {
+            return typeof(VoltEnemy);
+        }
     }
 }

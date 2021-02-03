@@ -1,5 +1,6 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -90,5 +91,10 @@ namespace StarSalvager.AI
         }
 
         //============================================================================================================//
+
+        public override Type GetOverrideType()
+        {
+            return typeof(ShardEnemy);
+        }
     }
 }

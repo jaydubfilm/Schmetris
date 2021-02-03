@@ -208,7 +208,7 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
-        public Type GetOverrideType()
+        public override Type GetOverrideType()
         {
             return typeof(JunkFlyEnemy);
         }

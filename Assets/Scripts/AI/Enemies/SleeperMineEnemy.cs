@@ -193,7 +193,7 @@ namespace StarSalvager.AI
             base.CustomRecycle(args);
         }
 
-        public Type GetOverrideType()
+        public override Type GetOverrideType()
         {
             return typeof(SleeperMineEnemy);
         }

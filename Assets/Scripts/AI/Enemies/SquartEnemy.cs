@@ -1,6 +1,7 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Values;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,5 +105,10 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
+
+        public override Type GetOverrideType()
+        {
+            return typeof(SquartEnemy);
+        }
     }
 }
