@@ -595,6 +595,7 @@ namespace StarSalvager
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
 
             GameUi.SetHealthValue(1f);
+            //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
             camera.SetLookAtFollow(_followTarget.transform);
@@ -623,6 +624,7 @@ namespace StarSalvager
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
+            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
         }
 
@@ -2218,6 +2220,7 @@ namespace StarSalvager
             }
 
             GameUi.SetBitLevelImages(outData);
+            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
         }
 
         //============================================================================================================//

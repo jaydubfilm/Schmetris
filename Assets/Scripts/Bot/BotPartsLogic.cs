@@ -105,6 +105,20 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
+
+        public Dictionary<PART_TYPE, bool> GetPartStates()
+        {
+            var outData = new Dictionary<PART_TYPE, bool>();
+            foreach (var part in _parts)
+            {
+                if (part.Type == PART_TYPE.EMPTY)
+                    continue;
+                
+                outData.Add(part.Type, !part.Disabled);
+            }
+
+            return outData;
+        }
         
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
