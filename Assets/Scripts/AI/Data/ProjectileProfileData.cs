@@ -11,7 +11,8 @@ namespace StarSalvager.Factories.Data
         public enum TowType : int
         {
             JunkBit,
-            Mine
+            Mine,
+            Bumper
         }
         
         public string ProjectileType => m_projectileType;

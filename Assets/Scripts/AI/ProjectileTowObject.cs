@@ -60,6 +60,9 @@ namespace StarSalvager.AI
                     case JunkBit junkBit:
                         Recycler.Recycle<JunkBit>(junkBit);
                         break;
+                    case Bit bit:
+                        Recycler.Recycle<Bit>(bit);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(towObjectActor), towObjectActor, null);
                 }
