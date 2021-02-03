@@ -310,10 +310,11 @@ MonoBehaviour:
     partGrade:
       Types: 05000000
       minBitLevel: 0
-      needsBitsToFunction: 1
+      needsBitsToFunction: 0
       values:
       - 0.8
       - 0.4
       - 0.2
       - 0.1
       - 0.05
+      - 0.025
