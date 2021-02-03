@@ -104,9 +104,10 @@ namespace StarSalvager.Factories
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
                             projectileTowObject.SetColliderActive(false);
                             break;
-                        /*case ProjectileProfileData.TowType.Mine:
-                            towObject = FactoryManager.Instance.GetFactory<MineFactory>().CreateMine(MINE_TYPE.Damage).gameObject;
-                            break;*/
+                        case ProjectileProfileData.TowType.Bumper:
+                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
+                            projectileTowObject.SetColliderActive(false);
+                            break;
                         default:
                             throw new Exception("Missing data for towObject");
                     }
