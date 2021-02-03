@@ -319,8 +319,6 @@ namespace StarSalvager.UI
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
-
-            ShowPartIcons();
         }
 
         private void OnDisable()
@@ -476,8 +474,13 @@ namespace StarSalvager.UI
                 _partIconImages.Add(images);
             }
         }
-        
-        private void ShowPartIcons()
+
+        private struct PartIconState
+        {
+            public Sprite Sprite;
+            public Color Color;
+        }
+        public void SetPartImages(in Dictionary<PART_TYPE, bool> partStates)
         {
             if (_partIconImages.IsNullOrEmpty())
                 return;
@@ -494,12 +497,14 @@ namespace StarSalvager.UI
 
             var partProfile = FactoryManager.Instance.PartsProfileData;
             var partRemoteData = FactoryManager.Instance.PartsRemoteData;
-            var parts = PlayerDataManager
+            /*var parts = PlayerDataManager
                 .GetBlockDatas()
                 .OfType<PartData>()
-                .Select(x => (PART_TYPE) x.Type);
+                .Select(x => (PART_TYPE) x.Type);*/
+
+            var parts = partStates.Keys.ToList();
             
-            var bitCategories = new Dictionary<BIT_TYPE, List<Sprite>>();
+            var bitCategories = new Dictionary<BIT_TYPE, List<PartIconState>>();
 
             foreach (var partType in parts)
             {
@@ -517,9 +522,13 @@ namespace StarSalvager.UI
                 foreach (var bitType in types)
                 {
                     if(!bitCategories.ContainsKey(bitType))
-                        bitCategories.Add(bitType, new List<Sprite>());
+                        bitCategories.Add(bitType, new List<PartIconState>());
                     
-                    bitCategories[bitType].Add(sprite);
+                    bitCategories[bitType].Add(new PartIconState
+                    {
+                        Sprite = sprite,
+                        Color = partStates[partType] ? Color.white : Color.gray
+                    });
                 }
             }
             
@@ -530,13 +539,14 @@ namespace StarSalvager.UI
                 if (!bitCategories.ContainsKey(bitType))
                     continue;
 
-                var sprites = bitCategories[bitType];
-
-                for (int ii = 0; ii < sprites.Count; ii++)
+                var partIconStates = bitCategories[bitType];
+                
+                for (int ii = 0; ii < partIconStates.Count; ii++)
                 {
                     var image = _partIconImages[i][ii];
                     image.enabled = true;
-                    image.sprite = sprites[ii];
+                    image.sprite = partIconStates[ii].Sprite;
+                    image.color = partIconStates[ii].Color;
                 }
             }
         }
