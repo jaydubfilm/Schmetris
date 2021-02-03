@@ -1,6 +1,7 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace StarSalvager.AI
 {
@@ -8,7 +9,6 @@ namespace StarSalvager.AI
     public class ProjectileTowObject : Projectile, IOverrideRecycleType
     {
 
-       // public GameObject towObject;
        [ReadOnly]
         public Actor2DBase towObjectActor;
         
@@ -23,7 +23,15 @@ namespace StarSalvager.AI
 
             if (towObjectActor is null || towObjectActor.IsRecycled)
             {
-                //towObject = null;
+                Debug.Log("Recycle Actor Gone");
+                towObjectActor = null;
+                Recycler.Recycle<ProjectileTowObject>(this);
+                return;
+            }
+
+            if (towObjectActor is Bit bit && bit.HasCollided)
+            {
+                Debug.Log("Recycle HasCollided");
                 towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
@@ -32,7 +40,6 @@ namespace StarSalvager.AI
             //IAttachable attachable = towObject.GetComponent<IAttachable>();
             if (towObjectActor is IAttachable attachable && attachable.Attached)
             {
-                //towObject = null;
                 towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
@@ -68,7 +75,6 @@ namespace StarSalvager.AI
                 }
             }
 
-            //towObject = null;
             towObjectActor = null;
 
             base.CustomRecycle(args);
