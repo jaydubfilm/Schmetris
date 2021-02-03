@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
@@ -101,6 +101,7 @@ MonoBehaviour:
   botExitScreenMaxSize: 2
   unmergeLargeBitsOnRefine: 1
   sendExcessResourceToBase: 0
+  bounceDistance: 3
   bitsPushThroughParts: 1
   bitShiftTime: 0.17
   comboMergeTime: 0.17
