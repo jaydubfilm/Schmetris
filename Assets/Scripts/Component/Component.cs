@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IObstacle
+    public class Component : CollidableBase, IObstacle, IAdditiveMove, ICustomRecycle
     {
 
         public int GearNum { get; set; }
@@ -21,7 +21,12 @@ namespace StarSalvager
 
         public bool IsMarkedOnGrid { get; set; }
 
+        public Vector2 AddMove => GetTowardsPlayer();
+        private float _speed;
+        
 
+        //====================================================================================================================//
+        
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             Color color = Color.HSVToRGB(0.11944f, 0.94f, 0.98f);
@@ -38,6 +43,25 @@ namespace StarSalvager
 
             Recycler.Recycle<Component>(this);
 
+        }
+
+        //====================================================================================================================//
+
+        private Vector3 GetTowardsPlayer()
+        {
+            var playerLocation = LevelManager.Instance.BotInLevel.transform.position;
+            var direction = (Vector2)(playerLocation - transform.position).normalized;
+
+            _speed += 0.2f;
+
+            return direction * _speed;
+        }
+
+        //====================================================================================================================//
+        
+        public void CustomRecycle(params object[] args)
+        {
+            _speed = 0f;
         }
     }
 }
