@@ -45,8 +45,13 @@ namespace StarSalvager
                 m_gridArray[i] = new GridSquare();
             }
 
-            float height = CameraController.Camera.orthographicSize * 2.0f;
-            float width = height * Screen.width / Screen.height;
+            //Used to ensure the CameraVisibleRect is updated
+            CameraController.IsPointInCameraRect(Vector2.zero, Constants.VISIBLE_GAME_AREA);
+
+            var cameraRect = CameraController.VisibleCameraRect;
+
+            float width = cameraRect.xMax - cameraRect.xMin;
+            float height = cameraRect.yMax - cameraRect.yMin;
             m_screenGridCellRange = new Vector2Int((int)(width / Constants.gridCellSize), (int)(height / Constants.gridCellSize));
             m_botGridPosition = GetCoordinatesOfGridSquareAtLocalPosition(LevelManager.Instance.BotInLevel.transform.position);
             randomPositionFindingLists = new Dictionary<Vector2, List<int>>();
@@ -293,7 +298,7 @@ namespace StarSalvager
         {
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(
                 m_botGridPosition.x + ((UnityEngine.Random.Range(0, 2) * 2 - 1) * UnityEngine.Random.Range(m_screenGridCellRange.x / 2, m_screenGridCellRange.x)), 
-                UnityEngine.Random.Range(m_screenGridCellRange.y / 2, (int)(m_screenGridCellRange.y / 1.5f)));
+                UnityEngine.Random.Range(m_screenGridCellRange.y / 2, m_screenGridCellRange.y));
         }
 
         //TODO: When the screen size and camera size and grid cell size systems all start working in a scaling fashion, this will need to adjust
