@@ -11,12 +11,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
   testingFeatures: 0
-  asteroidDamage: 10
+  asteroidDamage: 20
   gameUIResourceThreshold: 0.33
   patchPointBaseCost: 500
   patchPointIncrementCost: 50
