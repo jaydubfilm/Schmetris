@@ -339,7 +339,10 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.SpeedChange, SpeedChange
                 },
                 {
-                    Input.Actions.Default.Dash, Dash
+                    Input.Actions.Default.DashLeft, DashLeft
+                },
+                {
+                    Input.Actions.Default.DashRight, DashRight
                 }
             };
 
@@ -440,14 +443,38 @@ namespace StarSalvager.Utilities.Inputs
             }
         }
         
-        private void Dash(InputAction.CallbackContext ctx)
+        private void DashLeft(InputAction.CallbackContext ctx)
         {
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
                 return;
             
-            var direction = ctx.ReadValue<float>();
+            var pressed = ctx.ReadValue<float>() >= 0.9f;
+
+            if (!pressed)
+                return;
             
-            _bots[0].Dash(direction, Globals.DashDistance);
+            _bots[0].Dash(-1, Globals.DashDistance);
+            
+            /*if (direction < 0)
+            {
+                Globals.DecreaseFallSpeed();
+            }
+            else if (direction > 0)
+            {
+                Globals.IncreaseFallSpeed();
+            }*/
+        }
+        private void DashRight(InputAction.CallbackContext ctx)
+        {
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
+                return;
+            
+            var pressed = ctx.ReadValue<float>() >= 0.9f;
+            
+            if (!pressed)
+                return;
+            
+            _bots[0].Dash(1, Globals.DashDistance);
             
             /*if (direction < 0)
             {
