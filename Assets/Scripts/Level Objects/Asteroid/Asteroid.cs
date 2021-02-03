@@ -166,17 +166,18 @@ namespace StarSalvager
                 Debug.Log($"Hit Direction: {dir} [{direction}]");
 
                 //Only want to move the bot if we're legally allowed
-                if (bot.TryAsteroidBounceAt(worldHitPoint, 25, out var destroyed))
+                if (bot.TryAsteroidBounceAt(worldHitPoint, Globals.AsteroidDamage, out var destroyed))
                 {
-                    //FIXME Will need to consider the map borders to ensure direction is okay
-                    bot.Dash(direction);
-
                     if (destroyed)
                     {
                         CreateImpactEffect(worldHitPoint);
                     }
                     else
                     {
+                        //Only Dash of the piece is not destroyed on Impact
+                        //FIXME Will need to consider the map borders to ensure direction is okay
+                        bot.Dash(direction, Globals.AsteroidBounceDistance);
+                        
                         AddMove += -dir * 2f;
                     }
                 }

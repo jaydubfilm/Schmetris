@@ -447,7 +447,7 @@ namespace StarSalvager.Utilities.Inputs
             
             var direction = ctx.ReadValue<float>();
             
-            _bots[0].Dash(direction);
+            _bots[0].Dash(direction, Globals.DashDistance);
             
             /*if (direction < 0)
             {

@@ -272,8 +272,10 @@ namespace StarSalvager.Utilities.Saving
 
                 blockDatas.RemoveAt(index);
             }
-            
+
             var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            var originalBackup = new List<IBlockData>(droneBlockData);
+
             
             var bitsToRemove = droneBlockData
                 .OfType<BitData>()
@@ -298,6 +300,12 @@ namespace StarSalvager.Utilities.Saving
                     
                     droneBlockData[index].Coordinate = data.intendedCoordinates;
                 }
+            }
+
+            //Review all the bits (After having moved) to ensure there is no one floating
+            if (droneBlockData.OfType<BitData>().Any(bitData => !droneBlockData.HasPathToCore(bitData)))
+            {
+                throw new Exception($"No Path to Core found\nOriginal: {Newtonsoft.Json.JsonConvert.SerializeObject(originalBackup)}\nSolved: {Newtonsoft.Json.JsonConvert.SerializeObject(droneBlockData)}");
             }
 
             if (downgradeBits)

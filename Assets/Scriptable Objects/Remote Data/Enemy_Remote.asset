@@ -23,7 +23,7 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 1, y: 1}
+      m_numDrops: {x: 2, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
         lvl: 0
         weight: 1
         rng: 0
-        count: 4
+        count: 1
         min: 0
         max: 0
   - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
@@ -42,14 +42,46 @@ MonoBehaviour:
     m_movementSpeed: 6
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 20
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: MoonMiner
     m_health: 35
     m_movementSpeed: 3
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 50
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     m_name: Volt
     m_health: 25

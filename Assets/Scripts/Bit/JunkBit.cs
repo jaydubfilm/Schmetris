@@ -131,9 +131,6 @@ namespace StarSalvager
         //FIXME Need to fix the attach location issues
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            //Debug.Break();
-            
-            
             var bot = gameObject.GetComponent<Bot>();
 
             if (bot.Rotating)
@@ -144,7 +141,6 @@ namespace StarSalvager
             }
 
             var dir = (worldHitPoint - (Vector2)transform.position).ToVector2Int();
-            var direction = dir.ToDirection();
 
             //Checks to see if the player is moving in the correct direction to bother checking, and if so,
             //return the direction to shoot the ray
@@ -154,76 +150,12 @@ namespace StarSalvager
             if (dir != rayDirection && dir != Vector2Int.zero)
                 return;
 
-            if (!TryFindClosestCollision(rayDirection.ToDirection(), out var point))
+            if (!TryFindClosestCollision(rayDirection.ToDirection(), collisionMask, out var point))
                 return;
 
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
             bot.TryAddNewAttachable(this, inDirection, point);
-        }
-
-        private bool TryFindClosestCollision(DIRECTION direction, out Vector2 point)
-        {
-            const float rayLength = Constants.gridCellSize * 3f;
-            
-            point = Vector2.zero;
-            
-            var currentPosition = (Vector2)transform.position;
-            var vectorDirection = direction.ToVector2();
-            var startOffset = -vectorDirection * (rayLength / 2f);
-            Vector2 positionOffset;
-            
-            switch (direction)
-            {
-                case DIRECTION.RIGHT:
-                case DIRECTION.LEFT:
-                    positionOffset = Vector2.up * 0.33f;
-                    break;
-                case DIRECTION.UP:
-                case DIRECTION.DOWN:
-                    positionOffset = Vector2.right * 0.33f;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-            
-            var startPositions = new[]
-            {
-                currentPosition + startOffset,
-                (currentPosition - positionOffset) + startOffset,
-                (currentPosition + positionOffset) + startOffset,
-            };
-
-            var shortestDis = 999f;
-            RaycastHit2D? shortestHit = null;
-            foreach (var rayStartPosition in startPositions)
-            {
-                var hit = Physics2D.Raycast(rayStartPosition, vectorDirection, rayLength,  collisionMask.value);
-
-                //If nothing was hit, ray failed, thus no reason to continue
-                if (hit.collider == null)
-                {
-                    //Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.yellow, 1f);
-                    SSDebug.DrawArrowRay(rayStartPosition, vectorDirection * rayLength, Color.yellow);
-                    continue;
-                }
-
-                Debug.DrawRay(hit.point, Vector2.up, Color.red);
-                Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
-
-                if (hit.distance >= shortestDis)
-                    continue;
-                
-                shortestDis = hit.distance;
-                shortestHit = hit;
-            }
-
-            if (!shortestHit.HasValue)
-                return false;
-
-            point = shortestHit.Value.point;
-            
-            return true;
         }
 
         //============================================================================================================//

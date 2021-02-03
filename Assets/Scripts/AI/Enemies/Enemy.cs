@@ -192,8 +192,28 @@ namespace StarSalvager.AI
         
         public bool CanMove()
         {
-            if(GameTimer.IsPaused || !GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence) || Disabled)
+            if(GameTimer.IsPaused )
                 return false;
+            
+            if (Disabled)
+            {
+                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
+                transform.position -= fallAmount;
+                
+                return false;
+            }
+
+            if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
+            {
+                var currentPosition = transform.position;
+                var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
+                
+                
+                currentPosition -= dir * EnemyMovementSpeed;
+                transform.position = currentPosition;
+                
+                return false;
+            }
             
             if (FreezeTime > 0)
             {
