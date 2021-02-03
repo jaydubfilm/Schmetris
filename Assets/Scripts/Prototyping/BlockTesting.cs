@@ -12,12 +12,12 @@ public class BlockTesting : MonoBehaviour
         IBlockData[] blocksNull = null;
         var blocks = new IBlockData[]
         {
-            new PartData
-            {
-                Coordinate = Vector2Int.zero,
-                Type = (int)PART_TYPE.CORE,
-                Patches = new PatchData[2]
-            },
+            //new PartData
+            //{
+            //    Coordinate = Vector2Int.zero,
+            //    Type = (int)PART_TYPE.CORE,
+            //    Patches = new PatchData[2]
+            //},
             new PartData
             {
                 Coordinate = new Vector2Int(-1, 0),

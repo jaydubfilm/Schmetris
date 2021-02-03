@@ -562,13 +562,13 @@ namespace StarSalvager
             CompositeCollider2D.enabled = true;
 
             //Add core component
-            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
+            //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
-                    Type = (int)PART_TYPE.CORE,
+                    Type = (int)PART_TYPE.EMPTY,
                     Coordinate = Vector2Int.zero,
-                    Patches = new PatchData[patchSockets]
+                    //Patches = new PatchData[patchSockets]
                 });
 
             AttachNewBlock(Vector2Int.zero, core);
@@ -586,7 +586,7 @@ namespace StarSalvager
                     {
                         Type = (int)PART_TYPE.EMPTY,
                         Coordinate = botLayout[i],
-                        Patches = new PatchData[patchSockets]
+                        //Patches = new PatchData[patchSockets]
                     });
 
                 AttachNewBlock(botLayout[i], emptyPart);

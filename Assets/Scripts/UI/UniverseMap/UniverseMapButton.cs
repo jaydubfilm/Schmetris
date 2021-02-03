@@ -58,7 +58,7 @@ namespace StarSalvager
         private void OnEnable()
         {
             //TODO Need to get the level here
-            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
+            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
         }
 
         public void Start()

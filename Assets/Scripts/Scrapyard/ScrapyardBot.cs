@@ -71,14 +71,14 @@ namespace StarSalvager
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
+            //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
             //Add core component
             var core = partFactory.CreateScrapyardObject<ScrapyardPart>(
                 new PartData
                 {
-                    Type = (int)PART_TYPE.CORE,
+                    Type = (int)PART_TYPE.EMPTY,
                     Coordinate = Vector2Int.zero,
-                    Patches = new PatchData[patchSockets]
+                    //Patches = new PatchData[patchSockets]
                 });
 
             AttachNewBit(Vector2Int.zero, core);
@@ -96,7 +96,7 @@ namespace StarSalvager
                     {
                         Type = (int)PART_TYPE.EMPTY,
                         Coordinate = botLayout[i],
-                        Patches = new PatchData[patchSockets]
+                        //Patches = new PatchData[patchSockets]
                     });
 
                 AttachNewBit(botLayout[i], emptyPart);
@@ -456,7 +456,7 @@ namespace StarSalvager
         [SerializeField, BoxGroup("Bot Part Data"), ReadOnly, Space(10f)]
         private int magnetCount;
 
-        private int MAXParts { get; set; }
+        private int MAXParts => 12;
 
         public bool AtPartCapacity => _parts.Count >= MAXParts + 1;
         public string PartCapacity => $"{_parts.Count - 1 }/{MAXParts }";
@@ -478,7 +478,7 @@ namespace StarSalvager
         private void UpdatePartData()
         {
             magnetCount = 0;
-            MAXParts = 0;
+            //MAXParts = 0;
 
             foreach (var part in _parts)
             {
@@ -488,7 +488,7 @@ namespace StarSalvager
 
                 switch (part.Type)
                 {
-                    case PART_TYPE.CORE:
+                    /*case PART_TYPE.CORE:
                         if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
                         {
                             magnetCount += value;
@@ -498,7 +498,7 @@ namespace StarSalvager
                         {
                             MAXParts = intValue;
                         }
-                        break;
+                        break;*/
                     /*case PART_TYPE.MAGNET:
 
                         if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
