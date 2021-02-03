@@ -23,7 +23,6 @@ namespace StarSalvager.AI
 
             if (towObjectActor is null || towObjectActor.IsRecycled)
             {
-                Debug.Log("Recycle Actor Gone");
                 towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
@@ -31,7 +30,6 @@ namespace StarSalvager.AI
 
             if (towObjectActor is Bit bit && bit.HasCollided)
             {
-                Debug.Log("Recycle HasCollided");
                 towObjectActor = null;
                 Recycler.Recycle<ProjectileTowObject>(this);
                 return;
