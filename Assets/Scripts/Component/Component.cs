@@ -22,7 +22,7 @@ namespace StarSalvager
         public bool IsMarkedOnGrid { get; set; }
 
         public Vector2 AddMove => GetTowardsPlayer();
-        private Vector2 _added;
+        private float _speed;
         
 
         //====================================================================================================================//
@@ -52,16 +52,16 @@ namespace StarSalvager
             var playerLocation = LevelManager.Instance.BotInLevel.transform.position;
             var direction = (Vector2)(playerLocation - transform.position).normalized;
 
-            _added += direction / 5f;
+            _speed += 0.2f;
 
-            return _added;
+            return direction * _speed;
         }
 
         //====================================================================================================================//
         
         public void CustomRecycle(params object[] args)
         {
-            _added = Vector2.zero;
+            _speed = 0f;
         }
     }
 }
