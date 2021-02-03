@@ -16,10 +16,14 @@ namespace StarSalvager.AI
 {
     public class VoltEnemy : Enemy
     {
-        public float anticipationTime = 0.75f;
-        
+        private float anticipationTime => 0.0f;
+        private float timeChooseNewPosition => 1.5f;
+
+        public float AverageOrbitDistance = 6.5f;
+        public int LaserDamage = 8;
+
         //====================================================================================================================//
-        
+
         public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
@@ -34,11 +38,14 @@ namespace StarSalvager.AI
         
 
         private float _anticipationTime;
-        private float _minDistance => 4;
-        private float _maxDistance => 5;
+        public float _minDistance => AverageOrbitDistance - 0.5f;
+        public float _maxDistance => AverageOrbitDistance + 0.5f;
 
-        private float _repositionMinDistance => 1;
-        private float _repositionMaxDistance => 2;
+        private float _repositionMinDistance => 0.75f;
+        private float _repositionMaxDistance => 1.5f;
+
+        private bool _hasReachedPlayer = false;
+        private float _timeChooseNewPosition = 0.0f;
 
         [SerializeField]
         private LayerMask collisionMask;
@@ -50,6 +57,9 @@ namespace StarSalvager.AI
         public override void LateInit()
         {
             base.LateInit();
+
+            _hasReachedPlayer = false;
+            _timeChooseNewPosition = 0.0f;
 
             _targetOffset = ChooseOffset(_minDistance, _maxDistance);
             SetState(STATE.MOVE);
@@ -109,7 +119,7 @@ namespace StarSalvager.AI
 
                     break;
                 case STATE.MOVE:
-                    _jumpCount = Random.Range(4, 7);
+                    _jumpCount = Random.Range(6, 9);
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
@@ -153,14 +163,28 @@ namespace StarSalvager.AI
 
         private void MoveState()
         {
-            var currentPosition = transform.position;
-            var targetPosition = _playerLocation + _targetOffset;
-            if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
+            if (_hasReachedPlayer)
             {
-                transform.position = Vector2.MoveTowards(currentPosition, targetPosition, EnemyMovementSpeed * Time.deltaTime);
-                return;
+                _timeChooseNewPosition += Time.deltaTime;
             }
 
+            if (_timeChooseNewPosition < timeChooseNewPosition)
+            {
+                var currentPosition = transform.position;
+                var targetPosition = _playerLocation + _targetOffset;
+                if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
+                {
+                    transform.position = Vector2.MoveTowards(currentPosition, targetPosition, EnemyMovementSpeed * Time.deltaTime);
+                    return;
+                }
+            }
+            else
+            {
+                Debug.Log("Player is cheesing the volt, reposition");
+            }
+
+            _hasReachedPlayer = true;
+            _timeChooseNewPosition = 0;
             _jumpCount--;
 
             if (_jumpCount <= 0)
@@ -196,11 +220,11 @@ namespace StarSalvager.AI
             Vector2 rotatedAngle;
             if (Vector2.Distance(transform.position, _playerLocation) >= _maxDistance)
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-140, -100)) * angleBetweenBotAndEnemy;
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-150, -90)) * angleBetweenBotAndEnemy;
             }
             else
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-90, -60)) * angleBetweenBotAndEnemy;
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-100, -50)) * angleBetweenBotAndEnemy;
             }
             
             var pos = rotatedAngle * Random.Range(minDist, maxDist);
@@ -250,8 +274,7 @@ namespace StarSalvager.AI
 
             if (didHitTarget)
             {
-                var damage = 10;
-                LevelManager.Instance.BotInLevel.TryHitAt(targetLocation, damage);
+                LevelManager.Instance.BotInLevel.TryHitAt(targetLocation, LaserDamage);
             }
 
 
