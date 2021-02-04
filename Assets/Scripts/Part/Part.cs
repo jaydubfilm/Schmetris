@@ -21,7 +21,7 @@ namespace StarSalvager
 
         private void SetupColoredSquares()
         {
-            var partGradeData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(Type).partGrade;
+            var partGradeData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(Type).partGrade2;
 
             var bitProfileData = FactoryManager.Instance.BitProfileData;
             var colors = new Dictionary<BIT_TYPE, Color>
@@ -29,7 +29,8 @@ namespace StarSalvager
                 [BIT_TYPE.BLUE] = bitProfileData.GetProfile(BIT_TYPE.BLUE).color,
                 [BIT_TYPE.RED] = bitProfileData.GetProfile(BIT_TYPE.RED).color,
                 [BIT_TYPE.GREY] = bitProfileData.GetProfile(BIT_TYPE.GREY).color,
-                [BIT_TYPE.YELLOW] = bitProfileData.GetProfile(BIT_TYPE.YELLOW).color
+                [BIT_TYPE.YELLOW] = bitProfileData.GetProfile(BIT_TYPE.YELLOW).color,
+                [BIT_TYPE.GREEN] = bitProfileData.GetProfile(BIT_TYPE.GREEN).color
             };
 
             switch (partGradeData.Types.Count)
@@ -87,6 +88,7 @@ namespace StarSalvager
                     //TODO Only show the 3 colors
                     break;
                 case 4:
+                case 5:
                     //TODO Show all 4 colors
                     for (var i = 0; i < 4; i++)
                     {

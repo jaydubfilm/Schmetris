@@ -1669,7 +1669,7 @@ namespace StarSalvager
         
         private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
         {
-            var types = partRemoteData.partGrade.Types;
+            var types = partRemoteData.partGrade2.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
             var upgradePatchSum = part.Patches.GetPatchUpgradersSum();

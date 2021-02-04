@@ -20,11 +20,16 @@ MonoBehaviour:
     burnType: 0
     dataTest: []
     PatchSockets: 0
-    partGrade:
-      Types: 
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
       minBitLevel: 0
-      needsBitsToFunction: 0
-      values: []
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Core
     partType: 0
     lockRotation: 0
@@ -38,17 +43,16 @@ MonoBehaviour:
     - key: PartCapacity
       value: 12
     PatchSockets: 2
-    partGrade:
-      Types: 00000000
-      minBitLevel: 0
-      needsBitsToFunction: 0
-      values:
-      - 0
-      - 4
-      - 7
-      - 7
-      - 7
-      - 7
+    partGrade2:
+      useTypes: 31
+      requireBit: 0
+      minBitLevel: 1
+      Default: 0
+      lvl1: 4
+      lvl2: 7
+      lvl3: 7
+      lvl4: 7
+      lvl5: 7
   - name: Repairer
     partType: 2
     lockRotation: 0
@@ -60,17 +64,16 @@ MonoBehaviour:
     - key: Radius
       value: 1
     PatchSockets: 2
-    partGrade:
-      Types: 03000000
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
       minBitLevel: 1
-      needsBitsToFunction: 1
-      values:
-      - 0
-      - 10
-      - 20
-      - 30
-      - 40
-      - 50
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Armor
     partType: 3
     lockRotation: 0
@@ -79,17 +82,16 @@ MonoBehaviour:
     burnType: 0
     dataTest: []
     PatchSockets: 2
-    partGrade:
-      Types: 03000000
-      minBitLevel: 0
-      needsBitsToFunction: 0
-      values:
-      - 0.1
-      - 0.2
-      - 0.3
-      - 0.4
-      - 0.5
-      - 0.6
+    partGrade2:
+      useTypes: 4
+      requireBit: 0
+      minBitLevel: 1
+      Default: 0.1
+      lvl1: 0.2
+      lvl2: 0.3
+      lvl3: 0.4
+      lvl4: 0.5
+      lvl5: 0.6
   - name: Gun
     partType: 4
     lockRotation: 0
@@ -104,16 +106,16 @@ MonoBehaviour:
     - key: Projectile
       value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
     PatchSockets: 2
-    partGrade:
-      Types: 04000000
-      minBitLevel: 0
-      needsBitsToFunction: 1
-      values:
-      - 1
-      - 1.25
-      - 1.5
-      - 2
-      - 3
+    partGrade2:
+      useTypes: 8
+      requireBit: 1
+      minBitLevel: 1
+      Default: 0
+      lvl1: 1
+      lvl2: 1.25
+      lvl3: 1.5
+      lvl4: 2
+      lvl5: 3
   - name: Triple Shot
     partType: 12
     lockRotation: 1
@@ -128,11 +130,16 @@ MonoBehaviour:
     - key: Projectile
       value: 00c01728-210c-4944-b1a3-0c3bf2183d42
     PatchSockets: 2
-    partGrade:
-      Types: 
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
       minBitLevel: 0
-      needsBitsToFunction: 0
-      values: []
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Shield
     partType: 5
     lockRotation: 0
@@ -143,15 +150,16 @@ MonoBehaviour:
     - key: Cooldown
       value: 15
     PatchSockets: 2
-    partGrade:
-      Types: 01000000
-      minBitLevel: 1
-      needsBitsToFunction: 1
-      values:
-      - 2
-      - 3
-      - 4
-      - 5
+    partGrade2:
+      useTypes: 1
+      requireBit: 1
+      minBitLevel: 2
+      Default: 0
+      lvl1: 0
+      lvl2: 2
+      lvl3: 3
+      lvl4: 4
+      lvl5: 5
   - name: Bomb
     partType: 7
     lockRotation: 0
@@ -164,14 +172,16 @@ MonoBehaviour:
     - key: Damage
       value: 50
     PatchSockets: 2
-    partGrade:
-      Types: 05000000
-      minBitLevel: 2
-      needsBitsToFunction: 1
-      values:
-      - 1
-      - 2
-      - 3
+    partGrade2:
+      useTypes: 16
+      requireBit: 1
+      minBitLevel: 3
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 1
+      lvl4: 2
+      lvl5: 3
   - name: Missile
     partType: 13
     lockRotation: 0
@@ -185,11 +195,16 @@ MonoBehaviour:
     - key: Projectile
       value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
     PatchSockets: 2
-    partGrade:
-      Types: 
-      minBitLevel: 0
-      needsBitsToFunction: 0
-      values: []
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
+      minBitLevel: 1
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Sniper
     partType: 14
     lockRotation: 0
@@ -203,15 +218,16 @@ MonoBehaviour:
     - key: Probability
       value: 0.7
     PatchSockets: 2
-    partGrade:
-      Types: 04000000
-      minBitLevel: 1
-      needsBitsToFunction: 1
-      values:
-      - 1
-      - 1.5
-      - 2
-      - 3
+    partGrade2:
+      useTypes: 8
+      requireBit: 1
+      minBitLevel: 2
+      Default: 0
+      lvl1: 0
+      lvl2: 1
+      lvl3: 1.5
+      lvl4: 2
+      lvl5: 3
   - name: Blaster
     partType: 15
     lockRotation: 0
@@ -219,11 +235,16 @@ MonoBehaviour:
     burnType: 2
     dataTest: []
     PatchSockets: 2
-    partGrade:
-      Types: 
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
       minBitLevel: 0
-      needsBitsToFunction: 0
-      values: []
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Freeze
     partType: 6
     lockRotation: 0
@@ -236,15 +257,16 @@ MonoBehaviour:
     - key: Radius
       value: 15
     PatchSockets: 2
-    partGrade:
-      Types: 05000000
-      minBitLevel: 1
-      needsBitsToFunction: 1
-      values:
-      - 2
-      - 3
-      - 4
-      - 5
+    partGrade2:
+      useTypes: 16
+      requireBit: 1
+      minBitLevel: 2
+      Default: 0
+      lvl1: 0
+      lvl2: 2
+      lvl3: 3
+      lvl4: 4
+      lvl5: 5
   - name: Vampire
     partType: 33
     lockRotation: 0
@@ -256,16 +278,16 @@ MonoBehaviour:
     - key: Time
       value: 5
     PatchSockets: 2
-    partGrade:
-      Types: 01000000
+    partGrade2:
+      useTypes: 1
+      requireBit: 1
       minBitLevel: 1
-      needsBitsToFunction: 0
-      values:
-      - 0.1
-      - 0.15
-      - 0.2
-      - 0.25
-      - 0.5
+      Default: 0.1
+      lvl1: 0.1
+      lvl2: 0.15
+      lvl3: 0.2
+      lvl4: 0.25
+      lvl5: 0.5
   - name: Upgrader
     partType: 34
     lockRotation: 0
@@ -273,11 +295,16 @@ MonoBehaviour:
     burnType: 0
     dataTest: []
     PatchSockets: 0
-    partGrade:
-      Types: 
-      minBitLevel: 0
-      needsBitsToFunction: 0
-      values: []
+    partGrade2:
+      useTypes: 0
+      requireBit: 0
+      minBitLevel: 1
+      Default: 0
+      lvl1: 0
+      lvl2: 0
+      lvl3: 0
+      lvl4: 0
+      lvl5: 0
   - name: Wild Card
     partType: 35
     lockRotation: 0
@@ -285,16 +312,16 @@ MonoBehaviour:
     burnType: 5
     dataTest: []
     PatchSockets: 2
-    partGrade:
-      Types: 05000000
-      minBitLevel: 1
-      needsBitsToFunction: 1
-      values:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
+    partGrade2:
+      useTypes: 16
+      requireBit: 1
+      minBitLevel: 2
+      Default: 0
+      lvl1: 0
+      lvl2: 1
+      lvl3: 2
+      lvl4: 3
+      lvl5: 4
   - name: Railgun
     partType: 36
     lockRotation: 0
@@ -308,14 +335,13 @@ MonoBehaviour:
     - key: Cooldown
       value: 0.8
     PatchSockets: 2
-    partGrade:
-      Types: 05000000
-      minBitLevel: 0
-      needsBitsToFunction: 0
-      values:
-      - 0.8
-      - 0.6
-      - 0.45
-      - 0.35
-      - 0.25
-      - 0.2
+    partGrade2:
+      useTypes: 16
+      requireBit: 0
+      minBitLevel: 1
+      Default: 0.8
+      lvl1: 0.4
+      lvl2: 0.2
+      lvl3: 0.1
+      lvl4: 0.05
+      lvl5: 0.025
