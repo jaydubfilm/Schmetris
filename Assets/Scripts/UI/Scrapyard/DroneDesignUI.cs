@@ -205,11 +205,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitPurchasePatches()
         {
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             var patches = new[]
             {
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -218,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -227,7 +228,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -236,7 +237,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
