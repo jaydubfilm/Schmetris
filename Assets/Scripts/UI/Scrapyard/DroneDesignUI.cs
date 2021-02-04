@@ -286,8 +286,10 @@ namespace StarSalvager.UI.Scrapyard
             var cost = startingHealth - currentHealth;
             var components = PlayerDataManager.GetComponents();
 
-            repairButtonText.text = $"Repair {cost}";
-            repairButton.interactable = !(cost > components);
+            var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
+
+            repairButtonText.text = $"Repair {finalCost}";
+            repairButton.interactable = !(finalCost > components);
         }
 
         #endregion //Other
