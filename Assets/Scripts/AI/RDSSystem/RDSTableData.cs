@@ -115,6 +115,7 @@ namespace StarSalvager
             for (var i = 0; i < m_rdsLootDatas.Count; i++)
             {
                 m_rdsLootDatas[i].EditorSetParentContainer(this);
+                m_rdsLootDatas[i].showProbability = m_weightingType == WEIGHTING_TYPE.Weighted;
             }
             
             UpdateChance();
