@@ -113,7 +113,7 @@ namespace StarSalvager
             {
                 var partType = part.Type;
                 
-                if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                if (partType == PART_TYPE.EMPTY /*|| partType == PART_TYPE.CORE*/)
                     continue;
                 
                 if(outData.ContainsKey(partType))
