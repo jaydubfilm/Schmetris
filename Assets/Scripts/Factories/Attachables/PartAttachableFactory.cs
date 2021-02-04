@@ -1,10 +1,13 @@
-﻿using Recycling;
+﻿using System;
+using Recycling;
 using StarSalvager.Factories.Data;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.Factories
 {
@@ -40,15 +43,35 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public PART_TYPE GetBasicWreckPartTypeOption(PART_TYPE? exclusionType = null)
+        public static void SelectPartOptions(ref PART_TYPE[] options, in bool isBasic = false)
         {
-            List<PART_TYPE> partType = new List<PART_TYPE>
-            {
-                PART_TYPE.GUN,
-                PART_TYPE.RAILGUN
-            };
+            var partTypes = isBasic
+                ? new List<PART_TYPE>
+                {
+                    PART_TYPE.GUN,
+                    PART_TYPE.RAILGUN
+                }
+                : new List<PART_TYPE>
+                {
+                    PART_TYPE.GUN,
+                    PART_TYPE.SNIPER,
+                    PART_TYPE.RAILGUN,
+                    PART_TYPE.BOMB,
+                    PART_TYPE.FREEZE,
+                    PART_TYPE.ARMOR,
+                    PART_TYPE.SHIELD,
+                    PART_TYPE.REPAIR
+                };
 
-            if (exclusionType.HasValue)
+            for (int i = 0; i < options.Length; i++)
+            {
+                var option = partTypes[Random.Range(0, partTypes.Count)];
+                partTypes.Remove(option);
+
+                options[i] = option;
+            }
+
+            /*if (exclusionType.HasValue)
             {
                 partType.Remove(exclusionType.Value);
             }
@@ -56,14 +79,16 @@ namespace StarSalvager.Factories
             if (partType.Count != 0) 
                 return partType[Random.Range(0, partType.Count)];
             
-            Debug.LogError("No valid part types to return");
+            throw new ArgumentException("No valid part types to return");*/
             
-            return PART_TYPE.GUN;
+            /*Debug.LogError("No valid part types to return");
+            
+            return PART_TYPE.GUN;*/
         }
 
-        public PART_TYPE GetWreckPartTypeOption(PART_TYPE? exclusionType = null)
+        /*public static PART_TYPE GetWreckPartTypeOption(PART_TYPE? exclusionType = null)
         {
-            List<PART_TYPE> partType = new List<PART_TYPE>
+            var partType = new List<PART_TYPE>
             {
                 PART_TYPE.GUN,
                 PART_TYPE.SNIPER,
@@ -78,17 +103,18 @@ namespace StarSalvager.Factories
 
             if (exclusionType.HasValue)
             {
-                partType.Remove(exclusionType.Value);
+                var index = partType.FindIndex(x => x == exclusionType.Value);
+                partType.RemoveAt(index);
             }
 
             if (partType.Count == 0)
             {
-                Debug.LogError("No valid part types to return");
-                return PART_TYPE.GUN;
+                throw new ArgumentException("No valid part types to return");
+                //return PART_TYPE.GUN;
             }
 
             return partType[Random.Range(0, partType.Count)];
-        }
+        }*/
 
         //============================================================================================================//
 

@@ -1,45 +1,42 @@
-﻿using StarSalvager.Factories;
+﻿using System;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 
 namespace StarSalvager.UI.Scrapyard
 {
     public class PartChoiceUI : MonoBehaviour
     {
-        [SerializeField]
-        private PartChoice partChoice;
+        [Serializable]
+        private struct PartSelectionUI
+        {
+            public Button optionButton;
+            public Image optionImage;
+            public TMP_Text optionText;
+        }
 
 
         [SerializeField]
         private GameObject partChoiceWindow;
 
         [SerializeField]
-        private Button buttonOptionOne;
-        [SerializeField]
-        private Button buttonOptionTwo;
-        [SerializeField]
-        private Image buttonImageOptionOne;
-        [SerializeField]
-        private Image buttonImageOptionTwo;
-        [SerializeField]
-        private TMP_Text partTextOptionOne;
-        [SerializeField]
-        private TMP_Text partTextOptionTwo;
+        private PartSelectionUI[] selectionUis;
 
-        private PART_TYPE partTypeOptionOne;
-        private PART_TYPE partTypeOptionTwo;
-
+        private PART_TYPE[] _partOptions;
 
         // Start is called before the first frame update
         private void Start()
         {
+            _partOptions = new PART_TYPE[2];
             InitButtons();
         }
 
@@ -49,30 +46,37 @@ namespace StarSalvager.UI.Scrapyard
 
         public void Init()
         {
-            Random.InitState(System.DateTime.Now.Millisecond);
+            var partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-
-            if (Globals.CurrentSector == 0 && Globals.CurrentWave <= 1)
+            void SetUI(in int index, in PART_TYPE partType)
             {
-                partTypeOptionOne = partAttachableFactory.GetBasicWreckPartTypeOption();
-                partTypeOptionTwo = partAttachableFactory.GetBasicWreckPartTypeOption(partTypeOptionOne);
+                selectionUis[index].optionImage.sprite = partAttachableFactory.GetProfileData(partType).Sprite;
+                selectionUis[index].optionText.text = $"{partType}";
             }
-            else
+            
+            Random.InitState(DateTime.Now.Millisecond);
+
+            //Only use isBasic if the player is selecting the first Sector First Wave
+            PartAttachableFactory.SelectPartOptions(ref _partOptions,
+                Globals.CurrentSector == 0 && Globals.CurrentWave <= 1);
+
+
+            if (_partOptions[0] == _partOptions[1])
+                throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
+
+            for (var i = 0; i < _partOptions.Length; i++)
             {
-                partTypeOptionOne = partAttachableFactory.GetWreckPartTypeOption();
-                partTypeOptionTwo = partAttachableFactory.GetWreckPartTypeOption(partTypeOptionTwo);
+                SetUI(i, _partOptions[i]);
             }
-
-            buttonImageOptionOne.sprite = partAttachableFactory.GetProfileData(partTypeOptionOne).Sprite;
-            buttonImageOptionTwo.sprite = partAttachableFactory.GetProfileData(partTypeOptionTwo).Sprite;
-
-            partTextOptionOne.text = $"{partTypeOptionOne}";
-            partTextOptionTwo.text = $"{partTypeOptionTwo}";
         }
 
         private void InitButtons()
         {
+            PART_TYPE GetPartType(in int index)
+            {
+                return _partOptions[index];
+            }
+            
             void CreatePart(PART_TYPE partType)
             {
                 var patchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).PatchSockets;
@@ -88,16 +92,15 @@ namespace StarSalvager.UI.Scrapyard
                 
                 partChoiceWindow.SetActive(false);
             }
-            
-            buttonOptionOne.onClick.AddListener(() =>
-            {
-                CreatePart(partTypeOptionOne);
-            });
 
-            buttonOptionTwo.onClick.AddListener(() =>
+            for (int i = 0; i < selectionUis.Length; i++)
             {
-                CreatePart(partTypeOptionTwo);
-            });
+                var index = i;
+                selectionUis[i].optionButton.onClick.AddListener(() =>
+                {
+                    CreatePart(GetPartType(index));
+                });
+            }
         }
 
         #endregion //Init
