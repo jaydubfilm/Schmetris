@@ -302,7 +302,7 @@ namespace StarSalvager.Values
                 switch (partRemoteData.partType)
                 {
                     //Still want to be able to upgrade the core, just don't want to buy new ones?
-                    case PART_TYPE.CORE:
+                    //case PART_TYPE.CORE:
                     case PART_TYPE.SPIKES:
                     case PART_TYPE.LASER:
                     case PART_TYPE.GRENADE:

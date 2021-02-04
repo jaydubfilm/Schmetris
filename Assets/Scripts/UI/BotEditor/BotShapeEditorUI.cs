@@ -394,8 +394,8 @@ namespace StarSalvager.UI
             //FIXME This needs to move to the Factory
             foreach (var partRemoteData in _remotePartProfileScriptable.partRemoteData)
             {
-                if (partRemoteData.partType == PART_TYPE.CORE)
-                    continue;
+                /*if (partRemoteData.partType == PART_TYPE.CORE)
+                    continue;*/
 
                 var element = partsScrollView.AddElement(partRemoteData, $"{partRemoteData.partType}", true);
                 element.Init(partRemoteData, OnBrickElementPressed);

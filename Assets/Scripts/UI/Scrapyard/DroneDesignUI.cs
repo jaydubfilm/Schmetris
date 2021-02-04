@@ -392,8 +392,8 @@ namespace StarSalvager.UI.Scrapyard
 
             switch (partType)
             {
-                case PART_TYPE.CORE:
-                    return "Core Magnetism";
+                /*case PART_TYPE.CORE:
+                    return "Core Magnetism";*/
                 case PART_TYPE.REPAIR:
                     return "Repair bit hp per second";
                 case PART_TYPE.ARMOR:
@@ -440,8 +440,8 @@ namespace StarSalvager.UI.Scrapyard
 
             switch (partRemoteData.partType)
             {
-                case PART_TYPE.CORE:
-                    return $"{(int) value}\nBits";
+                /*case PART_TYPE.CORE:
+                    return $"{(int) value}\nBits";*/
                 case PART_TYPE.REPAIR:
                     return $"{(int) value}hp/s";
                 case PART_TYPE.ARMOR:
@@ -488,7 +488,7 @@ namespace StarSalvager.UI.Scrapyard
                 case PART_TYPE.SHIELD:
                 case PART_TYPE.ARMOR:
                 case PART_TYPE.REPAIR:
-                case PART_TYPE.CORE:
+                //case PART_TYPE.CORE:
                 case PART_TYPE.UPGRADER:
                 case PART_TYPE.WILDCARD:
                     return string.Empty;
