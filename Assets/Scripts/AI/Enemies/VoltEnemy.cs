@@ -175,6 +175,7 @@ namespace StarSalvager.AI
                 if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
                 {
                     transform.position = Vector2.MoveTowards(currentPosition, targetPosition, EnemyMovementSpeed * Time.deltaTime);
+                    m_mostRecentMovementDirection = (transform.position - currentPosition).normalized;
                     return;
                 }
             }

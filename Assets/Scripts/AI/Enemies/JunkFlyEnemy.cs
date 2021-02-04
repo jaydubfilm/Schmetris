@@ -150,6 +150,7 @@ namespace StarSalvager.AI
         private void MoveState()
         {
             Vector3 movementDirection = GetMovementDirection(_playerLocation).normalized;
+            m_mostRecentMovementDirection = movementDirection;
 
             transform.position += (movementDirection * (m_enemyData.MovementSpeed * Time.deltaTime));
 

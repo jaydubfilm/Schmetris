@@ -133,10 +133,12 @@ namespace StarSalvager.AI
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
             {
                 transform.position = Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
+                m_mostRecentMovementDirection = (transform.position - currentPosition).normalized;
                 return;
             }
 
             //TODO If within threshold, move to anticipation state
+            m_mostRecentMovementDirection = Vector3.zero;
             SetState(STATE.ANTICIPATION);
         }
 
