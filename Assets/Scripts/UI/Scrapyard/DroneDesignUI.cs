@@ -323,7 +323,7 @@ namespace StarSalvager.UI.Scrapyard
             var partType = (PART_TYPE) partData.Type;
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            var bitType = !partRemote.partGrade.Types.IsNullOrEmpty() ? partRemote.partGrade.Types[0] : BIT_TYPE.NONE;
+            var bitType = !partRemote.partGrade2.Types.IsNullOrEmpty() ? partRemote.partGrade2.Types[0] : BIT_TYPE.NONE;
 
             var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
             var bitProfile = bitType == BIT_TYPE.NONE
@@ -372,7 +372,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     gradeUis[i].bitImage.sprite = bitProfile.GetSprite(i);
 
-                    var hasLevel = partRemote.partGrade.minBitLevel <= levelOffset;
+                    var hasLevel = partRemote.partGrade2.HasPartGrade(levelOffset);
                     gradeUis[i].bitImage.color = hasLevel ? Color.white : Color.grey;
                     gradeUis[i].bitImage.rectTransform.localScale = hasLevel ? Vector3.one : Vector3.one * 0.9f;
                 }
