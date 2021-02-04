@@ -163,7 +163,7 @@ namespace StarSalvager
                     direction = Random.value < 0.5f ? DIRECTION.LEFT : DIRECTION.RIGHT;
                 }
 
-                Debug.Log($"Hit Direction: {dir} [{direction}]");
+                //Debug.Log($"Hit Direction: {dir} [{direction}]");
 
                 //Only want to move the bot if we're legally allowed
                 if (bot.TryAsteroidBounceAt(worldHitPoint, Globals.AsteroidDamage, out var destroyed))
