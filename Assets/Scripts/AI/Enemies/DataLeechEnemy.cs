@@ -38,7 +38,7 @@ namespace StarSalvager.AI
             SetState(Attached ? STATE.ATTACK : STATE.PURSUE);
         }
 
-        public override void ChangeHealth(float amount)
+        /*public override void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
             
@@ -66,9 +66,7 @@ namespace StarSalvager.AI
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
             SetState(STATE.DEATH);
-
-            Recycler.Recycle<DataLeechEnemy>(this);
-        }
+        }*/
 
         public override void OnBumped()
         {

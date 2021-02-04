@@ -18,10 +18,12 @@ MonoBehaviour:
     description: 
     Levels:
     - level: 1
+      cost: 10
       Properties:
       - key: Multiplier
         value: 0.1
     - level: 2
+      cost: 20
       Properties:
       - key: Multiplier
         value: 0.2
@@ -31,10 +33,12 @@ MonoBehaviour:
     description: 
     Levels:
     - level: 1
+      cost: 10
       Properties:
       - key: Multiplier
         value: 0.1
     - level: 2
+      cost: 20
       Properties:
       - key: Multiplier
         value: 0.2
@@ -44,10 +48,12 @@ MonoBehaviour:
     description: 
     Levels:
     - level: 1
+      cost: 10
       Properties:
       - key: Multiplier
         value: 0.1
     - level: 2
+      cost: 20
       Properties:
       - key: Multiplier
         value: 0.2
@@ -57,10 +63,12 @@ MonoBehaviour:
     description: 
     Levels:
     - level: 1
+      cost: 0
       Properties:
       - key: Multiplier
         value: 0.1
     - level: 2
+      cost: 0
       Properties:
       - key: Multiplier
         value: 0.2
@@ -100,7 +108,9 @@ MonoBehaviour:
     description: 
     Levels:
     - level: 1
+      cost: 10
       Properties: []
     - level: 2
+      cost: 20
       Properties: []
     allowedParts: 00000000040000000e0000000600000007000000020000000300000021000000050000002300000024000000

@@ -20,7 +20,7 @@ namespace StarSalvager.AI
         private float timeChooseNewPosition => 1.5f;
 
         public float AverageOrbitDistance = 6.5f;
-        public int LaserDamage = 8;
+        public int LaserDamage = 1;
 
         //====================================================================================================================//
 
@@ -38,11 +38,11 @@ namespace StarSalvager.AI
         
 
         private float _anticipationTime;
-        public float _minDistance => AverageOrbitDistance - 0.5f;
-        public float _maxDistance => AverageOrbitDistance + 0.5f;
+        public float _minDistance => AverageOrbitDistance - 1.5f;
+        public float _maxDistance => AverageOrbitDistance + 1.5f;
 
-        private float _repositionMinDistance => 0.75f;
-        private float _repositionMaxDistance => 1.5f;
+        private float _repositionMinDistance => 0.5f;
+        private float _repositionMaxDistance => 1.75f;
 
         private bool _hasReachedPlayer = false;
         private float _timeChooseNewPosition = 0.0f;
@@ -64,35 +64,6 @@ namespace StarSalvager.AI
             _targetOffset = ChooseOffset(_minDistance, _maxDistance);
             SetState(STATE.MOVE);
         }
-
-        //============================================================================================================//
-
-        public override void ChangeHealth(float amount)
-        {
-            CurrentHealth += amount;
-
-            if (amount < 0)
-            {
-                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
-            }
-
-            if (CurrentHealth > 0)
-                return;
-
-            DropLoot();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-
-
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            Recycler.Recycle<VoltEnemy>(this);
-        }
-
 
         //============================================================================================================//
 
@@ -175,6 +146,7 @@ namespace StarSalvager.AI
                 if (Vector2.Distance(currentPosition, targetPosition) > 0.1f)
                 {
                     transform.position = Vector2.MoveTowards(currentPosition, targetPosition, EnemyMovementSpeed * Time.deltaTime);
+                    m_mostRecentMovementDirection = (transform.position - currentPosition).normalized;
                     return;
                 }
             }
@@ -220,11 +192,11 @@ namespace StarSalvager.AI
             Vector2 rotatedAngle;
             if (Vector2.Distance(transform.position, _playerLocation) >= _maxDistance)
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-150, -90)) * angleBetweenBotAndEnemy;
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-160, -80)) * angleBetweenBotAndEnemy;
             }
             else
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-100, -50)) * angleBetweenBotAndEnemy;
+                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -40)) * angleBetweenBotAndEnemy;
             }
             
             var pos = rotatedAngle * Random.Range(minDist, maxDist);
@@ -292,5 +264,10 @@ namespace StarSalvager.AI
         #endregion
 
         //============================================================================================================//
+
+        public override Type GetOverrideType()
+        {
+            return typeof(VoltEnemy);
+        }
     }
 }

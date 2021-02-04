@@ -298,7 +298,7 @@ namespace StarSalvager
         {
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(
                 m_botGridPosition.x + ((UnityEngine.Random.Range(0, 2) * 2 - 1) * UnityEngine.Random.Range(m_screenGridCellRange.x / 2, m_screenGridCellRange.x)), 
-                UnityEngine.Random.Range(m_screenGridCellRange.y / 2, m_screenGridCellRange.y));
+                UnityEngine.Random.Range((int)(m_screenGridCellRange.y * 0.4f), (int)(m_screenGridCellRange.y * 0.8f)));
         }
 
         //TODO: When the screen size and camera size and grid cell size systems all start working in a scaling fashion, this will need to adjust

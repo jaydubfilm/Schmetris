@@ -18,6 +18,8 @@ namespace StarSalvager.Factories.Data
             [FoldoutGroup("$name")]
             public int level;
             [FoldoutGroup("$name")]
+            public int cost;
+            [FoldoutGroup("$name")]
             public PartProperties[] Properties;
         }
         

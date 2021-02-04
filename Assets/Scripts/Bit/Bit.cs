@@ -42,6 +42,8 @@ namespace StarSalvager
 
         public bool CountTowardsMagnetism => true;
 
+        public bool HasCollided = false;
+
         //ICanCombo Properties
         //====================================================================================================================//
         public IAttachable iAttachable => this;
@@ -160,6 +162,7 @@ namespace StarSalvager
 
             if (bot.Rotating)
             {
+                HasCollided = true;
                 this.Bounce(worldHitPoint, transform.position, bot.MostRecentRotate);
                 AudioController.PlaySound(SOUND.BIT_BOUNCE);
                 return;
@@ -182,6 +185,9 @@ namespace StarSalvager
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             var inDirection = (-rayDirection).ToDirection();
             bot.TryAddNewAttachable(this, inDirection, point);
+            HasCollided = true;
+
+
         }
 
 
@@ -241,6 +247,7 @@ namespace StarSalvager
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
             SetRotating(false);
+            HasCollided = false;
 
             SetSortingLayer(LayerHelper.ACTORS);
 

@@ -18,7 +18,7 @@ using StarSalvager.Utilities.Particles;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
         public abstract bool IsAttachable { get; }
         public abstract bool IgnoreObstacleAvoidance { get; }
@@ -310,12 +310,10 @@ namespace StarSalvager.AI
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            
-            
 
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 
-            Recycler.Recycle<Enemy>(this);
+            SetState(STATE.DEATH);
         }
 
         protected void DropLoot()
@@ -370,8 +368,10 @@ namespace StarSalvager.AI
             UnregisterCanBeSeen();
         }
 
+        public abstract Type GetOverrideType();
 
-        
+
+
         //============================================================================================================//
 
     }
