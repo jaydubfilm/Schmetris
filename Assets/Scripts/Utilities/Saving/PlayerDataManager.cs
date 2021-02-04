@@ -270,6 +270,10 @@ namespace StarSalvager.Utilities.Saving
                 var data = coordinate;
                 var index = blockDatas.FindIndex(x => x.Coordinate == data);
 
+                if (index < 0)
+                    throw new ArgumentOutOfRangeException(nameof(index), index,
+                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{Newtonsoft.Json.JsonConvert.SerializeObject(blockDatas)}");
+
                 blockDatas.RemoveAt(index);
             }
 

@@ -205,11 +205,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitPurchasePatches()
         {
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             var patches = new[]
             {
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -218,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -227,7 +228,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -236,7 +237,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = 10,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -286,8 +287,10 @@ namespace StarSalvager.UI.Scrapyard
             var cost = startingHealth - currentHealth;
             var components = PlayerDataManager.GetComponents();
 
-            repairButtonText.text = $"Repair {cost}";
-            repairButton.interactable = !(cost > components);
+            var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
+
+            repairButtonText.text = $"Repair {finalCost}";
+            repairButton.interactable = !(finalCost > components);
         }
 
         #endregion //Other

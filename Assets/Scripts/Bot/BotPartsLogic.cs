@@ -111,10 +111,15 @@ namespace StarSalvager
             var outData = new Dictionary<PART_TYPE, bool>();
             foreach (var part in _parts)
             {
-                if (part.Type == PART_TYPE.EMPTY)
+                var partType = part.Type;
+                
+                if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
                     continue;
                 
-                outData.Add(part.Type, !part.Disabled);
+                if(outData.ContainsKey(partType))
+                    continue;
+                
+                outData.Add(partType, !part.Disabled);
             }
 
             return outData;

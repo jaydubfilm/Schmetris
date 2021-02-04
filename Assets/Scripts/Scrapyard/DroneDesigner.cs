@@ -927,12 +927,26 @@ namespace StarSalvager
 
         public void RepairDrone()
         {
-            var cost = Globals.BotStartingHealth - PlayerDataManager.GetBotHealth();
-            PlayerDataManager.SubtractComponent((int)cost);
-            
             var startingHealth = Globals.BotStartingHealth;
-            _scrapyardBot.SetupHealthValues(startingHealth, startingHealth);
-            PlayerDataManager.SetBotHealth(startingHealth);
+            var currentHealth = PlayerDataManager.GetBotHealth();
+            
+            
+            var cost = startingHealth - currentHealth;
+            var components = PlayerDataManager.GetComponents();
+
+            if (components == 0)
+                throw new Exception();
+
+            var finalCost = Mathf.Min(cost, components);
+            
+            
+            PlayerDataManager.SubtractComponent((int)finalCost);
+            
+            //var startingHealth = currentHealth + (int)finalCost;
+            var newHealth = Mathf.Clamp(currentHealth + (int) finalCost, 0, startingHealth);
+            
+            _scrapyardBot.SetupHealthValues(startingHealth, newHealth);
+            PlayerDataManager.SetBotHealth(newHealth);
             //_scrapyardBot
         }
         

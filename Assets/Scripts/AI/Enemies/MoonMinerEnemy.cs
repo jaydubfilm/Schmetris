@@ -63,34 +63,6 @@ namespace StarSalvager.AI
             horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
         }
 
-        //============================================================================================================//
-
-        public override void ChangeHealth(float amount)
-        {
-            CurrentHealth += amount;
-
-            if (amount < 0)
-            {
-                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
-            }
-
-            if (CurrentHealth > 0) 
-                return;
-
-            DropLoot();
-            
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            
-            
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            Recycler.Recycle<MoonMinerEnemy>(this);
-        }
-
         //====================================================================================================================//
         
 
@@ -205,10 +177,12 @@ namespace StarSalvager.AI
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
             {
                 transform.position = Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
+                m_mostRecentMovementDirection = (transform.position - currentPosition).normalized;
                 return;
             }
-            
+
             //TODO If within threshold, move to anticipation state
+            m_mostRecentMovementDirection = Vector3.zero;
             SetState(STATE.ANTICIPATION);
         }
 

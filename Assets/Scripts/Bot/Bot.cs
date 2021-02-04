@@ -399,7 +399,9 @@ namespace StarSalvager
             transform.position += Vector3.left * blackHoleAmount;
             m_distanceHorizontal -= blackHoleAmount;
 
-            var xPos = transform.position.x;
+            var currentPosition = transform.position;
+
+            //var xPos = transform.position.x;
 
             var distHorizontal = Mathf.Abs(m_distanceHorizontal);
             DIRECTION direction;
@@ -409,12 +411,12 @@ namespace StarSalvager
             if (m_distanceHorizontal < 0)
             {
                 direction = DIRECTION.LEFT;
-                canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                canMove = currentPosition.x > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
             }
             else if (m_distanceHorizontal > 0)
             {
                 direction = DIRECTION.RIGHT;
-                canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
+                canMove = currentPosition.x < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
             }
             else
             {
@@ -439,7 +441,11 @@ namespace StarSalvager
             }
 
             if (!canMove)
+            {
+                currentPosition.x = Mathf.RoundToInt(currentPosition.x);
+                transform.position = currentPosition;
                 return;
+            }
 
             var moveSpeed = _isDashing ? Globals.DashSpeed : Globals.BotHorizontalSpeed;
 
