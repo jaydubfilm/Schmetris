@@ -72,7 +72,8 @@ namespace StarSalvager.AI
                     TrySpawnDataLeech(Vector3.left);
                     TrySpawnDataLeech(Vector3.right);
                     TrySpawnDataLeech(Vector3.up);
-                    Recycler.Recycle<MoonMinerEnemy>(this);
+                    
+                    Recycler.Recycle<ToughMotherEnemy>(this);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -161,12 +162,6 @@ namespace StarSalvager.AI
         }
 
         #endregion //States
-
-        //============================================================================================================//
-
-        #region Firing
-
-        #endregion
 
         //============================================================================================================//
 
