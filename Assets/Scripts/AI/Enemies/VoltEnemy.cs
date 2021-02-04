@@ -18,6 +18,7 @@ namespace StarSalvager.AI
     {
         private float anticipationTime => 0.0f;
         private float timeChooseNewPosition => 1.5f;
+        private int chanceSwapDirections = 7;
 
         public float AverageOrbitDistance = 6.5f;
         public int LaserDamage = 1;
@@ -33,6 +34,7 @@ namespace StarSalvager.AI
         private Vector2 _playerLocation;
         private Vector2 _targetOffset;
         private int _jumpCount;
+        private bool _clockwiseMovement;
 
         //====================================================================================================================//
         
@@ -62,6 +64,10 @@ namespace StarSalvager.AI
             _timeChooseNewPosition = 0.0f;
 
             _targetOffset = ChooseOffset(_minDistance, _maxDistance);
+            _clockwiseMovement = Random.Range(0, 2) == 0;
+
+            _jumpCount = Random.Range(6, 9);
+
             SetState(STATE.MOVE);
         }
 
@@ -90,7 +96,6 @@ namespace StarSalvager.AI
 
                     break;
                 case STATE.MOVE:
-                    _jumpCount = Random.Range(6, 9);
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
@@ -159,13 +164,13 @@ namespace StarSalvager.AI
             _timeChooseNewPosition = 0;
             _jumpCount--;
 
+            _targetOffset += ChooseOffset(_repositionMinDistance, _repositionMaxDistance);
+
             if (_jumpCount <= 0)
             {
                 SetState(STATE.ANTICIPATION);
                 return;
             }
-
-            _targetOffset += ChooseOffset(_repositionMinDistance, _repositionMaxDistance);
         }
 
         private void AnticipationState()
@@ -188,16 +193,28 @@ namespace StarSalvager.AI
 
         private Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
+            if (Random.Range(0, 100) < chanceSwapDirections)
+            {
+                _clockwiseMovement = !_clockwiseMovement;
+            }
+            
             Vector2 angleBetweenBotAndEnemy = ((Vector2)transform.position - _playerLocation).normalized;
             Vector2 rotatedAngle;
+            float angle;
             if (Vector2.Distance(transform.position, _playerLocation) >= _maxDistance)
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-160, -80)) * angleBetweenBotAndEnemy;
+                angle = Random.Range(160.0f, 80.0f);
             }
             else
             {
-                rotatedAngle = Quaternion.Euler(0, 0, Random.Range(-110, -40)) * angleBetweenBotAndEnemy;
+                angle = Random.Range(110.0f, 40.0f);
             }
+
+            if (_clockwiseMovement)
+            {
+                angle *= -1;
+            }
+            rotatedAngle = Quaternion.Euler(0, 0, angle) * angleBetweenBotAndEnemy;
             
             var pos = rotatedAngle * Random.Range(minDist, maxDist);
             
@@ -240,7 +257,7 @@ namespace StarSalvager.AI
                 .CreateObject<LineShrink>();
 
             var didHitTarget = true;
-
+            _jumpCount = Random.Range(6, 9);
 
             lineShrink.Init(transform.position, targetLocation);
 
