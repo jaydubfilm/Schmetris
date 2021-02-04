@@ -46,35 +46,6 @@ namespace StarSalvager.AI
             SetState(STATE.MOVE);
         }
 
-        //============================================================================================================//
-
-        public override void ChangeHealth(float amount)
-        {
-            CurrentHealth += amount;
-
-            if (amount < 0)
-            {
-                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
-            }
-
-            if (CurrentHealth > 0)
-                return;
-
-            DropLoot();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-
-
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            Recycler.Recycle<JunkFlyEnemy>(this);
-        }
-
-
         #region Movement
 
         public override void UpdateEnemy(Vector2 playerLocation)
@@ -122,7 +93,7 @@ namespace StarSalvager.AI
 
                     break;
                 case STATE.DEATH:
-                    Recycler.Recycle<VoltEnemy>(this);
+                    Recycler.Recycle<JunkFlyEnemy>(this);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

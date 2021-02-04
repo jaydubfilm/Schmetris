@@ -310,12 +310,10 @@ namespace StarSalvager.AI
             AudioController.PlaySound(SOUND.ENEMY_DEATH);
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            
-            
 
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
 
-            Recycler.Recycle<Enemy>(this);
+            SetState(STATE.DEATH);
         }
 
         protected void DropLoot()

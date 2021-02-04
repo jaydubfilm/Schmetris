@@ -24,6 +24,8 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         private float verticalLowestAllowed;
 
+        private int _jumpCount;
+
         private Vector2 _targetLocation;
         private float _anticipationTime;
 
@@ -34,34 +36,6 @@ namespace StarSalvager.AI
             base.LateInit();
 
             SetState(STATE.MOVE);
-        }
-
-        public override void ChangeHealth(float amount)
-        {
-            CurrentHealth += amount;
-
-            if (amount < 0)
-            {
-                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
-            }
-
-            if (CurrentHealth > 0)
-                return;
-
-            DropLoot();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-
-            TrySpawnDataLeech(Vector3.left);
-            TrySpawnDataLeech(Vector3.right);
-            TrySpawnDataLeech(Vector3.up);
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            Recycler.Recycle<ToughMotherEnemy>(this);
         }
 
         //============================================================================================================//
@@ -86,6 +60,7 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     return;
                 case STATE.MOVE:
+                    _jumpCount = UnityEngine.Random.Range(3, 5);
                     _targetLocation = GetNewPosition();
                     break;
                 case STATE.ANTICIPATION:
@@ -125,6 +100,13 @@ namespace StarSalvager.AI
             }
         }
 
+        protected override void CleanStateData()
+        {
+            base.CleanStateData();
+
+            _jumpCount = 0;
+        }
+
         private void MoveState()
         {
             //TODO Move towards target position
@@ -137,9 +119,16 @@ namespace StarSalvager.AI
                 return;
             }
 
-            //TODO If within threshold, move to anticipation state
-            m_mostRecentMovementDirection = Vector3.zero;
-            SetState(STATE.ANTICIPATION);
+            _jumpCount--;
+
+            if (_jumpCount <= 0)
+            {
+                m_mostRecentMovementDirection = Vector3.zero;
+                SetState(STATE.ANTICIPATION);
+                return;
+            }
+
+            _targetLocation = GetNewPosition();
         }
 
         private void AnticipationState()
