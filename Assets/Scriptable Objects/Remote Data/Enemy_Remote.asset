@@ -267,3 +267,10 @@ MonoBehaviour:
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_rdsTableData: []
+  - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
+    m_name: LaserTurret
+    m_health: 20
+    m_movementSpeed: 0
+    m_rateOfFire: 0
+    m_dimensions: {x: 0, y: 0}
+    m_rdsTableData: []
