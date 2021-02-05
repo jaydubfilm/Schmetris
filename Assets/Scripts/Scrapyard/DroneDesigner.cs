@@ -260,7 +260,7 @@ namespace StarSalvager
             if (SelectedBrick != null)
                 return;
 
-            if (_scrapyardBot == null || mouseCoordinate == Vector2Int.zero)
+            if (_scrapyardBot == null /*|| mouseCoordinate == Vector2Int.zero*/)
                 return;
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
@@ -445,8 +445,8 @@ namespace StarSalvager
             if (attachableAtCoordinates is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY)
             {
                 //Don't want to be able to remove the core
-                if (scrapPart.Type == PART_TYPE.CORE)
-                    return;
+                /*if (scrapPart.Type == PART_TYPE.CORE)
+                    return;*/
 
                 var blockData = scrapPart.ToBlockData();
                 blockData.Coordinate = mouseCoordinate;
@@ -570,7 +570,7 @@ namespace StarSalvager
 
             var currentBlockData = PlayerDataManager.GetBlockDatas();
             //Checks to make sure there is a core on the bot
-            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+            if (currentBlockData.Count == 0 /*|| !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE)*/)
             {
                 
                 _scrapyardBot.InitBot();
@@ -622,7 +622,7 @@ namespace StarSalvager
             List<IBlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
 
             //Checks to make sure there is a core on the bot
-            if (currentBlockData.Count == 0 || !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
+            if (currentBlockData.Count == 0 /*|| !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE)*/)
             {
                 _scrapyardBot.InitBot();
             }

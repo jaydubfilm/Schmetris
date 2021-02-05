@@ -511,7 +511,7 @@ namespace StarSalvager.UI
                 var partData = partRemoteData.GetRemoteData(partType);
                 var sprite = partProfile.GetProfile(partType).Sprite;
                 
-                var types = partData.partGrade.Types;
+                var types = partData.partGrade2.Types;
                 
                 if(types.IsNullOrEmpty())
                     continue;

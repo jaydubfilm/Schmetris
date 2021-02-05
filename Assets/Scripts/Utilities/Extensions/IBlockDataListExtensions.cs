@@ -597,7 +597,7 @@ namespace StarSalvager.Utilities.Extensions
 
             if (!Recycler.TryGrab(out imageObject))
             {
-                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
+                imageObject = CreateImageObject(nameof(Part), PART_TYPE.EMPTY);
             }
 
             rect = (RectTransform)imageObject.transform;
@@ -605,7 +605,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
         }
 
         public static List<IAttachable> ImportBlockDatas(this List<IBlockData> blockDatas, bool inScrapyardForm)

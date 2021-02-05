@@ -158,14 +158,15 @@ namespace StarSalvager.Utilities.Extensions
 
                 BotDisplaySetPosition(rect, coordinate.x, coordinate.y);
 
-                if (coordinate == Vector2Int.zero)
+                imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
+                /*if (coordinate == Vector2Int.zero)
                 {
                     imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
                 }
                 else
                 {
                     imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
-                }
+                }*/
             }
 
             if (coordinates.Count > 0)
@@ -173,7 +174,7 @@ namespace StarSalvager.Utilities.Extensions
 
             if (!Recycler.TryGrab(out imageObject))
             {
-                imageObject = CreateImageObject(nameof(Part), PART_TYPE.CORE);
+                imageObject = CreateImageObject(nameof(Part), PART_TYPE.EMPTY);
             }
 
             rect = (RectTransform)imageObject.transform;
@@ -181,7 +182,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
+            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
         }
     }
 }

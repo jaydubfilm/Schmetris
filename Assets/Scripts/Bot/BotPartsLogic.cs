@@ -61,7 +61,7 @@ namespace StarSalvager
         //==============================================================================================================//
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        public int MagnetCount { get; private set; }
+        public int MagnetCount => 10;
         private int _magnetOverride;
 
         //==============================================================================================================//
@@ -113,7 +113,7 @@ namespace StarSalvager
             {
                 var partType = part.Type;
                 
-                if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                if (partType == PART_TYPE.EMPTY /*|| partType == PART_TYPE.CORE*/)
                     continue;
                 
                 if(outData.ContainsKey(partType))
@@ -152,10 +152,10 @@ namespace StarSalvager
         /// </summary>
         private void InitPartData()
         {
-            if (_magnetOverride > 0)
+            /*if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;
-            }
+            }*/
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Bit>();
@@ -183,7 +183,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             FindObjectOfType<GameUI>();
-            MagnetCount = 0;
+            //MagnetCount = 0;
 
             int value;
             foreach (var part in _parts)
@@ -204,7 +204,7 @@ namespace StarSalvager
 
                 switch (part.Type)
                 {
-                    case PART_TYPE.CORE:
+                    /*case PART_TYPE.CORE:
                         if (_magnetOverride > 0)
                             break;
 
@@ -218,7 +218,7 @@ namespace StarSalvager
                             MagnetCount += (int)floatValue;
                         }
 
-                        break;
+                        break;*/
                     case PART_TYPE.SHIELD:
                         if (_shieldTimers == null)
                             _shieldTimers = new Dictionary<Part, float>();
@@ -302,9 +302,9 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     //------------------------------------------------------------------------------------------------//
-                    case PART_TYPE.CORE:
+                    /*case PART_TYPE.CORE:
                         CoreUpdate(part, partRemoteData);
-                        break;
+                        break;*/
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.REPAIR:
                         RepairUpdate(part, partRemoteData, deltaTime);
@@ -350,7 +350,7 @@ namespace StarSalvager
         
         #region Part Updates
 
-        private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
+        /*private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
         {
             if (_magnetOverride > 0)
                 return;
@@ -366,7 +366,7 @@ namespace StarSalvager
             {
                 MagnetCount += (int)magnet;
             }
-        }
+        }*/
 
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
@@ -1669,7 +1669,7 @@ namespace StarSalvager
         
         private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
         {
-            var types = partRemoteData.partGrade.Types;
+            var types = partRemoteData.partGrade2.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
             var upgradePatchSum = part.Patches.GetPatchUpgradersSum();

@@ -206,6 +206,7 @@ namespace StarSalvager.UI.Scrapyard
         private void InitPurchasePatches()
         {
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            
             var patches = new[]
             {
                 new Purchase_PatchData
@@ -219,7 +220,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.DAMAGE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -228,7 +229,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.FIRE_RATE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -237,7 +238,7 @@ namespace StarSalvager.UI.Scrapyard
                 },
                 new Purchase_PatchData
                 {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
+                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.GRADE).Levels[0].cost,
                     PatchData = new PatchData
                     {
                         Level = 0,
@@ -323,7 +324,7 @@ namespace StarSalvager.UI.Scrapyard
             var partType = (PART_TYPE) partData.Type;
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            var bitType = !partRemote.partGrade.Types.IsNullOrEmpty() ? partRemote.partGrade.Types[0] : BIT_TYPE.NONE;
+            var bitType = !partRemote.partGrade2.Types.IsNullOrEmpty() ? partRemote.partGrade2.Types[0] : BIT_TYPE.NONE;
 
             var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
             var bitProfile = bitType == BIT_TYPE.NONE
@@ -372,7 +373,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     gradeUis[i].bitImage.sprite = bitProfile.GetSprite(i);
 
-                    var hasLevel = partRemote.partGrade.minBitLevel <= levelOffset;
+                    var hasLevel = partRemote.partGrade2.HasPartGrade(levelOffset);
                     gradeUis[i].bitImage.color = hasLevel ? Color.white : Color.grey;
                     gradeUis[i].bitImage.rectTransform.localScale = hasLevel ? Vector3.one : Vector3.one * 0.9f;
                 }
@@ -392,8 +393,8 @@ namespace StarSalvager.UI.Scrapyard
 
             switch (partType)
             {
-                case PART_TYPE.CORE:
-                    return "Core Magnetism";
+                /*case PART_TYPE.CORE:
+                    return "Core Magnetism";*/
                 case PART_TYPE.REPAIR:
                     return "Repair bit hp per second";
                 case PART_TYPE.ARMOR:
@@ -440,8 +441,8 @@ namespace StarSalvager.UI.Scrapyard
 
             switch (partRemoteData.partType)
             {
-                case PART_TYPE.CORE:
-                    return $"{(int) value}\nBits";
+                /*case PART_TYPE.CORE:
+                    return $"{(int) value}\nBits";*/
                 case PART_TYPE.REPAIR:
                     return $"{(int) value}hp/s";
                 case PART_TYPE.ARMOR:
@@ -488,7 +489,7 @@ namespace StarSalvager.UI.Scrapyard
                 case PART_TYPE.SHIELD:
                 case PART_TYPE.ARMOR:
                 case PART_TYPE.REPAIR:
-                case PART_TYPE.CORE:
+                //case PART_TYPE.CORE:
                 case PART_TYPE.UPGRADER:
                 case PART_TYPE.WILDCARD:
                     return string.Empty;
