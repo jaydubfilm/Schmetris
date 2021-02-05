@@ -35,7 +35,11 @@ namespace StarSalvager.AI
         public override void SetAttached(bool isAttached)
         {
             base.SetAttached(isAttached);
-            SetState(Attached ? STATE.ATTACK : STATE.PURSUE);
+
+            if (currentState != STATE.IDLE)
+            {
+                SetState(Attached ? STATE.ATTACK : STATE.PURSUE);
+            }
         }
 
         /*public override void ChangeHealth(float amount)
