@@ -371,7 +371,7 @@ namespace StarSalvager.UI
 
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
-            waveDataWindow.SetActive(hovered);
+            /*waveDataWindow.SetActive(hovered);
 
             if (!hovered)
                 return;
@@ -404,7 +404,7 @@ namespace StarSalvager.UI
             }
 
             //Display
-            StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));
+            StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));*/
         }
 
         private IEnumerable<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> enemies, Dictionary<BIT_TYPE, float> bits)
