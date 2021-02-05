@@ -159,7 +159,10 @@ namespace StarSalvager.AI
         {
             if (Disabled)
                 return;
-            
+
+            if (currentState == STATE.IDLE)
+                return;
+
             if (GameManager.IsState(GameState.LevelEndWave))
                 return;
             
