@@ -569,7 +569,7 @@ namespace StarSalvager
 
             //Add core component
             //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
-            var core = partFactory.CreateObject<Part>(
+            /*var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.EMPTY,
@@ -577,12 +577,12 @@ namespace StarSalvager
                     //Patches = new PatchData[patchSockets]
                 });
 
-            AttachNewBlock(Vector2Int.zero, core);
+            AttachNewBlock(Vector2Int.zero, core);*/
 
             List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
-                if (_attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
+                if (_attachedBlocks != null && _attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
                 {
                     continue;
                 }
@@ -594,6 +594,7 @@ namespace StarSalvager
                         Coordinate = botLayout[i],
                         //Patches = new PatchData[patchSockets]
                     });
+                emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{botLayout[i]}";
 
                 AttachNewBlock(botLayout[i], emptyPart);
             }
@@ -2592,18 +2593,20 @@ _isShifting = true;
                 return false;
             
             var blocksCopy = new List<IBlockData>(blocks);
+            var indexesToCheck = new List<int>();
             for (int i = toShift.Count - 1; i >= 0; i--)
             {
                 var shiftData = toShift[i];
                 var index = blocksCopy.FindIndex(x => x.Coordinate == shiftData.StartCoordinate);
 
                 blocks[index].Coordinate = shiftData.TargetCoordinate;
+                indexesToCheck.Add(index);
             }
             
             //Look at all the blocks that can disconnect
-            foreach (var block in blocks.OfType<BitData>())
+            foreach (var index in indexesToCheck)
             {
-                var hasPathToCore = blocks.HasPathToCore(block);
+                var hasPathToCore = blocks.HasPathToCore(blocks[index]);
 
                 if(hasPathToCore)
                     continue;
