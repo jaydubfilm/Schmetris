@@ -129,11 +129,16 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
+            if (CameraController.IsPointInCameraRect(new Vector2(0, transform.position.y), Constants.VISIBLE_GAME_AREA))
+            {
+                SetState(STATE.ANTICIPATION);
+                return;
+            }
             //--------------------------------------------------------------------------------------------------------//
 
             Vector2 angle1 = Vector2.down;
-            Vector2 angle2 = Quaternion.Euler(0, 0, 65) * Vector2.down;
-            Vector2 angle3 = Quaternion.Euler(0, 0, -65) * Vector2.down;
+            Vector2 angle2 = Quaternion.Euler(0, 0, 115) * Vector2.down;
+            Vector2 angle3 = Quaternion.Euler(0, 0, -115) * Vector2.down;
             
             var raycastHit1 = Physics2D.Raycast(transform.position, angle1, 100, collisionMask.value);
             var raycastHit2 = Physics2D.Raycast(transform.position, angle2, 100, collisionMask.value);
