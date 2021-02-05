@@ -116,7 +116,7 @@ namespace StarSalvager.AI
             return playerLocation - (Vector2)transform.position;
         }
 
-        private Bit FindClosestBitOnBot()
+        public Bit FindClosestBitOnBot()
         {
             var bot = LevelManager.Instance.BotInLevel;
             var bits = bot.attachedBlocks.OfType<Bit>().ToArray();

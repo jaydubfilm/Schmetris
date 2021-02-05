@@ -973,7 +973,11 @@ namespace StarSalvager
 
                     if (enemyAttachable is BorrowerEnemy borrowerEnemy && !(closestAttachable is Bit bit))
                     {
-                        return false;
+                        closestAttachable = borrowerEnemy.FindClosestBitOnBot();
+                        if (closestAttachable == null)
+                        {
+                            return false;
+                        }
                     }
 
                     //FIXME This isn't sufficient to prevent multiple parasites using the same location
@@ -1754,6 +1758,11 @@ namespace StarSalvager
             if (Destroyed)
                 return;
 
+            if (newAttachable is BorrowerEnemy)
+            {
+                direction = GetAvailableConnectionDirection(existingAttachable.Coordinate, direction);
+            }
+
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
@@ -1828,6 +1837,46 @@ namespace StarSalvager
 
             if (updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+        }
+
+        private DIRECTION GetAvailableConnectionDirection(Vector2Int existingAttachableCoordinate, DIRECTION direction)
+        {
+            var coordinate = existingAttachableCoordinate + direction.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return direction;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.UP.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.UP;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.RIGHT.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.RIGHT;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.LEFT.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.LEFT;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.DOWN.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.DOWN;
+            }
+
+            return direction;
         }
 
 
