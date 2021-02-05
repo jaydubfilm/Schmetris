@@ -89,7 +89,7 @@ namespace StarSalvager.AI
         {
             _playerLocation = playerlocation;
 
-            m_mostRecentMovementDirection = GetMovementDirection(_playerLocation);
+            //m_mostRecentMovementDirection = GetMovementDirection(_playerLocation);
             
             StateUpdate();
         }
@@ -116,6 +116,7 @@ namespace StarSalvager.AI
                 case STATE.PURSUE:
                     break;
                 case STATE.ATTACK:
+                    m_mostRecentMovementDirection = Vector3.zero;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<DataLeechEnemy>(this);
@@ -157,6 +158,7 @@ namespace StarSalvager.AI
             currentPosition = Vector3.MoveTowards(currentPosition, _playerLocation,
                 m_enemyData.MovementSpeed * Time.deltaTime);
 
+            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
 
             transform.position = currentPosition;
         }
