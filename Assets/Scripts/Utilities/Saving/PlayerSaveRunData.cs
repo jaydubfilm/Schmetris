@@ -89,6 +89,15 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             0
         };
 
+        public Dictionary<BIT_TYPE, int> gradeCollectionCounts = new Dictionary<BIT_TYPE, int>
+        {
+            [BIT_TYPE.RED] = 0,
+            [BIT_TYPE.YELLOW] = 0,
+            [BIT_TYPE.GREY] = 0,
+            [BIT_TYPE.BLUE] = 0,
+            [BIT_TYPE.GREEN] = 0
+        };
+
         //============================================================================================================//
 
         public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
@@ -106,6 +115,16 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             }
 
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
+        }
+
+        //====================================================================================================================//
+
+        public void AddBitToCollection(in BIT_TYPE bitType)
+        {
+            if (gradeCollectionCounts[bitType] == 10)
+                return;
+            
+            gradeCollectionCounts[bitType]++;
         }
 
         //============================================================================================================//

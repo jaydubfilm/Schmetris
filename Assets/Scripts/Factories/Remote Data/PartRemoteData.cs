@@ -35,7 +35,7 @@ namespace StarSalvager.Factories.Data
             [SerializeField, ToggleLeft]
             private bool requireBit;
             
-            [SerializeField, Range(1, 5), EnableIf("requireBit"), LabelText("Min Lvl"), LabelWidth(75)]
+            [SerializeField, Range(1, 4), EnableIf("requireBit"), LabelText("Min Lvl"), LabelWidth(75)]
             private int minBitLevel;
 
             [HorizontalGroup("row1")]
@@ -49,8 +49,8 @@ namespace StarSalvager.Factories.Data
             private float lvl3;
             [SerializeField, BoxGroup("row1/Lvl 4"), HideLabel, DisableIf("@requireBit && minBitLevel > 4")]
             private float lvl4;
-            [SerializeField, BoxGroup("row1/Lvl 5"), HideLabel]
-            private float lvl5;
+            //[SerializeField, BoxGroup("row1/Lvl 5"), HideLabel]
+            //private float lvl5;
 
             //====================================================================================================================//
 
@@ -108,9 +108,9 @@ namespace StarSalvager.Factories.Data
                     case 3:
                         value = lvl4;
                         break;
-                    case 4:
-                        value = lvl5;
-                        break;
+                    //case 4:
+                    //    value = lvl5;
+                    //    break;
                     default:
                         value = requireBit ? 0.0f : Default;
                         break;

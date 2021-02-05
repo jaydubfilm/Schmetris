@@ -494,6 +494,9 @@ namespace StarSalvager
                 {
                     continue;
                 }
+                
+                if(obstacle is IRecycled recycled && recycled.IsRecycled)
+                    continue;
 
                 var pos = obstacle.transform.localPosition;
                 Vector2 gridPosition = LevelManager.Instance.WorldGrid.GetCoordinatesOfGridSquareAtLocalPosition(pos);

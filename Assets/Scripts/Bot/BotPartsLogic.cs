@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
@@ -1680,8 +1681,8 @@ namespace StarSalvager
             for (var i = 0; i < count; i++)
             {
                 levels[i] = types[i] == BIT_TYPE.NONE
-                    ? bot.attachedBlocks.GetHighestLevelBit()
-                    : bot.attachedBlocks.GetHighestLevelBit(types[i]);
+                    ? GetCollectionLevel()
+                    : GetCollectionLevel(types[i]);
             }
 
             var minLevel = levels.Min();
@@ -1692,6 +1693,41 @@ namespace StarSalvager
             var active = partRemoteData.HasPartGrade(minLevel, out value);
 
             return active;
+        }
+
+        private int GetCollectionLevel()
+        {
+            var count = PlayerDataManager.GetBitCollection().Values.Max();
+
+            return CountToLevel(count);
+        }
+        private int GetCollectionLevel(in BIT_TYPE bitType)
+        {
+            var collection = PlayerDataManager.GetBitCollection();
+            var count = collection[bitType];
+
+            return CountToLevel(count);
+            
+        }
+
+        private static int CountToLevel(in int count)
+        {
+            if (count == 0)
+                return -1;
+
+            if (count == 10)
+                return 3;
+
+            if (count >= 6)
+                return 2;
+
+            if (count >= 3)
+                return 1;
+            
+            if (count >= 1)
+                return 0;
+            
+            throw new ArgumentOutOfRangeException(nameof(count), count, null);
         }
     }
 }

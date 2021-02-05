@@ -607,6 +607,9 @@ namespace StarSalvager
             var camera = CameraController.Camera.GetComponent<CameraController>();
             camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
+            
+            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            GameUi.UpdateBitGradeCollection(PlayerDataManager.GetBitCollection());
         }
 
         public void InitBot(IEnumerable<IAttachable> botAttachables)
@@ -624,14 +627,13 @@ namespace StarSalvager
                 AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
             }
 
-
-
             var camera = CameraController.Camera.GetComponent<CameraController>();
             camera.SetLookAtFollow(_followTarget.transform);
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
             GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            GameUi.UpdateBitGradeCollection(PlayerDataManager.GetBitCollection());
 
         }
 
@@ -922,6 +924,8 @@ namespace StarSalvager
 
                                 return false;
                             }
+                            
+                            
 
                             PlayerDataManager.RecordBitConnection(bit.Type);
                             //Add these to the block depending on its relative position
@@ -1740,6 +1744,11 @@ namespace StarSalvager
 
             if(updateColliderGeometry)
                 CompositeCollider2D.GenerateGeometry();
+            
+            if (newAttachable is Bit bit && bit.level >= Globals.AddToCollectionBitLevel)
+            {
+                AddBitToCollection(bit);
+            }
 
             AttachedChanged();
         }
@@ -1802,12 +1811,14 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit _:
+                case Bit bit:
                     if (checkForCombo)
                         CheckForCombosAround(coordinate);
 
-                    /*if(existingAttachable is Part part)
-                        TryAutoProcessBit(bit, part);*/
+                    if (bit.level >= Globals.AddToCollectionBitLevel)
+                    {
+                        AddBitToCollection(bit);
+                    }
 
                     AttachedChanged();
                     break;
@@ -2166,7 +2177,7 @@ namespace StarSalvager
             AttachedChanged();
         }
 
-        public void DestroyAttachable(IAttachable attachable)
+        /*public void DestroyAttachable(IAttachable attachable)
         {
             switch (attachable)
             {
@@ -2181,7 +2192,7 @@ namespace StarSalvager
                     DestroyAttachable<EnemyAttachable>(attachable);
                     break;
             }
-        }
+        }*/
 
         /// <summary>
         /// Removes the attachable, and will recycle it under the T bin.
@@ -2211,27 +2222,21 @@ namespace StarSalvager
             CheckForDisconnects();
         }
 
+        [Obsolete]
         private void AttachedChanged()
         {
-            var bitTypes = new[]
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-                BIT_TYPE.GREEN
-            };
+            //TODO Need to check for any attached lvl 3?
+        }
+        
+        private void AddBitToCollection(in Bit bit)
+        {
+            CreateBonusShapeParticleEffect(bit.transform.position);
+            PlayerDataManager.AddBitToCollection(bit.Type);
+            DestroyAttachable<Bit>(bit);
 
             BotPartsLogic.PopulatePartsList();
-            var outData = new Dictionary<BIT_TYPE, int>();
-            foreach (var bitType in bitTypes)
-            {
-                var level = attachedBlocks.GetHighestLevelBit(bitType);
 
-                outData.Add(bitType, level);
-            }
-
-            GameUi.SetBitLevelImages(outData);
+            GameUi.UpdateBitGradeCollection(PlayerDataManager.GetBitCollection());
             GameUi.SetPartImages(BotPartsLogic.GetPartStates());
         }
 
@@ -3171,26 +3176,23 @@ _isShifting = true;
 
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
-                    //Show the gears hint, after the third time
-                    /*if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+                    if (closestToCore is Bit bit && closestToCore.level >= Globals.AddToCollectionBitLevel)
                     {
-                        var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
-
-                        Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
-
-                        HintManager.TryShowHint(HINT.GEARS, iHasBounds);
-                    }*/
-
-                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
-                    switch (closestToCore)
+                        AddBitToCollection(bit);
+                    }
+                    else
                     {
-                        case Bit _:
-                            CheckForCombosAround(attachedBlocks.OfType<Bit>());
-                            break;
-                        case Crate _:
-                            throw new NotImplementedException();
-                            //CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
-                            break;
+                        //We need to update the positions and level before we move them in case we interact with bits while they're moving
+                        switch (closestToCore)
+                        {
+                            case Bit _:
+                                CheckForCombosAround(attachedBlocks.OfType<Bit>());
+                                break;
+                            case Crate _:
+                                throw new NotImplementedException();
+                                //CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
+                                break;
+                        }
                     }
 
                     CheckForBonusShapeMatches();
@@ -3203,6 +3205,8 @@ _isShifting = true;
             CheckForDisconnects();
             //--------------------------------------------------------------------------------------------------------//
         }
+
+
 
         /*private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
         {

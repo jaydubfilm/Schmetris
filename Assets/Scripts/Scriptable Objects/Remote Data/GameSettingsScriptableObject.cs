@@ -14,6 +14,9 @@ namespace StarSalvager.ScriptableObjects
         public bool shuffleCanDisconnect = true;
         [BoxGroup("Prototyping"), Range(0.01f, 1f)]
         public float shuffleTimeThreshold = 0.3f;
+        
+        [BoxGroup("Prototyping"), Range(0, 5)]
+        public int addToCollectionBitLevel = 2;
 
 
         [BoxGroup("Debugging")]

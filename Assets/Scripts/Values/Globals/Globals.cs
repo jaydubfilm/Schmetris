@@ -38,6 +38,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static float AddToCollectionBitLevel => m_gameSettings.addToCollectionBitLevel;
+        
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;

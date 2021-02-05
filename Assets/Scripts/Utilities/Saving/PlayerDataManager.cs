@@ -206,6 +206,16 @@ namespace StarSalvager.Utilities.Saving
         //Run Data Functions
         //====================================================================================================================//
 
+        public static void AddBitToCollection(in BIT_TYPE bitType)
+        {
+            PlayerRunData.AddBitToCollection(bitType);
+        }
+        
+        public static IReadOnlyDictionary<BIT_TYPE, int> GetBitCollection()
+        {
+            return PlayerRunData.gradeCollectionCounts;
+        }
+        
         public static int GetCurrentNode()
         {
             return PlayerRunData.CurrentNode;

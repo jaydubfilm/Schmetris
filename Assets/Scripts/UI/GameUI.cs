@@ -287,10 +287,11 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        
+        
         [SerializeField]
         private RectTransform[] bitLevelContainerTransforms;
-        private List<Image[]> _bitLevelImages;
-
+        private List<Image[]> _bitGradeCollectionImages;
         
         [SerializeField]
         private RectTransform[] partIconContainerTransforms;
@@ -374,7 +375,7 @@ namespace StarSalvager.UI
             SetupBitLevelImages();
             SetupPartIconImages();
             
-            SetBitLevelImages(new Dictionary<BIT_TYPE, int>());
+            UpdateBitGradeCollection(new Dictionary<BIT_TYPE, int>());
             
             InitSmartWeaponUI();
             ResetIcons();
@@ -438,27 +439,21 @@ namespace StarSalvager.UI
         
         private void SetupBitLevelImages()
         {
-            _bitLevelImages = new List<Image[]>();
+            _bitGradeCollectionImages = new List<Image[]>();
             foreach (var bitLevelContainerTransform in bitLevelContainerTransforms)
             {
                 var images = bitLevelContainerTransform.GetComponentsInChildren<Image>();
                 
-                _bitLevelImages.Add(images);
+                _bitGradeCollectionImages.Add(images);
             }
 
             for (int i = 0; i < _bitTypes.Length; i++)
             {
-                var bitType = _bitTypes[i];
-
-                for (int ii = 0; ii < _bitLevelImages[i].Length; ii++)
+                for (int ii = 0; ii < _bitGradeCollectionImages[i].Length; ii++)
                 {
-                    var level = 4 - ii;
-                    var sprite = FactoryManager.Instance.BitProfileData.GetProfile(bitType).GetSprite(level);
-                    var image = _bitLevelImages[i][ii];
+                    var image = _bitGradeCollectionImages[i][ii];
                     
-                    image.gameObject.name = sprite.name;
-                    image.sprite = sprite;
-                    image.enabled = false;
+                    image.color = Color.gray;
                 }
             }
             
@@ -553,35 +548,37 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
-        public void SetBitLevelImages(Dictionary<BIT_TYPE, int> bitLevels)
+        /*public void SetBitLevelImages(Dictionary<BIT_TYPE, int> bitLevels)
         {
             foreach (var bitLevel in bitLevels)
             {
                 SetBitLevelImages(bitLevel.Key, bitLevel.Value);
             }
-        }
-        
-        //Uses levels 0-4
-        public void SetBitLevelImages(in BIT_TYPE type, in int level)
+        }*/
+
+        public void UpdateBitGradeCollection(IReadOnlyDictionary<BIT_TYPE, int> gradeCollection)
         {
-            var bitType = type;
-            var index = _bitTypes.ToList().FindIndex(x => x == bitType);
+            if(gradeCollection.IsNullOrEmpty())
+                return;
 
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-
-            var images = _bitLevelImages[index];
-
-            for (var i = 0; i < images.Length; i++)
+            for (int i = 0; i < _bitTypes.Length; i++)
             {
-                var active = (4 - i) <= level;
-                
-                //TODO Need to set the color depending on the level
-                images[i].color = (4 - i) == level ? Color.white : Color.gray;
-                images[i].enabled = active;
-
+                var type = _bitTypes[i];
+                SetBitLevelImages(i, gradeCollection[type]);
             }
+        }
 
+        private void SetBitLevelImages(in int index, in int count)
+        {
+            var type = _bitTypes[index];
+            var columnImages = _bitGradeCollectionImages[index];
+
+            var color = FactoryManager.Instance.BitProfileData.GetProfile(type).color;
+
+            for (int i = 0, j = columnImages.Length - 1; i < columnImages.Length; i++, j--)
+            {
+                columnImages[j].color = i + 1 <= count ? color : Color.gray;
+            }
         }
 
         //============================================================================================================//
