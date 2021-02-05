@@ -107,8 +107,6 @@ namespace StarSalvager.AI
         public override void UpdateEnemy(Vector2 playerlocation)
         {
             _playerLocation = playerlocation;
-
-            m_mostRecentMovementDirection = GetMovementDirection(_playerLocation);
             
             StateUpdate();
         }
@@ -227,15 +225,17 @@ namespace StarSalvager.AI
         private void PursueState()
         {
             //IF there is not a bit on the bot,
+            _attachTarget = FindClosestBitOnBot();
             if (_attachTarget is null)
             {
-                _attachTarget = FindClosestBitOnBot();
                 return;
             }
             
             //Fly towards a specific Bit on the bot
             var currentPosition = transform.position;
             var targetPosition = _attachTarget.transform.position;
+
+            m_mostRecentMovementDirection = GetMovementDirection(targetPosition);
 
             currentPosition = Vector3.MoveTowards(currentPosition, targetPosition,
                 m_enemyData.MovementSpeed * Time.deltaTime);

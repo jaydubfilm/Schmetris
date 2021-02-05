@@ -959,9 +959,6 @@ namespace StarSalvager
                 //FIXME This seems to be wanting to attach to the wrong direction
                 case EnemyAttachable enemyAttachable:
                 {
-                    bool legalDirection;
-
-
                     //Get the coordinate of the collision
                     var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
 
@@ -969,11 +966,14 @@ namespace StarSalvager
 
                     closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
 
-                    switch (closestAttachable)
+                    if (closestAttachable is EnemyAttachable)
                     {
-                        case EnemyAttachable _:
-                        /*case Part part when part.Destroyed:*/
-                            return false;
+                        return false;
+                    }
+
+                    if (enemyAttachable is BorrowerEnemy borrowerEnemy && !(closestAttachable is Bit bit))
+                    {
+                        return false;
                     }
 
                     //FIXME This isn't sufficient to prevent multiple parasites using the same location
@@ -1763,6 +1763,11 @@ namespace StarSalvager
                 Debug.Log(
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {onAttachable.gameObject.name}",
                     newAttachable.gameObject);
+
+                if (newAttachable is BorrowerEnemy)
+                {
+                    return;
+                }
 
                 AttachToClosestAvailableCoordinate(coordinate,
                     newAttachable,
