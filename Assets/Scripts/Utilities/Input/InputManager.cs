@@ -425,6 +425,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SpeedChange(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
 
@@ -442,6 +445,9 @@ namespace StarSalvager.Utilities.Inputs
         
         private void Dash(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
                 return;
             
@@ -461,6 +467,9 @@ namespace StarSalvager.Utilities.Inputs
 
         private void MovementDelegator(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             switch (ctx.action.name)
             {
                 case "Side Movement":
