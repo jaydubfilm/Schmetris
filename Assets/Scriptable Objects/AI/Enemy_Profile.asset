@@ -34,7 +34,7 @@ MonoBehaviour:
     m_isAttachable: 1
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
-    m_projectileType: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
   - EnemyName: MoonMiner
     m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
@@ -108,4 +108,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 664e16696cc0fe04fb5d099965730870,
       type: 2}
-    m_projectileType: 4d6f76fa-aeab-4014-9b8d-be98a3e39ff2
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+  - EnemyName: LaserTurret
+    m_sprite: {fileID: 21300000, guid: a1a6060a50d17f94182fe9ee1edc138b, type: 3}
+    m_enemyPrefab: {fileID: 5323334717173405649, guid: 6a418ce366687b74f9eb1edda0428808,
+      type: 3}
+    m_enemyTypeID: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 0}
+    m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8

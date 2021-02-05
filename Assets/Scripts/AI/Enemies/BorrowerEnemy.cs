@@ -296,7 +296,9 @@ namespace StarSalvager.AI
             var carrySpeed = EnemyMovementSpeed / 2f;
             
             currentPosition += direction  * (carrySpeed * Time.deltaTime);
-            
+
+            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
+
             transform.position = currentPosition;
             
             
