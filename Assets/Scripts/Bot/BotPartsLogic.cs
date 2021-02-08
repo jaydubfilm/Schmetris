@@ -1669,6 +1669,8 @@ namespace StarSalvager
         
         private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
         {
+            value = 0.0f;
+            
             var types = partRemoteData.partGrade2.Types;
             var count = types.Count;
             var upgradersNextTo = GetUpgradersAroundPart(part);
@@ -1683,6 +1685,9 @@ namespace StarSalvager
                     ? bot.attachedBlocks.GetHighestLevelBit()
                     : bot.attachedBlocks.GetHighestLevelBit(types[i]);
             }
+
+            if (levels.IsNullOrEmpty())
+                return false;
 
             var minLevel = levels.Min();
 
