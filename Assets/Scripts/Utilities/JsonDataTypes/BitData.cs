@@ -21,7 +21,7 @@ namespace StarSalvager.Utilities.JsonDataTypes
 
         public bool Equals(BitData other)
         {
-            return Type == other.Type && Level == other.Level;
+            return Type == other.Type && Level == other.Level && Coordinate.Equals(other.Coordinate);
         }
 
         public override bool Equals(object obj)
@@ -31,10 +31,7 @@ namespace StarSalvager.Utilities.JsonDataTypes
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return (Type * 397) ^ Level;
-            }
+            return base.GetHashCode();
         }
 
         #endregion //IEquatable
