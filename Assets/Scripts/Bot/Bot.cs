@@ -631,7 +631,7 @@ namespace StarSalvager
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
-            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
         }
 
@@ -2260,28 +2260,29 @@ namespace StarSalvager
             CheckForDisconnects();
         }
 
+        [Obsolete]
         private void AttachedChanged()
         {
-            var bitTypes = new[]
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-                BIT_TYPE.GREEN
-            };
-
-            BotPartsLogic.PopulatePartsList();
-            var outData = new Dictionary<BIT_TYPE, int>();
-            foreach (var bitType in bitTypes)
-            {
-                var level = attachedBlocks.GetHighestLevelBit(bitType);
-
-                outData.Add(bitType, level);
-            }
-
-            GameUi.SetBitLevelImages(outData);
-            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            //var bitTypes = new[]
+            //{
+            //    BIT_TYPE.RED,
+            //    BIT_TYPE.YELLOW,
+            //    BIT_TYPE.GREY,
+            //    BIT_TYPE.BLUE,
+            //    BIT_TYPE.GREEN
+            //};
+//
+            //BotPartsLogic.PopulatePartsList();
+            //var outData = new Dictionary<BIT_TYPE, int>();
+            //foreach (var bitType in bitTypes)
+            //{
+            //    var level = attachedBlocks.GetHighestLevelBit(bitType);
+//
+            //    outData.Add(bitType, level);
+            //}
+//
+            //GameUi.SetBitLevelImages(outData);
+            //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
         }
 
         //============================================================================================================//

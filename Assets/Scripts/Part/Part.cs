@@ -13,98 +13,6 @@ namespace StarSalvager
 {
     public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart, ICustomRecycle
     {
-        //Power Colour Indicator
-        //====================================================================================================================//
-        
-        [SerializeField]
-        private SpriteRenderer[] coloredSquares;
-
-        private void SetupColoredSquares()
-        {
-            var partGradeData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(Type).partGrade2;
-
-            var bitProfileData = FactoryManager.Instance.BitProfileData;
-            var colors = new Dictionary<BIT_TYPE, Color>
-            {
-                [BIT_TYPE.BLUE] = bitProfileData.GetProfile(BIT_TYPE.BLUE).color,
-                [BIT_TYPE.RED] = bitProfileData.GetProfile(BIT_TYPE.RED).color,
-                [BIT_TYPE.GREY] = bitProfileData.GetProfile(BIT_TYPE.GREY).color,
-                [BIT_TYPE.YELLOW] = bitProfileData.GetProfile(BIT_TYPE.YELLOW).color,
-                [BIT_TYPE.GREEN] = bitProfileData.GetProfile(BIT_TYPE.GREEN).color
-            };
-
-            switch (partGradeData.Types.Count)
-            {
-                case 0:
-                    for (var i = 0; i < 4; i++)
-                    {
-                        var coloredSquare = coloredSquares[i];
-
-                        coloredSquare.enabled = false;
-                    }
-                    return;
-                case 1 when partGradeData.Types[0] == BIT_TYPE.NONE:
-                    var keys = colors.Keys.ToList();
-                    //TODO Show all 4 colors
-                    for (var i = 0; i < 4; i++)
-                    {
-                        var coloredSquare = coloredSquares[i];
-
-                        coloredSquare.enabled = true;
-                        coloredSquare.color = colors[keys[i]];
-                    }
-                    break;
-                case 1:
-                    //TODO Set all colors to this
-                    foreach (var coloredSquare in coloredSquares)
-                    {
-                        coloredSquare.enabled = true;
-                        coloredSquare.color = colors[partGradeData.Types[0]];
-                    }
-                    break;
-                case 2:
-                    var flipped = false;
-                    foreach (var coloredSquare in coloredSquares)
-                    {
-                        coloredSquare.enabled = true;
-                        coloredSquare.color = flipped ? colors[partGradeData.Types[1]] : colors[partGradeData.Types[0]];
-
-                        flipped = !flipped;
-                    }
-                    //TODO Split the colors in half
-                    break;
-                case 3:
-                    for (var i = 0; i < 4; i++)
-                    {
-                        var coloredSquare = coloredSquares[i];
-
-                        coloredSquare.enabled = i <= 2;
-                        
-                        if(i > 2)
-                            continue;
-                        
-                        coloredSquare.color = colors[partGradeData.Types[i]];
-                    }
-                    //TODO Only show the 3 colors
-                    break;
-                case 4:
-                case 5:
-                    //TODO Show all 4 colors
-                    for (var i = 0; i < 4; i++)
-                    {
-                        var coloredSquare = coloredSquares[i];
-
-                        coloredSquare.enabled = true;
-                        
-                        coloredSquare.color = colors[partGradeData.Types[i]];
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(partGradeData.Types.Count), partGradeData.Types.Count, null);
-            }
-            
-        }
-        
         //IAttachable Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
@@ -233,8 +141,6 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE) blockData.Type;
             Patches = blockData.Patches;
-
-            SetupColoredSquares();
         }
 
         //============================================================================================================//

@@ -1658,45 +1658,16 @@ namespace StarSalvager
 
         
         
-
+        [Obsolete]
         private bool HasPartGrade(in Part part, out float value)
         {
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-
-            return HasPartGrade(part, partRemoteData, out value);
+            throw new NotImplementedException();
         }
         
+        [Obsolete]
         private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
         {
-            value = 0.0f;
-            
-            var types = partRemoteData.partGrade2.Types;
-            var count = types.Count;
-            var upgradersNextTo = GetUpgradersAroundPart(part);
-            var upgradePatchSum = part.Patches.GetPatchUpgradersSum();
-            
-            
-            var levels = new int[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                levels[i] = types[i] == BIT_TYPE.NONE
-                    ? bot.attachedBlocks.GetHighestLevelBit()
-                    : bot.attachedBlocks.GetHighestLevelBit(types[i]);
-            }
-
-            if (levels.IsNullOrEmpty())
-                return false;
-
-            var minLevel = levels.Min();
-
-            minLevel = Mathf.Clamp(minLevel + upgradersNextTo + upgradePatchSum, -1, 5);
-            
-            //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
-            var active = partRemoteData.HasPartGrade(minLevel, out value);
-
-            return active;
+            throw new NotImplementedException();
         }
     }
 }

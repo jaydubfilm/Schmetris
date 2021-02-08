@@ -300,7 +300,8 @@ namespace StarSalvager.UI.Scrapyard
 
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
-            partDetailsContainerRectTransform.gameObject.SetActive(show);
+            throw new NotImplementedException();
+            /*partDetailsContainerRectTransform.gameObject.SetActive(show);
 
             if (!show)
                 return;
@@ -381,12 +382,13 @@ namespace StarSalvager.UI.Scrapyard
                 gradeUis[i].text.text = $"{GetGradeDetails(levelOffset, partRemote, partData.Patches)}";
             }
 
-            //====================================================================================================================//
+            //====================================================================================================================//*/
 
         }
 
         //====================================================================================================================//
 
+        /*
         private string GetPartDetails(in PART_TYPE partType)
         {
             //var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
@@ -394,7 +396,7 @@ namespace StarSalvager.UI.Scrapyard
             switch (partType)
             {
                 /*case PART_TYPE.CORE:
-                    return "Core Magnetism";*/
+                    return "Core Magnetism";#1#
                 case PART_TYPE.REPAIR:
                     return "Repair bit hp per second";
                 case PART_TYPE.ARMOR:
@@ -442,7 +444,7 @@ namespace StarSalvager.UI.Scrapyard
             switch (partRemoteData.partType)
             {
                 /*case PART_TYPE.CORE:
-                    return $"{(int) value}\nBits";*/
+                    return $"{(int) value}\nBits";#1#
                 case PART_TYPE.REPAIR:
                     return $"{(int) value}hp/s";
                 case PART_TYPE.ARMOR:
@@ -530,7 +532,7 @@ namespace StarSalvager.UI.Scrapyard
                         null);
             }
 
-        }
+        }*/
 
     }
 }
