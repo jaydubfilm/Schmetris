@@ -11,6 +11,7 @@ using System.Linq;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
+using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
@@ -275,6 +276,11 @@ namespace StarSalvager.AI
             
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
             explosion.transform.position = worldPosition;
+            
+            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
+            var time = particleScaling.AnimationTime;
+
+            Destroy(explosion, time);
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
