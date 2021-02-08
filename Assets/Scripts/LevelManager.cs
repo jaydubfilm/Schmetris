@@ -894,7 +894,10 @@ namespace StarSalvager
             m_runLostState = true;
             //GameTimer.SetPaused(false);
 
-            OutroScene.gameObject.SetActive(true);
+            Globals.CurrentSector = 0;
+            Globals.CurrentWave = 0;
+
+        OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }
 
