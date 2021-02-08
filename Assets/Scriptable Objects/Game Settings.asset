@@ -105,10 +105,10 @@ MonoBehaviour:
   bitsPushThroughParts: 1
   bitShiftTime: 0.17
   comboMergeTime: 0.17
-  DASTime: 0.15
+  DASTime: 0.11
   botHorizontalSpeed: 30
   botRotationSpeed: 650
-  botContinuousRotationSpeed: 700
+  botContinuousRotationSpeed: 900
   dashDistance: 8
   dashSpeed: 60
   dashCooldown: 0
