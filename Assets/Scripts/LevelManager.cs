@@ -362,7 +362,7 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
             
-            PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
+            //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
             AudioController.CrossFadeTrack(MUSIC.NONE);
                 
             m_levelManagerUI.ShowSummaryWindow(

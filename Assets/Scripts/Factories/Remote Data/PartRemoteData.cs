@@ -24,9 +24,6 @@ namespace StarSalvager.Factories.Data
         [TextArea, FoldoutGroup("$name")]
         public string description;
 
-        //[FoldoutGroup("$name")]
-        //public BIT_TYPE burnType;
-
         [FoldoutGroup("$name")]
         public PartProperties[] dataTest;
 
