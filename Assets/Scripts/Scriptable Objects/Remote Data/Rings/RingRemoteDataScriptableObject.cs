@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
 {
+    //For descriptions of what each of these values represent, see the comments in WaveConfigurationData
     [CreateAssetMenu(fileName = "Ring Remote", menuName = "Star Salvager/Scriptable Objects/Ring Remote Data")]
     public class RingRemoteDataScriptableObject : ScriptableObject
     {
