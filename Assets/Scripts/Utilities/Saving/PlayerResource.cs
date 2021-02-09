@@ -70,7 +70,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SubtractAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botAmmo = Mathf.Min(_botAmmo - amount, 0);
+            _botAmmo = Mathf.Max(_botAmmo - amount, 0);
 
             if (updateValuesChanged)
             {

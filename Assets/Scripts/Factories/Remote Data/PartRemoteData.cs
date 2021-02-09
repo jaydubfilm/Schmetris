@@ -32,8 +32,7 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")]
         public BIT_TYPE category;
-        [FoldoutGroup("$name")] 
-        public float defaultValue;
+
         [FoldoutGroup("$name")] 
         public int ammoUseCost;
 

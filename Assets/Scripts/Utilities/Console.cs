@@ -68,12 +68,13 @@ namespace StarSalvager.Utilities
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             /*string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),*/
+            string.Concat("set ", "ammo ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
             string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
-            string.Concat("set ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
+            
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
             //string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
@@ -619,6 +620,34 @@ namespace StarSalvager.Utilities
                     //FactoryManager.Instance?.ChangeBitProfile(intAmount);
 
                     break;*/
+                case "ammo":
+                    if (!float.TryParse(split[3], out var floatAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
+                                continue;
+
+                            PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
+                        }
+                        PlayerDataManager.OnValuesChanged?.Invoke();
+
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        PlayerDataManager.GetResource(bitType).SetAmmo(floatAmount);
+                    }
+                    else
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                    }
+                    break;
                 case "bot":
                 {
                     switch (split[2].ToLower())
@@ -752,34 +781,7 @@ namespace StarSalvager.Utilities
                     }
 
                     break;
-                case "liquid":
-                    if (!float.TryParse(split[3], out var floatAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-                        {
-                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                                continue;
-
-                            PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
-                        }
-                        PlayerDataManager.OnValuesChanged?.Invoke();
-
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-                        PlayerDataManager.GetResource(bitType).SetAmmo(floatAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                    }
-                    break;
+                
                 case "orientation":
                     switch (split[2].ToLower())
                     {
