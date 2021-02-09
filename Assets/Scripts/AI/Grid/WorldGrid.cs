@@ -325,6 +325,7 @@ namespace StarSalvager
             }
         }
 
+        //Finds a random available position in the grid region that is somewhat spaced from other currently existing objects
         public Vector2? GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool allowOverlap, bool forceSpawn, bool inRandomYLevel)
         {
             if (!randomPositionFindingLists.ContainsKey(gridRegion))

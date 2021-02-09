@@ -191,6 +191,7 @@ namespace StarSalvager.AI
             SetState(STATE.MOVE);
         }
 
+        //What this is doing is alternating between two different angle offsets from the boss to determine next location. If it is far away, it chooses an angle that guides it inwards, and vice versa if it is close, to make it vary around in movement a bunch.
         private Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
             if (Random.Range(0, 100) < chanceSwapDirections)
