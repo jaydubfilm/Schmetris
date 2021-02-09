@@ -25,11 +25,11 @@ namespace StarSalvager.Utilities.Saving
         [JsonProperty]
         private List<PlayerResource> _playerResources = new List<PlayerResource>
         {
-            new PlayerResource(BIT_TYPE.BLUE, 0, 100),
-            new PlayerResource(BIT_TYPE.GREEN, 0, 100),
-            new PlayerResource(BIT_TYPE.GREY, 0, 100),
-            new PlayerResource(BIT_TYPE.RED, 0, 100),
-            new PlayerResource(BIT_TYPE.YELLOW, 0, 100)
+            new PlayerResource(BIT_TYPE.BLUE, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.GREEN, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.GREY, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.RED, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.YELLOW, Globals.StartingAmmo, 100)
         };
 
         public int RationCapacity = 500;

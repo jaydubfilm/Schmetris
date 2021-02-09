@@ -40,6 +40,8 @@ namespace StarSalvager.Values
 
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
+        public static int StartingAmmo => m_gameSettings.startingAmmo;
+        
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
         public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
         
