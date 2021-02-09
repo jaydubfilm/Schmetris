@@ -63,9 +63,6 @@ MonoBehaviour:
     _animation: {fileID: 0}
     _sprite: {fileID: -7433627698002936791, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
-  - partType: 33
-    _animation: {fileID: 0}
-    _sprite: {fileID: 21300000, guid: 6d3ed3fd4303488469c713824ce9ba93, type: 3}
   - partType: 34
     _animation: {fileID: 0}
     _sprite: {fileID: 21300000, guid: 33e29f6d59c4af14da383a4a138a78c8, type: 3}

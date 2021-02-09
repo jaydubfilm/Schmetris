@@ -3127,6 +3127,11 @@ _isShifting = true;
         /// <exception cref="Exception"></exception>
         private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
         {
+            void AddBitAmmo(in BIT_TYPE bitType, in int amount)
+            {
+                PlayerDataManager.GetResource(bitType).AddAmmo(amount);
+            }
+
             ICanCombo closestToCore = null;
             var shortest = 999f;
 
@@ -3221,26 +3226,17 @@ _isShifting = true;
 
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
-                    //Show the gears hint, after the third time
-                    /*if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+
+                    var bit = closestToCore as Bit;
+                    if (bit != null && bit.level == 1)
                     {
-                        var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
-
-                        Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
-
-                        HintManager.TryShowHint(HINT.GEARS, iHasBounds);
-                    }*/
-
-                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
-                    switch (closestToCore)
+                        AddBitAmmo(bit.Type, 10);
+                        CheckForCombosAround(attachedBlocks.OfType<Bit>());
+                    }
+                    else if (bit != null && bit.level == 2)
                     {
-                        case Bit _:
-                            CheckForCombosAround(attachedBlocks.OfType<Bit>());
-                            break;
-                        case Crate _:
-                            throw new NotImplementedException();
-                            //CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
-                            break;
+                        AddBitAmmo(bit.Type, 50);
+                        DestroyAttachable(bit);
                     }
 
                     CheckForBonusShapeMatches();
@@ -3477,7 +3473,7 @@ _isShifting = true;
 
                 var core = attachedBlocks[0] as Part;
 
-                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
+                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).AmmoCapacity;
 
                 /*if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {

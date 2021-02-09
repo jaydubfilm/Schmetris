@@ -17,64 +17,39 @@ MonoBehaviour:
     partType: 1
     lockRotation: 0
     description: 
-    burnType: 0
     dataTest: []
+    category: 0
+    defaultValue: 0
+    ammoUseCost: 0
     PatchSockets: 0
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 0
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Repairer
     partType: 2
     lockRotation: 0
     description: Uses plasma to repair damaged parts within range.
-    burnType: 3
     dataTest:
     - key: Heal
       value: 2
     - key: Radius
       value: 1
+    category: 2
+    defaultValue: 2
+    ammoUseCost: 2
     PatchSockets: 2
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Armor
     partType: 3
     lockRotation: 0
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
-    burnType: 0
     dataTest: []
+    category: 1
+    defaultValue: 0.1
+    ammoUseCost: 2
     PatchSockets: 2
-    partGrade2:
-      useTypes: 4
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0.1
-      lvl1: 0.2
-      lvl2: 0.3
-      lvl3: 0.4
-      lvl4: 0.5
-      lvl5: 0.6
   - name: Gun
     partType: 4
     lockRotation: 0
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
-    burnType: 3
     dataTest:
     - key: Damage
       value: 7
@@ -82,23 +57,15 @@ MonoBehaviour:
       value: 0.5
     - key: Projectile
       value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
+    category: 3
+    defaultValue: 0
+    ammoUseCost: 1
     PatchSockets: 2
-    partGrade2:
-      useTypes: 8
-      requireBit: 1
-      minBitLevel: 1
-      Default: 0
-      lvl1: 1
-      lvl2: 1.25
-      lvl3: 1.5
-      lvl4: 2
-      lvl5: 3
   - name: Triple Shot
     partType: 12
     lockRotation: 1
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
-    burnType: 3
     dataTest:
     - key: Damage
       value: 15
@@ -106,64 +73,40 @@ MonoBehaviour:
       value: 0.5
     - key: Projectile
       value: 00c01728-210c-4944-b1a3-0c3bf2183d42
+    category: 0
+    defaultValue: 0
+    ammoUseCost: 0
     PatchSockets: 2
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Shield
     partType: 5
     lockRotation: 0
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
-    burnType: 1
     dataTest:
     - key: Cooldown
       value: 15
+    category: 1
+    defaultValue: 2
+    ammoUseCost: 5
     PatchSockets: 2
-    partGrade2:
-      useTypes: 1
-      requireBit: 1
-      minBitLevel: 2
-      Default: 0
-      lvl1: 0
-      lvl2: 2
-      lvl3: 3
-      lvl4: 4
-      lvl5: 5
   - name: Bomb
     partType: 7
     lockRotation: 0
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
-    burnType: 4
     dataTest:
     - key: Cooldown
       value: 5
     - key: Damage
       value: 50
+    category: 4
+    defaultValue: 10
+    ammoUseCost: 10
     PatchSockets: 2
-    partGrade2:
-      useTypes: 16
-      requireBit: 1
-      minBitLevel: 3
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 1
-      lvl4: 2
-      lvl5: 3
   - name: Missile
     partType: 13
     lockRotation: 0
     description: This medium-range heat-seeking projectile almost always hits.
-    burnType: 3
     dataTest:
     - key: Damage
       value: 5
@@ -171,22 +114,14 @@ MonoBehaviour:
       value: 1
     - key: Projectile
       value: b352a285-3a9e-4b4e-86a0-9418fbad3f29
+    category: 0
+    defaultValue: 0
+    ammoUseCost: 0
     PatchSockets: 2
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Sniper
     partType: 14
     lockRotation: 0
     description: A long range, very accurate weapon with a slow rate of fire.
-    burnType: 3
     dataTest:
     - key: Damage
       value: 50
@@ -194,116 +129,55 @@ MonoBehaviour:
       value: 3
     - key: Probability
       value: 0.7
+    category: 3
+    defaultValue: 0
+    ammoUseCost: 2
     PatchSockets: 2
-    partGrade2:
-      useTypes: 8
-      requireBit: 1
-      minBitLevel: 2
-      Default: 0
-      lvl1: 0
-      lvl2: 1
-      lvl3: 1.5
-      lvl4: 2
-      lvl5: 3
   - name: Blaster
     partType: 15
     lockRotation: 0
     description: Destroys asteroids, extracting valuable minerals.
-    burnType: 2
     dataTest: []
+    category: 0
+    defaultValue: 0
+    ammoUseCost: 0
     PatchSockets: 2
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 0
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Freeze
     partType: 6
     lockRotation: 0
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
-    burnType: 5
     dataTest:
     - key: Cooldown
       value: 15
     - key: Radius
       value: 15
+    category: 4
+    defaultValue: 10
+    ammoUseCost: 10
     PatchSockets: 2
-    partGrade2:
-      useTypes: 16
-      requireBit: 1
-      minBitLevel: 2
-      Default: 0
-      lvl1: 0
-      lvl2: 2
-      lvl3: 3
-      lvl4: 4
-      lvl5: 5
-  - name: Vampire
-    partType: 33
-    lockRotation: 0
-    description: 
-    burnType: 1
-    dataTest:
-    - key: Cooldown
-      value: 5
-    - key: Time
-      value: 5
-    PatchSockets: 2
-    partGrade2:
-      useTypes: 1
-      requireBit: 1
-      minBitLevel: 1
-      Default: 0.1
-      lvl1: 0.1
-      lvl2: 0.15
-      lvl3: 0.2
-      lvl4: 0.25
-      lvl5: 0.5
   - name: Upgrader
     partType: 34
     lockRotation: 0
     description: 
-    burnType: 0
     dataTest: []
+    category: 0
+    defaultValue: 0
+    ammoUseCost: 0
     PatchSockets: 0
-    partGrade2:
-      useTypes: 0
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0
-      lvl1: 0
-      lvl2: 0
-      lvl3: 0
-      lvl4: 0
-      lvl5: 0
   - name: Wild Card
     partType: 35
     lockRotation: 0
     description: 
-    burnType: 5
     dataTest: []
+    category: 5
+    defaultValue: 0
+    ammoUseCost: 3
     PatchSockets: 2
-    partGrade2:
-      useTypes: 16
-      requireBit: 1
-      minBitLevel: 2
-      Default: 0
-      lvl1: 0
-      lvl2: 1
-      lvl3: 2
-      lvl4: 3
-      lvl5: 4
   - name: Railgun
     partType: 36
     lockRotation: 0
     description: 
-    burnType: 5
     dataTest:
     - key: Damage
       value: 10
@@ -311,14 +185,7 @@ MonoBehaviour:
       value: f4741159-a277-4dc0-97ca-849327e73192
     - key: Cooldown
       value: 0.8
+    category: 3
+    defaultValue: 0.8
+    ammoUseCost: 1
     PatchSockets: 2
-    partGrade2:
-      useTypes: 16
-      requireBit: 0
-      minBitLevel: 1
-      Default: 0.8
-      lvl1: 0.4
-      lvl2: 0.2
-      lvl3: 0.1
-      lvl4: 0.05
-      lvl5: 0.025

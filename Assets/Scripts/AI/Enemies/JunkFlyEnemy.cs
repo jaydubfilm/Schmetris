@@ -173,6 +173,7 @@ namespace StarSalvager.AI
                     1f,
                     "Player",
                     null,
+                    0f,
                     false,
                     true);
         }

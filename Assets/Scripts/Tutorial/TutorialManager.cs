@@ -95,8 +95,8 @@ namespace StarSalvager.Tutorial
             mono = LevelManager.Instance;
             InitInput();
 
-            _playerStartFuel = PlayerDataManager.GetResource(BIT_TYPE.RED).liquid;
-            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(30);
+            _playerStartFuel = PlayerDataManager.GetResource(BIT_TYPE.RED).Ammo;
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetAmmo(30);
             
             _tutorialStepCoroutines = new List<IEnumerator>
             {
@@ -376,7 +376,7 @@ namespace StarSalvager.Tutorial
             bot.OnBitShift -= SetBump;
             
             bot.CanUseResources = true;
-            PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(6f);
+            PlayerDataManager.GetResource(BIT_TYPE.RED).SetAmmo(6f);
 
             yield return mono.StartCoroutine(WaitStep(tutorialRemoteData[11], false));
         }
@@ -388,7 +388,7 @@ namespace StarSalvager.Tutorial
             
             LevelManager.Instance.SetStage(0);
             
-            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid <= 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).Ammo <= 0f);
             
             LevelManager.Instance.SetStage(4);
             
@@ -401,7 +401,7 @@ namespace StarSalvager.Tutorial
 
             //TODO Set the wave to spawn all reds
             
-            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).liquid > 0f);
+            yield return new WaitUntil(() => PlayerDataManager.GetResource(BIT_TYPE.RED).Ammo > 0f);
             
             bot.IsInvulnerable = true;
             LevelManager.Instance.SetStage(3);
@@ -457,7 +457,7 @@ namespace StarSalvager.Tutorial
                 LevelManager.Instance.BotInLevel.IsInvulnerable = false;
 
 
-                PlayerDataManager.GetResource(BIT_TYPE.RED).SetLiquid(_playerStartFuel);
+                PlayerDataManager.GetResource(BIT_TYPE.RED).SetAmmo(_playerStartFuel);
                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
             });
         }

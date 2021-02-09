@@ -24,11 +24,18 @@ namespace StarSalvager.Factories.Data
         [TextArea, FoldoutGroup("$name")]
         public string description;
 
-        [FoldoutGroup("$name")]
-        public BIT_TYPE burnType;
+        //[FoldoutGroup("$name")]
+        //public BIT_TYPE burnType;
 
         [FoldoutGroup("$name")]
         public PartProperties[] dataTest;
+
+        [FoldoutGroup("$name")]
+        public BIT_TYPE category;
+        [FoldoutGroup("$name")] 
+        public float defaultValue;
+        [FoldoutGroup("$name")] 
+        public int ammoUseCost;
 
         [FoldoutGroup("$name")] 
         public int PatchSockets = 2;

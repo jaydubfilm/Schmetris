@@ -335,14 +335,14 @@ namespace StarSalvager.Utilities
                             if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
-                            PlayerDataManager.GetResource(_bitType).AddLiquid(floatAmount, false);
+                            PlayerDataManager.GetResource(_bitType).AddAmmo(floatAmount, false);
                         }
                         PlayerDataManager.OnValuesChanged?.Invoke();
 
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerDataManager.GetResource(bitType).AddLiquid(floatAmount);
+                        PlayerDataManager.GetResource(bitType).AddAmmo(floatAmount);
                     }
                     else
                     {
@@ -766,14 +766,14 @@ namespace StarSalvager.Utilities
                             if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
-                            PlayerDataManager.GetResource(_bitType).SetLiquid(floatAmount, false);
+                            PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
                         }
                         PlayerDataManager.OnValuesChanged?.Invoke();
 
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerDataManager.GetResource(bitType).SetLiquid(floatAmount);
+                        PlayerDataManager.GetResource(bitType).SetAmmo(floatAmount);
                     }
                     else
                     {

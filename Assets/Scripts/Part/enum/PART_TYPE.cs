@@ -42,7 +42,7 @@
         HOOVER = 31,
         RECOVERY = 32,
         
-        VAMPIRE = 33,
+        //VAMPIRE = 33,
         UPGRADER = 34,
         WILDCARD = 35,
         
