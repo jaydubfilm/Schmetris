@@ -97,9 +97,9 @@ namespace StarSalvager.UI
             private static Color GetPartColor(PART_TYPE type)
             {
                 var factoryManager = FactoryManager.Instance;
-                var burnType = factoryManager.PartsRemoteData.GetRemoteData(type).burnType;
+                var category = factoryManager.PartsRemoteData.GetRemoteData(type).category;
 
-                var color = factoryManager.BitProfileData.GetProfile(burnType).color;
+                var color = factoryManager.BitProfileData.GetProfile(category).color;
 
                 return color;
             }
@@ -301,7 +301,6 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
             
             InitValues();
@@ -313,7 +312,7 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged += ValuesUpdated;
         }
 
         private void OnDisable()
@@ -321,7 +320,7 @@ namespace StarSalvager.UI
             Toast.SetToastArea(transform as RectTransform);
             
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged -= ValuesUpdated;
         }
 
         //============================================================================================================//
@@ -366,6 +365,8 @@ namespace StarSalvager.UI
         
         private void InitValues()
         {
+            SetupAmmoBars();
+            
             InitSmartWeaponUI();
             ResetIcons();
 
@@ -423,6 +424,31 @@ namespace StarSalvager.UI
 
             SetPlayerXP(0);
             SetPlayerComponents(PlayerDataManager.GetComponents());
+
+            UpdateAmmoBars();
+        }
+
+        private void SetupAmmoBars()
+        {
+            for (var i = 0; i < _bitTypes.Length; i++)
+            {
+                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
+
+                sliderImages[i].color = color;
+
+                sliders[i].minValue = 0;
+            }
+        }
+
+        private void UpdateAmmoBars()
+        {
+            for (var i = 0; i < _bitTypes.Length; i++)
+            {
+                var resource = PlayerDataManager.GetResource(_bitTypes[i]);
+
+                sliders[i].maxValue = resource.AmmoCapacity;
+                sliders[i].value = resource.Ammo;
+            }
         }
 
         //============================================================================================================//
@@ -477,6 +503,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private void ValuesUpdated()
+        {
+            SetPlayerComponents(PlayerDataManager.GetComponents());
+
+            UpdateAmmoBars();
+        }
+
         public void AbortPressed()
         {
             LevelManager.Instance.BotInLevel.TrySelfDestruct();
@@ -484,15 +517,6 @@ namespace StarSalvager.UI
             //If the bot was able to be killed, hide this window
             if(LevelManager.Instance.BotInLevel.Destroyed)
                 ShowAbortWindow(false);
-        }
-
-        //TODO I should look into the NotifyPropertyChanged for setting up this functionality
-        private void UpdatePlayerGearsLevel()
-        {
-            //SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
-
-            //TODO Need to add the Patch Points connection here
-            SetPlayerComponents(PlayerDataManager.GetComponents());
         }
 
         public void SetPlayerXP(int xp)
