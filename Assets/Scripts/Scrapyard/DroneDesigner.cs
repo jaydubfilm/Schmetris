@@ -19,6 +19,7 @@ using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -331,6 +332,22 @@ namespace StarSalvager
                 return;
             }
 
+            PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)SelectedBrick.Type);
+            Color color = partProfile.Color;
+
+            for (int i = 0; i < _scrapyardBot.AttachedBlocks.Count; i++)
+            {
+                if (_scrapyardBot.AttachedBlocks[i] is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY)
+                {
+                    PartProfile attachedProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)scrapPart.Type);
+                    if (attachedProfile.Color == color)
+                    {
+                        UpdateFloatingMarkers(false);
+                        return;
+                    }
+                }
+            }
+
 
             //Check if mouse coordinate is inside the editing grid
             //--------------------------------------------------------------------------------------------------------//
@@ -365,6 +382,17 @@ namespace StarSalvager
             
             //If mouse position was legal
             //--------------------------------------------------------------------------------------------------------//
+
+            if (mouseGridCoordinate == Vector2Int.zero)
+            {
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)SelectedBrick.Type);
+
+                if (partRemoteData.isManual)
+                {
+                    UpdateFloatingMarkers(false);
+                    return;
+                }
+            }
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
 

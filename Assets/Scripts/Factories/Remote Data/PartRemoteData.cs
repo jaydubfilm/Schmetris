@@ -34,7 +34,7 @@ namespace StarSalvager.Factories.Data
             
             [SerializeField, ToggleLeft]
             private bool requireBit;
-            
+
             [SerializeField, Range(1, 5), EnableIf("requireBit"), LabelText("Min Lvl"), LabelWidth(75)]
             private int minBitLevel;
 
@@ -156,6 +156,9 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")]
         public BIT_TYPE burnType;
+
+        [SerializeField, FoldoutGroup("$name")]
+        public bool isManual;
 
         [FoldoutGroup("$name")]
         public PartProperties[] dataTest;

@@ -55,6 +55,7 @@ namespace StarSalvager.UI.Scrapyard
             void SetUI(in int index, in PART_TYPE partType)
             {
                 selectionUis[index].optionImage.sprite = partAttachableFactory.GetProfileData(partType).Sprite;
+                selectionUis[index].optionImage.color = partAttachableFactory.GetProfileData(partType).Color;
                 selectionUis[index].optionText.text = $"{partType}";
             }
             

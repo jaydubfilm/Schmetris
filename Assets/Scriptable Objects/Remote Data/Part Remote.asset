@@ -18,12 +18,13 @@ MonoBehaviour:
     lockRotation: 0
     description: 
     burnType: 0
+    isManual: 0
     dataTest: []
     PatchSockets: 0
     partGrade2:
       useTypes: 0
       requireBit: 0
-      minBitLevel: 0
+      minBitLevel: 1
       Default: 0
       lvl1: 0
       lvl2: 0
@@ -35,6 +36,7 @@ MonoBehaviour:
     lockRotation: 0
     description: Uses plasma to repair damaged parts within range.
     burnType: 3
+    isManual: 0
     dataTest:
     - key: Heal
       value: 2
@@ -57,6 +59,7 @@ MonoBehaviour:
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
     burnType: 0
+    isManual: 0
     dataTest: []
     PatchSockets: 2
     partGrade2:
@@ -75,6 +78,7 @@ MonoBehaviour:
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
     burnType: 3
+    isManual: 0
     dataTest:
     - key: Damage
       value: 7
@@ -99,6 +103,7 @@ MonoBehaviour:
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
     burnType: 3
+    isManual: 0
     dataTest:
     - key: Damage
       value: 15
@@ -123,6 +128,7 @@ MonoBehaviour:
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
     burnType: 1
+    isManual: 0
     dataTest:
     - key: Cooldown
       value: 15
@@ -143,6 +149,7 @@ MonoBehaviour:
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
     burnType: 4
+    isManual: 1
     dataTest:
     - key: Cooldown
       value: 5
@@ -164,6 +171,7 @@ MonoBehaviour:
     lockRotation: 0
     description: This medium-range heat-seeking projectile almost always hits.
     burnType: 3
+    isManual: 0
     dataTest:
     - key: Damage
       value: 5
@@ -187,6 +195,7 @@ MonoBehaviour:
     lockRotation: 0
     description: A long range, very accurate weapon with a slow rate of fire.
     burnType: 3
+    isManual: 0
     dataTest:
     - key: Damage
       value: 50
@@ -210,6 +219,7 @@ MonoBehaviour:
     lockRotation: 0
     description: Destroys asteroids, extracting valuable minerals.
     burnType: 2
+    isManual: 0
     dataTest: []
     PatchSockets: 2
     partGrade2:
@@ -228,6 +238,7 @@ MonoBehaviour:
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
     burnType: 5
+    isManual: 1
     dataTest:
     - key: Cooldown
       value: 15
@@ -249,6 +260,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 
     burnType: 1
+    isManual: 1
     dataTest:
     - key: Cooldown
       value: 5
@@ -270,6 +282,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 
     burnType: 0
+    isManual: 0
     dataTest: []
     PatchSockets: 0
     partGrade2:
@@ -287,6 +300,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 
     burnType: 5
+    isManual: 0
     dataTest: []
     PatchSockets: 2
     partGrade2:
@@ -304,6 +318,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 
     burnType: 5
+    isManual: 1
     dataTest:
     - key: Damage
       value: 10

@@ -72,6 +72,7 @@ namespace StarSalvager.UI.Scrapyard
                     name = $"{(PART_TYPE) storageBlockData.Type}",
                     sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                         .GetProfileData((PART_TYPE) storageBlockData.Type).GetSprite(0),
+                    color = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)storageBlockData.Type).Color,
                     blockData = storageBlockData,
                     storageIndex = tempInt
                 };

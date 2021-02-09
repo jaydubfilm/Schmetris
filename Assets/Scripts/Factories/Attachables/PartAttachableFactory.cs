@@ -35,7 +35,7 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
-            part.SetSprite(sprite);
+            part.SetSprite(sprite, profile.Color);
         }
 
         //============================================================================================================//
@@ -180,6 +180,7 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
+            temp.PartColor = profile.Color;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
@@ -227,7 +228,7 @@ namespace StarSalvager.Factories
             }
 
             temp.LoadBlockData(partData);
-            temp.SetSprite(sprite);
+            temp.SetSprite(sprite, profile.Color);
 
             var gameObject = temp.gameObject;
             gameObject.name = $"{temp.Type}";
@@ -248,7 +249,7 @@ namespace StarSalvager.Factories
                     part.SetSprite(sprite);
                     break;
                 case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite);
+                    scrapyardPart.SetSprite(sprite, profile.Color);
                     break;
             }
 
