@@ -971,6 +971,8 @@ namespace StarSalvager
             {
                 enemy.SetFrozen(freezeTime);
             }
+            
+            resource.SubtractAmmo(ammoCost);
 
             //Need to pass the diameter not the radius
             CreateFreezeEffect(part, radius * 2f);
@@ -1043,6 +1045,8 @@ namespace StarSalvager
             {
                 _triggerPartTimers[part] = cooldown;
             }
+            
+            resource.SubtractAmmo(ammoCost);
 
             //Set the shielded time
             _shieldTimers[part] = seconds;
@@ -1085,6 +1089,8 @@ namespace StarSalvager
             {
                 return;
             }
+            
+            resource.SubtractAmmo(ammoCost);
             
             //--------------------------------------------------------------------------------------------------------//
 
