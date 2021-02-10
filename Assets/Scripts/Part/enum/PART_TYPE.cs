@@ -48,7 +48,12 @@
         
         RAILGUN = 36,
 
-        //MAGNET = 34
+        //MAGNET = 37,
+        
+        TRACTOR = 38,
+        HEAL = 39,
+        REGEN = 40,
+        BITSPLOSION = 41,
 
     } 
 }
