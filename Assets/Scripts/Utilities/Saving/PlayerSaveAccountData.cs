@@ -1,19 +1,13 @@
 ﻿using Newtonsoft.Json;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.FileIO;
+using StarSalvager.Audio;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using StarSalvager.Audio;
-using StarSalvager.UI.Hints;
 using UnityEngine;
 
 namespace StarSalvager.Values
 {
-    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
-    //FIXME: The patch points here refer to the old system, not the new, and need to be cleaned up
     public class PlayerSaveAccountData
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
@@ -22,8 +16,7 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
-        public int Gears;
-        public int PatchPointsSpent;
+        public int Experience;
 
         public int CoreDeaths;
         public float RepairsDone;
@@ -37,7 +30,7 @@ namespace StarSalvager.Values
         };
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
-        public int GearsAtRunBeginning;
+        public int ExperienceAtRunBeginning;
         public int CoreDeathsAtRunBeginning;
         public float RepairsDoneAtRunBeginning;
         public int TotalRuns;
@@ -68,7 +61,6 @@ namespace StarSalvager.Values
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            //[HINT.COMPONENT] = false,
             
         };
 
@@ -135,7 +127,7 @@ namespace StarSalvager.Values
 
             data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
-            GearsAtRunBeginning = Gears;
+            ExperienceAtRunBeginning = Experience;
             CoreDeathsAtRunBeginning = CoreDeaths;
             BitConnectionsAtRunBeginning.Clear();
             foreach (var keyValue in BitConnections)
@@ -154,61 +146,58 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
-        public void ChangeGears(int amount)
+        public void ChangeExperience(int amount)
         {
-            int totalPatchPoints = GetTotalPatchPoints();
-            Gears += amount;
+            int totalLevels = GetTotalLevels();
+            Experience += amount;
 
             if (GameManager.IsState(GameState.LEVEL))
             {
                 LevelManager.Instance.WaveEndSummaryData.AddGearsGained(amount);
             }
 
-            int newTotalPatchPoints = GetTotalPatchPoints();
+            int newTotalLevels = GetTotalLevels();
 
-            if (newTotalPatchPoints <= totalPatchPoints) 
+            if (newTotalLevels <= totalLevels) 
                 return;
             
-            var difference = newTotalPatchPoints - totalPatchPoints;
-            Toast.AddToast($"Unlocked {(difference > 1 ? $"{difference} Patch Points!" : "New Patch Point!")}");
-                
-            AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
-            
-            LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
+            var difference = newTotalLevels - totalLevels;
+
+            //Do something to signify gaining a level
         }
 
-        public (int, int) GetPatchPointProgress()
+        public (int, int) GetLevelProgress()
         {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
+            int totalLevels = 0;
+            int experienceAmount = Experience;
 
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return (gearsAmount, patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints));
+            return (experienceAmount, levelBaseExperience + (levelExperienceIncrement * totalLevels));
         }
 
-        public int GetTotalPatchPoints()
+        public int GetTotalLevels()
         {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
+            int totalLevels = 0;
+            int experienceAmount = Experience;
 
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return totalPatchPoints;
+            return totalLevels;
         }
 
         public void RecordBitConnection(BIT_TYPE bit)

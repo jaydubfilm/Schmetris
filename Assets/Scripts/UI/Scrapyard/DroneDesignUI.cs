@@ -286,7 +286,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 

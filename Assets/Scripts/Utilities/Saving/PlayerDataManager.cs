@@ -17,7 +17,6 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
 {
-    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
     public static class PlayerDataManager
     {
         public static int CurrentSaveSlotIndex = 0;
@@ -226,9 +225,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetComponents()
+        public static int GetGears()
         {
-            return PlayerRunData.Components;
+            return PlayerRunData.Gears;
         }
 
         public static List<IBlockData> GetBlockDatas()
@@ -241,9 +240,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static void SetComponents(int value)
+        public static void SetGears(int value)
         {
-            PlayerRunData.SetComponents(value);
+            PlayerRunData.SetGears(value);
 
             OnValuesChanged?.Invoke();
         }
@@ -321,17 +320,17 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public static void AddComponent(int amount, bool updateValuesChanged = true)
+        public static void AddGears(int amount, bool updateValuesChanged = true)
         {
-            PlayerRunData.AddComponent(amount);
+            PlayerRunData.AddGears(amount);
 
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractComponent(int amount)
+        public static void SubtractGears(int amount)
         {
-            PlayerRunData.SubtractComponent(amount);
+            PlayerRunData.SubtractGears(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -463,19 +462,19 @@ namespace StarSalvager.Utilities.Saving
         //Account Data Functions
         //====================================================================================================================//
 
-        public static int GetGears()
+        public static int GetExperience()
         {
-            return PlayerAccountData.Gears;
+            return PlayerAccountData.Experience;
         }
 
-        public static int GetGearsThisRun()
+        public static int GetExperienceThisRun()
         {
-            return PlayerAccountData.Gears - PlayerAccountData.GearsAtRunBeginning;
+            return PlayerAccountData.Experience - PlayerAccountData.ExperienceAtRunBeginning;
         }
 
-        public static void ChangeGears(int amount)
+        public static void ChangeExperience(int amount)
         {
-            PlayerAccountData.ChangeGears(amount);
+            PlayerAccountData.ChangeExperience(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -757,7 +756,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetAccountSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetGears()}, this run: {GetGearsThisRun()}\n";
+            summaryText += $"Total Gears: {GetExperience()}, this run: {GetExperienceThisRun()}\n";
             summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
             summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
 
@@ -788,7 +787,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"{GetAsTitle("Total Gears:")} {GetGearsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetExperienceThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 

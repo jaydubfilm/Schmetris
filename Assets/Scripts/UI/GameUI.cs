@@ -432,7 +432,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(0);
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
         }
 
         
@@ -651,7 +651,7 @@ namespace StarSalvager.UI
             //SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
 
             //TODO Need to add the Patch Points connection here
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
         }
 
         public void SetPlayerXP(int xp)
