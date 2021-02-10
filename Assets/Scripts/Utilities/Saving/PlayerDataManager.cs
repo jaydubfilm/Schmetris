@@ -630,16 +630,6 @@ namespace StarSalvager.Utilities.Saving
             playerAccountData.ResetPlayerRunData();
             PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
 
-            foreach (var blueprintData in Globals.BlueprintInitialData)
-            {
-                Blueprint blueprint = new Blueprint
-                {
-                    name = $"{((PART_TYPE)blueprintData.type)}",
-                    partType = (PART_TYPE)blueprintData.type
-                };
-                playerAccountData.UnlockBlueprint(blueprint);
-            }
-
             SavePlayerAccountData();
         }
 

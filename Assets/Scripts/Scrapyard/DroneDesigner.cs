@@ -269,6 +269,8 @@ namespace StarSalvager
                 !(attachableAtCoordinates is ScrapyardPart partAtCoordinates && partAtCoordinates.Type != PART_TYPE.EMPTY))
                 return;
 
+            //Grab clicked on attachable and move it
+
             var type = partAtCoordinates.Type;
 
             Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;

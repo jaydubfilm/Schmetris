@@ -51,8 +51,6 @@ namespace StarSalvager.Values
         };
         public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
-        public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
-
         [JsonIgnore]
         public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
         [JsonProperty]
@@ -240,71 +238,6 @@ namespace StarSalvager.Values
         public void SetHintDisplay(HINT hint, bool state)
         {
             _hintDisplay[hint] = state;
-        }
-
-        //====================================================================================================================//
-
-        public void UnlockBlueprint(Blueprint blueprint)
-        {
-            if (unlockedBlueprints.All(b => b.name != blueprint.name))
-            {
-                unlockedBlueprints.Add(blueprint);
-
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
-                }
-
-                PlayerDataManager.AddNewBlueprintAlert(blueprint);
-            }
-        }
-
-        public void UnlockBlueprint(PART_TYPE partType)
-        {
-            Blueprint blueprint = new Blueprint
-            {
-                name = $"{partType}",
-                partType = partType
-            };
-            UnlockBlueprint(blueprint);
-        }
-
-        public void UnlockAllBlueprints()
-        {
-            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
-            {
-                //TODO Add these back in when we're ready!
-                switch (partRemoteData.partType)
-                {
-                    //Still want to be able to upgrade the core, just don't want to buy new ones?
-                    //case PART_TYPE.CORE:
-                    case PART_TYPE.SPIKES:
-                    case PART_TYPE.LASER:
-                    case PART_TYPE.GRENADE:
-                    case PART_TYPE.CATAPULT:
-                    /*case PART_TYPE.LIGHTNING:
-                    case PART_TYPE.BOOSTRANGE:
-                    case PART_TYPE.BOOSTRATE:
-                    case PART_TYPE.BOOSTDAMAGE:
-                    case PART_TYPE.BOOSTDEFENSE:*/
-                    case PART_TYPE.STACKER:
-                    case PART_TYPE.CLOAK:
-                    case PART_TYPE.SONAR:
-                    case PART_TYPE.DECOY:
-                    case PART_TYPE.RETRACTOR:
-                    case PART_TYPE.HOOVER:
-                    case PART_TYPE.FREEZE:
-                        continue;
-                }
-
-                Blueprint blueprint = new Blueprint
-                {
-                    name = $"{partRemoteData.partType}",
-                    partType = partRemoteData.partType
-                };
-                UnlockBlueprint(blueprint);
-            }
         }
 
         //====================================================================================================================//

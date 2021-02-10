@@ -34,9 +34,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Facilities")]
         public int patchPointIncrementCost = 50;
 
-        [BoxGroup("Blueprints"), Space(10f)]
-        public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
-
         //Wave Properties
         //====================================================================================================================//
 
