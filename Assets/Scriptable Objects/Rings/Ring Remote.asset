@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mWaveDurationRange: {x: 30, y: 240}
   mGridWidthRange: {x: 30, y: 70}
-  mStageEnemyData: []
   mEnemyBudgetRange: {x: 0, y: 0}
+  enemySpawns:
+  - enemyID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+    cost: 0
+    weight: 0
   mBitsPerMinuteRange: {x: 0, y: 500}
   mRedBitsPercentageRange: {x: 0, y: 100}
   mBlueBitsPercentageRange: {x: 0, y: 100}

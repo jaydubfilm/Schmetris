@@ -6,11 +6,11 @@ using System;
 
 namespace StarSalvager.Factories.Data
 {
-    [System.Serializable]
+    [Serializable]
     public class EnemyRemoteData
     {
         [SerializeField, HorizontalGroup("$Name/row1"), DisplayAsString, LabelText("Enemy ID")]
-        private string m_enemyType = System.Guid.NewGuid().ToString();
+        private string m_enemyType = Guid.NewGuid().ToString();
 
 #if UNITY_EDITOR
         [Button("Copy"), HorizontalGroup("$Name/row1", 45)]
@@ -31,6 +31,9 @@ namespace StarSalvager.Factories.Data
         
         [SerializeField, FoldoutGroup("$Name")]
         private string m_name;
+        
+        [SerializeField, FoldoutGroup("$Name")]
+        private int cost;
 
         [SerializeField, FoldoutGroup("$Name")]
         private int m_health;
@@ -48,9 +51,13 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), LabelText("Loot Drops")]
         private List<RDSTableData> m_rdsTableData;
 
+
+
         public string EnemyID => m_enemyType;
 
         public string Name => m_name;
+
+        public int Cost => cost;
 
         public int Health => m_health;
 

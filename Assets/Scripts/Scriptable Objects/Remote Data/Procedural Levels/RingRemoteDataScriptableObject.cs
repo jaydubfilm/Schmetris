@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.AI;
+using StarSalvager.Factories;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -9,13 +12,62 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Ring Remote", menuName = "Star Salvager/Scriptable Objects/Ring Remote Data")]
     public class RingRemoteDataScriptableObject : ScriptableObject
     {
+        [Serializable]
+        private struct EnemySpawn
+        {
+            [ValueDropdown("GetEnemyTypes"),TableColumnWidth(40), OnValueChanged("GetCost")]
+            public string enemyID;
+            [TableColumnWidth(25), ReadOnly]
+            public int cost;
+            [TableColumnWidth(35)]
+            public int weight;
+
+#if UNITY_EDITOR
+
+            [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
+            public string Chance => $"{percentChance:P2}";
+            [HideInTables, NonSerialized]
+            public float percentChance;
+
+            private int GetCost()
+            {
+                return string.IsNullOrEmpty(enemyID)
+                    ? 0
+                    : FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyRemoteData(enemyID).Cost;
+            }
+
+            private static IEnumerable GetEnemyTypes()
+            {
+                return FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyTypes();
+            }
+
+#endif
+        }
+        
+        [Serializable]
+        private struct ObstacleSpawn
+        {
+            [TableColumnWidth(40)]
+            public string obstacleID;
+            [TableColumnWidth(35)]
+            public int weight;
+
+#if UNITY_EDITOR
+
+            [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
+            public string Chance => $"{percentChance:P2}";
+            [HideInTables, NonSerialized]
+            public float percentChance;
+
+#endif
+        }
+        
         //Public Properties
         //====================================================================================================================//
         
         public Vector2Int WaveDurationRange => mWaveDurationRange;
         public Vector2Int GridWidthRange => mGridWidthRange;
 
-        public List<StageEnemyData> StageEnemyData => mStageEnemyData;
         public Vector2Int EnemyBudgetRange => mEnemyBudgetRange;
 
         public Vector2Int BitsPerMinuteRange => mBitsPerMinuteRange;
@@ -25,47 +77,61 @@ namespace StarSalvager.ScriptableObjects
         public Vector2 YellowBitsPercentageRange => mYellowBitsPercentageRange;
         public Vector2 GreyBitsPercentageRange => mGreyBitsPercentageRange;
 
+        //Ring Properties
         //====================================================================================================================//
         
+        [BoxGroup("Ring Wave Properties"), LabelText("Duration Range"), Tooltip("Duration is measured in Seconds")]
         [SerializeField, Required, MinMaxSlider(30, 240, true), SuffixLabel("s", true)]
         private Vector2Int mWaveDurationRange = new Vector2Int(30, 240);
 
+        [BoxGroup("Ring Wave Properties"), LabelText("Width Range")]
         [SerializeField, Required, MinMaxSlider(30, 70, true)]
         private Vector2Int mGridWidthRange = new Vector2Int(30, 70);
 
-        [SerializeField]
-        private List<StageEnemyData> mStageEnemyData;
-
-        [SerializeField, Required, MinMaxSlider(0, 50, true)]
+        //Enemies
+        //====================================================================================================================//
+        
+        [FoldoutGroup("Enemies"), LabelText("Enemy Budget")]
+        [SerializeField, Required, MinMaxSlider(0, 100, true)]
         private Vector2Int mEnemyBudgetRange;
+        
+        [FoldoutGroup("Enemies")]
+        [SerializeField, TableList]
+        private List<EnemySpawn> enemySpawns;
 
         //Bits Properties
         //====================================================================================================================//
         
-        [FoldoutGroup("Bits"), LabelText("Bits per/min"), LabelWidth(75)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Bits per/min"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 500, true)]
         private Vector2Int mBitsPerMinuteRange;
 
-        [FoldoutGroup("Bits"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
         [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(1.0f, 0.3f, 0.3f)]
         private Vector2Int mRedBitsPercentageRange;
 
-        [FoldoutGroup("Bits"), LabelText("Blue Bit %"), LabelWidth(75)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Blue Bit %"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(0.3f, 0.3f, 1.0f)]
         private Vector2Int mBlueBitsPercentageRange;
 
-        [FoldoutGroup("Bits"), LabelText("Green Bit %"), LabelWidth(75)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Green Bit %"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(0.3f, 1.0f, 0.3f)]
         private Vector2Int mGreenBitsPercentageRange;
 
-        [FoldoutGroup("Bits"), LabelText("Yellow Bit %"), LabelWidth(75)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Yellow Bit %"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(1.0f, 1.0f, 0.3f)]
         private Vector2Int mYellowBitsPercentageRange;
 
-        [FoldoutGroup("Bits"), LabelText("Grey Bit %"), LabelWidth(75)]
+        [FoldoutGroup("Collectable Bits"), LabelText("Grey Bit %"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 100, true)]
         private Vector2Int mGreyBitsPercentageRange;
 
+        //Obstacle Properties
+        //====================================================================================================================//
+        
+        [FoldoutGroup("Obstacles")]
+        [SerializeField, TableList, InfoBox("Obstacle Spawns not yet functional", InfoMessageType.Warning)]
+        private List<ObstacleSpawn> obstacleSpawns;
 
         //RingRemoteDataScriptableObject Functions
         //====================================================================================================================//
