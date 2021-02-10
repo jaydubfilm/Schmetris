@@ -17,42 +17,38 @@
         //STOREGREEN = 10,
         //STOREGREY = 11,
         
-        //TRIPLESHOT = 12,
+        TRIPLESHOT = 12,
         //STOREYELLOW = 13,
-        //MISSILE = 13,
+        MISSILE = 13,
         SNIPER = 14,
-        //BLASTER = 15,
+        BLASTER = 15,
         //REFINER = 16,
-        //SPIKES = 17,
-        //LASER = 18,
-        //GRENADE = 19,
-        //CATAPULT = 20,
-        //LIGHTNING = 21,
+        SPIKES = 17,
+        LASER = 18,
+        GRENADE = 19,
+        CATAPULT = 20,
+        LIGHTNING = 21,
         
         //BOOSTRANGE = 22,
         //BOOSTRATE = 23,
         //BOOSTDAMAGE = 24,
         //BOOSTDEFENSE = 25,
         
-        //STACKER = 26,
-        //CLOAK = 27,
-        //SONAR = 28,
+        STACKER = 26,
+        CLOAK = 27,
+        SONAR = 28,
         DECOY = 29,
-        //RETRACTOR = 30,
+        RETRACTOR = 30,
         HOOVER = 31,
-        //RECOVERY = 32,
+        RECOVERY = 32,
         
-        //VAMPIRE = 33,
+        VAMPIRE = 33,
         UPGRADER = 34,
         WILDCARD = 35,
         
         RAILGUN = 36,
 
-        //MAGNET = 37,
-        TRACTOR = 38,
-        HEAL = 39,
-        REGEN = 40,
-        BITSPLOSION = 41
+        //MAGNET = 34
 
     } 
 }

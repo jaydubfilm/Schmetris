@@ -24,61 +24,58 @@ MonoBehaviour:
   - partType: 1
     _animation: {fileID: 0}
     _sprite: {fileID: 21300000, guid: 11dc16053ce4a3143907ee6e29149cf2, type: 3}
-  - partType: 4
-    _animation: {fileID: 0}
-    _sprite: {fileID: 21300000, guid: 436666be5f4dadf4dbeafda693e9eb0f, type: 3}
-  - partType: 14
-    _animation: {fileID: 0}
-    _sprite: {fileID: 2149927271057029845, guid: 73b7c16003b98714ca98a495da0d2bed,
-      type: 3}
-  - partType: 36
-    _animation: {fileID: 0}
-    _sprite: {fileID: 7177263876867455030, guid: 73b7c16003b98714ca98a495da0d2bed,
-      type: 3}
-  - partType: 6
-    _animation: {fileID: 0}
-    _sprite: {fileID: -7433627698002936791, guid: 73b7c16003b98714ca98a495da0d2bed,
-      type: 3}
-  - partType: 7
-    _animation: {fileID: 0}
-    _sprite: {fileID: 6689235125664535697, guid: 73b7c16003b98714ca98a495da0d2bed,
-      type: 3}
-  - partType: 41
-    _animation: {fileID: 0}
-    _sprite: {fileID: 0}
   - partType: 2
     _animation: {fileID: 0}
     _sprite: {fileID: -8062377312281428572, guid: 73b7c16003b98714ca98a495da0d2bed,
-      type: 3}
-  - partType: 39
-    _animation: {fileID: 0}
-    _sprite: {fileID: 0}
-  - partType: 40
-    _animation: {fileID: 0}
-    _sprite: {fileID: 0}
-  - partType: 5
-    _animation: {fileID: 0}
-    _sprite: {fileID: 7072333365704310619, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
   - partType: 3
     _animation: {fileID: 0}
     _sprite: {fileID: -6914618740702529518, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
-  - partType: 29
+  - partType: 4
     _animation: {fileID: 0}
-    _sprite: {fileID: 0}
+    _sprite: {fileID: 21300000, guid: 436666be5f4dadf4dbeafda693e9eb0f, type: 3}
+  - partType: 12
+    _animation: {fileID: 0}
+    _sprite: {fileID: -4118047063519997046, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 5
+    _animation: {fileID: 0}
+    _sprite: {fileID: 7072333365704310619, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 7
+    _animation: {fileID: 0}
+    _sprite: {fileID: 6689235125664535697, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 13
+    _animation: {fileID: 0}
+    _sprite: {fileID: -5092879141632876641, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 14
+    _animation: {fileID: 0}
+    _sprite: {fileID: 2149927271057029845, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 15
+    _animation: {fileID: 0}
+    _sprite: {fileID: 6586186104735683285, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 6
+    _animation: {fileID: 0}
+    _sprite: {fileID: -7433627698002936791, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
+  - partType: 33
+    _animation: {fileID: 0}
+    _sprite: {fileID: 21300000, guid: 6d3ed3fd4303488469c713824ce9ba93, type: 3}
   - partType: 34
     _animation: {fileID: 0}
     _sprite: {fileID: 21300000, guid: 33e29f6d59c4af14da383a4a138a78c8, type: 3}
   - partType: 35
     _animation: {fileID: 0}
     _sprite: {fileID: 21300000, guid: c8111f8df96b8e04c97e4b472db22c26, type: 3}
-  - partType: 38
+  - partType: 36
     _animation: {fileID: 0}
-    _sprite: {fileID: 0}
-  - partType: 31
-    _animation: {fileID: 0}
-    _sprite: {fileID: 0}
+    _sprite: {fileID: 7177263876867455030, guid: 73b7c16003b98714ca98a495da0d2bed,
+      type: 3}
   damagedSprites:
   - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}

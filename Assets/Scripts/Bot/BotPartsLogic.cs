@@ -137,7 +137,7 @@ namespace StarSalvager
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
                     p.Type == PART_TYPE.SHIELD || 
-                    //p.Type == PART_TYPE.VAMPIRE || 
+                    p.Type == PART_TYPE.VAMPIRE || 
                     p.Type == PART_TYPE.RAILGUN)
                 .ToList();
 
@@ -228,7 +228,7 @@ namespace StarSalvager
                         
                         _shieldTimers.Add(part, 0f);                        
                         break;
-                    /*case PART_TYPE.VAMPIRE:
+                    case PART_TYPE.VAMPIRE:
                         if (_vampireTimers == null)
                             _vampireTimers = new Dictionary<Part, float>();
 
@@ -236,7 +236,7 @@ namespace StarSalvager
                             break;
                         
                         _vampireTimers.Add(part, 0f);                        
-                        break;*/
+                        break;
                     
                     case PART_TYPE.REPAIR:
                         _repairTarget.Add(part, null);
@@ -244,8 +244,8 @@ namespace StarSalvager
 
                     case PART_TYPE.GUN:
                     case PART_TYPE.SNIPER:
-                    //case PART_TYPE.TRIPLESHOT:
-                    //case PART_TYPE.MISSILE:
+                    case PART_TYPE.TRIPLESHOT:
+                    case PART_TYPE.MISSILE:
                         
                         _gunTargets.Add(part, null);
                         
@@ -310,13 +310,13 @@ namespace StarSalvager
                         RepairUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
-                    /*case PART_TYPE.BLASTER:
+                    case PART_TYPE.BLASTER:
                         BlasterUpdate(part, partRemoteData, deltaTime);
-                        break;*/
+                        break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SNIPER:
-                    /*case PART_TYPE.MISSILE:
-                    case PART_TYPE.TRIPLESHOT:*/
+                    case PART_TYPE.MISSILE:
+                    case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
                         GunUpdate(part, partRemoteData, deltaTime);
                         break;
@@ -325,9 +325,9 @@ namespace StarSalvager
                         ShieldUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
-                    /*case PART_TYPE.VAMPIRE:
+                    case PART_TYPE.VAMPIRE:
                         VampireUpdate(part, partRemoteData, deltaTime);
-                        break;*/
+                        break;
                 }
             }
 
@@ -601,8 +601,8 @@ namespace StarSalvager
             switch (part.Type)
             {
                 case PART_TYPE.GUN:
-                //case PART_TYPE.TRIPLESHOT:
-                //case PART_TYPE.MISSILE:
+                case PART_TYPE.TRIPLESHOT:
+                case PART_TYPE.MISSILE:
                     CreateProjectile(part, partRemoteData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
@@ -704,8 +704,8 @@ namespace StarSalvager
 
                 switch (part.Type)
                 {
-                    //case PART_TYPE.TRIPLESHOT:
-                    //case PART_TYPE.MISSILE:
+                    case PART_TYPE.TRIPLESHOT:
+                    case PART_TYPE.MISSILE:
                     case PART_TYPE.GUN:
 
                         var projectileID = partData.GetDataValue<string>(PartProperties.KEYS.Projectile);
@@ -739,7 +739,7 @@ namespace StarSalvager
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
-            var vampireCaster = _vampirismActive /*&& _parts.Any(x => x.Type == PART_TYPE.VAMPIRE)*/ ? bot : null;
+            var vampireCaster = _vampirismActive && _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
 
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
@@ -854,9 +854,9 @@ namespace StarSalvager
                 case PART_TYPE.SHIELD:
                     TriggerShield(part);
                     break;
-                /*case PART_TYPE.VAMPIRE:
+                case PART_TYPE.VAMPIRE:
                     TriggerVampire(part);
-                    break;*/
+                    break;
                 case PART_TYPE.RAILGUN:
                     TriggerRailgun(part);
                     break;
@@ -1438,9 +1438,9 @@ namespace StarSalvager
             if (_turrets.ContainsKey(part))
                 return;
 
-            var partEffect = /*part.Type == PART_TYPE.TRIPLESHOT
+            var partEffect = part.Type == PART_TYPE.TRIPLESHOT
                 ? EffectFactory.PART_EFFECT.TRIPLE_SHOT
-                : */EffectFactory.PART_EFFECT.GUN;
+                : EffectFactory.PART_EFFECT.GUN;
             
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreatePartEffect(partEffect);
@@ -1607,13 +1607,12 @@ namespace StarSalvager
 
         public float GetVampireValue()
         {
-            return 0f;
-            /*var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
+            var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
             
             if (part == null || part.Disabled)
                 return 0f;
 
-            return !HasPartGrade(part, out var value) ? 0f : value;*/
+            return !HasPartGrade(part, out var value) ? 0f : value;
         }
 
         //====================================================================================================================//
