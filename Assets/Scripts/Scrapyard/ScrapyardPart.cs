@@ -129,9 +129,10 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public void SetSprite(Sprite sprite)
+        public void SetSprite(Sprite sprite, Color color)
         {
             renderer.sprite = sprite;
+            renderer.color = color;
         }
 
         //ICustomRecycle Functions

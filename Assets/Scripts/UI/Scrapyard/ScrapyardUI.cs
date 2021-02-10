@@ -123,7 +123,35 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice = FindObjectOfType<PartChoiceUI>();
                 }
-                _partChoice.Init();
+                bool isStart = Globals.CurrentSector == 0 && Globals.CurrentWave <= 1;
+
+                if (isStart)
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon);
+
+                    //Add starter parts
+                    PART_TYPE repairPart = PART_TYPE.REPAIR;
+                    var repairPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(repairPart).PatchSockets;
+                    var repairPartData = new PartData
+                    {
+                        Type = (int)repairPart,
+                        Patches = new PatchData[repairPatchCount]
+                    };
+                    PlayerDataManager.AddPartToStorage(repairPartData);
+
+                    PART_TYPE shieldPart = PART_TYPE.SHIELD;
+                    var shieldPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(shieldPart).PatchSockets;
+                    var shieldPartData = new PartData
+                    {
+                        Type = (int)shieldPart,
+                        Patches = new PatchData[shieldPatchCount]
+                    };
+                    PlayerDataManager.AddPartToStorage(shieldPartData);
+                }
+                else
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+                }
             }
 
         }

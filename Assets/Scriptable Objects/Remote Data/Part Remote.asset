@@ -17,6 +17,7 @@ MonoBehaviour:
     partType: 1
     lockRotation: 0
     description: 
+    isManual: 0
     dataTest: []
     category: 0
     ammoUseCost: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
     partType: 2
     lockRotation: 0
     description: Uses plasma to repair damaged parts within range.
+    isManual: 0
     dataTest:
     - key: Heal
       value: 2
@@ -40,6 +42,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
+    isManual: 0
     dataTest: []
     category: 1
     ammoUseCost: 2
@@ -49,6 +52,7 @@ MonoBehaviour:
     lockRotation: 0
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
+    isManual: 0
     dataTest:
     - key: Damage
       value: 7
@@ -64,6 +68,7 @@ MonoBehaviour:
     lockRotation: 1
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
+    isManual: 0
     dataTest:
     - key: Damage
       value: 15
@@ -79,6 +84,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
+    isManual: 0
     dataTest:
     - key: Cooldown
       value: 15
@@ -92,6 +98,7 @@ MonoBehaviour:
     lockRotation: 0
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
+    isManual: 1
     dataTest:
     - key: Cooldown
       value: 5
@@ -104,6 +111,7 @@ MonoBehaviour:
     partType: 13
     lockRotation: 0
     description: This medium-range heat-seeking projectile almost always hits.
+    isManual: 0
     dataTest:
     - key: Damage
       value: 5
@@ -118,6 +126,7 @@ MonoBehaviour:
     partType: 14
     lockRotation: 0
     description: A long range, very accurate weapon with a slow rate of fire.
+    isManual: 0
     dataTest:
     - key: Damage
       value: 50
@@ -132,6 +141,7 @@ MonoBehaviour:
     partType: 15
     lockRotation: 0
     description: Destroys asteroids, extracting valuable minerals.
+    isManual: 0
     dataTest: []
     category: 0
     ammoUseCost: 0
@@ -141,6 +151,7 @@ MonoBehaviour:
     lockRotation: 0
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
+    isManual: 1
     dataTest:
     - key: Cooldown
       value: 15
@@ -155,6 +166,7 @@ MonoBehaviour:
     partType: 34
     lockRotation: 0
     description: 
+    isManual: 0
     dataTest: []
     category: 0
     ammoUseCost: 0
@@ -163,6 +175,7 @@ MonoBehaviour:
     partType: 35
     lockRotation: 0
     description: 
+    isManual: 0
     dataTest: []
     category: 5
     ammoUseCost: 3
@@ -171,6 +184,7 @@ MonoBehaviour:
     partType: 36
     lockRotation: 0
     description: 
+    isManual: 1
     dataTest:
     - key: Damage
       value: 10

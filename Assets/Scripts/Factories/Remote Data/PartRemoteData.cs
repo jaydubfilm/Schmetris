@@ -11,7 +11,6 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class PartRemoteData : RemoteDataBase
     {
-
         [FoldoutGroup("$name")]
         public string name;
         
@@ -26,6 +25,9 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")]
         public PartProperties[] dataTest;
+
+        [SerializeField, FoldoutGroup("$name")]
+        public bool isManual;
 
         [FoldoutGroup("$name")]
         public BIT_TYPE category;

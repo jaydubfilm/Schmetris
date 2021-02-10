@@ -14,6 +14,13 @@ namespace StarSalvager.Factories
     //FIXME This needs to be cleaned up, feels messy
     public class PartAttachableFactory : AttachableFactoryBase<PartProfile, PART_TYPE>
     {
+        public enum PART_OPTION_TYPE
+        {
+            BasicWeapon,
+            PowerWeapon,
+            Any
+        }
+        
         private RemotePartProfileScriptableObject remotePartData;
 
         public PartAttachableFactory(AttachableProfileScriptableObject factoryProfile, RemotePartProfileScriptableObject remotePartData) : base(factoryProfile)
@@ -28,7 +35,7 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
-            part.SetSprite(sprite);
+            part.SetSprite(sprite, profile.Color);
         }
 
         //============================================================================================================//
@@ -43,25 +50,40 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public static void SelectPartOptions(ref PART_TYPE[] options, in bool isBasic = false)
+        public static void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType)
         {
-            var partTypes = isBasic
-                ? new List<PART_TYPE>
-                {
-                    PART_TYPE.GUN,
-                    PART_TYPE.RAILGUN
-                }
-                : new List<PART_TYPE>
-                {
-                    PART_TYPE.GUN,
-                    PART_TYPE.SNIPER,
-                    PART_TYPE.RAILGUN,
-                    PART_TYPE.BOMB,
-                    PART_TYPE.FREEZE,
-                    PART_TYPE.ARMOR,
-                    PART_TYPE.SHIELD,
-                    PART_TYPE.REPAIR
-                };
+            var partTypes = new List<PART_TYPE>();
+
+            switch (partOptionType)
+            {
+                case PART_OPTION_TYPE.BasicWeapon:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.GUN,
+                        PART_TYPE.RAILGUN
+                    };
+                    break;
+                case PART_OPTION_TYPE.PowerWeapon:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.FREEZE,
+                        PART_TYPE.BOMB
+                    };
+                    break;
+                case PART_OPTION_TYPE.Any:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.GUN,
+                        PART_TYPE.SNIPER,
+                        PART_TYPE.RAILGUN,
+                        PART_TYPE.BOMB,
+                        PART_TYPE.FREEZE,
+                        PART_TYPE.ARMOR,
+                        PART_TYPE.SHIELD,
+                        PART_TYPE.REPAIR
+                    };
+                    break;
+            }
 
             for (int i = 0; i < options.Length; i++)
             {
@@ -158,6 +180,7 @@ namespace StarSalvager.Factories
             temp.SetSprite(sprite);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
+            temp.PartColor = profile.Color;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
@@ -205,7 +228,7 @@ namespace StarSalvager.Factories
             }
 
             temp.LoadBlockData(partData);
-            temp.SetSprite(sprite);
+            temp.SetSprite(sprite, profile.Color);
 
             var gameObject = temp.gameObject;
             gameObject.name = $"{temp.Type}";
@@ -226,7 +249,7 @@ namespace StarSalvager.Factories
                     part.SetSprite(sprite);
                     break;
                 case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite);
+                    scrapyardPart.SetSprite(sprite, profile.Color);
                     break;
             }
 
