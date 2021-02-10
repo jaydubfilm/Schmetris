@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd806b8eb2372af4ca9ef13b1a209630, type: 3}
   m_Name: Ring Remote
   m_EditorClassIdentifier: 
-  m_waveDurationBounds: {x: 30, y: 240}
-  m_gridWidthBounds: {x: 30, y: 70}
-  m_stageEnemyData: []
-  m_averageBitsPerMinuteRange: {x: 0, y: 500}
-  m_redBitsPercentageRange: {x: 0, y: 1}
-  m_blueBitsPercentageRange: {x: 0, y: 1}
-  m_greenBitsPercentageRange: {x: 0, y: 1}
-  m_yellowBitsPercentageRange: {x: 0, y: 1}
-  m_greyBitsPercentageRange: {x: 0, y: 1}
+  mWaveDurationRange: {x: 30, y: 240}
+  mGridWidthRange: {x: 30, y: 70}
+  mStageEnemyData: []
+  mEnemyBudgetRange: {x: 0, y: 0}
+  mBitsPerMinuteRange: {x: 0, y: 500}
+  mRedBitsPercentageRange: {x: 0, y: 100}
+  mBlueBitsPercentageRange: {x: 0, y: 100}
+  mGreenBitsPercentageRange: {x: 0, y: 100}
+  mYellowBitsPercentageRange: {x: 0, y: 100}
+  mGreyBitsPercentageRange: {x: 0, y: 100}
