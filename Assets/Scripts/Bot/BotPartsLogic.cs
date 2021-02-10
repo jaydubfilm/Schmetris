@@ -1653,9 +1653,9 @@ namespace StarSalvager
                 .Count(x => x.Type == PART_TYPE.UPGRADER);
         }
 
-        public List<Bot.DataTest> GetWildcardParts(in int level)
+        public List<Bot.DataTest> GetWildcardParts()
         {
-            var wildCards = _parts.Where(x => x.Type == PART_TYPE.WILDCARD).ToArray();
+            var wildCards = _parts?.Where(x => x.Type == PART_TYPE.WILDCARD).ToArray();
 
             if (wildCards.IsNullOrEmpty())
                 return null;

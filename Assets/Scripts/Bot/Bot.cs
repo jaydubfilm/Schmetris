@@ -2972,7 +2972,7 @@ _isShifting = true;
                 //Gather any available Wildcards
                 //--------------------------------------------------------------------------------------------------------//
 
-                var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+                var wildCards = BotPartsLogic.GetWildcardParts();
                 if (!wildCards.IsNullOrEmpty())
                 {
                     foreach (var t in wildCards)
@@ -3082,7 +3082,7 @@ _isShifting = true;
             //Gather any available Wildcards
             //--------------------------------------------------------------------------------------------------------//
 
-            var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+            var wildCards = BotPartsLogic.GetWildcardParts();
             if (!wildCards.IsNullOrEmpty())
             {
                 foreach (var t in wildCards)

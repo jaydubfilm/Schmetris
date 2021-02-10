@@ -34,7 +34,7 @@ namespace StarSalvager
 
         public bool LockRotation { get; set; }
 
-        public Color PartColor = Color.white;
+        public Color partColor = Color.white;
 
         public bool Disabled
         {
@@ -42,7 +42,7 @@ namespace StarSalvager
             set
             {
                 _disabled = value;
-                SetColor(value ? Color.gray : PartColor);
+                SetColor(value ? Color.gray : partColor);
             }
         }
 

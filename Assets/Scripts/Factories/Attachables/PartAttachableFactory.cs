@@ -36,7 +36,9 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
-            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             part.SetSprite(sprite);
             part.SetColor(color);
@@ -182,12 +184,15 @@ namespace StarSalvager.Factories
             //--------------------------------------------------------------------------------------------------------//
             
             var remoteData = remotePartData.GetRemoteData(type);
-            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.SetSprite(sprite);
+            temp.SetColor(color);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
-            temp.PartColor = color;
+            temp.partColor = color;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
@@ -236,7 +241,9 @@ namespace StarSalvager.Factories
             }
             
             var remoteData = remotePartData.GetRemoteData(type);
-            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.LoadBlockData(partData);
             temp.SetSprite(sprite);
@@ -251,7 +258,9 @@ namespace StarSalvager.Factories
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
             var remoteData = remotePartData.GetRemoteData(overrideType);
-            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
             
             var profile = factoryProfile.GetProfile(overrideType);
             var sprite = profile.GetSprite(0);
