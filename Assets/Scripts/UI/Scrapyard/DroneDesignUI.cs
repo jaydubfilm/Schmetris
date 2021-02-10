@@ -409,8 +409,8 @@ namespace StarSalvager.UI.Scrapyard
                     return "Damage in Radius";
                 case PART_TYPE.SNIPER:
                     return "Bullet Damage";
-                case PART_TYPE.VAMPIRE:
-                    return "heals % of damage dealt for 2 seconds";
+                /*case PART_TYPE.VAMPIRE:
+                    return "heals % of damage dealt for 2 seconds";*/
                 case PART_TYPE.UPGRADER:
                     return "Increases grade level of adjacent parts";
                 case PART_TYPE.WILDCARD:
@@ -457,8 +457,8 @@ namespace StarSalvager.UI.Scrapyard
                     return $"{Mathf.RoundToInt(damage * value* patchMultipliers[PATCH_TYPE.DAMAGE])}\ndmg";
                 case PART_TYPE.SNIPER:
                     return $"{Mathf.RoundToInt(damage * value* patchMultipliers[PATCH_TYPE.DAMAGE])}\ndmg";
-                case PART_TYPE.VAMPIRE:
-                    return $"{(int) (value * 100f)}%";
+                /*case PART_TYPE.VAMPIRE:
+                    return $"{(int) (value * 100f)}%";*/
                 case PART_TYPE.WILDCARD:
                     return $"{(int) value}";
                 case PART_TYPE.RAILGUN:
@@ -485,7 +485,7 @@ namespace StarSalvager.UI.Scrapyard
 
             switch (partRemoteData.partType)
             {
-                case PART_TYPE.VAMPIRE:
+                //case PART_TYPE.VAMPIRE:
                 case PART_TYPE.SHIELD:
                 case PART_TYPE.ARMOR:
                 case PART_TYPE.REPAIR:
