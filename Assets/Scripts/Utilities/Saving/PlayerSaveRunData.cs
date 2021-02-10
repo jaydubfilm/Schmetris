@@ -12,6 +12,7 @@ using StarSalvager.Factories.Data;
 namespace StarSalvager.Utilities.Saving
 {
     [Serializable]
+    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
     public class PlayerSaveRunData
     {
         //============================================================================================================//
@@ -38,25 +39,11 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonProperty] private int _components;
 
-/*[JsonIgnore]
-public Dictionary<COMPONENT_TYPE, int> Components => _components;
-[JsonProperty]
-private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
-{
-    {COMPONENT_TYPE.FUSOR, 0},
-    {COMPONENT_TYPE.CHIP, 0},
-    {COMPONENT_TYPE.NUT, 0},
-    {COMPONENT_TYPE.BOLT, 0},
-    {COMPONENT_TYPE.COIL, 0}
-};*/
-
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
         public List<PatchData> patchesInStorage = new List<PatchData>();
-
-        public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
         public int currentModularSectorIndex = 0;
 
@@ -129,14 +116,6 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             _components = value;
         }
 
-        /*public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
-        {
-            foreach (var value in liquidValues)
-            {
-                _components[value.Key] = value.Value;
-            }
-        }*/
-
         //============================================================================================================//
 
         public void AddComponent(int amount)
@@ -164,49 +143,6 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             }
 
             return false;
-        }
-
-        //============================================================================================================//
-
-        public float GetLevelResourceModifier(int sector, int wave)
-        {
-            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-
-            if (index == -1)
-            {
-                levelResourceModifier.Add(new SectorWaveModifier
-                {
-                    Sector = sector,
-                    Wave = wave,
-                    Modifier = 1.0f
-                });
-                index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-            }
-
-            return levelResourceModifier[index].Modifier;
-        }
-
-        public void ReduceLevelResourceModifier(int sector, int wave)
-        {
-            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-            float previousModifier;
-
-            if (index >= 0)
-            {
-                previousModifier = levelResourceModifier[index].Modifier;
-                levelResourceModifier.RemoveAt(index);
-            }
-            else
-            {
-                previousModifier = 1.0f;
-            }
-
-            levelResourceModifier.Add(new SectorWaveModifier
-            {
-                Sector = sector,
-                Wave = wave,
-                Modifier = previousModifier * Globals.LevelResourceDropReductionAmount
-            });
         }
 
         //============================================================================================================//

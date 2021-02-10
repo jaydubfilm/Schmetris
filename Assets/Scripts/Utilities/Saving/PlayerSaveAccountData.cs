@@ -12,6 +12,8 @@ using UnityEngine;
 
 namespace StarSalvager.Values
 {
+    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
+    //FIXME: The patch points here refer to the old system, not the new, and need to be cleaned up
     public class PlayerSaveAccountData
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
@@ -19,16 +21,6 @@ namespace StarSalvager.Values
         public PlayerNewAlertData PlayerNewAlertData = new PlayerNewAlertData();
 
         public Version Version = Constants.VERSION;
-
-        //TEMP
-        public Dictionary<int, int> numTimesBeatNewWaveInSector = new Dictionary<int, int>()
-        {
-            { 0, 0 },
-            { 1, 0 },
-            { 2, 0 },
-            { 3, 0 },
-            { 4, 0 }
-        };
 
         public int Gears;
         public int PatchPointsSpent;
@@ -82,6 +74,8 @@ namespace StarSalvager.Values
             
         };
 
+        //This system likely should be reworked. These vector2ints define the connections between nodes on the universe map, where the 1st value is the node that can be reached from the second node.
+        //Example: (2,0) represents you being able to go from node 0 to node 2
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
             new Vector2Int(1, 0),
@@ -114,6 +108,7 @@ namespace StarSalvager.Values
             new Vector2Int(25, 20),
         };
 
+        //These are the nodes that have wrecks. Should also be reworked whenever the proper universe map setup is done
         [JsonIgnore]
         public List<int> WreckNodes = new List<int>()
         {
@@ -184,15 +179,6 @@ namespace StarSalvager.Values
             LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
         }
 
-        public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
-        {
-            for (int i = 0; i < numPatchPointsToGet; i++)
-            {
-                (int, int) progress = GetPatchPointProgress();
-                ChangeGears(progress.Item2 - progress.Item1);
-            }
-        }
-
         public (int, int) GetPatchPointProgress()
         {
             int patchPointBaseCost = Globals.PatchPointBaseCost;
@@ -225,16 +211,6 @@ namespace StarSalvager.Values
             }
 
             return totalPatchPoints;
-        }
-
-        public int GetAvailablePatchPoints()
-        {
-            return GetTotalPatchPoints() - PatchPointsSpent;
-        }
-
-        public void SpendPatchPoints(int amount)
-        {
-            PatchPointsSpent += amount;
         }
 
         public void RecordBitConnection(BIT_TYPE bit)

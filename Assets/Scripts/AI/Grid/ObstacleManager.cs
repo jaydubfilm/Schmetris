@@ -891,12 +891,6 @@ namespace StarSalvager
                 //This spawnVariable defines "how much of this thing should be spawned"
                 float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
-                if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
-                {
-                    float modifier = PlayerDataManager.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
-                    spawnVariable *= modifier;
-                }
-
                 if (m_currentStageData.StageBlendPeriod > 0)
                 {
                     if (isPrevious)
@@ -1197,6 +1191,7 @@ namespace StarSalvager
             }
         }
 
+        //This is used to place a moveable on a specific grid position, instead of randomly choosing one
         private void PlaceMovableOnGridSpecific(IObstacle obstacle, Vector2 position, int radius = 0)
         {
             obstacle.transform.parent = m_worldElementsRoot;
@@ -1251,6 +1246,7 @@ namespace StarSalvager
                 (bounceTravelDistance * bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
+        //Place an obstacle on an off grid moving path, with specifying a grid position instead of world position as the end destination
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)
@@ -1261,6 +1257,7 @@ namespace StarSalvager
                 arc, parentToGrid);
         }
 
+        //Place an obstacle on an off grid moving path, with a world position as the destination
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)

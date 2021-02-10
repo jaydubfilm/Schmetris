@@ -9,6 +9,7 @@ using UnityEngine;
 namespace StarSalvager.Utilities.Saving
 {
     [Serializable]
+    //FIXME: I don't think any of this functionality is needed anymore since the big changes. This was for managing the "new thing" stickers, which I think are all gone from the design now with the scrapyard changes.
     public class PlayerNewAlertData
     {
         public List<string> NewBlueprintNames => _newBlueprintNames;

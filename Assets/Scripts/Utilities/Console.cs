@@ -352,16 +352,6 @@ namespace StarSalvager.Utilities
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
                     break;
-                case "patchpoints":
-                    if (!int.TryParse(split[2], out intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-
-                    PlayerDataManager.AddGearsToGetPatchPoints(intAmount);
-
-                    break;
                 case "storage":
                     if (!int.TryParse(split[4], out var addAmount))
                     {

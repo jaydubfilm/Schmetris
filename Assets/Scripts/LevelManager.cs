@@ -239,7 +239,7 @@ namespace StarSalvager
         private float _enterTime = 1.3f;
         private float _t;
         private float _startY;
-        //FIXME Does this need to be happening every frame?
+        //FIXME Does this need to be happening every frame? This function is for the zoom in/out of level, it likely does not need to run every frame
         private void CheckBotPositions()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -345,6 +345,7 @@ namespace StarSalvager
                 TransitionToEndWaveState();
         }
 
+        //This triggers when the wave ends, not when the timer hits 0
         private void ProcessEndOfWave()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -605,6 +606,7 @@ namespace StarSalvager
         
         //============================================================================================================//
         
+        //This triggers when the timer hits 0 and the level is moving into completed state. This is not when the level pauses and the summaryy screen shows
         private void TransitionToEndWaveState()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -625,6 +627,7 @@ namespace StarSalvager
             EnemyManager.SetEnemiesFallEndLevel();
         }
 
+        //This handles cleanup for when you've entered the end wave state above. This and the above function likely should be combined in some way, I don't recall why it was originally set up like this and its on the list to fix.
         private void TryBeginWaveEndSequence()
         {
             if (!m_endLevelOverride && _afterWaveTimer >= 0)
@@ -650,8 +653,6 @@ namespace StarSalvager
 
             int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
-
-            PlayerDataManager.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
 
             endWaveMessage = "Wave Complete!";
 
@@ -773,48 +774,6 @@ namespace StarSalvager
         //FIXME Does this need to be in the LevelManager?
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
-            /*for (int i = loot.Count - 1; i >= 0; i--)
-            {
-                switch (loot[i])
-                {
-                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddLiquid(rdsValueResourceRefined.rdsValue.Item2);
-                        loot.RemoveAt(i);
-                        break;
-                    case RDSValue<Blueprint> rdsValueBlueprint:
-                        PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                        Toast.AddToast("Unlocked Blueprint!");
-                        loot.RemoveAt(i);
-                        break;
-                    case RDSValue<Vector2Int> rdsValueGears:
-                    {
-                        var gears = Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);
-                        PlayerDataManager.ChangeGears(gears);
-                        loot.RemoveAt(i);
-                        
-                        FloatingText.Create($"+{gears}", position, Color.white);
-                        
-                        break;
-                    }
-                    case RDSValue<IBlockData> rdsValueBlockData:
-                    {
-                        if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
-                        {
-                            switch (rdsValueBlockData.rdsValue.ClassType)
-                            {
-                                case nameof(Component):
-                                    PlayerDataManager.AddComponent(1);
-                                    loot.RemoveAt(i);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }*/
-
             ObstacleManager.SpawnObstacleExplosion(position, loot, isFromEnemyLoot);
         }
 
