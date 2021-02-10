@@ -8,33 +8,8 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class ScrapyardPart : MonoBehaviour, IAttachable, ISaveable<PartData>, IPart, ICustomRecycle
+    public class ScrapyardPart : Actor2DBase, IAttachable, ISaveable<PartData>, IPart, ICustomRecycle
     {
-        protected new SpriteRenderer renderer
-        {
-            get
-            {
-                if (_renderer == null)
-                    _renderer = gameObject.GetComponent<SpriteRenderer>();
-
-                return _renderer;
-            }
-        }
-        private SpriteRenderer _renderer;
-
-
-        public new Transform transform
-        {
-            get
-            {
-                if (_transform == null)
-                    _transform = gameObject.GetComponent<Transform>();
-
-                return _transform;
-            }
-        }
-        private Transform _transform;
-
 
         //IAttachable Properties
         //============================================================================================================//
@@ -125,14 +100,6 @@ namespace StarSalvager
             Coordinate = blockData.Coordinate;
             Type = (PART_TYPE)blockData.Type;
             Patches = blockData.Patches;
-        }
-
-        //============================================================================================================//
-
-        public void SetSprite(Sprite sprite, Color color)
-        {
-            renderer.sprite = sprite;
-            renderer.color = color;
         }
 
         //ICustomRecycle Functions

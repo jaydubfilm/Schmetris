@@ -332,15 +332,16 @@ namespace StarSalvager
                 return;
             }
 
-            PartProfile partProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)SelectedBrick.Type);
-            Color color = partProfile.Color;
+            var remoteData = FactoryManager.Instance.PartsRemoteData;
+            var bitType = remoteData.GetRemoteData((PART_TYPE) SelectedBrick.Type).category;
 
             for (int i = 0; i < _scrapyardBot.AttachedBlocks.Count; i++)
             {
                 if (_scrapyardBot.AttachedBlocks[i] is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY)
                 {
-                    PartProfile attachedProfile = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetProfileData((PART_TYPE)scrapPart.Type);
-                    if (attachedProfile.Color == color)
+                    var tempCategory = remoteData.GetRemoteData(scrapPart.Type).category;
+                    
+                    if (tempCategory == bitType)
                     {
                         UpdateFloatingMarkers(false);
                         return;

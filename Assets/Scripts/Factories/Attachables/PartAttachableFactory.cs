@@ -32,10 +32,14 @@ namespace StarSalvager.Factories
 
         public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
         {
+            var remoteData = remotePartData.GetRemoteData(partType);
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
-            part.SetSprite(sprite, profile.Color);
+            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+
+            part.SetSprite(sprite);
+            part.SetColor(color);
         }
 
         //============================================================================================================//
@@ -176,11 +180,14 @@ namespace StarSalvager.Factories
             }
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            var remoteData = remotePartData.GetRemoteData(type);
+            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.SetSprite(sprite);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
-            temp.PartColor = profile.Color;
+            temp.PartColor = color;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
@@ -218,7 +225,8 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PartData partData)
         {
-            var profile = factoryProfile.GetProfile((PART_TYPE)partData.Type);
+            var type = (PART_TYPE) partData.Type;
+            var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(0);
 
 
@@ -226,9 +234,13 @@ namespace StarSalvager.Factories
             {
                 temp = CreateScrapyardObject<ScrapyardPart>();
             }
+            
+            var remoteData = remotePartData.GetRemoteData(type);
+            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.LoadBlockData(partData);
-            temp.SetSprite(sprite, profile.Color);
+            temp.SetSprite(sprite);
+            temp.SetColor(color);
 
             var gameObject = temp.gameObject;
             gameObject.name = $"{temp.Type}";
@@ -238,7 +250,9 @@ namespace StarSalvager.Factories
 
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
-
+            var remoteData = remotePartData.GetRemoteData(overrideType);
+            var color = FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            
             var profile = factoryProfile.GetProfile(overrideType);
             var sprite = profile.GetSprite(0);
 
@@ -249,7 +263,8 @@ namespace StarSalvager.Factories
                     part.SetSprite(sprite);
                     break;
                 case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite, profile.Color);
+                    scrapyardPart.SetSprite(sprite);
+                    scrapyardPart.SetColor(color);
                     break;
             }
 

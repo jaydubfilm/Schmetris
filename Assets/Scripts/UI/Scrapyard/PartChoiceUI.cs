@@ -50,12 +50,16 @@ namespace StarSalvager.UI.Scrapyard
         {
             _partOptionType = partOptionType;
             
-            var partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            var partProfiles = FactoryManager.Instance.PartsProfileData;
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
+            var bitProfiles = FactoryManager.Instance.BitProfileData;
 
             void SetUI(in int index, in PART_TYPE partType)
             {
-                selectionUis[index].optionImage.sprite = partAttachableFactory.GetProfileData(partType).Sprite;
-                selectionUis[index].optionImage.color = partAttachableFactory.GetProfileData(partType).Color;
+                var category = partRemoteData.GetRemoteData(partType).category;
+                
+                selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
+                selectionUis[index].optionImage.color = bitProfiles.GetProfile(category).color;
                 selectionUis[index].optionText.text = $"{partType}";
             }
             
