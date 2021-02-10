@@ -59,6 +59,7 @@ namespace StarSalvager.Utilities.Trello
         
         private IEnumerator Start()
         {
+            bool earlyExit = false;
             submitButton.onClick.AddListener(SendReport);
             cancelButton.onClick.AddListener(()=>
             {
@@ -80,7 +81,14 @@ namespace StarSalvager.Utilities.Trello
             trello = new DG.TrelloAPI.Trello(KEY, TOKEN);
             
             // gets the boards of the current user
-            yield return trello.PopulateBoardsRoutine();
+            yield return trello.PopulateBoardsRoutine(() =>
+            {
+                earlyExit = true;
+            });
+
+            if (earlyExit)
+                yield break;
+            
             trello.SetCurrentBoard(BOARD);
             yield return trello.PopulateLabelsRoutine(); 
             

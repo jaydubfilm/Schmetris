@@ -17,6 +17,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
 {
+    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
     public static class PlayerDataManager
     {
         public static int CurrentSaveSlotIndex = 0;
@@ -53,7 +54,6 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SetRunStarted()
         {
-            //PlayerRunData.currentBotHealth = Globals.BotStartingHealth;
             PlayerRunData.runStarted = true;
         }
 
@@ -105,16 +105,6 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerRunData.Components;
         }
-
-        /*public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
-        {
-            return PlayerRunData.Components;
-        }*/
-
-        /*public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
-        {
-            return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
-        }*/
 
         public static List<IBlockData> GetBlockDatas()
         {
@@ -337,16 +327,6 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
         
 
-        public static float GetLevelResourceModifier(int sector, int wave)
-        {
-            return PlayerRunData.GetLevelResourceModifier(sector, wave);
-        }
-
-        public static void ReduceLevelResourceModifier(int sector, int wave)
-        {
-            PlayerRunData.ReduceLevelResourceModifier(sector, wave);
-        }
-
         public static bool CheckIfCompleted(int sector, int waveAt)
         {
             return PlayerRunData.CheckIfCompleted(sector, waveAt);
@@ -368,36 +348,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.Gears - PlayerAccountData.GearsAtRunBeginning;
         }
 
-        public static (int, int) GetPatchPointProgress()
-        {
-            return PlayerAccountData.GetPatchPointProgress();
-        }
-
-        public static int GetTotalPatchPoints()
-        {
-            return PlayerAccountData.GetTotalPatchPoints();
-        }
-
-        public static int GetAvailablePatchPoints()
-        {
-            return PlayerAccountData.GetAvailablePatchPoints();
-        }
-
-        public static void SpendPatchPoints(int amount)
-        {
-            PlayerAccountData.SpendPatchPoints(amount);
-        }
-
         public static void ChangeGears(int amount)
         {
             PlayerAccountData.ChangeGears(amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void AddGearsToGetPatchPoints(int numPatchPointsToGet)
-        {
-            PlayerAccountData.AddGearsToGetPatchPoints(numPatchPointsToGet);
 
             OnValuesChanged?.Invoke();
         }
@@ -500,34 +453,9 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RepairsDone += amount;
         }
 
-        public static void UnlockBlueprint(Blueprint blueprint)
-        {
-            PlayerAccountData.UnlockBlueprint(blueprint);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockBlueprint(PART_TYPE partType)
-        {
-            PlayerAccountData.UnlockBlueprint(partType);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockAllBlueprints()
-        {
-            PlayerAccountData.UnlockAllBlueprints();
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static IReadOnlyList<Blueprint> GetUnlockedBlueprints()
-        {
-            return PlayerAccountData.unlockedBlueprints;
-        }
-
         //============================================================================================================//
 
+        //See PlayerNewAlertData,  these functions are likely all defunct
         public static bool CheckHasBlueprintAlert(Blueprint blueprint)
         {
             return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
