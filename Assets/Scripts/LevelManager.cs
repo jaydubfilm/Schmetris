@@ -362,7 +362,7 @@ namespace StarSalvager
             SavePlayerData();
             GameTimer.SetPaused(true);
             
-            PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
+            //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
             AudioController.CrossFadeTrack(MUSIC.NONE);
                 
             m_levelManagerUI.ShowSummaryWindow(
@@ -858,7 +858,7 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
-                LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
+                LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).Ammo);
             }
 
             InputManager.Instance.CancelMove();
@@ -873,7 +873,7 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
-                tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).liquid);
+                tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).Ammo);
             }
 
             Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>

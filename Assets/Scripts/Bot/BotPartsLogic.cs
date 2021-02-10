@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
@@ -67,7 +68,7 @@ namespace StarSalvager
         //==============================================================================================================//
 
         private bool _shieldActive;
-        private bool _vampirismActive;
+        //private bool _vampirismActive;
 
         private GameObject _shieldObject;
         
@@ -83,9 +84,10 @@ namespace StarSalvager
         private Dictionary<Part, float> _projectileTimers;
         private Dictionary<Part, FlashSprite> _flashes;
         private Dictionary<Part, float> _triggerPartTimers;
-        
+
+        private Dictionary<Part, float> _repairTimers;
         private Dictionary<Part, float> _shieldTimers;
-        private Dictionary<Part, float> _vampireTimers;
+        //private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -137,7 +139,7 @@ namespace StarSalvager
                     p.Type == PART_TYPE.BOMB || 
                     p.Type == PART_TYPE.FREEZE || 
                     p.Type == PART_TYPE.SHIELD || 
-                    p.Type == PART_TYPE.VAMPIRE || 
+                    //p.Type == PART_TYPE.VAMPIRE || 
                     p.Type == PART_TYPE.RAILGUN)
                 .ToList();
 
@@ -173,11 +175,11 @@ namespace StarSalvager
                 if (i >= _triggerParts.Count)
                     break;
 
-                var partActive = HasPartGrade(_triggerParts[i], out _);
+                //var partActive = HasPartGrade(_triggerParts[i], out _);
 
                 GameUI.SetIconImage(i, _triggerParts[i].Type);
                 GameUI.ShowIcon(i, true);
-                GameUI.SetInteractable(i, partActive);
+                //GameUI.SetInteractable(i, partActive);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -196,7 +198,8 @@ namespace StarSalvager
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
 
-                part.Disabled = !HasPartGrade(part, partRemoteData, out _);
+                //FIXME Need to determine how things can become enabled/disabled
+                //part.Disabled = !HasPartGrade(part, partRemoteData, out _);
 
                 //Destroyed or disabled parts should not contribute to the stats of the bot anymore
                 if (part.Disabled)
@@ -228,7 +231,7 @@ namespace StarSalvager
                         
                         _shieldTimers.Add(part, 0f);                        
                         break;
-                    case PART_TYPE.VAMPIRE:
+                    /*case PART_TYPE.VAMPIRE:
                         if (_vampireTimers == null)
                             _vampireTimers = new Dictionary<Part, float>();
 
@@ -236,9 +239,15 @@ namespace StarSalvager
                             break;
                         
                         _vampireTimers.Add(part, 0f);                        
-                        break;
+                        break;*/
                     
                     case PART_TYPE.REPAIR:
+                        if (_repairTimers == null)
+                            _repairTimers = new Dictionary<Part, float>();
+                        
+                        if (!_repairTimers.ContainsKey(part))
+                            _repairTimers.Add(part, 0f);
+                        
                         _repairTarget.Add(part, null);
                         break;
 
@@ -302,10 +311,6 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     //------------------------------------------------------------------------------------------------//
-                    /*case PART_TYPE.CORE:
-                        CoreUpdate(part, partRemoteData);
-                        break;*/
-                    //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.REPAIR:
                         RepairUpdate(part, partRemoteData, deltaTime);
                         break;
@@ -323,10 +328,6 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SHIELD:
                         ShieldUpdate(part, partRemoteData, deltaTime);
-                        break;
-                    //------------------------------------------------------------------------------------------------//
-                    case PART_TYPE.VAMPIRE:
-                        VampireUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
             }
@@ -350,26 +351,20 @@ namespace StarSalvager
         
         #region Part Updates
 
-        /*private void CoreUpdate(in Part part, in PartRemoteData partRemoteData)
-        {
-            if (_magnetOverride > 0)
-                return;
-
-            MagnetCount = 0;
-
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out int value))
-            {
-                MagnetCount += value;
-            }
-
-            if (HasPartGrade(part, partRemoteData, out var magnet))
-            {
-                MagnetCount += (int)magnet;
-            }
-        }*/
-
+        //FIXME Need to restructure this to only trigger after cooldown time
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
+            var timer = _repairTimers[part];
+
+            if (timer > 0f)
+            {
+                timer -= deltaTime;
+                _repairTimers[part] = timer;
+
+                return;
+            }
+
+
             var repairTarget = _repairTarget[part];
 
 
@@ -383,12 +378,12 @@ namespace StarSalvager
 
             //Repair Effect Confirm
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (repairTarget && repairTarget != (Bit) toRepair)
             {
                 _repairEffects[repairTarget].SetActive(false);
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
             //If we weren't able to find a part, see if the repairer needs to be fixed
@@ -397,16 +392,16 @@ namespace StarSalvager
 
             //Repair Effect Setup
             //--------------------------------------------------------------------------------------------------------//
-            
+
             var bitToRepair = (Bit) toRepair;
 
             if (repairTarget != bitToRepair)
             {
                 _repairTarget[part] = bitToRepair;
-                
+
                 if (_repairEffects.IsNullOrEmpty())
                     _repairEffects = new Dictionary<Bit, GameObject>();
-            
+
                 if (!_repairEffects.TryGetValue(bitToRepair, out var effectObject))
                 {
                     CreateRepairEffect(bitToRepair);
@@ -417,21 +412,34 @@ namespace StarSalvager
                 }
             }
             //--------------------------------------------------------------------------------------------------------//
-            
-            if (!HasPartGrade(part, partRemoteData, out var repairAmount))
-            {
+
+            //Get Cost
+            //--------------------------------------------------------------------------------------------------------//
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            var currentAmmo = ammoResource.Ammo;
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > currentAmmo)
                 return;
+
+            ammoResource.SubtractAmmo(ammoCost);
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
+            {
+                _repairTimers[part] = cooldown;
             }
 
-            if (repairAmount == 0)
-                return;
-            
-
-            //Increase the health of this part depending on the current level of the repairer
-            toRepair.ChangeHealth(repairAmount * deltaTime);
+            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
+            {
+                toRepair.ChangeHealth(repairAmount * deltaTime);
+            }
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
         }
+
+
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
@@ -450,22 +458,7 @@ namespace StarSalvager
 
             _shieldTimers[part] = timer;
         }
-        
-        private void VampireUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
-        {
-            if (!_vampirismActive)
-                return;
 
-            var timer = _vampireTimers[part];
-
-            timer -= deltaTime;
-
-            if (timer <= 0f)
-                _vampirismActive = false;
-
-            _vampireTimers[part] = timer;
-        }
-        
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
@@ -506,17 +499,6 @@ namespace StarSalvager
                 if (asteroid == null)
                     return;
             }
-
-
-            //TODO Determine if this fires at all times or just when there are active enemies in range
-
-
-
-            //Use resources
-            //--------------------------------------------------------------------------------------------//
-
-
-            //--------------------------------------------------------------------------------------------//
 
             //TODO Create projectile shooting at new target
 
@@ -592,6 +574,19 @@ namespace StarSalvager
                 }
             }
 
+            //Get Cost
+            //--------------------------------------------------------------------------------------------------------//
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            var currentAmmo = ammoResource.Ammo;
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > currentAmmo)
+                return;
+            
+            ammoResource.SubtractAmmo(ammoCost);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             _gunTargets[part] = fireTarget;
 
 
@@ -678,9 +673,14 @@ namespace StarSalvager
             if (timer < 1f)
                 return;
 
-            var hasPartGrade = HasPartGrade(part, out _);
+            var currentAmmo = PlayerDataManager.GetResource(partRemoteData.category).Ammo;
+            var ammoCost = partRemoteData.ammoUseCost;
+            var canAfford = currentAmmo >= ammoCost;
             
-            GameUI.SetInteractable(uiIndex, fill >= 1f && hasPartGrade);
+            //TODO Setup Can Afford
+            //var hasPartGrade = HasPartGrade(part, out _);
+            
+            GameUI.SetInteractable(uiIndex, fill >= 1f && canAfford);
         }
 
         #endregion //Part Updates
@@ -727,11 +727,11 @@ namespace StarSalvager
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
-            if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
+            /*if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
                 HasPartGrade(part, partRemoteData, out var multiplier))
             {
                 damage *= multiplier;
-            }
+            }*/
 
 
             var position = part.transform.position;
@@ -739,7 +739,16 @@ namespace StarSalvager
                 ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
                 : part.transform.up.normalized;
 
-            var vampireCaster = _vampirismActive && _parts.Any(x => x.Type == PART_TYPE.VAMPIRE) ? bot : null;
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var vampireCaster = part.Patches.Any(x => x.Type == (int)PATCH_TYPE.VAMPIRE) ? bot : null;
+
+            var vampirism = vampireCaster is null
+                ? 0f
+                : FactoryManager.Instance.PatchRemoteData.GetRemoteData(PATCH_TYPE.VAMPIRE)
+                    .GetDataValue<float>(1, PartProperties.KEYS.Multiplier);
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             //TODO Might need to add something to change the projectile used for each gun piece
             FactoryManager.Instance.GetFactory<ProjectileFactory>()
@@ -752,6 +761,7 @@ namespace StarSalvager
                     rangeBoost,
                     collisionTag,
                     vampireCaster,
+                    vampirism,
                     true);
         }
 
@@ -854,9 +864,9 @@ namespace StarSalvager
                 case PART_TYPE.SHIELD:
                     TriggerShield(part);
                     break;
-                case PART_TYPE.VAMPIRE:
-                    TriggerVampire(part);
-                    break;
+                //case PART_TYPE.VAMPIRE:
+                //    TriggerVampire(part);
+                //    break;
                 case PART_TYPE.RAILGUN:
                     TriggerRailgun(part);
                     break;
@@ -880,12 +890,18 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            if (!HasPartGrade(part, partRemoteData, out var multiplier))
+            var resource = PlayerDataManager.GetResource(partRemoteData.category);
+
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > resource.Ammo)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
             }
 
+            resource.SubtractAmmo(ammoCost);
 
             //Set the cooldown time
             if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
@@ -898,8 +914,6 @@ namespace StarSalvager
             {
                 return;
             }
-
-            damage *= multiplier;
 
             EnemyManager.DamageAllEnemies(damage);
 
@@ -923,11 +937,25 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
             
-            if (!HasPartGrade(part, partRemoteData, out var freezeTime))
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var resource = PlayerDataManager.GetResource(partRemoteData.category);
+
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > resource.Ammo)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
             }
+            
+            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float freezeTime))
+            {
+                return;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             //Set the cooldown time
             if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
@@ -943,6 +971,8 @@ namespace StarSalvager
             {
                 enemy.SetFrozen(freezeTime);
             }
+            
+            resource.SubtractAmmo(ammoCost);
 
             //Need to pass the diameter not the radius
             CreateFreezeEffect(part, radius * 2f);
@@ -990,17 +1020,33 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            if (!HasPartGrade(part, partRemoteData, out var seconds))
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var resource = PlayerDataManager.GetResource(partRemoteData.category);
+
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > resource.Ammo)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
             }
+
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Time, out var seconds))
+            {
+                return;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             //Set the cooldown time
             if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
             {
                 _triggerPartTimers[part] = cooldown;
             }
+            
+            resource.SubtractAmmo(ammoCost);
 
             //Set the shielded time
             _shieldTimers[part] = seconds;
@@ -1010,42 +1056,6 @@ namespace StarSalvager
             SetShieldSize();
         }
 
-        private void TriggerVampire(in Part part)
-        {
-            if (_triggerPartTimers.IsNullOrEmpty())
-                return;
-
-            //If the bomb is still recharging, we tell the player that its unavailable
-            if (_triggerPartTimers[part] > 0f)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-            
-            if (!HasPartGrade(part, partRemoteData, out _))
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float seconds))
-            {
-                //Set the vampirism time
-                _vampireTimers[part] = seconds;
-            }
-
-            //Set the cooldown time
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
-            {
-                _triggerPartTimers[part] = cooldown;
-            }
-
-
-            _vampirismActive = true;
-        }
-        
         private void TriggerRailgun(in Part part)
         {
             if (bot.Rotating)
@@ -1062,11 +1072,27 @@ namespace StarSalvager
             var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
             
-            if (!HasPartGrade(part, partRemoteData, out var cooldown))
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var resource = PlayerDataManager.GetResource(partRemoteData.category);
+
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (ammoCost > resource.Ammo)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return;
             }
+
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
+            {
+                return;
+            }
+            
+            resource.SubtractAmmo(ammoCost);
+            
+            //--------------------------------------------------------------------------------------------------------//
 
             _triggerPartTimers[part] = cooldown;
             
@@ -1098,13 +1124,12 @@ namespace StarSalvager
             
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
 
-            foreach (var armor in armors)
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
-                if (!HasPartGrade(armor, partRemoteData, out var multiplier))
-                    continue;
-                
-                damage *= 1.0f - multiplier;
+                return false;
             }
+
+            damage *= 1.0f - multiplier;
 
             return true;
         }
@@ -1419,7 +1444,7 @@ namespace StarSalvager
                 return _flashes[part];
 
             
-            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).burnType;
+            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
             var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
@@ -1605,15 +1630,17 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public float GetVampireValue()
+        /*public float GetVampireValue()
         {
             var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
             
             if (part == null || part.Disabled)
                 return 0f;
 
-            return !HasPartGrade(part, out var value) ? 0f : value;
-        }
+            var value = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.VAMPIRE).defaultValue;
+
+            return value;
+        }*/
 
         //====================================================================================================================//
 
@@ -1638,11 +1665,6 @@ namespace StarSalvager
             var outList = new List<Bot.DataTest>();
             foreach (var wildCard in wildCards)
             {
-                if(!HasPartGrade(wildCard, out var lvl))
-                    continue;
-
-                if (level > lvl)
-                    continue;
                 
                 outList.Add(new Bot.DataTest
                 {
@@ -1655,48 +1677,5 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-
-        
-        
-
-        private bool HasPartGrade(in Part part, out float value)
-        {
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-
-            return HasPartGrade(part, partRemoteData, out value);
-        }
-        
-        private bool HasPartGrade(in Part part, in PartRemoteData partRemoteData, out float value)
-        {
-            value = 0.0f;
-            
-            var types = partRemoteData.partGrade2.Types;
-            var count = types.Count;
-            var upgradersNextTo = GetUpgradersAroundPart(part);
-            var upgradePatchSum = part.Patches.GetPatchUpgradersSum();
-            
-            
-            var levels = new int[count];
-
-            for (var i = 0; i < count; i++)
-            {
-                levels[i] = types[i] == BIT_TYPE.NONE
-                    ? bot.attachedBlocks.GetHighestLevelBit()
-                    : bot.attachedBlocks.GetHighestLevelBit(types[i]);
-            }
-
-            if (levels.IsNullOrEmpty())
-                return false;
-
-            var minLevel = levels.Min();
-
-            minLevel = Mathf.Clamp(minLevel + upgradersNextTo + upgradePatchSum, -1, 5);
-            
-            //var bitLevel = bot.attachedBlocks.GetHighestLevelBit(partRemoteData.partGrade.Type);
-            var active = partRemoteData.HasPartGrade(minLevel, out value);
-
-            return active;
-        }
     }
 }

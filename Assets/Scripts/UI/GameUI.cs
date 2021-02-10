@@ -97,9 +97,9 @@ namespace StarSalvager.UI
             private static Color GetPartColor(PART_TYPE type)
             {
                 var factoryManager = FactoryManager.Instance;
-                var burnType = factoryManager.PartsRemoteData.GetRemoteData(type).burnType;
+                var category = factoryManager.PartsRemoteData.GetRemoteData(type).category;
 
-                var color = factoryManager.BitProfileData.GetProfile(burnType).color;
+                var color = factoryManager.BitProfileData.GetProfile(category).color;
 
                 return color;
             }
@@ -284,18 +284,13 @@ namespace StarSalvager.UI
         private bool _flashingBorder;
 
         #endregion //Properties
-
-        //====================================================================================================================//
-
-        [SerializeField]
-        private RectTransform[] bitLevelContainerTransforms;
-        private List<Image[]> _bitLevelImages;
-
         
         [SerializeField]
-        private RectTransform[] partIconContainerTransforms;
-        private List<Image[]> _partIconImages;
-
+        private Slider[] sliders;
+        [SerializeField]
+        private Image[] sliderImages;
+        
+        
         //====================================================================================================================//
 
         private Image[] glowImages;
@@ -306,7 +301,6 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
             
             InitValues();
@@ -318,7 +312,7 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged += ValuesUpdated;
         }
 
         private void OnDisable()
@@ -326,7 +320,7 @@ namespace StarSalvager.UI
             Toast.SetToastArea(transform as RectTransform);
             
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged -= ValuesUpdated;
         }
 
         //============================================================================================================//
@@ -371,10 +365,7 @@ namespace StarSalvager.UI
         
         private void InitValues()
         {
-            SetupBitLevelImages();
-            SetupPartIconImages();
-            
-            SetBitLevelImages(new Dictionary<BIT_TYPE, int>());
+            SetupAmmoBars();
             
             InitSmartWeaponUI();
             ResetIcons();
@@ -433,155 +424,31 @@ namespace StarSalvager.UI
 
             SetPlayerXP(0);
             SetPlayerComponents(PlayerDataManager.GetComponents());
+
+            UpdateAmmoBars();
         }
 
-        
-        private void SetupBitLevelImages()
+        private void SetupAmmoBars()
         {
-            _bitLevelImages = new List<Image[]>();
-            foreach (var bitLevelContainerTransform in bitLevelContainerTransforms)
+            for (var i = 0; i < _bitTypes.Length; i++)
             {
-                var images = bitLevelContainerTransform.GetComponentsInChildren<Image>();
-                
-                _bitLevelImages.Add(images);
-            }
+                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
 
-            for (int i = 0; i < _bitTypes.Length; i++)
-            {
-                var bitType = _bitTypes[i];
+                sliderImages[i].color = color;
 
-                for (int ii = 0; ii < _bitLevelImages[i].Length; ii++)
-                {
-                    var level = 4 - ii;
-                    var sprite = FactoryManager.Instance.BitProfileData.GetProfile(bitType).GetSprite(level);
-                    var image = _bitLevelImages[i][ii];
-                    
-                    image.gameObject.name = sprite.name;
-                    image.sprite = sprite;
-                    image.enabled = false;
-                }
-            }
-            
-        }
-
-        private void SetupPartIconImages()
-        {
-            _partIconImages = new List<Image[]>();
-            foreach (var partIconContainerTransform in partIconContainerTransforms)
-            {
-                var images = partIconContainerTransform.GetComponentsInChildren<Image>();
-                
-                _partIconImages.Add(images);
+                sliders[i].minValue = 0;
             }
         }
 
-        private struct PartIconState
+        private void UpdateAmmoBars()
         {
-            public Sprite Sprite;
-            public Color Color;
-        }
-        public void SetPartImages(in Dictionary<PART_TYPE, bool> partStates)
-        {
-            if (_partIconImages.IsNullOrEmpty())
-                return;
-
-            for (int i = 0; i < _partIconImages.Count; i++)
+            for (var i = 0; i < _bitTypes.Length; i++)
             {
-                for (int ii = 0; ii < _partIconImages[i].Length; ii++)
-                {
-                    _partIconImages[i][ii].enabled = false;
-                }
+                var resource = PlayerDataManager.GetResource(_bitTypes[i]);
+
+                sliders[i].maxValue = resource.AmmoCapacity;
+                sliders[i].value = resource.Ammo;
             }
-            
-            //TODO Get the parts on the bot, determine the colors they're using
-
-            var partProfile = FactoryManager.Instance.PartsProfileData;
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
-            /*var parts = PlayerDataManager
-                .GetBlockDatas()
-                .OfType<PartData>()
-                .Select(x => (PART_TYPE) x.Type);*/
-
-            var parts = partStates.Keys.ToList();
-            
-            var bitCategories = new Dictionary<BIT_TYPE, List<PartIconState>>();
-
-            foreach (var partType in parts)
-            {
-                var partData = partRemoteData.GetRemoteData(partType);
-                var sprite = partProfile.GetProfile(partType).Sprite;
-                
-                var types = partData.partGrade2.Types;
-                
-                if(types.IsNullOrEmpty())
-                    continue;
-
-                if (types[0] == BIT_TYPE.NONE)
-                    types = new List<BIT_TYPE>(_bitTypes);
-
-                foreach (var bitType in types)
-                {
-                    if(!bitCategories.ContainsKey(bitType))
-                        bitCategories.Add(bitType, new List<PartIconState>());
-                    
-                    bitCategories[bitType].Add(new PartIconState
-                    {
-                        Sprite = sprite,
-                        Color = partStates[partType] ? Color.white : Color.gray
-                    });
-                }
-            }
-            
-            for (int i = 0; i < _bitTypes.Length; i++)
-            {
-                var bitType = _bitTypes[i];
-
-                if (!bitCategories.ContainsKey(bitType))
-                    continue;
-
-                var partIconStates = bitCategories[bitType];
-                
-                for (int ii = 0; ii < partIconStates.Count; ii++)
-                {
-                    var image = _partIconImages[i][ii];
-                    image.enabled = true;
-                    image.sprite = partIconStates[ii].Sprite;
-                    image.color = partIconStates[ii].Color;
-                }
-            }
-        }
-
-        //====================================================================================================================//
-
-        public void SetBitLevelImages(Dictionary<BIT_TYPE, int> bitLevels)
-        {
-            foreach (var bitLevel in bitLevels)
-            {
-                SetBitLevelImages(bitLevel.Key, bitLevel.Value);
-            }
-        }
-        
-        //Uses levels 0-4
-        public void SetBitLevelImages(in BIT_TYPE type, in int level)
-        {
-            var bitType = type;
-            var index = _bitTypes.ToList().FindIndex(x => x == bitType);
-
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-
-            var images = _bitLevelImages[index];
-
-            for (var i = 0; i < images.Length; i++)
-            {
-                var active = (4 - i) <= level;
-                
-                //TODO Need to set the color depending on the level
-                images[i].color = (4 - i) == level ? Color.white : Color.gray;
-                images[i].enabled = active;
-
-            }
-
         }
 
         //============================================================================================================//
@@ -636,6 +503,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+        private void ValuesUpdated()
+        {
+            SetPlayerComponents(PlayerDataManager.GetComponents());
+
+            UpdateAmmoBars();
+        }
+
         public void AbortPressed()
         {
             LevelManager.Instance.BotInLevel.TrySelfDestruct();
@@ -643,15 +517,6 @@ namespace StarSalvager.UI
             //If the bot was able to be killed, hide this window
             if(LevelManager.Instance.BotInLevel.Destroyed)
                 ShowAbortWindow(false);
-        }
-
-        //TODO I should look into the NotifyPropertyChanged for setting up this functionality
-        private void UpdatePlayerGearsLevel()
-        {
-            //SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
-
-            //TODO Need to add the Patch Points connection here
-            SetPlayerComponents(PlayerDataManager.GetComponents());
         }
 
         public void SetPlayerXP(int xp)

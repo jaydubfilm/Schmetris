@@ -13,6 +13,7 @@
         CORROSIVE,
         REINFORCED,
         SPECIALIST,
-        GRADE
+        GRADE,
+        VAMPIRE
     }
 }
