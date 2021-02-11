@@ -204,6 +204,8 @@ MonoBehaviour:
     dataTest:
     - key: Cooldown
       value: 15
+    - key: Multiplier
+      value: 30
     isManual: 1
     category: 5
     ammoUseCost: 2
