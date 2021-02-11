@@ -278,7 +278,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
                     
-                    PlayerDataManager.AddComponent(compAmount, false);
+                    PlayerDataManager.AddGears(compAmount, false);
                     
                     /*if (!int.TryParse(split[3], out var compAmount))
                     {
@@ -319,7 +319,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    PlayerDataManager.ChangeGears(intAmount);
+                    PlayerDataManager.ChangeExperience(intAmount);
 
                     break;
                 case "liquid":
@@ -724,7 +724,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-                    PlayerDataManager.SetComponents(compAmount);
+                    PlayerDataManager.SetGears(compAmount);
                     /*if (split[2].ToLower().Equals("all"))
                     {
                         var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());

@@ -33,13 +33,10 @@ namespace StarSalvager.ScriptableObjects
         //Experience Properties
         //====================================================================================================================//
 
-        [BoxGroup("Facilities")]
-        public int patchPointBaseCost = 500;
-        [BoxGroup("Facilities")]
-        public int patchPointIncrementCost = 50;
-
-        [BoxGroup("Blueprints"), Space(10f)]
-        public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
+        [BoxGroup("Experience")]
+        public int levelBaseExperience = 500;
+        [BoxGroup("Experience")]
+        public int levelExperienceIncrement = 50;
 
         //Wave Properties
         //====================================================================================================================//
