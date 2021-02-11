@@ -28,6 +28,7 @@ namespace StarSalvager.Values
         public static int CurrentWave = 0;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
+        public static bool StripBits;
         public static float TimeForAsteroidToFallOneSquare;
         public static float TimeForAsteroidToFallOneSquareOriginal;
 
