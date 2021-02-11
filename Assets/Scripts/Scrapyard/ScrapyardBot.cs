@@ -268,6 +268,8 @@ namespace StarSalvager
 
         public void AttachNewBit(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true, bool updateColliderGeometry = true)
         {
+            TryRemoveAttachableAt(coordinate);
+            
             newAttachable.Coordinate = coordinate;
             newAttachable.SetAttached(true);
             newAttachable.transform.position = transform.position + (Vector3)(Vector2.one * coordinate * Constants.gridCellSize);

@@ -148,6 +148,25 @@ namespace StarSalvager.Values
             }
         }
 
+        public Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            switch(bitType)
+            {
+                case BIT_TYPE.GREEN:
+                    return Vector2Int.zero;
+                case BIT_TYPE.RED:
+                    return Vector2Int.right;
+                case BIT_TYPE.BLUE:
+                    return Vector2Int.up;
+                case BIT_TYPE.GREY:
+                    return Vector2Int.left;
+                case BIT_TYPE.YELLOW:
+                    return Vector2Int.down;
+                default:
+                    throw new Exception("Invalid bit type for category to get coordinate on bot");
+            }
+        }
+
         //====================================================================================================================//
 
         public void ResetPlayerRunData()
