@@ -1,19 +1,13 @@
 ﻿using Newtonsoft.Json;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.FileIO;
+using StarSalvager.Audio;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using StarSalvager.Audio;
-using StarSalvager.UI.Hints;
 using UnityEngine;
 
 namespace StarSalvager.Values
 {
-    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
-    //FIXME: The patch points here refer to the old system, not the new, and need to be cleaned up
     public class PlayerSaveAccountData
     {
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
@@ -22,8 +16,7 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
-        public int Gears;
-        public int PatchPointsSpent;
+        public int Experience;
 
         public int CoreDeaths;
         public float RepairsDone;
@@ -37,7 +30,7 @@ namespace StarSalvager.Values
         };
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
-        public int GearsAtRunBeginning;
+        public int ExperienceAtRunBeginning;
         public int CoreDeathsAtRunBeginning;
         public float RepairsDoneAtRunBeginning;
         public int TotalRuns;
@@ -50,8 +43,6 @@ namespace StarSalvager.Values
             { BIT_TYPE.GREY, 0},
         };
         public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
-
-        public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
         [JsonIgnore]
         public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
@@ -70,7 +61,6 @@ namespace StarSalvager.Values
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            //[HINT.COMPONENT] = false,
             
         };
 
@@ -160,7 +150,7 @@ namespace StarSalvager.Values
 
             data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
-            GearsAtRunBeginning = Gears;
+            ExperienceAtRunBeginning = Experience;
             CoreDeathsAtRunBeginning = CoreDeaths;
             BitConnectionsAtRunBeginning.Clear();
             foreach (var keyValue in BitConnections)
@@ -179,61 +169,58 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
-        public void ChangeGears(int amount)
+        public void ChangeExperience(int amount)
         {
-            int totalPatchPoints = GetTotalPatchPoints();
-            Gears += amount;
+            int totalLevels = GetTotalLevels();
+            Experience += amount;
 
             if (GameManager.IsState(GameState.LEVEL))
             {
                 LevelManager.Instance.WaveEndSummaryData.AddGearsGained(amount);
             }
 
-            int newTotalPatchPoints = GetTotalPatchPoints();
+            int newTotalLevels = GetTotalLevels();
 
-            if (newTotalPatchPoints <= totalPatchPoints) 
+            if (newTotalLevels <= totalLevels) 
                 return;
             
-            var difference = newTotalPatchPoints - totalPatchPoints;
-            Toast.AddToast($"Unlocked {(difference > 1 ? $"{difference} Patch Points!" : "New Patch Point!")}");
-                
-            AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
-            
-            LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
+            var difference = newTotalLevels - totalLevels;
+
+            //Do something to signify gaining a level
         }
 
-        public (int, int) GetPatchPointProgress()
+        public (int, int) GetLevelProgress()
         {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
+            int totalLevels = 0;
+            int experienceAmount = Experience;
 
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return (gearsAmount, patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints));
+            return (experienceAmount, levelBaseExperience + (levelExperienceIncrement * totalLevels));
         }
 
-        public int GetTotalPatchPoints()
+        public int GetTotalLevels()
         {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
+            int totalLevels = 0;
+            int experienceAmount = Experience;
 
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return totalPatchPoints;
+            return totalLevels;
         }
 
         public void RecordBitConnection(BIT_TYPE bit)
@@ -263,71 +250,6 @@ namespace StarSalvager.Values
         public void SetHintDisplay(HINT hint, bool state)
         {
             _hintDisplay[hint] = state;
-        }
-
-        //====================================================================================================================//
-
-        public void UnlockBlueprint(Blueprint blueprint)
-        {
-            if (unlockedBlueprints.All(b => b.name != blueprint.name))
-            {
-                unlockedBlueprints.Add(blueprint);
-
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
-                }
-
-                PlayerDataManager.AddNewBlueprintAlert(blueprint);
-            }
-        }
-
-        public void UnlockBlueprint(PART_TYPE partType)
-        {
-            Blueprint blueprint = new Blueprint
-            {
-                name = $"{partType}",
-                partType = partType
-            };
-            UnlockBlueprint(blueprint);
-        }
-
-        public void UnlockAllBlueprints()
-        {
-            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
-            {
-                //TODO Add these back in when we're ready!
-                switch (partRemoteData.partType)
-                {
-                    //Still want to be able to upgrade the core, just don't want to buy new ones?
-                    //case PART_TYPE.CORE:
-                    case PART_TYPE.SPIKES:
-                    case PART_TYPE.LASER:
-                    case PART_TYPE.GRENADE:
-                    case PART_TYPE.CATAPULT:
-                    /*case PART_TYPE.LIGHTNING:
-                    case PART_TYPE.BOOSTRANGE:
-                    case PART_TYPE.BOOSTRATE:
-                    case PART_TYPE.BOOSTDAMAGE:
-                    case PART_TYPE.BOOSTDEFENSE:*/
-                    case PART_TYPE.STACKER:
-                    case PART_TYPE.CLOAK:
-                    case PART_TYPE.SONAR:
-                    case PART_TYPE.DECOY:
-                    case PART_TYPE.RETRACTOR:
-                    case PART_TYPE.HOOVER:
-                    case PART_TYPE.FREEZE:
-                        continue;
-                }
-
-                Blueprint blueprint = new Blueprint
-                {
-                    name = $"{partRemoteData.partType}",
-                    partType = partRemoteData.partType
-                };
-                UnlockBlueprint(blueprint);
-            }
         }
 
         //====================================================================================================================//

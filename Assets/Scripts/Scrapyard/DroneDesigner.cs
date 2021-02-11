@@ -269,6 +269,8 @@ namespace StarSalvager
                 !(attachableAtCoordinates is ScrapyardPart partAtCoordinates && partAtCoordinates.Type != PART_TYPE.EMPTY))
                 return;
 
+            //Grab clicked on attachable and move it
+
             var type = partAtCoordinates.Type;
 
             Vector3 currentAttachablePosition = attachableAtCoordinates.transform.position;
@@ -968,7 +970,7 @@ namespace StarSalvager
             
             
             var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             if (components == 0)
                 throw new Exception();
@@ -976,7 +978,7 @@ namespace StarSalvager
             var finalCost = Mathf.Min(cost, components);
             
             
-            PlayerDataManager.SubtractComponent((int)finalCost);
+            PlayerDataManager.SubtractGears((int)finalCost);
             
             //var startingHealth = currentHealth + (int)finalCost;
             var newHealth = Mathf.Clamp(currentHealth + (int) finalCost, 0, startingHealth);

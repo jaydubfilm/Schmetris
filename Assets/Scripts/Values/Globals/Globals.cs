@@ -43,8 +43,6 @@ namespace StarSalvager.Values
         
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
         public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
-        
-        //Properties from Game Settings - do not give explicit values
 
         public static int CameraScaleSize => m_gameSettings.columnsOnScreen;
         public static int DashDistance => m_gameSettings.dashDistance;
@@ -70,9 +68,8 @@ namespace StarSalvager.Values
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
-        public static List<BlueprintInitialData> BlueprintInitialData => m_gameSettings.blueprintInitialData;
-        public static int PatchPointBaseCost => m_gameSettings.patchPointBaseCost;
-        public static int PatchPointIncrementCost => m_gameSettings.patchPointIncrementCost;
+        public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
+        public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;
 
         public static float GameUIResourceThreshold => m_gameSettings.gameUIResourceThreshold;
 

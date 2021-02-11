@@ -1,18 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using UnityEngine;
-using StarSalvager.Values;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
 
 namespace StarSalvager.Utilities.Saving
 {
     [Serializable]
-    //FIXME: There is still some unfixed mixup in the naming of components vs gears. Tread carefully when interacting with those here, make sure you are working with the right variables
     public class PlayerSaveRunData
     {
         //============================================================================================================//
@@ -36,9 +31,9 @@ namespace StarSalvager.Utilities.Saving
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Components => _components;
+        public int Gears => _gears;
 
-        [JsonProperty] private int _components;
+        [JsonProperty] private int _gears;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
@@ -111,21 +106,21 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetComponents(int value)
+        public void SetGears(int value)
         {
-            _components = value;
+            _gears = value;
         }
 
         //============================================================================================================//
 
-        public void AddComponent(int amount)
+        public void AddGears(int amount)
         {
-            _components += Mathf.Abs(amount);
+            _gears += Mathf.Abs(amount);
         }
 
-        public void SubtractComponent(int amount)
+        public void SubtractGears(int amount)
         {
-            _components -= Mathf.Abs(amount);
+            _gears -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//
