@@ -25,3 +25,6 @@ MonoBehaviour:
   mGreenBitsPercentageRange: {x: 0, y: 100}
   mYellowBitsPercentageRange: {x: 0, y: 100}
   mGreyBitsPercentageRange: {x: 0, y: 100}
+  obstacleSpawns:
+  - obstacleID: 
+    weight: 0

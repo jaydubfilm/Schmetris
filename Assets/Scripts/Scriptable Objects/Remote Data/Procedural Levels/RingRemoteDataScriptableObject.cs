@@ -12,6 +12,8 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Ring Remote", menuName = "Star Salvager/Scriptable Objects/Ring Remote Data")]
     public class RingRemoteDataScriptableObject : ScriptableObject
     {
+        #region Spawn Data
+
         [Serializable]
         private struct EnemySpawn
         {
@@ -62,6 +64,26 @@ namespace StarSalvager.ScriptableObjects
 #endif
         }
         
+        [Serializable]
+        private struct EventSpawn
+        {
+            [TableColumnWidth(40)]
+            public string eventID;
+            [TableColumnWidth(35)]
+            public int weight;
+
+#if UNITY_EDITOR
+
+            [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
+            public string Chance => $"{percentChance:P2}";
+            [HideInTables, NonSerialized]
+            public float percentChance;
+
+#endif
+        }
+
+        #endregion //Spawn Data
+        
         //Public Properties
         //====================================================================================================================//
         
@@ -82,11 +104,11 @@ namespace StarSalvager.ScriptableObjects
         
         [BoxGroup("Ring Wave Properties"), LabelText("Duration Range"), Tooltip("Duration is measured in Seconds")]
         [SerializeField, Required, MinMaxSlider(30, 240, true), SuffixLabel("s", true)]
-        private Vector2Int mWaveDurationRange = new Vector2Int(30, 240);
+        private Vector2Int mWaveDurationRange;
 
         [BoxGroup("Ring Wave Properties"), LabelText("Width Range")]
         [SerializeField, Required, MinMaxSlider(30, 70, true)]
-        private Vector2Int mGridWidthRange = new Vector2Int(30, 70);
+        private Vector2Int mGridWidthRange;
 
         //Enemies
         //====================================================================================================================//
@@ -130,8 +152,15 @@ namespace StarSalvager.ScriptableObjects
         //====================================================================================================================//
         
         [FoldoutGroup("Obstacles")]
-        [SerializeField, TableList, InfoBox("Obstacle Spawns not yet functional", InfoMessageType.Warning)]
+        [SerializeField, TableList, InfoBox("Obstacle Spawns not yet functional", InfoMessageType.Warning), ReadOnly]
         private List<ObstacleSpawn> obstacleSpawns;
+
+        //Event Properties
+        //====================================================================================================================//
+        
+        [FoldoutGroup("Events")]
+        [SerializeField, TableList, InfoBox("Event Spawns not yet functional", InfoMessageType.Warning), ReadOnly]
+        private List<EventSpawn> eventSpawns;
 
         //RingRemoteDataScriptableObject Functions
         //====================================================================================================================//
