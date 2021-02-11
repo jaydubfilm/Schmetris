@@ -208,7 +208,7 @@ namespace StarSalvager.ScriptableObjects
         }
 
 
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
 
         /*[Button]
         private void UpdateData()
@@ -220,7 +220,7 @@ namespace StarSalvager.ScriptableObjects
                     StageRemoteData[i].StageObstacleData[k].UpdateDensity();
                 }
             }
-        }*/
+        }#1#
 
         public void OnValidate()
         {
@@ -232,7 +232,7 @@ namespace StarSalvager.ScriptableObjects
                 }
             }
         }
-#endif
+#endif*/
     }
 }
 

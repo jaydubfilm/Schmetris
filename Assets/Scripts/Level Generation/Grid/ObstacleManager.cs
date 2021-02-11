@@ -157,10 +157,13 @@ namespace StarSalvager
             SetupStage(0);
 
             WorldElementsRoot.transform.position = Vector3.zero;
-            if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
+            
+            LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
+            
+            /*if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
-            }
+            }*/
         }
 
         public void Reset()
@@ -812,8 +815,9 @@ namespace StarSalvager
             //TODO: Find a better approach. This line is causing the stageblendperiod on the last stage of a wave to prevent spawning for that last portion of the wave. Temporary approach to the waveendsequence.
             if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
                 return;
-
-            switch (m_currentStageData.StageType)
+            LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_currentStageData,
+                false, this);
+            /*switch (m_currentStageData.StageType)
             {
                 case STAGE_TYPE.STANDARD:
                     LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_currentStageData,
@@ -870,13 +874,15 @@ namespace StarSalvager
                     }
 
                     break;
-            }
+            }*/
 
             if (m_previousStageData == null || m_currentStageData.StageBlendPeriod == 0 ||
                 m_blendTimer > m_currentStageData.StageBlendPeriod)
                 return;
 
-            switch (m_previousStageData.StageType)
+            LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_previousStageData,
+                true, this);
+            /*switch (m_previousStageData.StageType)
             {
                 case STAGE_TYPE.STANDARD:
                     LevelManager.Instance.StandardBufferZoneObstacleData.SetObstacleDataSpawns(m_previousStageData,
@@ -934,7 +940,7 @@ namespace StarSalvager
                     }
 
                     break;
-            }
+            }*/
         }
 
         public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, bool allowOverlap,
