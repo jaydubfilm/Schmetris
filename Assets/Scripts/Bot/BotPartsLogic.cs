@@ -25,6 +25,19 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
+        private static PART_TYPE[] TriggerPartTypes
+        {
+            get
+            {
+                if(_triggerPartTypes.IsNullOrEmpty())
+                    _triggerPartTypes = FactoryManager.Instance.PartsRemoteData.GetTriggerParts();
+
+                return _triggerPartTypes;
+            }
+        }
+
+        private static PART_TYPE[] _triggerPartTypes;
+        
         #region Properties
 
         public List<BIT_TYPE> CurrentlyUsedBitTypes => _currentlyUsedBitTypes;
@@ -136,11 +149,7 @@ namespace StarSalvager
             _parts = bot.attachedBlocks.OfType<Part>().ToList();
             _triggerParts = _parts
                 .Where(p =>
-                    p.Type == PART_TYPE.BOMB || 
-                    p.Type == PART_TYPE.FREEZE || 
-                    p.Type == PART_TYPE.SHIELD || 
-                    //p.Type == PART_TYPE.VAMPIRE || 
-                    p.Type == PART_TYPE.RAILGUN)
+                    TriggerPartTypes.Contains(p.Type))
                 .ToList();
 
             //TODO Need to update the UI here for the amount of smart weapons able to be used
@@ -864,31 +873,44 @@ namespace StarSalvager
                 case PART_TYPE.SHIELD:
                     TriggerShield(part);
                     break;
-                //case PART_TYPE.VAMPIRE:
-                //    TriggerVampire(part);
-                //    break;
                 case PART_TYPE.RAILGUN:
                     TriggerRailgun(part);
+                    break;
+                case PART_TYPE.TRACTOR:
+                    break;
+                case PART_TYPE.HEAL:
+                    break;
+                case PART_TYPE.REGEN:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
         }
 
-        private void TriggerBomb(in Part part)
+        //====================================================================================================================//
+
+        private bool CanUseTriggerPart(in Part part, in bool useAmmo, out PartRemoteData partRemoteData)
         {
+            partRemoteData = null;
+            
             if (_triggerPartTimers == null || _triggerPartTimers.Count == 0)
-                return;
+                return false;
 
             //If the bomb is still recharging, we tell the player that its unavailable
             if (_triggerPartTimers[part] > 0f)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
+                return false;
             }
 
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+            partRemoteData = FactoryManager.Instance
+                .GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
+            
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
+            }
 
             var resource = PlayerDataManager.GetResource(partRemoteData.category);
 
@@ -898,22 +920,25 @@ namespace StarSalvager
             if (ammoCost > resource.Ammo)
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
+                return false;
+            }
+
+            if(useAmmo)
+                resource.SubtractAmmo(ammoCost);
+            
+            _triggerPartTimers[part] = cooldown;
+
+            return true;
+        }
+        
+        private void TriggerBomb(in Part part)
+        {
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
                 return;
-            }
-
-            resource.SubtractAmmo(ammoCost);
-
-            //Set the cooldown time
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
-            {
-                _triggerPartTimers[part] = cooldown;
-            }
 
             //Damage all the enemies
             if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
-            {
-                return;
-            }
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
 
             EnemyManager.DamageAllEnemies(damage);
 
@@ -924,46 +949,18 @@ namespace StarSalvager
 
         private void TriggerFreeze(in Part part)
         {
-            if (_triggerPartTimers == null || _triggerPartTimers.Count == 0)
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
                 return;
-
-            //If the bomb is still recharging, we tell the player that its unavailable
-            if (_triggerPartTimers[part] > 0f)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-            
-            //--------------------------------------------------------------------------------------------------------//
-            
-            var resource = PlayerDataManager.GetResource(partRemoteData.category);
-
-
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > resource.Ammo)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
             
             if (!partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float freezeTime))
             {
-                return;
+                throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
             
             //--------------------------------------------------------------------------------------------------------//
 
-            //Set the cooldown time
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
-            {
-                _triggerPartTimers[part] = cooldown;
-            }
-
-            partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius);
+            if(!partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius))
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
 
             var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
 
@@ -972,8 +969,6 @@ namespace StarSalvager
                 enemy.SetFrozen(freezeTime);
             }
             
-            resource.SubtractAmmo(ammoCost);
-
             //Need to pass the diameter not the radius
             CreateFreezeEffect(part, radius * 2f);
             AudioController.PlaySound(SOUND.BOMB_BLAST);
@@ -1007,47 +1002,16 @@ namespace StarSalvager
                 _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
             }
             
-            if (_triggerPartTimers.IsNullOrEmpty())
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
                 return;
-
-            //If the bomb is still recharging, we tell the player that its unavailable
-            if (_triggerPartTimers[part] > 0f)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
 
             //--------------------------------------------------------------------------------------------------------//
             
-            var resource = PlayerDataManager.GetResource(partRemoteData.category);
-
-
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > resource.Ammo)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Time, out var seconds))
             {
-                return;
+                throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
             
-            //--------------------------------------------------------------------------------------------------------//
-
-            //Set the cooldown time
-            if (partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown))
-            {
-                _triggerPartTimers[part] = cooldown;
-            }
-            
-            resource.SubtractAmmo(ammoCost);
-
             //Set the shielded time
             _shieldTimers[part] = seconds;
 
@@ -1061,43 +1025,39 @@ namespace StarSalvager
             if (bot.Rotating)
                 return;
             
-            if (_triggerPartTimers.IsNullOrEmpty())
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
                 return;
-            
-            if (_triggerPartTimers[part] > 0f)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-            var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
-            
-            //--------------------------------------------------------------------------------------------------------//
-            
-            var resource = PlayerDataManager.GetResource(partRemoteData.category);
-
-
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > resource.Ammo)
-            {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
-                return;
-            }
-
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
-            {
-                return;
-            }
-            
-            resource.SubtractAmmo(ammoCost);
-            
             //--------------------------------------------------------------------------------------------------------//
 
-            _triggerPartTimers[part] = cooldown;
-            
             CreateProjectile(part, partRemoteData, null);
 
+        }
+
+        private void TriggerTractorBeam(in Part part)
+        {
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+                return;
+            
+            //TODO Add functionality
+            
+        }
+        
+        private void TriggerHeal(in Part part)
+        {
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+                return;
+            
+            //TODO Alex Add functionality
+            
+        }
+        
+        private void TriggerRegen(in Part part)
+        {
+            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+                return;
+            
+            //TODO Alex Add functionality
+            
         }
 
         #endregion

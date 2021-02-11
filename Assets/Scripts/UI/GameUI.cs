@@ -423,7 +423,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(0);
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
 
             UpdateAmmoBars();
         }
@@ -505,7 +505,7 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
 
             UpdateAmmoBars();
         }

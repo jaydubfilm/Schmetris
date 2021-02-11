@@ -3,6 +3,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Saving
