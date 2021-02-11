@@ -222,7 +222,7 @@ MonoBehaviour:
     - key: Heal
       value: 10
     isManual: 1
-    category: 2
+    category: 1
     ammoUseCost: 10
     PatchSockets: 2
   - name: Regen
