@@ -480,37 +480,11 @@ namespace StarSalvager
             magnetCount = 0;
             //MAXParts = 0;
 
-            foreach (var part in _parts)
+            for (int i = 0; i < _parts.Count; i++)
             {
-                int value;
+                ScrapyardPart part = _parts[i];
 
-                var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData(part.Type);
-
-                switch (part.Type)
-                {
-                    /*case PART_TYPE.CORE:
-                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
-                        {
-                            magnetCount += value;
-                        }
-
-                        if (partRemoteData.TryGetValue(PartProperties.KEYS.PartCapacity, out int intValue))
-                        {
-                            MAXParts = intValue;
-                        }
-                        break;*/
-                    /*case PART_TYPE.MAGNET:
-
-                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
-                        {
-                            magnetCount += value;
-                        }
-                        break;*/
-                    //Determine if we need to setup the shield elements for the bot
-                    //FIXME I'll need a way of disposing of the shield visual object
-                    case PART_TYPE.SHIELD:
-                        break;
-                }
+                FactoryManager.Instance.GetFactory<PartAttachableFactory>().UpdatePartData(part.Type, 0, ref part);
             }
 
         }

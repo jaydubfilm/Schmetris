@@ -360,6 +360,10 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetLevelProgressSlider(1f);
+            foreach (var bot in m_bots)
+            {
+                bot.ResetRotationToIdentity();
+            }
             SavePlayerData();
             GameTimer.SetPaused(true);
             
@@ -776,10 +780,12 @@ namespace StarSalvager
         public void SavePlayerData()
         {
             if (Globals.UsingTutorial)
-                return; 
-            
+                return;
+
             foreach (Bot bot in m_bots)
             {
+                
+                
                 var blockData = bot.GetBlockDatas();
                 /*if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<IBlockData>();*/

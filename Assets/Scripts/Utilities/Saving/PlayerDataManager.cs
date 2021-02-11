@@ -77,6 +77,11 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData._botLayout;
         }
 
+        public static BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
+        {
+            return PlayerAccountData.GetCategoryAtCoordinate(coordinate);
+        }
+
 
         //Run Data Functions
         //====================================================================================================================//

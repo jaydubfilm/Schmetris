@@ -718,6 +718,21 @@ namespace StarSalvager
             _rotating = true;
         }
 
+        public void ResetRotationToIdentity()
+        {
+            PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+            if (attachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
+            {
+                foreach (var attachedBlock in attachedBlocks)
+                {
+                    attachedBlock.RotateCoordinate(ROTATION.CW);
+                }
+
+                ResetRotationToIdentity();
+            }
+        }
+
         public void TrySelfDestruct()
         {
             if (GameManager.IsState(GameState.LevelEndWave))

@@ -129,6 +129,25 @@ namespace StarSalvager.Values
             new Vector2Int(0, -1)
         };
 
+        public BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
+        {
+            switch (coordinate)
+            {
+                case Vector2Int v when v.Equals(Vector2Int.zero):
+                    return BIT_TYPE.GREEN;
+                case Vector2Int v when v.Equals(Vector2Int.right):
+                    return BIT_TYPE.RED;
+                case Vector2Int v when v.Equals(Vector2Int.up):
+                    return BIT_TYPE.BLUE;
+                case Vector2Int v when v.Equals(Vector2Int.left):
+                    return BIT_TYPE.GREY;
+                case Vector2Int v when v.Equals(Vector2Int.down):
+                    return BIT_TYPE.YELLOW;
+                default:
+                    return BIT_TYPE.NONE;
+            }
+        }
+
         //====================================================================================================================//
 
         public void ResetPlayerRunData()

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Factories
 {
@@ -36,9 +37,17 @@ namespace StarSalvager.Factories
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
-            var color = remoteData.category == BIT_TYPE.NONE
-                ? Color.white
-                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            Color color;
+            if (remoteData.partType == PART_TYPE.EMPTY)
+            {
+                color = FactoryManager.Instance.BitProfileData.GetProfile(PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)).color;
+            }
+            else
+            {
+                color = remoteData.category == BIT_TYPE.NONE
+                    ? Color.white
+                    : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            }
 
             part.SetSprite(sprite);
             part.SetColor(color);

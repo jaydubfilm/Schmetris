@@ -147,6 +147,15 @@ namespace StarSalvager.UI.Scrapyard
                         Patches = new PatchData[shieldPatchCount]
                     };
                     PlayerDataManager.AddPartToStorage(shieldPartData);
+
+                    PART_TYPE wildcardPart = PART_TYPE.WILDCARD;
+                    var wildcardPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).PatchSockets;
+                    var wildcardPartData = new PartData
+                    {
+                        Type = (int)wildcardPart,
+                        Patches = new PatchData[wildcardPatchCount]
+                    };
+                    PlayerDataManager.AddPartToStorage(wildcardPartData);
                 }
                 else
                 {

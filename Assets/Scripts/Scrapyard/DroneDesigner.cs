@@ -252,7 +252,7 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
-            UpdateFloatingMarkers(SelectedBrick != null);
+            /*UpdateFloatingMarkers(SelectedBrick != null);
 
             if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
@@ -260,7 +260,7 @@ namespace StarSalvager
             if (SelectedBrick != null)
                 return;
 
-            if (_scrapyardBot == null /*|| mouseCoordinate == Vector2Int.zero*/)
+            if (_scrapyardBot == null)
                 return;
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
@@ -301,7 +301,7 @@ namespace StarSalvager
                 Patches = new PatchData[0]
             });
 
-            _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+            _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);*/
         }
 
         private void OnLeftMouseButtonUp()
@@ -383,7 +383,7 @@ namespace StarSalvager
             //If mouse position was legal
             //--------------------------------------------------------------------------------------------------------//
 
-            if (mouseGridCoordinate == Vector2Int.zero)
+            /*if (mouseGridCoordinate == Vector2Int.zero)
             {
                 PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)SelectedBrick.Type);
 
@@ -392,7 +392,7 @@ namespace StarSalvager
                     UpdateFloatingMarkers(false);
                     return;
                 }
-            }
+            }*/
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
 
@@ -400,6 +400,14 @@ namespace StarSalvager
             {
                 if (!(SelectedBrick is PartData partData))
                     throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
+
+
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)SelectedBrick.Type);
+                if (partRemoteData.category != PlayerDataManager.GetCategoryAtCoordinate(mouseGridCoordinate))
+                {
+                    UpdateFloatingMarkers(false);
+                    return;
+                }
 
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
