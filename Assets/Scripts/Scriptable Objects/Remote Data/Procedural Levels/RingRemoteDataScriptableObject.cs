@@ -99,6 +99,20 @@ namespace StarSalvager.ScriptableObjects
         public Vector2 YellowBitsPercentageRange => mYellowBitsPercentageRange;
         public Vector2 GreyBitsPercentageRange => mGreyBitsPercentageRange;
 
+        [ProgressBar(0,100), OnValueChanged("Balance0")]
+        public int test = 25;
+        [ProgressBar(0,100)]
+        public int test1 = 25;
+        [ProgressBar(0,100)]
+        public int test2 = 25;
+        [ProgressBar(0,100)]
+        public int test3 = 25;
+
+        private void Balance0()
+        {
+            
+        }
+        
         //Ring Properties
         //====================================================================================================================//
         
