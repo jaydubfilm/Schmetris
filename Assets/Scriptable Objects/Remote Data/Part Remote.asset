@@ -34,8 +34,8 @@ MonoBehaviour:
     - key: Cooldown
       value: 2
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 2
+    ammoUseCost: 2
     PatchSockets: 2
   - name: Armor
     partType: 3
@@ -44,8 +44,8 @@ MonoBehaviour:
       a great defense. '
     dataTest: []
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 1
+    ammoUseCost: 2
     PatchSockets: 2
   - name: Gun
     partType: 4
@@ -60,8 +60,8 @@ MonoBehaviour:
     - key: Projectile
       value: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 3
+    ammoUseCost: 1
     PatchSockets: 2
   - name: Triple Shot
     partType: 12
@@ -90,8 +90,8 @@ MonoBehaviour:
     - key: Time
       value: 2
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 1
+    ammoUseCost: 5
     PatchSockets: 2
   - name: Bomb
     partType: 7
@@ -104,8 +104,8 @@ MonoBehaviour:
     - key: Damage
       value: 50
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 4
+    ammoUseCost: 10
     PatchSockets: 2
   - name: Missile
     partType: 13
@@ -134,8 +134,8 @@ MonoBehaviour:
     - key: Probability
       value: 0.7
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 3
+    ammoUseCost: 2
     PatchSockets: 2
   - name: Blaster
     partType: 15
@@ -159,17 +159,19 @@ MonoBehaviour:
     - key: Time
       value: 3
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 4
+    ammoUseCost: 10
     PatchSockets: 2
   - name: Upgrader
     partType: 34
     lockRotation: 0
     description: 
-    dataTest: []
-    isManual: 0
-    category: 0
-    ammoUseCost: 0
+    dataTest:
+    - key: Cooldown
+      value: 15
+    isManual: 1
+    category: 5
+    ammoUseCost: 10
     PatchSockets: 0
   - name: Wild Card
     partType: 35
@@ -177,8 +179,8 @@ MonoBehaviour:
     description: 
     dataTest: []
     isManual: 0
-    category: 0
-    ammoUseCost: 0
+    category: 5
+    ammoUseCost: 3
     PatchSockets: 2
   - name: Railgun
     partType: 36
@@ -191,9 +193,9 @@ MonoBehaviour:
       value: f4741159-a277-4dc0-97ca-849327e73192
     - key: Cooldown
       value: 0.8
-    isManual: 0
-    category: 0
-    ammoUseCost: 0
+    isManual: 1
+    category: 3
+    ammoUseCost: 1
     PatchSockets: 2
   - name: Tractor Beam
     partType: 38
