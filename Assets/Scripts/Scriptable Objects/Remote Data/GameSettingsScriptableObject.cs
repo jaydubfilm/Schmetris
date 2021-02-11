@@ -19,7 +19,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Prototyping")]
         public int startingAmmo = 20;
 
-
         [BoxGroup("Debugging")]
         public bool testingFeatures = false;
 

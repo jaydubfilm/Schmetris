@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove
     {
         //IAttachable properties
         //============================================================================================================//
@@ -56,6 +56,11 @@ namespace StarSalvager
         public float StartingHealth { get; private set; }
         [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
         public float CurrentHealth { get; private set; }
+
+        //IAdditiveMove Properties
+        //====================================================================================================================//
+        
+        public Vector2 AddMove { get; set; }
 
         //IObstacle Properties
         //============================================================================================================//
@@ -253,6 +258,8 @@ namespace StarSalvager
 
             PendingDetach = false;
             IsBusy = false;
+            
+            AddMove = Vector2.zero;
 
             if (_damage)
             {
@@ -281,5 +288,7 @@ namespace StarSalvager
         {
             return ToBlockData();
         }
+
+        
     }
 }

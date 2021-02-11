@@ -939,6 +939,7 @@ namespace StarSalvager
                     TriggerRailgun(part);
                     break;
                 case PART_TYPE.TRACTOR:
+                    TriggerTractorBeam(part);
                     break;
                 case PART_TYPE.HEAL:
                     TriggerHeal(part);
@@ -950,7 +951,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        private bool CanUseTriggerPart(in Part part, out PartRemoteData partRemoteData)
+        private bool CanUseTriggerPart(in Part part, out PartRemoteData partRemoteData, in bool useTriggerOnTrue = true)
         {
             partRemoteData = null;
             
@@ -972,7 +973,7 @@ namespace StarSalvager
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
             }
-
+            
             var resource = PlayerDataManager.GetResource(partRemoteData.category);
 
             var ammoCost = partRemoteData.ammoUseCost;
@@ -982,6 +983,9 @@ namespace StarSalvager
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
             }
+            
+            if (!useTriggerOnTrue) 
+                return true;
 
             resource.SubtractAmmo(ammoCost);
             
@@ -1094,11 +1098,25 @@ namespace StarSalvager
 
         private void TriggerTractorBeam(in Part part)
         {
-            if (!CanUseTriggerPart(part, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out _, false))
                 return;
+
+            var bit = LevelManager.Instance.ObstacleManager.TryGetBitInColumn(part.transform.position);
+
+            if (bit is null)
+                return;
+
+            CanUseTriggerPart(part, out var partRemoteData);
+            
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var speedMultiplier))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Multiplier} missing from {part.Type} remote data");
+            }
+            
+            bit.AddMove = Vector2.down * speedMultiplier;
             
             //TODO Add functionality
-            
+
         }
         
         private void TriggerHeal(in Part part)
