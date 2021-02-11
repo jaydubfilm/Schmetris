@@ -81,6 +81,10 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.GetCategoryAtCoordinate(coordinate);
         }
 
+        public static Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            return PlayerAccountData.GetCoordinateForCategory(bitType);
+        }
 
         //Run Data Functions
         //====================================================================================================================//
