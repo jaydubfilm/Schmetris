@@ -448,8 +448,6 @@ namespace StarSalvager
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
         }
 
-
-
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             if (!_shieldActive)
@@ -880,8 +878,6 @@ namespace StarSalvager
                     break;
                 case PART_TYPE.HEAL:
                     break;
-                case PART_TYPE.REGEN:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -889,7 +885,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        private bool CanUseTriggerPart(in Part part, in bool useAmmo, out PartRemoteData partRemoteData)
+        private bool CanUseTriggerPart(in Part part, out PartRemoteData partRemoteData)
         {
             partRemoteData = null;
             
@@ -914,7 +910,6 @@ namespace StarSalvager
 
             var resource = PlayerDataManager.GetResource(partRemoteData.category);
 
-
             var ammoCost = partRemoteData.ammoUseCost;
 
             if (ammoCost > resource.Ammo)
@@ -923,8 +918,7 @@ namespace StarSalvager
                 return false;
             }
 
-            if(useAmmo)
-                resource.SubtractAmmo(ammoCost);
+            resource.SubtractAmmo(ammoCost);
             
             _triggerPartTimers[part] = cooldown;
 
@@ -933,7 +927,7 @@ namespace StarSalvager
         
         private void TriggerBomb(in Part part)
         {
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
             //Damage all the enemies
@@ -949,7 +943,7 @@ namespace StarSalvager
 
         private void TriggerFreeze(in Part part)
         {
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             
             if (!partRemoteData.TryGetValue(PartProperties.KEYS.Time, out float freezeTime))
@@ -1002,7 +996,7 @@ namespace StarSalvager
                 _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
             }
             
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
             //--------------------------------------------------------------------------------------------------------//
@@ -1025,7 +1019,7 @@ namespace StarSalvager
             if (bot.Rotating)
                 return;
             
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             //--------------------------------------------------------------------------------------------------------//
 
@@ -1035,7 +1029,7 @@ namespace StarSalvager
 
         private void TriggerTractorBeam(in Part part)
         {
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             
             //TODO Add functionality
@@ -1044,16 +1038,7 @@ namespace StarSalvager
         
         private void TriggerHeal(in Part part)
         {
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
-                return;
-            
-            //TODO Alex Add functionality
-            
-        }
-        
-        private void TriggerRegen(in Part part)
-        {
-            if (!CanUseTriggerPart(part, true, out var partRemoteData))
+            if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             
             //TODO Alex Add functionality
