@@ -84,6 +84,8 @@ namespace StarSalvager
         //private bool _vampirismActive;
 
         private GameObject _shieldObject;
+        private GameObject _healObject;
+        private float _healActiveTimer;
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -259,7 +261,6 @@ namespace StarSalvager
                         
                         _repairTarget.Add(part, null);
                         break;
-
                     case PART_TYPE.GUN:
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.TRIPLESHOT:
@@ -337,6 +338,14 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SHIELD:
                         ShieldUpdate(part, partRemoteData, deltaTime);
+                        break;
+                    //------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.REGEN:
+                        RegenUpdate(part, partRemoteData, deltaTime);
+                        break;
+                    //------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.HEAL:
+                        HealUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
             }
@@ -446,6 +455,61 @@ namespace StarSalvager
             }
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
+        }
+
+        private void RegenUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            var repairTarget = bot;
+
+            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
+            {
+                return;
+            }
+
+            //Get Cost
+            //--------------------------------------------------------------------------------------------------------//
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            var currentAmmo = ammoResource.Ammo;
+            var ammoCost = partRemoteData.ammoUseCost * Time.deltaTime;
+
+            if (ammoCost > currentAmmo)
+                return;
+
+            ammoResource.SubtractAmmo(ammoCost);
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
+            {
+                repairTarget.ChangeHealth(repairAmount * deltaTime);
+            }
+
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
+        }
+
+        private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            if (_healActiveTimer <= 0)
+            {
+                return;
+            }
+            _healActiveTimer -= Time.deltaTime;
+            
+            var repairTarget = bot;
+
+            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
+            {
+                return;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
+            {
+                repairTarget.ChangeHealth(repairAmount * deltaTime);
+            }
+
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -877,6 +941,7 @@ namespace StarSalvager
                 case PART_TYPE.TRACTOR:
                     break;
                 case PART_TYPE.HEAL:
+                    TriggerHeal(part);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
@@ -1040,9 +1105,13 @@ namespace StarSalvager
         {
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
-            
-            //TODO Alex Add functionality
-            
+
+            if (_healObject == null)
+            {
+                _healObject = part.gameObject;
+            }
+
+            _healActiveTimer = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
         }
 
         #endregion
