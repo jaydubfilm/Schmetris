@@ -213,8 +213,7 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            //if(Globals.StripBits)
-            //    DowngradeAllBits(1, false);
+            PlayerDataManager.RemoveAllBits();
             
             //SellBits();
             SetupDrone();
