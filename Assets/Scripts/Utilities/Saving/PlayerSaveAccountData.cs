@@ -16,6 +16,7 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
+        public bool HasStarted = false;
         public int Experience;
 
         public int CoreDeaths;

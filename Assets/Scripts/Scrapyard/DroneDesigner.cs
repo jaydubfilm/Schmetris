@@ -621,8 +621,8 @@ namespace StarSalvager
                 _scrapyardBot.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
 
-            bool isStart = Globals.CurrentSector == 0 && Globals.CurrentWave <= 1;
-            if (isStart)
+            bool notYetStarted = PlayerDataManager.GetStarted();
+            if (!notYetStarted)
             {
                 //Add starter parts
                 PART_TYPE repairPart = PART_TYPE.REPAIR;
@@ -656,6 +656,7 @@ namespace StarSalvager
                 _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).category), wildcardAttachable);
 
                 SaveBlockData();
+                PlayerDataManager.SetStarted(true);
             }
         }
 

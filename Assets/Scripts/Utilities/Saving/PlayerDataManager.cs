@@ -36,6 +36,16 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData.Version;
         }
 
+        public static bool GetStarted()
+        {
+            return PlayerAccountData.HasStarted;
+        }
+
+        public static void SetStarted(bool started)
+        {
+            PlayerAccountData.HasStarted = started;
+        }
+
         public static bool GetCanChoosePart()
         {
             return PlayerRunData.CanChoosePart;

@@ -123,9 +123,9 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice = FindObjectOfType<PartChoiceUI>();
                 }
-                bool isStart = Globals.CurrentSector == 0 && Globals.CurrentWave <= 1;
+                bool notYetStarted = PlayerDataManager.GetStarted();
 
-                if (isStart)
+                if (!notYetStarted)
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon);
                 }
