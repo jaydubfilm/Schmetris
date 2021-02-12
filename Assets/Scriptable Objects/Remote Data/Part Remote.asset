@@ -260,3 +260,14 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 5
     PatchSockets: 2
+  - name: Hoover
+    partType: 31
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 15
+    isManual: 1
+    category: 5
+    ammoUseCost: 30
+    PatchSockets: 2

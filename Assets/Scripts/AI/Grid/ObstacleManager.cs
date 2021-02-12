@@ -333,14 +333,26 @@ namespace StarSalvager
             var yPos = position.y;
             var bit = m_obstacles
                 .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
                 .Where(x => x.Type != BIT_TYPE.WHITE)
                 .Where(x => Mathf.Abs(xPos - x.transform.position.x) < 0.5f)
                 .Where(x => x.transform.position.y > yPos)
                 .OrderBy(x => x.transform.position.y)
                 .FirstOrDefault();
 
-
             return bit;
+        }
+        
+        public List<Bit> TryGetBitsOnScreen()
+        {
+            var bits = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
+                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
+                .ToList();
+
+            return bits;
         }
         
         //====================================================================================================================//

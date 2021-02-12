@@ -997,6 +997,9 @@ namespace StarSalvager
                 case PART_TYPE.DECOY:
                     TriggerDecoy(part);
                     break;
+                case PART_TYPE.HOOVER:
+                    TriggerHoover(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1195,6 +1198,51 @@ namespace StarSalvager
 
             bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
             bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
+        }
+
+        private void TriggerHoover(in Part part)
+        {
+            if (!CanUseTriggerPart(part, out _, false))
+                return;
+
+            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
+
+            if (bits.IsNullOrEmpty())
+                return;
+
+            CanUseTriggerPart(part, out _);
+
+            //Vector2 botPosition = bot.transform.position;
+            foreach (var bit in bits)
+            {
+                Vector2 bitPosition = bit.transform.position;
+
+                var closestAttachable = bot.GetClosestAttachable(bitPosition);
+                //ar newCoordinate = closestAttachable.Coordinate + dir;
+                
+                var direction = (bitPosition - (Vector2)closestAttachable.transform.position).normalized;
+                DIRECTION dir;
+                if (direction == Vector2.zero)
+                {
+                    throw new Exception($"Weird Direction found {direction}");
+                }
+                
+                if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+                {
+                    dir = new Vector2Int(Mathf.RoundToInt(direction.x), 0).ToDirection();
+                }
+                else
+                {
+                    dir = new Vector2Int(0, Mathf.RoundToInt(direction.y)).ToDirection();
+                }
+
+                dir = dir.Reflected();
+
+                bot.AttachToClosestAvailableCoordinate(closestAttachable.Coordinate, bit, dir, false, false);
+            }
+            
+            bot.ForceCheckMagnets();
+            bot.ForceUpdateColliderGeometry();
         }
 
         #endregion

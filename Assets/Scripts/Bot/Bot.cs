@@ -1108,7 +1108,7 @@ namespace StarSalvager
                 if (attached.CountAsConnectedToCore == false)
                     continue;
 
-                var dist = Vector2.Distance(attached.Coordinate, location);
+                var dist = Vector2.Distance(attached.transform.position, location);
 
                 if (dist > maxDistance)
                     continue;
@@ -1945,7 +1945,8 @@ namespace StarSalvager
         /// <param name="desiredDirection"></param>
         /// <param name="checkForCombo"></param>
         /// <param name="updateColliderGeometry"></param>
-        public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable, DIRECTION desiredDirection, bool checkForCombo,
+        public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable,
+            DIRECTION desiredDirection, bool checkForCombo,
             bool updateColliderGeometry)
         {
             if (Destroyed)
@@ -1960,10 +1961,10 @@ namespace StarSalvager
                 Vector2Int.down,
 
                 //Corners
-                new Vector2Int(-1,-1),
-                new Vector2Int(-1,1),
-                new Vector2Int(1,-1),
-                new Vector2Int(1,1),
+                new Vector2Int(-1, -1),
+                new Vector2Int(-1, 1),
+                new Vector2Int(1, -1),
+                new Vector2Int(1, 1),
             };
 
             var avoid = desiredDirection.Reflected().ToVector2Int();
@@ -3360,6 +3361,11 @@ _isShifting = true;
         #endregion //Puzzle Checks
 
         //============================================================================================================//
+
+        public void ForceUpdateColliderGeometry()
+        {
+            CompositeCollider2D.GenerateGeometry();
+        }
 
         #region Magnet Checks
 
