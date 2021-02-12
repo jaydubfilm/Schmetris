@@ -106,6 +106,8 @@ namespace StarSalvager.UI.Scrapyard
                     _droneDesigner._scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category), attachable);
                 }
 
+                _droneDesigner.SaveBlockData();
+
                 if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
                 {
                     PlayerDataManager.SetStarted(true);
