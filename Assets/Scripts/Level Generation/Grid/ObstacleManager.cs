@@ -111,7 +111,7 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
-
+            
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
             if (Globals.AsteroidFallTimer >= Globals.TimeForAsteroidToFallOneSquare)
@@ -735,7 +735,7 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
             m_blendTimer = 0;
 
-            CreateEdgeSprites();
+            CreateEdgeSprites(m_currentStageData.testWidth);
         }
 
         public void TryMarkNewShapesOnGrid()
@@ -1465,7 +1465,7 @@ namespace StarSalvager
         public Color edgeSpriteColor;
         private SpriteRenderer[] _edgeSprites;
 
-        private void CreateEdgeSprites()
+        private void CreateEdgeSprites(in int gridSizeX)
         {
             const int X_SCALE = 55;
             //TODO Create the sprite Objects
@@ -1489,7 +1489,7 @@ namespace StarSalvager
             //TODO Get Grid Size
             var gridSize = new Vector2Int
             {
-                x = Globals.GridSizeX,
+                x = gridSizeX,
                 y = Globals.GridSizeY
             };
             //TODO Get Cell Size

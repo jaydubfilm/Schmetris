@@ -233,9 +233,13 @@ namespace StarSalvager
                 return;
             }
             
+            
             StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
+
+            Globals.GridSizeX = waveRemoteData.testWidth;
+
 
             //Populate enemies to spawn list
             foreach (StageEnemyData stageEnemyData in waveRemoteData.StageEnemyData)

@@ -15,7 +15,7 @@ namespace StarSalvager.ScriptableObjects
     {
         public int WaveSeed;
 
-        public int waveWidth;
+        public int waveMaxWidth => StageRemoteData.Max(x => x.testWidth);
         
         public List<StageObstacleShapeData> BonusShapes = new List<StageObstacleShapeData>();
         

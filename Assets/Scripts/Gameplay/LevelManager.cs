@@ -483,7 +483,7 @@ namespace StarSalvager
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
 
-            Globals.GridSizeX = CurrentWaveData.waveWidth;
+            //Globals.GridSizeX = ;
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
@@ -529,7 +529,7 @@ namespace StarSalvager
             }
             
             
-            WorldGrid.SetupGrid();
+            WorldGrid.SetupGrid(CurrentWaveData.waveMaxWidth);
             ProjectileManager.Activate();
 
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
@@ -991,7 +991,7 @@ namespace StarSalvager
 
 #if UNITY_EDITOR
 
-        [SerializeField]
+        /*[SerializeField]
         private bool drawGrid = true;
 
         private void OnDrawGizmos()
@@ -1001,7 +1001,7 @@ namespace StarSalvager
 
             Gizmos.color = Color.red;
             WorldGrid?.OnDrawGizmos();
-        }
+        }*/
 
 #endif
 
