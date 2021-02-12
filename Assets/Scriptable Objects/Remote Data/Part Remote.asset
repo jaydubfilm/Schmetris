@@ -236,3 +236,14 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 1
     PatchSockets: 2
+  - name: Decoy
+    partType: 29
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 15
+    isManual: 1
+    category: 1
+    ammoUseCost: 5
+    PatchSockets: 2

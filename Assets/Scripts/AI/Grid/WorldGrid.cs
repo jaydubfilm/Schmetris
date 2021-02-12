@@ -28,6 +28,7 @@ namespace StarSalvager
 
         #region Setup
 
+        //Sets up the world grid with an anchor point at the bottom left of the grid, 0,0 is the bottom left corner of it
         public void SetupGrid()
         {
             m_gridSizeX = Globals.GridSizeX;
@@ -58,6 +59,7 @@ namespace StarSalvager
             randomPositionFindingLists.Clear();
         }
 
+        //Find all markers with a "has obstacle", and shift that marker 1 space downwards on the grid
         public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles, StageRemoteData stageData)
         {
 

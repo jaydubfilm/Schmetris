@@ -987,6 +987,9 @@ namespace StarSalvager
                 case PART_TYPE.HEAL:
                     TriggerHeal(part);
                     break;
+                case PART_TYPE.DECOY:
+                    TriggerDecoy(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1175,10 +1178,22 @@ namespace StarSalvager
             _healActiveTimer = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
         }
 
+        private void TriggerDecoy(in Part part)
+        {
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            if (bot.DecoyDrone != null)
+                return;
+
+            bot.DecoyDrone = GameObject.Instantiate(bot._decoyDronePrefab);
+            bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
+        }
+
         #endregion
 
         //============================================================================================================//
-        
+
         #region Armor
 
         public bool TryHitArmor(ref float damage)
