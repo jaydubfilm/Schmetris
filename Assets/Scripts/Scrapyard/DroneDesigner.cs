@@ -656,7 +656,6 @@ namespace StarSalvager
                 _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).category), wildcardAttachable);
 
                 SaveBlockData();
-                PlayerDataManager.SetStarted(true);
             }
         }
 

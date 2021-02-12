@@ -108,6 +108,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
                 {
+                    PlayerDataManager.SetStarted(true);
                     Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
                     return;
                 }
