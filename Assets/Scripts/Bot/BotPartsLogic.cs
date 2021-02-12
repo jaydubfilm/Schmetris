@@ -990,6 +990,9 @@ namespace StarSalvager
                 case PART_TYPE.DECOY:
                     TriggerDecoy(part);
                     break;
+                case PART_TYPE.BITSPLOSION:
+                    TriggerBitsplosion(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1188,6 +1191,27 @@ namespace StarSalvager
 
             bot.DecoyDrone = GameObject.Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
             bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
+        }
+
+        private void TriggerBitsplosion(in Part part)
+        {
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            //Damage all the enemies
+            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+
+            EnemyManager.DamageAllEnemies(damage);
+
+            List<IAttachable> bits = bot.attachedBlocks.Where(b => b is Bit).ToList();
+            for (int i = 0; i < bits.Count; i++)
+            {
+                EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
+                CreateBombEffect(bits[i], 5f);
+            }
+
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
         #endregion
@@ -1565,13 +1589,13 @@ namespace StarSalvager
             _turrets.Add(part, effect.transform);
         }
 
-        private void CreateBombEffect(in Part part, in float range)
+        private void CreateBombEffect(in IAttachable attachable, in float range)
         {
            
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreatePartEffect(EffectFactory.PART_EFFECT.BOMB);
 
-            effect.transform.position = part.transform.position;
+            effect.transform.position = attachable.transform.position;
             
             var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
             

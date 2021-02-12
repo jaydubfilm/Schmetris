@@ -303,6 +303,31 @@ namespace StarSalvager
             }
         }
 
+        public void DamageAllEnemiesInRange(float damage, Vector2 damagePosition, float range)
+        {
+            var existingEnemies = new List<Enemy>(m_enemies);
+            var damageAbs = Mathf.Abs(damage);
+            foreach (var enemy in existingEnemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
+                    continue;
+
+                if (Vector2.Distance(damagePosition, (Vector2)enemy.transform.position) > range)
+                {
+                    continue;
+                }
+
+                if (enemy is ICanBeHit canBeHit)
+                {
+                    //Position doesn't matter for enemies
+                    canBeHit.TryHitAt(Vector2.zero, damageAbs);
+                }
+            }
+        }
+
         public Enemy GetClosestEnemy(Vector2 position)
         {
             var shortestDist = 999f;

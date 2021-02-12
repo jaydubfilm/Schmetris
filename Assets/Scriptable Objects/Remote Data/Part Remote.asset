@@ -256,7 +256,9 @@ MonoBehaviour:
       value: 10
     - key: Damage
       value: 10
+    - key: Radius
+      value: 5
     isManual: 1
-    category: 3
+    category: 4
     ammoUseCost: 5
     PatchSockets: 2
