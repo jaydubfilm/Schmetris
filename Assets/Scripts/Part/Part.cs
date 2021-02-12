@@ -35,6 +35,7 @@ namespace StarSalvager
         public bool LockRotation { get; set; }
 
         public Color partColor = Color.white;
+        public BIT_TYPE category;
 
         public bool Disabled
         {

@@ -198,7 +198,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
 
-        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
+        /*public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
@@ -261,7 +261,7 @@ namespace StarSalvager.Utilities.Saving
 
            
             SetBlockData(droneBlockData);
-        }
+        }*/
 
         //============================================================================================================//
 

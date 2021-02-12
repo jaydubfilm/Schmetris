@@ -165,6 +165,17 @@ namespace StarSalvager
         /// </summary>
         private void InitPartData()
         {
+            void SetIcon(in int index, in BIT_TYPE bitType)
+            {
+                var type = bitType;
+                var part = _triggerParts.FirstOrDefault(x => x.category == type);
+
+                if (part is null)
+                    return;
+                
+                GameUI.SetIconImage(index, part.Type);
+                GameUI.ShowIcon(index, true);
+            }
             /*if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;
@@ -181,7 +192,12 @@ namespace StarSalvager
 
             GameUI.ResetIcons();
 
-            for (int i = 0; i < MAXTriggerParts; i++)
+            SetIcon(0, BIT_TYPE.BLUE);
+            SetIcon(1, BIT_TYPE.RED);
+            SetIcon(2, BIT_TYPE.GREY);
+            SetIcon(3, BIT_TYPE.YELLOW);
+
+            /*for (int i = 0; i < MAXTriggerParts; i++)
             {
                 if (i >= _triggerParts.Count)
                     break;
@@ -191,7 +207,7 @@ namespace StarSalvager
                 GameUI.SetIconImage(i, _triggerParts[i].Type);
                 GameUI.ShowIcon(i, true);
                 //GameUI.SetInteractable(i, partActive);
-            }
+            }*/
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -911,18 +927,45 @@ namespace StarSalvager
         /// This should use values similar to an array (ie. starts at [0])
         /// </summary>
         /// <param name="index"></param>
-        public void TryTriggerPart(int index)
+        public void TryTriggerPart(in int index)
         {
+            Part GetPart(in BIT_TYPE bitType)
+            {
+                var temp = bitType;
+                
+                return _triggerParts.FirstOrDefault(x => x.category == temp);
+            }
+            
             if (_triggerParts == null || _triggerParts.Count == 0)
                 return;
-            //TODO Need to check the capacity of smart weapons on the bot
+            /*//TODO Need to check the capacity of smart weapons on the bot
             if (index - 1 > MAXTriggerParts)
                 return;
 
             if (index >= _triggerParts.Count)
-                return;
+                return;*/
 
-            var part = _triggerParts[index];
+            Part part = null;
+            switch (index)
+            {
+                case 0: //Blue, West
+                    part = GetPart(BIT_TYPE.BLUE);
+                    break;
+                case 1: //Red, South
+                    part =  GetPart(BIT_TYPE.RED);
+                    break;
+                case 2: //Grey, North
+                    part =  GetPart(BIT_TYPE.GREY);
+                    break;
+                case 3: //Yellow, East
+                    part =  GetPart(BIT_TYPE.YELLOW);
+                    break;
+            }
+
+            if (part is null)
+                return;
+            
+            //var part = _triggerParts[index];
 
             switch (part.Type)
             {
