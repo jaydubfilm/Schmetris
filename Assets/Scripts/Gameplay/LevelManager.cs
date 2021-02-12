@@ -482,6 +482,8 @@ namespace StarSalvager
             
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData();
+
+            Globals.GridSizeX = CurrentWaveData.waveWidth;
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//

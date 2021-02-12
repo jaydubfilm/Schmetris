@@ -14,26 +14,14 @@ namespace StarSalvager.ScriptableObjects
     public class WaveRemoteDataScriptableObject : ScriptableObject
     {
         public int WaveSeed;
+
+        public int waveWidth;
         
         public List<StageObstacleShapeData> BonusShapes = new List<StageObstacleShapeData>();
         
         public List<StageRemoteData> StageRemoteData = new List<StageRemoteData>();
 
-        [SerializeField]
-        private int maxDrops;
-
-        [SerializeField]
-        private List<RDSLootData> RDSEndOfWaveLoot = new List<RDSLootData>();
-
-        //public RDSTable rdsTable;
-
         public float BonusShapeFrequency => GetWaveDuration() / (BonusShapes.Count + 1);
-
-        public void ConfigureLootTable()
-        {
-            //rdsTable = new RDSTable();
-            //rdsTable.SetupRDSTable(maxDrops, RDSEndOfWaveLoot);
-        }
 
         public StageRemoteData GetRemoteData(int waveNumber)
         {
@@ -206,33 +194,6 @@ namespace StarSalvager.ScriptableObjects
 
             return bitTypes;
         }
-
-
-/*#if UNITY_EDITOR
-
-        /*[Button]
-        private void UpdateData()
-        {
-            for (int i = 0; i < StageRemoteData.Count; i++)
-            {
-                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
-                {
-                    StageRemoteData[i].StageObstacleData[k].UpdateDensity();
-                }
-            }
-        }#1#
-
-        public void OnValidate()
-        {
-            for (int i = 0; i < StageRemoteData.Count; i++)
-            {
-                for (int k = 0; k < StageRemoteData[i].StageObstacleData.Count; k++)
-                {
-                    StageRemoteData[i].StageObstacleData[k].spawningMultiplier = StageRemoteData[i].SpawningObstacleMultiplier;
-                }
-            }
-        }
-#endif*/
     }
 }
 

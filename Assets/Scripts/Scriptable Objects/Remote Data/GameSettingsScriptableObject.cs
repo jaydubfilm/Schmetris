@@ -40,8 +40,8 @@ namespace StarSalvager.ScriptableObjects
         //Wave Properties
         //====================================================================================================================//
 
-        [DisableInPlayMode][BoxGroup("Waves")]
-        public int gridWidth = 300;
+        /*[DisableInPlayMode][BoxGroup("Waves")]
+        public int gridWidth = 300;*/
 
         [DisableInPlayMode]
         public float gridHeightRelativeToScreen = 1.25f;

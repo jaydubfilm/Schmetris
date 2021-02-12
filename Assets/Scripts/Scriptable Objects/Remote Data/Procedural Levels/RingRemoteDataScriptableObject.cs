@@ -17,19 +17,18 @@ namespace StarSalvager.ScriptableObjects
         [Serializable]
         private struct EnemySpawn
         {
-            [ValueDropdown("GetEnemyTypes"),TableColumnWidth(40), OnValueChanged("GetCost")]
+            [ValueDropdown("GetEnemyTypes"), TableColumnWidth(40), OnValueChanged("GetCost")]
             public string enemyID;
-            [TableColumnWidth(25), ReadOnly]
-            public int cost;
-            [TableColumnWidth(35)]
-            public int weight;
+
+            [TableColumnWidth(25), ReadOnly] public int cost;
+            [TableColumnWidth(35)] public int weight;
 
 #if UNITY_EDITOR
 
             [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
             public string Chance => $"{percentChance:P2}";
-            [HideInTables, NonSerialized]
-            public float percentChance;
+
+            [HideInTables, NonSerialized] public float percentChance;
 
             private int GetCost()
             {
@@ -45,74 +44,59 @@ namespace StarSalvager.ScriptableObjects
 
 #endif
         }
-        
+
         [Serializable]
         private struct ObstacleSpawn
         {
-            [TableColumnWidth(40)]
-            public string obstacleID;
-            [TableColumnWidth(35)]
-            public int weight;
+            [TableColumnWidth(40)] public string obstacleID;
+            [TableColumnWidth(35)] public int weight;
 
 #if UNITY_EDITOR
 
             [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
             public string Chance => $"{percentChance:P2}";
-            [HideInTables, NonSerialized]
-            public float percentChance;
+
+            [HideInTables, NonSerialized] public float percentChance;
 
 #endif
         }
-        
+
         [Serializable]
         private struct EventSpawn
         {
-            [TableColumnWidth(40)]
-            public string eventID;
-            [TableColumnWidth(35)]
-            public int weight;
+            [TableColumnWidth(40)] public string eventID;
+            [TableColumnWidth(35)] public int weight;
 
 #if UNITY_EDITOR
 
             [ShowInInspector, DisplayAsString, TableColumnWidth(40)]
             public string Chance => $"{percentChance:P2}";
-            [HideInTables, NonSerialized]
-            public float percentChance;
+
+            [HideInTables, NonSerialized] public float percentChance;
 
 #endif
         }
 
         #endregion //Spawn Data
-        
+
         //Public Properties
         //====================================================================================================================//
-        
+
         public Vector2Int WaveDurationRange => mWaveDurationRange;
         public Vector2Int GridWidthRange => mGridWidthRange;
 
         public Vector2Int EnemyBudgetRange => mEnemyBudgetRange;
 
         public Vector2Int BitsPerMinuteRange => mBitsPerMinuteRange;
-        public Vector2 RedBitsPercentageRange => mRedBitsPercentageRange;
-        public Vector2 BlueBitsPercentageRange => mBlueBitsPercentageRange;
-        public Vector2 GreenBitsPercentageRange => mGreenBitsPercentageRange;
-        public Vector2 YellowBitsPercentageRange => mYellowBitsPercentageRange;
-        public Vector2 GreyBitsPercentageRange => mGreyBitsPercentageRange;
+        public float RedBitsPercentage => redBitsPercentage / 100f;
+        public float BlueBitsPercentage => blueBitsPercentage / 100f;
+        public float GreenBitsPercentage => greenBitsPercentage / 100f;
+        public float YellowBitsPercentage => yellowBitsPercentage / 100f;
+        public float GreyBitsPercentage => greyBitsPercentage / 100f;
 
-        [ProgressBar(0,100), OnValueChanged("Balance")]
-        public int test = 25;
-        [ProgressBar(0,100), OnValueChanged("Balance")]
-        public int test1 = 25;
-        [ProgressBar(0,100), OnValueChanged("Balance")]
-        public int test2 = 25;
-        [ProgressBar(0,100), OnValueChanged("Balance")]
-        public int test3 = 25;
-
-
-        
         //Ring Properties
         //====================================================================================================================//
-        
+
         [BoxGroup("Ring Wave Properties"), LabelText("Duration Range"), Tooltip("Duration is measured in Seconds")]
         [SerializeField, Required, MinMaxSlider(30, 240, true), SuffixLabel("s", true)]
         private Vector2Int mWaveDurationRange;
@@ -123,59 +107,57 @@ namespace StarSalvager.ScriptableObjects
 
         //Enemies
         //====================================================================================================================//
-        
-        [FoldoutGroup("Enemies"), LabelText("Enemy Budget")]
-        [SerializeField, Required, MinMaxSlider(0, 100, true)]
+
+        [FoldoutGroup("Enemies"), LabelText("Enemy Budget")] [SerializeField, Required, MinMaxSlider(0, 100, true)]
         private Vector2Int mEnemyBudgetRange;
-        
-        [FoldoutGroup("Enemies")]
-        [SerializeField, TableList]
+
+        [FoldoutGroup("Enemies")] [SerializeField, TableList]
         private List<EnemySpawn> enemySpawns;
 
         //Bits Properties
         //====================================================================================================================//
-        
+
         [FoldoutGroup("Collectable Bits"), LabelText("Bits per/min"), LabelWidth(75)]
         [SerializeField, Required, MinMaxSlider(0, 500, true)]
         private Vector2Int mBitsPerMinuteRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
-        [SerializeField, Required,ProgressBar(0,100, R = 1.0f, G = 0.3f, B = 0.3f), OnValueChanged("BalanceBits")]
-        private int mRedBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0, 100, R = 1.0f, G = 0.3f, B = 0.3f), OnValueChanged("BalanceBits")]
+        private int redBitsPercentage;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Blue Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(0.3f, 0.3f, 1.0f)]
-        private int mBlueBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0, 100, R = 0.3f, G = 0.3f, B = 1.0f), OnValueChanged("BalanceBits")]
+        private int blueBitsPercentage;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Green Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(0.3f, 1.0f, 0.3f)]
-        private int mGreenBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0, 100, R = 0.3f, G = 1.0f, B = 0.3f), OnValueChanged("BalanceBits")]
+        private int greenBitsPercentage;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Yellow Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(1.0f, 1.0f, 0.3f)]
-        private int mYellowBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0, 100, R = 1.0f, G = 1.0f, B = 0.3f), OnValueChanged("BalanceBits")]
+        private int yellowBitsPercentage;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Grey Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits")]
-        private int mGreyBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0, 100, R = 0.9f, G = 0.9f, B = 0.9f), OnValueChanged("BalanceBits")]
+        private int greyBitsPercentage;
 
         //Obstacle Properties
         //====================================================================================================================//
-        
+
         [FoldoutGroup("Obstacles")]
         [SerializeField, TableList, InfoBox("Obstacle Spawns not yet functional", InfoMessageType.Warning), ReadOnly]
         private List<ObstacleSpawn> obstacleSpawns;
 
         //Event Properties
         //====================================================================================================================//
-        
+
         [FoldoutGroup("Events")]
         [SerializeField, TableList, InfoBox("Event Spawns not yet functional", InfoMessageType.Warning), ReadOnly]
         private List<EventSpawn> eventSpawns;
 
         //RingRemoteDataScriptableObject Functions
         //====================================================================================================================//
-        
+
         public WaveConfigurationData GenerateNewWaveConfigurationData()
         {
             WaveConfigurationData waveConfigurationData = new WaveConfigurationData
@@ -186,35 +168,34 @@ namespace StarSalvager.ScriptableObjects
                 BitsPerMinute = Random.Range(BitsPerMinuteRange.x, BitsPerMinuteRange.y + 1)
             };
 
-
-
-
-
             return waveConfigurationData;
         }
 
         //====================================================================================================================//
-        
-        #if UNITY_EDITOR
-        
-        private void Balance()
-        {
-            var sum = test + test1 + test2 + test3;
 
-            test = Mathf.RoundToInt(((float)test / sum) * 100f);
-            test1 = Mathf.RoundToInt(((float)test1 / sum) * 100f);
-            test2 = Mathf.RoundToInt(((float)test2 / sum) * 100f);
-            test3 = Mathf.RoundToInt(((float)test3 / sum) * 100f);
+#if UNITY_EDITOR
+
+        private void BalanceBits()
+        {
+            var sum = redBitsPercentage + blueBitsPercentage + greenBitsPercentage + yellowBitsPercentage +
+                      greyBitsPercentage;
+
+            redBitsPercentage = Mathf.RoundToInt(((float) redBitsPercentage / sum) * 100f);
+            blueBitsPercentage = Mathf.RoundToInt(((float) blueBitsPercentage / sum) * 100f);
+            greenBitsPercentage = Mathf.RoundToInt(((float) greenBitsPercentage / sum) * 100f);
+            yellowBitsPercentage = Mathf.RoundToInt(((float) yellowBitsPercentage / sum) * 100f);
+            greyBitsPercentage = Mathf.RoundToInt(((float) greyBitsPercentage / sum) * 100f);
 
         }
 
-        [Button]
+        [Button("Balance Bits"), FoldoutGroup("Collectable Bits")]
         private void Reset()
         {
-            test = test1 = test2 = test3 = 25;
+            redBitsPercentage =
+                blueBitsPercentage = greenBitsPercentage = yellowBitsPercentage = greyBitsPercentage = 20;
         }
-        
-        #endif
-        
+
+#endif
+
     }
 }

@@ -13,15 +13,13 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_1_2
   m_EditorClassIdentifier: 
   WaveSeed: 0
+  waveWidth: 50
   BonusShapes: []
   StageRemoteData:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
-    m_stageType: 0
-    m_spawningObstacleMultiplier: 1
-    m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 0
       m_shapeName: RedSingle
@@ -86,17 +84,10 @@ MonoBehaviour:
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
-    m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
       m_enemyCount: 4
-    m_stageType: 0
-    m_spawningObstacleMultiplier: 1
-    m_centerChannelWidth: 0.5
     m_stageObstacleData: []
-    m_stageColumnGroupObstacleData: []
-  maxDrops: 0
-  RDSEndOfWaveLoot: []
