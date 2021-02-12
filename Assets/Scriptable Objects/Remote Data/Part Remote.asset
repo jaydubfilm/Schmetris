@@ -247,3 +247,16 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 5
     PatchSockets: 2
+  - name: Bitsplosion
+    partType: 41
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 10
+    - key: Damage
+      value: 10
+    isManual: 1
+    category: 3
+    ammoUseCost: 5
+    PatchSockets: 2

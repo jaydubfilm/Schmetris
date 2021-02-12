@@ -1186,7 +1186,7 @@ namespace StarSalvager
             if (bot.DecoyDrone != null)
                 return;
 
-            bot.DecoyDrone = GameObject.Instantiate(bot._decoyDronePrefab);
+            bot.DecoyDrone = GameObject.Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
             bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
         }
 

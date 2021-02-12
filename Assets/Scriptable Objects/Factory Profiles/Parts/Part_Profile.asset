@@ -88,6 +88,9 @@ MonoBehaviour:
   - partType: 29
     _animation: {fileID: 0}
     _sprite: {fileID: 21300000, guid: 416e2e35ba2804e41980f4a5c23ffb01, type: 3}
+  - partType: 41
+    _animation: {fileID: 0}
+    _sprite: {fileID: 21300000, guid: f27cdc66a92cddc409494b6005898db3, type: 3}
   damagedSprites:
   - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
