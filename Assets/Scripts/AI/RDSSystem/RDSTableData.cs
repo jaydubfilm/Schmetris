@@ -20,11 +20,11 @@ namespace StarSalvager
             Weighted
         }
 
-        public int DropChance => m_dropChance;
+        public int DropChance => m_dropChance;          // Chance for this table to be dropped
 
-        public Vector2 NumDrops => m_numDrops;
+        public Vector2 NumDrops => m_numDrops;          // Number of things that drop from this table
 
-        public bool EvenWeighting => m_weightingType == WEIGHTING_TYPE.Even;
+        public bool EvenWeighting => m_weightingType == WEIGHTING_TYPE.Even;        // Whether things in this table have evenly weighted drops
 
         public List<RDSLootData> RDSLootDatas => m_rdsLootDatas;
 

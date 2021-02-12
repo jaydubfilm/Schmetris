@@ -8,11 +8,11 @@ namespace StarSalvager
 	{
 		//============================================================================================================//
 
-		public double rdsProbability { get; set; }
-		public bool rdsUnique { get; set; }
-		public bool rdsAlways { get; set; }
-		public bool rdsEnabled { get; set; }
-		public RDSTable rdsTable { get; set; }
+		public double rdsProbability { get; set; }      // The chance for this item to drop
+		public bool rdsUnique { get; set; }				// Only drops once per query
+		public bool rdsAlways { get; set; }             // Only drops once per query
+		public bool rdsEnabled { get; set; }            // Can it drop now?
+		public RDSTable rdsTable { get; set; }          // What table am I in?
 
 		//============================================================================================================//
 
