@@ -19,6 +19,7 @@ using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Factories.Data;
 
 namespace StarSalvager
 {
@@ -212,8 +213,7 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            //if(Globals.StripBits)
-            //    DowngradeAllBits(1, false);
+            PlayerDataManager.RemoveAllBits();
             
             //SellBits();
             SetupDrone();
@@ -252,7 +252,7 @@ namespace StarSalvager
 
         private void OnLeftMouseButtonDown()
         {
-            UpdateFloatingMarkers(SelectedBrick != null);
+            /*UpdateFloatingMarkers(SelectedBrick != null);
 
             if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
                 return;
@@ -260,7 +260,7 @@ namespace StarSalvager
             if (SelectedBrick != null)
                 return;
 
-            if (_scrapyardBot == null /*|| mouseCoordinate == Vector2Int.zero*/)
+            if (_scrapyardBot == null)
                 return;
 
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseCoordinate);
@@ -303,7 +303,7 @@ namespace StarSalvager
                 Patches = new PatchData[0]
             });
 
-            _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);
+            _scrapyardBot.AttachNewBit(mouseCoordinate, attachable);*/
         }
 
         private void OnLeftMouseButtonUp()
@@ -331,6 +331,23 @@ namespace StarSalvager
             {
                 UpdateFloatingMarkers(false);
                 return;
+            }
+
+            var remoteData = FactoryManager.Instance.PartsRemoteData;
+            var bitType = remoteData.GetRemoteData((PART_TYPE) SelectedBrick.Type).category;
+
+            for (int i = 0; i < _scrapyardBot.AttachedBlocks.Count; i++)
+            {
+                if (_scrapyardBot.AttachedBlocks[i] is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY)
+                {
+                    var tempCategory = remoteData.GetRemoteData(scrapPart.Type).category;
+                    
+                    if (tempCategory == bitType)
+                    {
+                        UpdateFloatingMarkers(false);
+                        return;
+                    }
+                }
             }
 
 
@@ -368,12 +385,31 @@ namespace StarSalvager
             //If mouse position was legal
             //--------------------------------------------------------------------------------------------------------//
 
+            /*if (mouseGridCoordinate == Vector2Int.zero)
+            {
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)SelectedBrick.Type);
+
+                if (partRemoteData.isManual)
+                {
+                    UpdateFloatingMarkers(false);
+                    return;
+                }
+            }*/
+
             IAttachable attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(mouseGridCoordinate);
 
             if (attachableAtCoordinates is ScrapyardPart scrapyardPart && scrapyardPart.Type == PART_TYPE.EMPTY)
             {
                 if (!(SelectedBrick is PartData partData))
                     throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick, $"Expected {nameof(PartData)}");
+
+
+                PartRemoteData partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>().GetRemoteData((PART_TYPE)SelectedBrick.Type);
+                if (partRemoteData.category != PlayerDataManager.GetCategoryAtCoordinate(mouseGridCoordinate))
+                {
+                    UpdateFloatingMarkers(false);
+                    return;
+                }
 
                 var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
 
@@ -584,6 +620,44 @@ namespace StarSalvager
                 _scrapyardBot.InitBot(importedData);
                 _scrapyardBot.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
+
+            bool notYetStarted = PlayerDataManager.GetStarted();
+            if (!notYetStarted)
+            {
+                //Add starter parts
+                PART_TYPE repairPart = PART_TYPE.REPAIR;
+                var repairPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(repairPart).PatchSockets;
+                var repairPartData = new PartData
+                {
+                    Type = (int)repairPart,
+                    Patches = new PatchData[repairPatchCount]
+                };
+                var repairAttachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(repairPartData);
+                _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(repairPart).category), repairAttachable);
+
+                PART_TYPE shieldPart = PART_TYPE.SHIELD;
+                var shieldPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(shieldPart).PatchSockets;
+                var shieldPartData = new PartData
+                {
+                    Type = (int)shieldPart,
+                    Patches = new PatchData[shieldPatchCount]
+                };
+                var shieldAttachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(shieldPartData);
+                _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(shieldPart).category), shieldAttachable);
+
+                PART_TYPE wildcardPart = PART_TYPE.WILDCARD;
+                var wildcardPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).PatchSockets;
+                var wildcardPartData = new PartData
+                {
+                    Type = (int)wildcardPart,
+                    Patches = new PatchData[wildcardPatchCount]
+                };
+                var wildcardAttachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(wildcardPartData);
+                _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).category), wildcardAttachable);
+
+                SaveBlockData();
+                PlayerDataManager.SetStarted(true);
+            }
         }
 
         public void RecycleDrone()
@@ -595,46 +669,6 @@ namespace StarSalvager
 
             Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
             _scrapyardBot = null;
-        }
-
-        public void ToggleDrones()
-        {
-            if (!IsFullyConnected())
-            {
-                Alert.ShowAlert("Alert!",
-                    "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
-                    () =>
-                    {
-                        /*ShowMenu(MENU.DESIGN);*/
-                    });
-
-                return;
-            }
-
-            SaveBlockData();
-
-            if (_scrapyardBot != null)
-            {
-                Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
-                _scrapyardBot = null;
-            }
-
-            _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
-
-            List<IBlockData> currentBlockData = PlayerDataManager.GetBlockDatas();
-
-            //Checks to make sure there is a core on the bot
-            if (currentBlockData.Count == 0 /*|| !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE)*/)
-            {
-                _scrapyardBot.InitBot();
-            }
-            else
-            {
-                var importedData = currentBlockData.ImportBlockDatas(true);
-                _scrapyardBot.InitBot(importedData);
-            }
-
-            UpdateFloatingMarkers(false);
         }
 
         //Sell Bits & Components

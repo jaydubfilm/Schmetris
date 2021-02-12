@@ -327,6 +327,25 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
+        public Bit TryGetBitInColumn(in Vector2 position)
+        {
+            var xPos = position.x;
+            var yPos = position.y;
+            var bit = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => xPos - x.transform.position.x < 0.5f)
+                .Where(x => x.transform.position.y > yPos)
+                .OrderBy(x => x.transform.position.y)
+                .FirstOrDefault();
+
+
+            return bit;
+        }
+        
+        //====================================================================================================================//
+        
+
         private void HandleObstacleMovement()
         {
             Vector3 amountShift = Vector3.up *

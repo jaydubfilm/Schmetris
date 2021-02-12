@@ -16,6 +16,7 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
+        public bool HasStarted = false;
         public int Experience;
 
         public int CoreDeaths;
@@ -112,8 +113,50 @@ namespace StarSalvager.Values
 
         public List<Vector2Int> _botLayout = new List<Vector2Int>()
         {
-
+            new Vector2Int(0, 0),
+            new Vector2Int(1, 0),
+            new Vector2Int(0, 1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, -1)
         };
+
+        public BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
+        {
+            switch (coordinate)
+            {
+                case Vector2Int v when v.Equals(Vector2Int.zero):
+                    return BIT_TYPE.GREEN;
+                case Vector2Int v when v.Equals(Vector2Int.right):
+                    return BIT_TYPE.RED;
+                case Vector2Int v when v.Equals(Vector2Int.up):
+                    return BIT_TYPE.BLUE;
+                case Vector2Int v when v.Equals(Vector2Int.left):
+                    return BIT_TYPE.GREY;
+                case Vector2Int v when v.Equals(Vector2Int.down):
+                    return BIT_TYPE.YELLOW;
+                default:
+                    return BIT_TYPE.NONE;
+            }
+        }
+
+        public Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            switch(bitType)
+            {
+                case BIT_TYPE.GREEN:
+                    return Vector2Int.zero;
+                case BIT_TYPE.RED:
+                    return Vector2Int.right;
+                case BIT_TYPE.BLUE:
+                    return Vector2Int.up;
+                case BIT_TYPE.GREY:
+                    return Vector2Int.left;
+                case BIT_TYPE.YELLOW:
+                    return Vector2Int.down;
+                default:
+                    throw new Exception("Invalid bit type for category to get coordinate on bot");
+            }
+        }
 
         //====================================================================================================================//
 

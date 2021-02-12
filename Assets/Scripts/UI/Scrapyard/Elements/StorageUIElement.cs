@@ -30,6 +30,7 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             itemImage.sprite = data.sprite;
+            itemImage.color = data.color;
 
             var isPart = data.blockData.ClassType == nameof(Part) ||
                          data.blockData.ClassType == nameof(ScrapyardPart);
@@ -93,6 +94,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var image = new GameObject("Test").AddComponent<Image>();
                 image.sprite = data.sprite;
+                image.color = data.color;
 
                 partDragImageTransform = image.transform as RectTransform;
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
@@ -147,6 +149,7 @@ namespace StarSalvager.UI.Scrapyard
     {
         public string name;
         public Sprite sprite;
+        public Color color;
         public IBlockData blockData;
         public int storageIndex;
 

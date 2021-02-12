@@ -8,12 +8,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Factories
 {
     //FIXME This needs to be cleaned up, feels messy
     public class PartAttachableFactory : AttachableFactoryBase<PartProfile, PART_TYPE>
     {
+        public enum PART_OPTION_TYPE
+        {
+            BasicWeapon,
+            PowerWeapon,
+            Any
+        }
+        
         private RemotePartProfileScriptableObject remotePartData;
 
         public PartAttachableFactory(AttachableProfileScriptableObject factoryProfile, RemotePartProfileScriptableObject remotePartData) : base(factoryProfile)
@@ -25,10 +33,24 @@ namespace StarSalvager.Factories
 
         public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
         {
+            var remoteData = remotePartData.GetRemoteData(partType);
             var profile = factoryProfile.GetProfile(partType);
             var sprite = profile.GetSprite(level);
 
+            Color color;
+            if (remoteData.partType == PART_TYPE.EMPTY)
+            {
+                color = FactoryManager.Instance.BitProfileData.GetProfile(PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)).color;
+            }
+            else
+            {
+                color = remoteData.category == BIT_TYPE.NONE
+                    ? Color.white
+                    : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            }
+
             part.SetSprite(sprite);
+            part.SetColor(color);
         }
 
         //============================================================================================================//
@@ -43,25 +65,40 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public static void SelectPartOptions(ref PART_TYPE[] options, in bool isBasic = false)
+        public static void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType)
         {
-            var partTypes = isBasic
-                ? new List<PART_TYPE>
-                {
-                    PART_TYPE.GUN,
-                    PART_TYPE.RAILGUN
-                }
-                : new List<PART_TYPE>
-                {
-                    PART_TYPE.GUN,
-                    PART_TYPE.SNIPER,
-                    PART_TYPE.RAILGUN,
-                    PART_TYPE.BOMB,
-                    PART_TYPE.FREEZE,
-                    PART_TYPE.ARMOR,
-                    PART_TYPE.SHIELD,
-                    PART_TYPE.REPAIR
-                };
+            var partTypes = new List<PART_TYPE>();
+
+            switch (partOptionType)
+            {
+                case PART_OPTION_TYPE.BasicWeapon:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.GUN,
+                        PART_TYPE.RAILGUN
+                    };
+                    break;
+                case PART_OPTION_TYPE.PowerWeapon:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.FREEZE,
+                        PART_TYPE.BOMB
+                    };
+                    break;
+                case PART_OPTION_TYPE.Any:
+                    partTypes = new List<PART_TYPE>
+                    {
+                        PART_TYPE.GUN,
+                        PART_TYPE.SNIPER,
+                        PART_TYPE.RAILGUN,
+                        PART_TYPE.BOMB,
+                        PART_TYPE.FREEZE,
+                        PART_TYPE.ARMOR,
+                        PART_TYPE.SHIELD,
+                        PART_TYPE.REPAIR
+                    };
+                    break;
+            }
 
             for (int i = 0; i < options.Length; i++)
             {
@@ -154,10 +191,18 @@ namespace StarSalvager.Factories
             }
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            var remoteData = remotePartData.GetRemoteData(type);
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.SetSprite(sprite);
+            temp.SetColor(color);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
+            temp.partColor = color;
+            temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";
             return temp.gameObject;
@@ -195,7 +240,8 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PartData partData)
         {
-            var profile = factoryProfile.GetProfile((PART_TYPE)partData.Type);
+            var type = (PART_TYPE) partData.Type;
+            var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(0);
 
 
@@ -203,9 +249,15 @@ namespace StarSalvager.Factories
             {
                 temp = CreateScrapyardObject<ScrapyardPart>();
             }
+            
+            var remoteData = remotePartData.GetRemoteData(type);
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
 
             temp.LoadBlockData(partData);
             temp.SetSprite(sprite);
+            temp.SetColor(color);
 
             var gameObject = temp.gameObject;
             gameObject.name = $"{temp.Type}";
@@ -215,7 +267,11 @@ namespace StarSalvager.Factories
 
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
-
+            var remoteData = remotePartData.GetRemoteData(overrideType);
+            var color = remoteData.category == BIT_TYPE.NONE
+                ? Color.white
+                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+            
             var profile = factoryProfile.GetProfile(overrideType);
             var sprite = profile.GetSprite(0);
 
@@ -227,6 +283,7 @@ namespace StarSalvager.Factories
                     break;
                 case ScrapyardPart scrapyardPart:
                     scrapyardPart.SetSprite(sprite);
+                    scrapyardPart.SetColor(color);
                     break;
             }
 

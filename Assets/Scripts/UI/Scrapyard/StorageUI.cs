@@ -58,6 +58,10 @@ namespace StarSalvager.UI.Scrapyard
 
         public void UpdateStorage()
         {
+            var partProfiles = FactoryManager.Instance.PartsProfileData;
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
+            var bitProfiles = FactoryManager.Instance.BitProfileData;
+            
             // Update the Part Storage Scroll View contents
             //--------------------------------------------------------------------------------------------------------//
             storageUiElementScrollView.ClearElements();
@@ -65,13 +69,18 @@ namespace StarSalvager.UI.Scrapyard
             for (int i = 0; i < storedParts.Count; i++)
             {
                 var storageBlockData = storedParts[i];
+                var type = (PART_TYPE) storageBlockData.Type;
+
+                var sprite = partProfiles.GetProfile(type).GetSprite(0);
+                var category = partRemoteData.GetRemoteData(type).category;
+                var color = bitProfiles.GetProfile(category).color;
 
                 int tempInt = i;
                 TEST_Storage testStorage = new TEST_Storage
                 {
-                    name = $"{(PART_TYPE) storageBlockData.Type}",
-                    sprite = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                        .GetProfileData((PART_TYPE) storageBlockData.Type).GetSprite(0),
+                    name = $"{type}",
+                    sprite = sprite,
+                    color = color,
                     blockData = storageBlockData,
                     storageIndex = tempInt
                 };

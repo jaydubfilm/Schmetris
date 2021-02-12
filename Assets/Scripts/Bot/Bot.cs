@@ -631,7 +631,7 @@ namespace StarSalvager
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
-            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
         }
 
@@ -716,6 +716,21 @@ namespace StarSalvager
             }
 
             _rotating = true;
+        }
+
+        public void ResetRotationToIdentity()
+        {
+            PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+            if (attachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
+            {
+                foreach (var attachedBlock in attachedBlocks)
+                {
+                    attachedBlock.RotateCoordinate(ROTATION.CW);
+                }
+
+                ResetRotationToIdentity();
+            }
         }
 
         public void TrySelfDestruct()
@@ -2260,28 +2275,29 @@ namespace StarSalvager
             CheckForDisconnects();
         }
 
+        [Obsolete]
         private void AttachedChanged()
         {
-            var bitTypes = new[]
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-                BIT_TYPE.GREEN
-            };
-
-            BotPartsLogic.PopulatePartsList();
-            var outData = new Dictionary<BIT_TYPE, int>();
-            foreach (var bitType in bitTypes)
-            {
-                var level = attachedBlocks.GetHighestLevelBit(bitType);
-
-                outData.Add(bitType, level);
-            }
-
-            GameUi.SetBitLevelImages(outData);
-            GameUi.SetPartImages(BotPartsLogic.GetPartStates());
+            //var bitTypes = new[]
+            //{
+            //    BIT_TYPE.RED,
+            //    BIT_TYPE.YELLOW,
+            //    BIT_TYPE.GREY,
+            //    BIT_TYPE.BLUE,
+            //    BIT_TYPE.GREEN
+            //};
+//
+            //BotPartsLogic.PopulatePartsList();
+            //var outData = new Dictionary<BIT_TYPE, int>();
+            //foreach (var bitType in bitTypes)
+            //{
+            //    var level = attachedBlocks.GetHighestLevelBit(bitType);
+//
+            //    outData.Add(bitType, level);
+            //}
+//
+            //GameUi.SetBitLevelImages(outData);
+            //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
         }
 
         //============================================================================================================//
@@ -2971,7 +2987,7 @@ _isShifting = true;
                 //Gather any available Wildcards
                 //--------------------------------------------------------------------------------------------------------//
 
-                var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+                var wildCards = BotPartsLogic.GetWildcardParts();
                 if (!wildCards.IsNullOrEmpty())
                 {
                     foreach (var t in wildCards)
@@ -3081,7 +3097,7 @@ _isShifting = true;
             //Gather any available Wildcards
             //--------------------------------------------------------------------------------------------------------//
 
-            var wildCards = BotPartsLogic.GetWildcardParts(bit.level);
+            var wildCards = BotPartsLogic.GetWildcardParts();
             if (!wildCards.IsNullOrEmpty())
             {
                 foreach (var t in wildCards)
@@ -3126,6 +3142,11 @@ _isShifting = true;
         /// <exception cref="Exception"></exception>
         private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
         {
+            void AddBitAmmo(in BIT_TYPE bitType, in int amount)
+            {
+                PlayerDataManager.GetResource(bitType).AddAmmo(amount);
+            }
+
             ICanCombo closestToCore = null;
             var shortest = 999f;
 
@@ -3220,26 +3241,17 @@ _isShifting = true;
 
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
-                    //Show the gears hint, after the third time
-                    /*if (_lastGearText && _combosMade++ > 2 && HintManager.CanShowHint(HINT.GEARS))
+
+                    var bit = closestToCore as Bit;
+                    if (bit != null && bit.level == 1)
                     {
-                        var iHasBounds = _lastGearText.GetComponent<IHasBounds>().GetBounds();
-
-                        Debug.Log($"Center: {iHasBounds.center}, Extents: {iHasBounds.extents}");
-
-                        HintManager.TryShowHint(HINT.GEARS, iHasBounds);
-                    }*/
-
-                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
-                    switch (closestToCore)
+                        AddBitAmmo(bit.Type, 10);
+                        CheckForCombosAround(attachedBlocks.OfType<Bit>());
+                    }
+                    else if (bit != null && bit.level == 2)
                     {
-                        case Bit _:
-                            CheckForCombosAround(attachedBlocks.OfType<Bit>());
-                            break;
-                        case Crate _:
-                            throw new NotImplementedException();
-                            //CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
-                            break;
+                        AddBitAmmo(bit.Type, 50);
+                        DestroyAttachable(bit);
                     }
 
                     CheckForBonusShapeMatches();
@@ -3476,7 +3488,7 @@ _isShifting = true;
 
                 var core = attachedBlocks[0] as Part;
 
-                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).liquidCapacity;
+                float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).AmmoCapacity;
 
                 /*if (_botPartsLogic.ProcessBit(core, bit, resourceCapacityLiquid * Globals.GameUIResourceThreshold) > 0)
                 {

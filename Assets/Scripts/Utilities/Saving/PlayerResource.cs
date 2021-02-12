@@ -17,35 +17,29 @@ namespace StarSalvager.Utilities.Saving
         private BIT_TYPE bitType;
 
         [JsonIgnore]
-        public float liquid
-        {
-            get => _botLiquid;
-        }
+        public float Ammo => _botAmmo;
 
 
         [JsonProperty]
-        private float _botLiquid;
+        private float _botAmmo;
 
         [JsonIgnore]
-        public int liquidCapacity
-        {
-            get => _botLiquidCapacity;
-        }
+        public int AmmoCapacity => _botAmmoCapacity;
 
         [JsonProperty]
-        private int _botLiquidCapacity;
+        private int _botAmmoCapacity;
 
-        public PlayerResource(BIT_TYPE type, int botLiquid, int botLiquidCapacity)
+        public PlayerResource(BIT_TYPE type, int botAmmo, int botAmmoCapacity)
         {
             bitType = type;
 
-            _botLiquid = botLiquid;
-            _botLiquidCapacity = botLiquidCapacity;
+            _botAmmo = botAmmo;
+            _botAmmoCapacity = botAmmoCapacity;
         }
 
-        public void SetLiquid(float amount, bool updateValuesChanged = true)
+        public void SetAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botLiquid = Mathf.Clamp(amount, 0f, _botLiquidCapacity);
+            _botAmmo = Mathf.Clamp(amount, 0f, _botAmmoCapacity);
 
             if (updateValuesChanged)
             {
@@ -53,10 +47,10 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public void SetLiquidCapacity(int amount, bool updateCapacitiesChanged = true)
+        public void SetAmmoCapacity(int amount, bool updateCapacitiesChanged = true)
         {
-            _botLiquidCapacity = amount;
-            _botLiquid = Mathf.Clamp(_botLiquid, 0f, _botLiquidCapacity);
+            _botAmmoCapacity = amount;
+            _botAmmo = Mathf.Clamp(_botAmmo, 0f, _botAmmoCapacity);
 
             if (updateCapacitiesChanged)
             {
@@ -64,9 +58,9 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public void AddLiquid(float amount, bool updateValuesChanged = true)
+        public void AddAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botLiquid = Mathf.Min(_botLiquid + amount, _botLiquidCapacity);
+            _botAmmo = Mathf.Min(_botAmmo + amount, _botAmmoCapacity);
 
             if (updateValuesChanged)
             {
@@ -74,9 +68,9 @@ namespace StarSalvager.Utilities.Saving
             }
         }
 
-        public void SubtractLiquid(float amount, bool updateValuesChanged = true)
+        public void SubtractAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botLiquid = Mathf.Min(_botLiquid - amount, 0);
+            _botAmmo = Mathf.Max(_botAmmo - amount, 0);
 
             if (updateValuesChanged)
             {

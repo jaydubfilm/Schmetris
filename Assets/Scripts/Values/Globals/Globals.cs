@@ -28,7 +28,6 @@ namespace StarSalvager.Values
         public static int CurrentWave = 0;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
-        public static bool StripBits;
         public static float TimeForAsteroidToFallOneSquare;
         public static float TimeForAsteroidToFallOneSquareOriginal;
 
@@ -40,6 +39,8 @@ namespace StarSalvager.Values
 
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
+        public static int StartingAmmo => m_gameSettings.startingAmmo;
+        
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
         public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
 

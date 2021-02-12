@@ -29,131 +29,21 @@ namespace StarSalvager.Utilities.Saving
 
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
-        public static List<List<Vector2Int>> botLayoutOptions = new List<List<Vector2Int>>()
-        {
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(1, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, -1),
-                new Vector2Int(-2, 1),
-                new Vector2Int(-2, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, 2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(0, -1),
-                new Vector2Int(0, -2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, 2),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(-2, -1),
-                new Vector2Int(-2, -2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(1, 2),
-                new Vector2Int(2, 2),
-                new Vector2Int(-1, 2),
-                new Vector2Int(-2, 2),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, 0),
-                new Vector2Int(-2, 1),
-                new Vector2Int(-2, 0)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, -1),
-                new Vector2Int(1, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(1, 1),
-                new Vector2Int(0, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(1, -1),
-                new Vector2Int(0, -1),
-                new Vector2Int(-1, -1),
-                new Vector2Int(0, -2)
-            }
-        };
-
         //====================================================================================================================//
 
         public static Version GetVersion()
         {
             return PlayerAccountData.Version;
+        }
+
+        public static bool GetStarted()
+        {
+            return PlayerAccountData.HasStarted;
+        }
+
+        public static void SetStarted(bool started)
+        {
+            PlayerAccountData.HasStarted = started;
         }
 
         public static bool GetCanChoosePart()
@@ -196,11 +86,15 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData._botLayout;
         }
 
-        public static void SetBotLayout(int index)
+        public static BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
         {
-            PlayerAccountData._botLayout = botLayoutOptions[index];
+            return PlayerAccountData.GetCategoryAtCoordinate(coordinate);
         }
 
+        public static Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            return PlayerAccountData.GetCoordinateForCategory(bitType);
+        }
 
         //Run Data Functions
         //====================================================================================================================//
@@ -251,8 +145,60 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.SetShipBlockData(blockData);
         }
-        
-        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
+
+        public static void RemoveAllBits()
+        {
+            void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
+            {
+                var data = coordinate;
+                var index = blockDatas.FindIndex(x => x.Coordinate == data);
+
+                if (index < 0)
+                    throw new ArgumentOutOfRangeException(nameof(index), index,
+                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{Newtonsoft.Json.JsonConvert.SerializeObject(blockDatas)}");
+
+                blockDatas.RemoveAt(index);
+            }
+
+            var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            var originalBackup = new List<IBlockData>(droneBlockData);
+
+            var bitsToRemove = droneBlockData
+                .OfType<BitData>()
+                .OrderBy(x => x.Coordinate.magnitude)
+                .ToList();
+
+            for (int i = bitsToRemove.Count - 1; i >= 0; i--)
+            {
+                var bitData = bitsToRemove[i];
+
+                var orphanData = new List<OrphanMoveBlockData>();
+                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
+
+                //droneBlockData.Remove(bitData);
+                RemoveBit(ref droneBlockData, bitData.Coordinate);
+                bitsToRemove.RemoveAt(i);
+                for (int ii = 0; ii < orphanData.Count; ii++)
+                {
+                    var data = orphanData[ii];
+                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
+
+                    droneBlockData[index].Coordinate = data.intendedCoordinates;
+                }
+            }
+
+
+            //Review all the bits (After having moved) to ensure there is no one floating
+            if (droneBlockData.OfType<BitData>().Any(bitData => !droneBlockData.HasPathToCore(bitData)))
+            {
+                throw new Exception($"No Path to Core found\nOriginal: {Newtonsoft.Json.JsonConvert.SerializeObject(originalBackup)}\nSolved: {Newtonsoft.Json.JsonConvert.SerializeObject(droneBlockData)}");
+            }
+
+            SetBlockData(droneBlockData);
+        }
+
+
+        /*public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
@@ -315,8 +261,7 @@ namespace StarSalvager.Utilities.Saving
 
            
             SetBlockData(droneBlockData);
-            Globals.StripBits = false;
-        }
+        }*/
 
         //============================================================================================================//
 

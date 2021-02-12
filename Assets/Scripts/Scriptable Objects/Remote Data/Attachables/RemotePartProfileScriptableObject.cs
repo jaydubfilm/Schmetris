@@ -15,6 +15,12 @@ namespace StarSalvager.ScriptableObjects
             return partRemoteData
                 .FirstOrDefault(p => p.partType == Type);
         }
+        
+        public PART_TYPE[] GetTriggerParts()
+        {
+            return partRemoteData
+                .Where(p => p.isManual).Select(p => p.partType).ToArray();
+        }
     }
 }
 
