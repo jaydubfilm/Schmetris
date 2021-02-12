@@ -725,6 +725,13 @@ namespace StarSalvager
         
         private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
+            var types = new List<BIT_TYPE>
+            {
+                BIT_TYPE.BLUE,
+                BIT_TYPE.RED,
+                BIT_TYPE.GREY,
+                BIT_TYPE.YELLOW
+            };
             //TODO This still needs to account for multiple bombs
             if (!_triggerPartTimers.TryGetValue(part, out var timer))
                 return;
@@ -738,7 +745,7 @@ namespace StarSalvager
             
             //Find the index of the ui element to show cooldown
             var tempPart = part;
-            var uiIndex = _triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//
@@ -1183,13 +1190,13 @@ namespace StarSalvager
 
         private void TriggerDecoy(in Part part)
         {
+            if (bot.DecoyDrone != null)
+                return;
+            
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
-            if (bot.DecoyDrone != null)
-                return;
-
-            bot.DecoyDrone = GameObject.Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
+            bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
             bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
         }
 
