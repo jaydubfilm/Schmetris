@@ -99,19 +99,16 @@ namespace StarSalvager.ScriptableObjects
         public Vector2 YellowBitsPercentageRange => mYellowBitsPercentageRange;
         public Vector2 GreyBitsPercentageRange => mGreyBitsPercentageRange;
 
-        [ProgressBar(0,100), OnValueChanged("Balance0")]
+        [ProgressBar(0,100), OnValueChanged("Balance")]
         public int test = 25;
-        [ProgressBar(0,100)]
+        [ProgressBar(0,100), OnValueChanged("Balance")]
         public int test1 = 25;
-        [ProgressBar(0,100)]
+        [ProgressBar(0,100), OnValueChanged("Balance")]
         public int test2 = 25;
-        [ProgressBar(0,100)]
+        [ProgressBar(0,100), OnValueChanged("Balance")]
         public int test3 = 25;
 
-        private void Balance0()
-        {
-            
-        }
+
         
         //Ring Properties
         //====================================================================================================================//
@@ -143,24 +140,24 @@ namespace StarSalvager.ScriptableObjects
         private Vector2Int mBitsPerMinuteRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
-        [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(1.0f, 0.3f, 0.3f)]
-        private Vector2Int mRedBitsPercentageRange;
+        [SerializeField, Required,ProgressBar(0,100, R = 1.0f, G = 0.3f, B = 0.3f), OnValueChanged("BalanceBits")]
+        private int mRedBitsPercentageRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Blue Bit %"), LabelWidth(75)]
-        [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(0.3f, 0.3f, 1.0f)]
-        private Vector2Int mBlueBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(0.3f, 0.3f, 1.0f)]
+        private int mBlueBitsPercentageRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Green Bit %"), LabelWidth(75)]
-        [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(0.3f, 1.0f, 0.3f)]
-        private Vector2Int mGreenBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(0.3f, 1.0f, 0.3f)]
+        private int mGreenBitsPercentageRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Yellow Bit %"), LabelWidth(75)]
-        [SerializeField, Required, MinMaxSlider(0, 100, true), GUIColor(1.0f, 1.0f, 0.3f)]
-        private Vector2Int mYellowBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits"), GUIColor(1.0f, 1.0f, 0.3f)]
+        private int mYellowBitsPercentageRange;
 
         [FoldoutGroup("Collectable Bits"), LabelText("Grey Bit %"), LabelWidth(75)]
-        [SerializeField, Required, MinMaxSlider(0, 100, true)]
-        private Vector2Int mGreyBitsPercentageRange;
+        [SerializeField, Required, ProgressBar(0,100), OnValueChanged("BalanceBits")]
+        private int mGreyBitsPercentageRange;
 
         //Obstacle Properties
         //====================================================================================================================//
@@ -197,6 +194,27 @@ namespace StarSalvager.ScriptableObjects
         }
 
         //====================================================================================================================//
+        
+        #if UNITY_EDITOR
+        
+        private void Balance()
+        {
+            var sum = test + test1 + test2 + test3;
+
+            test = Mathf.RoundToInt(((float)test / sum) * 100f);
+            test1 = Mathf.RoundToInt(((float)test1 / sum) * 100f);
+            test2 = Mathf.RoundToInt(((float)test2 / sum) * 100f);
+            test3 = Mathf.RoundToInt(((float)test3 / sum) * 100f);
+
+        }
+
+        [Button]
+        private void Reset()
+        {
+            test = test1 = test2 = test3 = 25;
+        }
+        
+        #endif
         
     }
 }
