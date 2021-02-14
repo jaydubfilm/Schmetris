@@ -203,12 +203,12 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 1
     - key: Multiplier
       value: 30
     isManual: 1
     category: 5
-    ammoUseCost: 2
+    ammoUseCost: 1
     PatchSockets: 2
   - name: Heal
     partType: 39
@@ -242,7 +242,7 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 5
     isManual: 1
     category: 1
     ammoUseCost: 5
