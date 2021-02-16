@@ -232,9 +232,13 @@ namespace StarSalvager.AI
 
         private void PursueState()
         {
-            Bit test;
-            if (_attachTarget is null && (test = FindClosestBitOnBot()) != null)
+            //If we currently don't have a target, and are able to find a new one
+            if (_attachTarget is null)
             {
+                var test = FindClosestBitOnBot();
+                if (test == null)
+                    return;
+                
                 EnemyManager.SetBorrowerTarget(this, test);
                 _attachTarget = test;
             }
