@@ -103,21 +103,12 @@ namespace StarSalvager
         public GameObject _decoyDronePrefab;
 
         [NonSerialized]
-        public GameObject DecoyDrone;
+        public DecoyDrone DecoyDrone;
 
         //============================================================================================================//
 
-        public Vector2 GetPosition()
-        {
-            if (DecoyDrone != null)
-            {
-                return DecoyDrone.transform.position;
-            }
-            else
-            {
-                return transform.position;
-            }
-        }
+        public Vector2 Position => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
+        
 
         public bool IsInvulnerable
         {
@@ -4214,6 +4205,8 @@ _isShifting = true;
             attachedBlocks.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
+            
+            if(DecoyDrone) Destroy(DecoyDrone.gameObject);
 
             ObstacleManager.NewShapeOnScreen -= CheckForBonusShapeMatches;
         }

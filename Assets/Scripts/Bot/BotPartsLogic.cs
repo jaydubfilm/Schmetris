@@ -1195,8 +1195,11 @@ namespace StarSalvager
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
-            bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
-            bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
+            var decoyDroneHealth = Globals.DecoyDroneHealth;
+            
+            bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity).GetComponent<DecoyDrone>();
+            bot.DecoyDrone.Init(bot, 10f);
+            bot.DecoyDrone.SetupHealthValues(decoyDroneHealth,decoyDroneHealth);
         }
 
         private void TriggerBitsplosion(in Part part)

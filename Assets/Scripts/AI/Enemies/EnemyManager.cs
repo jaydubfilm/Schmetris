@@ -131,7 +131,7 @@ namespace StarSalvager
 
         private void HandleEnemyUpdate()
         {
-            Vector3 playerBotPosition = LevelManager.Instance.BotInLevel.GetPosition();
+            Vector3 playerBotPosition = LevelManager.Instance.BotInLevel.Position;
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];

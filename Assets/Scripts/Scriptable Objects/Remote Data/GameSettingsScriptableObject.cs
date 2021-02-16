@@ -80,6 +80,9 @@ namespace StarSalvager.ScriptableObjects
         public float greenHealAmount = 10f;
         
         [BoxGroup("Bot")]
+        public float decoyDroneHealth = 20f;
+        
+        [BoxGroup("Bot")]
         public int magnetAmount = 10;
 
         [BoxGroup("Bot")]
