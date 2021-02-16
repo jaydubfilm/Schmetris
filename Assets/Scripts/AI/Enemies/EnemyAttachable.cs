@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
-using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.UI.Hints;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
-using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
@@ -26,8 +20,8 @@ namespace StarSalvager.AI
 
         //IAttachable Properties
         //============================================================================================================//
-        
-        public abstract bool IsAttachable { get; }
+
+        public bool IsAttachable => true;
 
         
 

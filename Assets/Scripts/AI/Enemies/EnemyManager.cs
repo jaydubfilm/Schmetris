@@ -2,11 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using StarSalvager.Values;
 using StarSalvager.Factories;
 using StarSalvager.AI;
 using StarSalvager.Utilities;
-using StarSalvager.Utilities.Inputs;
 using Random = UnityEngine.Random;
 using Recycling;
 using StarSalvager.Audio;
