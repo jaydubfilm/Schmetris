@@ -624,6 +624,34 @@ namespace StarSalvager
             bool notYetStarted = PlayerDataManager.GetStarted();
             if (!notYetStarted)
             {
+
+                var starterParts = new[]
+                {
+                    PART_TYPE.REPAIR, //GREEN
+                    //PART_TYPE.SHIELD,
+                    PART_TYPE.REGEN, //BLUE
+                    PART_TYPE.WILDCARD //YELLOW
+                };
+                
+                var remoteData = FactoryManager.Instance.PartsRemoteData;
+                var partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+                foreach (var partType in starterParts)
+                {
+                    var patchCount = remoteData.GetRemoteData(partType).PatchSockets;
+                    var partData = new PartData
+                    {
+                        Type = (int)partType,
+                        Patches = new PatchData[patchCount]
+                    };
+                    var scrapyardObject = partAttachableFactory.CreateScrapyardObject<ScrapyardPart>(partData);
+                    var coordinate =
+                        PlayerDataManager.GetCoordinateForCategory(remoteData.GetRemoteData(partType).category);
+                    
+                    _scrapyardBot.AttachNewBit(coordinate, scrapyardObject);
+                }
+                
+                /*
                 //Add starter parts
                 PART_TYPE repairPart = PART_TYPE.REPAIR;
                 var repairPatchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(repairPart).PatchSockets;
@@ -653,7 +681,7 @@ namespace StarSalvager
                     Patches = new PatchData[wildcardPatchCount]
                 };
                 var wildcardAttachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(wildcardPartData);
-                _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).category), wildcardAttachable);
+                _scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(wildcardPart).category), wildcardAttachable);*/
 
                 SaveBlockData();
             }
