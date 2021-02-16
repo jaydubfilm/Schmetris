@@ -334,6 +334,7 @@ namespace StarSalvager
             var bit = m_obstacles
                 .OfType<Bit>()
                 .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Attached == false)
                 .Where(x => Mathf.Abs(xPos - x.transform.position.x) < 0.5f)
                 .Where(x => x.transform.position.y > yPos)
                 .OrderBy(x => x.transform.position.y)

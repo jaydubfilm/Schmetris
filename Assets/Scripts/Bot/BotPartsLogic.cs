@@ -75,13 +75,12 @@ namespace StarSalvager
         //==============================================================================================================//
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        public int MagnetCount => 10;
+        public int MagnetCount => Globals.Magnetism;
         private int _magnetOverride;
 
         //==============================================================================================================//
 
         private bool _shieldActive;
-        //private bool _vampirismActive;
 
         private GameObject _shieldObject;
         private GameObject _healObject;
