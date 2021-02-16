@@ -65,7 +65,7 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public static void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType)
+        public static void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType, in PART_TYPE[] currentParts)
         {
             var partTypes = new List<PART_TYPE>();
 
@@ -99,6 +99,14 @@ namespace StarSalvager.Factories
                     };
                     break;
             }
+
+            foreach (var partType in currentParts)
+            {
+                partTypes.Remove(partType);
+            }
+
+            if (partTypes.IsNullOrEmpty())
+                throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
 
             for (int i = 0; i < options.Length; i++)
             {

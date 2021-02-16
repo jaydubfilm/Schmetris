@@ -5,6 +5,7 @@ using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -68,7 +69,20 @@ namespace StarSalvager.UI.Scrapyard
             
             Random.InitState(DateTime.Now.Millisecond);
 
-            PartAttachableFactory.SelectPartOptions(ref _partOptions, partOptionType);
+            var partsOnBot = PlayerDataManager
+                .GetBlockDatas()
+                .OfType<PartData>()
+                .Select(x => (PART_TYPE) x.Type)
+                .Where(x => x != PART_TYPE.EMPTY)
+                .ToList();
+            var partsInStorage = PlayerDataManager
+                .GetCurrentPartsInStorage()
+                .OfType<PartData>()
+                .Select(x => (PART_TYPE) x.Type);
+            
+            partsOnBot.AddRange(partsInStorage);
+
+            PartAttachableFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
 
             if (_partOptions[0] == _partOptions[1])
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
