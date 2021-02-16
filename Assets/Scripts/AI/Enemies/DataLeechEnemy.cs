@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Recycling;
-using StarSalvager.Audio;
-using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -13,7 +7,6 @@ namespace StarSalvager.AI
 {
     public class DataLeechEnemy : EnemyAttachable
     {
-        public override bool IsAttachable => true;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 
