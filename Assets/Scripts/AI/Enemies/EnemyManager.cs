@@ -11,6 +11,7 @@ using Random = UnityEngine.Random;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
+using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
 {
@@ -25,6 +26,8 @@ namespace StarSalvager
         private float m_spawnTimer;
         private int m_nextStageToSpawn;
 
+        private Dictionary<BorrowerEnemy, Bit> _borrowerTargets;
+
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         //private float m_currentInput;
 
@@ -37,7 +40,7 @@ namespace StarSalvager
         private bool _hasActiveEnemies;
 
         //============================================================================================================//
-         
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -64,6 +67,7 @@ namespace StarSalvager
             {
                 SetupStage(m_nextStageToSpawn);
             }
+
             CheckSpawns();
 
             HandleEnemyUpdate();
@@ -73,8 +77,9 @@ namespace StarSalvager
         {
             if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
                 return;
-            
-            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.IsState(GameState.LEVEL_ACTIVE) && !GameManager.IsState(GameState.LevelEndWave))
+
+            if (!_hasActiveEnemies && m_enemies.Count > 0 && GameManager.IsState(GameState.LEVEL_ACTIVE) &&
+                !GameManager.IsState(GameState.LevelEndWave))
             {
                 _hasActiveEnemies = true;
                 AudioController.CrossFadeTrack(MUSIC.ENEMY);
@@ -112,18 +117,18 @@ namespace StarSalvager
                     case EnemyAttachable _:
                         Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
                         break;
-                    
+
                     case Enemy _:
                         Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
                         break;
                     default:
                         throw new ArgumentException();
                 }
-                
+
                 m_enemies.RemoveAt(i);
             }
         }
-        
+
         //============================================================================================================//
 
         private void HandleEnemyUpdate()
@@ -136,7 +141,7 @@ namespace StarSalvager
                 //Check to see if the enemy can Move
                 if (!enemy.CanMove())
                     continue;
-                
+
                 enemy.UpdateEnemy(playerBotPosition);
 
             }
@@ -154,7 +159,7 @@ namespace StarSalvager
             {
                 return;
             }
-            
+
             StageRemoteData waveRemoteData = LevelManager.Instance.CurrentWaveData.GetRemoteData(stageNumber);
             m_enemiesToSpawn.Clear();
             m_timesToSpawn.Clear();
@@ -184,6 +189,7 @@ namespace StarSalvager
                 float timeToSpawn = Random.Range(0, waveRemoteData.StageDuration * (1.0f - m_endOfStageSpawnBuffer));
                 m_timesToSpawn.Add(timeToSpawn);
             }
+
             m_timesToSpawn.Sort();
 
             m_spawnTimer = 0;
@@ -197,13 +203,13 @@ namespace StarSalvager
 
         private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
         {
-            if(timeDelay > 0)
+            if (timeDelay > 0)
                 yield return new WaitForSeconds(timeDelay);
-            
-            if(isPaused)
+
+            if (isPaused)
                 yield return new WaitUntil(() => !isPaused);
-            
-            if(!LevelManager.Instance.gameObject.activeSelf)
+
+            if (!LevelManager.Instance.gameObject.activeSelf)
                 yield break;
 
             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
@@ -237,6 +243,7 @@ namespace StarSalvager
                 //print("TRYING TO ADD DUPLICATE ENEMY");
                 m_enemies.Add(newEnemy);
             }
+
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
 
             if (spawnLocationOverride.HasValue)
@@ -245,22 +252,24 @@ namespace StarSalvager
             }
             else
             {
-                newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
+                newEnemy.transform.localPosition =
+                    LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
             }
 
             newEnemy.LateInit();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
         }
-        
+
         public void AddEnemy(Enemy newEnemy)
         {
             if (newEnemy == null)
                 return;
-            
+
             m_enemies.Add(newEnemy);
             ReParentEnemy(newEnemy);
-            newEnemy.transform.localPosition = LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
+            newEnemy.transform.localPosition =
+                LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
         }
 
         public void RemoveEnemy(Enemy newEnemy)
@@ -280,7 +289,7 @@ namespace StarSalvager
         {
             LevelManager.Instance.ObstacleManager.AddTransformToRoot(enemy.transform);
         }
-        
+
         //============================================================================================================//
 
         public void DamageAllEnemies(float damage)
@@ -315,7 +324,7 @@ namespace StarSalvager
                 if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
 
-                if (Vector2.Distance(damagePosition, (Vector2)enemy.transform.position) > range)
+                if (Vector2.Distance(damagePosition, (Vector2) enemy.transform.position) > range)
                 {
                     continue;
                 }
@@ -336,12 +345,12 @@ namespace StarSalvager
             {
                 if (enemy.IsRecycled)
                     continue;
-                
+
                 if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
-                
+
                 var dist = Vector2.Distance(position, enemy.transform.position);
-                if(dist > shortestDist)
+                if (dist > shortestDist)
                     continue;
 
                 shortestDist = dist;
@@ -365,15 +374,15 @@ namespace StarSalvager
             {
                 if (enemy.IsRecycled)
                     continue;
-                
+
                 if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
-                
+
                 var dist = Vector2.Distance(position, enemy.transform.position);
-                
-                if(dist > range)
+
+                if (dist > range)
                     continue;
-                if(dist > shortestDist)
+                if (dist > shortestDist)
                     continue;
 
                 shortestDist = dist;
@@ -382,7 +391,7 @@ namespace StarSalvager
 
             return closestEnemy;
         }
-        
+
         public List<Enemy> GetEnemiesInRange(Vector2 position, float range)
         {
             var outList = new List<Enemy>();
@@ -390,13 +399,13 @@ namespace StarSalvager
             {
                 if (enemy.IsRecycled)
                     continue;
-                
+
                 if (!CameraController.IsPointInCameraRect(enemy.transform.position))
                     continue;
-                
+
                 var dist = Vector2.Distance(position, enemy.transform.position);
-                
-                if(dist > range)
+
+                if (dist > range)
                     continue;
 
                 outList.Add(enemy);
@@ -404,7 +413,7 @@ namespace StarSalvager
 
             return outList;
         }
-        
+
         public void SetEnemiesInert(bool inert)
         {
             if (inert)
@@ -428,10 +437,46 @@ namespace StarSalvager
             {
                 Recycler.Recycle<Enemy>(enemy);
             }
+
             m_enemies.Clear();
         }
 
         //============================================================================================================//
+
+        public void SetBorrowerTarget(in BorrowerEnemy borrowerEnemy, in Bit targetBit)
+        {
+            if (_borrowerTargets == null)
+            {
+                _borrowerTargets = new Dictionary<BorrowerEnemy, Bit>();
+            }
+
+            if (!_borrowerTargets.ContainsKey(borrowerEnemy))
+            {
+                _borrowerTargets.Add(borrowerEnemy, targetBit);
+                return;
+            }
+
+            _borrowerTargets[borrowerEnemy] = targetBit;
+        }
+
+        public void RemoveBorrowerTarget(in BorrowerEnemy borrowerEnemy)
+        {
+            if (_borrowerTargets.IsNullOrEmpty())
+                return;
+
+            if (!_borrowerTargets.ContainsKey(borrowerEnemy))
+                return;
+
+            _borrowerTargets.Remove(borrowerEnemy);
+        }
+
+        public bool IsBitTargeted(in Bit targetBit)
+        {
+            return !_borrowerTargets.IsNullOrEmpty() && _borrowerTargets.ContainsValue(targetBit);
+        }
+
+    //====================================================================================================================//
+        
 
         public void RegisterPausable()
         {

@@ -27,6 +27,9 @@ namespace StarSalvager.AI
         //IAttachable Properties
         //============================================================================================================//
         
+        public abstract bool IsAttachable { get; }
+
+        
 
         [ShowInInspector, ReadOnly]
         public Vector2Int Coordinate { get; set; }

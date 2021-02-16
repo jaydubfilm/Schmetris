@@ -10,7 +10,6 @@ namespace StarSalvager.AI
 {
     public class SquartEnemy : Enemy
     {
-        public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
