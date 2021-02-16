@@ -9,7 +9,6 @@ namespace StarSalvager.AI
 {
     public class ShardEnemy : Enemy
     {
-        public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 

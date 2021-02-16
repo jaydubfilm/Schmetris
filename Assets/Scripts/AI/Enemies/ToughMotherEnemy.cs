@@ -16,7 +16,6 @@ namespace StarSalvager.AI
     {
         public float anticipationTime = 1f;
 
-        public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 

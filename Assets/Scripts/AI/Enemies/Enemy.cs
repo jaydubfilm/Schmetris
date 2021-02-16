@@ -21,8 +21,21 @@ namespace StarSalvager.AI
     [RequireComponent(typeof(StateAnimator))]
     public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
-        public abstract bool IsAttachable { get; }
+        protected static EnemyManager EnemyManager
+        {
+            get
+            {
+                if (_enemyManager == null)
+                    _enemyManager = LevelManager.Instance.EnemyManager;
+
+                return _enemyManager;
+            }
+        }
+
+        private static EnemyManager _enemyManager;
+        
         public abstract bool IgnoreObstacleAvoidance { get; }
+
         public abstract bool SpawnAboveScreen { get; }
 
         public float EnemyMovementSpeed => m_enemyData.MovementSpeed;

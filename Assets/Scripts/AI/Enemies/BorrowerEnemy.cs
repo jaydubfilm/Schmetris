@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
@@ -131,6 +132,9 @@ namespace StarSalvager.AI
             
             foreach (var bit in bits)
             {
+                if (EnemyManager.IsBitTargeted(bit))
+                    continue;
+                
                 var dist = Vector2.Distance(currentPosition, bit.transform.position);
                 
                 if(dist >= minDist)
@@ -160,6 +164,8 @@ namespace StarSalvager.AI
                 case STATE.PURSUE:
                     //Try to Find a Bit on the bot
                     _attachTarget = FindClosestBitOnBot();
+
+                    EnemyManager.SetBorrowerTarget(this, _attachTarget);
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
@@ -180,6 +186,8 @@ namespace StarSalvager.AI
                         _carryingBit.transform.parent = null;
                         _carryingBit = null;
                     }
+                    
+                    EnemyManager.RemoveBorrowerTarget(this);
                     
                     Recycler.Recycle<DataLeechEnemy>(this);
                     break;
@@ -224,11 +232,11 @@ namespace StarSalvager.AI
 
         private void PursueState()
         {
-            //IF there is not a bit on the bot,
-            _attachTarget = FindClosestBitOnBot();
-            if (_attachTarget is null)
+            Bit test;
+            if (_attachTarget is null && (test = FindClosestBitOnBot()) != null)
             {
-                return;
+                EnemyManager.SetBorrowerTarget(this, test);
+                _attachTarget = test;
             }
             
             //Fly towards a specific Bit on the bot
