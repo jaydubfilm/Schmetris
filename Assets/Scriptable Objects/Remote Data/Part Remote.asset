@@ -233,7 +233,7 @@ MonoBehaviour:
     - key: Heal
       value: 3
     isManual: 0
-    category: 2
+    category: 1
     ammoUseCost: 1
     PatchSockets: 2
   - name: Decoy
