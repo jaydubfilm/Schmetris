@@ -37,6 +37,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static int Magnetism => m_gameSettings.magnetAmount;
+        
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
         public static int StartingAmmo => m_gameSettings.startingAmmo;
