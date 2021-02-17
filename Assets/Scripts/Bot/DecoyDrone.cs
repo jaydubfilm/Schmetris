@@ -1,7 +1,4 @@
 ﻿using StarSalvager.Values;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
@@ -30,18 +27,6 @@ namespace StarSalvager
         //private float _timer = 0.0f;
         //private float m_timeAlive = 5.0f;
         private Vector2 m_positionMoveUpwards;
-
-        private new Transform transform
-        {
-            get
-            {
-                if (!_transform)
-                    _transform = gameObject.transform;
-
-                return _transform;
-            }
-        }
-        private Transform _transform;
 
         //Unity Functions
         //====================================================================================================================//
