@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using StarSalvager.Utilities.Saving;
 using System.Linq;
+using UnityEngine.Serialization;
 
 namespace StarSalvager
 {
@@ -22,54 +23,46 @@ namespace StarSalvager
         Level,
         Wreck
     }
-    
+
     [RequireComponent(typeof(Button)), RequireComponent(typeof(PointerEvents))]
     public class UniverseMapButton : MonoBehaviour
     {
-        private Action<bool, int, int, RectTransform> _onHoveredCallback;
+        public NodeType NodeType => nodeType;
+        public int NodeIndex => nodeIndex;
+        
+        [SerializeField, ReadOnly]
+        private NodeType nodeType;
 
-        [NonSerialized]
-        public NodeType NodeType;
-        [NonSerialized]
-        public int NodeIndex;
+        [SerializeField, ReadOnly] private int nodeIndex;
 
-        [NonSerialized]
-        public Button Button;
-        [NonSerialized]
-        public PointerEvents PointerEvents;
-        public TMP_Text Text;
-        public TMP_Text TextBelow;
-        [NonSerialized]
-        public int SectorNumber = -1;
-        [NonSerialized]
-        public int WaveNumber = -1;
-        public Image BotImage;
-        public Image ShortcutImage;
-        public Image PointOfInterestImage;
+        [SerializeField] private Button Button;
+        [SerializeField] private TMP_Text Text;
+        [SerializeField] private TMP_Text TextBelow;
+
+        [SerializeField] private int waveNumber = -1;
+        [SerializeField] private Image BotImage;
+        [SerializeField] private Image ShortcutImage;
+        //[SerializeField] private Image PointOfInterestImage;
+
+        public new RectTransform transform { get; private set; }
+
+        //Unity Functions
+        //====================================================================================================================//
 
         public void Awake()
         {
-            Button = GetComponent<Button>();
-            PointerEvents = GetComponent<PointerEvents>();
-
-            BotImage.gameObject.SetActive(false);
-        }
-
-        private void OnEnable()
-        {
-            //TODO Need to get the level here
-            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
+            transform = gameObject.transform as RectTransform;
         }
 
         public void Start()
         {
             Button.onClick.AddListener(() =>
             {
-                switch(NodeType)
+                switch (nodeType)
                 {
                     case NodeType.Level:
-                        Globals.CurrentSector = SectorNumber;
-                        Globals.CurrentWave = WaveNumber;
+                        //Globals.CurrentSector = SectorNumber;
+                        Globals.CurrentWave = waveNumber;
 
                         ScreenFade.Fade(() =>
                         {
@@ -77,11 +70,11 @@ namespace StarSalvager
                         });
                         break;
                     case NodeType.Wreck:
-                        PlayerDataManager.SetCurrentNode(NodeIndex);
+                        PlayerDataManager.SetCurrentNode(nodeIndex);
 
-                        if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(NodeIndex))
+                        if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(nodeIndex))
                         {
-                            PlayerDataManager.AddCompletedNode(NodeIndex);
+                            PlayerDataManager.AddCompletedNode(nodeIndex);
                         }
 
                         ScreenFade.Fade(() =>
@@ -98,7 +91,59 @@ namespace StarSalvager
             PulseBotObject();
         }
 
-        public void PulseBotObject()
+        //====================================================================================================================//
+
+        public void Init(in int index, in string title, in string subTitle = "")
+        {
+            if (!transform)
+                transform = gameObject.transform as RectTransform;
+            
+            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
+
+            nodeIndex = index;
+            waveNumber = index;
+            Text.text = title;
+            TextBelow.text = subTitle;
+        }
+
+        public void SetButtonProperties(in bool buttonInteractable, in Color color)
+        {
+            SetButtonColor(color);
+            SetButtonInteractable(buttonInteractable);
+        }
+        public void SetButtonColor(in Color buttonColor)
+        {
+            Button.image.color = buttonColor;
+        }
+        public void SetButtonInteractable(in bool buttonInteractable)
+        {
+            Button.interactable = buttonInteractable;
+        }
+
+        public void SetBotImageActive(in bool state)
+        {
+            BotImage.gameObject.SetActive(state);
+        }
+
+        public void SetShortcutImageActive(in bool state)
+        {
+            ShortcutImage.gameObject.SetActive(state);
+        }
+
+        public void SetWaveType(in NodeType nodeType)
+        {
+            this.nodeType = nodeType;
+        }
+
+        public void Reset()
+        {
+            SetButtonProperties(false, Color.white);
+            SetBotImageActive(false);
+            SetShortcutImageActive(false);
+        }
+
+
+        private void PulseBotObject()
         {
             if (!BotImage.gameObject.activeSelf)
             {
@@ -109,7 +154,7 @@ namespace StarSalvager
             BotImage.gameObject.transform.localScale = Vector3.one * scale;
         }
 
-        public void SetupHoveredCallback(Action<bool, int, int, RectTransform> onHoveredCallback)
+        /*public void SetupHoveredCallback(Action<bool, int, int, RectTransform> onHoveredCallback)
         {
             _onHoveredCallback = onHoveredCallback;
 
@@ -120,6 +165,9 @@ namespace StarSalvager
                 else
                     _onHoveredCallback?.Invoke(false, -1, -1, null);
             };
-        }
+        }*/
+
+        //====================================================================================================================//
+
     }
 }

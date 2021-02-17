@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.AI;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
@@ -12,18 +13,22 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
-        [SerializeField, Required, BoxGroup("Temporary")]
-        private List<SectorModularData> m_sectorRemoteData;
+        /*[SerializeField, Required, BoxGroup("Temporary")]
+        private List<SectorModularData> m_sectorRemoteData;*/
         
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
 
-        public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;
+        public RingRemoteDataScriptableObject RingRemoteData => _ringRemoteData;
+        [SerializeField, Required]
+        private RingRemoteDataScriptableObject _ringRemoteData;
+        
+        /*public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;*/
 
         [SerializeField, Required, BoxGroup("Temporary")]
         public int currentModularDataIndex = 0;
 
-        public int ModularDataCount => m_sectorRemoteData.Count;
+        /*public int ModularDataCount => m_sectorRemoteData.Count;*/
 
 
         public Sprite PatchSprite;

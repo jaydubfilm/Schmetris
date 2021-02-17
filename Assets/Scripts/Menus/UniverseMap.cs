@@ -19,27 +19,30 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.UI
 {
     public class UniverseMap : MonoBehaviour, IReset, IHasHintElement
     {
-        private enum ICON_TYPE
+        /*private enum ICON_TYPE
         {
             WAVE,
             RING_SUM,
             RING_MAX
-        }
+        }*/
 
         #region Properties
                 
-        [SerializeField, ReadOnly, BoxGroup("Map Stats Icon Prototyping")]
-        private bool PROTO_useSum = true;
-        [SerializeField, BoxGroup("Map Stats Icon Prototyping")]
-        private ICON_TYPE IconType = ICON_TYPE.RING_MAX;
+        /*[SerializeField, ReadOnly, BoxGroup("Map Stats Icon Prototyping")]
+        private bool PROTO_useSum = true;*/
+        /*[SerializeField, BoxGroup("Map Stats Icon Prototyping")]
+        private ICON_TYPE IconType = ICON_TYPE.RING_MAX;*/
         
 
-        [SerializeField, Required] private UniverseMapButton m_universeSectorButtonPrefab;
+        [FormerlySerializedAs("m_universeSectorButtonPrefab")] 
+        [SerializeField, Required] 
+        private UniverseMapButton universeSectorButtonPrefab;
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
@@ -61,11 +64,11 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
         
-        [SerializeField]
-        private List<UniverseMapButton> universeMapButtons;
+        //[SerializeField]
+        private UniverseMapButton[] _universeMapButtons;
 
-        [SerializeField]
-        private Image dottedLineImage;
+        [FormerlySerializedAs("dottedLineImage")] [SerializeField]
+        private Image dottedLineImagePrefab;
 
         private List<Image> _connectionLines;
 
@@ -111,7 +114,7 @@ namespace StarSalvager.UI
         
         public void Activate()
         {
-            if (PROTO_useSum)
+            /*if (PROTO_useSum)
             {
                 switch (IconType)
                 {
@@ -130,7 +133,7 @@ namespace StarSalvager.UI
                         throw new ArgumentOutOfRangeException();
                 }
                 
-            }
+            }*/
 
             DrawMap();
 
@@ -153,39 +156,31 @@ namespace StarSalvager.UI
         
         private void InitButtons()
         {
-            int curSector = 0;
-            int curWave = 0;
-            for (int i = 0; i < universeMapButtons.Count; i++)
+            void CreateButtonElement(in int index, in string titleOverride = "", in string subTitleOverride = "")
             {
-                if (i == 0)
-                {
-                    universeMapButtons[i].Text.text = "Base";
-                    universeMapButtons[i].TextBelow.text = string.Empty;
-                    
-                    _shipwreckButtonRectTransform = universeMapButtons[i].transform as RectTransform;
-                    continue;
-                }
+                _universeMapButtons[index] = Instantiate(universeSectorButtonPrefab, m_scrollRectArea);
+                _universeMapButtons[index].Init(index,
+                    string.IsNullOrEmpty(titleOverride) ? $"{index}" : titleOverride, subTitleOverride);
 
-                universeMapButtons[i].SectorNumber = curSector;
-                universeMapButtons[i].WaveNumber = curWave;
-                universeMapButtons[i].NodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(universeMapButtons[i].SectorNumber, universeMapButtons[i].WaveNumber);
-                universeMapButtons[i].Text.text = $"{curSector + 1}.{curWave + 1}";
-                universeMapButtons[i].TextBelow.text = string.Empty;
-                universeMapButtons[i].SetupHoveredCallback(WaveHovered);
-                if (curWave + 1 >= 5)
-                {
-                    curSector++;
-                    curWave = 0;
-                    if (FactoryManager.Instance.SectorRemoteData.Count == curSector)
-                    {
-                        Debug.Log("SECTOR NOT EXIST " + i);
-                        break;
-                    }
-                }
-                else
-                {
-                    curWave++;
-                }
+                _universeMapButtons[index].gameObject.name = $"{nameof(UniverseMapButton)}_[{index}]";
+
+                var sizeX = _universeMapButtons[index].transform.sizeDelta.x;
+                _universeMapButtons[index].transform.anchoredPosition += Vector2.right * (index * sizeX * 1.5f);
+            }
+            
+            var ring = FactoryManager.Instance.RingRemoteData;
+            var count = ring.GetNumberOfWaves();
+            
+            _universeMapButtons = new UniverseMapButton[count];
+
+            for (var i = 0; i < count; i++)
+            {
+                CreateButtonElement(i, i == 0 ? "Base" : string.Empty);
+
+                if (i != 0) 
+                    continue;
+                
+                _shipwreckButtonRectTransform = _universeMapButtons[i].transform;
             }
         }
         
@@ -193,89 +188,82 @@ namespace StarSalvager.UI
 
         private void DrawMap()
         {
-            for (int i = 0; i < universeMapButtons.Count; i++)
+            CenterToItem(_universeMapButtons[PlayerDataManager.GetCurrentNode()].transform);
+
+            for (var i = 0; i < _universeMapButtons.Length; i++)
             {
-                universeMapButtons[i].Button.image.color = Color.white;
-                universeMapButtons[i].Button.interactable = false;
-                universeMapButtons[i].BotImage.gameObject.SetActive(false);
-                universeMapButtons[i].ShortcutImage.gameObject.SetActive(false);
-            }
+                var currentMapButton = _universeMapButtons[i];
+                currentMapButton.Reset();
 
-            CenterToItem(universeMapButtons[PlayerDataManager.GetCurrentNode()].GetComponent<RectTransform>());
+                //FIXME Dotted line should be dependent on the completed state of a wave
+                if (i + 1 < _universeMapButtons.Length)
+                    DrawConnection(i, i + 1, true);
+                
+                //int curIndex = currentMapButton.NodeIndex;
+                
+                //FIXME Need to work on these nodes
+                //List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes;
 
-            for (int i = 0; i < universeMapButtons.Count; i++)
-            {
-                int curIndex = universeMapButtons[i].NodeIndex;
-                List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(i).childNodes;
-
-                for (int k = 0; k < childNodesAccessible.Count; k++)
+                /*for (int k = 0; k < childNodesAccessible.Count; k++)
                 {
-                    DrawConnection(curIndex, childNodesAccessible[k].nodeIndex, !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == curIndex)
+                    DrawConnection(curIndex, childNodesAccessible[k].nodeIndex, 
+                        !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == curIndex)
                         || !PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Any(n => n == childNodesAccessible[k].nodeIndex));
-                }
+                }*/
 
-                if (PlayerDataManager.GetWreckNodes().Contains(universeMapButtons[i].NodeIndex))
-                {
-                    universeMapButtons[i].ShortcutImage.gameObject.SetActive(true);
-                    universeMapButtons[i].NodeType = NodeType.Wreck;
-                }
-                else
-                {
-                    universeMapButtons[i].NodeType = NodeType.Level;
-                }
+                var isWreck = i != 0 && i % 3 == 0;//PlayerDataManager.GetWreckNodes().Contains(i);
+                
+                currentMapButton.SetWaveType(isWreck ? NodeType.Wreck : NodeType.Level);
+                currentMapButton.SetShortcutImageActive(isWreck);
 
-                if (curIndex == PlayerDataManager.GetCurrentNode())
+
+                if (i != PlayerDataManager.GetCurrentNode())
+                    continue;
+                
+                
+                
+                if (PlayerDataManager.GetWreckNodes().Contains(currentMapButton.NodeIndex))
                 {
-                    if (PlayerDataManager.GetWreckNodes().Contains(universeMapButtons[i].NodeIndex))
-                    {
-                        universeMapButtons[i].Button.interactable = true;
-                    }
-                    
-                    for (int k = 0; k < universeMapButtons.Count; k++)
-                    {
-                        if (childNodesAccessible.Any(n => n.nodeIndex == k))
-                        {
-                            universeMapButtons[k].Button.interactable = true;
-                        }
-                    }
+                    currentMapButton.SetButtonProperties(true, Color.white);
                 }
+                
+                currentMapButton.SetButtonInteractable(true);
+                
+                /*for (int k = 0; k < universeMapButtons.Count; k++)
+                {
+                    if (childNodesAccessible.Any(n => n.nodeIndex == k))
+                    {
+                        universeMapButtons[k].Button.interactable = true;
+                    }
+                }*/
             }
         }
 
-        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, bool colourCyan = false)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine)
         {
-            GameObject newLine;
+            DrawConnection(connectionStart, connectionEnd, dottedLine, Color.white);
+        }
 
-            if (dottedLine)
-            {
-                newLine = Instantiate(dottedLineImage).gameObject;
-            }
-            else
-            {
-                newLine = new GameObject();
-            }
+        private void DrawConnection(in int connectionStart, in int connectionEnd, in bool dottedLine, in Color color)
+        {
+            var startPosition = _universeMapButtons[connectionStart].transform.position;
+            var endPosition = _universeMapButtons[connectionEnd].transform.position;
+            
+            var newLineImage = dottedLine ? Instantiate(dottedLineImagePrefab) : new GameObject().AddComponent<Image>();
+            newLineImage.name = $"Line_[{connectionStart}][{connectionEnd}]";
+            newLineImage.color = color;
 
-            newLine.transform.parent = m_scrollRectArea.transform;
-            newLine.transform.SetAsFirstSibling();
 
-            if (!dottedLine)
-            {
-                newLine.AddComponent<Image>();
-            }
+            var newLineTransform = (RectTransform)newLineImage.transform;
+            
+            newLineTransform.SetParent(m_scrollRectArea.transform);
+            newLineTransform.SetAsFirstSibling();
+            
+            newLineTransform.position = (startPosition + endPosition) / 2;
 
-            Image newLineImage = newLine.GetComponent<Image>();
+            newLineTransform.sizeDelta = new Vector2(Vector2.Distance(startPosition, endPosition), 5);
 
-            newLineImage.transform.position = (universeMapButtons[connectionStart].transform.position + universeMapButtons[connectionEnd].transform.position) / 2;
-
-            if (colourCyan)
-            {
-                newLineImage.color = Color.cyan;
-            }
-
-            RectTransform newLineRectTransform = newLine.GetComponent<RectTransform>();
-            newLineRectTransform.sizeDelta = new Vector2(Vector2.Distance(universeMapButtons[connectionStart].transform.position, universeMapButtons[connectionEnd].transform.position), 5);
-
-            newLineRectTransform.transform.right = (universeMapButtons[connectionStart].transform.position - universeMapButtons[connectionEnd].transform.position).normalized;
+            newLineTransform.right = (startPosition - endPosition).normalized;
 
             _connectionLines.Add(newLineImage);
         }
@@ -295,7 +283,7 @@ namespace StarSalvager.UI
         //Ring Sums
         //============================================================================================================//
 
-        #region Ring Sums
+        /*#region Ring Sums
         
         private void CalculateRingSum()
         {
@@ -362,12 +350,12 @@ namespace StarSalvager.UI
             }
         }
 
-        #endregion //Ring Sums
+        #endregion //Ring Sums*/
 
         //Hover Preview UI
         //====================================================================================================================//
 
-        #region Hover Preview UI
+        /*#region Hover Preview UI
 
         private void WaveHovered(bool hovered, int sector, int wave, RectTransform rectTransform)
         {
@@ -404,7 +392,7 @@ namespace StarSalvager.UI
             }
 
             //Display
-            StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));*/
+            StartCoroutine(ResizeRepositionCostWindowCoroutine(rectTransform));#1#
         }
 
         private IEnumerable<TEST_SpriteScale> GetSpriteTitleObjects(Dictionary<string, int> enemies, Dictionary<BIT_TYPE, float> bits)
@@ -469,7 +457,7 @@ namespace StarSalvager.UI
 
             //--------------------------------------------------------------------------------------------------------//
 
-            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + sizeDelta.x / 2f);*/
+            windowTransform.localPosition += Vector3.left * (buttonTransform.sizeDelta.x / 2f + sizeDelta.x / 2f);#1#
 
             windowTransform.anchoredPosition += Vector2.right * 10f;
         }
@@ -493,11 +481,11 @@ namespace StarSalvager.UI
 
 
             return outString;
-        }
+        }*/
 
         //====================================================================================================================//
 
-        private static Dictionary<BIT_TYPE, int> CountResources(List<BitData> blockDatas)
+        /*private static Dictionary<BIT_TYPE, int> CountResources(List<BitData> blockDatas)
         {
             if (blockDatas.IsNullOrEmpty())
                 return null;
@@ -520,6 +508,6 @@ namespace StarSalvager.UI
 
 
             return outValue;
-        }
+        }*/
     }
 }

@@ -43,18 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d5f8cb99e5ee7488b354fe3cdae687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sectorRemoteData:
-  - SectorData:
-    - {fileID: 11400000, guid: 73bd9b43e95a34f2a93d1b93c463cbd2, type: 2}
-    - {fileID: 11400000, guid: 02d3c4c89735846c1bde1192765756e8, type: 2}
-    - {fileID: 11400000, guid: bdc91e174659e4f438f323f1e54aabd0, type: 2}
-    - {fileID: 11400000, guid: 2ff32c882c6ac4a57830def969facfe2, type: 2}
-    - {fileID: 11400000, guid: 20e73ccfc2e59483ebb4fea26b363cb9, type: 2}
-    - {fileID: 11400000, guid: ac596de1af6b6c54883d5b2fd72b5140, type: 2}
-  - SectorData:
-    - {fileID: 11400000, guid: 7ac9df6299ec27246841800d65fc57ec, type: 2}
-    - {fileID: 11400000, guid: 63cd5494bf32a7b4d9e634d59d26d498, type: 2}
-    - {fileID: 11400000, guid: a717bd6db04690d488c33a7ed054e8f2, type: 2}
+  _ringRemoteData: {fileID: 11400000, guid: 3f19d0b37133e0f4a92ede7a9d12c77c, type: 2}
   currentModularDataIndex: 0
   PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}
@@ -92,8 +81,6 @@ MonoBehaviour:
   cratePrefab: {fileID: 2338614340111776972, guid: a80aba27d8b8a524691d44cdd28925bf,
     type: 3}
   mineRemote: {fileID: 11400000, guid: 0ac1c204e08248e4581672d7e3b81307, type: 2}
-  minePrefab: {fileID: 4611369530616709383, guid: 8f21901ce996a114184c54c9feadf014,
-    type: 3}
   blackHoleRemote: {fileID: 11400000, guid: b4fda01c7d6d38a4992a294cc584ae20, type: 2}
   blackHolePrefab: {fileID: 4611369530616709383, guid: b9704b1ea0117dd44ba5167ae1970ad1,
     type: 3}
