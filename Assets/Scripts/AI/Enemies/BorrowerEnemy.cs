@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
-using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
@@ -26,6 +18,8 @@ namespace StarSalvager.AI
         public override bool SpawnAboveScreen => true;
 
         //====================================================================================================================//
+
+        public Bit CarryingBit => _carryingBit;
         
         private float _anticipationTime;
         private Vector2 _playerLocation;
@@ -240,6 +234,12 @@ namespace StarSalvager.AI
                 EnemyManager.SetBorrowerTarget(this, test);
                 _attachTarget = test;
             }
+
+            if (EnemyManager.IsBitCarried(_attachTarget))
+            {
+                _attachTarget = null;
+                return;
+            }
             
             //Fly towards a specific Bit on the bot
             var currentPosition = transform.position;
@@ -277,6 +277,7 @@ namespace StarSalvager.AI
             //Set Bit Parent to this object & Disable the collider
             bit.transform.SetParent(transform, false);
             bit.transform.localPosition = Vector3.down;
+            bit.transform.localRotation = Quaternion.identity;
             
             bit.SetColliderActive(false);
             bit.SetAttached(true);
@@ -289,8 +290,22 @@ namespace StarSalvager.AI
 
         private void FleeState()
         {
+            bool IsOffScreen()
+            {
+                var dif = 3 * Constants.gridCellSize;
+                var screenRect = CameraController.VisibleCameraRect;
+                var yPos = _carryingBit.transform.position.y;
+
+                if (yPos <= screenRect.yMin - dif)
+                    return true;
+                
+                return yPos >= screenRect.yMax + dif;
+            }
+
+            
+            
             //If off screen, destroy bit, then set to pursue state
-            if (!CameraController.IsPointInCameraRect(_carryingBit.transform.position))
+            if (IsOffScreen())
             {
                 Recycler.Recycle<Bit>(_carryingBit);
                 _carryingBit = null;
