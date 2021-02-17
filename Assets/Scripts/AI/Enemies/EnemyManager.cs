@@ -480,9 +480,9 @@ namespace StarSalvager
 
             foreach (var borrowerTarget in _borrowerTargets)
             {
-                var value = borrowerTarget.Value;
+                /*var value = borrowerTarget.Value;
                 if (value == null || !value.Equals(targetBit))
-                    continue;
+                    continue;*/
 
                 var carryTarget = borrowerTarget.Key.CarryingBit;
 

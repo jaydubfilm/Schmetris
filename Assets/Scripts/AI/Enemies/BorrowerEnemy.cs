@@ -52,6 +52,11 @@ namespace StarSalvager.AI
                 return;
             
             SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
+            
+            //This is important to change the target, as attaching may have changed the intended target
+            if(Attached)
+                _attachTarget = AttachedBot.GetClosestAttachable(Coordinate, 1f) as Bit;
+
         }
 
         /*public override void ChangeHealth(float amount)
@@ -152,6 +157,7 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     break;
                 case STATE.IDLE:
+                    EnemyManager.SetBorrowerTarget(this, null);
                     break;
                 case STATE.PURSUE:
                     //Try to Find a Bit on the bot
@@ -257,7 +263,8 @@ namespace StarSalvager.AI
         private void AnticipationState()
         {
             //After wait time, move to attack state
-            if (_anticipationTime > 0)
+            //If the Bit fell off the Bot, then we can attempt to steal it
+            if (_anticipationTime > 0 && _attachTarget.Attached)
             {
                 _anticipationTime -= Time.deltaTime;
                 return;
@@ -268,11 +275,23 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
-            if (!(Target is Bit bit))
+            Bit bit;
+            //If we've switched from anticipation but the Target is null (Which means we're no longer attached to the bot)
+            if (previousState == STATE.ANTICIPATION && Target == null && _attachTarget != null)
+            {
+                bit = _attachTarget;
+            }
+            else if (Target is Bit target)
+            {
+                bit = target;
+            }
+            else
+            {
                 return;
+            }
                 
-            //Detach Bit from Bot
-            AttachedBot.ForceDetach(bit);
+            //Detach Bit from Bot, in the situation where we've fallen off bot, we have to check for null
+            AttachedBot?.ForceDetach(bit);
             
             //Set Bit Parent to this object & Disable the collider
             bit.transform.SetParent(transform, false);
@@ -294,12 +313,16 @@ namespace StarSalvager.AI
             {
                 var dif = 3 * Constants.gridCellSize;
                 var screenRect = CameraController.VisibleCameraRect;
-                var yPos = _carryingBit.transform.position.y;
+                var pos = _carryingBit.transform.position;
 
-                if (yPos <= screenRect.yMin - dif)
+                if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
                     return true;
                 
-                return yPos >= screenRect.yMax + dif;
+                if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
+                    return true;
+                    
+                
+                return false;
             }
 
             
