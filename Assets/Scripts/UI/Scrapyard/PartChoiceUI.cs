@@ -53,7 +53,8 @@ namespace StarSalvager.UI.Scrapyard
         public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
         {
             _partOptionType = partOptionType;
-            
+
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
             var partProfiles = FactoryManager.Instance.PartsProfileData;
             var partRemoteData = FactoryManager.Instance.PartsRemoteData;
             var bitProfiles = FactoryManager.Instance.BitProfileData;
@@ -82,7 +83,7 @@ namespace StarSalvager.UI.Scrapyard
             
             partsOnBot.AddRange(partsInStorage);
 
-            PartAttachableFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
+            partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
 
             if (_partOptions[0] == _partOptions[1])
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
