@@ -680,6 +680,8 @@ namespace StarSalvager
             }
             PlayerDataManager.SetCurrentNode(curNodeIndex);*/
 
+            PlayerDataManager.SetCurrentNode(Globals.CurrentWave + 1);
+
             for (int i = 0; i < m_bots.Count; i++)
             {
                 m_bots[i].SetColliderActive(false);

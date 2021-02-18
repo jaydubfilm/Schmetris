@@ -20,6 +20,7 @@ namespace StarSalvager
 {
     public enum NodeType
     {
+        Base,
         Level,
         Wreck
     }
@@ -93,7 +94,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void Init(in int index, in string title, in string subTitle = "")
+        public void Init(in int index,in int waveIndex, in string title, in string subTitle = "")
         {
             if (!transform)
                 transform = gameObject.transform as RectTransform;
@@ -101,7 +102,7 @@ namespace StarSalvager
             BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
 
             nodeIndex = index;
-            waveNumber = index;
+            waveNumber = waveIndex;
             Text.text = title;
             TextBelow.text = subTitle;
         }

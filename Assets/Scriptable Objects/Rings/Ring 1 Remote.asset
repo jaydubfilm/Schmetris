@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 430b8aee2ba095241bd459763a953c42, type: 3}
+  m_Name: Ring 1 Remote
+  m_EditorClassIdentifier: 
+  WaveRemoteData:
+  - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
+  - {fileID: 11400000, guid: 9a4d60bebe7b14a30beaf0d59d5e5295, type: 2}
+  - {fileID: 11400000, guid: c5c51a53021694f11a3fcfa5f9d619ab, type: 2}
+  - {fileID: 11400000, guid: f29cbff2aaa594fa59f7057df5e69199, type: 2}
+  - {fileID: 11400000, guid: bc4e210b66a5e4c6c8311e6c55f771c3, type: 2}
+  - {fileID: 11400000, guid: 6a5d371aa1eaa42029aef22ca495657a, type: 2}
+  - {fileID: 11400000, guid: 39a89c637e12949c893ec2f6425b9f88, type: 2}
+  - {fileID: 11400000, guid: d9767b2f5eabd4c5a825753a7ced31b7, type: 2}
+  - {fileID: 11400000, guid: 3528ce95f107a4a778a46b4ddff40b57, type: 2}

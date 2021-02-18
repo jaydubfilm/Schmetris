@@ -156,10 +156,10 @@ namespace StarSalvager.UI
         
         private void InitButtons()
         {
-            void CreateButtonElement(in int index, in string titleOverride = "", in string subTitleOverride = "")
+            void CreateButtonElement(in int index,in int waveIndex, in string titleOverride = "", in string subTitleOverride = "")
             {
                 _universeMapButtons[index] = Instantiate(universeSectorButtonPrefab, m_scrollRectArea);
-                _universeMapButtons[index].Init(index,
+                _universeMapButtons[index].Init(index, waveIndex,
                     string.IsNullOrEmpty(titleOverride) ? $"{index}" : titleOverride, subTitleOverride);
 
                 _universeMapButtons[index].gameObject.name = $"{nameof(UniverseMapButton)}_[{index}]";
@@ -169,17 +169,16 @@ namespace StarSalvager.UI
             }
             
             var ring = FactoryManager.Instance.RingRemoteData;
-            var count = ring.GetNumberOfWaves();
+            var count = ring.GetNumberOfWaves() + 1;
             
             _universeMapButtons = new UniverseMapButton[count];
+            
+            //Create Base Button
+            CreateButtonElement(0, -1, "Base");
 
-            for (var i = 0; i < count; i++)
+            for (var i = 1; i < count; i++)
             {
-                CreateButtonElement(i, i == 0 ? "Base" : string.Empty);
-
-                if (i != 0) 
-                    continue;
-                
+                CreateButtonElement(i, i - 1);
                 _shipwreckButtonRectTransform = _universeMapButtons[i].transform;
             }
         }
@@ -188,12 +187,24 @@ namespace StarSalvager.UI
 
         private void DrawMap()
         {
-            CenterToItem(_universeMapButtons[PlayerDataManager.GetCurrentNode()].transform);
+            var playerNodeLocation = PlayerDataManager.GetCurrentNode();
+            
+            CenterToItem(_universeMapButtons[playerNodeLocation].transform);
+            _universeMapButtons[playerNodeLocation].SetWaveType(NodeType.Base);
+
+
+            foreach (var universeMapButton in _universeMapButtons)
+            {
+                universeMapButton.Reset();
+            }
+            
+            _universeMapButtons[playerNodeLocation].SetBotImageActive(true);
+
 
             for (var i = 0; i < _universeMapButtons.Length; i++)
             {
                 var currentMapButton = _universeMapButtons[i];
-                currentMapButton.Reset();
+                
 
                 //FIXME Dotted line should be dependent on the completed state of a wave
                 if (i + 1 < _universeMapButtons.Length)
@@ -217,17 +228,18 @@ namespace StarSalvager.UI
                 currentMapButton.SetShortcutImageActive(isWreck);
 
 
-                if (i != PlayerDataManager.GetCurrentNode())
+                if (i != playerNodeLocation)
                     continue;
                 
-                
-                
-                if (PlayerDataManager.GetWreckNodes().Contains(currentMapButton.NodeIndex))
+                if (isWreck)
                 {
-                    currentMapButton.SetButtonProperties(true, Color.white);
+                    currentMapButton.SetButtonInteractable(true);
                 }
+
+                if (i + 1 >= _universeMapButtons.Length)
+                    continue;
                 
-                currentMapButton.SetButtonInteractable(true);
+                _universeMapButtons[i + 1].SetButtonInteractable(true);
                 
                 /*for (int k = 0; k < universeMapButtons.Count; k++)
                 {
