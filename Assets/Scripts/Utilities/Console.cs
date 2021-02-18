@@ -974,7 +974,8 @@ namespace StarSalvager.Utilities
 
         private void ParseUnlockCmd(string[] split)
         {
-            switch (split[1].ToLower())
+            throw new NotImplementedException();
+            /*switch (split[1].ToLower())
             {
                 case "sectorwave":
                     if (!int.TryParse(split[2], out var sector))
@@ -993,7 +994,7 @@ namespace StarSalvager.Utilities
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
-            }
+            }*/
 
         }
 

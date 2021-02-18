@@ -461,11 +461,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9147ab86766b22049973a3da4ee7a776, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodeType: 0
+  nodeIndex: 0
+  Button: {fileID: 404087361540810058}
   Text: {fileID: 404087359750205670}
   TextBelow: {fileID: 4393020789772223093}
+  waveNumber: -1
   BotImage: {fileID: 5674789532329536262}
   ShortcutImage: {fileID: 5207803694595769500}
-  PointOfInterestImage: {fileID: 2612776969145641362}
 --- !u!1 &4066580884299684642
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5037211035798040682
 RectTransform:
   m_ObjectHideFlags: 0
@@ -631,7 +634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &541519309221566569
 RectTransform:
   m_ObjectHideFlags: 0

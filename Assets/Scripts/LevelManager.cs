@@ -44,9 +44,10 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
+        //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
-        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
+        public WaveRemoteDataScriptableObject CurrentWaveData =>
+            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRing].GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -515,7 +516,8 @@ namespace StarSalvager
             InputManager.Instance.InitInput();
             InputManager.Instance.LockRotation = true;
 
-            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotInLevel.GetBlockDatas());
+            //FIXME
+            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
             
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotInLevel.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
@@ -600,7 +602,7 @@ namespace StarSalvager
             {
 
             };
-            string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            string levelStartString = $"{Globals.CurrentWave}";
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
         }
         
@@ -647,11 +649,11 @@ namespace StarSalvager
             //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
 
-            WaveEndSummaryData.CompletedSector = Globals.CurrentSector;
+            WaveEndSummaryData.CompletedSector = 0;
             WaveEndSummaryData.CompletedWave = Globals.CurrentWave;
-            WaveEndSummaryData.WaveEndTitle = $"Sector {Globals.CurrentSector + 1}.{Globals.CurrentWave + 1} Complete";
+            WaveEndSummaryData.WaveEndTitle = $"Wave {Globals.CurrentWave + 1} Complete";
 
-            int progressionSector = Globals.CurrentSector;
+            //int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
 
             endWaveMessage = "Wave Complete!";
@@ -669,12 +671,16 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            //FIXME
+            Debug.Log("WARNING The progress for bot must be saved here");
+            /*int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
             if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
             {
                 PlayerDataManager.AddCompletedNode(curNodeIndex);
             }
-            PlayerDataManager.SetCurrentNode(curNodeIndex);
+            PlayerDataManager.SetCurrentNode(curNodeIndex);*/
+
+            PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
 
             for (int i = 0; i < m_bots.Count; i++)
             {
@@ -799,7 +805,7 @@ namespace StarSalvager
         public void RestartLevel()
         {
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
 
             ScreenFade.Fade(() =>
@@ -842,7 +848,7 @@ namespace StarSalvager
                 {AnalyticsManager.DeathCause, deathMethod},
                 {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
             };
-            string levelLostString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            string levelLostString = $"Wave {Globals.CurrentWave + 1}";
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost,
                 eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
 
@@ -855,7 +861,7 @@ namespace StarSalvager
             m_runLostState = true;
             //GameTimer.SetPaused(false);
 
-            Globals.CurrentSector = 0;
+            //Globals.CurrentSector = 0;
             Globals.CurrentWave = 0;
 
         OutroScene.gameObject.SetActive(true);
@@ -895,7 +901,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
         }
 
         public void OnPause()
@@ -912,10 +918,10 @@ namespace StarSalvager
 
         public void ProcessScrapyardUsageBeginAnalytics()
         {
-            Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
+            /*Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
             {
                 {"Sector Number", Globals.CurrentSector}
-            };
+            };*/
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
         }
 

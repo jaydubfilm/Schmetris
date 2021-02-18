@@ -55,18 +55,12 @@ namespace StarSalvager.Utilities.Saving
         [JsonProperty]
         private List<string> _dontShowAgainKeys = new List<string>();
 
-        [JsonIgnore]
+        /*[JsonIgnore]
         public LevelNodeTree LevelRingNodeTree = new LevelNodeTree();
         [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
-        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
-        {
+        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>();*/
 
-        };
-
-        public List<int> WreckNodes = new List<int>()
-        {
-
-        };
+        public List<int> WreckNodes = new List<int>();
 
         public List<int> PlayerPreviouslyCompletedNodes = new List<int>()
         {
@@ -75,7 +69,7 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
+        /*public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
         {
             if (levelRingConnectionsJson != null)
             {
@@ -90,7 +84,7 @@ namespace StarSalvager.Utilities.Saving
             }
 
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -126,9 +120,10 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        public bool CheckIfCompleted(int sector, int waveAt)
+        public bool CheckIfCompleted(in int waveIndex)
         {
-            for (int i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
+            Debug.LogError("Checks not yet setup");
+            /*for (var i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
             {
                 (int, int) curSectorWaveTuple = LevelRingNodeTree.ConvertNodeIndexIntoSectorWave(PlayerPreviouslyCompletedNodes[i]);
 
@@ -138,6 +133,7 @@ namespace StarSalvager.Utilities.Saving
                 }
             }
 
+            return false;*/
             return false;
         }
 

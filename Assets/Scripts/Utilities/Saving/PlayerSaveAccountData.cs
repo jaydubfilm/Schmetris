@@ -65,7 +65,7 @@ namespace StarSalvager.Values
             
         };
 
-        //This system likely should be reworked. These vector2ints define the connections between nodes on the universe map, where the 1st value is the node that can be reached from the second node.
+        /*//This system likely should be reworked. These vector2ints define the connections between nodes on the universe map, where the 1st value is the node that can be reached from the second node.
         //Example: (2,0) represents you being able to go from node 0 to node 2
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
@@ -108,7 +108,7 @@ namespace StarSalvager.Values
             11,
             16,
             21,
-        };
+        };*/
 
 
         public List<Vector2Int> _botLayout = new List<Vector2Int>()
@@ -168,7 +168,7 @@ namespace StarSalvager.Values
                 runStarted = false,
             };
 
-            data.SetupMap(LevelRingConnectionsJson, WreckNodes);
+            //data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
             ExperienceAtRunBeginning = Experience;
             CoreDeathsAtRunBeginning = CoreDeaths;

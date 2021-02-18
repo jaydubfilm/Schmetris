@@ -309,9 +309,9 @@ namespace StarSalvager.UI
 
         public void ToggleBetweenWavesUIActive(bool active)
         {
-            int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            //int curIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentWave);
 
-            if (PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex) == null)
+            /*if (PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex) == null)
             {
                 betweenWavesContinueButton.gameObject.SetActive(false);
             }
@@ -319,7 +319,11 @@ namespace StarSalvager.UI
             {
                 List<LevelNode> childNodesAccessible = PlayerDataManager.GetLevelRingNodeTree().TryFindNode(curIndex).childNodes;
                 betweenWavesContinueButton.gameObject.SetActive(childNodesAccessible.Count > 0);
-            }
+            }*/
+
+            Debug.Log("WARNING Checks for next waves need to be added here");
+            
+            betweenWavesContinueButton.gameObject.SetActive(true);
 
             m_betweenWavesUI.SetActive(active);
         }
