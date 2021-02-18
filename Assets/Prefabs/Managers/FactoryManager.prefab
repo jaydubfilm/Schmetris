@@ -43,7 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d5f8cb99e5ee7488b354fe3cdae687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ringRemoteData: {fileID: 11400000, guid: 3f19d0b37133e0f4a92ede7a9d12c77c, type: 2}
+  _ringRemoteDatas:
+  - {fileID: 11400000, guid: 3f19d0b37133e0f4a92ede7a9d12c77c, type: 2}
+  - {fileID: 11400000, guid: 0bf5a9f7a4694f04a8099ce6e67ce682, type: 2}
+  - {fileID: 11400000, guid: cd86d3fc079b9c8478cd0ce365f0e036, type: 2}
   currentModularDataIndex: 0
   PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}

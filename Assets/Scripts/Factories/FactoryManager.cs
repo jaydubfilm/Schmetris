@@ -19,9 +19,9 @@ namespace StarSalvager.Factories
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
 
-        public RingRemoteDataScriptableObject RingRemoteData => _ringRemoteData;
+        public RingRemoteDataScriptableObject[] RingRemoteDatas => _ringRemoteDatas;
         [SerializeField, Required]
-        private RingRemoteDataScriptableObject _ringRemoteData;
+        private RingRemoteDataScriptableObject[] _ringRemoteDatas;
         
         /*public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;*/
 

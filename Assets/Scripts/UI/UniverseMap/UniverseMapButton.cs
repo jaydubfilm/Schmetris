@@ -14,6 +14,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using StarSalvager.Utilities.Saving;
 using System.Linq;
+using StarSalvager.AI;
+using StarSalvager.UI;
 using UnityEngine.Serialization;
 
 namespace StarSalvager
@@ -28,6 +30,8 @@ namespace StarSalvager
     [RequireComponent(typeof(Button)), RequireComponent(typeof(PointerEvents))]
     public class UniverseMapButton : MonoBehaviour
     {
+        private static UniverseMap _universeMap;
+        
         public NodeType NodeType => nodeType;
         public int NodeIndex => nodeIndex;
         
@@ -40,7 +44,9 @@ namespace StarSalvager
         [SerializeField] private TMP_Text Text;
         [SerializeField] private TMP_Text TextBelow;
 
-        [SerializeField] private int waveNumber = -1;
+        [SerializeField] private int ringIndex = -1;
+        [SerializeField] private int waveIndex = -1;
+        
         [SerializeField] private Image BotImage;
         [SerializeField] private Image ShortcutImage;
         //[SerializeField] private Image PointOfInterestImage;
@@ -61,9 +67,16 @@ namespace StarSalvager
             {
                 switch (nodeType)
                 {
+                    case NodeType.Base:
+                        PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
+                        ScreenFade.Fade(() =>
+                        {
+                            _universeMap.ForceDrawMap();
+                        });
+                        break;
                     case NodeType.Level:
-                        //Globals.CurrentSector = SectorNumber;
-                        Globals.CurrentWave = waveNumber;
+                        Globals.CurrentRing = ringIndex;
+                        Globals.CurrentWave = waveIndex;
 
                         ScreenFade.Fade(() =>
                         {
@@ -94,17 +107,57 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void Init(in int index,in int waveIndex, in string title, in string subTitle = "")
+        public void Init(in int nodeIndex, in int ringIndex, in NodeData nodeData)
         {
+
+            if (!_universeMap)
+                _universeMap = FindObjectOfType<UniverseMap>();
+            
             if (!transform)
                 transform = gameObject.transform as RectTransform;
             
             BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
 
-            nodeIndex = index;
-            waveNumber = waveIndex;
+            this.nodeIndex = nodeIndex;
+
+            SetWaveIndex(ringIndex, nodeData.waveIndex);
+
+            nodeType = nodeData.NodeType;
+
+
+            SetShortcutImageActive(NodeType == NodeType.Wreck);
+            
+            string title;
+            switch (NodeType)
+            {
+                case NodeType.Base:
+                    title = "Base";
+                    break;
+                case NodeType.Level:
+                    title = $"{ringIndex + 1}.{waveIndex + 1}";
+                    break;
+                case NodeType.Wreck:
+                    title = "Wreck";
+                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            SetTitles(title, string.Empty);
+
+        }
+
+        public void SetTitles(in string title, in string subTitle)
+        {
             Text.text = title;
             TextBelow.text = subTitle;
+        }
+
+        public void SetWaveIndex(in int ringIndex, in int waveIndex)
+        {
+            this.ringIndex = ringIndex;
+            this.waveIndex = waveIndex;
         }
 
         public void SetButtonProperties(in bool buttonInteractable, in Color color)
@@ -131,13 +184,22 @@ namespace StarSalvager
             ShortcutImage.gameObject.SetActive(state);
         }
 
-        public void SetWaveType(in NodeType nodeType)
+        /*public void SetWaveType(in NodeType nodeType, in int waveIndex)
         {
             this.nodeType = nodeType;
-        }
+            switch (nodeType)
+            {
+                case NodeType.Level when waveIndex < 0:
+                    throw new ArgumentException("Missing the wave number for level");
+                case NodeType.Level:
+                    waveNumber = waveIndex;
+                    break;
+            }
+        }*/
 
         public void Reset()
         {
+            SetTitles(string.Empty, string.Empty);
             SetButtonProperties(false, Color.white);
             SetBotImageActive(false);
             SetShortcutImageActive(false);

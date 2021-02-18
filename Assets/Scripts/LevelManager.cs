@@ -47,7 +47,7 @@ namespace StarSalvager
         //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
         public WaveRemoteDataScriptableObject CurrentWaveData =>
-            FactoryManager.Instance.RingRemoteData.GetRemoteData(Globals.CurrentWave);
+            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRing].GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -680,7 +680,7 @@ namespace StarSalvager
             }
             PlayerDataManager.SetCurrentNode(curNodeIndex);*/
 
-            PlayerDataManager.SetCurrentNode(Globals.CurrentWave + 1);
+            PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
 
             for (int i = 0; i < m_bots.Count; i++)
             {
