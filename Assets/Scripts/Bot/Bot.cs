@@ -33,7 +33,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds, IHealth
+    public class Bot : MonoBehaviour,IBot, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds, IHealth
     {
         private readonly struct ShiftData
         {

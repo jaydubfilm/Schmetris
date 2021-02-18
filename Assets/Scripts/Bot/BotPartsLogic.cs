@@ -1197,6 +1197,7 @@ namespace StarSalvager
 
             var decoyDroneHealth = Globals.DecoyDroneHealth;
             
+            //FIXME This needs to be moved to a factory
             bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity).GetComponent<DecoyDrone>();
             bot.DecoyDrone.Init(bot, 10f);
             bot.DecoyDrone.SetupHealthValues(decoyDroneHealth,decoyDroneHealth);

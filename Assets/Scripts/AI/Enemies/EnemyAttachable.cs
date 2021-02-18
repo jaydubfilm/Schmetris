@@ -53,7 +53,7 @@ namespace StarSalvager.AI
         
         private EnemyDecoy _enemyDecoy;
 
-        protected Bot AttachedBot;
+        protected IBot AttachedBot;
         protected IAttachable Target;
         private Vector2Int _targetCoordinate;
         
@@ -166,7 +166,7 @@ namespace StarSalvager.AI
             if(Attached)
                 return;
 
-            var bot = gameObject.GetComponent<Bot>();
+            var bot = gameObject.GetComponent<IBot>();
 
             if (bot.Rotating)
             {
@@ -371,7 +371,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0)
                 return;
 
-            if (AttachedBot)
+            if (AttachedBot != null)
             {
                 AttachedBot.ForceDetach(this);
                 AttachedBot = null;
