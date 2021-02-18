@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 430b8aee2ba095241bd459763a953c42, type: 3}
-  m_Name: Ring 3 Remote
+  m_Name: Ring 5 Remote
   m_EditorClassIdentifier: 
-  wreckFrequency: 3
+  wreckFrequency: 5
   WaveRemoteData:
   - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
   - {fileID: 11400000, guid: 9a4d60bebe7b14a30beaf0d59d5e5295, type: 2}

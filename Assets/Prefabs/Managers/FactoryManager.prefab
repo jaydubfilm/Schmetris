@@ -47,6 +47,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f19d0b37133e0f4a92ede7a9d12c77c, type: 2}
   - {fileID: 11400000, guid: 0bf5a9f7a4694f04a8099ce6e67ce682, type: 2}
   - {fileID: 11400000, guid: cd86d3fc079b9c8478cd0ce365f0e036, type: 2}
+  - {fileID: 11400000, guid: 12a369d52e25b734e8a15bf1940609f0, type: 2}
+  - {fileID: 11400000, guid: 2b59d33b3dfbb354380e9c5d656b1dcb, type: 2}
   currentModularDataIndex: 0
   PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}

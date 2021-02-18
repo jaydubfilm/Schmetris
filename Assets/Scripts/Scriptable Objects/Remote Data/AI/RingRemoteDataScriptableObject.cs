@@ -34,7 +34,7 @@ namespace StarSalvager.AI
         public int GetNodeCount()
         {
             var waves = GetNumberOfWaves();
-            var wrecks = Mathf.FloorToInt((float)waves / (wreckFrequency - 1));
+            var wrecks = Mathf.FloorToInt((float)waves / (wreckFrequency));
                 
             //1 represents the base the player starts at
             return 1 + waves + wrecks;
@@ -59,7 +59,7 @@ namespace StarSalvager.AI
                     continue;
                 }
 
-                if (i % wreckFrequency == 0)
+                if (i % (wreckFrequency + 1) == 0)
                 {
                     outList.Add(new NodeData
                     {
