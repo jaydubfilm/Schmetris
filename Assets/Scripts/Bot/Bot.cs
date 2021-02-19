@@ -33,7 +33,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     [RequireComponent(typeof(BotPartsLogic))]
-    public class Bot : MonoBehaviour,IBot, ICustomRecycle, IRecycled, ICanBeHit, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds, IHealth
+    public class Bot : BotBase, ICustomRecycle, IRecycled, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
     {
         private readonly struct ShiftData
         {
@@ -90,11 +90,6 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public List<IAttachable> AttachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
-
-        [SerializeField, ReadOnly, Space(10f), ShowInInspector]
-        private List<IAttachable> _attachedBlocks;
-
         //Input Manager variables - -1.0f for left, 0 for nothing, 1.0f for right
         private float m_currentInput;
         private float m_distanceHorizontal = 0.0f;
@@ -132,7 +127,7 @@ namespace StarSalvager
         private Vector2 targetPosition;
         private float _currentInput;
 
-        public bool Rotating => _rotating;
+        public override bool Rotating => _rotating;
         public ROTATION MostRecentRotate;
 
         private bool _rotating;
@@ -161,31 +156,6 @@ namespace StarSalvager
             }
         }
         private BotPartsLogic _botPartsLogic;
-
-        public Collider2D Collider => CompositeCollider2D;
-        private CompositeCollider2D CompositeCollider2D
-        {
-            get
-            {
-                if (!_compositeCollider2D)
-                    _compositeCollider2D = GetComponent<CompositeCollider2D>();
-
-                return _compositeCollider2D;
-            }
-        }
-        private CompositeCollider2D _compositeCollider2D;
-
-        private new Rigidbody2D rigidbody
-        {
-            get
-            {
-                if (!_rigidbody)
-                    _rigidbody = GetComponent<Rigidbody2D>();
-
-                return _rigidbody;
-            }
-        }
-        private Rigidbody2D _rigidbody;
 
         public new Transform transform
         {
@@ -221,22 +191,18 @@ namespace StarSalvager
         //IHealth Test
         //====================================================================================================================//
 
-        public float StartingHealth { get; private set; }
-        public float CurrentHealth { get;  private set; }
-        public void SetupHealthValues(float startingHealth, float currentHealth)
+        public override void SetupHealthValues(float startingHealth, float currentHealth)
         {
-            CurrentHealth = currentHealth;
-            StartingHealth = startingHealth;
+            base.SetupHealthValues(startingHealth, currentHealth);
 
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
         }
 
-        public void ChangeHealth(float amount)
+        public override void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
 
             //TODO Need to update UI
-
             GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
             //Here we check to make sure to not display tiny values of damage
@@ -591,7 +557,7 @@ namespace StarSalvager
             List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
-                if (_attachedBlocks != null && _attachedBlocks.Any(b => b.Coordinate == botLayout[i]))
+                if (AttachedBlocks != null && AttachedBlocks.Any(b => b.Coordinate == botLayout[i]))
                 {
                     continue;
                 }
@@ -891,7 +857,7 @@ namespace StarSalvager
 
         #region TryAddNewAttachable
 
-        public bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
+        public override bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
             if (_isDestroyed)
                 return false;
@@ -905,26 +871,9 @@ namespace StarSalvager
             {
                 case Bit bit:
                 {
-
-                    bool legalDirection = true;
-
                     //------------------------------------------------------------------------------------------------//
 
                     closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
-
-                    /*
-                    //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(bit.transform.position);
-
-                    legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    if (!legalDirection)
-                    {
-                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to
-                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                            return false;
-                    }*/
-
 
                     //------------------------------------------------------------------------------------------------//
 
@@ -1116,7 +1065,7 @@ namespace StarSalvager
             return selected;
         }
 
-        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
+        public override IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f)
         {
             IAttachable selected = null;
 
@@ -1177,16 +1126,6 @@ namespace StarSalvager
             }
 
             //return direction != DIRECTION.NULL;
-        }
-
-        public bool CoordinateHasPathToCore(Vector2Int coordinate)
-        {
-            return _attachedBlocks.HasPathToCore(coordinate);
-        }
-
-        public bool CoordinateOccupied(Vector2Int coordinate)
-        {
-            return _attachedBlocks.Any(x => x.Coordinate == coordinate /*&& !(x is Part part && part.Destroyed)*/);
         }
 
         #endregion //Check For Legal Attach
@@ -1403,7 +1342,7 @@ namespace StarSalvager
             return true;
         }
 
-        public bool TryHitAt(Vector2 worldPosition, float damage)
+        public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
 
@@ -1428,7 +1367,7 @@ namespace StarSalvager
             return true;
         }
 
-        public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
+        public override void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
         {
             if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
@@ -1674,7 +1613,7 @@ namespace StarSalvager
 
         #region Attach Blocks
 
-        public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+        public override bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
             bool updatePartList = true)
@@ -1721,7 +1660,7 @@ namespace StarSalvager
             return true;
         }
 
-        public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+        public override void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
             bool checkMagnet = true,
@@ -1772,7 +1711,7 @@ namespace StarSalvager
             AttachedChanged();
         }
 
-        public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
+        public override void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
             DIRECTION direction,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
@@ -2084,7 +2023,7 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void ForceDetach(ICanDetach canDetach)
+        public override void ForceDetach(ICanDetach canDetach)
         {
             DetachSingleBlock(canDetach);
         }
@@ -2125,7 +2064,7 @@ namespace StarSalvager
 
                     if (delayedCollider)
                     {
-                        shape.DisableColliderTillLeaves(_compositeCollider2D);
+                        shape.DisableColliderTillLeaves(CompositeCollider2D);
                     }
 
                     if (isMagnetDetach)
@@ -2159,7 +2098,7 @@ namespace StarSalvager
                     bits.RemoveAt(0);
 
                     if(delayedCollider)
-                        bit.DisableColliderTillLeaves(_compositeCollider2D);
+                        bit.DisableColliderTillLeaves(CompositeCollider2D);
 
                     if (isMagnetDetach)
                     {
@@ -2172,7 +2111,7 @@ namespace StarSalvager
             {
                 if (delayedCollider && canDetach is CollidableBase collidableBase)
                 {
-                    collidableBase.DisableColliderTillLeaves(_compositeCollider2D);
+                    collidableBase.DisableColliderTillLeaves(CompositeCollider2D);
                 }
 
                 if(LevelManager.Instance && canDetach is IObstacle obstacle)

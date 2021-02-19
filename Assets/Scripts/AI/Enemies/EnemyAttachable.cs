@@ -53,7 +53,7 @@ namespace StarSalvager.AI
         
         private EnemyDecoy _enemyDecoy;
 
-        protected IBot AttachedBot;
+        protected BotBase AttachedBot;
         protected IAttachable Target;
         private Vector2Int _targetCoordinate;
         
@@ -166,9 +166,9 @@ namespace StarSalvager.AI
             if(Attached)
                 return;
 
-            var bot = gameObject.GetComponent<IBot>();
+            var botBase = gameObject.GetComponent<BotBase>();
 
-            if (bot.Rotating)
+            if (botBase.Rotating)
             {
                 return;
             }
@@ -182,11 +182,11 @@ namespace StarSalvager.AI
 
             TryFindClosestCollision(dir, collisionMask, out var point);
 
-            AttachedBot = bot;
+            AttachedBot = botBase;
             
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             //var inDirection = (-rayDirection).ToDirection();
-            var attached = bot.TryAddNewAttachable(this, dir.Reflected(), point);
+            var attached = botBase.TryAddNewAttachable(this, dir.Reflected(), point);
 
             if (!attached)
             {

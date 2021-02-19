@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Recycling;
-using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Values;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
-using StarSalvager.Prototype;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Particles;
@@ -16,34 +14,20 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class DecoyDrone : MonoBehaviour, IBot, IHealth, ICanBeHit
+    public class DecoyDrone : BotBase
     {
         //IBot Properties
         //====================================================================================================================//
 
-        public List<IAttachable> AttachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
-        [SerializeField, ReadOnly, Space(10f), ShowInInspector]
-        private List<IAttachable> _attachedBlocks;
-        
-        public Collider2D Collider => _compositeCollider2D;
-        private CompositeCollider2D _compositeCollider2D;
         //Decoy should not be rotating
-        public bool Rotating => false;
-
-        //IHealth Properties
-        //====================================================================================================================//
-
-        public float StartingHealth { get; private set; }
-        public float CurrentHealth { get; private set; }
+        public override bool Rotating => false;
 
         //DecoyDrone Properties
         //====================================================================================================================//
 
         private Bot _bot;
 
-        //private float _timer = 0.0f;
-        //private float m_timeAlive = 5.0f;
-        private Vector2 m_positionMoveUpwards;
+        private Vector2 _positionMoveUpwards;
 
         //Unity Functions
         //====================================================================================================================//
@@ -51,17 +35,10 @@ namespace StarSalvager
         // Update is called once per frame
         private void Update()
         {
-            /*if (_timer >= m_timeAlive)
-            {
-                bot.DecoyDrone = null;
-                Destroy(gameObject);
-            }*/
-
             if (transform == null)
                 return;
             
-            transform.position = Vector2.Lerp(transform.position, m_positionMoveUpwards, Time.deltaTime);
-            /*_timer += Time.deltaTime;*/
+            transform.position = Vector2.Lerp(transform.position, _positionMoveUpwards, Time.deltaTime);
         }
         
         //DecoyDrone Functions
@@ -71,19 +48,15 @@ namespace StarSalvager
         {
             var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            _compositeCollider2D = GetComponent<CompositeCollider2D>();
-            
-            
             _bot = bot;
-            m_positionMoveUpwards = (Vector2) transform.position + (Vector2.up * (speed * Constants.gridCellSize));
+            _positionMoveUpwards = (Vector2) transform.position + (Vector2.up * (speed * Constants.gridCellSize));
             
 
             var emptyPart = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.EMPTY,
-                    Coordinate = Vector2Int.zero,
-                    //Patches = new PatchData[patchSockets]
+                    Coordinate = Vector2Int.zero
                 });
             emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{Vector2Int.zero}";
             
@@ -92,14 +65,8 @@ namespace StarSalvager
 
         //IHealth Functions
         //====================================================================================================================//
-        
-        public void SetupHealthValues(float startingHealth, float currentHealth)
-        {
-            StartingHealth = startingHealth;
-            CurrentHealth = currentHealth;
-        }
 
-        public void ChangeHealth(float amount)
+        public override void ChangeHealth(float amount)
         {
             CurrentHealth += amount;
 
@@ -132,18 +99,9 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public bool TryHitAt(Vector2 worldPosition, float damage)
+        public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
-            
-            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
-            explosion.transform.position = worldPosition;
-            
-            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
-            var time = particleScaling.AnimationTime;
-
-            Destroy(explosion, time);
-            */
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
@@ -154,24 +112,16 @@ namespace StarSalvager
         //IBot Functions
         //====================================================================================================================//
         
-        public bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
+        public override bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
         {
-            if (Rotating)
-                return false;
-
-            IAttachable closestAttachable = null;
-
             switch (attachable)
             {
                 //FIXME This seems to be wanting to attach to the wrong direction
                 case EnemyAttachable enemyAttachable:
                 {
-                    //Get the coordinate of the collision
-                    //var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
-
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
+                    var closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     if (closestAttachable is EnemyAttachable)
                     {
@@ -192,17 +142,6 @@ namespace StarSalvager
                     if (AttachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
 
-                    /*legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
-
-                    //----------------------------------------------------------------------------------------------------//
-
-                    if (!legalDirection)
-                    {
-                        //Make sure that the attachable isn't overlapping the bot before we say its impossible to
-                        if (!CompositeCollider2D.OverlapPoint(attachable.transform.position))
-                            return false;
-                    }*/
-
                     //Add these to the block depending on its relative position
                     AttachAttachableToExisting(enemyAttachable, closestAttachable, connectionDirection);
                     break;
@@ -211,7 +150,7 @@ namespace StarSalvager
 
             return true;
         }
-        public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
+        public override void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
             DIRECTION direction,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
@@ -306,7 +245,7 @@ namespace StarSalvager
             }
         }
         
-        public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+        public override void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
             bool checkMagnet = true,
@@ -318,54 +257,12 @@ namespace StarSalvager
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
-
             //We want to avoid having the same element multiple times in the list
             if(!AttachedBlocks.Contains(newAttachable))
                 AttachedBlocks.Add(newAttachable);
         }
-        
-        private DIRECTION GetAvailableConnectionDirection(Vector2Int existingAttachableCoordinate, DIRECTION direction)
-        {
-            var coordinate = existingAttachableCoordinate + direction.ToVector2Int();
-            //Checks for attempts to add attachable to occupied location
-            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
-            {
-                return direction;
-            }
 
-            coordinate = existingAttachableCoordinate + DIRECTION.UP.ToVector2Int();
-            //Checks for attempts to add attachable to occupied location
-            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
-            {
-                return DIRECTION.UP;
-            }
-
-            coordinate = existingAttachableCoordinate + DIRECTION.RIGHT.ToVector2Int();
-            //Checks for attempts to add attachable to occupied location
-            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
-            {
-                return DIRECTION.RIGHT;
-            }
-
-            coordinate = existingAttachableCoordinate + DIRECTION.LEFT.ToVector2Int();
-            //Checks for attempts to add attachable to occupied location
-            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
-            {
-                return DIRECTION.LEFT;
-            }
-
-            coordinate = existingAttachableCoordinate + DIRECTION.DOWN.ToVector2Int();
-            //Checks for attempts to add attachable to occupied location
-            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
-            {
-                return DIRECTION.DOWN;
-            }
-
-            return direction;
-        }
-
-        public void ForceDetach(ICanDetach canDetach)
+        public override void ForceDetach(ICanDetach canDetach)
         {
             canDetach.transform.parent = null;
 
@@ -378,48 +275,17 @@ namespace StarSalvager
             AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
 
-            _compositeCollider2D.GenerateGeometry();
+            CompositeCollider2D.GenerateGeometry();
         }
 
-        public bool CoordinateHasPathToCore(Vector2Int coordinate)
-        {
-            return _attachedBlocks.HasPathToCore(coordinate);
-        }
-
-        public bool CoordinateOccupied(Vector2Int coordinate)
-        {
-            return _attachedBlocks.Any(x => x.Coordinate == coordinate /*&& !(x is Part part && part.Destroyed)*/);
-        }
-
-        public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true,
-            bool updateColliderGeometry = true, bool updatePartList = true)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999)
+        public override IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999)
         {
             return AttachedBlocks[0];
         }
 
-        public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
+        public override void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
         {
             TryHitAt(transform.position, damage);
-        }
-
-        //IAttachable Functions
-        //====================================================================================================================//
-        
-
-        public Bounds GetBounds()
-        {
-            throw new System.NotImplementedException();
-        }
-
-
-        public void SetAttached(bool isAttached)
-        {
-            throw new System.NotImplementedException();
         }
 
         //====================================================================================================================//
