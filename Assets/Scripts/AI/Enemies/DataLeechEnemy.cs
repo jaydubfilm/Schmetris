@@ -179,7 +179,7 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
-            if (!AttachedBot || Target == null || !Attached || Disabled)
+            if (AttachedBot == null || Target == null || !Attached || Disabled)
             {
                 return;
             }

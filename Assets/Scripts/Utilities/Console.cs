@@ -446,7 +446,7 @@ namespace StarSalvager.Utilities
                         return;
                     }
 
-                    var brick = bot.attachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
+                    var brick = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
 
                     if (brick == null)
                     {
@@ -482,7 +482,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    var brick = bot.attachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
+                    var brick = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
 
                     if (brick == null)
                     {
@@ -512,7 +512,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    bot.TryHitAt(bot.attachedBlocks[0], 100000f);
+                    bot.TryHitAt(bot.AttachedBlocks[0], 100000f);
 
                     break;
                 default:
@@ -694,7 +694,7 @@ namespace StarSalvager.Utilities
                                 return;
                             }
 
-                            var attachables = bot.attachedBlocks.OfType<IHealth>();
+                            var attachables = bot.AttachedBlocks.OfType<IHealth>();
 
                             foreach (var attachable in attachables)
                             {

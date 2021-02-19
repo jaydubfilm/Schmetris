@@ -45,7 +45,7 @@ namespace StarSalvager.AI
 
             if (!isAttachable)
             {
-                foreach (var attached in LevelManager.Instance.BotInLevel.attachedBlocks)
+                foreach (var attached in LevelManager.Instance.BotInLevel.AttachedBlocks)
                 {
                     Vector2 obstacleForce = GetForce(agentPosition, attached.transform.position);
                     force.x += obstacleForce.x;

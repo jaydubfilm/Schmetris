@@ -117,7 +117,7 @@ namespace StarSalvager.AI
         public Bit FindClosestBitOnBot()
         {
             var bot = LevelManager.Instance.BotInLevel;
-            var bits = bot.attachedBlocks.OfType<Bit>().ToArray();
+            var bits = bot.AttachedBlocks.OfType<Bit>().ToArray();
 
             if (bits.IsNullOrEmpty())
                 return null;
