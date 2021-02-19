@@ -87,7 +87,10 @@ namespace StarSalvager.UI.Scrapyard
 
                 var temp = storageUiElementScrollView.AddElement(testStorage, $"{testStorage.name}_UIElement",
                     allowDuplicate: true);
-                temp.Init(testStorage, data => { DroneDesigner.SelectPartFromStorage(data.blockData, tempInt); });
+                temp.Init(testStorage, data =>
+                {
+                    DroneDesigner.SelectPartFromStorage(data.blockData, tempInt);
+                });
             }
 
             // Update the Patch Scroll View contents
