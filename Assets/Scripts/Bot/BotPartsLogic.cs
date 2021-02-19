@@ -147,7 +147,7 @@ namespace StarSalvager
         /// </summary>
         public void PopulatePartsList()
         {
-            _parts = bot.attachedBlocks.OfType<Part>().ToList();
+            _parts = bot.AttachedBlocks.OfType<Part>().ToList();
             _triggerParts = _parts
                 .Where(p =>
                     TriggerPartTypes.Contains(p.Type))
@@ -403,7 +403,7 @@ namespace StarSalvager
 
             //FIXME I don't think using linq here, especially twice is the best option
             //TODO This needs to fire every x Seconds
-            IHealth toRepair = bot.attachedBlocks.OfType<Bit>()
+            IHealth toRepair = bot.AttachedBlocks.OfType<Bit>()
                 .Where(p => p.CurrentHealth < p.StartingHealth)
                 .Select(x => new KeyValuePair<Bit, float>(x, x.level / (x.CurrentHealth / x.StartingHealth)))
                 .OrderByDescending(x => x.Value)
@@ -1102,7 +1102,7 @@ namespace StarSalvager
                 _shieldObject.SetActive(true);
             
                 //TODO Set the shield Size
-                var coordinates = bot.attachedBlocks
+                var coordinates = bot.AttachedBlocks
                     .Select(x => new
                     {
                         x = Mathf.Abs(x.Coordinate.x),
@@ -1214,7 +1214,7 @@ namespace StarSalvager
 
             EnemyManager.DamageAllEnemies(damage);
 
-            List<IAttachable> bits = bot.attachedBlocks.Where(b => b is Bit).ToList();
+            List<IAttachable> bits = bot.AttachedBlocks.Where(b => b is Bit).ToList();
             for (int i = 0; i < bits.Count; i++)
             {
                 EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
@@ -1238,7 +1238,7 @@ namespace StarSalvager
                 return true;
             }
             
-            var armors = bot.attachedBlocks
+            var armors = bot.AttachedBlocks
                 .OfType<Part>()
                 .Where(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false)
                 .ToArray();
@@ -1784,7 +1784,7 @@ namespace StarSalvager
             if (wildCards.IsNullOrEmpty())
                 return null;
 
-            var bitsToCheck = bot.attachedBlocks.OfType<Bit>().ToArray();
+            var bitsToCheck = bot.AttachedBlocks.OfType<Bit>().ToArray();
 
             var outList = new List<Bot.DataTest>();
             foreach (var wildCard in wildCards)

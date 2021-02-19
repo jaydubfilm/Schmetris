@@ -90,7 +90,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
+        public List<IAttachable> AttachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
 
         [SerializeField, ReadOnly, Space(10f), ShowInInspector]
         private List<IAttachable> _attachedBlocks;
@@ -267,7 +267,7 @@ namespace StarSalvager
             }
 
             //This should be the core
-            if (!(attachedBlocks[0] is IHealth iHealth))
+            if (!(AttachedBlocks[0] is IHealth iHealth))
                 return;
 
             var health = iHealth.CurrentHealth / iHealth.StartingHealth;
@@ -388,7 +388,7 @@ namespace StarSalvager
 
         public void CoreShuffle(DIRECTION direction)
         {
-            var start = attachedBlocks.GetAttachableInDirection(attachedBlocks[0], direction.Reflected());
+            var start = AttachedBlocks.GetAttachableInDirection(AttachedBlocks[0], direction.Reflected());
 
             //Checks to see if the shuffle will cause a disconnect, and prevents it
             if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
@@ -555,7 +555,7 @@ namespace StarSalvager
 
         private void SetColliderActive(bool state)
         {
-            attachedBlocks.OfType<CollidableBase>().ToList().ForEach(x => x.SetColliderActive(state));
+            AttachedBlocks.OfType<CollidableBase>().ToList().ForEach(x => x.SetColliderActive(state));
         }
 
 
@@ -646,7 +646,7 @@ namespace StarSalvager
 
         public void DisplayHints()
         {
-            if(HintManager.CanShowHint(HINT.GUN) && attachedBlocks.HasPartAttached(PART_TYPE.GUN))
+            if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
                 HintManager.TryShowHint(HINT.GUN);
         }
 
@@ -719,7 +719,7 @@ namespace StarSalvager
 
             targetRotation = MathS.ClampAngle(targetRotation);
 
-            foreach (var attachedBlock in attachedBlocks)
+            foreach (var attachedBlock in AttachedBlocks)
             {
                 attachedBlock.RotateCoordinate(rotation);
             }
@@ -731,9 +731,9 @@ namespace StarSalvager
         {
             PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
 
-            if (attachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
+            if (AttachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
             {
-                foreach (var attachedBlock in attachedBlocks)
+                foreach (var attachedBlock in AttachedBlocks)
                 {
                     attachedBlock.RotateCoordinate(ROTATION.CW);
                 }
@@ -848,7 +848,7 @@ namespace StarSalvager
                 counterRotation = Quaternion.Euler(0,0, MathS.ClampAngle(rotationTarget + 180));
             }
 
-            foreach (var attachedBlock in attachedBlocks)
+            foreach (var attachedBlock in AttachedBlocks)
             {
                 if (attachedBlock is ICustomRotate customRotate)
                 {
@@ -910,7 +910,7 @@ namespace StarSalvager
 
                     //------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     /*
                     //Get the coordinate of the collision
@@ -989,7 +989,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     if (closestAttachable is EnemyAttachable)
                     {
@@ -1007,7 +1007,7 @@ namespace StarSalvager
 
                     //FIXME This isn't sufficient to prevent multiple parasites using the same location
                     var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
-                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
+                    if (AttachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
 
                     /*legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
@@ -1031,7 +1031,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     //Check if its legal to attach (Within threshold of connection)
                     if (closestAttachable is EnemyAttachable /*||
@@ -1055,7 +1055,7 @@ namespace StarSalvager
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     //Check if its legal to attach (Within threshold of connection)
                     if (closestAttachable is EnemyAttachable /*||
@@ -1093,7 +1093,7 @@ namespace StarSalvager
 
             var smallestDist = 999f;
 
-            foreach (var attached in attachedBlocks)
+            foreach (var attached in AttachedBlocks)
             {
                 //attached.SetColor(Color.white);
                 if (attached.CountAsConnectedToCore == false)
@@ -1122,7 +1122,7 @@ namespace StarSalvager
 
             var smallestDist = 999f;
 
-            foreach (var attached in attachedBlocks)
+            foreach (var attached in AttachedBlocks)
             {
                 //attached.SetColor(Color.white);
                 if (attached.CountAsConnectedToCore == false)
@@ -1203,7 +1203,7 @@ namespace StarSalvager
             if (Rotating)
                 return false;
 
-            var closestOnBot= attachedBlocks.GetClosestAttachable(collisionPoint);
+            var closestOnBot= AttachedBlocks.GetClosestAttachable(collisionPoint);
 
 
 
@@ -1258,7 +1258,7 @@ namespace StarSalvager
                         for (var i = 0; i < bitsToAdd.Length; i++)
                         {
                             //FIXME This will need to be removed once i've confirmed the solver works correctly
-                            if (attachedBlocks.Any(x => x.Coordinate == newBotCoordinate + differences[i]))
+                            if (AttachedBlocks.Any(x => x.Coordinate == newBotCoordinate + differences[i]))
                             {
 
                                 Debug.LogError($"Conflict found at {newBotCoordinate + differences[i]}");
@@ -1336,7 +1336,7 @@ namespace StarSalvager
         {
             for (var i = 0; i < bitsToAdd.Count; i++)
             {
-                var check = attachedBlocks.FirstOrDefault(x =>
+                var check = AttachedBlocks.FirstOrDefault(x =>
                     x.Coordinate == attachCoordinate + differences[i]);
 
                 if (check == null)
@@ -1373,7 +1373,7 @@ namespace StarSalvager
             if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
 
-            var closestAttachable = attachedBlocks.GetClosestAttachable(hitPosition);
+            var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
 
             /*switch (closestAttachable)
             {
@@ -1410,7 +1410,7 @@ namespace StarSalvager
             if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return false;
 
-            var closestAttachable = attachedBlocks.GetClosestAttachable(worldPosition);
+            var closestAttachable = AttachedBlocks.GetClosestAttachable(worldPosition);
 
             switch (closestAttachable)
             {
@@ -1535,7 +1535,7 @@ namespace StarSalvager
 
         public void TryAOEDamageFrom(in Vector2 worldPosition, in float radius, in float damage, in bool partsOnly = false)
         {
-            var blocksToDamage = attachedBlocks.GetAttachablesWhichIntersectCircle(worldPosition, radius);
+            var blocksToDamage = AttachedBlocks.GetAttachablesWhichIntersectCircle(worldPosition, radius);
 
             if (blocksToDamage.IsNullOrEmpty())
                 return;
@@ -1665,9 +1665,9 @@ namespace StarSalvager
 
         public List<IAttachable> GetAttachablesInColumn(in Vector2 worldHitPoint)
         {
-            var column = attachedBlocks.GetClosestAttachable(worldHitPoint)?.Coordinate.x;
+            var column = AttachedBlocks.GetClosestAttachable(worldHitPoint)?.Coordinate.x;
 
-            return column.HasValue ? attachedBlocks.Where(x => x.Coordinate.x == column.Value).ToList() : null;
+            return column.HasValue ? AttachedBlocks.Where(x => x.Coordinate.x == column.Value).ToList() : null;
         }
 
         //============================================================================================================//
@@ -1682,7 +1682,7 @@ namespace StarSalvager
             if (Destroyed)
                 return false;
 
-            if (attachedBlocks.Any(x => x.Coordinate == coordinate))
+            if (AttachedBlocks.Any(x => x.Coordinate == coordinate))
                 return false;
 
             newAttachable.Coordinate = coordinate;
@@ -1693,8 +1693,8 @@ namespace StarSalvager
             //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
 
             //We want to avoid having the same element multiple times in the list
-            if(!attachedBlocks.Contains(newAttachable))
-                attachedBlocks.Add(newAttachable);
+            if(!AttachedBlocks.Contains(newAttachable))
+                AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)
             {
@@ -1739,8 +1739,8 @@ namespace StarSalvager
             //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
 
             //We want to avoid having the same element multiple times in the list
-            if(!attachedBlocks.Contains(newAttachable))
-                attachedBlocks.Add(newAttachable);
+            if(!AttachedBlocks.Contains(newAttachable))
+                AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)
             {
@@ -1791,9 +1791,9 @@ namespace StarSalvager
             var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
 
             //Checks for attempts to add attachable to occupied location
-            if (attachedBlocks.Any(a => a.Coordinate == coordinate /*&& !(a is Part part && part.Destroyed)*/))
+            if (AttachedBlocks.Any(a => a.Coordinate == coordinate /*&& !(a is Part part && part.Destroyed)*/))
             {
-                var onAttachable = attachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+                var onAttachable = AttachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
                 Debug.Log(
                     $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {onAttachable.gameObject.name}",
                     newAttachable.gameObject);
@@ -1830,8 +1830,8 @@ namespace StarSalvager
             newAttachable.transform.SetParent(transform);
 
             //We want to avoid having the same element multiple times in the list
-            if(!attachedBlocks.Contains(newAttachable))
-                attachedBlocks.Add(newAttachable);
+            if(!AttachedBlocks.Contains(newAttachable))
+                AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)
             {
@@ -1868,35 +1868,35 @@ namespace StarSalvager
         {
             var coordinate = existingAttachableCoordinate + direction.ToVector2Int();
             //Checks for attempts to add attachable to occupied location
-            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 return direction;
             }
 
             coordinate = existingAttachableCoordinate + DIRECTION.UP.ToVector2Int();
             //Checks for attempts to add attachable to occupied location
-            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 return DIRECTION.UP;
             }
 
             coordinate = existingAttachableCoordinate + DIRECTION.RIGHT.ToVector2Int();
             //Checks for attempts to add attachable to occupied location
-            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 return DIRECTION.RIGHT;
             }
 
             coordinate = existingAttachableCoordinate + DIRECTION.LEFT.ToVector2Int();
             //Checks for attempts to add attachable to occupied location
-            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 return DIRECTION.LEFT;
             }
 
             coordinate = existingAttachableCoordinate + DIRECTION.DOWN.ToVector2Int();
             //Checks for attempts to add attachable to occupied location
-            if (!attachedBlocks.Any(a => a.Coordinate == coordinate))
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
             {
                 return DIRECTION.DOWN;
             }
@@ -1966,11 +1966,11 @@ namespace StarSalvager
                 {
 
                     var check = coordinate + (directions[i] * dist);
-                    if (attachedBlocks.Any(x => x.Coordinate == check))
+                    if (AttachedBlocks.Any(x => x.Coordinate == check))
                         continue;
 
                     //We need to make sure that the piece wont be floating
-                    if (!attachedBlocks.HasPathToCore(check))
+                    if (!AttachedBlocks.HasPathToCore(check))
                         continue;
                     //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
                     AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry);
@@ -1990,14 +1990,14 @@ namespace StarSalvager
 
             var newCoord = direction.ToVector2Int();
 
-            attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
+            AttachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            attachedBlocks.Add(newAttachable);
+            AttachedBlocks.Add(newAttachable);
 
             switch (newAttachable)
             {
@@ -2041,14 +2041,14 @@ namespace StarSalvager
 
             var newCoord = startCoord + direction.ToVector2Int();
 
-            attachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
+            AttachedBlocks.FindUnoccupiedCoordinate(direction, ref newCoord);
 
             newAttachable.Coordinate = newCoord;
             newAttachable.SetAttached(true);
             newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * newCoord * Constants.gridCellSize);
             newAttachable.transform.SetParent(transform);
 
-            attachedBlocks.Add(newAttachable);
+            AttachedBlocks.Add(newAttachable);
 
             /*if (checkForCombo)
             {
@@ -2102,7 +2102,7 @@ namespace StarSalvager
 
             foreach (var canDetach in detachingBits)
             {
-                attachedBlocks.Remove(canDetach.iAttachable);
+                AttachedBlocks.Remove(canDetach.iAttachable);
             }
 
             var bits = detachingBits.OfType<Bit>().ToList();
@@ -2229,7 +2229,7 @@ namespace StarSalvager
 
         private void RemoveAttachable(IAttachable attachable)
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
             
             CheckForDisconnects();
@@ -2263,7 +2263,7 @@ namespace StarSalvager
         /// <typeparam name="T"></typeparam>
         public void DestroyAttachable<T>(IAttachable attachable) where T: IAttachable
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
             attachable.SetAttached(false);
 
             Recycler.Recycle<T>(attachable.gameObject);
@@ -2279,7 +2279,7 @@ namespace StarSalvager
 
         public void MarkAttachablePendingRemoval(IAttachable attachable)
         {
-            attachedBlocks.Remove(attachable);
+            AttachedBlocks.Remove(attachable);
 
             CheckForDisconnects();
         }
@@ -2318,7 +2318,7 @@ namespace StarSalvager
         /// </summary>
         private bool CheckForDisconnects()
         {
-            var toSolve = new List<ICanDetach>(attachedBlocks.OfType<ICanDetach>());
+            var toSolve = new List<ICanDetach>(AttachedBlocks.OfType<ICanDetach>());
             bool hasDetached = false;
 
             foreach (var canDetach in toSolve)
@@ -2326,7 +2326,7 @@ namespace StarSalvager
                 /*if (!attachedBlocks.Contains(attachable))
                     continue;*/
 
-                var hasPathToCore = attachedBlocks.HasPathToCore(canDetach.iAttachable);
+                var hasPathToCore = AttachedBlocks.HasPathToCore(canDetach.iAttachable);
 
                 if(hasPathToCore)
                     continue;
@@ -2334,7 +2334,7 @@ namespace StarSalvager
                 hasDetached = true;
 
                 var detachables = new List<ICanDetach>();
-                attachedBlocks.GetAllConnectedDetachables(canDetach, null, ref detachables);
+                AttachedBlocks.GetAllConnectedDetachables(canDetach, null, ref detachables);
 
                 foreach (var attachedBit in detachables.OfType<Bit>())
                 {
@@ -2363,7 +2363,7 @@ namespace StarSalvager
         private bool RemovalCausesDisconnects(ICollection<ICanDetach> wantToRemove, out string disconnectList)
         {
             disconnectList = string.Empty;
-            var toSolve = new List<ICanDetach>(attachedBlocks.OfType<ICanDetach>());
+            var toSolve = new List<ICanDetach>(AttachedBlocks.OfType<ICanDetach>());
             var ignoreCoordinates = wantToRemove?.Select(x => x.Coordinate).ToList();
 
             foreach (var canDetach in toSolve)
@@ -2377,7 +2377,7 @@ namespace StarSalvager
                 if (wantToRemove != null && wantToRemove.Contains(canDetach))
                     continue;
 
-                var hasPathToCore = attachedBlocks.HasPathToCore(canDetach.iAttachable, ignoreCoordinates);
+                var hasPathToCore = AttachedBlocks.HasPathToCore(canDetach.iAttachable, ignoreCoordinates);
 
                 if(hasPathToCore)
                     continue;
@@ -2415,11 +2415,11 @@ namespace StarSalvager
             {
                 case DIRECTION.LEFT:
                 case DIRECTION.RIGHT:
-                    inLine = attachedBlocks.Where(ab => ab.Coordinate.y == attachable.Coordinate.y).ToList();
+                    inLine = AttachedBlocks.Where(ab => ab.Coordinate.y == attachable.Coordinate.y).ToList();
                     break;
                 case DIRECTION.UP:
                 case DIRECTION.DOWN:
-                    inLine = attachedBlocks.Where(ab => ab.Coordinate.x == attachable.Coordinate.x).ToList();
+                    inLine = AttachedBlocks.Where(ab => ab.Coordinate.x == attachable.Coordinate.x).ToList();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
@@ -2553,7 +2553,7 @@ _isShifting = true;
         private bool DoesShiftCauseDisconnect(in DIRECTION direction, in IBlockData blockData)
         {
             var startBlock = blockData;
-            var blocks = attachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData()).ToList();
+            var blocks = AttachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData()).ToList();
             
             List<IBlockData> inLine;
             switch (direction)
@@ -2666,7 +2666,7 @@ _isShifting = true;
 
             IEnumerable<Shape> shapesToCheck = obstacleManager.ActiveBonusShapes;
 
-            var botBits = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>();
+            var botBits = AttachedBlocks.OfType<Bit>().GetBlockDatas<BitData>();
             
 
             foreach (var shape in shapesToCheck)
@@ -2684,7 +2684,7 @@ _isShifting = true;
                     CreateBonusShapeEffect(attachable.transform.position);
                 }
 
-                var blocks = attachedBlocks.Where(x => upgrading.Contains(x.Coordinate));
+                var blocks = AttachedBlocks.Where(x => upgrading.Contains(x.Coordinate));
                 CreateBonusShapeEffect(blocks);
 
                 /*foreach (var coordinate in upgrading)
@@ -2701,7 +2701,7 @@ _isShifting = true;
                 //Upgrade the pieces matched
                 foreach (var coordinate in upgrading)
                 {
-                    var toUpgrade = attachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
+                    var toUpgrade = AttachedBlocks.OfType<Bit>().FirstOrDefault(x => x.Coordinate == coordinate);
 
                     toUpgrade?.IncreaseLevel();
 
@@ -2729,12 +2729,12 @@ _isShifting = true;
 
                 //FIXME We'll need to double check the position here
                 FloatingText.Create($"+{gears}",
-                    attachedBlocks.Find(upgrading).GetCollectionCenterCoordinateWorldPosition(),
+                    AttachedBlocks.Find(upgrading).GetCollectionCenterCoordinateWorldPosition(),
                     Color.white);
 
 
                 //Check for Combos
-                CheckForCombosAround(attachedBlocks.OfType<Bit>());
+                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                 //CheckForCombosAround<COMPONENT_TYPE>(attachedBlocks);
 
                 //Call this function again
@@ -2954,7 +2954,7 @@ _isShifting = true;
         #region Check for Combos from List
         public bool CheckAllForCombos()
         {
-            bool bitCombos = CheckForCombosAround(attachedBlocks.OfType<Bit>());
+            bool bitCombos = CheckForCombosAround(AttachedBlocks.OfType<Bit>());
             //bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
             return bitCombos;//|| crateCombos;
@@ -2985,7 +2985,7 @@ _isShifting = true;
                 //Get all basic info about bits available to combo
                 //--------------------------------------------------------------------------------------------------------//
                 var bitType = bit.Type;
-                var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
+                var bitsToCheck = AttachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
 
                 var checkData = new List<DataTest>();
                 foreach (var attached in bitsToCheck)
@@ -3079,7 +3079,7 @@ _isShifting = true;
         private void CheckForCombosAround(Vector2Int coordinate)
         {
             CheckForCombosAround(
-                attachedBlocks
+                AttachedBlocks
                 .OfType<Bit>()
                 .FirstOrDefault(a => a.Coordinate == coordinate));
         }
@@ -3095,7 +3095,7 @@ _isShifting = true;
             //Get all basic info about bits available to combo
             //--------------------------------------------------------------------------------------------------------//
             var bitType = bit.Type;
-            var bitsToCheck = attachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
+            var bitsToCheck = AttachedBlocks.OfType<Bit>().Where(x => x.Type == bitType).ToArray();
 
             var checkData = new List<DataTest>();
             foreach (var attached in bitsToCheck)
@@ -3172,7 +3172,7 @@ _isShifting = true;
             {
                 var attachable = canCombo.iAttachable;
                 //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = attachedBlocks.HasPathToCore(attachable,
+                var hasPath = AttachedBlocks.HasPathToCore(attachable,
                     canCombos
                         .Where(ab => ab != attachable)
                         .Select(b => b.Coordinate)
@@ -3209,7 +3209,7 @@ _isShifting = true;
             var orphans = new List<OrphanMoveData>();
             //CheckForOrphans(movingBits.OfType<IAttachable>(), closestToCore.iAttachable, ref orphans);
 
-            attachedBlocks.CheckForOrphansFromCombo(
+            AttachedBlocks.CheckForOrphansFromCombo(
                 movingBits.OfType<IAttachable>(),
                 closestToCore.iAttachable,
                 ref orphans);
@@ -3261,7 +3261,7 @@ _isShifting = true;
                     if (bit != null && bit.level == 1)
                     {
                         AddBitAmmo(bit.Type, 10);
-                        CheckForCombosAround(attachedBlocks.OfType<Bit>());
+                        CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                     }
                     else if (bit != null && bit.level == 2)
                     {
@@ -3367,7 +3367,7 @@ _isShifting = true;
 
         public void ForceDisconnectAllDetachables()
         {
-            DetachBlocks(attachedBlocks.OfType<ICanDetach>(), true, true);
+            DetachBlocks(AttachedBlocks.OfType<ICanDetach>(), true, true);
 
             ForceCheckMagnets();
         }
@@ -3389,7 +3389,7 @@ _isShifting = true;
 
 
             var magnetCount = BotPartsLogic.MagnetCount;
-            var magnetDetachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).OfType<ICanDetach>().ToList();
+            var magnetDetachables = AttachedBlocks.Where(x => x.CountTowardsMagnetism).OfType<ICanDetach>().ToList();
 
             if(GameUi)
                 GameUi.SetCarryCapacity(magnetDetachables.Count / (float)magnetCount, magnetCount);
@@ -3501,7 +3501,7 @@ _isShifting = true;
                 if (!_botPartsLogic.CurrentlyUsedBitTypes.Contains(bit.Type))
                     continue;
 
-                var core = attachedBlocks[0] as Part;
+                var core = AttachedBlocks[0] as Part;
 
                 float resourceCapacityLiquid = PlayerDataManager.GetResource(bit.Type).AmmoCapacity;
 
@@ -3515,7 +3515,7 @@ _isShifting = true;
         private bool IsMagnetFull()
         {
             var magnetCount = BotPartsLogic.MagnetCount;
-            var magnetAttachables = attachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
+            var magnetAttachables = AttachedBlocks.Where(x => x.CountTowardsMagnetism).ToList();
 
             if(GameUi)
                 GameUi.SetCarryCapacity(magnetAttachables.Count / (float)magnetCount, magnetCount);
@@ -3535,17 +3535,17 @@ _isShifting = true;
             var leavingCoordinates = toDetach.Select(a => a.Coordinate).ToList();
 
             //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
-            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
+            for (var i = AttachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (toDetach.Any(x => x.iAttachable == attachedBlocks[i]))
+                if (toDetach.Any(x => x.iAttachable == AttachedBlocks[i]))
                     continue;
 
-                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
                 Debug.LogError(
-                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
-                    attachedBlocks[i].gameObject);
+                    $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
+                    AttachedBlocks[i].gameObject);
             }
         }
 
@@ -3560,17 +3560,17 @@ _isShifting = true;
             var leavingCoordinates = toDetach.Select(a => a.Coordinate).ToList();
 
             //Go through the bots Blocks to make sure no one will be floating when we detach the parts.
-            for (var i = attachedBlocks.Count - 1; i >= 0; i--)
+            for (var i = AttachedBlocks.Count - 1; i >= 0; i--)
             {
-                if (toDetach.Any(x => x.iAttachable == attachedBlocks[i]))
+                if (toDetach.Any(x => x.iAttachable == AttachedBlocks[i]))
                     continue;
 
-                if (attachedBlocks.HasPathToCore(attachedBlocks[i], leavingCoordinates))
+                if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
                 Debug.LogError(
-                    $"Found a potential floater {attachedBlocks[i].gameObject.name} at {attachedBlocks[i].Coordinate}",
-                    attachedBlocks[i].gameObject);
+                    $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
+                    AttachedBlocks[i].gameObject);
             }
 
 
@@ -3863,7 +3863,7 @@ _isShifting = true;
             {
                 //We need to disable the collider otherwise they can collide while moving
                 //I'm also assuming that if we've confirmed the upgrade, and it cannot be cancelled
-                attachedBlocks.Remove(canCombo as IAttachable);
+                AttachedBlocks.Remove(canCombo as IAttachable);
                 canCombo.IsBusy = true;
 
                 if(canCombo is CollidableBase collidableBase)
@@ -4149,7 +4149,7 @@ _isShifting = true;
 
         public void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
         {
-            foreach (var setSpriteLayer in attachedBlocks.OfType<ISetSpriteLayer>())
+            foreach (var setSpriteLayer in AttachedBlocks.OfType<ISetSpriteLayer>())
             {
                 setSpriteLayer.SetSortingLayer(sortingLayerName, sortingOrder);
             }
@@ -4174,7 +4174,7 @@ _isShifting = true;
             targetRotation = 0;
             _rotating = false;
 
-            foreach (var attachable in attachedBlocks)
+            foreach (var attachable in AttachedBlocks)
             {
                 switch (attachable)
                 {
@@ -4202,7 +4202,7 @@ _isShifting = true;
                 }
             }
 
-            attachedBlocks.Clear();
+            AttachedBlocks.Clear();
             BotPartsLogic.ClearList();
             //_parts.Clear();
             
@@ -4314,7 +4314,7 @@ _isShifting = true;
             };
 
             AddMorePieces(blocks, false);
-            CheckForCombosAround(attachedBlocks.OfType<Bit>());
+            CheckForCombosAround(AttachedBlocks.OfType<Bit>());
         }
 
         private void AddMorePieces(IEnumerable<IBlockData> blocks, bool checkForCombos)
@@ -4383,9 +4383,9 @@ _isShifting = true;
                 },*/
             };
 
-            var result = attachedBlocks.OfType<Bit>().GetBlockDatas<BitData>().Contains(testBlockData, out _);
+            var result = AttachedBlocks.OfType<Bit>().GetBlockDatas<BitData>().Contains(testBlockData, out _);
 
-            Debug.LogError($"{nameof(attachedBlocks)} contains match: {result}");
+            Debug.LogError($"{nameof(AttachedBlocks)} contains match: {result}");
 
 
         }

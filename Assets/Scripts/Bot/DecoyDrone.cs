@@ -21,7 +21,7 @@ namespace StarSalvager
         //IBot Properties
         //====================================================================================================================//
 
-        public List<IAttachable> attachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
+        public List<IAttachable> AttachedBlocks => _attachedBlocks ?? (_attachedBlocks = new List<IAttachable>());
         [SerializeField, ReadOnly, Space(10f), ShowInInspector]
         private List<IAttachable> _attachedBlocks;
         
@@ -142,11 +142,11 @@ namespace StarSalvager
                 case EnemyAttachable enemyAttachable:
                 {
                     //Get the coordinate of the collision
-                    var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
+                    //var bitCoordinate = GetRelativeCoordinate(enemyAttachable.transform.position);
 
                     //----------------------------------------------------------------------------------------------------//
 
-                    closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
+                    closestAttachable = AttachedBlocks.GetClosestAttachable(collisionPoint);
 
                     if (closestAttachable is EnemyAttachable)
                     {
@@ -164,7 +164,7 @@ namespace StarSalvager
 
                     //FIXME This isn't sufficient to prevent multiple parasites using the same location
                     var potentialCoordinate = closestAttachable.Coordinate + connectionDirection.ToVector2Int();
-                    if (attachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
+                    if (AttachedBlocks.Count(x => x.Coordinate == potentialCoordinate) > 1)
                         return false;
 
                     /*legalDirection = CheckLegalCollision(bitCoordinate, closestAttachable.Coordinate, out _);
@@ -185,6 +185,159 @@ namespace StarSalvager
             }
 
             return true;
+        }
+        public void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
+            DIRECTION direction,
+            bool checkForCombo = true,
+            bool updateColliderGeometry = true,
+            bool checkMagnet = true,
+            bool playSound = true,
+            bool updatePartList = true)
+        {
+
+            if (newAttachable is BorrowerEnemy)
+            {
+                direction = GetAvailableConnectionDirection(existingAttachable.Coordinate, direction);
+            }
+
+            var coordinate = existingAttachable.Coordinate + direction.ToVector2Int();
+
+            //Checks for attempts to add attachable to occupied location
+            if (AttachedBlocks.Any(a => a.Coordinate == coordinate /*&& !(a is Part part && part.Destroyed)*/))
+            {
+                var onAttachable = AttachedBlocks.FirstOrDefault(a => a.Coordinate == coordinate);
+                Debug.Log(
+                    $"Prevented attaching {newAttachable.gameObject.name} to occupied location {coordinate}\n Occupied by {onAttachable.gameObject.name}",
+                    newAttachable.gameObject);
+
+                if (newAttachable is BorrowerEnemy)
+                {
+                    return;
+                }
+
+                AttachToClosestAvailableCoordinate(coordinate,
+                    newAttachable,
+                    direction,
+                    checkForCombo,
+                    updateColliderGeometry);
+                return;
+            }
+
+            newAttachable.Coordinate = coordinate;
+
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position =
+                transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
+            newAttachable.transform.SetParent(transform);
+
+            //We want to avoid having the same element multiple times in the list
+            if(!AttachedBlocks.Contains(newAttachable))
+                AttachedBlocks.Add(newAttachable);
+
+        }
+        
+        public void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable, DIRECTION desiredDirection, bool checkForCombo,
+            bool updateColliderGeometry)
+        {
+
+            var directions = new[]
+            {
+                //Cardinal Directions
+                Vector2Int.left,
+                Vector2Int.up,
+                Vector2Int.right,
+                Vector2Int.down,
+
+                //Corners
+                new Vector2Int(-1,-1),
+                new Vector2Int(-1,1),
+                new Vector2Int(1,-1),
+                new Vector2Int(1,1),
+            };
+
+            var avoid = desiredDirection.Reflected().ToVector2Int();
+
+            var dist = 1;
+            while (true)
+            {
+                for (var i = 0; i < directions.Length; i++)
+                {
+
+                    var check = coordinate + (directions[i] * dist);
+                    if (AttachedBlocks.Any(x => x.Coordinate == check))
+                        continue;
+
+                    //We need to make sure that the piece wont be floating
+                    if (!AttachedBlocks.HasPathToCore(check))
+                        continue;
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry);
+                    return;
+                }
+
+                if (dist++ > 10)
+                    break;
+
+            }
+        }
+        
+        public void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+            bool checkForCombo = true,
+            bool updateColliderGeometry = true,
+            bool checkMagnet = true,
+            bool playSound = true,
+            bool updatePartList = true)
+        {
+            newAttachable.Coordinate = coordinate;
+            newAttachable.SetAttached(true);
+            newAttachable.transform.position = transform.position + (Vector3) (Vector2.one * coordinate * Constants.gridCellSize);
+            newAttachable.transform.SetParent(transform);
+
+            //newAttachable.gameObject.name = $"Block {attachedBlocks.Count}";
+
+            //We want to avoid having the same element multiple times in the list
+            if(!AttachedBlocks.Contains(newAttachable))
+                AttachedBlocks.Add(newAttachable);
+        }
+        
+        private DIRECTION GetAvailableConnectionDirection(Vector2Int existingAttachableCoordinate, DIRECTION direction)
+        {
+            var coordinate = existingAttachableCoordinate + direction.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return direction;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.UP.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.UP;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.RIGHT.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.RIGHT;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.LEFT.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.LEFT;
+            }
+
+            coordinate = existingAttachableCoordinate + DIRECTION.DOWN.ToVector2Int();
+            //Checks for attempts to add attachable to occupied location
+            if (!AttachedBlocks.Any(a => a.Coordinate == coordinate))
+            {
+                return DIRECTION.DOWN;
+            }
+
+            return direction;
         }
 
         public void ForceDetach(ICanDetach attachable)

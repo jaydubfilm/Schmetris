@@ -1,31 +1,53 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace StarSalvager
 {
     public interface IBot
     {
-        public Collider2D Collider { get; }
+        List<IAttachable> AttachedBlocks { get; }
 
-        public bool Rotating { get; }
+        Collider2D Collider { get; }
+
+        bool Rotating { get; }
 
         //====================================================================================================================//
         
 
         bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint);
-        public void ForceDetach(ICanDetach attachable);
-        public bool CoordinateHasPathToCore(Vector2Int coordinate);
-        public bool CoordinateOccupied(Vector2Int coordinate);
+        void ForceDetach(ICanDetach attachable);
+        bool CoordinateHasPathToCore(Vector2Int coordinate);
+        bool CoordinateOccupied(Vector2Int coordinate);
 
-        public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+        bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
             bool checkForCombo = true,
             bool updateColliderGeometry = true,
             bool updatePartList = true);
 
-        public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f);
+        void AttachAttachableToExisting(IAttachable newAttachable, IAttachable existingAttachable,
+            DIRECTION direction,
+            bool checkForCombo = true,
+            bool updateColliderGeometry = true,
+            bool checkMagnet = true,
+            bool playSound = true,
+            bool updatePartList = true);
+
+        void AttachToClosestAvailableCoordinate(Vector2Int coordinate, IAttachable newAttachable,
+            DIRECTION desiredDirection, bool checkForCombo,
+            bool updateColliderGeometry);
+
+        void AttachNewBlock(Vector2Int coordinate, IAttachable newAttachable,
+            bool checkForCombo = true,
+            bool updateColliderGeometry = true,
+            bool checkMagnet = true,
+            bool playSound = true,
+            bool updatePartList = true);
+
+        IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999f);
 
         //====================================================================================================================//
 
-        public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true);
+        void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true);
 
     }
 }
