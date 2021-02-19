@@ -2084,9 +2084,9 @@ namespace StarSalvager
 
         #region Detach Bits
 
-        public void ForceDetach(ICanDetach attachable)
+        public void ForceDetach(ICanDetach canDetach)
         {
-            DetachSingleBlock(attachable);
+            DetachSingleBlock(canDetach);
         }
 
         private void DetachBlocks(IEnumerable<ICanDetach> detachingBits, bool delayedCollider = false,

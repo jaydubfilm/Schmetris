@@ -133,6 +133,9 @@ namespace StarSalvager
         {
             var bot = gameObject.GetComponent<Bot>();
 
+            if (bot is null)
+                return;
+
             if (bot.Rotating)
             {
                 this.Bounce(worldHitPoint, transform.position, bot.MostRecentRotate);

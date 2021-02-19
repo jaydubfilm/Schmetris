@@ -15,7 +15,7 @@ namespace StarSalvager
         
 
         bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint);
-        void ForceDetach(ICanDetach attachable);
+        void ForceDetach(ICanDetach canDetach);
         bool CoordinateHasPathToCore(Vector2Int coordinate);
         bool CoordinateOccupied(Vector2Int coordinate);
 

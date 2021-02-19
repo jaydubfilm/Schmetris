@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Values;
@@ -7,17 +9,15 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Particles;
 using UnityEngine;
 
 
 namespace StarSalvager
 {
-    public class DecoyDrone : CollidableBase, IBot, IAttachable, IHealth, ICanBeHit
+    public class DecoyDrone : MonoBehaviour, IBot, IHealth, ICanBeHit
     {
-        //[NonSerialized]
-        //public Bot bot;
-
         //IBot Properties
         //====================================================================================================================//
 
@@ -25,18 +25,10 @@ namespace StarSalvager
         [SerializeField, ReadOnly, Space(10f), ShowInInspector]
         private List<IAttachable> _attachedBlocks;
         
-        public Collider2D Collider => collider;
+        public Collider2D Collider => _compositeCollider2D;
+        private CompositeCollider2D _compositeCollider2D;
         //Decoy should not be rotating
         public bool Rotating => false;
-
-        //IAttachable Properties
-        //====================================================================================================================//
-        
-        public Vector2Int Coordinate { get; set; }
-        public bool Attached => false;
-        public bool CountAsConnectedToCore => true;
-        public bool CanShift => false;
-        public bool CountTowardsMagnetism => false;
 
         //IHealth Properties
         //====================================================================================================================//
@@ -77,8 +69,25 @@ namespace StarSalvager
 
         public void Init(in Bot bot, in float speed)
         {
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
+            _compositeCollider2D = GetComponent<CompositeCollider2D>();
+            
+            
             _bot = bot;
             m_positionMoveUpwards = (Vector2) transform.position + (Vector2.up * (speed * Constants.gridCellSize));
+            
+
+            var emptyPart = partFactory.CreateObject<Part>(
+                new PartData
+                {
+                    Type = (int)PART_TYPE.EMPTY,
+                    Coordinate = Vector2Int.zero,
+                    //Patches = new PatchData[patchSockets]
+                });
+            emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{Vector2Int.zero}";
+            
+            AttachNewBlock(Vector2Int.zero, emptyPart);
         }
 
         //IHealth Functions
@@ -100,25 +109,41 @@ namespace StarSalvager
                 return;
             
             _bot.DecoyDrone = null;
+
+            var copy = new List<IAttachable>(AttachedBlocks);
+
+            foreach (var attachable in copy)
+            {
+                switch (attachable)
+                {
+                    case Part part:
+                        Recycler.Recycle<Part>(part);
+                        break;
+                    case EnemyAttachable enemyAttachable:
+                        ForceDetach(enemyAttachable);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(attachable), attachable, null);
+                }
+            }
+            
             Destroy(gameObject);
         }
 
-        //CollidableBase Functions
         //====================================================================================================================//
-
-        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint) { }
 
         public bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
             
-            var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
+            /*var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
             explosion.transform.position = worldPosition;
             
             var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
             var time = particleScaling.AnimationTime;
 
             Destroy(explosion, time);
+            */
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
@@ -340,19 +365,30 @@ namespace StarSalvager
             return direction;
         }
 
-        public void ForceDetach(ICanDetach attachable)
+        public void ForceDetach(ICanDetach canDetach)
         {
-            throw new System.NotImplementedException();
+            canDetach.transform.parent = null;
+
+            if (LevelManager.Instance && canDetach is IObstacle obstacle)
+                LevelManager.Instance.ObstacleManager.AddObstacleToListAndParentToWorldRoot(obstacle);
+
+            if (!(canDetach is IAttachable attachable))
+                return;
+
+            AttachedBlocks.Remove(attachable);
+            attachable.SetAttached(false);
+
+            _compositeCollider2D.GenerateGeometry();
         }
 
         public bool CoordinateHasPathToCore(Vector2Int coordinate)
         {
-            throw new System.NotImplementedException();
+            return _attachedBlocks.HasPathToCore(coordinate);
         }
 
         public bool CoordinateOccupied(Vector2Int coordinate)
         {
-            throw new System.NotImplementedException();
+            return _attachedBlocks.Any(x => x.Coordinate == coordinate /*&& !(x is Part part && part.Destroyed)*/);
         }
 
         public bool TryAttachNewBlock(Vector2Int coordinate, IAttachable newAttachable, bool checkForCombo = true,
@@ -363,7 +399,7 @@ namespace StarSalvager
 
         public IAttachable GetClosestAttachable(Vector2Int checkCoordinate, float maxDistance = 999)
         {
-            return this;
+            return AttachedBlocks[0];
         }
 
         public void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
