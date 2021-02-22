@@ -1189,11 +1189,14 @@ namespace StarSalvager
 
         private void TriggerDecoy(in Part part)
         {
-            if (bot.DecoyDrone != null)
-                return;
-            
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
+
+            if (bot.DecoyDrone != null)
+            {
+                bot.DecoyDrone.ChangeHealth(-1000000);
+                bot.DecoyDrone = null;
+            }
 
             var decoyDroneHealth = Globals.DecoyDroneHealth;
             
