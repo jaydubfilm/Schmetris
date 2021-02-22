@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using StarSalvager.Factories;
 using StarSalvager.AI;
@@ -491,6 +492,14 @@ namespace StarSalvager
             }
 
             return false;
+        }
+
+        public List<Bit> GetCarriedBits()
+        {
+            return _borrowerTargets.IsNullOrEmpty() ? null : _borrowerTargets.Keys
+                .Select(x => x.CarryingBit)
+                .Where(x => x != null)
+                .ToList();
         }
 
     //====================================================================================================================//
