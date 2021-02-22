@@ -589,6 +589,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void ResetPlayerRunData()
         {
+            SetStarted(false);
             PlayerAccountData.ResetPlayerRunData();
         }
 

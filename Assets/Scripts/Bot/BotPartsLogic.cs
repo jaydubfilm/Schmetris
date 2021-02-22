@@ -1214,11 +1214,13 @@ namespace StarSalvager
 
             EnemyManager.DamageAllEnemies(damage);
 
-            List<IAttachable> bits = bot.AttachedBlocks.Where(b => b is Bit).ToList();
+            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
             for (int i = 0; i < bits.Count; i++)
             {
-                EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
+                //EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
                 CreateBombEffect(bits[i], 5f);
+                
+                Recycler.Recycle<Bit>(bits[i]);
             }
 
             AudioController.PlaySound(SOUND.BOMB_BLAST);

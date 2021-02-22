@@ -833,6 +833,7 @@ namespace StarSalvager
 
             SavePlayerData();
             GameManager.SetCurrentGameState(GameState.LevelBotDead);
+            PlayerDataManager.SetStarted(false);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
@@ -840,7 +841,7 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
-                tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).Ammo);
+                tempDictionary.Add((int) _bitType, PlayerDataManager.GetResource(_bitType).Ammo);
             }
 
             Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
@@ -864,7 +865,7 @@ namespace StarSalvager
             //Globals.CurrentSector = 0;
             Globals.CurrentWave = 0;
 
-        OutroScene.gameObject.SetActive(true);
+            OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }
 
