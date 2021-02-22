@@ -344,6 +344,19 @@ namespace StarSalvager
             return bit;
         }
         
+        public List<Bit> TryGetBitsOnScreen()
+        {
+            var bits = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
+                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Attached == false)
+                .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
+                .ToList();
+
+            return bits;
+        }
+        
         //====================================================================================================================//
         
 
