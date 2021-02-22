@@ -1956,15 +1956,16 @@ namespace StarSalvager
             {
                 //Cardinal Directions
                 Vector2Int.left,
-                Vector2Int.up,
-                Vector2Int.right,
-                Vector2Int.down,
-
-                //Corners
-                new Vector2Int(-1, -1),
                 new Vector2Int(-1, 1),
-                new Vector2Int(1, -1),
+                
+                Vector2Int.up,
                 new Vector2Int(1, 1),
+                
+                Vector2Int.right,
+                new Vector2Int(1, -1),
+                
+                Vector2Int.down,
+                new Vector2Int(-1, -1),
             };
 
             var avoid = desiredDirection.Reflected().ToVector2Int();
@@ -1991,6 +1992,44 @@ namespace StarSalvager
                     break;
 
             }
+        }
+        
+        public void AttachToClosestAvailableCoordinate(
+            Vector2Int coordinate, 
+            IAttachable newAttachable,
+            Vector2 rawDirection, 
+            bool checkForCombo,
+            bool updateColliderGeometry)
+        {
+            /*if (Destroyed)
+                return;
+            
+            var directions = new List<Vector2>();
+
+            var avoid = desiredDirection.Reflected().ToVector2Int();
+
+            var dist = 1;
+            while (true)
+            {
+                for (var i = 0; i < directions.Length; i++)
+                {
+
+                    var check = coordinate + (directions[i] * dist);
+                    if (attachedBlocks.Any(x => x.Coordinate == check))
+                        continue;
+
+                    //We need to make sure that the piece wont be floating
+                    if (!attachedBlocks.HasPathToCore(check))
+                        continue;
+                    //Debug.Log($"Found available location for {newAttachable.gameObject.name}\n{coordinate} + ({directions[i]} * {dist}) = {check}");
+                    AttachNewBlock(check, newAttachable, checkForCombo, updateColliderGeometry);
+                    return;
+                }
+
+                if (dist++ > 10)
+                    break;
+
+            }*/
         }
 
         public void PushNewAttachable(IAttachable newAttachable, DIRECTION direction, bool checkForCombo = true, bool updateColliderGeometry = true, bool checkMagnet = true, bool playSound = true)

@@ -266,7 +266,7 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 2
     isManual: 1
     category: 5
     ammoUseCost: 30
