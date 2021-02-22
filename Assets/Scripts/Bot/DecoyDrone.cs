@@ -40,7 +40,7 @@ namespace StarSalvager
             
             transform.position = Vector2.Lerp(transform.position, _positionMoveUpwards, Time.deltaTime);
         }
-        
+
         //DecoyDrone Functions
         //====================================================================================================================//
 
@@ -70,7 +70,6 @@ namespace StarSalvager
         {
             CurrentHealth += amount;
 
-            FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
             
             if (CurrentHealth > 0)
                 return;
@@ -102,6 +101,9 @@ namespace StarSalvager
         public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
             ChangeHealth(-damage);
+            
+            FloatingText.Create($"{-damage}", transform.position, Color.red);
+
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);

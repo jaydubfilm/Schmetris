@@ -4184,43 +4184,6 @@ _isShifting = true;
             {
                 new BitData
                 {
-                    Coordinate = new Vector2Int(-2, 1),
-                    Level = 1,
-                    Type = (int) BIT_TYPE.BLUE,
-                    Health = 50
-                },
-                new BitData
-                {
-                    Coordinate = new Vector2Int(-1, 1),
-                    Level = 1,
-                    Type = (int) BIT_TYPE.GREEN,
-                    Health = 50
-                },
-                new BitData
-                {
-                    Coordinate = new Vector2Int(1, 1),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREY,
-                    Health = 50
-                },
-                
-                new BitData
-                {
-                    Coordinate = new Vector2Int(-2, 0),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.GREEN,
-                    Health = 50
-                },
-                
-                new BitData
-                {
-                    Coordinate = new Vector2Int(-2, -1),
-                    Level = 1,
-                    Type = (int) BIT_TYPE.GREEN,
-                    Health = 50
-                },
-                new BitData
-                {
                     Coordinate = new Vector2Int(-1, -1),
                     Level = 1,
                     Type = (int) BIT_TYPE.YELLOW,
@@ -4228,28 +4191,18 @@ _isShifting = true;
                 },
                 new BitData
                 {
-                    Coordinate = new Vector2Int(1, -1),
+                    Coordinate = new Vector2Int(-2, 0),
                     Level = 0,
-                    Type = (int) BIT_TYPE.RED,
-                    Health = 50
-                },
-                
-                new BitData
-                {
-                    Coordinate = new Vector2Int(-1, -2),
-                    Level = 0,
-                    Type = (int) BIT_TYPE.RED,
+                    Type = (int) BIT_TYPE.GREEN,
                     Health = 50
                 },
                 new BitData
                 {
-                    Coordinate = new Vector2Int(0, -2),
+                    Coordinate = new Vector2Int(-2, 1),
                     Level = 0,
-                    Type = (int) BIT_TYPE.GREY,
+                    Type = (int) BIT_TYPE.RED,
                     Health = 50
                 },
-
-
             };
 
             AddMorePieces(blocks, false);
