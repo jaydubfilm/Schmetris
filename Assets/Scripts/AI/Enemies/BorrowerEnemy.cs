@@ -129,7 +129,7 @@ namespace StarSalvager.AI
             
             foreach (var bit in bits)
             {
-                if (EnemyManager.IsBitTargeted(bit))
+                if (EnemyManager.IsBitTargeted(this, bit))
                     continue;
                 
                 var dist = Vector2.Distance(currentPosition, bit.transform.position);

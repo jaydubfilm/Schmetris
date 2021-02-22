@@ -469,9 +469,25 @@ namespace StarSalvager
             _borrowerTargets.Remove(borrowerEnemy);
         }
 
-        public bool IsBitTargeted(in Bit targetBit)
+        public bool IsBitTargeted(in BorrowerEnemy borrowerAsking, in Bit targetBit)
         {
-            return !_borrowerTargets.IsNullOrEmpty() && _borrowerTargets.ContainsValue(targetBit);
+            //return !_borrowerTargets.IsNullOrEmpty() && _borrowerTargets.ContainsValue(targetBit);
+            
+            if (_borrowerTargets.IsNullOrEmpty())
+                return false;
+
+            foreach (var borrowerTarget in _borrowerTargets)
+            {
+                if(borrowerTarget.Key.Equals(borrowerAsking))
+                    continue;
+                
+                var carryTarget = borrowerTarget.Key.CarryingBit;
+
+                if (carryTarget != null && carryTarget.Equals(targetBit))
+                    return true;
+            }
+
+            return false;
         }
 
         public bool IsBitCarried(in Bit targetBit)
