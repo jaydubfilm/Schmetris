@@ -1200,6 +1200,7 @@ namespace StarSalvager
             bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
         }
 
+        //FIXME This needs to be cleaned
         private void TriggerHoover(in Part part)
         {
             Vector2Int[] GetCoordinates(in int checkIndex, in Vector2Int offset, in Vector2Int startCoordinate)
@@ -1266,6 +1267,11 @@ namespace StarSalvager
                         //TODO Get coordinate
                         var coordinate = coordinates[coordinateIndex];
                         
+                        if (flip) totalOffset.y += offsetAmount.x;
+                        else totalOffset.x += offsetAmount.y;
+
+                        flip = !flip;
+                        
                         //TODO Check if coordinate is occupied
                         if(currentlyAttached.Any(x => x.Coordinate == coordinate))
                             continue;
@@ -1276,21 +1282,16 @@ namespace StarSalvager
                             success = true;
                             break;
                         }
-                        
-                        //debugList.Add(coordinateIndex);
 
-                        if (flip) totalOffset.y += offsetAmount.x;
-                        else totalOffset.x += offsetAmount.y;
-
-                        flip = !flip;
                     }
 
                     if (success)
                         break;
 
-                }
+                    if (i == 5 && success == false)
+                        throw new Exception($"Unable to find an attachable Point, {PART_TYPE.HOOVER}");
 
-                break;
+                }
             }
 
             /*CanUseTriggerPart(part, out _);
