@@ -195,9 +195,10 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitType"></param>
+        /// <param name="level"></param>
         /// <returns></returns>
-        public GameObject CreateGameObject(BIT_TYPE bitType, int level = 0)
+        public GameObject CreateGameObject(in BIT_TYPE bitType, in int level = 0)
         {
             var blockData = new BitData
             {
@@ -207,13 +208,15 @@ namespace StarSalvager.Factories
 
             return CreateGameObject(blockData);
         }
+
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitType"></param>
+        /// <param name="level"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T CreateObject<T>(BIT_TYPE bitType, int level = 0)
+        public T CreateObject<T>(in BIT_TYPE bitType, in int level = 0)
         {
             var temp = CreateGameObject(bitType, level);
                 
@@ -264,9 +267,10 @@ namespace StarSalvager.Factories
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitType"></param>
+        /// <param name="level"></param>
         /// <returns></returns>
-        public GameObject CreateScrapyardGameObject(BIT_TYPE bitType, int level = 0)
+        public GameObject CreateScrapyardGameObject(in BIT_TYPE bitType, in int level = 0)
         {
             var bitData = new BitData
             {
@@ -276,13 +280,15 @@ namespace StarSalvager.Factories
 
             return CreateScrapyardGameObject(bitData);
         }
+
         /// <summary>
         /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
         /// </summary>
-        /// <param name="blockData"></param>
+        /// <param name="bitType"></param>
+        /// <param name="level"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T CreateScrapyardObject<T>(BIT_TYPE bitType, int level = 0)
+        public T CreateScrapyardObject<T>(in BIT_TYPE bitType, in int level = 0)
         {
             var temp = CreateScrapyardGameObject(bitType, level);
 

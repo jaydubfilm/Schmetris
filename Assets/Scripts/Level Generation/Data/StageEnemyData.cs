@@ -20,6 +20,12 @@ namespace StarSalvager.AI
         public string EnemyType => m_enemyType;
         public int EnemyCount => m_enemyCount;
 
+        public StageEnemyData(in string enemyTypeId, in int count)
+        {
+            m_enemyType = enemyTypeId;
+            m_enemyCount = count;
+        }
+
 #if UNITY_EDITOR
         private string GetEnemyType()
         {

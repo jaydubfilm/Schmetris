@@ -12,20 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB2_1_3
   m_EditorClassIdentifier: 
-  WaveSeed: 0
+  WaveSeed: 50
   BonusShapes: []
   StageRemoteData:
-  - m_stageDuration: 20
+  - testWidth: 50
+    m_stageDuration: 20
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
-    m_stageType: 0
-    m_spawningObstacleMultiplier: 1
-    m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 0
       m_shapeName: RedSingle
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.19508804
@@ -35,6 +34,7 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: BlueSingle
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.19508804
@@ -44,6 +44,7 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: GreenSingle
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.19508804
@@ -53,6 +54,7 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: GreySingle
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.19508804
@@ -62,6 +64,7 @@ MonoBehaviour:
     - m_selectionType: 0
       m_shapeName: YellowSingle
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.19508804
@@ -71,6 +74,7 @@ MonoBehaviour:
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.22166616
@@ -80,14 +84,15 @@ MonoBehaviour:
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
+      bitType: 0
       m_rotation: -1
       m_asteroidSize: 2
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
-    m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 25
+  - testWidth: 50
+    m_stageDuration: 25
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
@@ -95,13 +100,11 @@ MonoBehaviour:
       m_enemyCount: 2
     - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
       m_enemyCount: 3
-    m_stageType: 0
-    m_spawningObstacleMultiplier: 1
-    m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
+      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
       m_density: 0.22166616
@@ -111,12 +114,10 @@ MonoBehaviour:
     - m_selectionType: 2
       m_shapeName: 
       m_category: 
+      bitType: 0
       m_rotation: -1
       m_asteroidSize: 2
       m_density: 0.19508804
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
-    m_stageColumnGroupObstacleData: []
-  maxDrops: 0
-  RDSEndOfWaveLoot: []

@@ -922,10 +922,15 @@ namespace StarSalvager
             }*/
         }
 
-        public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, bool allowOverlap,
-            bool forceSpawn, float spawningMultiplier, bool isPrevious, bool inRandomYLevel = false)
+        public void SpawnObstacleData(List<StageObstacleData> obstacleData, 
+            Vector2 columnFieldRange, 
+            bool allowOverlap,
+            bool forceSpawn, 
+            float spawningMultiplier,
+            bool isPrevious, 
+            bool inRandomYLevel = false)
         {
-            foreach (StageObstacleData stageObstacleData in obstacleData)
+            foreach (var stageObstacleData in obstacleData)
             {
                 //This spawnVariable defines "how much of this thing should be spawned"
                 float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
@@ -948,9 +953,7 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName,
-                        stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation,
-                        columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
                     spawnVariable -= 1;
                 }
 
@@ -961,9 +964,7 @@ namespace StarSalvager
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName,
-                        stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation,
-                        columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
                 }
             }
         }
@@ -1047,49 +1048,64 @@ namespace StarSalvager
             
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
-            ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
-            bool inRandomYLevel)
+        private void SpawnObstacle(in StageObstacleData stageObstacleData, 
+            in Vector2 gridRegion, 
+            in bool allowOverlap, 
+            in bool forceSpawn,
+            in bool inRandomYLevel)
         {
-            IObstacle obstacle;
-            int radiusAround = 0;
-
-
-            switch (selectionType)
+            IObstacle AddObstacle(in IObstacle newObstacle)
             {
+                /*if (LevelManager.Instance != null)
+                    LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);*/
+
+                AddObstacleToList(newObstacle);
+                    
+                return newObstacle;
+            }
+
+            //====================================================================================================================//
+            
+            IObstacle obstacle;
+            var radiusAround = 0;
+
+            switch (stageObstacleData.SelectionType)
+            {
+                case SELECTION_TYPE.BUMPER:
+                case SELECTION_TYPE.BIT:
+                {
+                    var bitType = stageObstacleData.SelectionType == SELECTION_TYPE.BUMPER
+                        ? BIT_TYPE.WHITE
+                        : stageObstacleData.BitType;
+                    
+                    IObstacle newObstacle = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
+                        .CreateObject<IObstacle>(bitType);
+                    
+                    obstacle = AddObstacle(newObstacle);
+                    break;
+                }
                 case SELECTION_TYPE.CATEGORY:
                 {
                     IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, category, numRotations);
+                        .CreateObject<IObstacle>(stageObstacleData.SelectionType, stageObstacleData.Category, stageObstacleData.Rotation);
 
-                    if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
-
-                    AddObstacleToList(newObstacle);
-
-                    obstacle = newObstacle;
+                    obstacle = AddObstacle(newObstacle);
                     break;
                 }
                 case SELECTION_TYPE.SHAPE:
                 {
                     IObstacle newObstacle = FactoryManager.Instance.GetFactory<ShapeFactory>()
-                        .CreateObject<IObstacle>(selectionType, shapeName, numRotations);
+                        .CreateObject<IObstacle>(stageObstacleData.SelectionType, stageObstacleData.ShapeName, stageObstacleData.Rotation);
 
-                    if (LevelManager.Instance != null)
-                        LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
-
-                    AddObstacleToList(newObstacle);
-                    
-                    obstacle = newObstacle;
+                    obstacle = AddObstacle(newObstacle);
                     break;
                 }
                 case SELECTION_TYPE.ASTEROID:
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
-                        .CreateAsteroid<Asteroid>(asteroidSize);
-                    AddObstacleToList(newAsteroid);
-
-                    switch (asteroidSize)
+                        .CreateAsteroid<Asteroid>(stageObstacleData.AsteroidSize);
+                    
+                    switch (stageObstacleData.AsteroidSize)
                     {
                         case ASTEROID_SIZE.Bit:
                             break;
@@ -1099,23 +1115,19 @@ namespace StarSalvager
                             radiusAround = 1;
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(asteroidSize), asteroidSize, null);
+                            throw new ArgumentOutOfRangeException(nameof(stageObstacleData.AsteroidSize), stageObstacleData.AsteroidSize, null);
                     }
 
                     Asteroids.Add(newAsteroid);
-                    obstacle = newAsteroid;
+                    obstacle = AddObstacle(newAsteroid);
                     break;
                 }
-                case SELECTION_TYPE.BUMPER:
-                    Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                        .CreateObject<Bit>(BIT_TYPE.WHITE, 0);
-                    AddObstacleToList(newBit);
-
-                    obstacle = newBit;
-                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
+                    throw new ArgumentOutOfRangeException(nameof(stageObstacleData.SelectionType), stageObstacleData.SelectionType, null);
             }
+
+            //====================================================================================================================//
+            
 
             PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
         }

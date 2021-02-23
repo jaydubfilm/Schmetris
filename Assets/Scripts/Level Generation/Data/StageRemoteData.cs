@@ -9,7 +9,17 @@ namespace StarSalvager.AI
     [Serializable]
     public class StageRemoteData
     {
+        public float StageDuration => Mathf.Max(1.0f, m_stageDuration);
+        public float StageBlendPeriod => m_stageBlendPeriod;
+        public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
+
+        public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
+
+        public List<StageObstacleData> StageObstacleData => m_stageObstacleData;
+        
         public int testWidth;
+
+        //====================================================================================================================//
         
         [SerializeField, Min(1.0f)]
         private float m_stageDuration;
@@ -19,31 +29,19 @@ namespace StarSalvager.AI
         private bool m_waitUntilAllEnemiesDefeatedToBegin;
         [SerializeField]
         private List<StageEnemyData> m_stageEnemyData;
-        //[SerializeField]
-        //private STAGE_TYPE m_stageType;
-        //[SerializeField]
-        //private float m_spawningObstacleMultiplier = 1.0f;
 
-        //[SerializeField, ShowIf("m_stageType", STAGE_TYPE.STANDARD), Required, Range(0.0f, 1.0f)]
-        //private float m_centerChannelWidth = 0.5f;
-        //[ShowInInspector, ShowIf("m_stageType", STAGE_TYPE.STANDARD), DisplayAsString]
-        //private string m_numColumns => (Globals.GridSizeX * m_centerChannelWidth).ToString();
-        [SerializeField/*, HideIf("m_stageType", STAGE_TYPE.CUSTOM)*/]
+        [SerializeField]
         private List<StageObstacleData> m_stageObstacleData;
 
-        //[SerializeField, ShowIf("m_stageType", STAGE_TYPE.CUSTOM)]
-        //private List<StageColumnGroupObstacleData> m_stageColumnGroupObstacleData;
-
-        public float StageDuration => Mathf.Max(1.0f, m_stageDuration);
-        public float StageBlendPeriod => m_stageBlendPeriod;
-        public bool WaitUntilAllEnemiesDefeatedToBegin => m_waitUntilAllEnemiesDefeatedToBegin;
-        //public STAGE_TYPE StageType => STAGE_TYPE.STANDARD;
-        //public float SpawningObstacleMultiplier => 1f;
-        public List<StageEnemyData> StageEnemyData => m_stageEnemyData;
-
-        public List<StageObstacleData> StageObstacleData => m_stageObstacleData;
-        //public float CenterChannelWidth => 0.5f;
-
-        //public List<StageColumnGroupObstacleData> StageColumnGroupObstacleData => m_stageColumnGroupObstacleData;
+        //====================================================================================================================//
+        
+        public StageRemoteData(in int stageTime, in int stageWidth, in List<StageObstacleData> obstacleData, in List<StageEnemyData> enemyData)
+        {
+            m_stageDuration = stageTime;
+            testWidth = stageWidth;
+            
+            m_stageObstacleData = new List<StageObstacleData>(obstacleData);
+            m_stageEnemyData = new List<StageEnemyData>(enemyData);
+        }
     }
 }

@@ -10,22 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd806b8eb2372af4ca9ef13b1a209630, type: 3}
-  m_Name: Ring Remote
+  m_Name: Ring Wave Generator Remote
   m_EditorClassIdentifier: 
-  mWaveDurationRange: {x: 30, y: 240}
-  mGridWidthRange: {x: 30, y: 70}
-  mEnemyBudgetRange: {x: 0, y: 0}
+  seed: 776481667
+  mWaveDurationRange: {x: 60, y: 90}
+  mGridWidthRange: {x: 70, y: 100}
+  mEnemyBudgetRange: {x: 4, y: 6}
   enemySpawns:
   - enemyID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-    cost: 0
-    weight: 0
-  mBitsPerMinuteRange: {x: 0, y: 500}
-  redBitsPercentage: 20
-  blueBitsPercentage: 20
-  greenBitsPercentage: 20
-  yellowBitsPercentage: 20
-  greyBitsPercentage: 20
+    cost: 1
+    weight: 1
+  mBitsPerMinuteRange: {x: 100, y: 150}
+  redBitsPercentage: 14
+  blueBitsPercentage: 21
+  greenBitsPercentage: 10
+  yellowBitsPercentage: 30
+  greyBitsPercentage: 24
   obstacleSpawns:
   - obstacleID: 
     weight: 0
   eventSpawns: []
+  waveRemoteDataScriptableObject: {fileID: 11400000, guid: 403d4142738a51d4fa2b512b880abcba,
+    type: 2}

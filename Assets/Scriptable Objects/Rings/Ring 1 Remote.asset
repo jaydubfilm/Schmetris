@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 430b8aee2ba095241bd459763a953c42, type: 3}
   m_Name: Ring 1 Remote
   m_EditorClassIdentifier: 
-  wreckFrequency: 1
+  wreckFrequency: 2
   WaveRemoteData:
-  - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}
+  - {fileID: 11400000, guid: 403d4142738a51d4fa2b512b880abcba, type: 2}
   - {fileID: 11400000, guid: 9a4d60bebe7b14a30beaf0d59d5e5295, type: 2}
   - {fileID: 11400000, guid: c5c51a53021694f11a3fcfa5f9d619ab, type: 2}
   - {fileID: 11400000, guid: f29cbff2aaa594fa59f7057df5e69199, type: 2}

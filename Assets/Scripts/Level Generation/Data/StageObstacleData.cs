@@ -32,6 +32,16 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
+        public StageObstacleData(in SELECTION_TYPE selectionType, in BIT_TYPE bitType, in int spawnsPerMinute)
+        {
+            m_selectionType = selectionType;
+            this.bitType = bitType;
+            m_spawnsPerScreenWidthPerMinute = spawnsPerMinute;
+        }
+
+        //====================================================================================================================//
+        
+
 
 #if UNITY_EDITOR
         //Todo: These are temporary values set OnValidate in StageObstacleData used for SpawnsPerScreenWidthPerMinute
@@ -54,6 +64,7 @@ namespace StarSalvager.AI
                 {"Bumper", SELECTION_TYPE.BUMPER},
                 {"Category", SELECTION_TYPE.CATEGORY},
                 {"Shape", SELECTION_TYPE.SHAPE},
+                {"Bit", SELECTION_TYPE.BIT},
             };
 
             return valueDropdownItems;
