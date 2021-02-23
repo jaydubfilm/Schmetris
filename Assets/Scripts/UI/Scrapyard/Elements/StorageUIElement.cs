@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>/*, IDragHandler, IBeginDragHandler, IEndDragHandler*/
     {
         private static ScrapyardBot _scrapyardBot;
 
@@ -79,9 +79,8 @@ namespace StarSalvager.UI.Scrapyard
         }*/
 
         //====================================================================================================================//
-
-
-        public void OnBeginDrag(PointerEventData eventData)
+ 
+        /*public void OnBeginDrag(PointerEventData eventData)
         {
             if (!button.interactable)
                 return;
@@ -131,7 +130,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             partDragImageTransform.gameObject.SetActive(false);
-        }
+        }*/
 
         //============================================================================================================//
 

@@ -297,10 +297,10 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static LevelNodeTree GetLevelRingNodeTree()
+        /*public static LevelNodeTree GetLevelRingNodeTree()
         {
             return PlayerRunData.LevelRingNodeTree;
-        }
+        }*/
 
         public static void AddCompletedNode(int node)
         {
@@ -396,9 +396,9 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
         
 
-        public static bool CheckIfCompleted(int sector, int waveAt)
+        public static bool CheckIfCompleted(in int waveAt)
         {
-            return PlayerRunData.CheckIfCompleted(sector, waveAt);
+            return PlayerRunData.CheckIfCompleted(waveAt);
         }
 
         //====================================================================================================================//
@@ -589,6 +589,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void ResetPlayerRunData()
         {
+            SetStarted(false);
             PlayerAccountData.ResetPlayerRunData();
         }
 

@@ -37,10 +37,10 @@ namespace StarSalvager.Utilities.Extensions
         {
             var travelled = new List<Vector2Int>();
             //Debug.LogError("STARTED TO CHECK HERE");
-            return PathAlgorithm(attachedBlocks, checking, toIgnore, ref travelled);
+            return PathAlgorithm(attachedBlocks.ToList(), checking, toIgnore, ref travelled);
         }
 
-        private static bool PathAlgorithm(IEnumerable<IAttachable> attachedBlocks, IAttachable current,
+        private static bool PathAlgorithm(List<IAttachable> attachedBlocks, IAttachable current,
             ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
             //If we're on (0, 0) we've reached the core, so go back up through 
@@ -114,7 +114,7 @@ namespace StarSalvager.Utilities.Extensions
         /// <summary>
         /// Returns whether or not this AttachableBase has a clear path to the core.
         /// </summary>
-        /// <param name="bot"></param>
+        /// <param name="attachedBlocks"></param>
         /// <param name="checking"></param>
         /// <param name="toIgnore"></param>
         /// <returns></returns>
@@ -123,10 +123,10 @@ namespace StarSalvager.Utilities.Extensions
         {
             var travelled = new List<Vector2Int>();
             //Debug.LogError("STARTED TO CHECK HERE");
-            return PathAlgorithm(attachedBlocks, checking, toIgnore, ref travelled);
+            return PathAlgorithm(attachedBlocks.ToList(), checking, toIgnore, ref travelled);
         }
 
-        private static bool PathAlgorithm(IEnumerable<IAttachable> attachedBlocks, Vector2Int current,
+        private static bool PathAlgorithm(List<IAttachable> attachedBlocks, Vector2Int current,
             ICollection<Vector2Int> toIgnore, ref List<Vector2Int> travelled)
         {
             //If we're on (0, 0) we've reached the core, so go back up through 
@@ -805,7 +805,9 @@ namespace StarSalvager.Utilities.Extensions
             ICanDetach[] toIgnore,
             ref List<ICanDetach> outDetachables)
         {
-            var detachablesAround = attachables.GetAttachablesAround(current.iAttachable).OfType<ICanDetach>();
+            var detachablesAround = attachables.GetAttachablesAround(current.iAttachable)
+                .OfType<ICanDetach>()
+                .Where(x => x.iAttachable.CountAsConnectedToCore);
 
             outDetachables.Add(current);
 

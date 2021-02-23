@@ -110,7 +110,7 @@ MonoBehaviour:
     m_projectileType: Mosquito Zap
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 0
+    m_projectileDamage: 5
     m_projectileSpeed: 18
     m_projectileRange: 0
     m_requiredRotate: 0

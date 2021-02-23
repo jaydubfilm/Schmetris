@@ -65,40 +65,30 @@ namespace StarSalvager.Factories
             return factoryProfile.GetProfile(partType);
         }
 
-        public static void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType)
+        public void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType, in PART_TYPE[] currentParts)
         {
             var partTypes = new List<PART_TYPE>();
 
             switch (partOptionType)
             {
                 case PART_OPTION_TYPE.BasicWeapon:
-                    partTypes = new List<PART_TYPE>
-                    {
-                        PART_TYPE.GUN,
-                        PART_TYPE.RAILGUN
-                    };
+                    partTypes = new List<PART_TYPE>(remotePartData.basicWeapons);
                     break;
                 case PART_OPTION_TYPE.PowerWeapon:
-                    partTypes = new List<PART_TYPE>
-                    {
-                        PART_TYPE.FREEZE,
-                        PART_TYPE.BOMB
-                    };
+                    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
                     break;
                 case PART_OPTION_TYPE.Any:
-                    partTypes = new List<PART_TYPE>
-                    {
-                        PART_TYPE.GUN,
-                        PART_TYPE.SNIPER,
-                        PART_TYPE.RAILGUN,
-                        PART_TYPE.BOMB,
-                        PART_TYPE.FREEZE,
-                        PART_TYPE.ARMOR,
-                        PART_TYPE.SHIELD,
-                        PART_TYPE.REPAIR
-                    };
+                    partTypes = new List<PART_TYPE>(remotePartData.anyParts);
                     break;
             }
+
+            foreach (var partType in currentParts)
+            {
+                partTypes.Remove(partType);
+            }
+
+            if (partTypes.IsNullOrEmpty())
+                throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
 
             for (int i = 0; i < options.Length; i++)
             {

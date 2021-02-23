@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f0b61dbe4de28a41a174085ffc4416e, type: 3}
   m_Name: Part Remote
   m_EditorClassIdentifier: 
+  basicWeapons: 0400000024000000
+  powerWeapons: 0600000007000000
+  anyParts: 040000000e000000240000000700000006000000030000000500000002000000
   partRemoteData:
   - name: Empty Part
     partType: 1
@@ -203,12 +206,12 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 1
     - key: Multiplier
       value: 30
     isManual: 1
     category: 5
-    ammoUseCost: 2
+    ammoUseCost: 1
     PatchSockets: 2
   - name: Heal
     partType: 39
@@ -233,7 +236,7 @@ MonoBehaviour:
     - key: Heal
       value: 3
     isManual: 0
-    category: 2
+    category: 1
     ammoUseCost: 1
     PatchSockets: 2
   - name: Decoy
@@ -242,7 +245,7 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 5
     isManual: 1
     category: 1
     ammoUseCost: 5
@@ -256,8 +259,10 @@ MonoBehaviour:
       value: 10
     - key: Damage
       value: 10
+    - key: Radius
+      value: 5
     isManual: 1
-    category: 3
+    category: 4
     ammoUseCost: 5
     PatchSockets: 2
   - name: Hoover

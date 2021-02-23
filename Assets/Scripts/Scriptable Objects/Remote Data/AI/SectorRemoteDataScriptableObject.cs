@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StarSalvager.AI;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
 {
+    [Obsolete]
     [CreateAssetMenu(fileName = "Sector Remote", menuName = "Star Salvager/Scriptable Objects/Sector Remote Data")]
     public class SectorRemoteDataScriptableObject : ScriptableObject
     {

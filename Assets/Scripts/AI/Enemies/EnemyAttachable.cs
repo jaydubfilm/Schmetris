@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
-using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.UI.Hints;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
-using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Enemies;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
@@ -26,6 +20,9 @@ namespace StarSalvager.AI
 
         //IAttachable Properties
         //============================================================================================================//
+
+        public bool IsAttachable => true;
+
         
 
         [ShowInInspector, ReadOnly]
@@ -56,7 +53,7 @@ namespace StarSalvager.AI
         
         private EnemyDecoy _enemyDecoy;
 
-        protected Bot AttachedBot;
+        protected BotBase AttachedBot;
         protected IAttachable Target;
         private Vector2Int _targetCoordinate;
         
@@ -169,9 +166,9 @@ namespace StarSalvager.AI
             if(Attached)
                 return;
 
-            var bot = gameObject.GetComponent<Bot>();
+            var botBase = gameObject.GetComponent<BotBase>();
 
-            if (bot.Rotating)
+            if (botBase.Rotating)
             {
                 return;
             }
@@ -185,11 +182,11 @@ namespace StarSalvager.AI
 
             TryFindClosestCollision(dir, collisionMask, out var point);
 
-            AttachedBot = bot;
+            AttachedBot = botBase;
             
             //Here we flip the direction of the ray so that we can tell the Bot where this piece might be added to
             //var inDirection = (-rayDirection).ToDirection();
-            var attached = bot.TryAddNewAttachable(this, dir.Reflected(), point);
+            var attached = botBase.TryAddNewAttachable(this, dir.Reflected(), point);
 
             if (!attached)
             {
@@ -374,7 +371,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0)
                 return;
 
-            if (AttachedBot)
+            if (AttachedBot != null)
             {
                 AttachedBot.ForceDetach(this);
                 AttachedBot = null;

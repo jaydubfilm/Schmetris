@@ -75,13 +75,12 @@ namespace StarSalvager
         //==============================================================================================================//
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        public int MagnetCount => 10;
+        public int MagnetCount => Globals.Magnetism;
         private int _magnetOverride;
 
         //==============================================================================================================//
 
         private bool _shieldActive;
-        //private bool _vampirismActive;
 
         private GameObject _shieldObject;
         private GameObject _healObject;
@@ -148,7 +147,7 @@ namespace StarSalvager
         /// </summary>
         public void PopulatePartsList()
         {
-            _parts = bot.attachedBlocks.OfType<Part>().ToList();
+            _parts = bot.AttachedBlocks.OfType<Part>().ToList();
             _triggerParts = _parts
                 .Where(p =>
                     TriggerPartTypes.Contains(p.Type))
@@ -404,7 +403,7 @@ namespace StarSalvager
 
             //FIXME I don't think using linq here, especially twice is the best option
             //TODO This needs to fire every x Seconds
-            IHealth toRepair = bot.attachedBlocks.OfType<Bit>()
+            IHealth toRepair = bot.AttachedBlocks.OfType<Bit>()
                 .Where(p => p.CurrentHealth < p.StartingHealth)
                 .Select(x => new KeyValuePair<Bit, float>(x, x.level / (x.CurrentHealth / x.StartingHealth)))
                 .OrderByDescending(x => x.Value)
@@ -997,6 +996,9 @@ namespace StarSalvager
                 case PART_TYPE.DECOY:
                     TriggerDecoy(part);
                     break;
+                case PART_TYPE.BITSPLOSION:
+                    TriggerBitsplosion(part);
+                    break;
                 case PART_TYPE.HOOVER:
                     TriggerHoover(part);
                     break;
@@ -1103,7 +1105,7 @@ namespace StarSalvager
                 _shieldObject.SetActive(true);
             
                 //TODO Set the shield Size
-                var coordinates = bot.attachedBlocks
+                var coordinates = bot.AttachedBlocks
                     .Select(x => new
                     {
                         x = Mathf.Abs(x.Coordinate.x),
@@ -1190,14 +1192,44 @@ namespace StarSalvager
 
         private void TriggerDecoy(in Part part)
         {
-            if (bot.DecoyDrone != null)
-                return;
-            
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
-            bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity);
-            bot.DecoyDrone.GetComponent<DecoyDrone>().bot = bot;
+            if (bot.DecoyDrone != null)
+            {
+                bot.DecoyDrone.ChangeHealth(-1000000);
+                bot.DecoyDrone = null;
+            }
+
+            var decoyDroneHealth = Globals.DecoyDroneHealth;
+            
+            //FIXME This needs to be moved to a factory
+            bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity).GetComponent<DecoyDrone>();
+            bot.DecoyDrone.Init(bot, 10f);
+            bot.DecoyDrone.SetupHealthValues(decoyDroneHealth,decoyDroneHealth);
+        }
+
+        private void TriggerBitsplosion(in Part part)
+        {
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            //Damage all the enemies
+            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+
+            EnemyManager.DamageAllEnemies(damage);
+
+            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
+            for (int i = 0; i < bits.Count; i++)
+            {
+                //EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
+                CreateBombEffect(bits[i], 5f);
+                
+                Recycler.Recycle<Bit>(bits[i]);
+            }
+
+            AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
         //FIXME This needs to be cleaned
@@ -1353,7 +1385,7 @@ namespace StarSalvager
                 return true;
             }
             
-            var armors = bot.attachedBlocks
+            var armors = bot.AttachedBlocks
                 .OfType<Part>()
                 .Where(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false)
                 .ToArray();
@@ -1714,13 +1746,13 @@ namespace StarSalvager
             _turrets.Add(part, effect.transform);
         }
 
-        private void CreateBombEffect(in Part part, in float range)
+        private void CreateBombEffect(in IAttachable attachable, in float range)
         {
            
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreatePartEffect(EffectFactory.PART_EFFECT.BOMB);
 
-            effect.transform.position = part.transform.position;
+            effect.transform.position = attachable.transform.position;
             
             var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
             
@@ -1899,7 +1931,7 @@ namespace StarSalvager
             if (wildCards.IsNullOrEmpty())
                 return null;
 
-            var bitsToCheck = bot.attachedBlocks.OfType<Bit>().ToArray();
+            var bitsToCheck = bot.AttachedBlocks.OfType<Bit>().ToArray();
 
             var outList = new List<Bot.DataTest>();
             foreach (var wildCard in wildCards)
