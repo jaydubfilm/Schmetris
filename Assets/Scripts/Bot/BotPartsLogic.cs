@@ -1275,7 +1275,7 @@ namespace StarSalvager
                     dir.y > 0 ? 1 : -1
                 );
 
-                var currentlyAttached = bot.attachedBlocks;
+                var currentlyAttached = bot.AttachedBlocks;
                 var success = false;
 
                 for (int i = 0; i <= 5; i++)
