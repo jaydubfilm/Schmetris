@@ -999,6 +999,9 @@ namespace StarSalvager
                 case PART_TYPE.BITSPLOSION:
                     TriggerBitsplosion(part);
                     break;
+                case PART_TYPE.HOOVER:
+                    TriggerHoover(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1227,6 +1230,145 @@ namespace StarSalvager
             }
 
             AudioController.PlaySound(SOUND.BOMB_BLAST);
+        }
+
+        //FIXME This needs to be cleaned
+        private void TriggerHoover(in Part part)
+        {
+            Vector2Int[] GetCoordinates(in int checkIndex, in Vector2Int offset, in Vector2Int startCoordinate)
+            {
+                var count = 3 + checkIndex;
+                var coordinate = startCoordinate;
+                coordinate += Vector2Int.right * (startCoordinate.x < 0 ? -checkIndex : checkIndex);
+
+                var outList = new List<Vector2Int>();
+                
+                for (var i = 0; i < count; i++)
+                {
+                    outList.Add(coordinate + offset * i);
+                }
+
+                return outList.ToArray();
+            }
+            
+            
+            if (!CanUseTriggerPart(part, out _, false))
+                return;
+
+            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
+
+            if (bits.IsNullOrEmpty())
+                return;
+
+            bits = bits
+                .OrderBy(x => Vector2.Distance(x.transform.position, bot.transform.position))
+                .ToList();
+
+            var startIndices = new[] {1, 1, 2, 2, 3, 3};
+
+            foreach (var bit in bits)
+            {
+                var dir = (bit.transform.position - bot.transform.position).normalized;
+                var startCoordinate = dir.x > 0 ? new Vector2Int(2, 0) : new Vector2Int(-2, 0);
+                var offsets = new Vector2Int(
+                    dir.x > 0 ? -1 : 1, 
+                    dir.y > 0 ? 1 : -1
+                );
+
+                var currentlyAttached = bot.attachedBlocks;
+                var success = false;
+
+                for (int i = 0; i <= 5; i++)
+                {
+                    var startIndex = startIndices[i];
+
+                    var count = 3 + i;
+                    var isOdd = count % 2 == 1;
+                    
+                    var offsetAmount = isOdd ? new Vector2Int(-1, 1) : new Vector2Int(1, -1);
+                    
+                    var totalOffset = new Vector2Int(0, 0);
+                    var flip = true;
+
+                    var coordinates = GetCoordinates(i, offsets, startCoordinate);
+
+                    for (int ii = 0; ii < count; ii++)
+                    {
+                        var coordinateIndex = startIndex + (flip ? totalOffset.x : totalOffset.y);
+                        
+                        //TODO Get coordinate
+                        var coordinate = coordinates[coordinateIndex];
+                        
+                        if (flip) totalOffset.y += offsetAmount.x;
+                        else totalOffset.x += offsetAmount.y;
+
+                        flip = !flip;
+                        
+                        //TODO Check if coordinate is occupied
+                        if(currentlyAttached.Any(x => x.Coordinate == coordinate))
+                            continue;
+
+                        if (currentlyAttached.HasPathToCore(coordinate))
+                        {
+                            bot.AttachNewBlock(coordinate, bit, false, false, false, false, false);
+                            success = true;
+                            break;
+                        }
+
+                    }
+
+                    if (success)
+                        break;
+
+                    if (i == 5 && success == false)
+                        throw new Exception($"Unable to find an attachable Point, {PART_TYPE.HOOVER}");
+
+                }
+            }
+
+            /*CanUseTriggerPart(part, out _);
+
+            //Vector2 botPosition = bot.transform.position;
+            foreach (var bit in bits)
+            {
+                Vector2 bitPosition = bit.transform.position;
+
+                var closestAttachable = bot.GetClosestAttachable(bitPosition);
+                //ar newCoordinate = closestAttachable.Coordinate + dir;
+
+                var direction = (bitPosition - (Vector2) closestAttachable.transform.position).normalized;
+                DIRECTION dir;
+                if (direction == Vector2.zero)
+                {
+                    throw new Exception($"Weird Direction found {direction}");
+                }
+
+                if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+                {
+                    dir = new Vector2Int(Mathf.RoundToInt(direction.x), 0).ToDirection();
+                }
+                else
+                {
+                    dir = new Vector2Int(0, Mathf.RoundToInt(direction.y)).ToDirection();
+                }
+
+                bot.AttachToClosestAvailableCoordinate(closestAttachable.Coordinate, bit, dir.Reflected(), false, false);
+                //bot.AttachAttachableToExisting(bit, closestAttachable, dir.Reflected(), false, false, false, true, false);
+                /*bot.AttachNewBlock(closestAttachable.Coordinate + dir.ToVector2Int(), bit, false, false, false, true,
+                    false);#1#
+
+                Debug.DrawLine(bitPosition, (Vector2) closestAttachable.transform.position + dir.ToVector2(),
+                    Color.magenta, 1f);
+                
+                Debug.DrawLine(bitPosition,bit.transform.position,
+                    Color.cyan, 1f);
+            }*/
+
+            bot.CheckAllForCombos();
+            bot.ForceCheckMagnets();
+            bot.ForceUpdateColliderGeometry();
+            
+            //Debug.Break();
         }
 
         #endregion
