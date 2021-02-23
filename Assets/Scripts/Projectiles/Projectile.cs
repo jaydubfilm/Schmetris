@@ -26,6 +26,7 @@ namespace StarSalvager.AI
         protected TrailRenderer _trailRenderer;
 
         private IHealth _vampirismCaster;
+        private float _vampirismValue;
 
         //============================================================================================================//
 
@@ -57,7 +58,8 @@ namespace StarSalvager.AI
             float rangeBoost,
             Vector2 direction, 
             Vector2 velocity,
-            IHealth vampirismCaster)
+            IHealth vampirismCaster,
+            float vampirismValue)
         {
             ProjectileData = profileData;
 
@@ -85,6 +87,7 @@ namespace StarSalvager.AI
             }
 
             _vampirismCaster = vampirismCaster;
+            _vampirismValue = vampirismValue;
         }
 
         private void CheckLifeTime()
@@ -186,13 +189,13 @@ namespace StarSalvager.AI
                     if (!(_vampirismCaster is Bot bot))
                         return;
 
-                    stealAmount = bot.BotPartsLogic.GetVampireValue();
+                    //stealAmount = _vampirismValue;
                     break;
                 default:
                     return;
             }
 
-            var stolenHealth = stealAmount * damage;
+            var stolenHealth = _vampirismValue * damage;
 
             _vampirismCaster.ChangeHealth(stolenHealth);
         }

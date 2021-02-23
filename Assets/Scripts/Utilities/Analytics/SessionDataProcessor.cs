@@ -61,16 +61,17 @@ namespace StarSalvager.Utilities.Analytics
         
         public void StartNewWave(int sector, int wave, IEnumerable<IBlockData> initialBot)
         {
-            if (_currentWave.HasValue)
+            throw new NotImplementedException();
+            /*if (_currentWave.HasValue)
             {
                 //TODO Need to end the existing wave
                 EndActiveWave();
             }
 
             var botAtStart = new List<IBlockData>(initialBot);
-            _currentWave = new WaveData(botAtStart, sector, wave);
-            
-            
+            _currentWave = new WaveData(botAtStart, sector, wave);*/
+
+
         }
 
         public void EndActiveWave()

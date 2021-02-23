@@ -210,10 +210,10 @@ namespace StarSalvager.Utilities.FileIO
                 PlayerAccountSavePaths[saveSlotIndex],
                 new IBlockDataArrayConverter());
 
-            if (loaded.PlayerRunData.PlaythroughID != "")
+            /*if (loaded.PlayerRunData.PlaythroughID != "")
             {
                 loaded.PlayerRunData.SetupMap();
-            }
+            }*/
 
             return loaded;
         }

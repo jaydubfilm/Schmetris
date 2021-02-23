@@ -76,7 +76,7 @@ namespace StarSalvager.Utilities.Extensions
         {
             //TODO Need to consider that there will be parts & bits attached to the bot
 
-            var data = bot.attachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData())
+            var data = bot.AttachedBlocks.OfType<ISaveable>().Select(x => x.ToBlockData())
                 .ToArray();
 
             var blah = JsonConvert.SerializeObject(data, Formatting.None);
@@ -118,7 +118,7 @@ namespace StarSalvager.Utilities.Extensions
         {
             var blockDatas = new List<IBlockData>();
             
-            var attachables = new List<IAttachable>(bot.attachedBlocks);
+            var attachables = new List<IAttachable>(bot.AttachedBlocks);
             //var ignoreAttachables = bot.PendingDetach == null
             //    ? new List<IAttachable>()
             //    : new List<IAttachable>(bot.PendingDetach);
@@ -164,7 +164,7 @@ namespace StarSalvager.Utilities.Extensions
         [Obsolete]
         public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<ICanCombo> iCanCombos) where T: Enum
         {
-            var combo = bot.attachedBlocks.OfType<ICanCombo>();
+            var combo = bot.AttachedBlocks.OfType<ICanCombo>();
             combo.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref iCanCombos);
         }
@@ -185,7 +185,7 @@ namespace StarSalvager.Utilities.Extensions
 
         public static void SetColliderActive(this Bot bot, bool state)
         {
-            foreach (var collidableBase in bot.attachedBlocks.OfType<CollidableBase>())
+            foreach (var collidableBase in bot.AttachedBlocks.OfType<CollidableBase>())
             {
                 collidableBase.SetColliderActive(state);
             }

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
-using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
@@ -21,12 +14,12 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
         
-        public override bool IsAttachable => true;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 
-
         //====================================================================================================================//
+
+        public Bit CarryingBit => _carryingBit;
         
         private float _anticipationTime;
         private Vector2 _playerLocation;
@@ -59,6 +52,11 @@ namespace StarSalvager.AI
                 return;
             
             SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
+            
+            //This is important to change the target, as attaching may have changed the intended target
+            if(Attached)
+                _attachTarget = AttachedBot.GetClosestAttachable(Coordinate, 1f) as Bit;
+
         }
 
         /*public override void ChangeHealth(float amount)
@@ -119,7 +117,7 @@ namespace StarSalvager.AI
         public Bit FindClosestBitOnBot()
         {
             var bot = LevelManager.Instance.BotInLevel;
-            var bits = bot.attachedBlocks.OfType<Bit>().ToArray();
+            var bits = bot.AttachedBlocks.OfType<Bit>().ToArray();
 
             if (bits.IsNullOrEmpty())
                 return null;
@@ -131,6 +129,9 @@ namespace StarSalvager.AI
             
             foreach (var bit in bits)
             {
+                if (EnemyManager.IsBitTargeted(this, bit))
+                    continue;
+                
                 var dist = Vector2.Distance(currentPosition, bit.transform.position);
                 
                 if(dist >= minDist)
@@ -156,10 +157,13 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     break;
                 case STATE.IDLE:
+                    EnemyManager.SetBorrowerTarget(this, null);
                     break;
                 case STATE.PURSUE:
                     //Try to Find a Bit on the bot
                     _attachTarget = FindClosestBitOnBot();
+
+                    EnemyManager.SetBorrowerTarget(this, _attachTarget);
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
@@ -180,6 +184,8 @@ namespace StarSalvager.AI
                         _carryingBit.transform.parent = null;
                         _carryingBit = null;
                     }
+                    
+                    EnemyManager.RemoveBorrowerTarget(this);
                     
                     Recycler.Recycle<DataLeechEnemy>(this);
                     break;
@@ -224,10 +230,20 @@ namespace StarSalvager.AI
 
         private void PursueState()
         {
-            //IF there is not a bit on the bot,
-            _attachTarget = FindClosestBitOnBot();
+            //If we currently don't have a target, and are able to find a new one
             if (_attachTarget is null)
             {
+                var test = FindClosestBitOnBot();
+                if (test == null)
+                    return;
+                
+                EnemyManager.SetBorrowerTarget(this, test);
+                _attachTarget = test;
+            }
+
+            if (EnemyManager.IsBitCarried(_attachTarget))
+            {
+                _attachTarget = null;
                 return;
             }
             
@@ -247,7 +263,8 @@ namespace StarSalvager.AI
         private void AnticipationState()
         {
             //After wait time, move to attack state
-            if (_anticipationTime > 0)
+            //If the Bit fell off the Bot, then we can attempt to steal it
+            if (_anticipationTime > 0 && _attachTarget.Attached)
             {
                 _anticipationTime -= Time.deltaTime;
                 return;
@@ -258,15 +275,28 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
-            if (!(Target is Bit bit))
+            Bit bit;
+            //If we've switched from anticipation but the Target is null (Which means we're no longer attached to the bot)
+            if (previousState == STATE.ANTICIPATION && Target == null && _attachTarget != null)
+            {
+                bit = _attachTarget;
+            }
+            else if (Target is Bit target)
+            {
+                bit = target;
+            }
+            else
+            {
                 return;
+            }
                 
-            //Detach Bit from Bot
-            AttachedBot.ForceDetach(bit);
+            //Detach Bit from Bot, in the situation where we've fallen off bot, we have to check for null
+            AttachedBot?.ForceDetach(bit);
             
             //Set Bit Parent to this object & Disable the collider
             bit.transform.SetParent(transform, false);
             bit.transform.localPosition = Vector3.down;
+            bit.transform.localRotation = Quaternion.identity;
             
             bit.SetColliderActive(false);
             bit.SetAttached(true);
@@ -279,8 +309,26 @@ namespace StarSalvager.AI
 
         private void FleeState()
         {
+            bool IsOffScreen()
+            {
+                var dif = 3 * Constants.gridCellSize;
+                var screenRect = CameraController.VisibleCameraRect;
+                var pos = _carryingBit.transform.position;
+
+                if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
+                    return true;
+                
+                if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
+                    return true;
+                    
+                
+                return false;
+            }
+
+            
+            
             //If off screen, destroy bit, then set to pursue state
-            if (!CameraController.IsPointInCameraRect(_carryingBit.transform.position))
+            if (IsOffScreen())
             {
                 Recycler.Recycle<Bit>(_carryingBit);
                 _carryingBit = null;

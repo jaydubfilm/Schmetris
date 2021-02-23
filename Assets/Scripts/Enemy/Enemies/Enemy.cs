@@ -11,6 +11,7 @@ using System.Linq;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
+using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
@@ -20,8 +21,21 @@ namespace StarSalvager.AI
     [RequireComponent(typeof(StateAnimator))]
     public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
-        public abstract bool IsAttachable { get; }
+        protected static EnemyManager EnemyManager
+        {
+            get
+            {
+                if (_enemyManager == null)
+                    _enemyManager = LevelManager.Instance.EnemyManager;
+
+                return _enemyManager;
+            }
+        }
+
+        private static EnemyManager _enemyManager;
+        
         public abstract bool IgnoreObstacleAvoidance { get; }
+
         public abstract bool SpawnAboveScreen { get; }
 
         public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
@@ -275,6 +289,11 @@ namespace StarSalvager.AI
             
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.EXPLOSION);
             explosion.transform.position = worldPosition;
+            
+            var particleScaling = explosion.GetComponent<ParticleSystemGroupScaling>();
+            var time = particleScaling.AnimationTime;
+
+            Destroy(explosion, time);
             
             if(CurrentHealth > 0)
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);

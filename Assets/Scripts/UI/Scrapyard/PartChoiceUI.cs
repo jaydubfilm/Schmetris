@@ -5,6 +5,7 @@ using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -29,9 +30,14 @@ namespace StarSalvager.UI.Scrapyard
         private GameObject partChoiceWindow;
 
         [SerializeField]
+        private DroneDesigner _droneDesigner;
+
+        [SerializeField]
         private PartSelectionUI[] selectionUis;
 
         private PART_TYPE[] _partOptions;
+
+        private PartAttachableFactory.PART_OPTION_TYPE _partOptionType;
 
         // Start is called before the first frame update
         private void Start()
@@ -44,22 +50,40 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Init
 
-        public void Init()
+        public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
         {
-            var partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            _partOptionType = partOptionType;
+
+            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+            var partProfiles = FactoryManager.Instance.PartsProfileData;
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
+            var bitProfiles = FactoryManager.Instance.BitProfileData;
 
             void SetUI(in int index, in PART_TYPE partType)
             {
-                selectionUis[index].optionImage.sprite = partAttachableFactory.GetProfileData(partType).Sprite;
+                var category = partRemoteData.GetRemoteData(partType).category;
+                
+                selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
+                selectionUis[index].optionImage.color = bitProfiles.GetProfile(category).color;
                 selectionUis[index].optionText.text = $"{partType}";
             }
             
             Random.InitState(DateTime.Now.Millisecond);
 
-            //Only use isBasic if the player is selecting the first Sector First Wave
-            PartAttachableFactory.SelectPartOptions(ref _partOptions,
-                Globals.CurrentSector == 0 && Globals.CurrentWave <= 1);
+            var partsOnBot = PlayerDataManager
+                .GetBlockDatas()
+                .OfType<PartData>()
+                .Select(x => (PART_TYPE) x.Type)
+                .Where(x => x != PART_TYPE.EMPTY)
+                .ToList();
+            var partsInStorage = PlayerDataManager
+                .GetCurrentPartsInStorage()
+                .OfType<PartData>()
+                .Select(x => (PART_TYPE) x.Type);
+            
+            partsOnBot.AddRange(partsInStorage);
 
+            partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
 
             if (_partOptions[0] == _partOptions[1])
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
@@ -86,8 +110,26 @@ namespace StarSalvager.UI.Scrapyard
                     Type = (int)partType,
                     Patches = new PatchData[patchCount]
                 };
-                
-                PlayerDataManager.AddPartToStorage(partData);
+
+                if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.Any)
+                {
+                    PlayerDataManager.AddPartToStorage(partData);
+                }
+                else
+                {
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
+                    _droneDesigner._scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category), attachable);
+                }
+
+                _droneDesigner.SaveBlockData();
+
+                if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
+                {
+                    PlayerDataManager.SetStarted(true);
+                    Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
+                    return;
+                }
+
                 PlayerDataManager.SetCanChoosePart(false);
                 
                 partChoiceWindow.SetActive(false);

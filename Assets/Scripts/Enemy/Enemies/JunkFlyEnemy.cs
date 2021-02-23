@@ -15,7 +15,6 @@ namespace StarSalvager.AI
 {
     public class JunkFlyEnemy : Enemy, IOverrideRecycleType
     {
-        public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
@@ -173,6 +172,7 @@ namespace StarSalvager.AI
                     1f,
                     "Player",
                     null,
+                    0f,
                     false,
                     true);
         }

@@ -41,18 +41,18 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CheckCanAfford()
         {
-            purchaseButton.interactable = PlayerDataManager.GetComponents() >= data.cost;
+            purchaseButton.interactable = PlayerDataManager.GetGears() >= data.cost;
         }
         
         private void OnPurchasePressed()
         {
-            var currentComponents = PlayerDataManager.GetComponents();
+            var currentComponents = PlayerDataManager.GetGears();
             if (currentComponents < data.cost)
                 return;
 
             currentComponents -= data.cost;
 
-            PlayerDataManager.SetComponents(currentComponents);
+            PlayerDataManager.SetGears(currentComponents);
             PlayerDataManager.AddPatchToStorage(data.PatchData);
 
         }

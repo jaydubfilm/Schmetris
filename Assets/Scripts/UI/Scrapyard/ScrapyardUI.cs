@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Update()
         {
-            gearsNumber.text = $"{PlayerDataManager.GetComponents()}";
+            gearsNumber.text = $"{PlayerDataManager.GetGears()}";
         }
 
         private void OnEnable()
@@ -123,7 +123,16 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice = FindObjectOfType<PartChoiceUI>();
                 }
-                _partChoice.Init();
+                bool notYetStarted = PlayerDataManager.GetStarted();
+
+                if (!notYetStarted)
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon);
+                }
+                else
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+                }
             }
 
         }

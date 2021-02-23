@@ -38,7 +38,7 @@ namespace StarSalvager.UI
             public Slider Slider;
             [Required, FoldoutGroup("$NAME")]
             public GameObject buttonUnCover;
-            
+
             [Required, FoldoutGroup("$NAME")]
             public GameObject buttonCover;
 
@@ -69,7 +69,7 @@ namespace StarSalvager.UI
             public void SetFill(float val)
             {
                 Slider.value = val;
-                
+
                 //buttonObject.interactable = val >= 1f;
                 //SetInteractable(val >= 1f);
             }
@@ -86,7 +86,7 @@ namespace StarSalvager.UI
             #if UNITY_EDITOR
             private string NAME => Type.ToString();
             #endif
-            
+
             [FoldoutGroup("$NAME")]
             public PART_TYPE Type;
             [Required, FoldoutGroup("$NAME")]
@@ -97,14 +97,14 @@ namespace StarSalvager.UI
             private static Color GetPartColor(PART_TYPE type)
             {
                 var factoryManager = FactoryManager.Instance;
-                var burnType = factoryManager.PartsRemoteData.GetRemoteData(type).burnType;
+                var category = factoryManager.PartsRemoteData.GetRemoteData(type).category;
 
-                var color = factoryManager.BitProfileData.GetProfile(burnType).color;
+                var color = factoryManager.BitProfileData.GetProfile(category).color;
 
                 return color;
             }
         }
-        
+
         [Serializable]
         public struct WindowSpriteSet
         {
@@ -127,11 +127,11 @@ namespace StarSalvager.UI
             [FoldoutGroup("$type")] public Color titleColor;
             [FoldoutGroup("$type")] public Color textColor;
         }
-        
+
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
-        
+
         #region Properties
 
         [SerializeField]
@@ -142,7 +142,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private TMP_Text gearsText;
-        
+
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Slider gearsSlider;
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
@@ -150,10 +150,10 @@ namespace StarSalvager.UI
 
         //Top Right Window
         //====================================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("TR Window")]
         private Slider progressSlider;
-        
+
         [SerializeField, Required, FoldoutGroup("TR Window")]
         private TMP_Text sectorText;
 
@@ -163,7 +163,7 @@ namespace StarSalvager.UI
         private GameObject abortWindow;
         [SerializeField, Required, FoldoutGroup("B Window")]
         private Button abortButton;
-        
+
 
         //Bottom Left Window
         //============================================================================================================//
@@ -173,13 +173,13 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Trigger Parts")]
-        [FormerlySerializedAs("SmartWeaponIcons")] 
+        [FormerlySerializedAs("SmartWeaponIcons")]
         private TriggerPartIcon[] triggerPartIcons;
 
          [SerializeField, Required, FoldoutGroup("Trigger Parts")]
          [FormerlySerializedAs("SmartWeaponsUI")]
         private TriggerPartUI[] triggerPartUI;
-        
+
 
 
 
@@ -187,7 +187,7 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        [FormerlySerializedAs("heatFillImage")] 
+        [FormerlySerializedAs("heatFillImage")]
         private Image botHealthBarImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
@@ -205,8 +205,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private GameObject dancersObject;
-        
-        
+
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
         [SerializeField, Required, FoldoutGroup("Summary Window")]
@@ -227,7 +227,7 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Summary Window")]
         private WindowSpriteSet[] spriteSets;
-        
+
         //Health Cracks
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
@@ -237,7 +237,7 @@ namespace StarSalvager.UI
 
         //Patch Point Effect
         //====================================================================================================================//
-        
+
         #region Patch Point Effect
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
@@ -252,7 +252,7 @@ namespace StarSalvager.UI
         private float effectRadius;
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
         private int effectCount;
-        
+
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private float rotationSpeed;
 
@@ -260,20 +260,20 @@ namespace StarSalvager.UI
         private float spawnTime;
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve spawnCurve;
-        
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
         private float moveTime;
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve moveCurve;
 
         #endregion //Patch Point Effect
-        
+
         //Other
         //============================================================================================================//
-        [SerializeField, Required, FoldoutGroup("Extras")] 
+        [SerializeField, Required, FoldoutGroup("Extras")]
         private FadeUIImage magnetFlash;
-        
-        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")] 
+
+        [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")]
         private Vector2 flashTimeRange;
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image borderGlow;
@@ -285,16 +285,11 @@ namespace StarSalvager.UI
 
         #endregion //Properties
 
-        //====================================================================================================================//
-
         [SerializeField]
-        private RectTransform[] bitLevelContainerTransforms;
-        private List<Image[]> _bitLevelImages;
-
-        
+        private Slider[] sliders;
         [SerializeField]
-        private RectTransform[] partIconContainerTransforms;
-        private List<Image[]> _partIconImages;
+        private Image[] sliderImages;
+
 
         //====================================================================================================================//
 
@@ -306,9 +301,8 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
-            
+
             InitValues();
         }
 
@@ -318,15 +312,15 @@ namespace StarSalvager.UI
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged += UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged += ValuesUpdated;
         }
 
         private void OnDisable()
         {
             Toast.SetToastArea(transform as RectTransform);
-            
+
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
-            PlayerDataManager.OnValuesChanged -= UpdatePlayerGearsLevel;
+            PlayerDataManager.OnValuesChanged -= ValuesUpdated;
         }
 
         //============================================================================================================//
@@ -340,15 +334,15 @@ namespace StarSalvager.UI
             var canvasSize = (_canvas.transform as RectTransform).sizeDelta;
 
             var size = viewableAreaTransform.rect.size;
-            
+
             return new Vector2
             {
                 x = size.x / canvasSize.x,
-                y = size.y / canvasSize.y,  
+                y = size.y / canvasSize.y,
             };
         }
-        
-        
+
+
         //============================================================================================================//
 
         public object[] GetHintElements(HINT hint)
@@ -360,7 +354,7 @@ namespace StarSalvager.UI
                 case HINT.MAGNET:
                     return new object[]
                     {
-                        magnetFlash.transform as RectTransform 
+                        magnetFlash.transform as RectTransform
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -368,24 +362,21 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
+
         private void InitValues()
         {
-            SetupBitLevelImages();
-            SetupPartIconImages();
-            
-            SetBitLevelImages(new Dictionary<BIT_TYPE, int>());
-            
+            SetupAmmoBars();
+
             InitSmartWeaponUI();
             ResetIcons();
 
 
             SetCarryCapacity(0f, 1);
-            
+
             SetHealthValue(1f);
             SetLevelProgressSlider(0f);
 
-            
+
             SetPlayerComponents(0);
             SetPlayerXP(0);
             ShowAbortWindow(false);
@@ -415,10 +406,10 @@ namespace StarSalvager.UI
 
             }
         }
-        
+
 
         //============================================================================================================//
-        
+
         readonly BIT_TYPE[] _bitTypes = {
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
@@ -426,162 +417,38 @@ namespace StarSalvager.UI
             BIT_TYPE.BLUE,
             BIT_TYPE.GREEN
         };
-        
+
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
 
             SetPlayerXP(0);
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
+
+            UpdateAmmoBars();
         }
 
-        
-        private void SetupBitLevelImages()
+        private void SetupAmmoBars()
         {
-            _bitLevelImages = new List<Image[]>();
-            foreach (var bitLevelContainerTransform in bitLevelContainerTransforms)
+            for (var i = 0; i < _bitTypes.Length; i++)
             {
-                var images = bitLevelContainerTransform.GetComponentsInChildren<Image>();
-                
-                _bitLevelImages.Add(images);
-            }
+                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
 
-            for (int i = 0; i < _bitTypes.Length; i++)
-            {
-                var bitType = _bitTypes[i];
+                sliderImages[i].color = color;
 
-                for (int ii = 0; ii < _bitLevelImages[i].Length; ii++)
-                {
-                    var level = 4 - ii;
-                    var sprite = FactoryManager.Instance.BitProfileData.GetProfile(bitType).GetSprite(level);
-                    var image = _bitLevelImages[i][ii];
-                    
-                    image.gameObject.name = sprite.name;
-                    image.sprite = sprite;
-                    image.enabled = false;
-                }
-            }
-            
-        }
-
-        private void SetupPartIconImages()
-        {
-            _partIconImages = new List<Image[]>();
-            foreach (var partIconContainerTransform in partIconContainerTransforms)
-            {
-                var images = partIconContainerTransform.GetComponentsInChildren<Image>();
-                
-                _partIconImages.Add(images);
+                sliders[i].minValue = 0;
             }
         }
 
-        private struct PartIconState
+        private void UpdateAmmoBars()
         {
-            public Sprite Sprite;
-            public Color Color;
-        }
-        public void SetPartImages(in Dictionary<PART_TYPE, bool> partStates)
-        {
-            if (_partIconImages.IsNullOrEmpty())
-                return;
-
-            for (int i = 0; i < _partIconImages.Count; i++)
+            for (var i = 0; i < _bitTypes.Length; i++)
             {
-                for (int ii = 0; ii < _partIconImages[i].Length; ii++)
-                {
-                    _partIconImages[i][ii].enabled = false;
-                }
+                var resource = PlayerDataManager.GetResource(_bitTypes[i]);
+
+                sliders[i].maxValue = resource.AmmoCapacity;
+                sliders[i].value = resource.Ammo;
             }
-            
-            //TODO Get the parts on the bot, determine the colors they're using
-
-            var partProfile = FactoryManager.Instance.PartsProfileData;
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData;
-            /*var parts = PlayerDataManager
-                .GetBlockDatas()
-                .OfType<PartData>()
-                .Select(x => (PART_TYPE) x.Type);*/
-
-            var parts = partStates.Keys.ToList();
-            
-            var bitCategories = new Dictionary<BIT_TYPE, List<PartIconState>>();
-
-            foreach (var partType in parts)
-            {
-                var partData = partRemoteData.GetRemoteData(partType);
-                var sprite = partProfile.GetProfile(partType).Sprite;
-                
-                var types = partData.partGrade2.Types;
-                
-                if(types.IsNullOrEmpty())
-                    continue;
-
-                if (types[0] == BIT_TYPE.NONE)
-                    types = new List<BIT_TYPE>(_bitTypes);
-
-                foreach (var bitType in types)
-                {
-                    if(!bitCategories.ContainsKey(bitType))
-                        bitCategories.Add(bitType, new List<PartIconState>());
-                    
-                    bitCategories[bitType].Add(new PartIconState
-                    {
-                        Sprite = sprite,
-                        Color = partStates[partType] ? Color.white : Color.gray
-                    });
-                }
-            }
-            
-            for (int i = 0; i < _bitTypes.Length; i++)
-            {
-                var bitType = _bitTypes[i];
-
-                if (!bitCategories.ContainsKey(bitType))
-                    continue;
-
-                var partIconStates = bitCategories[bitType];
-                
-                for (int ii = 0; ii < partIconStates.Count; ii++)
-                {
-                    var image = _partIconImages[i][ii];
-                    image.enabled = true;
-                    image.sprite = partIconStates[ii].Sprite;
-                    image.color = partIconStates[ii].Color;
-                }
-            }
-        }
-
-        //====================================================================================================================//
-
-        public void SetBitLevelImages(Dictionary<BIT_TYPE, int> bitLevels)
-        {
-            foreach (var bitLevel in bitLevels)
-            {
-                SetBitLevelImages(bitLevel.Key, bitLevel.Value);
-            }
-        }
-        
-        //Uses levels 0-4
-        public void SetBitLevelImages(in BIT_TYPE type, in int level)
-        {
-            var bitType = type;
-            var index = _bitTypes.ToList().FindIndex(x => x == bitType);
-
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-
-            var images = _bitLevelImages[index];
-
-            for (var i = 0; i < images.Length; i++)
-            {
-                var active = (4 - i) <= level;
-                
-                //TODO Need to set the color depending on the level
-                images[i].color = (4 - i) == level ? Color.white : Color.gray;
-                images[i].enabled = active;
-
-            }
-
         }
 
         //============================================================================================================//
@@ -592,7 +459,7 @@ namespace StarSalvager.UI
             carryCapacitySlider.value = value;
 
         }
-        
+
         public void OutlineMagnet(bool state)
         {
             magnetFlash.SetActive(state);
@@ -602,7 +469,7 @@ namespace StarSalvager.UI
         {
             magnetFlash.FlashOnce();
         }
-        
+
         //============================================================================================================//
 
         private bool _abortWindowShown = true;
@@ -613,14 +480,14 @@ namespace StarSalvager.UI
                 return;
 
             _abortWindowShown = shown;
-            
+
             if (!shown)
             {
                 abortButton.onClick.RemoveAllListeners();
                 abortWindow.SetActive(false);
                 return;
             }
-            
+
             abortWindow.SetActive(true);
 
             if (Globals.UsingTutorial)
@@ -630,28 +497,26 @@ namespace StarSalvager.UI
             }
 
             abortButton.gameObject.SetActive(true);
-            
+
             abortButton.onClick.AddListener(AbortPressed);
         }
 
         //============================================================================================================//
 
+        private void ValuesUpdated()
+        {
+            SetPlayerComponents(PlayerDataManager.GetGears());
+
+            UpdateAmmoBars();
+        }
+
         public void AbortPressed()
         {
             LevelManager.Instance.BotInLevel.TrySelfDestruct();
-                
+
             //If the bot was able to be killed, hide this window
             if(LevelManager.Instance.BotInLevel.Destroyed)
                 ShowAbortWindow(false);
-        }
-
-        //TODO I should look into the NotifyPropertyChanged for setting up this functionality
-        private void UpdatePlayerGearsLevel()
-        {
-            //SetPlayerGearsProgress(PlayerDataManager.GetPatchPointProgress());
-
-            //TODO Need to add the Patch Points connection here
-            SetPlayerComponents(PlayerDataManager.GetComponents());
         }
 
         public void SetPlayerXP(int xp)
@@ -682,7 +547,7 @@ namespace StarSalvager.UI
             _flashingBorder = true;
 
             var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
-            
+
             StartCoroutine(BorderFlashingCoroutine(time));
         }
 
@@ -724,13 +589,13 @@ namespace StarSalvager.UI
             {
                 var color = triggerPartIcon.Color;
                 triggerPartUI[index].buttonImage.color = color;
-                
+
                 triggerPartUI[index].iconImage.color = color;
                 triggerPartUI[index].iconImage.sprite = triggerPartIcon.UISprite;
 
                 return;
             }
-            
+
             triggerPartUI[index].buttonImage.color = Color.white;
             triggerPartUI[index].iconImage.sprite = null;
         }
@@ -739,7 +604,7 @@ namespace StarSalvager.UI
             if (index < 0) return;
             triggerPartUI[index].SetActive(state);
         }
-        
+
         public void SetInteractable(int index, bool state)
         {
             if (index < 0) return;
@@ -792,7 +657,7 @@ namespace StarSalvager.UI
             botHealthBarImage.fillAmount = value;
 
         }
-        
+
         //Wave Summary Window Functions
         //====================================================================================================================//
 
@@ -800,28 +665,28 @@ namespace StarSalvager.UI
 
         private bool _movingSummaryWindow;
 
-        public void ShowWaveSummaryWindow(bool show, 
-            in string title, 
-            in string text, 
+        public void ShowWaveSummaryWindow(bool show,
+            in string title,
+            in string text,
             Action onConfirmCallback,
             string buttonText = "Continue",
-            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT, 
+            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT,
             float moveTime = 1f,
             bool instantMove = false)
         {
             if (_movingSummaryWindow)
                 return;
-            
+
             InputManager.SwitchCurrentActionMap(show ? ACTION_MAP.MENU : ACTION_MAP.DEFAULT);
-            
-            
+
+
             float targetY;
             if (show)
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
 
                 confirmButtonText.text = buttonText;
-                
+
                 confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(() =>
                 {
@@ -841,8 +706,8 @@ namespace StarSalvager.UI
 
                 waveSummaryTitle.color = spriteSet.titleColor;
                 waveSummaryText.color = spriteSet.textColor;
-                
-                
+
+
 
             }
             else
@@ -863,14 +728,14 @@ namespace StarSalvager.UI
             }
 
             StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
-            
+
         }
 
         private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
         {
             confirmButton.interactable = false;
             _movingSummaryWindow = true;
-            
+
             var t = 0f;
 
             var startPos = rectTransform.anchoredPosition;
@@ -887,20 +752,20 @@ namespace StarSalvager.UI
 
             _movingSummaryWindow = false;
             confirmButton.interactable = true;
-            
+
             EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
 
         }
 
         #endregion //Wave Summary Window
-        
+
         #region Dancers
 
         public void SetDancersActive(bool state)
         {
             dancersObject.SetActive(state);
         }
-        
+
         #endregion
 
         public void FadeBackground(bool fadeIn, bool instant = false)
@@ -915,7 +780,7 @@ namespace StarSalvager.UI
                 fadeImage.color = endColor;
                 return;
             }
-            
+
             if (_fading)
                 return;
 
@@ -929,14 +794,14 @@ namespace StarSalvager.UI
             float t = 0;
 
             fadeImage.color = startColor;
-            
+
             while (t / time <= 1f)
             {
                 fadeImage.color = Color.Lerp(startColor, endColor, t / time);
-                
-                
+
+
                 t += Time.deltaTime;
-                
+
                 yield return null;
             }
 
@@ -945,7 +810,7 @@ namespace StarSalvager.UI
 
             _fading = false;
         }
-        
+
 
 
         //Patch point Effect
@@ -965,14 +830,14 @@ namespace StarSalvager.UI
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
                 return;
 
-            
+
             var patchSprite = FactoryManager.Instance.PatchSprite;
 
-            
+
             var botWorldPosition = LevelManager.Instance.BotInLevel.transform.position;
 
             var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
-            
+
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 effectArea,
                 screenPoint,
@@ -997,7 +862,7 @@ namespace StarSalvager.UI
             {
                 var image = Instantiate(imagePrefab);
                 image.sprite = sprite;
-                
+
                 var trans = (RectTransform)image.transform;
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
@@ -1027,12 +892,12 @@ namespace StarSalvager.UI
                 t += deltaTime;
                 yield return null;
             }
-            
+
             for (int i = 0; i < count; i++)
             {
                 spawnPositions[i] = transforms[i].localPosition;
             }
-            
+
             t = 0f;
             var targetPosition = effectArea.transform.InverseTransformPoint(moveTargetTransform.position);
 
@@ -1051,7 +916,7 @@ namespace StarSalvager.UI
                 t += deltaTime;
                 yield return null;
             }
-            
+
             for (int i = 0; i < count; i++)
             {
                 Destroy(transforms[i].gameObject);
@@ -1066,9 +931,7 @@ namespace StarSalvager.UI
 
 
         //====================================================================================================================//
-        
+
 
     }
 }
-
-

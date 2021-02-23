@@ -114,3 +114,18 @@ MonoBehaviour:
       cost: 20
       Properties: []
     allowedParts: 00000000040000000e0000000600000007000000020000000300000021000000050000002300000024000000
+  - name: VAMPIRE
+    type: 12
+    description: 
+    Levels:
+    - level: 1
+      cost: 50
+      Properties:
+      - key: Multiplier
+        value: .02
+    - level: 2
+      cost: 100
+      Properties:
+      - key: Multiplier
+        value: .05
+    allowedParts: 040000000c0000000e0000002400000007000000

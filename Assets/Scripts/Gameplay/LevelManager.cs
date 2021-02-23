@@ -44,9 +44,10 @@ namespace StarSalvager
         private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
-        public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
+        //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
-        public WaveRemoteDataScriptableObject CurrentWaveData => CurrentSector.GetRemoteData(Globals.CurrentWave);
+        public WaveRemoteDataScriptableObject CurrentWaveData =>
+            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRing].GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -239,7 +240,7 @@ namespace StarSalvager
         private float _enterTime = 1.3f;
         private float _t;
         private float _startY;
-        //FIXME Does this need to be happening every frame?
+        //FIXME Does this need to be happening every frame? This function is for the zoom in/out of level, it likely does not need to run every frame
         private void CheckBotPositions()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -345,6 +346,7 @@ namespace StarSalvager
                 TransitionToEndWaveState();
         }
 
+        //This triggers when the wave ends, not when the timer hits 0
         private void ProcessEndOfWave()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -359,10 +361,14 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetLevelProgressSlider(1f);
+            foreach (var bot in m_bots)
+            {
+                bot.ResetRotationToIdentity();
+            }
             SavePlayerData();
             GameTimer.SetPaused(true);
             
-            PlayerDataManager.GetResource(BIT_TYPE.RED).AddLiquid(10);
+            //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
             AudioController.CrossFadeTrack(MUSIC.NONE);
                 
             m_levelManagerUI.ShowSummaryWindow(
@@ -374,10 +380,6 @@ namespace StarSalvager
                 GameManager.SetCurrentGameState(GameState.UniverseMap);
                 ProcessScrapyardUsageBeginAnalytics();
                 PlayerDataManager.SetCanChoosePart(true);
-                
-                Globals.StripBits = true;
-                PlayerDataManager.DowngradeAllBits(1, false);
-                
 
                 ScreenFade.Fade(() =>
                 {
@@ -516,7 +518,8 @@ namespace StarSalvager
             InputManager.Instance.InitInput();
             InputManager.Instance.LockRotation = true;
 
-            SessionDataProcessor.Instance.StartNewWave(Globals.CurrentSector, Globals.CurrentWave, BotInLevel.GetBlockDatas());
+            //FIXME
+            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
             
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotInLevel.transform.position);
             if (Globals.Orientation == ORIENTATION.VERTICAL)
@@ -601,12 +604,13 @@ namespace StarSalvager
             {
 
             };
-            string levelStartString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            string levelStartString = $"{Globals.CurrentWave}";
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
         }
         
         //============================================================================================================//
         
+        //This triggers when the timer hits 0 and the level is moving into completed state. This is not when the level pauses and the summaryy screen shows
         private void TransitionToEndWaveState()
         {
             if (GameManager.IsState(GameState.LevelBotDead))
@@ -627,6 +631,7 @@ namespace StarSalvager
             EnemyManager.SetEnemiesFallEndLevel();
         }
 
+        //This handles cleanup for when you've entered the end wave state above. This and the above function likely should be combined in some way, I don't recall why it was originally set up like this and its on the list to fix.
         private void TryBeginWaveEndSequence()
         {
             if (!m_endLevelOverride && _afterWaveTimer >= 0)
@@ -646,14 +651,12 @@ namespace StarSalvager
             //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
 
-            WaveEndSummaryData.CompletedSector = Globals.CurrentSector;
+            WaveEndSummaryData.CompletedSector = 0;
             WaveEndSummaryData.CompletedWave = Globals.CurrentWave;
-            WaveEndSummaryData.WaveEndTitle = $"Sector {Globals.CurrentSector + 1}.{Globals.CurrentWave + 1} Complete";
+            WaveEndSummaryData.WaveEndTitle = $"Wave {Globals.CurrentWave + 1} Complete";
 
-            int progressionSector = Globals.CurrentSector;
+            //int progressionSector = Globals.CurrentSector;
             string endWaveMessage;
-
-            PlayerDataManager.ReduceLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
 
             endWaveMessage = "Wave Complete!";
 
@@ -670,12 +673,16 @@ namespace StarSalvager
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
 
-            int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
+            //FIXME
+            Debug.Log("WARNING The progress for bot must be saved here");
+            /*int curNodeIndex = PlayerDataManager.GetLevelRingNodeTree().ConvertSectorWaveToNodeIndex(Globals.CurrentSector, Globals.CurrentWave);
             if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(curNodeIndex))
             {
                 PlayerDataManager.AddCompletedNode(curNodeIndex);
             }
-            PlayerDataManager.SetCurrentNode(curNodeIndex);
+            PlayerDataManager.SetCurrentNode(curNodeIndex);*/
+
+            PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
 
             for (int i = 0; i < m_bots.Count; i++)
             {
@@ -699,7 +706,7 @@ namespace StarSalvager
             }
             
             var lowestCoordinate =
-                bot.attachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
+                bot.AttachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
 
             var localPosition = bot.transform.position + (Vector3)(lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
             
@@ -775,58 +782,18 @@ namespace StarSalvager
         //FIXME Does this need to be in the LevelManager?
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
-            /*for (int i = loot.Count - 1; i >= 0; i--)
-            {
-                switch (loot[i])
-                {
-                    case RDSValue<(BIT_TYPE, int)> rdsValueResourceRefined:
-                        PlayerDataManager.GetResource(rdsValueResourceRefined.rdsValue.Item1).AddLiquid(rdsValueResourceRefined.rdsValue.Item2);
-                        loot.RemoveAt(i);
-                        break;
-                    case RDSValue<Blueprint> rdsValueBlueprint:
-                        PlayerDataManager.UnlockBlueprint(rdsValueBlueprint.rdsValue);
-                        Toast.AddToast("Unlocked Blueprint!");
-                        loot.RemoveAt(i);
-                        break;
-                    case RDSValue<Vector2Int> rdsValueGears:
-                    {
-                        var gears = Random.Range(rdsValueGears.rdsValue.x, rdsValueGears.rdsValue.y);
-                        PlayerDataManager.ChangeGears(gears);
-                        loot.RemoveAt(i);
-                        
-                        FloatingText.Create($"+{gears}", position, Color.white);
-                        
-                        break;
-                    }
-                    case RDSValue<IBlockData> rdsValueBlockData:
-                    {
-                        if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
-                        {
-                            switch (rdsValueBlockData.rdsValue.ClassType)
-                            {
-                                case nameof(Component):
-                                    PlayerDataManager.AddComponent(1);
-                                    loot.RemoveAt(i);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }*/
-
             ObstacleManager.SpawnObstacleExplosion(position, loot, isFromEnemyLoot);
         }
 
         public void SavePlayerData()
         {
             if (Globals.UsingTutorial)
-                return; 
-            
+                return;
+
             foreach (Bot bot in m_bots)
             {
+                
+                
                 var blockData = bot.GetBlockDatas();
                 /*if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
                     blockData = new List<IBlockData>();*/
@@ -840,7 +807,7 @@ namespace StarSalvager
         public void RestartLevel()
         {
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
 
             ScreenFade.Fade(() =>
@@ -860,7 +827,7 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
-                LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).liquid);
+                LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).Ammo);
             }
 
             InputManager.Instance.CancelMove();
@@ -868,6 +835,7 @@ namespace StarSalvager
 
             SavePlayerData();
             GameManager.SetCurrentGameState(GameState.LevelBotDead);
+            PlayerDataManager.SetStarted(false);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
@@ -875,7 +843,7 @@ namespace StarSalvager
                 if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                     continue;
 
-                tempDictionary.Add((int)_bitType, PlayerDataManager.GetResource(_bitType).liquid);
+                tempDictionary.Add((int) _bitType, PlayerDataManager.GetResource(_bitType).Ammo);
             }
 
             Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
@@ -883,7 +851,7 @@ namespace StarSalvager
                 {AnalyticsManager.DeathCause, deathMethod},
                 {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
             };
-            string levelLostString = Globals.CurrentSector + "." + Globals.CurrentWave;
+            string levelLostString = $"Wave {Globals.CurrentWave + 1}";
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost,
                 eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
 
@@ -896,10 +864,10 @@ namespace StarSalvager
             m_runLostState = true;
             //GameTimer.SetPaused(false);
 
-            Globals.CurrentSector = 0;
+            //Globals.CurrentSector = 0;
             Globals.CurrentWave = 0;
 
-        OutroScene.gameObject.SetActive(true);
+            OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }
 
@@ -936,7 +904,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(Globals.CurrentSector + 1, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
         }
 
         public void OnPause()
@@ -953,10 +921,10 @@ namespace StarSalvager
 
         public void ProcessScrapyardUsageBeginAnalytics()
         {
-            Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
+            /*Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
             {
                 {"Sector Number", Globals.CurrentSector}
-            };
+            };*/
             //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
         }
 

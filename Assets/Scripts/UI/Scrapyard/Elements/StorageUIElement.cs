@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>/*, IDragHandler, IBeginDragHandler, IEndDragHandler*/
     {
         private static ScrapyardBot _scrapyardBot;
 
@@ -30,6 +30,7 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             itemImage.sprite = data.sprite;
+            itemImage.color = data.color;
 
             var isPart = data.blockData.ClassType == nameof(Part) ||
                          data.blockData.ClassType == nameof(ScrapyardPart);
@@ -78,9 +79,8 @@ namespace StarSalvager.UI.Scrapyard
         }*/
 
         //====================================================================================================================//
-
-
-        public void OnBeginDrag(PointerEventData eventData)
+ 
+        /*public void OnBeginDrag(PointerEventData eventData)
         {
             if (!button.interactable)
                 return;
@@ -93,6 +93,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var image = new GameObject("Test").AddComponent<Image>();
                 image.sprite = data.sprite;
+                image.color = data.color;
 
                 partDragImageTransform = image.transform as RectTransform;
                 partDragImageTransform.anchorMin = partDragImageTransform.anchorMax = Vector2.one * 0.5f;
@@ -129,7 +130,7 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             partDragImageTransform.gameObject.SetActive(false);
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -147,6 +148,7 @@ namespace StarSalvager.UI.Scrapyard
     {
         public string name;
         public Sprite sprite;
+        public Color color;
         public IBlockData blockData;
         public int storageIndex;
 

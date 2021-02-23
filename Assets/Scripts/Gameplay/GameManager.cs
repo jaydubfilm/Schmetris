@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    //FIXME We'll likely want to make use of enum flags here
     [Flags]
     public enum GameState
     {
@@ -18,7 +17,7 @@ namespace StarSalvager
         Scrapyard = 1 << 2,
         UniverseMap = 1 << 3,
         LevelActive = 1 << 4,
-        LevelActiveEndSequence = 1 << 5,
+        LevelActiveEndSequence = 1 << 5, // After the timer is over, before the level properly ends
         LevelEndWave = 1 << 6,
         LevelBotDead = 1 << 7,
 

@@ -25,7 +25,6 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override bool IsAttachable => false;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
@@ -191,6 +190,7 @@ namespace StarSalvager.AI
             SetState(STATE.MOVE);
         }
 
+        //What this is doing is alternating between two different angle offsets from the boss to determine next location. If it is far away, it chooses an angle that guides it inwards, and vice versa if it is close, to make it vary around in movement a bunch.
         private Vector2 ChooseOffset(in float minDist, in float maxDist)
         {
             if (Random.Range(0, 100) < chanceSwapDirections)
@@ -229,14 +229,16 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
-            if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
+            var currentPosition = transform.position;
+            
+            if (!CameraController.IsPointInCameraRect(currentPosition, Constants.VISIBLE_GAME_AREA))
                 return;
 
             Vector2 targetLocation = _playerLocation;
 
-            Vector2 shootDirection = (targetLocation - (Vector2)transform.position).normalized;
+            Vector2 shootDirection = (targetLocation - (Vector2)currentPosition).normalized;
 
-            var raycastHit = Physics2D.Raycast(transform.position, shootDirection, 100, collisionMask.value);
+            var raycastHit = Physics2D.Raycast(currentPosition, shootDirection, 100, collisionMask.value);
             //Debug.DrawRay(transform.position, shootDirection * 100, Color.blue, 1.0f);
 
             if (raycastHit.collider == null)
@@ -244,38 +246,20 @@ namespace StarSalvager.AI
                 return;
             }
 
-            if (!(raycastHit.transform.GetComponent<Bot>() is Bot bot))
-                throw new Exception();
+            var iCanBeHit = raycastHit.transform.GetComponent<ICanBeHit>();
 
-            if (LevelManager.Instance.BotInLevel.GetClosestAttachable(raycastHit.point - _playerLocation) is Bit)
-            {
+            if (iCanBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point - _playerLocation) is Bit)
                 return;
-            }
 
             var lineShrink = FactoryManager.Instance
                 .GetFactory<EffectFactory>()
                 .CreateObject<LineShrink>();
 
-            var didHitTarget = true;
             _jumpCount = Random.Range(6, 9);
 
             lineShrink.Init(transform.position, targetLocation);
 
-            if (didHitTarget)
-            {
-                LevelManager.Instance.BotInLevel.TryHitAt(targetLocation, LaserDamage);
-            }
-
-
-            /*FactoryManager.Instance.GetFactory<ProjectileFactory>()
-                .CreateObjects<Projectile>(
-                    m_enemyData.ProjectileType,
-                    transform.position,
-                    targetLocation,
-                    shootDirection,
-                    1f,
-                    "Player",
-                    null);*/
+            iCanBeHit.TryHitAt(targetLocation, LaserDamage);
         }
 
         #endregion

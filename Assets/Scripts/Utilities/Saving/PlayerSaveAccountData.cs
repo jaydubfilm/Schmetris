@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.FileIO;
+using StarSalvager.Audio;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using StarSalvager.Audio;
-using StarSalvager.UI.Hints;
 using UnityEngine;
 
 namespace StarSalvager.Values
@@ -20,18 +16,8 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
-        //TEMP
-        public Dictionary<int, int> numTimesBeatNewWaveInSector = new Dictionary<int, int>()
-        {
-            { 0, 0 },
-            { 1, 0 },
-            { 2, 0 },
-            { 3, 0 },
-            { 4, 0 }
-        };
-
-        public int Gears;
-        public int PatchPointsSpent;
+        public bool HasStarted = false;
+        public int Experience;
 
         public int CoreDeaths;
         public float RepairsDone;
@@ -45,7 +31,7 @@ namespace StarSalvager.Values
         };
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
-        public int GearsAtRunBeginning;
+        public int ExperienceAtRunBeginning;
         public int CoreDeathsAtRunBeginning;
         public float RepairsDoneAtRunBeginning;
         public int TotalRuns;
@@ -58,8 +44,6 @@ namespace StarSalvager.Values
             { BIT_TYPE.GREY, 0},
         };
         public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
-
-        public List<Blueprint> unlockedBlueprints = new List<Blueprint>();
 
         [JsonIgnore]
         public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
@@ -78,10 +62,11 @@ namespace StarSalvager.Values
             
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            //[HINT.COMPONENT] = false,
             
         };
 
+        /*//This system likely should be reworked. These vector2ints define the connections between nodes on the universe map, where the 1st value is the node that can be reached from the second node.
+        //Example: (2,0) represents you being able to go from node 0 to node 2
         private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
         {
             new Vector2Int(1, 0),
@@ -114,6 +99,7 @@ namespace StarSalvager.Values
             new Vector2Int(25, 20),
         };
 
+        //These are the nodes that have wrecks. Should also be reworked whenever the proper universe map setup is done
         [JsonIgnore]
         public List<int> WreckNodes = new List<int>()
         {
@@ -122,13 +108,55 @@ namespace StarSalvager.Values
             11,
             16,
             21,
-        };
+        };*/
 
 
         public List<Vector2Int> _botLayout = new List<Vector2Int>()
         {
-
+            new Vector2Int(0, 0),
+            new Vector2Int(1, 0),
+            new Vector2Int(0, 1),
+            new Vector2Int(-1, 0),
+            new Vector2Int(0, -1)
         };
+
+        public BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
+        {
+            switch (coordinate)
+            {
+                case Vector2Int v when v.Equals(Vector2Int.zero):
+                    return BIT_TYPE.GREEN;
+                case Vector2Int v when v.Equals(Vector2Int.right):
+                    return BIT_TYPE.RED;
+                case Vector2Int v when v.Equals(Vector2Int.up):
+                    return BIT_TYPE.BLUE;
+                case Vector2Int v when v.Equals(Vector2Int.left):
+                    return BIT_TYPE.GREY;
+                case Vector2Int v when v.Equals(Vector2Int.down):
+                    return BIT_TYPE.YELLOW;
+                default:
+                    return BIT_TYPE.NONE;
+            }
+        }
+
+        public Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            switch(bitType)
+            {
+                case BIT_TYPE.GREEN:
+                    return Vector2Int.zero;
+                case BIT_TYPE.RED:
+                    return Vector2Int.right;
+                case BIT_TYPE.BLUE:
+                    return Vector2Int.up;
+                case BIT_TYPE.GREY:
+                    return Vector2Int.left;
+                case BIT_TYPE.YELLOW:
+                    return Vector2Int.down;
+                default:
+                    throw new Exception("Invalid bit type for category to get coordinate on bot");
+            }
+        }
 
         //====================================================================================================================//
 
@@ -140,9 +168,9 @@ namespace StarSalvager.Values
                 runStarted = false,
             };
 
-            data.SetupMap(LevelRingConnectionsJson, WreckNodes);
+            //data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
-            GearsAtRunBeginning = Gears;
+            ExperienceAtRunBeginning = Experience;
             CoreDeathsAtRunBeginning = CoreDeaths;
             BitConnectionsAtRunBeginning.Clear();
             foreach (var keyValue in BitConnections)
@@ -161,80 +189,58 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
-        public void ChangeGears(int amount)
+        public void ChangeExperience(int amount)
         {
-            int totalPatchPoints = GetTotalPatchPoints();
-            Gears += amount;
+            int totalLevels = GetTotalLevels();
+            Experience += amount;
 
             if (GameManager.IsState(GameState.LEVEL))
             {
                 LevelManager.Instance.WaveEndSummaryData.AddGearsGained(amount);
             }
 
-            int newTotalPatchPoints = GetTotalPatchPoints();
+            int newTotalLevels = GetTotalLevels();
 
-            if (newTotalPatchPoints <= totalPatchPoints) 
+            if (newTotalLevels <= totalLevels) 
                 return;
             
-            var difference = newTotalPatchPoints - totalPatchPoints;
-            Toast.AddToast($"Unlocked {(difference > 1 ? $"{difference} Patch Points!" : "New Patch Point!")}");
-                
-            AudioController.PlaySound(SOUND.UNLOCK_PATCH_POINT);
-            
-            LevelManager.Instance?.GameUi?.CreatePatchPointEffect(difference);
+            var difference = newTotalLevels - totalLevels;
+
+            //Do something to signify gaining a level
         }
 
-        public void AddGearsToGetPatchPoints(int numPatchPointsToGet)
+        public (int, int) GetLevelProgress()
         {
-            for (int i = 0; i < numPatchPointsToGet; i++)
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
+
+            int totalLevels = 0;
+            int experienceAmount = Experience;
+
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                (int, int) progress = GetPatchPointProgress();
-                ChangeGears(progress.Item2 - progress.Item1);
-            }
-        }
-
-        public (int, int) GetPatchPointProgress()
-        {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
-
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
-
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
-            {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return (gearsAmount, patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints));
+            return (experienceAmount, levelBaseExperience + (levelExperienceIncrement * totalLevels));
         }
 
-        public int GetTotalPatchPoints()
+        public int GetTotalLevels()
         {
-            int patchPointBaseCost = Globals.PatchPointBaseCost;
-            int patchPointCostIncrement = Globals.PatchPointIncrementCost;
+            int levelBaseExperience = Globals.LevelBaseExperience;
+            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
-            int totalPatchPoints = 0;
-            int gearsAmount = Gears;
+            int totalLevels = 0;
+            int experienceAmount = Experience;
 
-            while (patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints) <= gearsAmount)
+            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
-                gearsAmount -= patchPointBaseCost + (patchPointCostIncrement * totalPatchPoints);
-                totalPatchPoints++;
+                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
+                totalLevels++;
             }
 
-            return totalPatchPoints;
-        }
-
-        public int GetAvailablePatchPoints()
-        {
-            return GetTotalPatchPoints() - PatchPointsSpent;
-        }
-
-        public void SpendPatchPoints(int amount)
-        {
-            PatchPointsSpent += amount;
+            return totalLevels;
         }
 
         public void RecordBitConnection(BIT_TYPE bit)
@@ -264,71 +270,6 @@ namespace StarSalvager.Values
         public void SetHintDisplay(HINT hint, bool state)
         {
             _hintDisplay[hint] = state;
-        }
-
-        //====================================================================================================================//
-
-        public void UnlockBlueprint(Blueprint blueprint)
-        {
-            if (unlockedBlueprints.All(b => b.name != blueprint.name))
-            {
-                unlockedBlueprints.Add(blueprint);
-
-                //FIXME This may benefit from the use of a callback instead of a direct call
-                if (LevelManager.Instance != null && LevelManager.Instance.WaveEndSummaryData != null)
-                {
-                    LevelManager.Instance.WaveEndSummaryData.AddUnlockedBlueprint(blueprint.DisplayString);
-                }
-
-                PlayerDataManager.AddNewBlueprintAlert(blueprint);
-            }
-        }
-
-        public void UnlockBlueprint(PART_TYPE partType)
-        {
-            Blueprint blueprint = new Blueprint
-            {
-                name = $"{partType}",
-                partType = partType
-            };
-            UnlockBlueprint(blueprint);
-        }
-
-        public void UnlockAllBlueprints()
-        {
-            foreach (var partRemoteData in FactoryManager.Instance.PartsRemoteData.partRemoteData)
-            {
-                //TODO Add these back in when we're ready!
-                switch (partRemoteData.partType)
-                {
-                    //Still want to be able to upgrade the core, just don't want to buy new ones?
-                    //case PART_TYPE.CORE:
-                    case PART_TYPE.SPIKES:
-                    case PART_TYPE.LASER:
-                    case PART_TYPE.GRENADE:
-                    case PART_TYPE.CATAPULT:
-                    /*case PART_TYPE.LIGHTNING:
-                    case PART_TYPE.BOOSTRANGE:
-                    case PART_TYPE.BOOSTRATE:
-                    case PART_TYPE.BOOSTDAMAGE:
-                    case PART_TYPE.BOOSTDEFENSE:*/
-                    case PART_TYPE.STACKER:
-                    case PART_TYPE.CLOAK:
-                    case PART_TYPE.SONAR:
-                    case PART_TYPE.DECOY:
-                    case PART_TYPE.RETRACTOR:
-                    case PART_TYPE.HOOVER:
-                    case PART_TYPE.FREEZE:
-                        continue;
-                }
-
-                Blueprint blueprint = new Blueprint
-                {
-                    name = $"{partRemoteData.partType}",
-                    partType = partRemoteData.partType
-                };
-                UnlockBlueprint(blueprint);
-            }
         }
 
         //====================================================================================================================//

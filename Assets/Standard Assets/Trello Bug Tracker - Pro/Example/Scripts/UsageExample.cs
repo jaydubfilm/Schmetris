@@ -94,7 +94,7 @@ namespace DG
             trello = new Trello(yourKey, yourToken);
             
             // gets the boards of the current user
-            yield return trello.PopulateBoardsRoutine(); 
+            yield return trello.PopulateBoardsRoutine(null); 
             trello.SetCurrentBoard(currentBoard);
             
             // gets the lists on the current board

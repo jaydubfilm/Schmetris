@@ -14,7 +14,10 @@ namespace StarSalvager.ScriptableObjects
         public bool shuffleCanDisconnect = true;
         [BoxGroup("Prototyping"), Range(0.01f, 1f)]
         public float shuffleTimeThreshold = 0.3f;
-
+        
+        
+        [BoxGroup("Prototyping")]
+        public int startingAmmo = 20;
 
         [BoxGroup("Debugging")]
         public bool testingFeatures = false;
@@ -29,13 +32,10 @@ namespace StarSalvager.ScriptableObjects
         //Experience Properties
         //====================================================================================================================//
 
-        [BoxGroup("Facilities")]
-        public int patchPointBaseCost = 500;
-        [BoxGroup("Facilities")]
-        public int patchPointIncrementCost = 50;
-
-        [BoxGroup("Blueprints"), Space(10f)]
-        public List<BlueprintInitialData> blueprintInitialData = new List<BlueprintInitialData>();
+        [BoxGroup("Experience")]
+        public int levelBaseExperience = 500;
+        [BoxGroup("Experience")]
+        public int levelExperienceIncrement = 50;
 
         //Wave Properties
         //====================================================================================================================//
@@ -78,6 +78,12 @@ namespace StarSalvager.ScriptableObjects
         public float botHealth = 100f;
         [BoxGroup("Bot")]
         public float greenHealAmount = 10f;
+        
+        [BoxGroup("Bot")]
+        public float decoyDroneHealth = 20f;
+        
+        [BoxGroup("Bot")]
+        public int magnetAmount = 10;
 
         [BoxGroup("Bot")]
         public float botEnterScreenMaxSize = 1.5f;

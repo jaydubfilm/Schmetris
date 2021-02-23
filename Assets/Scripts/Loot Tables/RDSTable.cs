@@ -93,6 +93,7 @@ namespace StarSalvager
 
 		//============================================================================================================//
 
+		//Add this RDS Object to the list of loot that will be dropped
 		private void AddToResult(List<IRDSObject> rv, IRDSObject o)
 		{
 			if (!o.rdsUnique || !uniquedrops.Contains(o))
@@ -119,6 +120,7 @@ namespace StarSalvager
 			}
 		}
 
+		//Get the loot from this RDS Table
 		public virtual IEnumerable<IRDSObject> rdsResult
 		{
 			get

@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using StarSalvager.Utilities.JsonDataTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using UnityEngine;
 using StarSalvager.Values;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
+using UnityEngine;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -23,40 +20,27 @@ namespace StarSalvager.Utilities.Saving
         public bool hasSetupConverter;
 
         [JsonProperty]
-        private List<PlayerResource> _playerResources = new List<PlayerResource>() {
-            new PlayerResource(BIT_TYPE.BLUE, 0, 0),
-            new PlayerResource(BIT_TYPE.GREEN, 0, 0),
-            new PlayerResource(BIT_TYPE.GREY, 0, 0),
-            new PlayerResource(BIT_TYPE.RED, 30, 0),
-            new PlayerResource(BIT_TYPE.YELLOW, 0, 0)
+        private List<PlayerResource> _playerResources = new List<PlayerResource>
+        {
+            new PlayerResource(BIT_TYPE.BLUE, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.GREEN, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.GREY, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.RED, Globals.StartingAmmo, 100),
+            new PlayerResource(BIT_TYPE.YELLOW, Globals.StartingAmmo, 100)
         };
 
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Components => _components;
+        public int Gears => _gears;
 
-        [JsonProperty] private int _components;
-
-/*[JsonIgnore]
-public Dictionary<COMPONENT_TYPE, int> Components => _components;
-[JsonProperty]
-private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_TYPE, int>
-{
-    {COMPONENT_TYPE.FUSOR, 0},
-    {COMPONENT_TYPE.CHIP, 0},
-    {COMPONENT_TYPE.NUT, 0},
-    {COMPONENT_TYPE.BOLT, 0},
-    {COMPONENT_TYPE.COIL, 0}
-};*/
+        [JsonProperty] private int _gears;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
         public List<PatchData> patchesInStorage = new List<PatchData>();
-
-        public List<SectorWaveModifier> levelResourceModifier = new List<SectorWaveModifier>();
 
         public int currentModularSectorIndex = 0;
 
@@ -71,18 +55,12 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
         [JsonProperty]
         private List<string> _dontShowAgainKeys = new List<string>();
 
-        [JsonIgnore]
+        /*[JsonIgnore]
         public LevelNodeTree LevelRingNodeTree = new LevelNodeTree();
         [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
-        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>
-        {
+        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>();*/
 
-        };
-
-        public List<int> WreckNodes = new List<int>()
-        {
-
-        };
+        public List<int> WreckNodes = new List<int>();
 
         public List<int> PlayerPreviouslyCompletedNodes = new List<int>()
         {
@@ -91,7 +69,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
 
         //============================================================================================================//
 
-        public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
+        /*public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
         {
             if (levelRingConnectionsJson != null)
             {
@@ -106,7 +84,7 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             }
 
             LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -115,45 +93,37 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
             return _playerResources;
         }
 
-        public PlayerResource GetResource(BIT_TYPE bitType)
+        public PlayerResource GetResource(in BIT_TYPE bitType)
         {
-            int index = (int)bitType - 1;
-
-            return _playerResources[index];
+            var type = (int) bitType - 1;
+            return _playerResources[type];
         }
 
         //============================================================================================================//
 
-        public void SetComponents(int value)
+        public void SetGears(int value)
         {
-            _components = value;
-        }
-
-        /*public void SetComponents(Dictionary<COMPONENT_TYPE, int> liquidValues)
-        {
-            foreach (var value in liquidValues)
-            {
-                _components[value.Key] = value.Value;
-            }
-        }*/
-
-        //============================================================================================================//
-
-        public void AddComponent(int amount)
-        {
-            _components += Mathf.Abs(amount);
-        }
-
-        public void SubtractComponent(int amount)
-        {
-            _components -= Mathf.Abs(amount);
+            _gears = value;
         }
 
         //============================================================================================================//
 
-        public bool CheckIfCompleted(int sector, int waveAt)
+        public void AddGears(int amount)
         {
-            for (int i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
+            _gears += Mathf.Abs(amount);
+        }
+
+        public void SubtractGears(int amount)
+        {
+            _gears -= Mathf.Abs(amount);
+        }
+
+        //============================================================================================================//
+
+        public bool CheckIfCompleted(in int waveIndex)
+        {
+            Debug.LogError("Checks not yet setup");
+            /*for (var i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
             {
                 (int, int) curSectorWaveTuple = LevelRingNodeTree.ConvertNodeIndexIntoSectorWave(PlayerPreviouslyCompletedNodes[i]);
 
@@ -163,50 +133,8 @@ private Dictionary<COMPONENT_TYPE, int> _components = new Dictionary<COMPONENT_T
                 }
             }
 
+            return false;*/
             return false;
-        }
-
-        //============================================================================================================//
-
-        public float GetLevelResourceModifier(int sector, int wave)
-        {
-            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-
-            if (index == -1)
-            {
-                levelResourceModifier.Add(new SectorWaveModifier
-                {
-                    Sector = sector,
-                    Wave = wave,
-                    Modifier = 1.0f
-                });
-                index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-            }
-
-            return levelResourceModifier[index].Modifier;
-        }
-
-        public void ReduceLevelResourceModifier(int sector, int wave)
-        {
-            int index = levelResourceModifier.FindIndex(s => s.Sector == sector && s.Wave == wave);
-            float previousModifier;
-
-            if (index >= 0)
-            {
-                previousModifier = levelResourceModifier[index].Modifier;
-                levelResourceModifier.RemoveAt(index);
-            }
-            else
-            {
-                previousModifier = 1.0f;
-            }
-
-            levelResourceModifier.Add(new SectorWaveModifier
-            {
-                Sector = sector,
-                Wave = wave,
-                Modifier = previousModifier * Globals.LevelResourceDropReductionAmount
-            });
         }
 
         //============================================================================================================//

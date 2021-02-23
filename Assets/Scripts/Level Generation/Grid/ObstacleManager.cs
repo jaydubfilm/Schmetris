@@ -330,6 +330,39 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
+        public Bit TryGetBitInColumn(in Vector2 position)
+        {
+            var xPos = position.x;
+            var yPos = position.y;
+            var bit = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
+                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Attached == false)
+                .Where(x => Mathf.Abs(xPos - x.transform.position.x) < 0.5f)
+                .Where(x => x.transform.position.y > yPos)
+                .OrderBy(x => x.transform.position.y)
+                .FirstOrDefault();
+
+            return bit;
+        }
+        
+        public List<Bit> TryGetBitsOnScreen()
+        {
+            var bits = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
+                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Attached == false)
+                .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
+                .ToList();
+
+            return bits;
+        }
+        
+        //====================================================================================================================//
+        
+
         private void HandleObstacleMovement()
         {
             Vector3 amountShift = Vector3.up *
@@ -337,6 +370,7 @@ namespace StarSalvager
 
             //TryMoveElements();
 
+            //Off grid moving obstacles are things like the previous bonus shapes or objects flying out from a loot drop, that the obstaclemanager manages but don't fall the normal amount
             for (int i = m_offGridMovingObstacles.Count - 1; i >= 0; i--)
             {
                 if (m_offGridMovingObstacles[i].Obstacle is null)
@@ -359,6 +393,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                //If its destination has something in it currently, it instead will extend its current movement pattern and go further
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
                                     m_offGridMovingObstacles[i].Extend();
@@ -378,6 +413,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                //If its destination has something in it currently, it instead will extend its current movement pattern and go further
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
                                     m_offGridMovingObstacles[i].Extend();
@@ -397,6 +433,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                //If its destination has something in it currently, it instead will extend its current movement pattern and go further
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
                                     m_offGridMovingObstacles[i].Extend();
@@ -434,6 +471,7 @@ namespace StarSalvager
                             }
                             else
                             {
+                                //If its destination has something in it currently, it instead will extend its current movement pattern and go further
                                 if (LevelManager.Instance.WorldGrid.GetGridSquareAtLocalPosition(m_offGridMovingObstacles[i].Obstacle.transform.position).ObstacleInSquare)
                                 {
                                     m_offGridMovingObstacles[i].Extend();
@@ -484,6 +522,7 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
             }
 
+            //These are the regular falling obstacles
             for (int i = m_obstacles.Count - 1; i >= 0; i--)
             {
                 var obstacle = m_obstacles[i];
@@ -587,68 +626,7 @@ namespace StarSalvager
                         Quaternion.Euler(0.0f, 0.0f, Time.deltaTime * 15.0f * rotate.RotateDirection);
                 }
             }
-
-            /*if (Mathf.Abs(m_distanceHorizontal) > 0.2f)
-                return;
-
-            if (m_currentInput != 0f)
-            {
-                Move(m_currentInput);
-            }*/
         }
-
-        /*private void TryMoveElements()
-        {
-            var xPos = m_worldElementsRoot.position.x;
-
-            float distHorizontal;
-            float direction;
-            Vector3 moveDirection;
-            bool canMove;
-
-            switch (true)
-            {
-                //Move Left values
-                //----------------------------------------------------------------------------------------------------//
-                case bool _ when m_distanceHorizontal > 0:
-                    distHorizontal = m_distanceHorizontal;
-                    direction = -1f;
-                    canMove = xPos > -0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                    moveDirection = Vector3.left;
-                    break;
-
-                //Move Right Values
-                //----------------------------------------------------------------------------------------------------//
-                case bool _ when m_distanceHorizontal < 0:
-                    distHorizontal = Mathf.Abs(m_distanceHorizontal);
-                    direction = 1f;
-                    canMove = xPos < 0.5f * Constants.gridCellSize * Globals.GridSizeX;
-                    moveDirection = Vector3.right;
-                    break;
-
-                //----------------------------------------------------------------------------------------------------//
-                default:
-                    MOVE_DELTA = 0f;
-                    return;
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            var toMove = Mathf.Min(distHorizontal, Globals.BotHorizontalSpeed * Time.deltaTime);
-            MOVE_DELTA = toMove * direction;
-
-            m_distanceHorizontal += toMove * direction;
-
-            if (!canMove)
-                return;
-
-            m_worldElementsRoot.position += moveDirection * toMove;
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            //FIXME We cannot access the camera like this, it is not the responsibility of the ObstacleManager to move the camera
-            LevelManager.Instance.CameraController.MoveCameraWithObstacles(moveDirection * toMove);
-        }*/
 
         public List<BlackHole> GetAllBlackHoles()
         {
@@ -807,6 +785,7 @@ namespace StarSalvager
             monoBehaviour.transform.SetParent(m_worldElementsRoot, true);
         }
 
+        //This is called every time the grid has fallen enough to empty the top row
         private void SpawnNewRowOfObstacles()
         {
             if (isPaused)
@@ -948,13 +927,8 @@ namespace StarSalvager
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
+                //This spawnVariable defines "how much of this thing should be spawned"
                 float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
-
-                if (stageObstacleData.SelectionType == SELECTION_TYPE.CATEGORY || stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
-                {
-                    float modifier = PlayerDataManager.GetLevelResourceModifier(Globals.CurrentSector, Globals.CurrentWave);
-                    spawnVariable *= modifier;
-                }
 
                 if (m_currentStageData.StageBlendPeriod > 0)
                 {
@@ -1189,6 +1163,7 @@ namespace StarSalvager
             }
         }
 
+        //This finds the proper position for the new obstacle
         private void PlaceMovableOnGrid(IObstacle obstacle, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
             bool inRandomYLevel, int radius = 0)
         {
@@ -1255,6 +1230,7 @@ namespace StarSalvager
             }
         }
 
+        //This is used to place a moveable on a specific grid position, instead of randomly choosing one
         private void PlaceMovableOnGridSpecific(IObstacle obstacle, Vector2 position, int radius = 0)
         {
             obstacle.transform.parent = m_worldElementsRoot;
@@ -1309,6 +1285,7 @@ namespace StarSalvager
                 (bounceTravelDistance * bounceSpeedAdjustment), spinSpeed, despawnOnEnd, spinning, arc);
         }
 
+        //Place an obstacle on an off grid moving path, with specifying a grid position instead of world position as the end destination
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector2Int gridEndPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)
@@ -1319,6 +1296,7 @@ namespace StarSalvager
                 arc, parentToGrid);
         }
 
+        //Place an obstacle on an off grid moving path, with a world position as the destination
         private void PlaceMovableOffGrid(IObstacle obstacle, Vector3 startingPosition, Vector3 endPosition,
             float lerpSpeed, float spinSpeed = 0.0f, bool despawnOnEnd = false, bool spinning = false, bool arc = false,
             bool parentToGrid = true)

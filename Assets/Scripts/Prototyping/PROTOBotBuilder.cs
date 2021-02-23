@@ -84,7 +84,7 @@ public class PROTOBotBuilder : MonoBehaviour, IInput
     private void GetTotalResources()
     {
         var list = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-            .GetTotalResources(bot.attachedBlocks.OfType<Bit>());
+            .GetTotalResources(bot.AttachedBlocks.OfType<Bit>());
 
         var _out = list.Aggregate(string.Empty, (current, i) => current + $"[{i.Key}] {i.Value}\n");
 

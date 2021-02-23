@@ -60,13 +60,9 @@ namespace StarSalvager
             randomPositionFindingLists.Clear();
         }
 
+        //Find all markers with a "has obstacle", and shift that marker 1 space downwards on the grid
         public void MoveObstacleMarkersDownwardOnGrid(List<IObstacle> obstacles, StageRemoteData stageData)
         {
-            /*for (int i = 0; i < m_gridSizeX; i++)
-            {
-                GridSquare topRowSquare = GetGridSquareAtCoordinates(new Vector2Int(i, m_gridSizeY - 1));
-                SetObstacleInGridSquare(topRowSquare, 0, false);
-            }*/
 
             for (int i = 0; i < obstacles.Count; i++)
             {

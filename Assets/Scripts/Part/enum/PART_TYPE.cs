@@ -42,13 +42,18 @@
         HOOVER = 31,
         RECOVERY = 32,
         
-        VAMPIRE = 33,
+        //VAMPIRE = 33,
         UPGRADER = 34,
         WILDCARD = 35,
         
         RAILGUN = 36,
 
-        //MAGNET = 34
+        //MAGNET = 37,
+        
+        TRACTOR = 38,
+        HEAL = 39,
+        REGEN = 40,
+        BITSPLOSION = 41,
 
     } 
 }

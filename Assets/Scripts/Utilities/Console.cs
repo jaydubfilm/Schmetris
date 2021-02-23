@@ -68,12 +68,13 @@ namespace StarSalvager.Utilities
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
             //string.Concat("set ", "bot ", "magnet ", "[uint]").ToUpper(),
             /*string.Concat("set ", "bot ", "heat ", "[0.0 - 100.0]").ToUpper(),*/
+            string.Concat("set ", "ammo ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
             string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
-            string.Concat("set ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
+            
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
             //string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
@@ -277,7 +278,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
                     
-                    PlayerDataManager.AddComponent(compAmount, false);
+                    PlayerDataManager.AddGears(compAmount, false);
                     
                     /*if (!int.TryParse(split[3], out var compAmount))
                     {
@@ -318,7 +319,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    PlayerDataManager.ChangeGears(intAmount);
+                    PlayerDataManager.ChangeExperience(intAmount);
 
                     break;
                 case "liquid":
@@ -335,14 +336,14 @@ namespace StarSalvager.Utilities
                             if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
                                 continue;
 
-                            PlayerDataManager.GetResource(_bitType).AddLiquid(floatAmount, false);
+                            PlayerDataManager.GetResource(_bitType).AddAmmo(floatAmount, false);
                         }
                         PlayerDataManager.OnValuesChanged?.Invoke();
 
                     }
                     else if (Enum.TryParse(split[2], true, out bitType))
                     {
-                        PlayerDataManager.GetResource(bitType).AddLiquid(floatAmount);
+                        PlayerDataManager.GetResource(bitType).AddAmmo(floatAmount);
                     }
                     else
                     {
@@ -351,16 +352,6 @@ namespace StarSalvager.Utilities
                     }
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
-                    break;
-                case "patchpoints":
-                    if (!int.TryParse(split[2], out intAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                        break;
-                    }
-
-                    PlayerDataManager.AddGearsToGetPatchPoints(intAmount);
-
                     break;
                 case "storage":
                     if (!int.TryParse(split[4], out var addAmount))
@@ -455,7 +446,7 @@ namespace StarSalvager.Utilities
                         return;
                     }
 
-                    var brick = bot.attachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
+                    var brick = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
 
                     if (brick == null)
                     {
@@ -491,7 +482,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    var brick = bot.attachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
+                    var brick = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coord);
 
                     if (brick == null)
                     {
@@ -521,7 +512,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    bot.TryHitAt(bot.attachedBlocks[0], 100000f);
+                    bot.TryHitAt(bot.AttachedBlocks[0], 100000f);
 
                     break;
                 default:
@@ -619,6 +610,34 @@ namespace StarSalvager.Utilities
                     //FactoryManager.Instance?.ChangeBitProfile(intAmount);
 
                     break;*/
+                case "ammo":
+                    if (!float.TryParse(split[3], out var floatAmount))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[3]);
+                        break;
+                    }
+
+                    if (split[2].ToLower().Equals("all"))
+                    {
+                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+                        {
+                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
+                                continue;
+
+                            PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
+                        }
+                        PlayerDataManager.OnValuesChanged?.Invoke();
+
+                    }
+                    else if (Enum.TryParse(split[2], true, out bitType))
+                    {
+                        PlayerDataManager.GetResource(bitType).SetAmmo(floatAmount);
+                    }
+                    else
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                    }
+                    break;
                 case "bot":
                 {
                     switch (split[2].ToLower())
@@ -675,7 +694,7 @@ namespace StarSalvager.Utilities
                                 return;
                             }
 
-                            var attachables = bot.attachedBlocks.OfType<IHealth>();
+                            var attachables = bot.AttachedBlocks.OfType<IHealth>();
 
                             foreach (var attachable in attachables)
                             {
@@ -705,7 +724,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
                     }
-                    PlayerDataManager.SetComponents(compAmount);
+                    PlayerDataManager.SetGears(compAmount);
                     /*if (split[2].ToLower().Equals("all"))
                     {
                         var componentData = new Dictionary<COMPONENT_TYPE, int>((IDictionary<COMPONENT_TYPE, int>) PlayerDataManager.GetComponents());
@@ -752,34 +771,7 @@ namespace StarSalvager.Utilities
                     }
 
                     break;
-                case "liquid":
-                    if (!float.TryParse(split[3], out var floatAmount))
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[3]);
-                        break;
-                    }
-
-                    if (split[2].ToLower().Equals("all"))
-                    {
-                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
-                        {
-                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
-                                continue;
-
-                            PlayerDataManager.GetResource(_bitType).SetLiquid(floatAmount, false);
-                        }
-                        PlayerDataManager.OnValuesChanged?.Invoke();
-
-                    }
-                    else if (Enum.TryParse(split[2], true, out bitType))
-                    {
-                        PlayerDataManager.GetResource(bitType).SetLiquid(floatAmount);
-                    }
-                    else
-                    {
-                        _consoleDisplay += UnrecognizeCommand(split[2]);
-                    }
-                    break;
+                
                 case "orientation":
                     switch (split[2].ToLower())
                     {
@@ -982,7 +974,8 @@ namespace StarSalvager.Utilities
 
         private void ParseUnlockCmd(string[] split)
         {
-            switch (split[1].ToLower())
+            throw new NotImplementedException();
+            /*switch (split[1].ToLower())
             {
                 case "sectorwave":
                     if (!int.TryParse(split[2], out var sector))
@@ -1001,7 +994,7 @@ namespace StarSalvager.Utilities
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
                     break;
-            }
+            }*/
 
         }
 

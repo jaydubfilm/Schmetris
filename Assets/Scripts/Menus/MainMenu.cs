@@ -302,7 +302,7 @@ namespace StarSalvager.UI
             tutorialButton.onClick.AddListener(() =>
             {
                 Globals.UsingTutorial = true;
-                Globals.CurrentSector = 4;
+                //Globals.CurrentSector = 4;
                 Globals.CurrentWave = 0;
 
                 SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.MAIN_MENU);

@@ -29,131 +29,21 @@ namespace StarSalvager.Utilities.Saving
 
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
-        public static List<List<Vector2Int>> botLayoutOptions = new List<List<Vector2Int>>()
-        {
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(1, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, -1),
-                new Vector2Int(-2, 1),
-                new Vector2Int(-2, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, 2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(0, -1),
-                new Vector2Int(0, -2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, 2),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(-2, -1),
-                new Vector2Int(-2, -2)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(1, 2),
-                new Vector2Int(2, 2),
-                new Vector2Int(-1, 2),
-                new Vector2Int(-2, 2),
-                new Vector2Int(2, 1),
-                new Vector2Int(2, 0),
-                new Vector2Int(-2, 1),
-                new Vector2Int(-2, 0)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(0, 1),
-                new Vector2Int(1, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, -1),
-                new Vector2Int(1, -1),
-                new Vector2Int(-1, -1)
-            },
-            new List<Vector2Int>()
-            {
-                new Vector2Int(0, 0),
-                new Vector2Int(1, 0),
-                new Vector2Int(2, 0),
-                new Vector2Int(-1, 0),
-                new Vector2Int(-2, 0),
-                new Vector2Int(1, 1),
-                new Vector2Int(0, 1),
-                new Vector2Int(-1, 1),
-                new Vector2Int(0, 2),
-                new Vector2Int(1, -1),
-                new Vector2Int(0, -1),
-                new Vector2Int(-1, -1),
-                new Vector2Int(0, -2)
-            }
-        };
-
         //====================================================================================================================//
 
         public static Version GetVersion()
         {
             return PlayerAccountData.Version;
+        }
+
+        public static bool GetStarted()
+        {
+            return PlayerAccountData.HasStarted;
+        }
+
+        public static void SetStarted(bool started)
+        {
+            PlayerAccountData.HasStarted = started;
         }
 
         public static bool GetCanChoosePart()
@@ -173,7 +63,6 @@ namespace StarSalvager.Utilities.Saving
 
         public static void SetRunStarted()
         {
-            //PlayerRunData.currentBotHealth = Globals.BotStartingHealth;
             PlayerRunData.runStarted = true;
         }
 
@@ -197,11 +86,15 @@ namespace StarSalvager.Utilities.Saving
             return PlayerAccountData._botLayout;
         }
 
-        public static void SetBotLayout(int index)
+        public static BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
         {
-            PlayerAccountData._botLayout = botLayoutOptions[index];
+            return PlayerAccountData.GetCategoryAtCoordinate(coordinate);
         }
 
+        public static Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
+        {
+            return PlayerAccountData.GetCoordinateForCategory(bitType);
+        }
 
         //Run Data Functions
         //====================================================================================================================//
@@ -226,20 +119,10 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetComponents()
+        public static int GetGears()
         {
-            return PlayerRunData.Components;
+            return PlayerRunData.Gears;
         }
-
-        /*public static IReadOnlyDictionary<COMPONENT_TYPE, int> GetComponents()
-        {
-            return PlayerRunData.Components;
-        }*/
-
-        /*public static Dictionary<COMPONENT_TYPE, int> GetComponentsClone()
-        {
-            return new Dictionary<COMPONENT_TYPE, int>(PlayerRunData.Components);
-        }*/
 
         public static List<IBlockData> GetBlockDatas()
         {
@@ -251,9 +134,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static void SetComponents(int value)
+        public static void SetGears(int value)
         {
-            PlayerRunData.SetComponents(value);
+            PlayerRunData.SetGears(value);
 
             OnValuesChanged?.Invoke();
         }
@@ -262,8 +145,60 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.SetShipBlockData(blockData);
         }
-        
-        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
+
+        public static void RemoveAllBits()
+        {
+            void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
+            {
+                var data = coordinate;
+                var index = blockDatas.FindIndex(x => x.Coordinate == data);
+
+                if (index < 0)
+                    throw new ArgumentOutOfRangeException(nameof(index), index,
+                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{Newtonsoft.Json.JsonConvert.SerializeObject(blockDatas)}");
+
+                blockDatas.RemoveAt(index);
+            }
+
+            var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            var originalBackup = new List<IBlockData>(droneBlockData);
+
+            var bitsToRemove = droneBlockData
+                .OfType<BitData>()
+                .OrderBy(x => x.Coordinate.magnitude)
+                .ToList();
+
+            for (int i = bitsToRemove.Count - 1; i >= 0; i--)
+            {
+                var bitData = bitsToRemove[i];
+
+                var orphanData = new List<OrphanMoveBlockData>();
+                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
+
+                //droneBlockData.Remove(bitData);
+                RemoveBit(ref droneBlockData, bitData.Coordinate);
+                bitsToRemove.RemoveAt(i);
+                for (int ii = 0; ii < orphanData.Count; ii++)
+                {
+                    var data = orphanData[ii];
+                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
+
+                    droneBlockData[index].Coordinate = data.intendedCoordinates;
+                }
+            }
+
+
+            //Review all the bits (After having moved) to ensure there is no one floating
+            if (droneBlockData.OfType<BitData>().Any(bitData => !droneBlockData.HasPathToCore(bitData)))
+            {
+                throw new Exception($"No Path to Core found\nOriginal: {Newtonsoft.Json.JsonConvert.SerializeObject(originalBackup)}\nSolved: {Newtonsoft.Json.JsonConvert.SerializeObject(droneBlockData)}");
+            }
+
+            SetBlockData(droneBlockData);
+        }
+
+
+        /*public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
@@ -326,22 +261,21 @@ namespace StarSalvager.Utilities.Saving
 
            
             SetBlockData(droneBlockData);
-            Globals.StripBits = false;
-        }
+        }*/
 
         //============================================================================================================//
 
-        public static void AddComponent(int amount, bool updateValuesChanged = true)
+        public static void AddGears(int amount, bool updateValuesChanged = true)
         {
-            PlayerRunData.AddComponent(amount);
+            PlayerRunData.AddGears(amount);
 
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractComponent(int amount)
+        public static void SubtractGears(int amount)
         {
-            PlayerRunData.SubtractComponent(amount);
+            PlayerRunData.SubtractGears(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -363,10 +297,10 @@ namespace StarSalvager.Utilities.Saving
 
         //====================================================================================================================//
 
-        public static LevelNodeTree GetLevelRingNodeTree()
+        /*public static LevelNodeTree GetLevelRingNodeTree()
         {
             return PlayerRunData.LevelRingNodeTree;
-        }
+        }*/
 
         public static void AddCompletedNode(int node)
         {
@@ -462,19 +396,9 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
         
 
-        public static float GetLevelResourceModifier(int sector, int wave)
+        public static bool CheckIfCompleted(in int waveAt)
         {
-            return PlayerRunData.GetLevelResourceModifier(sector, wave);
-        }
-
-        public static void ReduceLevelResourceModifier(int sector, int wave)
-        {
-            PlayerRunData.ReduceLevelResourceModifier(sector, wave);
-        }
-
-        public static bool CheckIfCompleted(int sector, int waveAt)
-        {
-            return PlayerRunData.CheckIfCompleted(sector, waveAt);
+            return PlayerRunData.CheckIfCompleted(waveAt);
         }
 
         //====================================================================================================================//
@@ -483,46 +407,19 @@ namespace StarSalvager.Utilities.Saving
         //Account Data Functions
         //====================================================================================================================//
 
-        public static int GetGears()
+        public static int GetExperience()
         {
-            return PlayerAccountData.Gears;
+            return PlayerAccountData.Experience;
         }
 
-        public static int GetGearsThisRun()
+        public static int GetExperienceThisRun()
         {
-            return PlayerAccountData.Gears - PlayerAccountData.GearsAtRunBeginning;
+            return PlayerAccountData.Experience - PlayerAccountData.ExperienceAtRunBeginning;
         }
 
-        public static (int, int) GetPatchPointProgress()
+        public static void ChangeExperience(int amount)
         {
-            return PlayerAccountData.GetPatchPointProgress();
-        }
-
-        public static int GetTotalPatchPoints()
-        {
-            return PlayerAccountData.GetTotalPatchPoints();
-        }
-
-        public static int GetAvailablePatchPoints()
-        {
-            return PlayerAccountData.GetAvailablePatchPoints();
-        }
-
-        public static void SpendPatchPoints(int amount)
-        {
-            PlayerAccountData.SpendPatchPoints(amount);
-        }
-
-        public static void ChangeGears(int amount)
-        {
-            PlayerAccountData.ChangeGears(amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void AddGearsToGetPatchPoints(int numPatchPointsToGet)
-        {
-            PlayerAccountData.AddGearsToGetPatchPoints(numPatchPointsToGet);
+            PlayerAccountData.ChangeExperience(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -625,34 +522,9 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RepairsDone += amount;
         }
 
-        public static void UnlockBlueprint(Blueprint blueprint)
-        {
-            PlayerAccountData.UnlockBlueprint(blueprint);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockBlueprint(PART_TYPE partType)
-        {
-            PlayerAccountData.UnlockBlueprint(partType);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void UnlockAllBlueprints()
-        {
-            PlayerAccountData.UnlockAllBlueprints();
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static IReadOnlyList<Blueprint> GetUnlockedBlueprints()
-        {
-            return PlayerAccountData.unlockedBlueprints;
-        }
-
         //============================================================================================================//
 
+        //See PlayerNewAlertData,  these functions are likely all defunct
         public static bool CheckHasBlueprintAlert(Blueprint blueprint)
         {
             return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
@@ -702,16 +574,6 @@ namespace StarSalvager.Utilities.Saving
             playerAccountData.ResetPlayerRunData();
             PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
 
-            foreach (var blueprintData in Globals.BlueprintInitialData)
-            {
-                Blueprint blueprint = new Blueprint
-                {
-                    name = $"{((PART_TYPE)blueprintData.type)}",
-                    partType = (PART_TYPE)blueprintData.type
-                };
-                playerAccountData.UnlockBlueprint(blueprint);
-            }
-
             SavePlayerAccountData();
         }
 
@@ -727,6 +589,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static void ResetPlayerRunData()
         {
+            SetStarted(false);
             PlayerAccountData.ResetPlayerRunData();
         }
 
@@ -839,7 +702,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetAccountSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetGears()}, this run: {GetGearsThisRun()}\n";
+            summaryText += $"Total Gears: {GetExperience()}, this run: {GetExperienceThisRun()}\n";
             summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
             summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
 
@@ -870,7 +733,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"{GetAsTitle("Total Gears:")} {GetGearsThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetExperienceThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 

@@ -184,7 +184,7 @@ namespace StarSalvager.UI.Hints
                 case HINT.GUN:
                     var gunPart = LevelManager.Instance
                         .BotInLevel
-                        .attachedBlocks
+                        .AttachedBlocks
                         .FirstOrDefault(x => x is Part part && part.Type == PART_TYPE.GUN) as Part;
                     
                     objectsToHighlight = new object[]

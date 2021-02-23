@@ -1,8 +1,10 @@
-﻿using StarSalvager.Factories;
+﻿using System;
+using StarSalvager.Factories;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete]
 public class LevelNodeTree
 {
     private LevelNode startingPoint;
@@ -63,7 +65,7 @@ public class LevelNodeTree
         return curIndex;
     }
 
-    public (int, int) ConvertNodeIndexIntoSectorWave(int nodeIndex)
+    /*public (int, int) ConvertNodeIndexIntoSectorWave(int nodeIndex)
     {
         if (nodeIndex == 0)
         {
@@ -87,5 +89,5 @@ public class LevelNodeTree
         }
 
         return (curSector, curWave);
-    }
+    }*/
 }

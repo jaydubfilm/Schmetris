@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +37,15 @@ namespace DG.TrelloAPI
         /// </summary>
         /// <param name="errorMessage">Error message.</param>
         /// <param name="www">The request object.</param>
-        private void CheckWwwStatus(string errorMessage, WWW www)
+        private bool CheckWwwStatus(string errorMessage, WWW www)
         {
-            if (!string.IsNullOrEmpty(www.error))
-            {
-                //throw new TrelloException(errorMessage + ": " + www.error);
-                Debug.LogError($"{errorMessage}: {www.error}");
-            }
+            if (string.IsNullOrEmpty(www.error)) 
+                return true;
+            
+            //throw new TrelloException(errorMessage + ": " + www.error);
+            Debug.LogError($"{errorMessage}: {www.error}");
+            return false;
+
         }
 
         /// <summary>
@@ -59,13 +62,19 @@ namespace DG.TrelloAPI
         /// Async Download a parsed JSON list of the boards in the users account, these are cached on "boards"
         /// </summary>
         /// <returns>  </returns>
-        public IEnumerator PopulateBoardsRoutine()
+        public IEnumerator PopulateBoardsRoutine(Action OnFailed)
         {
             boards = null;
             WWW www = new WWW(memberBaseUrl + "?" + "key=" + key + "&token=" + token + "&boards=all");
 
             yield return www;
-            CheckWwwStatus("Connection to the Trello servers was not possible", www);
+
+            if (!CheckWwwStatus("Connection to the Trello servers was not possible", www))
+            {
+                OnFailed?.Invoke();
+                yield break;
+            }
+            
 
             var dict = Json.Deserialize(www.text) as Dictionary<string, object>;
 

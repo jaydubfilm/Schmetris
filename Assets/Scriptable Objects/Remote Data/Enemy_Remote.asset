@@ -209,7 +209,7 @@ MonoBehaviour:
         lootType: 0
         value: 0
         type: 5
-        lvl: 1
+        lvl: 0
         weight: 4
         rng: 0
         count: 1
@@ -219,7 +219,7 @@ MonoBehaviour:
         lootType: 0
         value: 0
         type: 5
-        lvl: 2
+        lvl: 1
         weight: 1
         rng: 0
         count: 1
@@ -263,10 +263,82 @@ MonoBehaviour:
   - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
     m_name: Borrower
     m_health: 20
-    m_movementSpeed: 6
+    m_movementSpeed: 12
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 10
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 2}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 4
+        lvl: 1
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 1
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 3
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 2
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
     m_name: LaserTurret
     m_health: 100
