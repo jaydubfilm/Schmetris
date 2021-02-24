@@ -411,7 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9f4fefe13937646a51b9d251bb8ad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  purchaseButton: {fileID: 3362788426943902560}
+  _button: {fileID: 3362788426943902560}
   titleText: {fileID: 3188004112946342149}
 --- !u!114 &3426160924092666599
 MonoBehaviour:

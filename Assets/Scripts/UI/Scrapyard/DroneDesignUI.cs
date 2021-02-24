@@ -31,6 +31,8 @@ namespace StarSalvager.UI.Scrapyard
         //====================================================================================================================//
 
         [SerializeField] private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
+        
+        
 
         //============================================================================================================//
 
@@ -55,8 +57,21 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //====================================================================================================================//
-        
 
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private GameObject partUpgradeWindow;
+        
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private TMP_Text upgradeWindowHeaderText;
+
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private Button closePartUpgradeWindowButton;
+        
+        [SerializeField, FoldoutGroup("Part Upgrade UI")] 
+        private UpgradeUIElementScrollView partUpgradeUIElementScrollView;
+
+        //====================================================================================================================//
+        
         [SerializeField, FoldoutGroup("Part Details Window")]
         private RectTransform partDetailsContainerRectTransform;
 
@@ -146,6 +161,7 @@ namespace StarSalvager.UI.Scrapyard
             InitPurchasePatches();
 
             ShowPartDetails(false, null);
+            SetUpgradeWindowActive(false);
         }
 
         private void OnEnable()
@@ -185,6 +201,11 @@ namespace StarSalvager.UI.Scrapyard
             launchButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+            });
+            
+            closePartUpgradeWindowButton.onClick.AddListener(() =>
+            {
+                SetUpgradeWindowActive(false);
             });
 
             //--------------------------------------------------------------------------------------------------------//
@@ -250,14 +271,146 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var t in patches)
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
-                element.Init(t);
+                element.Init(t, ShowPartUpgradeSelectionWindow);
             }
             
         }
 
+        /// <summary>
+        /// Gets a collection of all parts that the player currently has, then lays them out on a grid to allow the
+        /// player to pick a part to be upgraded.
+        /// </summary>
+        /// <param name="purchasePatchData"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private void ShowPartUpgradeSelectionWindow(Purchase_PatchData purchasePatchData)
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //FIXME I need to sort this list By Enabled & Name
+            void AddPartsToView(in IReadOnlyList<IBlockData> blockDatas, in bool isAttached = false)
+            {
+                for (var i = 0; i < blockDatas.Count; i++)
+                {
+                    if (!(blockDatas[i] is PartData partData && partData.Type != (int)PART_TYPE.EMPTY))
+                        continue;
+
+                    //var storageBlockData = storedParts[i];
+                    var type = (PART_TYPE) partData.Type;
+
+                    var blockIndex = i;
+                    var partUpgrd = new TEST_PartUpgrd
+                    {
+                        PartData = partData,
+                        itemIndex = blockIndex,
+                        isAttached = isAttached,
+                    
+                        PurchasePatchData = purchasePatchData
+                    };
+
+                    var temp = partUpgradeUIElementScrollView.AddElement(partUpgrd,
+                        $"{type}_UIElement",
+                        allowDuplicate: true);
+                
+                    temp.Init(partUpgrd, OnPurchasedPatch);
+                }
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var patchType = (PATCH_TYPE)purchasePatchData.PatchData.Type;
+            
+            partUpgradeUIElementScrollView.ClearElements();
+
+            //Parts in Storage
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //TODO Need to include the attached parts
+            var storedParts = PlayerDataManager.GetCurrentPartsInStorage();
+            AddPartsToView(storedParts);
+
+            
+            //Parts On Bot
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var attachedParts = PlayerDataManager.GetBlockDatas();
+            AddPartsToView(attachedParts, true);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var patchData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
+
+            SetUpgradeWindowActive(true, $"{patchData.name} {purchasePatchData.PatchData.Level + 1}", patchData.description);
+        }
+
+
+
         #endregion //Scroll Views
 
         //====================================================================================================================//
+
+        #region Upgrade Parts
+
+        private void SetUpgradeWindowActive(in bool state, in string title, in string description)
+        {
+            upgradeWindowHeaderText.text = $"{title}\n{description}";
+            
+            SetUpgradeWindowActive(state);
+
+        }
+        private void SetUpgradeWindowActive(in bool state)
+        {
+            partUpgradeWindow.SetActive(state);
+        }
+
+        private void OnPurchasedPatch(TEST_PartUpgrd partUpgrd)
+        {
+            //Remove Components
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var patchData = partUpgrd.PurchasePatchData;
+            var currentComponents = PlayerDataManager.GetGears();
+            if (currentComponents < patchData.cost)
+                return;
+
+            currentComponents -= patchData.cost;
+
+            PlayerDataManager.SetGears(currentComponents);
+
+            //Add Patch to Selected Part
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partUpgrd.isAttached)
+            {
+                if (!(DroneDesigner._scrapyardBot.AttachedBlocks[partUpgrd.itemIndex] is ScrapyardPart scrapyardPart))
+                    throw new Exception(
+                        $"{nameof(ScrapyardPart)} was expected at {nameof(DroneDesigner._scrapyardBot.AttachedBlocks)}[{partUpgrd.itemIndex}]");
+                
+                scrapyardPart.AddPatch(partUpgrd.PurchasePatchData.PatchData);
+            }
+            else
+            {
+                var partsInStorage = PlayerDataManager.GetCurrentPartsInStorage().ToList();
+                if(!(partsInStorage[partUpgrd.itemIndex] is PartData))
+                    throw new Exception(
+                        $"{nameof(PartData)} was expected at {nameof(PlayerDataManager.GetCurrentPartsInStorage)}[{partUpgrd.itemIndex}]");
+                
+                ((PartData)partsInStorage[partUpgrd.itemIndex]).AddPatch(partUpgrd.PurchasePatchData.PatchData);
+
+                PlayerDataManager.SetCurrentPartsInStorage(partsInStorage);
+            }
+
+            //Refresh Data
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //TODO Will need to reload the
+            
+            SetUpgradeWindowActive(false);
+        }
+        
+        #endregion //Upgrade Parts
+
+        //====================================================================================================================//
+        
 
         #region Other
 

@@ -10,14 +10,22 @@ using Object = UnityEngine.Object;
 namespace StarSalvager.UI
 {
     [Serializable]
-    public class UIElementContentScrollView<U, T> where U: UIElement<T> where T : IEquatable<T>
+    public abstract class UIElementContentScrollViewBase
     {
         [SerializeField, Required]
-        private RectTransform contentTransform;
+        protected RectTransform contentTransform;
 
         [SerializeField, Required]
-        private GameObject contentPrefab;
-
+        protected GameObject contentPrefab;
+        
+        public void SetActive(bool state)
+        {
+            contentTransform.gameObject.SetActive(state);
+        }
+    }
+    [Serializable]
+    public class UIElementContentScrollView<U, T>: UIElementContentScrollViewBase where U: UIElement<T> where T : IEquatable<T>
+    {
         public List<U> Elements { get; private set; }
 
         
@@ -42,6 +50,8 @@ namespace StarSalvager.UI
 
             element.transform.SetParent(contentTransform, false);
             element.transform.localScale = Vector3.one;
+            
+            element.SetContainer(this as UIElementContentScrollView<U, T>);
 
             Elements.Add(element);
 
@@ -123,11 +133,6 @@ namespace StarSalvager.UI
             {
                 uiElement.gameObject.SetActive(state);
             }
-        }
-
-        public void SetActive(bool state)
-        {
-            contentTransform.gameObject.SetActive(state);
         }
     }
 }
