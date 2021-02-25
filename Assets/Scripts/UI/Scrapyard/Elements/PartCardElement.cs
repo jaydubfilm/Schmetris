@@ -11,6 +11,9 @@ namespace StarSalvager.UI.Scrapyard
     //FIXME This needs to be cleaned up once approved
     public class PartCardElement : ButtonReturnUIElement<TEST_PartUpgrd, TEST_PartUpgrd>
     {
+        public bool canUsePart { get; private set; }
+        public string partName { get; private set; }
+
         private Toggle _toggle;
         
         [SerializeField]
@@ -62,7 +65,9 @@ namespace StarSalvager.UI.Scrapyard
             var partRemote = FactoryManager.Instance.PartsRemoteData;
             var partProfile = FactoryManager.Instance.PartsProfileData;
 
-            titleText.text = $"{partRemote.GetRemoteData(partType).name}";
+            partName = $"{partRemote.GetRemoteData(partType).name}";
+            
+            titleText.text = partName;
             descriptionText.text = "NEEDS TO BE IMPLEMENTED";
             partImage.sprite = partProfile.GetProfile(partType).Sprite;
 
@@ -72,6 +77,9 @@ namespace StarSalvager.UI.Scrapyard
             button.interactable = canUse;
             
             overlayImage.gameObject.SetActive(!canUse);
+
+            canUsePart = canUse;
+            
         }
         
         private bool CanSelectPart(in PatchData patchData)
@@ -146,6 +154,21 @@ namespace StarSalvager.UI.Scrapyard
             foreach (var cardElement in Elements)
             {
                 cardElement.SetSelected(partCardElement.Equals(cardElement));
+            }
+        }
+
+        public override void SortList()
+        {
+            var newOder = Elements
+                .OrderByDescending(x => x.canUsePart)
+                    .ThenBy(x => x.partName)
+                .ToArray();
+
+            for (var i = 0; i < newOder.Length; i++)
+            {
+                var partCardElement = newOder[i];
+                partCardElement.transform.SetSiblingIndex(i);
+                
             }
         }
         

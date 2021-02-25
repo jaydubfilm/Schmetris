@@ -51,7 +51,7 @@ namespace StarSalvager.UI
             element.transform.SetParent(contentTransform, false);
             element.transform.localScale = Vector3.one;
             
-            element.SetContainer(this as UIElementContentScrollView<U, T>);
+            element.SetContainer(this);
 
             Elements.Add(element);
 
@@ -133,6 +133,11 @@ namespace StarSalvager.UI
             {
                 uiElement.gameObject.SetActive(state);
             }
+        }
+
+        public virtual void SortList()
+        {
+            throw new NotImplementedException();
         }
     }
 }

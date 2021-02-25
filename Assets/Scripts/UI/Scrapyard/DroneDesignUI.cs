@@ -337,6 +337,8 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
             
+            partUpgradeUIElementScrollView.SortList();
+            
             var patchData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
 
             SetUpgradeWindowActive(true, $"{patchData.name} {purchasePatchData.PatchData.Level + 1}", patchData.description);
