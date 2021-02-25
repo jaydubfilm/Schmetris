@@ -1166,9 +1166,9 @@ namespace StarSalvager
 
             CanUseTriggerPart(part, out var partRemoteData);
             
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var speedMultiplier))
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Speed, out var speedMultiplier))
             {
-                throw new MissingFieldException($"{PartProperties.KEYS.Multiplier} missing from {part.Type} remote data");
+                throw new MissingFieldException($"{PartProperties.KEYS.Speed} missing from {part.Type} remote data");
             }
             
             bit.AddMove = Vector2.down * speedMultiplier;

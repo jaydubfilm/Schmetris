@@ -526,6 +526,9 @@ namespace StarSalvager
 
         private void CheckForMousePartHover()
         {
+            if (StorageUIElement.HoveringElement)
+                return;
+            
             var show = TryHoverPart(out var partData);
 
             DroneDesignUi.ShowPartDetails(show, partData);
@@ -534,8 +537,11 @@ namespace StarSalvager
         private bool TryHoverPart(out ScrapyardPart scrapyardPart)
         {
             scrapyardPart = null;
-            
+
             if(_draggingPatch /*|| _isDragging */|| PlayerDataManager.GetCanChoosePart())
+                return false;
+
+            if (DroneDesignUi.UpgradeWindowOpen)
                 return false;
             
             if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))

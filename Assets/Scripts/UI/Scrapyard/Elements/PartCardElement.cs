@@ -21,6 +21,9 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField]
         private TMP_Text titleText;
+
+        [SerializeField] 
+        private TMP_Text patchText;
         [SerializeField]
         private TMP_Text descriptionText;
 
@@ -66,9 +69,8 @@ namespace StarSalvager.UI.Scrapyard
             var partProfile = FactoryManager.Instance.PartsProfileData;
 
             partName = $"{partRemote.GetRemoteData(partType).name}";
+            //ShowPreviewChanges(this.data.PartData);
             
-            titleText.text = partName;
-            descriptionText.text = "NEEDS TO BE IMPLEMENTED";
             partImage.sprite = partProfile.GetProfile(partType).Sprite;
 
             SetSelected(false);
@@ -95,6 +97,17 @@ namespace StarSalvager.UI.Scrapyard
 
             return patchRemoteDataData.allowedParts.Contains(partType);
         }
+
+        private string GetPatchDetails(in PartData partData)
+        {
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            var patches = partData.Patches;
+
+            return string.Join("\n",
+                patches.Where(x => x.Type != (int) PATCH_TYPE.EMPTY)
+                    .Select(x => $"{patchRemoteData.GetRemoteData(x.Type).name} {x.Level + 1}"));
+            
+        }
         
         //====================================================================================================================//
 
@@ -102,6 +115,25 @@ namespace StarSalvager.UI.Scrapyard
         {
             purchaseButton.gameObject.SetActive(selected);
             glowImage.gameObject.SetActive(selected);
+
+            if (!selected)
+            {
+                ShowPreviewChanges(data.PartData);
+                return;
+            }
+
+            var partData = new PartData(data.PartData);
+            
+            partData.AddPatch(data.PurchasePatchData.PatchData);
+            ShowPreviewChanges(partData);
+
+        }
+
+        private void ShowPreviewChanges(in PartData partData)
+        {
+            titleText.text = partName;
+            patchText.text = GetPatchDetails(partData);
+            descriptionText.text = DroneDesignUI.GetAltDetails(partData);
         }
         
     }

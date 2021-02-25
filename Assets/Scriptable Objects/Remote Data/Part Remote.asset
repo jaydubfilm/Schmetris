@@ -207,7 +207,7 @@ MonoBehaviour:
     dataTest:
     - key: Cooldown
       value: 1
-    - key: Multiplier
+    - key: Speed
       value: 30
     isManual: 1
     category: 5

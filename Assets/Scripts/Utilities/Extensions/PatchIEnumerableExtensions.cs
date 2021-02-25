@@ -8,10 +8,10 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class PatchIEnumerableExtensions
     {
-        public static int GetPatchUpgradersSum(this IEnumerable<PatchData> patches)
+        /*public static int GetPatchUpgradersSum(this IEnumerable<PatchData> patches)
         {
             return patches.Where(x => x.Type == (int) PATCH_TYPE.GRADE).Sum(x => x.Level + 1);
-        }
+        }*/
         
         public static float GetPatchMultiplier(this IEnumerable<PatchData> patches, in PATCH_TYPE patchType)
         {

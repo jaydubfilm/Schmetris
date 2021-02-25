@@ -81,8 +81,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
 
-        [SerializeField, FoldoutGroup("Part Details Window")]
-        private TMP_Text otherPartDetailsText;
+        //[SerializeField, FoldoutGroup("Part Details Window")]
+        //private TMP_Text otherPartDetailsText;
 
         [FormerlySerializedAs("PatchUis")] [SerializeField, FoldoutGroup("Part Details Window")]
         private PatchUI[] patchUis;
@@ -135,6 +135,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required] private DroneDesigner _droneDesigner;
 
         private ScrapyardLayout currentSelected;
+
+        public bool UpgradeWindowOpen => partUpgradeWindow.activeInHierarchy;
 
         public bool IsPopupActive => Alert.Displayed;
         private bool _currentlyOverwriting;
@@ -227,8 +229,9 @@ namespace StarSalvager.UI.Scrapyard
         private void InitPurchasePatches()
         {
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            var patches = new List<Purchase_PatchData>();
             
-            var patches = new[]
+            /*var patches = new[]
             {
                 new Purchase_PatchData
                 {
@@ -256,17 +259,8 @@ namespace StarSalvager.UI.Scrapyard
                         Level = 0,
                         Type = (int) PATCH_TYPE.FIRE_RATE
                     }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.GRADE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.GRADE
-                    }
                 }
-            };
+            };*/
 
             foreach (var t in patches)
             {
@@ -455,6 +449,262 @@ namespace StarSalvager.UI.Scrapyard
 
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
+
+            if (!show)
+                return;
+
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+            //TODO Get the world position of the object, convert to canvas space
+            var screenPoint =
+                CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            partDetailsContainerRectTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+
+            var partData = scrapyardPart.ToBlockData();
+
+            //====================================================================================================================//
+
+            var partType = (PART_TYPE) partData.Type;
+
+            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            //var bitType = !partRemote.partGrade.Types.IsNullOrEmpty() ? partRemote.partGrade.Types[0] : BIT_TYPE.NONE;
+
+            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            /*var bitProfile = bitType == BIT_TYPE.NONE
+                ? new BitProfile()
+                : FactoryManager.Instance.BitProfileData.GetProfile(bitType);*/
+
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+
+            //====================================================================================================================//
+
+            partNameText.text = partRemote.name;
+            partImage.sprite = partProfile.Sprite;
+
+            var altDetails = GetAltDetails(partData, partRemote);
+            partDetailsText.text = $"{partRemote.description}\n{altDetails}";
+
+            for (var i = 0; i < partData.Patches.Length; i++)
+            {
+                var patchData = partData.Patches[i];
+                var type = (PATCH_TYPE) patchData.Type;
+
+                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
+
+                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
+                    ? string.Empty
+                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
+
+            }
+
+            //====================================================================================================================//
+
+            //partDetailsText.text = $"{GetPartDetails(partType)}";
+
+
+            //====================================================================================================================//
+
+            /*for (var i = 0; i < 5; i++)
+            {
+                var hasSprite = bitType != BIT_TYPE.NONE;
+
+                gradeUis[i].bitImage.enabled = hasSprite;
+
+                //Contain within the bit Level limits
+                var levelOffset = Mathf.Clamp(i + partData.Patches.GetPatchUpgradersSum(), 0, 4);
+
+                if (hasSprite)
+                {
+                    gradeUis[i].bitImage.sprite = bitProfile.GetSprite(i);
+
+                    var hasLevel = partRemote.partGrade.minBitLevel <= levelOffset;
+                    gradeUis[i].bitImage.color = hasLevel ? Color.white : Color.grey;
+                    gradeUis[i].bitImage.rectTransform.localScale = hasLevel ? Vector3.one : Vector3.one * 0.9f;
+                }
+
+                gradeUis[i].text.text = $"{GetGradeDetails(levelOffset, partRemote, partData.Patches)}";
+            }*/
+
+            //====================================================================================================================//
+
+        }
+        
+        public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
+        {
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
+
+            if (!show)
+                return;
+
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+
+            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
+            
+            
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            partDetailsContainerRectTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+            var partType = (PART_TYPE) partData.Type;
+            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+
+            //====================================================================================================================//
+
+            partNameText.text = partRemote.name;
+            partImage.sprite = partProfile.Sprite;
+
+            partDetailsText.text = GetAltDetails(partData, partRemote);
+
+            for (var i = 0; i < partData.Patches.Length; i++)
+            {
+                var patchData = partData.Patches[i];
+                var type = (PATCH_TYPE) patchData.Type;
+
+                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
+
+                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
+                    ? string.Empty
+                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
+
+            }
+
+            //====================================================================================================================//
+        }
+
+        //====================================================================================================================//
+
+        public static string GetAltDetails(in PartData partData)
+        {
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
+            return GetAltDetails(partData, partRemoteData);
+        }
+        
+        public static string GetAltDetails(in PartData partData, in PartRemoteData partRemoteData)
+        {
+            var multipliers = partData.Patches.GetPatchMultipliers(
+                PATCH_TYPE.DAMAGE,
+                PATCH_TYPE.RANGE,
+                PATCH_TYPE.FIRE_RATE);
+
+            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
+
+            var modifiers = new[]
+            {
+                partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage),
+                partRemote.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown),
+                partRemote.TryGetValue(PartProperties.KEYS.Radius, out float range),
+                partRemote.TryGetValue(PartProperties.KEYS.Projectile, out string projectileID),
+                partRemote.TryGetValue(PartProperties.KEYS.Speed, out float speed),
+                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal)
+            };
+
+            var outList = new Dictionary<string, float>();
+            
+            if(modifiers[0])
+                outList.Add("Damage", damage * multipliers[PATCH_TYPE.DAMAGE]);
+            
+            if(modifiers[1])
+                outList.Add("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]);
+            
+            if (modifiers[2])
+            {
+                outList.Add("Range", range * multipliers[PATCH_TYPE.RANGE]);
+            }
+            else if (modifiers[3])
+            {
+                var projectileRange = FactoryManager.Instance.ProjectileProfile
+                    .GetProjectileProfileData(projectileID).ProjectileRange; 
+                
+                outList.Add("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]);
+            }
+            
+            if(modifiers[4])
+                outList.Add("Speed", speed);
+            
+            if(modifiers[5])
+                outList.Add("Heal", heal);
+
+            return string.Join("\n",outList.Select(x => $"{x.Key}: {x.Value}"));
+
+
+
+
+            /*switch (partRemoteData.partType)
+            {
+                //case PART_TYPE.VAMPIRE:
+                case PART_TYPE.SHIELD:
+                case PART_TYPE.ARMOR:
+                case PART_TYPE.REPAIR:
+                //case PART_TYPE.CORE:
+                case PART_TYPE.UPGRADER:
+                case PART_TYPE.WILDCARD:
+                    return string.Empty;
+                case PART_TYPE.GUN:
+                {
+                    var projectileRange = FactoryManager.Instance.ProjectileProfile
+                        .GetProjectileProfileData(projectileID).ProjectileRange;
+
+                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
+                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
+                    var rng = projectileRange * multipliers[PATCH_TYPE.RANGE];
+                    return $"cooldown: dps {dps}\nrng {rng}";
+                }
+                case PART_TYPE.FREEZE:
+                {
+                    var rng = range * multipliers[PATCH_TYPE.RANGE];
+                    return $"Cooldown {cooldown}s\nrng {rng}";
+                }
+                case PART_TYPE.BOMB:
+                {
+                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
+                    return $"Cooldown {cooldown}s\ndmg {dmg}";
+                }
+                case PART_TYPE.SNIPER:
+                /*{
+                    /*var dps = Mathf.RoundToInt(damage * multipliers[PATCH_TYPE.DAMAGE] /
+                                               (cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));#2#
+                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
+                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
+                    return $"Cooldown {cldwn}s\nDmg {dmg}\n";
+                }#1#
+                case PART_TYPE.RAILGUN:
+                {
+                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
+                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
+                    return $"Cooldown {cldwn}s\nDmg {dmg}\n";
+                
+                }
+                
+                case PART_TYPE.REGEN:
+                    return "";
+                case PART_TYPE.BITSPLOSION:
+                    return string.Empty;
+                case PART_TYPE.HOOVER:
+                    return string.Empty;
+                case PART_TYPE.DECOY:
+                    return string.Empty;
+                case PART_TYPE.HEAL:
+                    return string.Empty;
+                case PART_TYPE.RECOVERY:
+                    return string.Empty;
+                case PART_TYPE.TRACTOR:
+                    return string.Empty;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(partRemoteData.partType), partRemoteData.partType,
+                        null);
+            }*/
 
         }
 

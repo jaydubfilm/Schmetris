@@ -23,6 +23,7 @@ namespace StarSalvager.Parts.Data
             Probability,
             PartCapacity,
             Multiplier,
+            Speed
         }
 
         public static readonly string[] Names =
@@ -41,6 +42,7 @@ namespace StarSalvager.Parts.Data
             "Probability",
             "PartCapacity",
             "Multiplier",
+            "Speed",
         };
 
         [ValueDropdown(nameof(Names)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -76,6 +78,7 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Cooldown:
                 case KEYS.Probability:
                 case KEYS.Multiplier:
+                case KEYS.Speed:
                     return float.Parse(value);
 
                 case KEYS.Projectile:
