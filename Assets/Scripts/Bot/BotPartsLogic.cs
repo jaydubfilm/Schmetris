@@ -1641,6 +1641,8 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(key), key, null);
             }
 
+            value = (float)Math.Round(value, 2);
+            
             return true;
         }
 

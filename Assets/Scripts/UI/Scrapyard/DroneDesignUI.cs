@@ -229,13 +229,18 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Scroll Views
 
-        private void InitPurchasePatches()
+        public void InitPurchasePatches()
         {
+            purchasePatchUIElementScrollView.ClearElements();
+            
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-            var patches = Globals.CurrentRing.GenerateRingPatches();
+            var patches = PlayerDataManager.Patches;
+
+            if (patches.IsNullOrEmpty())
+                return;
 
             var purchasePatchData = new List<Purchase_PatchData>();
-            for (var i = 0; i < patches.Length; i++)
+            for (var i = 0; i < patches.Count; i++)
             {
                 var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
@@ -384,7 +389,9 @@ namespace StarSalvager.UI.Scrapyard
             }
             
             //Once its been purchased it should be removed
-            purchasePatchUIElementScrollView.RemoveElementAtIndex(partUpgrd.PurchasePatchData.index);
+            //purchasePatchUIElementScrollView.RemoveElementAtIndex(partUpgrd.PurchasePatchData.index);
+            PlayerDataManager.RemovePatchAtIndex(partUpgrd.PurchasePatchData.index);
+            InitPurchasePatches();
 
             //Refresh Data
             //--------------------------------------------------------------------------------------------------------//

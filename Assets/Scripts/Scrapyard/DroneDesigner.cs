@@ -25,7 +25,7 @@ namespace StarSalvager
 {
     public class DroneDesigner : AttachableEditorToolBase, IReset, IInput, IHasHintElement
     {
-        private DroneDesignUI DroneDesignUi
+        public DroneDesignUI DroneDesignUi
         {
             get
             {
@@ -140,7 +140,7 @@ namespace StarSalvager
         #endregion
 
         //====================================================================================================================//
-        private PatchUIElement _draggingPatch;
+        /*private PatchUIElement _draggingPatch;
         public void BeginDragPatch(in PatchUIElement patchUIElement)
         {
             _draggingPatch = patchUIElement;
@@ -202,7 +202,7 @@ namespace StarSalvager
             
             _draggingPatch.ResetInScrollview();
             _draggingPatch = null;
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -538,7 +538,7 @@ namespace StarSalvager
         {
             scrapyardPart = null;
 
-            if(_draggingPatch /*|| _isDragging */|| PlayerDataManager.GetCanChoosePart())
+            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.GetCanChoosePart())
                 return false;
 
             if (DroneDesignUi.UpgradeWindowOpen)

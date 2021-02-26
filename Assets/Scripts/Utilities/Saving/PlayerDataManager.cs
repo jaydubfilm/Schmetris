@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Math;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
@@ -367,6 +368,7 @@ namespace StarSalvager.Utilities.Saving
         //Patches
         //====================================================================================================================//
 
+        /*
         public static IReadOnlyList<PatchData> GetCurrentPatchesInStorage()
         {
             return PlayerRunData.GetCurrentPatchesInStorage();
@@ -391,7 +393,7 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.RemovePatchFromStorageAtIndex(index);
 
             OnValuesChanged?.Invoke();
-        }
+        }*/
 
         //====================================================================================================================//
         
@@ -686,6 +688,23 @@ namespace StarSalvager.Utilities.Saving
             return GameMetaData.SaveFiles;
         }
 
+        //Patches
+        //====================================================================================================================//
+        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
+        
+        public static void SetPatches(in IEnumerable<PatchData> patches)
+        {
+            PlayerRunData.SetPatches(patches);
+        }
+        public static void ClearAllPatches()
+        {
+            PlayerRunData.ClearAllPatches();
+        }
+        public static void RemovePatchAtIndex(in int index)
+        {
+            PlayerRunData.RemovePatchAtIndex(index);
+        }
+        
         //====================================================================================================================//
 
         public static void CustomOnApplicationQuit()

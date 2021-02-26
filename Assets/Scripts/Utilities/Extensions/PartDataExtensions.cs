@@ -69,7 +69,7 @@ namespace StarSalvager.Utilities.Extensions
             if (modifiers[5])
                 outList.Add("Heal", heal);
 
-            return string.Join("\n", outList.Select(x => $"{x.Key}: {x.Value}"));
+            return string.Join("\n", outList.Select(x => $"{x.Key}: {x.Value:#.0}"));
         }
 
         //GetPatchNames

@@ -18,8 +18,8 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField] private StorageUIElementScrollView storageUiElementScrollView;
 
-        [SerializeField, BoxGroup("Patches")] 
-        private PatchUIElementScrollView patchUIElementScrollView;
+        /*[SerializeField, BoxGroup("Patches")] 
+        private PatchUIElementScrollView patchUIElementScrollView;*/
 
         //============================================================================================================//
 
@@ -96,7 +96,7 @@ namespace StarSalvager.UI.Scrapyard
             // Update the Patch Scroll View contents
             //--------------------------------------------------------------------------------------------------------//
 
-            patchUIElementScrollView.ClearElements();
+            /*patchUIElementScrollView.ClearElements();
             var storedPatches = PlayerDataManager.GetCurrentPatchesInStorage();
             for (int i = 0; i < storedPatches.Count; i++)
             {
@@ -114,7 +114,7 @@ namespace StarSalvager.UI.Scrapyard
                     allowDuplicate: true);
 
                 temp.Init(patchStorage);
-            }
+            }*/
 
         }
 
@@ -137,7 +137,7 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
 
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
 
         [Button]
         private void AddPatchToStorage()
@@ -149,7 +149,7 @@ namespace StarSalvager.UI.Scrapyard
             });
         }
         
-#endif
+#endif*/
     }
 
     [System.Serializable]

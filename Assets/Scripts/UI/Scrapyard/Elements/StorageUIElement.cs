@@ -64,7 +64,7 @@ namespace StarSalvager.UI.Scrapyard
             if (!(data.blockData is PartData))
                 return;
 
-            _droneDesignUI.HidePartDetails();
+            _droneDesignUI.ShowPartDetails(false, new PartData(), null);
         }
 
         //============================================================================================================//
