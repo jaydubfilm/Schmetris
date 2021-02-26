@@ -121,6 +121,8 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public bool HoveringStoragePartUIElement { get; private set; }
+
         private DroneDesigner DroneDesigner
         {
             get
@@ -159,9 +161,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-
-
-            ShowPartDetails(false, null);
+            HidePartDetails();
             SetUpgradeWindowActive(false);
         }
 
@@ -235,17 +235,18 @@ namespace StarSalvager.UI.Scrapyard
             var patches = Globals.CurrentRing.GenerateRingPatches();
 
             var purchasePatchData = new List<Purchase_PatchData>();
-            foreach (var patchData in patches)
+            for (var i = 0; i < patches.Length; i++)
             {
+                var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
                 var remoteData = patchRemoteData.GetRemoteData(patchType);
                 var cost = remoteData.Levels[patchData.Level].cost;
-                
-                
+
                 purchasePatchData.Add(new Purchase_PatchData
                 {
+                    index = i,
                     cost = cost,
-                    PatchData = patchData  
+                    PatchData = patchData
                 });
             }
 
@@ -381,6 +382,9 @@ namespace StarSalvager.UI.Scrapyard
 
                 PlayerDataManager.SetCurrentPartsInStorage(partsInStorage);
             }
+            
+            //Once its been purchased it should be removed
+            purchasePatchUIElementScrollView.RemoveElementAtIndex(partUpgrd.PurchasePatchData.index);
 
             //Refresh Data
             //--------------------------------------------------------------------------------------------------------//
@@ -434,6 +438,10 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public void HidePartDetails()
+        {
+            ShowPartDetails(false, null);
+        }
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
             partDetailsContainerRectTransform.gameObject.SetActive(show);
@@ -460,12 +468,9 @@ namespace StarSalvager.UI.Scrapyard
             var partType = (PART_TYPE) partData.Type;
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            //var bitType = !partRemote.partGrade.Types.IsNullOrEmpty() ? partRemote.partGrade.Types[0] : BIT_TYPE.NONE;
 
             var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
-            /*var bitProfile = bitType == BIT_TYPE.NONE
-                ? new BitProfile()
-                : FactoryManager.Instance.BitProfileData.GetProfile(bitType);*/
+
 
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
 
@@ -474,8 +479,9 @@ namespace StarSalvager.UI.Scrapyard
             partNameText.text = partRemote.name;
             partImage.sprite = partProfile.Sprite;
 
-            var altDetails = GetAltDetails(partData, partRemote);
-            partDetailsText.text = $"{partRemote.description}\n{altDetails}";
+            var altDetails = partData.GetPartDetails(partRemote);
+            //partDetailsText.text = $"{partRemote.description}\n{altDetails}";
+            partDetailsText.text = $"{altDetails}";
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
@@ -491,40 +497,13 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //====================================================================================================================//
-
-            //partDetailsText.text = $"{GetPartDetails(partType)}";
-
-
-            //====================================================================================================================//
-
-            /*for (var i = 0; i < 5; i++)
-            {
-                var hasSprite = bitType != BIT_TYPE.NONE;
-
-                gradeUis[i].bitImage.enabled = hasSprite;
-
-                //Contain within the bit Level limits
-                var levelOffset = Mathf.Clamp(i + partData.Patches.GetPatchUpgradersSum(), 0, 4);
-
-                if (hasSprite)
-                {
-                    gradeUis[i].bitImage.sprite = bitProfile.GetSprite(i);
-
-                    var hasLevel = partRemote.partGrade.minBitLevel <= levelOffset;
-                    gradeUis[i].bitImage.color = hasLevel ? Color.white : Color.grey;
-                    gradeUis[i].bitImage.rectTransform.localScale = hasLevel ? Vector3.one : Vector3.one * 0.9f;
-                }
-
-                gradeUis[i].text.text = $"{GetGradeDetails(levelOffset, partRemote, partData.Patches)}";
-            }*/
-
-            //====================================================================================================================//
-
         }
         
         public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
         {
             partDetailsContainerRectTransform.gameObject.SetActive(show);
+
+            HoveringStoragePartUIElement = show;
 
             if (!show)
                 return;
@@ -552,7 +531,7 @@ namespace StarSalvager.UI.Scrapyard
             partNameText.text = partRemote.name;
             partImage.sprite = partProfile.Sprite;
 
-            partDetailsText.text = GetAltDetails(partData, partRemote);
+            partDetailsText.text = partData.GetPartDetails( partRemote);
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
@@ -568,63 +547,6 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //====================================================================================================================//
-        }
-
-        //====================================================================================================================//
-
-        public static string GetAltDetails(in PartData partData)
-        {
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
-            return GetAltDetails(partData, partRemoteData);
-        }
-        
-        //FIXME This can probably be really improved
-        public static string GetAltDetails(in PartData partData, in PartRemoteData partRemoteData)
-        {
-            var multipliers = partData.Patches.GetPatchMultipliers(
-                PATCH_TYPE.POWER,
-                PATCH_TYPE.RANGE,
-                PATCH_TYPE.FIRE_RATE);
-
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
-
-            var modifiers = new[]
-            {
-                partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage),
-                partRemote.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown),
-                partRemote.TryGetValue(PartProperties.KEYS.Radius, out float range),
-                partRemote.TryGetValue(PartProperties.KEYS.Projectile, out string projectileID),
-                partRemote.TryGetValue(PartProperties.KEYS.Speed, out float speed),
-                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal)
-            };
-
-            var outList = new Dictionary<string, float>();
-            
-            if(modifiers[0])
-                outList.Add("Damage", damage * multipliers[PATCH_TYPE.POWER]);
-            
-            if(modifiers[1])
-                outList.Add("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]);
-            
-            if (modifiers[2])
-            {
-                outList.Add("Range", range * multipliers[PATCH_TYPE.RANGE]);
-            }
-            else if (modifiers[3])
-            {
-                var projectileRange = FactoryManager.Instance.ProjectileProfile
-                    .GetProjectileProfileData(projectileID).ProjectileRange; 
-                
-                outList.Add("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]);
-            }
-            
-            if(modifiers[4])
-                outList.Add("Speed", speed);
-            
-            if(modifiers[5])
-                outList.Add("Heal", heal);
-
-            return string.Join("\n",outList.Select(x => $"{x.Key}: {x.Value}"));
         }
 
         //====================================================================================================================//

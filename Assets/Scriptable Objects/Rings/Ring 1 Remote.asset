@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wreckFrequency: 1
   patchSpawnCount: {x: 2, y: 4}
-  patchLevelRange: {x: 1, y: 3}
+  patchLevelRange: {x: 1, y: 2}
   patches: 010000000300000002000000
   WaveRemoteData:
   - {fileID: 11400000, guid: 18559367f3ec34b7b98c984416e9d6e9, type: 2}

@@ -22,12 +22,12 @@ namespace StarSalvager.Utilities.Extensions
             if (patchesOfType.Count == 0)
                 return 1;
 
-            var remoteData = FactoryManager.Instance.PatchRemoteData;
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             
             var total = 0f;
             foreach (var patchData in patchesOfType)
             {
-                var data = remoteData.GetRemoteData(patchType)
+                var data = patchRemoteData.GetRemoteData(patchType)
                     .GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
 
                 total += data;
@@ -38,13 +38,13 @@ namespace StarSalvager.Utilities.Extensions
                 case PATCH_TYPE.POWER:
                 case PATCH_TYPE.RANGE:
                     return 1 + total;
+                case PATCH_TYPE.REINFORCED:
+                case PATCH_TYPE.EFFICIENCY:
                 case PATCH_TYPE.FIRE_RATE:
                     return  1 - total;
                 
                 case PATCH_TYPE.AOE:
-                case PATCH_TYPE.EFFICIENCY:
                 case PATCH_TYPE.BURN:
-                case PATCH_TYPE.REINFORCED:
                     throw new NotImplementedException($"{patchType} not yet implemented");
                 
                 default:

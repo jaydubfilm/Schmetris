@@ -448,26 +448,20 @@ namespace StarSalvager
 
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
-            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
-            var currentAmmo = ammoResource.Ammo;
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > currentAmmo)
+            
+            if (TryUseAmmo(part, partRemoteData) == false)
                 return;
 
-            ammoResource.SubtractAmmo(ammoCost);
-
             //--------------------------------------------------------------------------------------------------------//
-
-            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
-            {
-                _repairTimers[part] = cooldown;
-            }
-
-            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
-            {
-                toRepair.ChangeHealth(repairAmount * deltaTime);
-            }
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Cooldown, part, partRemoteData, out var cooldown))
+                throw new ArgumentOutOfRangeException();
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
+            
+            _repairTimers[part] = cooldown;
+            toRepair.ChangeHealth(repairAmount * deltaTime);
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
         }
@@ -483,22 +477,18 @@ namespace StarSalvager
 
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
-            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
-            var currentAmmo = ammoResource.Ammo;
-            var ammoCost = partRemoteData.ammoUseCost * Time.deltaTime;
-
-            if (ammoCost > currentAmmo)
+            
+            if (TryUseAmmo(part, partRemoteData, Time.deltaTime) == false)
                 return;
-
-            ammoResource.SubtractAmmo(ammoCost);
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
-            {
-                repairTarget.ChangeHealth(repairAmount * deltaTime);
-            }
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
+            
+            repairTarget.ChangeHealth(repairAmount * deltaTime);
 
+            
             TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
 
@@ -519,10 +509,10 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (partRemoteData.TryGetValue<float>(PartProperties.KEYS.Heal, out var repairAmount))
-            {
-                repairTarget.ChangeHealth(repairAmount * deltaTime);
-            }
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
+
+            repairTarget.ChangeHealth(repairAmount * deltaTime);
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
@@ -662,15 +652,9 @@ namespace StarSalvager
 
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
-            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
-            var currentAmmo = ammoResource.Ammo;
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > currentAmmo)
+            if (TryUseAmmo(part, partRemoteData) == false)
                 return;
             
-            ammoResource.SubtractAmmo(ammoCost);
-
             //--------------------------------------------------------------------------------------------------------//
             
             _gunTargets[part] = fireTarget;
@@ -705,12 +689,15 @@ namespace StarSalvager
 
                     if (didHitTarget)
                     {
-                        var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
-                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
+                        /*var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);*/
+
+                        if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
+                            throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
                         if (fireTarget is ICanBeHit iCanBeHit)
                         {
-                            iCanBeHit.TryHitAt(fireTarget.transform.position, damage * damageBoost);
+                            iCanBeHit.TryHitAt(fireTarget.transform.position, damage/* * damageBoost*/);
                         }
                     }
 
@@ -766,9 +753,7 @@ namespace StarSalvager
             if (timer < 1f)
                 return;
 
-            var currentAmmo = PlayerDataManager.GetResource(partRemoteData.category).Ammo;
-            var ammoCost = partRemoteData.ammoUseCost;
-            var canAfford = currentAmmo >= ammoCost;
+            var canAfford = CanAffordAmmo(part, partRemoteData, out _);
             
             //TODO Setup Can Afford
             //var hasPartGrade = HasPartGrade(part, out _);
@@ -814,11 +799,14 @@ namespace StarSalvager
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
-            var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.POWER);
+            //var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.POWER);
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
-            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            //var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
+                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
             /*if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
                 HasPartGrade(part, partRemoteData, out var multiplier))
@@ -851,7 +839,7 @@ namespace StarSalvager
                     position,
                     collidableTarget,
                     shootDirection,
-                    damage * damageBoost,
+                    damage,
                     rangeBoost,
                     collisionTag,
                     vampireCaster,
@@ -1032,21 +1020,20 @@ namespace StarSalvager
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
             }
-            
-            var resource = PlayerDataManager.GetResource(partRemoteData.category);
 
-            var ammoCost = partRemoteData.ammoUseCost;
-
-            if (ammoCost > resource.Ammo)
+            if (!CanAffordAmmo(part, partRemoteData, out _))
             {
                 AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
             }
-            
+
             if (!useTriggerOnTrue) 
                 return true;
 
-            resource.SubtractAmmo(ammoCost);
+            if (!TryUseAmmo(part, partRemoteData))
+                throw new Exception($"Error calling {nameof(TryUseAmmo)}");
+
+            //resource.SubtractAmmo(ammoCost);
             
             _triggerPartTimers[part] = cooldown;
 
@@ -1059,8 +1046,8 @@ namespace StarSalvager
                 return;
 
             //Damage all the enemies
-            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
-                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
+                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
             EnemyManager.DamageAllEnemies(damage);
 
@@ -1167,11 +1154,9 @@ namespace StarSalvager
 
             CanUseTriggerPart(part, out var partRemoteData);
             
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Speed, out var speedMultiplier))
-            {
-                throw new MissingFieldException($"{PartProperties.KEYS.Speed} missing from {part.Type} remote data");
-            }
-            
+            if (!TryGetPartProperty(PartProperties.KEYS.Speed, part, partRemoteData, out var speedMultiplier))
+                throw new ArgumentOutOfRangeException();
+
             bit.AddMove = Vector2.down * speedMultiplier;
             
             //TODO Add functionality
@@ -1216,8 +1201,11 @@ namespace StarSalvager
                 return;
 
             //Damage all the enemies
-            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
-                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+            /*if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");*/
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
+                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
             EnemyManager.DamageAllEnemies(damage);
 
@@ -1550,10 +1538,10 @@ namespace StarSalvager
         #region Boosts
 
         //FIXME This is very efficient for finding the parts
-        private float GetBoostValue(PART_TYPE boostPart, in Part fromPart)
+        /*private float GetBoostValue(PART_TYPE boostPart, in Part fromPart)
         {
             var boosts = _parts
-                .Where(x => !x.Disabled /*&& !x.Destroyed*/ && x.Type == boostPart)
+                .Where(x => !x.Disabled /*&& !x.Destroyed#1# && x.Type == boostPart)
                 .ToList();
 
             if (boosts.IsNullOrEmpty())
@@ -1583,7 +1571,7 @@ namespace StarSalvager
             }
 
             return maxBoost;
-        }
+        }*/
 
         /*private float GetDefenseBoost(in Part part)
         {
@@ -1602,6 +1590,59 @@ namespace StarSalvager
         }*/
 
         #endregion //Boosts
+
+        //Ammo
+        //====================================================================================================================//
+
+        private bool CanAffordAmmo(in Part part, in PartRemoteData partRemoteData, out float ammoCost, float additional = 1f)
+        {
+            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY);
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            var currentAmmo = ammoResource.Ammo;
+            ammoCost = partRemoteData.ammoUseCost * ammoMultiplier * additional;
+
+            return ammoCost <= currentAmmo;
+        }
+        
+        private bool TryUseAmmo(in Part part, in PartRemoteData partRemoteData, float additional = 1f)
+        {
+            if (!CanAffordAmmo(part, partRemoteData, out var ammoCost, additional))
+                return false;
+            
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            ammoResource.SubtractAmmo(ammoCost);
+            
+            return true;
+        }
+
+        //====================================================================================================================//
+
+        private bool TryGetPartProperty(in PartProperties.KEYS key, in Part part, in PartRemoteData partRemoteData, out float value)
+        {
+            if (!partRemoteData.TryGetValue(key, out value))
+                return false;
+            
+            switch (key)
+            {
+                case PartProperties.KEYS.Heal:
+                case PartProperties.KEYS.Damage:
+                case PartProperties.KEYS.Speed:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
+                    break;
+                case PartProperties.KEYS.Radius:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
+                    break;
+                case PartProperties.KEYS.Time:
+                case PartProperties.KEYS.Cooldown:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(key), key, null);
+            }
+
+            return true;
+        }
 
         //Checking for recycled extras
         //============================================================================================================//

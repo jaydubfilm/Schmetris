@@ -177,7 +177,7 @@ namespace StarSalvager
             var partType = part.Type;
 
             //Check if the part is allowed to have this Patch
-            if (!patchRemoteData.allowedParts.Contains(partType))
+            if (!patchRemoteData.fitsAnyPart && !patchRemoteData.allowedParts.Contains(partType))
             {
                 _draggingPatch.ResetInScrollview();
                 _draggingPatch = null;
@@ -526,7 +526,7 @@ namespace StarSalvager
 
         private void CheckForMousePartHover()
         {
-            if (StorageUIElement.HoveringElement)
+            if (DroneDesignUi.HoveringStoragePartUIElement)
                 return;
             
             var show = TryHoverPart(out var partData);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using TMPro;
 using UnityEngine;
@@ -95,19 +96,10 @@ namespace StarSalvager.UI.Scrapyard
             var patchRemoteDataData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
             var partType = (PART_TYPE) data.PartData.Type;
 
-            return patchRemoteDataData.allowedParts.Contains(partType);
+            return patchRemoteDataData.fitsAnyPart || patchRemoteDataData.allowedParts.Contains(partType);
         }
 
-        private string GetPatchDetails(in PartData partData)
-        {
-            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-            var patches = partData.Patches;
-
-            return string.Join("\n",
-                patches.Where(x => x.Type != (int) PATCH_TYPE.EMPTY)
-                    .Select(x => $"{patchRemoteData.GetRemoteData(x.Type).name} {x.Level + 1}"));
-            
-        }
+        
         
         //====================================================================================================================//
 
@@ -132,8 +124,8 @@ namespace StarSalvager.UI.Scrapyard
         private void ShowPreviewChanges(in PartData partData)
         {
             titleText.text = partName;
-            patchText.text = GetPatchDetails(partData);
-            descriptionText.text = DroneDesignUI.GetAltDetails(partData);
+            patchText.text = partData.GetPatchNames();
+            descriptionText.text = partData.GetPartDetails();
         }
         
     }

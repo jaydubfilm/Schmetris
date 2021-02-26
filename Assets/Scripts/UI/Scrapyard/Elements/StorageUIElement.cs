@@ -8,7 +8,6 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IPointerEnterHandler, IPointerExitHandler
     {
-        public static bool HoveringElement { get; private set; }
         private static DroneDesignUI _droneDesignUI;
         private static ScrapyardBot _scrapyardBot;
 
@@ -56,7 +55,6 @@ namespace StarSalvager.UI.Scrapyard
             if (!(data.blockData is PartData partData))
                 return;
 
-            HoveringElement = true;
             _droneDesignUI.ShowPartDetails(true, partData, transform);
             
         }
@@ -66,8 +64,7 @@ namespace StarSalvager.UI.Scrapyard
             if (!(data.blockData is PartData))
                 return;
 
-            HoveringElement = false;
-            _droneDesignUI.ShowPartDetails(false, null);
+            _droneDesignUI.HidePartDetails();
         }
 
         //============================================================================================================//
@@ -75,7 +72,7 @@ namespace StarSalvager.UI.Scrapyard
         public override void CustomRecycle(params object[] args)
         {
             if (partDragImageTransform != null && partDragImageTransform.gameObject != null)
-                GameObject.Destroy(partDragImageTransform.gameObject);
+                Destroy(partDragImageTransform.gameObject);
 
             if(_damageImage)
                 Destroy(_damageImage.gameObject);

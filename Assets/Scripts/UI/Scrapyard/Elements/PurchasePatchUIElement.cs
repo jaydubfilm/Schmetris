@@ -63,6 +63,7 @@ namespace StarSalvager.UI.Scrapyard
 
     public struct Purchase_PatchData : IEquatable<Purchase_PatchData>
     {
+        public int index;
         public int cost;
         public PatchData PatchData;
 
