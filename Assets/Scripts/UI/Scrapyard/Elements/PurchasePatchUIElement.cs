@@ -68,10 +68,9 @@ namespace StarSalvager.UI.Scrapyard
         public PatchData PatchData;
 
         #region IEquatable
-
         public bool Equals(Purchase_PatchData other)
         {
-            return cost == other.cost && PatchData.Equals(other.PatchData);
+            return index == other.index && cost == other.cost && PatchData.Equals(other.PatchData);
         }
 
         public override bool Equals(object obj)
@@ -83,11 +82,15 @@ namespace StarSalvager.UI.Scrapyard
         {
             unchecked
             {
-                return (cost * 397) ^ PatchData.GetHashCode();
+                var hashCode = index;
+                hashCode = (hashCode * 397) ^ cost;
+                hashCode = (hashCode * 397) ^ PatchData.GetHashCode();
+                return hashCode;
             }
         }
-
         #endregion //IEquatable
+
+
     }
 
     [Serializable]
