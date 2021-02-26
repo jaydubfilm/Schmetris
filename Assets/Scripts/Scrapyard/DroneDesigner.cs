@@ -701,7 +701,7 @@ namespace StarSalvager
                 return;
             }
 
-            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+            Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
             _scrapyardBot = null;
         }
 

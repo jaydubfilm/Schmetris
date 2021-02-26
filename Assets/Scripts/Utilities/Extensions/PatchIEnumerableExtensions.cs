@@ -35,20 +35,18 @@ namespace StarSalvager.Utilities.Extensions
 
             switch (patchType)
             {
-                case PATCH_TYPE.DAMAGE:
+                case PATCH_TYPE.POWER:
                 case PATCH_TYPE.RANGE:
                     return 1 + total;
                 case PATCH_TYPE.FIRE_RATE:
                     return  1 - total;
                 
+                case PATCH_TYPE.AOE:
                 case PATCH_TYPE.EFFICIENCY:
-                case PATCH_TYPE.DURATION:
-                case PATCH_TYPE.CRITICAL:
-                case PATCH_TYPE.ELECTRIC:
-                case PATCH_TYPE.CORROSIVE:
+                case PATCH_TYPE.BURN:
                 case PATCH_TYPE.REINFORCED:
-                case PATCH_TYPE.SPECIALIST:
                     throw new NotImplementedException($"{patchType} not yet implemented");
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(patchType), patchType, null);
             }

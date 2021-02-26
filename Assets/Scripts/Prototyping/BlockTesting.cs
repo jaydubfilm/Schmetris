@@ -31,7 +31,7 @@ public class BlockTesting : MonoBehaviour
                     },
                     new PatchData
                     {
-                        Type = (int)PATCH_TYPE.DAMAGE,
+                        Type = (int)PATCH_TYPE.POWER,
                         Level = 1
                     }
                 }

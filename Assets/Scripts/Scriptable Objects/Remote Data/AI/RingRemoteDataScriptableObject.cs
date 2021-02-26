@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -16,11 +15,26 @@ namespace StarSalvager.AI
     [CreateAssetMenu(fileName = "Ring Remote", menuName = "Star Salvager/Scriptable Objects/Ring Remote Data")]
     public class RingRemoteDataScriptableObject : ScriptableObject
     {
-        [Range(1,10)]
-        public int wreckFrequency = 3;
+        //Wrecks
+        //====================================================================================================================//
         
+        [Range(1,10), BoxGroup("Wrecks")]
+        public int wreckFrequency = 3;
+
+        [BoxGroup("Wrecks/Patches"), MinMaxSlider(1, 10, true)]
+        public Vector2Int patchSpawnCount = new Vector2Int(2, 4);
+        [BoxGroup("Wrecks/Patches"), MinMaxSlider(1, 2, true)]
+        public Vector2Int patchLevelRange = new Vector2Int(1, 2);
+        [BoxGroup("Wrecks/Patches")]
+        public List<PATCH_TYPE> patches;
+
+        //====================================================================================================================//
+        
+        [Space(10f)]
         public List<WaveRemoteDataScriptableObject> WaveRemoteData;
 
+        //====================================================================================================================//
+        
         public WaveRemoteDataScriptableObject GetRemoteData(int waveNumber)
         {
             return WaveRemoteData[waveNumber];
@@ -79,6 +93,26 @@ namespace StarSalvager.AI
             }
 
             return outList;
+        }
+
+        //====================================================================================================================//
+
+        public PatchData[] GenerateRingPatches()
+        {
+            var count = Random.Range(patchSpawnCount.x, patchSpawnCount.y + 1);
+
+            var outData = new PatchData[count];
+            
+            for (int i = 0; i < count; i++)
+            {
+                outData[i] = new PatchData
+                {
+                    Type = (int)patches[Random.Range(0, patches.Count)],
+                    Level = Random.Range(patchLevelRange.x - 1, patchLevelRange.y)
+                };
+            }
+
+            return outData;
         }
     }
 }

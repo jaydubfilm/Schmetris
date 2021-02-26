@@ -75,7 +75,7 @@ namespace StarSalvager
                         });
                         break;
                     case NodeType.Level:
-                        Globals.CurrentRing = ringIndex;
+                        Globals.CurrentRingIndex = ringIndex;
                         Globals.CurrentWave = waveIndex;
 
                         ScreenFade.Fade(() =>

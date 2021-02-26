@@ -47,7 +47,7 @@ namespace StarSalvager
         //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
         public WaveRemoteDataScriptableObject CurrentWaveData =>
-            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRing].GetRemoteData(Globals.CurrentWave);
+            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRingIndex].GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;

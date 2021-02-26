@@ -144,7 +144,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             PlayerDataManager.AddPatchToStorage(new PatchData
             {
-                Type = (int)PATCH_TYPE.DAMAGE,
+                Type = (int)PATCH_TYPE.POWER,
                 Level = Random.Range(0, 5)
             });
         }

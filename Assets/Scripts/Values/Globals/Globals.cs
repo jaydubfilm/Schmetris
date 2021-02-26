@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -25,7 +27,9 @@ namespace StarSalvager.Values
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         
-        public static int CurrentRing = 0;
+        public static int CurrentRingIndex = 0;
+        public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
+
         public static int CurrentWave = 0;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;

@@ -706,7 +706,7 @@ namespace StarSalvager
                     if (didHitTarget)
                     {
                         var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
-                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.DAMAGE);
+                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
 
                         if (fireTarget is ICanBeHit iCanBeHit)
                         {
@@ -814,7 +814,7 @@ namespace StarSalvager
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
-            var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.DAMAGE);
+            var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.POWER);
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
@@ -833,13 +833,14 @@ namespace StarSalvager
                 : part.transform.up.normalized;
 
             //--------------------------------------------------------------------------------------------------------//
-            
-            var vampireCaster = part.Patches.Any(x => x.Type == (int)PATCH_TYPE.VAMPIRE) ? bot : null;
+            Bot vampireCaster = null;
+            var vampirism = 0f;
+            /*var vampireCaster = part.Patches.Any(x => x.Type == (int)PATCH_TYPE.VAMPIRE) ? bot : null;
 
             var vampirism = vampireCaster is null
                 ? 0f
                 : FactoryManager.Instance.PatchRemoteData.GetRemoteData(PATCH_TYPE.VAMPIRE)
-                    .GetDataValue<float>(1, PartProperties.KEYS.Multiplier);
+                    .GetDataValue<float>(1, PartProperties.KEYS.Multiplier);*/
             
             //--------------------------------------------------------------------------------------------------------//
 

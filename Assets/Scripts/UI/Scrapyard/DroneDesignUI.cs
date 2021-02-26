@@ -160,7 +160,6 @@ namespace StarSalvager.UI.Scrapyard
             _currentlyOverwriting = false;
 
 
-            InitPurchasePatches();
 
             ShowPartDetails(false, null);
             SetUpgradeWindowActive(false);
@@ -173,13 +172,17 @@ namespace StarSalvager.UI.Scrapyard
 
             UpdateHealthBar();
             CheckCanRepair();
+            
+            InitPurchasePatches();
         }
 
         private void OnDisable()
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
             PlayerDataManager.OnValuesChanged -= CheckCanRepair;
-            _droneDesigner.RecycleDrone();
+            
+            if(_droneDesigner)
+                _droneDesigner.RecycleDrone();
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -229,40 +232,24 @@ namespace StarSalvager.UI.Scrapyard
         private void InitPurchasePatches()
         {
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-            var patches = new List<Purchase_PatchData>();
-            
-            /*var patches = new[]
-            {
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.RANGE
-                    }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.DAMAGE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.DAMAGE
-                    }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.FIRE_RATE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.FIRE_RATE
-                    }
-                }
-            };*/
+            var patches = Globals.CurrentRing.GenerateRingPatches();
 
-            foreach (var t in patches)
+            var purchasePatchData = new List<Purchase_PatchData>();
+            foreach (var patchData in patches)
+            {
+                var patchType = (PATCH_TYPE) patchData.Type;
+                var remoteData = patchRemoteData.GetRemoteData(patchType);
+                var cost = remoteData.Levels[patchData.Level].cost;
+                
+                
+                purchasePatchData.Add(new Purchase_PatchData
+                {
+                    cost = cost,
+                    PatchData = patchData  
+                });
+            }
+
+            foreach (var t in purchasePatchData)
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
                 element.Init(t, ShowPartUpgradeSelectionWindow);
@@ -591,10 +578,11 @@ namespace StarSalvager.UI.Scrapyard
             return GetAltDetails(partData, partRemoteData);
         }
         
+        //FIXME This can probably be really improved
         public static string GetAltDetails(in PartData partData, in PartRemoteData partRemoteData)
         {
             var multipliers = partData.Patches.GetPatchMultipliers(
-                PATCH_TYPE.DAMAGE,
+                PATCH_TYPE.POWER,
                 PATCH_TYPE.RANGE,
                 PATCH_TYPE.FIRE_RATE);
 
@@ -613,7 +601,7 @@ namespace StarSalvager.UI.Scrapyard
             var outList = new Dictionary<string, float>();
             
             if(modifiers[0])
-                outList.Add("Damage", damage * multipliers[PATCH_TYPE.DAMAGE]);
+                outList.Add("Damage", damage * multipliers[PATCH_TYPE.POWER]);
             
             if(modifiers[1])
                 outList.Add("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]);
@@ -637,75 +625,6 @@ namespace StarSalvager.UI.Scrapyard
                 outList.Add("Heal", heal);
 
             return string.Join("\n",outList.Select(x => $"{x.Key}: {x.Value}"));
-
-
-
-
-            /*switch (partRemoteData.partType)
-            {
-                //case PART_TYPE.VAMPIRE:
-                case PART_TYPE.SHIELD:
-                case PART_TYPE.ARMOR:
-                case PART_TYPE.REPAIR:
-                //case PART_TYPE.CORE:
-                case PART_TYPE.UPGRADER:
-                case PART_TYPE.WILDCARD:
-                    return string.Empty;
-                case PART_TYPE.GUN:
-                {
-                    var projectileRange = FactoryManager.Instance.ProjectileProfile
-                        .GetProjectileProfileData(projectileID).ProjectileRange;
-
-                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
-                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
-                    var rng = projectileRange * multipliers[PATCH_TYPE.RANGE];
-                    return $"cooldown: dps {dps}\nrng {rng}";
-                }
-                case PART_TYPE.FREEZE:
-                {
-                    var rng = range * multipliers[PATCH_TYPE.RANGE];
-                    return $"Cooldown {cooldown}s\nrng {rng}";
-                }
-                case PART_TYPE.BOMB:
-                {
-                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
-                    return $"Cooldown {cooldown}s\ndmg {dmg}";
-                }
-                case PART_TYPE.SNIPER:
-                /*{
-                    /*var dps = Mathf.RoundToInt(damage * multipliers[PATCH_TYPE.DAMAGE] /
-                                               (cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));#2#
-                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
-                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
-                    return $"Cooldown {cldwn}s\nDmg {dmg}\n";
-                }#1#
-                case PART_TYPE.RAILGUN:
-                {
-                    var cldwn = cooldown * multipliers[PATCH_TYPE.FIRE_RATE];
-                    var dmg = damage * multipliers[PATCH_TYPE.DAMAGE];
-                    return $"Cooldown {cldwn}s\nDmg {dmg}\n";
-                
-                }
-                
-                case PART_TYPE.REGEN:
-                    return "";
-                case PART_TYPE.BITSPLOSION:
-                    return string.Empty;
-                case PART_TYPE.HOOVER:
-                    return string.Empty;
-                case PART_TYPE.DECOY:
-                    return string.Empty;
-                case PART_TYPE.HEAL:
-                    return string.Empty;
-                case PART_TYPE.RECOVERY:
-                    return string.Empty;
-                case PART_TYPE.TRACTOR:
-                    return string.Empty;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(partRemoteData.partType), partRemoteData.partType,
-                        null);
-            }*/
-
         }
 
         //====================================================================================================================//
