@@ -224,8 +224,7 @@ namespace StarSalvager.AI
         
         private void IdleState()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
+            ApplyFallMotion();
         }
 
         private void PursueState()

@@ -343,6 +343,6 @@ MonoBehaviour:
     m_name: LaserTurret
     m_health: 100
     m_movementSpeed: 0
-    m_rateOfFire: 0
+    m_rateOfFire: 0.4
     m_dimensions: {x: 0, y: 0}
     m_rdsTableData: []

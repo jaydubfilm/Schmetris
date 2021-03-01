@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Linq;
 using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
-using StarSalvager.Factories;
-using StarSalvager.Prototype;
-using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Particles;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 namespace StarSalvager.AI
 {
-    public class LaserTurretEnemy  : Enemy, IOverrideRecycleType
+    public class LaserTurretEnemy  : Enemy
     {
-        public float anticipationTime = 1f;
-        public float triggerDistance = 5f;
-        
+        private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
         //====================================================================================================================//
         
         public override bool IgnoreObstacleAvoidance => true;
@@ -24,21 +19,29 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        private float _anticipationTime;
+        [SerializeField]
+        private float anticipationTime = 1f;
+
+        private float _anticipationTimer;
+        [SerializeField]
+        private float attackTime;
+        private float _attackTimer;
+
         private Vector2 _playerPosition;
 
+        private static Vector3[] _directions;
+
         //====================================================================================================================//
+
+        [SerializeField] private float rotationSpeed = 5f;
+        private int _rotateDirection;
 
         [SerializeField]
         private float damage;
         [SerializeField]
         private LayerMask collisionMask;
         [SerializeField]
-        private GameObject beamObject1;
-        [SerializeField]
-        private GameObject beamObject2;
-        [SerializeField]
-        private GameObject beamObject3;
+        private SpriteRenderer[] beamSpriteRenderers;
 
         //====================================================================================================================//
 
@@ -46,11 +49,19 @@ namespace StarSalvager.AI
         {
             base.LateInit();
 
-            beamObject1.SetActive(false);
-            beamObject2.SetActive(false);
-            beamObject3.SetActive(false);
+            _rotateDirection = Random.value > 0.5f ? -1 : 1;
+            transform.eulerAngles = Vector3.forward * Random.Range(0, 360);
+            
+            if(_directions.IsNullOrEmpty())
+                _directions = new []
+                {
+                    Vector3.down,
+                    Quaternion.Euler(0, 0, 115) * Vector3.down,
+                    Quaternion.Euler(0, 0, 245) * Vector3.down
+                };
 
             SetState(STATE.ANTICIPATION );
+            
         }
 
         //State Functions
@@ -65,11 +76,12 @@ namespace StarSalvager.AI
             {
                 case STATE.NONE:
                 case STATE.ANTICIPATION:
+                    SetBeamsActive(false);
+                    _anticipationTimer = anticipationTime;
                     break;
                 case STATE.ATTACK:
-                    beamObject1.SetActive(true);
-                    beamObject2.SetActive(true);
-                    beamObject3.SetActive(true);
+                    SetBeamsActive(true);
+                    _attackTimer = attackTime;
                     break;
                 case STATE.DEATH:
                     //Recycle ya boy
@@ -82,9 +94,8 @@ namespace StarSalvager.AI
 
         protected override void StateUpdate()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
-            m_mostRecentMovementDirection = Vector3.down;
+            ApplyFallMotion();
+            Rotate();
 
             switch (currentState)
             {
@@ -106,7 +117,7 @@ namespace StarSalvager.AI
         protected override void CleanStateData()
         {
             base.CleanStateData();
-            _anticipationTime = anticipationTime;
+            _anticipationTimer = anticipationTime;
         }
 
         //====================================================================================================================//
@@ -116,9 +127,14 @@ namespace StarSalvager.AI
             if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
 
-            _anticipationTime -= Time.deltaTime;
+            _anticipationTimer -= Time.deltaTime;
 
-            if (_anticipationTime > 0)
+            if (_anticipationTimer <= anticipationTime / 3f)
+            {
+                SetBeamsActive(true, SEMI_TRANSPARENT);
+            }
+
+            if (_anticipationTimer > 0)
             {
                 return;
             }
@@ -128,61 +144,54 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
-            if (CameraController.IsPointInCameraRect(new Vector2(0, transform.position.y), Constants.VISIBLE_GAME_AREA))
+            const float DISTANCE = 100f;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void TryRaycast(in Vector2 worldPosition, in Vector3 direction, Color color)
+            {
+                var raycastHit2D = Physics2D.Raycast(worldPosition, direction, DISTANCE, collisionMask.value);
+
+                if (raycastHit2D.collider == null)
+                {
+                    Debug.DrawRay(worldPosition, direction * DISTANCE, color);
+                    return;
+                }
+
+                if (!(raycastHit2D.transform.GetComponent<Bot>() is Bot bot))
+                    throw new Exception();
+                
+                Debug.DrawRay(worldPosition, direction * DISTANCE, Color.green);
+
+                var damageToApply = damage * Time.deltaTime;
+
+                bot.TryHitAt(damageToApply);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            _attackTimer -= Time.deltaTime;
+
+            if (_attackTimer <= 0f)
             {
                 SetState(STATE.ANTICIPATION);
                 return;
             }
+            
+            if (!CameraController.IsPointInCameraRect(new Vector2(0, transform.position.y), Constants.VISIBLE_GAME_AREA))
+            {
+                SetState(STATE.ANTICIPATION);
+                return;
+            }
+            
             //--------------------------------------------------------------------------------------------------------//
 
-            Vector2 angle1 = Vector2.down;
-            Vector2 angle2 = Quaternion.Euler(0, 0, 115) * Vector2.down;
-            Vector2 angle3 = Quaternion.Euler(0, 0, -115) * Vector2.down;
-            
-            var raycastHit1 = Physics2D.Raycast(transform.position, angle1, 100, collisionMask.value);
-            var raycastHit2 = Physics2D.Raycast(transform.position, angle2, 100, collisionMask.value);
-            var raycastHit3 = Physics2D.Raycast(transform.position, angle3, 100, collisionMask.value);
+            var currentPosition = transform.position;
+            var currentRotation = transform.rotation;
 
-            if (raycastHit1.collider != null)
+            foreach (var direction in _directions)
             {
-                if (!(raycastHit1.transform.GetComponent<Bot>() is Bot bot))
-                    throw new Exception();
-
-                var damageToApply = damage * Time.deltaTime;
-
-                var toHit = bot.GetAttachablesInColumn(raycastHit1.point);
-                foreach (var attachable in toHit)
-                {
-                    bot.TryHitAt(attachable, damageToApply, false);
-                }
-            }
-
-            if (raycastHit2.collider != null)
-            {
-                if (!(raycastHit2.transform.GetComponent<Bot>() is Bot bot))
-                    throw new Exception();
-
-                var damageToApply = damage * Time.deltaTime;
-
-                var toHit = bot.GetAttachablesInColumn(raycastHit2.point);
-                foreach (var attachable in toHit)
-                {
-                    bot.TryHitAt(attachable, damageToApply, false);
-                }
-            }
-
-            if (raycastHit3.collider != null)
-            {
-                if (!(raycastHit3.transform.GetComponent<Bot>() is Bot bot))
-                    throw new Exception();
-
-                var damageToApply = damage * Time.deltaTime;
-
-                var toHit = bot.GetAttachablesInColumn(raycastHit3.point);
-                foreach (var attachable in toHit)
-                {
-                    bot.TryHitAt(attachable, damageToApply, false);
-                }
+                TryRaycast(currentPosition, currentRotation * direction, Color.red);
             }
         }
 
@@ -198,8 +207,36 @@ namespace StarSalvager.AI
             StateUpdate();
         }
         
+        private void Rotate()
+        {
+            var eulerAngles = transform.eulerAngles;
+            
+            eulerAngles += Vector3.forward * (rotationSpeed * _rotateDirection * Time.deltaTime);
+
+            transform.eulerAngles = eulerAngles;
+        }
+        
 
         #endregion
+
+        //LaserTurretEnemy Functions
+        //====================================================================================================================//
+
+        private void SetBeamsActive(in bool state)
+        {
+            SetBeamsActive(state, Color.white);
+        }
+        
+        private void SetBeamsActive(in bool state, in Color color)
+        {
+            foreach (var spriteRenderer in beamSpriteRenderers)
+            {
+                if(state)
+                    spriteRenderer.color = color;
+                
+                spriteRenderer.gameObject.SetActive(state);
+            }
+        }
 
         //====================================================================================================================//
 
@@ -216,6 +253,5 @@ namespace StarSalvager.AI
         }
 
         //====================================================================================================================//
-        
     }
 }

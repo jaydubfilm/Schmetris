@@ -1342,6 +1342,12 @@ namespace StarSalvager
             return true;
         }
 
+        public void TryHitAt(in float damage)
+        {
+            var part = AttachedBlocks.FirstOrDefault(x => x is Part);
+            TryHitAt(part, damage);
+        }
+        
         public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
