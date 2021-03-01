@@ -114,10 +114,13 @@ namespace StarSalvager.UI.Scrapyard
                 return;
             }
 
+            ShowPreviewChanges(data.PartData, data.PurchasePatchData.PatchData);
+
+            /*
             var partData = new PartData(data.PartData);
             
             partData.AddPatch(data.PurchasePatchData.PatchData);
-            ShowPreviewChanges(partData);
+            ShowPreviewChanges(partData);*/
 
         }
 
@@ -126,6 +129,13 @@ namespace StarSalvager.UI.Scrapyard
             titleText.text = partName;
             patchText.text = partData.GetPatchNames();
             descriptionText.text = partData.GetPartDetails();
+        }
+        
+        private void ShowPreviewChanges(in PartData partData, in PatchData patchData)
+        {
+            titleText.text = partName;
+            patchText.text = partData.GetPatchNames();
+            descriptionText.text = partData.GetPartDetailsPatchPreview(patchData);
         }
         
     }

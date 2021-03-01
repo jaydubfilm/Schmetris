@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -99,6 +100,9 @@ namespace StarSalvager.AI
 
         public PatchData[] GenerateRingPatches()
         {
+            if (patches.IsNullOrEmpty())
+                return new PatchData[0];
+            
             var count = Random.Range(patchSpawnCount.x, patchSpawnCount.y + 1);
 
             var outData = new PatchData[count];
