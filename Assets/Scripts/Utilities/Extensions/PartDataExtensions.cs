@@ -12,6 +12,25 @@ namespace StarSalvager.Utilities.Extensions
         //GetPartDetails
         //====================================================================================================================//
         
+        private readonly struct PartDetail
+        {
+            private readonly string _name;
+            private readonly object _value;
+            private readonly object _previewValue;
+
+            public PartDetail(string name, object value, object previewValue = null)
+            {
+                _name = name;
+                _value = value;
+                _previewValue = previewValue;
+            }
+
+            public override string ToString()
+            {
+                return $"{_name}: {(_previewValue is null ? $"{_value:#0.##}": $"<b>{_value:#0.##} -> <color=green>{_previewValue:#0.##}")}</color></b>";
+            }
+        }
+        
         public static string GetPartDetails(this PartData partData)
         {
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
@@ -38,58 +57,41 @@ namespace StarSalvager.Utilities.Extensions
                 partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal)
             };
 
-            var outList = new Dictionary<string, float>();
+            var outList = new List<PartDetail>();
 
 
 
             if (modifiers[0])
-                outList.Add("Damage", damage * multipliers[PATCH_TYPE.POWER]);
+                outList.Add(new PartDetail("Damage", damage * multipliers[PATCH_TYPE.POWER]));
 
             if (partRemote.ammoUseCost > 0)
-                outList.Add("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]);
+                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
 
             if (modifiers[1])
-                outList.Add("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]);
+                outList.Add(new PartDetail("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
 
             if (modifiers[2])
             {
-                outList.Add("Range", range * multipliers[PATCH_TYPE.RANGE]);
+                outList.Add(new PartDetail("Range", range * multipliers[PATCH_TYPE.RANGE]));
             }
             else if (modifiers[3])
             {
                 var projectileRange = FactoryManager.Instance.ProjectileProfile
                     .GetProjectileProfileData(projectileID).ProjectileRange;
 
-                outList.Add("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]);
+                outList.Add(new PartDetail("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]));
             }
 
             if (modifiers[4])
-                outList.Add("Speed", speed);
+                outList.Add(new PartDetail("Speed", speed));
 
             if (modifiers[5])
-                outList.Add("Heal", heal);
+                outList.Add(new PartDetail("Heal", heal));
 
-            return string.Join("\n", outList.Select(x => $"{x.Key}: {x.Value:#0.##}"));
+            return string.Join("\n", outList.Select(x => x.ToString()));
         }
 
-        private readonly struct PartDetail
-        {
-            private readonly string _name;
-            private readonly object _value;
-            private readonly object _previewValue;
 
-            public PartDetail(string name, object value, object previewValue = null)
-            {
-                _name = name;
-                _value = value;
-                _previewValue = previewValue;
-            }
-
-            public override string ToString()
-            {
-                return $"{_name}: {(_previewValue is null ? $"{_value:#0.##}": $"<b>{_value:#0.##} -> <color=green>{_previewValue:#0.##}")}</color></b>";
-            }
-        }
         public static string GetPartDetailsPatchPreview(this PartData partData, in PatchData patchToPreview)
         {
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
