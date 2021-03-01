@@ -90,6 +90,9 @@ namespace StarSalvager.Factories
             if (partTypes.IsNullOrEmpty())
                 throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
 
+            if (partTypes.Count < options.Length)
+                throw new ArgumentOutOfRangeException(nameof(partTypes), partTypes, "Ran out of part options to present to the player");
+
             for (int i = 0; i < options.Length; i++)
             {
                 var option = partTypes[Random.Range(0, partTypes.Count)];
