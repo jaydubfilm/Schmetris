@@ -1249,6 +1249,8 @@ namespace StarSalvager
             if (bits.IsNullOrEmpty())
                 return;
 
+            CanUseTriggerPart(part, out _);
+
             bits = bits
                 .OrderBy(x => Vector2.Distance(x.transform.position, bot.transform.position))
                 .ToList();
@@ -1315,49 +1317,10 @@ namespace StarSalvager
                 }
             }
 
-            /*CanUseTriggerPart(part, out _);
-
-            //Vector2 botPosition = bot.transform.position;
-            foreach (var bit in bits)
-            {
-                Vector2 bitPosition = bit.transform.position;
-
-                var closestAttachable = bot.GetClosestAttachable(bitPosition);
-                //ar newCoordinate = closestAttachable.Coordinate + dir;
-
-                var direction = (bitPosition - (Vector2) closestAttachable.transform.position).normalized;
-                DIRECTION dir;
-                if (direction == Vector2.zero)
-                {
-                    throw new Exception($"Weird Direction found {direction}");
-                }
-
-                if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-                {
-                    dir = new Vector2Int(Mathf.RoundToInt(direction.x), 0).ToDirection();
-                }
-                else
-                {
-                    dir = new Vector2Int(0, Mathf.RoundToInt(direction.y)).ToDirection();
-                }
-
-                bot.AttachToClosestAvailableCoordinate(closestAttachable.Coordinate, bit, dir.Reflected(), false, false);
-                //bot.AttachAttachableToExisting(bit, closestAttachable, dir.Reflected(), false, false, false, true, false);
-                /*bot.AttachNewBlock(closestAttachable.Coordinate + dir.ToVector2Int(), bit, false, false, false, true,
-                    false);#1#
-
-                Debug.DrawLine(bitPosition, (Vector2) closestAttachable.transform.position + dir.ToVector2(),
-                    Color.magenta, 1f);
-                
-                Debug.DrawLine(bitPosition,bit.transform.position,
-                    Color.cyan, 1f);
-            }*/
 
             bot.CheckAllForCombos();
             bot.ForceCheckMagnets();
             bot.ForceUpdateColliderGeometry();
-            
-            //Debug.Break();
         }
 
         #endregion
