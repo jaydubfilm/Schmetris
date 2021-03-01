@@ -344,5 +344,12 @@ MonoBehaviour:
     m_health: 100
     m_movementSpeed: 0
     m_rateOfFire: 0.4
-    m_dimensions: {x: 0, y: 0}
+    m_dimensions: {x: 1, y: 1}
+    m_rdsTableData: []
+  - m_enemyType: 1543e014-58ee-4141-ba9d-9e5998b5c71b
+    m_name: PulseCannon
+    m_health: 50
+    m_movementSpeed: 0
+    m_rateOfFire: 0.4
+    m_dimensions: {x: 1, y: 1}
     m_rdsTableData: []
