@@ -124,4 +124,4 @@ MonoBehaviour:
     m_enemyTypeID: 1543e014-58ee-4141-ba9d-9e5998b5c71b
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
-    m_projectileType: 
+    m_projectileType: a814f17b-460b-4dfb-b939-67a72e3f2d29

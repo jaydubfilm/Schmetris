@@ -46,7 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e3148c605b129e459d37099049ff977, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimRotation: 0
+  dotThreshold: 0.98
+  anticipcationTime: 1.5
+  burstShotDelay: 0.1
+  burstCount: 4
+  spreadAmount: 0.2
 --- !u!114 &5026375194549460751
 MonoBehaviour:
   m_ObjectHideFlags: 0

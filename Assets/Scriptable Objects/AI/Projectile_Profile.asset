@@ -281,3 +281,21 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: a814f17b-460b-4dfb-b939-67a72e3f2d29
+    m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
+      type: 3}
+    m_projectileType: Pulse Cannon
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    m_projectileDamage: 20
+    m_projectileSpeed: 10
+    m_projectileRange: 0
+    m_requiredRotate: 0
+    fireType: 2
+    fireTowardsTarget: 0
+    m_spreadAngle: 0
+    m_sprayCount: 0
+    m_isTow: 0
+    m_towType: 0
+    m_canHitAsteroids: 0
+    m_addVelocityToProjectiles: 0
