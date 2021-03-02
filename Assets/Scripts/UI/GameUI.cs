@@ -691,6 +691,7 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
             SliderPartUis[index].SetSprite(sprite);
+            SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
         }
 
         public void SetFill(int index, float fillValue)
