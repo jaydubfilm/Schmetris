@@ -122,7 +122,10 @@ namespace StarSalvager.AI
         {
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
             transform.position -= fallAmount;
-            m_mostRecentMovementDirection = Vector3.down;    
+            m_mostRecentMovementDirection = Vector3.down;
+
+            if (transform.position.y < -10)
+                SetState(STATE.DEATH);
         }
 
         //States
@@ -218,9 +221,7 @@ namespace StarSalvager.AI
             
             if (Disabled)
             {
-                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-                transform.position -= fallAmount;
-                
+                ApplyFallMotion();
                 return false;
             }
 
@@ -395,8 +396,6 @@ namespace StarSalvager.AI
         }
 
         public abstract Type GetOverrideType();
-
-
 
         //============================================================================================================//
 
