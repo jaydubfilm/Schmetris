@@ -164,16 +164,20 @@ namespace StarSalvager
         /// </summary>
         private void InitPartData()
         {
+            var partRemote = FactoryManager.Instance.PartsRemoteData;
+            
             void SetIcon(in int index, in BIT_TYPE bitType)
             {
                 var type = bitType;
-                var part = _triggerParts.FirstOrDefault(x => x.category == type);
+                var part = _parts.FirstOrDefault(x => x.category == type);
 
                 if (part is null)
                     return;
+
+                
                 
                 GameUI.SetIconImage(index, part.Type);
-                GameUI.ShowIcon(index, true);
+                //GameUI.ShowIcon(index, true);
             }
             /*if (_magnetOverride > 0)
             {
@@ -191,10 +195,19 @@ namespace StarSalvager
 
             GameUI.ResetIcons();
 
-            SetIcon(0, BIT_TYPE.BLUE);
-            SetIcon(1, BIT_TYPE.RED);
-            SetIcon(2, BIT_TYPE.GREY);
-            SetIcon(3, BIT_TYPE.YELLOW);
+            /*
+                BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                 BIT_TYPE.GREEN,
+                BIT_TYPE.GREY,
+                BIT_TYPE.BLUE,
+            */
+            SetIcon(0, BIT_TYPE.RED);
+            SetIcon(1, BIT_TYPE.YELLOW);
+            SetIcon(2, BIT_TYPE.GREEN);
+            SetIcon(3, BIT_TYPE.GREY);
+            SetIcon(4, BIT_TYPE.BLUE);
+            
 
             /*for (int i = 0; i < MAXTriggerParts; i++)
             {
@@ -713,10 +726,11 @@ namespace StarSalvager
         {
             var types = new List<BIT_TYPE>
             {
-                BIT_TYPE.BLUE,
                 BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                BIT_TYPE.GREEN,
                 BIT_TYPE.GREY,
-                BIT_TYPE.YELLOW
+                BIT_TYPE.BLUE,
             };
             //TODO This still needs to account for multiple bombs
             if (!_triggerPartTimers.TryGetValue(part, out var timer))
@@ -750,15 +764,15 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (timer < 1f)
-                return;
+            //if (timer < 1f)
+            //    return;
 
-            var canAfford = CanAffordAmmo(part, partRemoteData, out _);
+            //var canAfford = CanAffordAmmo(part, partRemoteData, out _);
             
             //TODO Setup Can Afford
             //var hasPartGrade = HasPartGrade(part, out _);
             
-            GameUI.SetInteractable(uiIndex, fill >= 1f && canAfford);
+            //GameUI.SetInteractable(uiIndex, fill >= 1f && canAfford);
         }
 
         #endregion //Part Updates
@@ -933,27 +947,21 @@ namespace StarSalvager
             
             if (_triggerParts == null || _triggerParts.Count == 0)
                 return;
-            /*//TODO Need to check the capacity of smart weapons on the bot
-            if (index - 1 > MAXTriggerParts)
-                return;
-
-            if (index >= _triggerParts.Count)
-                return;*/
 
             Part part = null;
             switch (index)
             {
                 case 0: //Blue, West
-                    part = GetPart(BIT_TYPE.BLUE);
+                    part = GetPart(BIT_TYPE.RED);
                     break;
                 case 1: //Red, South
-                    part =  GetPart(BIT_TYPE.RED);
+                    part =  GetPart(BIT_TYPE.YELLOW);
                     break;
                 case 2: //Grey, North
                     part =  GetPart(BIT_TYPE.GREY);
                     break;
                 case 3: //Yellow, East
-                    part =  GetPart(BIT_TYPE.YELLOW);
+                    part =  GetPart(BIT_TYPE.BLUE);
                     break;
             }
 
@@ -1625,10 +1633,10 @@ namespace StarSalvager
             {
                 Recycler.Recycle<FlashSprite>(data.gameObject);
             });
-            CheckShouldRecycle(ref _triggerPartTimers, (Part part) =>
+            CheckShouldRecycle(ref _triggerPartTimers, (Part _) =>
             {
-                var index = _triggerParts.FindIndex(0, _triggerParts.Count, x => x == part);
-                GameUI.ShowIcon(index, false);
+                //var index = _triggerParts.FindIndex(0, _triggerParts.Count, x => x == part);
+                //GameUI.ShowIcon(index, false);
             });
         }
 
