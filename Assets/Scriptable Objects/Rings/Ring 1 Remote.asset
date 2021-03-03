@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 430b8aee2ba095241bd459763a953c42, type: 3}
   m_Name: Ring 1 Remote
   m_EditorClassIdentifier: 
-  wreckFrequency: 1
+  wreckFrequency: 2
   patchSpawnCount: {x: 2, y: 4}
   patchLevelRange: {x: 1, y: 2}
   patches: 01000000030000000400000002000000

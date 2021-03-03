@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Part Remote
   m_EditorClassIdentifier: 
   starterGreen: 2
-  starterBlue: 40
-  starterYellow: 35
+  starterBlue: 3
+  starterYellow: 31
   basicWeapons: 0400000024000000
   powerWeapons: 0600000007000000
   anyParts: 040000000e000000240000000700000006000000030000000500000002000000
@@ -277,5 +277,5 @@ MonoBehaviour:
       value: 2
     isManual: 1
     category: 5
-    ammoUseCost: 30
+    ammoUseCost: 10
     PatchSockets: 2

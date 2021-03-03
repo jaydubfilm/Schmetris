@@ -296,9 +296,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anticipationTime: 3
-  attackTime: 2
+  attackTime: 1
   rotationSpeed: 5
-  damage: 10
+  damage: 20
   collisionMask:
     serializedVersion: 2
     m_Bits: 256

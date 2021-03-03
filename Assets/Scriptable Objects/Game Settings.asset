@@ -21,9 +21,9 @@ MonoBehaviour:
   gameUIResourceThreshold: 0.33
   levelBaseExperience: 500
   levelExperienceIncrement: 50
-  gridWidth: 50
+  gridWidth: 70
   gridHeightRelativeToScreen: 1.25
-  timeForAsteroidToFallOneSquare: 0.32
+  timeForAsteroidToFallOneSquare: 0.28
   levelResourceDropReductionAmount: 0.854
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
