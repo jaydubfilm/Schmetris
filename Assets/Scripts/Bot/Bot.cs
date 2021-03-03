@@ -2707,7 +2707,7 @@ _isShifting = true;
 
 
                 //Remove the Shape
-                PlayerDataManager.ChangeExperience(gears);
+                PlayerDataManager.ChangeXP(gears);
                 obstacleManager.MatchBonusShape(shape);
 
 
@@ -3240,7 +3240,7 @@ _isShifting = true;
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points
-                    PlayerDataManager.ChangeExperience(gearsToAdd);
+                    PlayerDataManager.ChangeXP(gearsToAdd);
 
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 

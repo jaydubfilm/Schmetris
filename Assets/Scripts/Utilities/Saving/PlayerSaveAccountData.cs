@@ -17,7 +17,7 @@ namespace StarSalvager.Values
         public Version Version = Constants.VERSION;
 
         public bool HasStarted = false;
-        public int Experience;
+        public int XP;
 
         public int CoreDeaths;
         public float RepairsDone;
@@ -31,7 +31,7 @@ namespace StarSalvager.Values
         };
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
-        public int ExperienceAtRunBeginning;
+        public int XPAtRunBeginning;
         public int CoreDeathsAtRunBeginning;
         public float RepairsDoneAtRunBeginning;
         public int TotalRuns;
@@ -170,7 +170,7 @@ namespace StarSalvager.Values
 
             //data.SetupMap(LevelRingConnectionsJson, WreckNodes);
 
-            ExperienceAtRunBeginning = Experience;
+            XPAtRunBeginning = XP;
             CoreDeathsAtRunBeginning = CoreDeaths;
             BitConnectionsAtRunBeginning.Clear();
             foreach (var keyValue in BitConnections)
@@ -189,14 +189,14 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
-        public void ChangeExperience(int amount)
+        public void ChangeXP(int amount)
         {
             int totalLevels = GetTotalLevels();
-            Experience += amount;
+            XP += amount;
 
             if (GameManager.IsState(GameState.LEVEL))
             {
-                LevelManager.Instance.WaveEndSummaryData.AddGearsGained(amount);
+                LevelManager.Instance.WaveEndSummaryData.AddXPGained(amount);
             }
 
             int newTotalLevels = GetTotalLevels();
@@ -209,13 +209,13 @@ namespace StarSalvager.Values
             //Do something to signify gaining a level
         }
 
-        public (int, int) GetLevelProgress()
+        /*public (int, int) GetLevelProgress()
         {
             int levelBaseExperience = Globals.LevelBaseExperience;
             int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
             int totalLevels = 0;
-            int experienceAmount = Experience;
+            int experienceAmount = XP;
 
             while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {
@@ -224,7 +224,7 @@ namespace StarSalvager.Values
             }
 
             return (experienceAmount, levelBaseExperience + (levelExperienceIncrement * totalLevels));
-        }
+        }*/
 
         public int GetTotalLevels()
         {
@@ -232,7 +232,7 @@ namespace StarSalvager.Values
             int levelExperienceIncrement = Globals.LevelExperienceIncrement;
 
             int totalLevels = 0;
-            int experienceAmount = Experience;
+            int experienceAmount = XP;
 
             while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
             {

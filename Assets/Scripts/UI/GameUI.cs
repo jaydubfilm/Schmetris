@@ -212,8 +212,9 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Slider gearsSlider;
+        [FormerlySerializedAs("patchPointsText")] 
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
-        private TMP_Text patchPointsText;
+        private TMP_Text componentsText;
 
         //Top Right Window
         //====================================================================================================================//
@@ -496,7 +497,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(0);
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerComponents(PlayerDataManager.GetComponents());
 
             UpdateAmmoBars();
         }
@@ -578,7 +579,9 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            //SetPlayerXP(PlayerDataManager.get);
 
             UpdateAmmoBars();
         }
@@ -592,18 +595,18 @@ namespace StarSalvager.UI
                 ShowAbortWindow(false);
         }
 
-        public void SetPlayerXP(int xp)
+        public void SetPlayerXP(in int xp)
         {
             gearsText.text = $"{xp} XP";
         }
 
-        public void SetPlayerComponents(int points)
+        public void SetPlayerComponents(in int points)
         {
-            patchPointsText.text = $"{points}";
+            componentsText.text = $"{points}";
         }
 
 
-        public void SetLevelProgressSlider(float value)
+        public void SetLevelProgressSlider(in float value)
         {
             progressSlider.value = value;
         }

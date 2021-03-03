@@ -1001,7 +1001,7 @@ namespace StarSalvager
             
             
             var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetGears();
+            var components = PlayerDataManager.GetComponents();
 
             if (components == 0)
                 throw new Exception();

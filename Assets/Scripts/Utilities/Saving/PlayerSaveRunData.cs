@@ -32,9 +32,9 @@ namespace StarSalvager.Utilities.Saving
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Gears => _gears;
+        public int Components => _components;
 
-        [JsonProperty] private int _gears;
+        [JsonProperty] private int _components;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
@@ -109,19 +109,19 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetGears(int value)
         {
-            _gears = value;
+            _components = value;
         }
 
         //============================================================================================================//
 
         public void AddGears(int amount)
         {
-            _gears += Mathf.Abs(amount);
+            _components += Mathf.Abs(amount);
         }
 
         public void SubtractGears(int amount)
         {
-            _gears -= Mathf.Abs(amount);
+            _components -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//

@@ -59,8 +59,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
-        [SerializeField, Required, FoldoutGroup("Gears Indicator")]
-        private TMP_Text gearsNumber;
+        [SerializeField, Required, FoldoutGroup("Components Indicator")]
+        private TMP_Text componentsNumber;
 
         //====================================================================================================================//
 
@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Update()
         {
-            gearsNumber.text = $"{PlayerDataManager.GetGears()}";
+            componentsNumber.text = $"Components: {PlayerDataManager.GetComponents()}";
         }
 
         private void OnEnable()

@@ -120,9 +120,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetGears()
+        public static int GetComponents()
         {
-            return PlayerRunData.Gears;
+            return PlayerRunData.Components;
         }
 
         public static List<IBlockData> GetBlockDatas()
@@ -373,19 +373,19 @@ namespace StarSalvager.Utilities.Saving
         //Account Data Functions
         //====================================================================================================================//
 
-        public static int GetExperience()
+        public static int GetXP()
         {
-            return PlayerAccountData.Experience;
+            return PlayerAccountData.XP;
         }
 
-        public static int GetExperienceThisRun()
+        public static int GetXPThisRun()
         {
-            return PlayerAccountData.Experience - PlayerAccountData.ExperienceAtRunBeginning;
+            return PlayerAccountData.XP - PlayerAccountData.XPAtRunBeginning;
         }
 
-        public static void ChangeExperience(int amount)
+        public static void ChangeXP(int amount)
         {
-            PlayerAccountData.ChangeExperience(amount);
+            PlayerAccountData.ChangeXP(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -685,7 +685,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetAccountSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetExperience()}, this run: {GetExperienceThisRun()}\n";
+            summaryText += $"Total Gears: {GetXP()}, this run: {GetXPThisRun()}\n";
             summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
             summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
 
@@ -716,7 +716,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"{GetAsTitle("Total Gears:")} {GetExperienceThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetXPThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 

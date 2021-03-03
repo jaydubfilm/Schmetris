@@ -357,7 +357,7 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
             
             var patchData = partUpgrd.PurchasePatchData;
-            var currentComponents = PlayerDataManager.GetGears();
+            var currentComponents = PlayerDataManager.GetComponents();
             if (currentComponents < patchData.cost)
                 return;
 
@@ -432,8 +432,8 @@ namespace StarSalvager.UI.Scrapyard
             if (!canRepair)
                 return;
 
-            var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetGears();
+            var cost = Mathf.CeilToInt(startingHealth - currentHealth);
+            var components = PlayerDataManager.GetComponents();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
