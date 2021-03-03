@@ -1016,7 +1016,7 @@ namespace StarSalvager
             //If the bomb is still recharging, we tell the player that its unavailable
             if (_triggerPartTimers[part] > 0f)
             {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                //AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
             }
 
@@ -1031,7 +1031,7 @@ namespace StarSalvager
 
             if (!CanAffordAmmo(part, partRemoteData, out _))
             {
-                AudioController.PlaySound(SOUND.BOMB_CLICK);
+                //AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
             }
 
