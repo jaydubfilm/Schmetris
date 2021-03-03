@@ -15,15 +15,12 @@ MonoBehaviour:
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
+  startingAmmo: 0
   testingFeatures: 0
   asteroidDamage: 20
   gameUIResourceThreshold: 0.33
-  patchPointBaseCost: 500
-  patchPointIncrementCost: 50
-  blueprintInitialData:
-  - type: 4
-  - type: 9
-  - type: 1
+  levelBaseExperience: 500
+  levelExperienceIncrement: 50
   gridWidth: 50
   gridHeightRelativeToScreen: 1.25
   timeForAsteroidToFallOneSquare: 0.32
@@ -97,6 +94,8 @@ MonoBehaviour:
   timeAfterWaveEndFlyOut: 8
   botHealth: 100
   greenHealAmount: 10
+  decoyDroneHealth: 20
+  magnetAmount: 50
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
   unmergeLargeBitsOnRefine: 1
