@@ -631,13 +631,12 @@ namespace StarSalvager
             bool notYetStarted = PlayerDataManager.GetStarted();
             if (!notYetStarted)
             {
-
+                var partRemoteData = FactoryManager.Instance.PartsRemoteData;
                 var starterParts = new[]
                 {
-                    PART_TYPE.REPAIR, //GREEN
-                    //PART_TYPE.SHIELD,
-                    PART_TYPE.REGEN, //BLUE
-                    PART_TYPE.WILDCARD //YELLOW
+                    partRemoteData.starterGreen,
+                    partRemoteData.starterBlue,
+                    partRemoteData.starterYellow
                 };
                 
                 var remoteData = FactoryManager.Instance.PartsRemoteData;

@@ -234,7 +234,7 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
+        public Enemy SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
 
@@ -259,6 +259,8 @@ namespace StarSalvager
             newEnemy.LateInit();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
+
+            return newEnemy;
         }
 
         public void AddEnemy(Enemy newEnemy)
