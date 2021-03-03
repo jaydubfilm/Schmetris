@@ -21,12 +21,12 @@ MonoBehaviour:
       cost: 10
       Properties:
       - key: Multiplier
-        value: 0.1
+        value: 0.25
     - level: 2
       cost: 20
       Properties:
       - key: Multiplier
-        value: 0.2
+        value: 0.5
     fitsAnyPart: 0
     allowedParts: 04000000070000000e0000000700000024000000
   - name: AREA OF EFFECT
@@ -43,12 +43,12 @@ MonoBehaviour:
       cost: 10
       Properties:
       - key: Multiplier
-        value: 0.1
+        value: 0.25
     - level: 2
       cost: 20
       Properties:
       - key: Multiplier
-        value: 0.2
+        value: 0.5
     fitsAnyPart: 0
     allowedParts: 040000000e000000
   - name: EFFECIENCY
@@ -59,12 +59,12 @@ MonoBehaviour:
       cost: 10
       Properties:
       - key: Multiplier
-        value: 0.1
+        value: 0.25
     - level: 2
       cost: 20
       Properties:
       - key: Multiplier
-        value: 0.2
+        value: 0.5
     fitsAnyPart: 1
     allowedParts: 
   - name: RANGE
@@ -75,12 +75,12 @@ MonoBehaviour:
       cost: 10
       Properties:
       - key: Multiplier
-        value: 0.1
+        value: 0.25
     - level: 2
       cost: 20
       Properties:
       - key: Multiplier
-        value: 0.2
+        value: 0.5
     fitsAnyPart: 0
     allowedParts: 040000000700000006000000
   - name: BURN
