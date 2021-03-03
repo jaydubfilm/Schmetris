@@ -82,6 +82,6 @@ MonoBehaviour:
     multiplier: 4.5
   ComboAmmos:
   - level: 1
-    ammoEarned: 10
+    ammoEarned: 20
   - level: 2
     ammoEarned: 50
