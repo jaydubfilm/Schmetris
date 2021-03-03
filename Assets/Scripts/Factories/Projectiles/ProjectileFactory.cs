@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.AI;
@@ -108,6 +109,13 @@ namespace StarSalvager.Factories
                             break;
                         case ProjectileProfileData.TowType.Bumper:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
+                            projectileTowObject.SetColliderActive(false);
+                            break;
+                        case ProjectileProfileData.TowType.Mine:
+                            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");
+                            
+                            towObject = LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, fromPosition).gameObject;
+                            
                             projectileTowObject.SetColliderActive(false);
                             break;
                         default:

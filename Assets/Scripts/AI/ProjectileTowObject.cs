@@ -68,6 +68,9 @@ namespace StarSalvager.AI
                     case Bit bit:
                         Recycler.Recycle<Bit>(bit);
                         break;
+                    case Enemy enemy:
+                        Recycler.Recycle<Enemy>(enemy);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(towObjectActor), towObjectActor, null);
                 }
