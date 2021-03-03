@@ -3144,6 +3144,9 @@ _isShifting = true;
         {
             void AddBitAmmo(in BIT_TYPE bitType, in int amount)
             {
+                if(amount == 0)
+                    return;
+
                 PlayerDataManager.GetResource(bitType).AddAmmo(amount);
             }
 
@@ -3243,16 +3246,26 @@ _isShifting = true;
 
 
                     var bit = closestToCore as Bit;
-                    if (bit != null && bit.level == 1)
+
+                    if (bit != null)
                     {
-                        AddBitAmmo(bit.Type, 10);
-                        CheckForCombosAround(AttachedBlocks.OfType<Bit>());
+                        switch (bit.level)
+                        {
+                            case 1:
+                                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
+                                break;
+                            case 2:
+                                DestroyAttachable(bit);
+                                break;
+                        }
+
+                        var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                            .FirstOrDefault(x => x.level == bit.level)
+                            .ammoEarned;
+                        
+                        AddBitAmmo(bit.Type, ammoEarned);
                     }
-                    else if (bit != null && bit.level == 2)
-                    {
-                        AddBitAmmo(bit.Type, 50);
-                        DestroyAttachable(bit);
-                    }
+
 
                     CheckForBonusShapeMatches();
 
