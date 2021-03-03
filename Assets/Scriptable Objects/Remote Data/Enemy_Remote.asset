@@ -228,7 +228,7 @@ MonoBehaviour:
   - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
     m_name: Squart
     m_health: 100
-    m_movementSpeed: 12
+    m_movementSpeed: 5
     m_rateOfFire: 1
     m_dimensions: {x: 2, y: 2}
     m_rdsTableData: []
