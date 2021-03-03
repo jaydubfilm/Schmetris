@@ -18,18 +18,20 @@ MonoBehaviour:
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+      m_enemyCount: 5
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
     m_stageObstacleData:
     - m_selectionType: 0
       m_shapeName: RedSingle
-      m_category: Singles
+      m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.25186518
-      m_spawnsPerScreenWidthPerMinute: 18
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -37,8 +39,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.33613926
-      m_spawnsPerScreenWidthPerMinute: 45
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -46,8 +48,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -55,8 +57,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -64,8 +66,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -73,71 +75,50 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29583564
-      m_spawnsPerScreenWidthPerMinute: 30
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 30
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+      m_enemyCount: 8
+    - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+      m_enemyCount: 5
+    - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
+      m_enemyCount: 3
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
     m_stageObstacleData:
-    - m_selectionType: 0
-      m_shapeName: RedSingle
-      m_category: Singles
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.25186518
-      m_spawnsPerScreenWidthPerMinute: 18
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: BlueSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.33613926
-      m_spawnsPerScreenWidthPerMinute: 45
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: GreenSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: GreySingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: YellowSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20246209
-      m_spawnsPerScreenWidthPerMinute: 9
-      m_maxOut: 0
-      spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.29583564
-      m_spawnsPerScreenWidthPerMinute: 30
+      m_density: 0.22166616
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 2
+      m_shapeName: 
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 2
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
