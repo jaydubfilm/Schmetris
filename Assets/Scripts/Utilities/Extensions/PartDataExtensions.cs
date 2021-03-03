@@ -59,8 +59,6 @@ namespace StarSalvager.Utilities.Extensions
 
             var outList = new List<PartDetail>();
 
-
-
             if (modifiers[0])
                 outList.Add(new PartDetail("Damage", damage * multipliers[PATCH_TYPE.POWER]));
 

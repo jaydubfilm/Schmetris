@@ -80,6 +80,8 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
+        [SerializeField, FoldoutGroup("Part Details Window")]
+        private TMP_Text partDescriptionText;
 
         //[SerializeField, FoldoutGroup("Part Details Window")]
         //private TMP_Text otherPartDetailsText;
@@ -90,12 +92,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partDetailsText;
 
-        [FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
-        private GradeUI[] gradeUis;
-
+        /*[FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
+        private GradeUI[] gradeUis;*/
 
         //====================================================================================================================//
-
 
         [SerializeField, Required, BoxGroup("Repairs Buttons")]
         private Button repairButton;
@@ -484,6 +484,7 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             partNameText.text = partRemote.name;
+            partDescriptionText.text = partRemote.description;
             partImage.sprite = partProfile.Sprite;
 
             var altDetails = partData.GetPartDetails(partRemote);
@@ -536,6 +537,7 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             partNameText.text = partRemote.name;
+            partDescriptionText.text = partRemote.description;
             partImage.sprite = partProfile.Sprite;
 
             partDetailsText.text = partData.GetPartDetails( partRemote);
