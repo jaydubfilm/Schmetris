@@ -15,6 +15,8 @@ namespace StarSalvager.ScriptableObjects
         
         [TableList]
         public List<SimultaneousComboData> SimultaneousComboData = new List<SimultaneousComboData>();
+        [TableList]
+        public List<ComboAmmo> ComboAmmos;
 
         private Dictionary<COMBO, ComboRemoteData> data;
 
@@ -61,6 +63,15 @@ namespace StarSalvager.ScriptableObjects
         [TableColumnWidth(45)]
         public int bits;
         public float multiplier;
+    }
+
+    [Serializable]
+    public struct ComboAmmo
+    {
+        [TableColumnWidth(45)]
+        public int level;
+        [TableColumnWidth(45)]
+        public int ammoEarned;
     }
 }
 

@@ -80,3 +80,8 @@ MonoBehaviour:
   - combos: 5
     bits: 6
     multiplier: 4.5
+  ComboAmmos:
+  - level: 1
+    ammoEarned: 10
+  - level: 2
+    ammoEarned: 50

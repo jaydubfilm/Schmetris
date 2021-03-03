@@ -105,6 +105,10 @@ namespace StarSalvager.Factories
         private GameObject alertIconPrefab;*/
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject scrapyardBotPrefab;
+
+
+        public ComboRemoteDataScriptableObject ComboRemoteData => comboRemoteData;
+        
         [SerializeField, Required, BoxGroup("Puzzle Combos")]
         private ComboRemoteDataScriptableObject comboRemoteData;
 

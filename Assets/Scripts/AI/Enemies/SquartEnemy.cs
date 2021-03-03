@@ -4,6 +4,7 @@ using StarSalvager.Values;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Recycling;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -87,12 +88,59 @@ namespace StarSalvager.AI
 
         protected override void StateChanged(STATE newState)
         {
-            throw new System.NotImplementedException();
+            switch (newState)
+            {
+                case STATE.NONE:
+                    return;
+                case STATE.MOVE:
+                    break;
+                case STATE.FLEE:
+                    break;
+                case STATE.ATTACK:
+                    break;
+                case STATE.DEATH:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+            }
         }
 
         protected override void StateUpdate()
         {
-            throw new System.NotImplementedException();
+            switch (currentState)
+            {
+                case STATE.NONE:
+                    break;
+                case STATE.MOVE:
+                    MoveState();
+                    break;
+                case STATE.FLEE:
+                    FleeState();
+                    break;
+                case STATE.ATTACK:
+                    AttackState();
+                    break;
+                case STATE.DEATH:
+                    Recycler.Recycle<SquartEnemy>(this);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
+            }
+        }
+
+        private void MoveState()
+        {
+            
+        }
+
+        private void FleeState()
+        {
+            
+        }
+
+        private void AttackState()
+        {
+            
         }
 
         #endregion //States
