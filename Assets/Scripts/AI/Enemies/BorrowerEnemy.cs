@@ -111,7 +111,13 @@ namespace StarSalvager.AI
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
-            return playerLocation - (Vector2)transform.position;
+            switch (currentState)
+            {
+                case STATE.FLEE:
+                    return (Vector2) transform.position - playerLocation; 
+                default:
+                    return playerLocation - (Vector2)transform.position;
+            }
         }
 
         public Bit FindClosestBitOnBot()
@@ -253,7 +259,7 @@ namespace StarSalvager.AI
             var currentPosition = transform.position;
             var targetPosition = _attachTarget.transform.position;
 
-            m_mostRecentMovementDirection = GetMovementDirection(targetPosition);
+            MostRecentMovementDirection = GetMovementDirection(targetPosition);
 
             currentPosition = Vector3.MoveTowards(currentPosition, targetPosition,
                 m_enemyData.MovementSpeed * Time.deltaTime);
@@ -319,7 +325,7 @@ namespace StarSalvager.AI
         private void FleeState()
         {
             //If off screen, destroy bit, then set to pursue state
-            if (IsOffScreen())
+            if (IsOffScreen(_carryingBit.transform.position))
             {
                 Recycler.Recycle<Bit>(_carryingBit);
                 _carryingBit = null;
@@ -336,7 +342,7 @@ namespace StarSalvager.AI
             
             currentPosition += direction  * (carrySpeed * Time.deltaTime);
 
-            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
+            MostRecentMovementDirection = GetMovementDirection(currentPosition);
 
             transform.position = currentPosition;
             
@@ -347,18 +353,17 @@ namespace StarSalvager.AI
 
         protected override void ApplyFleeMotion()
         {
-            if (IsOffScreen())
+            if (IsOffScreen(transform.position))
                 return;
             
             base.ApplyFleeMotion();
         }
 
         
-        private bool IsOffScreen()
+        private bool IsOffScreen(in Vector2 pos)
         {
             var dif = 3 * Constants.gridCellSize;
             var screenRect = CameraController.VisibleCameraRect;
-            var pos = _carryingBit.transform.position;
 
             if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
                 return true;

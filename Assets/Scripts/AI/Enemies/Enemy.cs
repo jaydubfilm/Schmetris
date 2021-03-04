@@ -66,8 +66,7 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         private float verticalLowestAllowed;*/
 
-        [NonSerialized]
-        public Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        public Vector3 MostRecentMovementDirection { get; protected set; }
 
         public bool Disabled { get; protected set; }
 
@@ -122,7 +121,7 @@ namespace StarSalvager.AI
         {
             Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
             transform.position -= fallAmount;
-            m_mostRecentMovementDirection = Vector3.down;
+            MostRecentMovementDirection = Vector3.down;
 
             if (transform.position.y < -10)
                 SetState(STATE.DEATH);
@@ -392,7 +391,7 @@ namespace StarSalvager.AI
         {
             CleanStateData();
             
-            m_mostRecentMovementDirection = Vector3.zero;
+            MostRecentMovementDirection = Vector3.zero;
 
             FreezeTime = 0f;
             Disabled = false;

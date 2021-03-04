@@ -109,7 +109,7 @@ namespace StarSalvager.AI
                 case STATE.PURSUE:
                     break;
                 case STATE.ATTACK:
-                    m_mostRecentMovementDirection = Vector3.zero;
+                    MostRecentMovementDirection = Vector3.zero;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<DataLeechEnemy>(this);
@@ -150,7 +150,7 @@ namespace StarSalvager.AI
             currentPosition = Vector3.MoveTowards(currentPosition, _playerLocation,
                 m_enemyData.MovementSpeed * Time.deltaTime);
 
-            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
+            MostRecentMovementDirection = GetMovementDirection(currentPosition);
 
             transform.position = currentPosition;
         }

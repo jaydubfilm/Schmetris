@@ -204,7 +204,7 @@ namespace StarSalvager.AI
             switch (direction)
             {
                 case DIRECTION.NULL:
-                    var norm = m_mostRecentMovementDirection.normalized;
+                    var norm = MostRecentMovementDirection.normalized;
 
                     if (Mathf.Abs(norm.x) > Mathf.Abs(norm.y))
                     {

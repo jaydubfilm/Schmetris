@@ -141,7 +141,7 @@ namespace StarSalvager.AI
 
                     _startPosition = _targetLocation;
 
-                    m_mostRecentMovementDirection = Vector3.zero;
+                    MostRecentMovementDirection = Vector3.zero;
                     break;
                 case STATE.FLEE:
                     break;
@@ -185,7 +185,7 @@ namespace StarSalvager.AI
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
             {
                 transform.position = Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
-                m_mostRecentMovementDirection = (transform.position - currentPosition).normalized;
+                MostRecentMovementDirection = (transform.position - currentPosition).normalized;
                 return;
             }
 
