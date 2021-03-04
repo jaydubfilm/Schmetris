@@ -448,6 +448,7 @@ namespace StarSalvager.UI.Scrapyard
         public void HidePartDetails()
         {
             ShowPartDetails(false, null);
+            HoveringStoragePartUIElement = false;
         }
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {

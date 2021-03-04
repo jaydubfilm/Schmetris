@@ -1003,7 +1003,7 @@ namespace StarSalvager
             var currentHealth = PlayerDataManager.GetBotHealth();
             
             
-            var cost = startingHealth - currentHealth;
+            var cost = Mathf.CeilToInt(startingHealth - currentHealth);
             var components = PlayerDataManager.GetComponents();
 
             if (components == 0)
@@ -1012,10 +1012,10 @@ namespace StarSalvager
             var finalCost = Mathf.Min(cost, components);
             
             
-            PlayerDataManager.SubtractGears((int)finalCost);
+            PlayerDataManager.SubtractGears(finalCost);
             
             //var startingHealth = currentHealth + (int)finalCost;
-            var newHealth = Mathf.Clamp(currentHealth + (int) finalCost, 0, startingHealth);
+            var newHealth = Mathf.Clamp(currentHealth + finalCost, 0, startingHealth);
             
             _scrapyardBot.SetupHealthValues(startingHealth, newHealth);
             PlayerDataManager.SetBotHealth(newHealth);
