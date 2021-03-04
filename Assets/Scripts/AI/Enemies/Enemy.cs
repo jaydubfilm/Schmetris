@@ -127,6 +127,16 @@ namespace StarSalvager.AI
             if (transform.position.y < -10)
                 SetState(STATE.DEATH);
         }
+        
+        protected virtual void ApplyFleeMotion()
+        {
+            var currentPosition = transform.position;
+            var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
+                
+                
+            currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
+            transform.position = currentPosition;
+        }
 
         //States
         //====================================================================================================================//
@@ -227,12 +237,7 @@ namespace StarSalvager.AI
 
             if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
             {
-                var currentPosition = transform.position;
-                var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
-                
-                
-                currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
-                transform.position = currentPosition;
+                ApplyFleeMotion();
                 
                 return false;
             }

@@ -147,13 +147,13 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.SetShipBlockData(blockData);
         }
 
-        public static void RemoveAllBits()
+        public static void RemoveAllNonParts()
         {
             var droneBlockData = new List<IBlockData>(GetBlockDatas());
 
             for (var i = droneBlockData.Count - 1; i >= 0 ; i--)
             {
-                if(!(droneBlockData[i] is BitData))
+                if(droneBlockData[i] is PartData)
                     continue;
                 
                 droneBlockData.RemoveAt(i);

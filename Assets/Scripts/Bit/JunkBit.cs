@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     //FIXME This can be combined with the Bit class a little
-    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<BitData>, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
+    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<JunkBitData>, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
     {
         public IAttachable iAttachable => this;
         
@@ -179,10 +179,10 @@ namespace StarSalvager
         //ISaveable Functions
         //============================================================================================================//
 
-        public BitData ToBlockData()
+        public JunkBitData ToBlockData()
         {
             //throw new NotImplementedException();
-            return new BitData
+            return new JunkBitData
             {
                 Type = (int)BIT_TYPE.NONE,
                 //ClassType = GetType().Name,
@@ -192,11 +192,12 @@ namespace StarSalvager
 
         public void LoadBlockData(IBlockData blockData)
         {
-            throw new NotImplementedException();
-            //if (!(blockData is JunkBitData junkBitData))
-            //    throw new Exception();
+            if (!(blockData is JunkBitData junkBitData))
+                throw new Exception();
             
-            //Coordinate = junkBitData.Coordinate;
+            Coordinate = junkBitData.Coordinate;
+            //Type = (BIT_TYPE)junkBitData.Type;
+            //evel = junkBitData.Level;
         }
 
 

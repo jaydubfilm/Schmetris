@@ -234,7 +234,10 @@ namespace StarSalvager.AI
             {
                 var test = FindClosestBitOnBot();
                 if (test == null)
+                {
+                    ApplyFleeMotion();
                     return;
+                }
                 
                 EnemyManager.SetBorrowerTarget(this, test);
                 _attachTarget = test;
@@ -261,6 +264,13 @@ namespace StarSalvager.AI
 
         private void AnticipationState()
         {
+
+            if (_attachTarget == null)
+            {
+                SetState(STATE.PURSUE);
+                return;
+            }
+            
             //After wait time, move to attack state
             //If the Bit fell off the Bot, then we can attempt to steal it
             if (_anticipationTime > 0 && _attachTarget.Attached)
@@ -308,24 +318,6 @@ namespace StarSalvager.AI
 
         private void FleeState()
         {
-            bool IsOffScreen()
-            {
-                var dif = 3 * Constants.gridCellSize;
-                var screenRect = CameraController.VisibleCameraRect;
-                var pos = _carryingBit.transform.position;
-
-                if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
-                    return true;
-                
-                if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
-                    return true;
-                    
-                
-                return false;
-            }
-
-            
-            
             //If off screen, destroy bit, then set to pursue state
             if (IsOffScreen())
             {
@@ -352,7 +344,31 @@ namespace StarSalvager.AI
         }
 
         #endregion //States
+
+        protected override void ApplyFleeMotion()
+        {
+            if (IsOffScreen())
+                return;
+            
+            base.ApplyFleeMotion();
+        }
+
         
+        private bool IsOffScreen()
+        {
+            var dif = 3 * Constants.gridCellSize;
+            var screenRect = CameraController.VisibleCameraRect;
+            var pos = _carryingBit.transform.position;
+
+            if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
+                return true;
+                
+            if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
+                return true;
+                    
+                
+            return false;
+        }
 
         //============================================================================================================//
         
