@@ -30,26 +30,8 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20951016
-      m_spawnsPerScreenWidthPerMinute: 12
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: BlueSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20951016
-      m_spawnsPerScreenWidthPerMinute: 12
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: GreenSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20951016
-      m_spawnsPerScreenWidthPerMinute: 12
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -57,17 +39,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20951016
-      m_spawnsPerScreenWidthPerMinute: 12
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: YellowSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.20951016
-      m_spawnsPerScreenWidthPerMinute: 12
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -95,26 +68,8 @@ MonoBehaviour:
       m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.14211647
-      m_spawnsPerScreenWidthPerMinute: 4
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: BlueSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.14211647
-      m_spawnsPerScreenWidthPerMinute: 4
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: GreenSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.14211647
-      m_spawnsPerScreenWidthPerMinute: 4
+      m_density: 0.21550845
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -122,17 +77,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.14211647
-      m_spawnsPerScreenWidthPerMinute: 4
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 0
-      m_shapeName: YellowSingle
-      m_category: 
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.14211647
-      m_spawnsPerScreenWidthPerMinute: 4
+      m_density: 0.21550845
+      m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
@@ -140,8 +86,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.16147794
-      m_spawnsPerScreenWidthPerMinute: 6
+      m_density: 0.20088044
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []

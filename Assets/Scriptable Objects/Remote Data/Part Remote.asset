@@ -108,10 +108,10 @@ MonoBehaviour:
     - key: Cooldown
       value: 5
     - key: Damage
-      value: 50
+      value: 15
     isManual: 1
     category: 4
-    ammoUseCost: 10
+    ammoUseCost: 20
     PatchSockets: 2
   - name: Missile
     partType: 13
