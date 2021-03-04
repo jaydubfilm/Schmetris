@@ -64,7 +64,10 @@ namespace StarSalvager.ScriptableObjects
         {
             var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
             
-            var projectileTypes = new ValueDropdownList<PART_TYPE>();
+            var projectileTypes = new ValueDropdownList<PART_TYPE>
+            {
+                {$"{PART_TYPE.EMPTY}", PART_TYPE.EMPTY}
+            };
             
             foreach (var data in partRemote.partRemoteData.Where(x => x.category == bitType))
             {

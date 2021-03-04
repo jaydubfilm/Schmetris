@@ -644,6 +644,9 @@ namespace StarSalvager
 
                 foreach (var partType in starterParts)
                 {
+                    if(partType == PART_TYPE.EMPTY)
+                        continue;
+                    
                     var patchCount = remoteData.GetRemoteData(partType).PatchSockets;
                     var partData = new PartData
                     {
@@ -1040,14 +1043,18 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             var attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(categoryCoordinate);
 
-            if (!(attachableAtCoordinates is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY))
+            if (!(attachableAtCoordinates is ScrapyardPart scrapPart))
                 return;
 
-            var toRemoveBlockData = scrapPart.ToBlockData();
-            toRemoveBlockData.Coordinate = categoryCoordinate;
-            _scrapyardBot.TryRemoveAttachableAt(categoryCoordinate);
+            //Only want to remove the part if it is present, empty parts should be regarded as an open slot
+            if (scrapPart.Type != PART_TYPE.EMPTY)
+            {
+                var toRemoveBlockData = scrapPart.ToBlockData();
+                toRemoveBlockData.Coordinate = categoryCoordinate;
+                _scrapyardBot.TryRemoveAttachableAt(categoryCoordinate);
 
-            PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
+                PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
+            }
 
             //Adds Part to location
             //--------------------------------------------------------------------------------------------------------//
@@ -1062,6 +1069,8 @@ namespace StarSalvager
             SaveBlockData();
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            DroneDesignUi.HidePartDetails();
 
         }
 
