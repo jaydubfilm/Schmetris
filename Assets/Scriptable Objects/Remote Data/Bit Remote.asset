@@ -17,9 +17,9 @@ MonoBehaviour:
     refinedName: Water
     bitType: 1
     levels:
-    - health: 20
+    - health: 10
       resources: 10
-    - health: 35
+    - health: 20
       resources: 30
     - health: 50
       resources: 90
@@ -31,9 +31,9 @@ MonoBehaviour:
     refinedName: Plasma
     bitType: 2
     levels:
-    - health: 20
+    - health: 10
       resources: 10
-    - health: 35
+    - health: 20
       resources: 30
     - health: 50
       resources: 90
@@ -45,9 +45,9 @@ MonoBehaviour:
     refinedName: Scrap
     bitType: 3
     levels:
-    - health: 20
+    - health: 10
       resources: 10
-    - health: 35
+    - health: 20
       resources: 30
     - health: 50
       resources: 90
@@ -59,9 +59,9 @@ MonoBehaviour:
     refinedName: Fuel
     bitType: 4
     levels:
-    - health: 20
+    - health: 10
       resources: 10
-    - health: 35
+    - health: 20
       resources: 30
     - health: 50
       resources: 90
@@ -73,9 +73,9 @@ MonoBehaviour:
     refinedName: Power
     bitType: 5
     levels:
-    - health: 20
+    - health: 10
       resources: 10
-    - health: 35
+    - health: 20
       resources: 30
     - health: 50
       resources: 90
