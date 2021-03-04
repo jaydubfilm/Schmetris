@@ -687,6 +687,14 @@ namespace StarSalvager.UI
             
             if (index < 0) return;
 
+            if (partType == PART_TYPE.EMPTY)
+            {
+                SliderPartUis[index].SetIsTrigger(false, null);
+                SliderPartUis[index].SetSprite(null);
+                SliderPartUis[index].SetColor(Color.clear);
+                return;
+            }
+
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
 
             var isTrigger = partRemoteData.isManual;

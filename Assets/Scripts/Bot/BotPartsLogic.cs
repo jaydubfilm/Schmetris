@@ -171,13 +171,7 @@ namespace StarSalvager
                 var type = bitType;
                 var part = _parts.FirstOrDefault(x => x.category == type);
 
-                if (part is null)
-                    return;
-
-                
-                
-                GameUI.SetIconImage(index, part.Type);
-                //GameUI.ShowIcon(index, true);
+                GameUI.SetIconImage(index, part is null ? PART_TYPE.EMPTY : part.Type);
             }
             /*if (_magnetOverride > 0)
             {
@@ -1056,10 +1050,19 @@ namespace StarSalvager
             //Damage all the enemies
             if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
                 throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
+            
+            if(!partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius))
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
 
-            EnemyManager.DamageAllEnemies(damage);
+            var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.transform.position, damage);
+            }
+            
+            //EnemyManager.DamageAllEnemies(damage);
 
-            CreateBombEffect(part, 50f);
+            CreateBombEffect(part, radius * 2);
 
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
