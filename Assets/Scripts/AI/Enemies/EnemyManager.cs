@@ -110,19 +110,20 @@ namespace StarSalvager
         {
             for (int i = m_enemies.Count - 1; i >= 0; i--)
             {
-                //Need to ensure that the fall through order has the base class at the bottom, and inheritors at the top
+                Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                /*//Need to ensure that the fall through order has the base class at the bottom, and inheritors at the top
                 switch (m_enemies[i])
                 {
-                    case EnemyAttachable _:
+                    case EnemyAttachable enemyAttachable:
                         Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
                         break;
 
-                    case Enemy _:
+                    case Enemy enemy:
                         Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
                         break;
                     default:
                         throw new ArgumentException();
-                }
+                }*/
 
                 m_enemies.RemoveAt(i);
             }

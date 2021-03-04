@@ -231,7 +231,7 @@ namespace StarSalvager.AI
                 var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
                 
                 
-                currentPosition -= dir * EnemyMovementSpeed;
+                currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
                 transform.position = currentPosition;
                 
                 return false;
