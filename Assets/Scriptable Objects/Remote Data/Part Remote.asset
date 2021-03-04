@@ -60,7 +60,7 @@ MonoBehaviour:
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
     dataTest:
     - key: Damage
-      value: 7
+      value: 5
     - key: Cooldown
       value: 0.5
     - key: Projectile
@@ -111,7 +111,7 @@ MonoBehaviour:
       value: 15
     isManual: 1
     category: 4
-    ammoUseCost: 20
+    ammoUseCost: 10
     PatchSockets: 2
   - name: Missile
     partType: 13
@@ -201,7 +201,7 @@ MonoBehaviour:
       value: 0.8
     isManual: 1
     category: 3
-    ammoUseCost: 1
+    ammoUseCost: 2
     PatchSockets: 2
   - name: Tractor Beam
     partType: 38

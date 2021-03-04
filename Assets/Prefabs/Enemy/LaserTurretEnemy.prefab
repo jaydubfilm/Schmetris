@@ -298,7 +298,7 @@ MonoBehaviour:
   anticipationTime: 3
   attackTime: 1
   rotationSpeed: 5
-  damage: 20
+  damage: 40
   collisionMask:
     serializedVersion: 2
     m_Bits: 256
