@@ -861,7 +861,7 @@ namespace StarSalvager
             switch(target)
             {
                 case Enemy enemy:
-                    targetVelocity = enemy.EnemyMovementSpeed * enemy.m_mostRecentMovementDirection;
+                    targetVelocity = enemy.EnemyMovementSpeed * enemy.MostRecentMovementDirection;
                     break;
                 default:
                     targetVelocity = Vector3.zero;
