@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 6011450431445295622}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_Children:
   - {fileID: 6011450431445296087}
   - {fileID: 6011450431445296086}
@@ -57,7 +57,8 @@ MonoBehaviour:
   - ParticleSystem: {fileID: 6011450431445296029}
   - ParticleSystem: {fileID: 6011450431445296030}
   simulationSpeed: 1
-  simulationScale: 5
+  simulationScale: 1
+  scalingMultiplier: 0.55
 --- !u!114 &6011450431445296298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4866,7 +4867,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 8
   m_RenderMode: 0
   m_SortMode: 0
@@ -9687,7 +9688,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 7
   m_RenderMode: 0
   m_SortMode: 0
@@ -14508,7 +14509,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 8
   m_RenderMode: 0
   m_SortMode: 0
@@ -19329,7 +19330,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 5
   m_RenderMode: 0
   m_SortMode: 0
@@ -24150,7 +24151,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 9
   m_RenderMode: 0
   m_SortMode: 0
@@ -28971,7 +28972,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 341895645
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 6
   m_RenderMode: 0
   m_SortMode: 0
