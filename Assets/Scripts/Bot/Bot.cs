@@ -2571,6 +2571,7 @@ _isShifting = true;
                     case PartData _:
                         currentCoordinate += dir;
                         continue;
+                    case JunkBitData _:
                     case BitData _:
                     {
                         IBlockData nextCheck;
@@ -2583,7 +2584,7 @@ _isShifting = true;
                             //TODO I think that I can combine both the While Loop and the Linq expression
                             nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
 
-                            if (nextCheck is null || nextCheck is BitData) 
+                            if (nextCheck is null || nextCheck is BitData || nextCheck is JunkBitData) 
                                 break;
 
 
