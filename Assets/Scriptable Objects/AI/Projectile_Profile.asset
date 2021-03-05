@@ -128,7 +128,7 @@ MonoBehaviour:
     m_projectileType: Squid Ball
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-    m_projectileDamage: 0
+    m_projectileDamage: 10
     m_projectileSpeed: 12
     m_projectileRange: 0
     m_requiredRotate: 0
