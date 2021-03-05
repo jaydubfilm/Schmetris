@@ -236,6 +236,10 @@ namespace StarSalvager.AI
 
             if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
             {
+                //FIXME Might be better to broadcast to every enemy that the level has concluded
+                if(this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
+                    enemyAttachable.SetAttached(false);
+                
                 ApplyFleeMotion();
                 
                 return false;
