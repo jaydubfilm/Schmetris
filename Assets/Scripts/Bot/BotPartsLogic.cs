@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -120,16 +121,55 @@ namespace StarSalvager
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
         }
 
-        //====================================================================================================================//
+        //==============================================================================================================//
 
-        public Dictionary<PART_TYPE, bool> GetPartStates()
+        public void TrySwapPart(in DIRECTION direction)
+        {
+            var checkCoordinate = direction.ToVector2Int();
+            var partIndex = bot.AttachedBlocks.FindIndex(x =>
+                x.Coordinate == checkCoordinate && x is Part p && p.Type != PART_TYPE.EMPTY);
+
+            if (partIndex < 0 || !(bot.AttachedBlocks[partIndex] is Part part))
+                return;
+
+            var partsRemote = FactoryManager.Instance.PartsRemoteData;
+            
+            //Get list of available parts that are
+            var storedPart = PlayerDataManager
+                .GetCurrentPartsInStorage()
+                .OfType<PartData>()
+                .Where(x => x.Type != (int) part.Type)
+                .FirstOrDefault(x => part.category == partsRemote.GetRemoteData((PART_TYPE) x.Type).category);
+            
+            if(storedPart.Type == 0)
+                return;
+            
+            
+            PlayerDataManager.AddPartToStorage(part.ToBlockData());
+            Recycler.Recycle<Part>(part);
+            
+            var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                .CreateObject<Part>(storedPart);
+            
+            ClearList();
+            
+            bot.AttachNewBlock(checkCoordinate, newPart,
+                false,
+                false,
+                false,
+                false,
+                true);
+
+        }
+
+        /*public Dictionary<PART_TYPE, bool> GetPartStates()
         {
             var outData = new Dictionary<PART_TYPE, bool>();
             foreach (var part in _parts)
             {
                 var partType = part.Type;
                 
-                if (partType == PART_TYPE.EMPTY /*|| partType == PART_TYPE.CORE*/)
+                if (partType == PART_TYPE.EMPTY /*|| partType == PART_TYPE.CORE#1#)
                     continue;
                 
                 if(outData.ContainsKey(partType))
@@ -139,7 +179,7 @@ namespace StarSalvager
             }
 
             return outData;
-        }
+        }*/
         
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call

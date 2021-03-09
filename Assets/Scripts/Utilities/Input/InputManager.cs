@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
@@ -302,6 +303,9 @@ namespace StarSalvager.Utilities.Inputs
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
+                {
+                    Input.Actions.Default.SwapPart, TrySwapPart
+                },
                 /*{
                     Input.Actions.Default.ShuffleAlt, ShuffleInput
                 },*/
@@ -359,6 +363,20 @@ namespace StarSalvager.Utilities.Inputs
             }*/
         }
 
+
+        private void TrySwapPart(InputAction.CallbackContext ctx)
+        {
+            var vector2 = ctx.ReadValue<Vector2>();
+
+            if (vector2 == Vector2.zero)
+                return;
+
+            var direction = vector2.ToDirection();
+            
+            Debug.Log($"Try swap {direction} part");
+            
+            _bots[0].BotPartsLogic.TrySwapPart(direction);
+        }
 
 
         private void SmartAction1(InputAction.CallbackContext ctx)
