@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
                     .Where(x => partRemote.GetRemoteData((PART_TYPE) x.Type).category == bitType)
                     .ToList();
                 
-                if(parts.Count <= 2)
+                if(parts.Count <= Globals.MaxPartTypeCount)
                     continue;
                 
                 partDisposeWindow.SetActive(true);

@@ -9,6 +9,8 @@ namespace StarSalvager.ScriptableObjects
     public class GameSettingsScriptableObject : ScriptableObject
     {
         [BoxGroup("Prototyping")]
+        public int maxPartTypeCount = 2;
+        [BoxGroup("Prototyping")]
         public bool useShuffleDance = true;
         [BoxGroup("Prototyping")]
         public bool shuffleCanDisconnect = true;

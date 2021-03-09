@@ -42,7 +42,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
-        
+
+        public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
         public static int Magnetism => m_gameSettings.magnetAmount;
         
