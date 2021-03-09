@@ -47,7 +47,7 @@ namespace StarSalvager.UI.Scrapyard
         public void CheckForPartOverage()
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void FindAndDestroyPart(in PART_TYPE partType)
             {
                 var type = partType;
@@ -67,17 +67,18 @@ namespace StarSalvager.UI.Scrapyard
                 if (index < 0)
                     throw new Exception();
 
-                var scrapyardPart = (ScrapyardPart)_droneDesigner._scrapyardBot.AttachedBlocks[index];
+                var scrapyardPart = (ScrapyardPart) _droneDesigner._scrapyardBot.AttachedBlocks[index];
                 var coordinate = scrapyardPart.Coordinate;
-                
-                Recycler.Recycle<ScrapyardPart>(scrapyardPart);
-                
-                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(new PartData
-                {
-                    Type = (int)PART_TYPE.EMPTY,
-                    Coordinate = coordinate,
-                    Patches = new PatchData[0]
-                });
+
+                _droneDesigner._scrapyardBot.TryRemoveAttachableAt(coordinate);
+
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                    .CreateScrapyardObject<ScrapyardPart>(new PartData
+                    {
+                        Type = (int) PART_TYPE.EMPTY,
+                        Coordinate = coordinate,
+                        Patches = new PatchData[0]
+                    });
 
                 _droneDesigner._scrapyardBot.AttachNewBit(coordinate, attachable);
 
