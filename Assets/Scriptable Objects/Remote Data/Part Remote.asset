@@ -136,7 +136,7 @@ MonoBehaviour:
     description: A long range, very accurate weapon with a slow rate of fire.
     dataTest:
     - key: Damage
-      value: 50
+      value: 25
     - key: Cooldown
       value: 3
     - key: Probability

@@ -229,6 +229,8 @@ namespace StarSalvager.AI
 
         protected override void FireAttack()
         {
+            const float DISTANCE = 100f;
+            
             var currentPosition = transform.position;
             
             if (!CameraController.IsPointInCameraRect(currentPosition, Constants.VISIBLE_GAME_AREA))
@@ -238,18 +240,23 @@ namespace StarSalvager.AI
 
             Vector2 shootDirection = (targetLocation - (Vector2)currentPosition).normalized;
 
-            var raycastHit = Physics2D.Raycast(currentPosition, shootDirection, 100, collisionMask.value);
+            var raycastHit = Physics2D.Raycast(currentPosition, shootDirection, DISTANCE, collisionMask.value);
             //Debug.DrawRay(transform.position, shootDirection * 100, Color.blue, 1.0f);
 
             if (raycastHit.collider == null)
             {
+                Debug.DrawRay(currentPosition, shootDirection * DISTANCE, Color.red, 1f);
                 return;
             }
 
             var iCanBeHit = raycastHit.transform.GetComponent<ICanBeHit>();
 
-            if (iCanBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point - _playerLocation) is Bit)
+            if (iCanBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point) is Bit bit)
+            {
+                Debug.Log($"Hit {bit.gameObject.name}", bit);
+                Debug.DrawLine(currentPosition, raycastHit.point, Color.yellow, 1f);
                 return;
+            }
 
             var lineShrink = FactoryManager.Instance
                 .GetFactory<EffectFactory>()
@@ -260,6 +267,8 @@ namespace StarSalvager.AI
             lineShrink.Init(transform.position, targetLocation);
 
             iCanBeHit.TryHitAt(targetLocation, LaserDamage);
+            
+            Debug.DrawLine(currentPosition, raycastHit.point, Color.green, 1f);
         }
 
         #endregion
