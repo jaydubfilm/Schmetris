@@ -25,6 +25,10 @@ namespace StarSalvager.UI.Scrapyard
             public TMP_Text optionText;
         }
 
+        //====================================================================================================================//
+
+        public static PART_TYPE LastPicked { get; private set; }
+
 
         [SerializeField]
         private GameObject partChoiceWindow;
@@ -131,8 +135,9 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
                 PlayerDataManager.SetCanChoosePart(false);
-                
                 partChoiceWindow.SetActive(false);
+
+                FindObjectOfType<ScrapyardUI>().CheckForPartOverage();
             }
 
             for (int i = 0; i < selectionUis.Length; i++)
@@ -140,7 +145,10 @@ namespace StarSalvager.UI.Scrapyard
                 var index = i;
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
-                    CreatePart(GetPartType(index));
+                    var partType = GetPartType(index);
+
+                    LastPicked = partType;
+                    CreatePart(partType);
                 });
             }
         }

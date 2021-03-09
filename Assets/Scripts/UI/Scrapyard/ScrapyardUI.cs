@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
@@ -23,6 +24,118 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, Required]
         private GameObject workbenchWindow;
+
+        //Prototype
+        //====================================================================================================================//
+
+        //FIXME This should be combined with the part choice UI
+        [Serializable]
+        private struct SelectionUI
+        {
+            public Button partButton;
+            public TMP_Text partTitle;
+        }
+        
+        [SerializeField, Required, FoldoutGroup("Prototype")]
+        private GameObject partDisposeWindow;
+        [SerializeField, Required, FoldoutGroup("Prototype")]
+        private TMP_Text titleText;
+        [SerializeField, Required, FoldoutGroup("Prototype")]
+        private SelectionUI[] selectionUis;
+
+        //FIXME This should be moving to the drone designer once its ready
+        public void CheckForPartOverage()
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void FindAndDestroyPart(in PART_TYPE partType)
+            {
+                var type = partType;
+
+                var storage = new List<IBlockData>(PlayerDataManager.GetCurrentPartsInStorage());
+                var index = storage.FindIndex(x => x is PartData p && p.Type == (int) type);
+                if (index >= 0)
+                {
+                    //TODO From the part from the storage
+                    PlayerDataManager.RemovePartFromStorageAtIndex(index);
+                    return;
+                }
+
+                index = _droneDesigner._scrapyardBot.AttachedBlocks
+                    .FindIndex(x => x is ScrapyardPart p && p.Type == type);
+
+                if (index < 0)
+                    throw new Exception();
+
+                var scrapyardPart = (ScrapyardPart)_droneDesigner._scrapyardBot.AttachedBlocks[index];
+                var coordinate = scrapyardPart.Coordinate;
+                
+                Recycler.Recycle<ScrapyardPart>(scrapyardPart);
+                
+                var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(new PartData
+                {
+                    Type = (int)PART_TYPE.EMPTY,
+                    Coordinate = coordinate,
+                    Patches = new PatchData[0]
+                });
+
+                _droneDesigner._scrapyardBot.AttachNewBit(coordinate, attachable);
+
+                PlayerDataManager.SetBlockData(_droneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas());
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var bitProfile = FactoryManager.Instance.BitProfileData;
+            
+            var partRemote = FactoryManager.Instance.PartsRemoteData;
+            var partProfile = FactoryManager.Instance.PartsProfileData;
+            
+            var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
+            currentParts.AddRange(PlayerDataManager.GetBlockDatas().OfType<PartData>());
+
+            foreach (BIT_TYPE bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if(bitType == BIT_TYPE.WHITE || bitType == BIT_TYPE.NONE)
+                    continue;
+                
+                var parts = currentParts
+                    .Where(x => partRemote.GetRemoteData((PART_TYPE) x.Type).category == bitType)
+                    .ToList();
+                
+                if(parts.Count <= 2)
+                    continue;
+                
+                partDisposeWindow.SetActive(true);
+                titleText.text = "Discard 1 Part";
+                
+                var partOptions = parts
+                    .Where(x => PartChoiceUI.LastPicked != (PART_TYPE)x.Type)
+                    .Select(x => (PART_TYPE) x.Type)
+                    .Take(2)
+                    .ToArray();
+                
+                for (int i = 0; i < partOptions.Length; i++)
+                {
+                    var partType = partOptions[i];
+                    var partRemoteData = partRemote.GetRemoteData(partType);
+                    
+                    selectionUis[i].partTitle.text = partRemoteData.name;
+                    selectionUis[i].partButton.image.sprite = partProfile.GetProfile(partType).Sprite;
+                    selectionUis[i].partButton.image.color = bitProfile.GetProfile(partRemoteData.category).color;
+                    
+                    selectionUis[i].partButton.onClick.RemoveAllListeners();
+                    selectionUis[i].partButton.onClick.AddListener(() =>
+                    {
+                        FindAndDestroyPart(partType);
+                        
+                        partDisposeWindow.SetActive(false);
+                    });
+                }
+                
+                break;
+            }
+        }
 
         //====================================================================================================================//
 
@@ -80,8 +193,6 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-
-
         // Start is called before the first frame update
         private void Start()
         {
@@ -99,6 +210,9 @@ namespace StarSalvager.UI.Scrapyard
             InitSettings();
 
             SetWindowActive(Window.Workbench);
+
+
+            partDisposeWindow.SetActive(false);
         }
 
         private void Update()
@@ -272,24 +386,6 @@ namespace StarSalvager.UI.Scrapyard
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
         }
-
-        /*private void EscPressed()
-        {
-            switch (_currentWindow)
-            {
-                case Window.ShipInterior:
-                    _windows[(int)Window.Settings].SetActive(true);
-                    _currentWindow = Window.Settings;
-                    break;
-                case Window.Workbench:
-                case Window.Settings:
-                    _windows[(int)Window.Settings].SetActive(false);
-                    _currentWindow = Window.ShipInterior;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }*/
 
         //============================================================================================================//
 
