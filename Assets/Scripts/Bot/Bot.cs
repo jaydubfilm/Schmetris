@@ -63,11 +63,6 @@ namespace StarSalvager
         public Action OnFullMagnet;
         public Action OnBitShift;
 
-        [BoxGroup("Smoke Particles")]
-        public ParticleSystem TEST_ParticleSystem;
-        [BoxGroup("Smoke Particles")]
-        public ParticleSystemForceField TEST_ParticleSystemForceField;
-
         //============================================================================================================//
 
         public bool IsRecycled { get; set; }
@@ -221,51 +216,6 @@ namespace StarSalvager
             Destroy("Core Destroyed");
         }
 
-        //Particle Tests
-        //====================================================================================================================//
-
-        private void SetParticles()
-        {
-            if (Destroyed)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-
-            //This should be the core
-            if (!(AttachedBlocks[0] is IHealth iHealth))
-                return;
-
-            var health = iHealth.CurrentHealth / iHealth.StartingHealth;
-
-            if(health < 0.25f && !TEST_ParticleSystem.isPlaying)
-                TEST_ParticleSystem.Play();
-            else if (health >= 1f)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-
-
-            //FIXME This is only here as a proof of concept
-            switch (Globals.MovingDirection)
-            {
-                case DIRECTION.NULL:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(0f);
-                    break;
-                case DIRECTION.LEFT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(10f);
-                    break;
-                case DIRECTION.RIGHT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
-                    break;
-            }
-
-
-            //var emission = TEST_ParticleSystem.sizeOverLifetime;
-            //emission.sizeMultiplier = 1f - healthValue;
-        }
-
         //============================================================================================================//
 
         #region Unity Functions
@@ -281,9 +231,6 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
-
-
-            SetParticles();
 
             //See if the bot has completed the current wave
             //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
@@ -736,9 +683,6 @@ namespace StarSalvager
 
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
             transform.rotation = Quaternion.Euler(0,0,rotation);
-
-            //FIXME Remove this when ready
-            TEST_ParticleSystem.transform.rotation = Quaternion.identity;
 
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
@@ -2571,6 +2515,7 @@ _isShifting = true;
                     case PartData _:
                         currentCoordinate += dir;
                         continue;
+                    case JunkBitData _:
                     case BitData _:
                     {
                         IBlockData nextCheck;
@@ -2583,7 +2528,7 @@ _isShifting = true;
                             //TODO I think that I can combine both the While Loop and the Linq expression
                             nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
 
-                            if (nextCheck is null || nextCheck is BitData) 
+                            if (nextCheck is null || nextCheck is BitData || nextCheck is JunkBitData) 
                                 break;
 
 

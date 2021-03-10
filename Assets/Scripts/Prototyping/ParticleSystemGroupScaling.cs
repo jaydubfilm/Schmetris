@@ -35,6 +35,9 @@ namespace StarSalvager.Prototype
         [SerializeField, Range(0.1f, 10f), OnValueChanged("UpdateSimulationSize")]
         private float simulationScale = 1f;
 
+        [SerializeField, OnValueChanged("UpdateSimulationSize")]
+        private float scalingMultiplier = 1f;
+
         private new Transform transform
         {
             get
@@ -62,7 +65,7 @@ namespace StarSalvager.Prototype
 
         public void SetSimulationSize(float size)
         {
-            transform.localScale = Vector3.one * size;
+            transform.localScale = Vector3.one * (size * scalingMultiplier);
         }
         
         public void SetSimulationSpeed(float speed)

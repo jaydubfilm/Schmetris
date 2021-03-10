@@ -12,6 +12,8 @@ namespace StarSalvager.AI
     public class LaserTurretEnemy  : Enemy
     {
         private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
+        const float DISTANCE = 100f;
+
         //====================================================================================================================//
         
         public override bool IgnoreObstacleAvoidance => true;
@@ -102,6 +104,7 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     break;
                 case STATE.ANTICIPATION:
+                    SetBeamsLengthPosition(transform.position, DISTANCE);
                     AnticipationState();
                     break;
                 case STATE.ATTACK:
@@ -144,31 +147,53 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
-            const float DISTANCE = 100f;
 
             //--------------------------------------------------------------------------------------------------------//
             
-            void TryRaycast(in Vector2 worldPosition, in Vector3 direction, Color color)
+            float TryRaycast(in Vector2 rayStartPosition, in Vector3 direction, Color color)
             {
-                var raycastHit2D = Physics2D.Raycast(worldPosition, direction, DISTANCE, collisionMask.value);
+                var raycastHit2D = Physics2D.Raycast(rayStartPosition, direction, DISTANCE, collisionMask.value);
 
                 if (raycastHit2D.collider == null)
                 {
-                    Debug.DrawRay(worldPosition, direction * DISTANCE, color);
-                    return;
+                    Debug.DrawRay(rayStartPosition, direction * DISTANCE, color);
+                    return DISTANCE;
                 }
 
                 if (!(raycastHit2D.transform.GetComponent<Bot>() is Bot bot))
                     throw new Exception();
                 
-                Debug.DrawRay(worldPosition, direction * DISTANCE, Color.green);
+                Debug.DrawRay(rayStartPosition, direction * DISTANCE, Color.green);
 
                 var damageToApply = damage * Time.deltaTime;
 
-                bot.TryHitAt(damageToApply);
+                var attachable = bot.GetClosestAttachable(raycastHit2D.point);
+
+                bot.TryHitAt(attachable, damageToApply);
+
+                //bot.TryHitAt(damageToApply);
+
+                return raycastHit2D.distance;
             }
 
+            /*void SetArmLengthPosition(in int index, in Vector2 worldPosition, in Vector2 direction, in float length)
+            {
+                var targetTransform = beamSpriteRenderers[index].transform;
+                var size = beamSpriteRenderers[index].size;
+                size.y = length;
+                
+                beamSpriteRenderers[index].size = size;
+                
+                targetTransform.up = direction;
+                //targetTransform.localScale = Vector3.up * length;
+
+                targetTransform.position = worldPosition + (direction * (length / 2));
+            }*/
+
             //--------------------------------------------------------------------------------------------------------//
+            
+            var currentPosition = transform.position;
+            var currentRotation = transform.rotation;
 
             _attackTimer -= Time.deltaTime;
 
@@ -177,21 +202,31 @@ namespace StarSalvager.AI
                 SetState(STATE.ANTICIPATION);
                 return;
             }
-            
-            if (!CameraController.IsPointInCameraRect(new Vector2(0, transform.position.y), Constants.VISIBLE_GAME_AREA))
+
+            /*if (!CameraController.IsPointInCameraRect(new Vector2(0, transform.position.y), Constants.VISIBLE_GAME_AREA)
+            )
             {
+                for (var i = 0; i < _directions.Length; i++)
+                {
+                    var direction = _directions[i];
+                    SetArmLength(i, currentPosition, direction, DISTANCE);
+                }
+
                 SetState(STATE.ANTICIPATION);
                 return;
-            }
-            
+            }*/
+
             //--------------------------------------------------------------------------------------------------------//
 
-            var currentPosition = transform.position;
-            var currentRotation = transform.rotation;
 
-            foreach (var direction in _directions)
+
+            for (var i = 0; i < _directions.Length; i++)
             {
-                TryRaycast(currentPosition, currentRotation * direction, Color.red);
+                var currentDirection = currentRotation * _directions[i];
+                
+                var length = TryRaycast(currentPosition, currentDirection, Color.red);
+
+                SetBeamLengthPosition(i, currentPosition, currentDirection, length);
             }
         }
 
@@ -219,8 +254,47 @@ namespace StarSalvager.AI
 
         #endregion
 
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
+        {
+            return Vector2.down;
+        }
+
         //LaserTurretEnemy Functions
         //====================================================================================================================//
+
+        private void SetBeamLengthPosition(in int index, in Vector2 worldPosition, in Vector2 direction, in float length)
+        {
+            var targetTransform = beamSpriteRenderers[index].transform;
+            var size = beamSpriteRenderers[index].size;
+            size.y = length;
+                
+            beamSpriteRenderers[index].size = size;
+                
+            targetTransform.up = direction;
+
+            targetTransform.position = worldPosition + (direction * (length / 2));
+        }
+        
+        private void SetBeamsLengthPosition(in Vector2 worldPosition, in float length)
+        {
+            var currentRotation = transform.rotation;
+            
+            for (int i = 0; i < _directions.Length; i++)
+            {
+                var currentDirection = (Vector2)(currentRotation * _directions[i]);
+                
+                var targetTransform = beamSpriteRenderers[i].transform;
+                var size = beamSpriteRenderers[i].size;
+                size.y = length;
+                
+                beamSpriteRenderers[i].size = size;
+                
+                targetTransform.up = currentDirection;
+
+                targetTransform.position = worldPosition + (currentDirection * (length / 2));
+            }
+
+        }
 
         private void SetBeamsActive(in bool state)
         {

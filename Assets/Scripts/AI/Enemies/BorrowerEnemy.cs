@@ -111,13 +111,18 @@ namespace StarSalvager.AI
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
+            Vector2 direction;
             switch (currentState)
             {
                 case STATE.FLEE:
-                    return (Vector2) transform.position - playerLocation; 
+                    direction = (Vector2) transform.position - playerLocation;
+                    break;
                 default:
-                    return playerLocation - (Vector2)transform.position;
+                    direction = playerLocation - (Vector2)transform.position;
+                    break;
             }
+
+            return direction.normalized;
         }
 
         public Bit FindClosestBitOnBot()
