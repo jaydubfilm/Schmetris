@@ -85,7 +85,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
-      m_enemyCount: 3
+      m_enemyCount: 2
     - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
       m_enemyCount: 2
     m_stageType: 0
@@ -190,7 +190,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
-      m_enemyCount: 3
+      m_enemyCount: 2
     - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
       m_enemyCount: 2
     m_stageType: 0
