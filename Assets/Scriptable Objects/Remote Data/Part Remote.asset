@@ -281,3 +281,18 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 10
     PatchSockets: 2
+  - name: Core
+    partType: 0
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Magnet
+      value: 50
+    - key: Capacity
+      value: 100
+    - key: Health
+      value: 100
+    isManual: 0
+    category: 2
+    ammoUseCost: 5
+    PatchSockets: 3

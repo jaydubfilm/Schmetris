@@ -75,8 +75,8 @@ namespace StarSalvager
         //==============================================================================================================//
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
-        public int MagnetCount => Globals.Magnetism;
-        private int _magnetOverride;
+        public int MagnetCount { get; private set; }
+        //private int _magnetOverride;
 
         //==============================================================================================================//
 
@@ -218,7 +218,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             FindObjectOfType<GameUI>();
-            //MagnetCount = 0;
+            MagnetCount = 0;
 
             int value;
             foreach (var part in _parts)
@@ -240,21 +240,21 @@ namespace StarSalvager
 
                 switch (part.Type)
                 {
-                    /*case PART_TYPE.CORE:
-                        if (_magnetOverride > 0)
-                            break;
-
-                        if (partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out value))
+                    case PART_TYPE.CORE:
+                        
+                        if (!partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out int magnetAmount))
                         {
-                            MagnetCount += value;
+                            throw new MissingFieldException($"{PartProperties.KEYS.Magnet} missing from {part.Type} remote data");
                         }
 
-                        if (HasPartGrade(part, partRemoteData, out var floatValue))
+                        MagnetCount = magnetAmount;
+
+                        /*if (HasPartGrade(part, partRemoteData, out var floatValue))
                         {
                             MagnetCount += (int)floatValue;
-                        }
+                        }*/
 
-                        break;*/
+                        break;
                     case PART_TYPE.SHIELD:
                         if (_shieldTimers == null)
                             _shieldTimers = new Dictionary<Part, float>();

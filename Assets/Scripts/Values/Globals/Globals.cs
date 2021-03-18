@@ -44,7 +44,7 @@ namespace StarSalvager.Values
 
         
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
-        public static int Magnetism => m_gameSettings.magnetAmount;
+        //public static int Magnetism => m_gameSettings.magnetAmount;
         
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 

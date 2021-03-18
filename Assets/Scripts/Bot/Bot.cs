@@ -491,7 +491,7 @@ namespace StarSalvager
 
             //Add core component
             //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
-            /*var core = partFactory.CreateObject<Part>(
+            var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.EMPTY,
@@ -499,11 +499,14 @@ namespace StarSalvager
                     //Patches = new PatchData[patchSockets]
                 });
 
-            AttachNewBlock(Vector2Int.zero, core);*/
+            AttachNewBlock(Vector2Int.zero, core);
 
             List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
+                if (botLayout[i] == Vector2Int.zero)
+                    continue;
+                
                 if (AttachedBlocks != null && AttachedBlocks.Any(b => b.Coordinate == botLayout[i]))
                 {
                     continue;
@@ -514,7 +517,6 @@ namespace StarSalvager
                     {
                         Type = (int)PART_TYPE.EMPTY,
                         Coordinate = botLayout[i],
-                        //Patches = new PatchData[patchSockets]
                     });
                 emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{botLayout[i]}";
 
