@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -47,17 +48,85 @@ namespace StarSalvager.Utilities.Extensions
 
             var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
 
-            var modifiers = new[]
+            var partProperties = new []
+            {
+                PartProperties.KEYS.Damage,
+                PartProperties.KEYS.Cooldown,
+                PartProperties.KEYS.Radius,
+                PartProperties.KEYS.Projectile,
+                PartProperties.KEYS.Speed,
+                PartProperties.KEYS.Heal,
+                PartProperties.KEYS.Health,
+                PartProperties.KEYS.Capacity,
+                PartProperties.KEYS.Magnet,
+            };
+            
+            var outList = new List<PartDetail>();
+
+            //If the part uses ammo we'll check that first
+            if (partRemote.ammoUseCost > 0 && partData.Type == (int)PART_TYPE.CORE)
+                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
+            
+            foreach (var property in partProperties)
+            {
+                if (!partRemote.TryGetValue(property, out var value))
+                    continue;
+
+                var propertyName = PartProperties.GetPropertyName(property);
+                object total;
+
+                switch (property)
+                {
+                    case PartProperties.KEYS.Damage when value is float f:
+                        total = f * multipliers[PATCH_TYPE.POWER];
+                        break;
+                    case PartProperties.KEYS.Cooldown when value is float f:
+                        total = f * multipliers[PATCH_TYPE.FIRE_RATE];
+                        break;
+                    case PartProperties.KEYS.Radius when value is int r:
+                        total = r * multipliers[PATCH_TYPE.RANGE];
+                        break;
+                    case PartProperties.KEYS.Projectile when value is string s:
+                        var projectileRange = FactoryManager.Instance.ProjectileProfile
+                            .GetProjectileProfileData(s).ProjectileRange;
+                        total = projectileRange * multipliers[PATCH_TYPE.RANGE];
+                        break;
+                    
+                    case PartProperties.KEYS.Health when partData.Type == (int)PART_TYPE.CORE:
+                        propertyName = "Hull Strength";
+                        total = value;
+                        break;
+                    case PartProperties.KEYS.Magnet:
+                        propertyName = "Magnetism";
+                        total = value;
+                        break;
+                    case PartProperties.KEYS.Speed:
+                    case PartProperties.KEYS.Heal:
+                    case PartProperties.KEYS.Health:
+                    case PartProperties.KEYS.Capacity:
+                        total = value;
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(property), property, null);
+                }
+
+                var partDetail = new PartDetail(propertyName, total);
+                outList.Add(partDetail);
+            }
+
+            /*var modifiers = new[]
             {
                 partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage),
                 partRemote.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown),
                 partRemote.TryGetValue(PartProperties.KEYS.Radius, out int range),
                 partRemote.TryGetValue(PartProperties.KEYS.Projectile, out string projectileID),
                 partRemote.TryGetValue(PartProperties.KEYS.Speed, out float speed),
-                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal)
+                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal),
+                partRemote.TryGetValue(PartProperties.KEYS.Health, out float Health),
             };
 
-            var outList = new List<PartDetail>();
+            //var outList = new List<PartDetail>();
 
             if (modifiers[0])
                 outList.Add(new PartDetail("Damage", damage * multipliers[PATCH_TYPE.POWER]));
@@ -84,7 +153,7 @@ namespace StarSalvager.Utilities.Extensions
                 outList.Add(new PartDetail("Speed", speed));
 
             if (modifiers[5])
-                outList.Add(new PartDetail("Heal", heal));
+                outList.Add(new PartDetail("Heal", heal));*/
 
             return string.Join("\n", outList.Select(x => x.ToString()));
         }

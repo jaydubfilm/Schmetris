@@ -25,6 +25,14 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
+        private static readonly BIT_TYPE[] _bitTypes = {
+            BIT_TYPE.RED,
+            BIT_TYPE.YELLOW,
+            BIT_TYPE.GREEN,
+            BIT_TYPE.GREY,
+            BIT_TYPE.BLUE,
+        };
+        
         private static PART_TYPE[] TriggerPartTypes
         {
             get
@@ -164,6 +172,7 @@ namespace StarSalvager
         /// </summary>
         private void InitPartData()
         {
+            
             var partRemote = FactoryManager.Instance.PartsRemoteData;
             
             void SetIcon(in int index, in BIT_TYPE bitType)
@@ -173,10 +182,9 @@ namespace StarSalvager
 
                 GameUI.SetIconImage(index, part is null ? PART_TYPE.EMPTY : part.Type);
             }
-            /*if (_magnetOverride > 0)
-            {
-                MagnetCount = _magnetOverride;
-            }*/
+
+            //--------------------------------------------------------------------------------------------------------//
+            
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Bit>();
@@ -189,38 +197,18 @@ namespace StarSalvager
 
             GameUI.ResetIcons();
 
-            /*
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                 BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            */
-            SetIcon(0, BIT_TYPE.RED);
-            SetIcon(1, BIT_TYPE.YELLOW);
-            SetIcon(2, BIT_TYPE.GREEN);
-            SetIcon(3, BIT_TYPE.GREY);
-            SetIcon(4, BIT_TYPE.BLUE);
-            
-
-            /*for (int i = 0; i < MAXTriggerParts; i++)
+            //Using a fixed order for the BIT_TYPES since the UI needs it in this order
+            for (var i = 0; i < _bitTypes.Length; i++)
             {
-                if (i >= _triggerParts.Count)
-                    break;
-
-                //var partActive = HasPartGrade(_triggerParts[i], out _);
-
-                GameUI.SetIconImage(i, _triggerParts[i].Type);
-                GameUI.ShowIcon(i, true);
-                //GameUI.SetInteractable(i, partActive);
-            }*/
+                SetIcon(i, _bitTypes[i]);
+            }
 
             //--------------------------------------------------------------------------------------------------------//
 
             FindObjectOfType<GameUI>();
             MagnetCount = 0;
 
-            int value;
+            //int value;
             foreach (var part in _parts)
             {
                 if (part.Type == PART_TYPE.EMPTY)
@@ -241,13 +229,18 @@ namespace StarSalvager
                 switch (part.Type)
                 {
                     case PART_TYPE.CORE:
-                        
-                        if (!partRemoteData.TryGetValue(PartProperties.KEYS.Magnet, out int magnetAmount))
-                        {
-                            throw new MissingFieldException($"{PartProperties.KEYS.Magnet} missing from {part.Type} remote data");
-                        }
+                        var magnetAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Magnet);
+                        var capacityAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Capacity);
 
                         MagnetCount = magnetAmount;
+
+                        foreach (var bitType in _bitTypes)
+                        {
+                            var resource = PlayerDataManager.GetResource(bitType);
+                            resource.SetAmmoCapacity(capacityAmount, false);
+                        }
+                        
+                        PlayerDataManager.OnCapacitiesChanged?.Invoke();
 
                         /*if (HasPartGrade(part, partRemoteData, out var floatValue))
                         {
@@ -366,7 +359,7 @@ namespace StarSalvager
                         RegenUpdate(part, partRemoteData, deltaTime);
                         break;
                     //------------------------------------------------------------------------------------------------//
-                    case PART_TYPE.HEAL:
+                    case PART_TYPE.CORE:
                         HealUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
@@ -501,11 +494,11 @@ namespace StarSalvager
 
         private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            if (_healActiveTimer <= 0)
+            /*if (_healActiveTimer <= 0)
             {
                 return;
             }
-            _healActiveTimer -= Time.deltaTime;
+            _healActiveTimer -= Time.deltaTime;*/
             
             var repairTarget = bot;
 
@@ -513,13 +506,23 @@ namespace StarSalvager
             {
                 return;
             }
+            
 
             //--------------------------------------------------------------------------------------------------------//
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
                 throw new ArgumentOutOfRangeException();
 
-            repairTarget.ChangeHealth(repairAmount * deltaTime);
+            var cost = repairAmount * deltaTime;
+            
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            if (ammoResource.Ammo < cost)
+                return;
+            ammoResource.SubtractAmmo(cost);
+            
+            repairTarget.ChangeHealth(cost);
+            
+            
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }

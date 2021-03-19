@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f0b61dbe4de28a41a174085ffc4416e, type: 3}
   m_Name: Part Remote
   m_EditorClassIdentifier: 
-  starterGreen: 1
   starterBlue: 1
   starterYellow: 1
   basicWeapons: 0400000024000000
@@ -292,7 +291,9 @@ MonoBehaviour:
       value: 100
     - key: Health
       value: 100
+    - key: Heal
+      value: 10
     isManual: 0
     category: 2
-    ammoUseCost: 5
+    ammoUseCost: 0
     PatchSockets: 3

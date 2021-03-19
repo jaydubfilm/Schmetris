@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace StarSalvager.Parts.Data
 {
@@ -110,6 +111,11 @@ namespace StarSalvager.Parts.Data
             {
                 return ((key != null ? key.GetHashCode() : 0) * 397) ^ value.GetHashCode();
             }*/
+        }
+
+        public static string GetPropertyName(in KEYS key)
+        {
+            return Names[(int) key];
         }
 
 #if UNITY_EDITOR
