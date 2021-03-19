@@ -496,7 +496,7 @@ namespace StarSalvager.UI
         {
             ShowAbortWindow(false);
 
-            SetPlayerXP(0);
+            SetPlayerXP(PlayerDataManager.GetXPThisRun());
             SetPlayerComponents(PlayerDataManager.GetComponents());
 
             UpdateAmmoBars();

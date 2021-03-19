@@ -244,7 +244,7 @@ MonoBehaviour:
     m_health: 20
     m_movementSpeed: 5
     m_rateOfFire: 0
-    m_dimensions: {x: 1, y: 1}
+    m_dimensions: {x: 1, y: 2}
     m_rdsTableData: []
   - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
     m_name: Sleeper Mine

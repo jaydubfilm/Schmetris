@@ -980,7 +980,7 @@ namespace StarSalvager
             return true;
         }
 
-        public IAttachable GetClosestAttachable(Vector2 location, float maxDistance = 999f)
+        public IAttachable GetClosestAttachable(Vector2 worldPosition, float maxDistance = 999f)
         {
             IAttachable selected = null;
 
@@ -992,7 +992,7 @@ namespace StarSalvager
                 if (attached.CountAsConnectedToCore == false)
                     continue;
 
-                var dist = Vector2.Distance(attached.transform.position, location);
+                var dist = Vector2.Distance(attached.transform.position, worldPosition);
 
                 if (dist > maxDistance)
                     continue;
