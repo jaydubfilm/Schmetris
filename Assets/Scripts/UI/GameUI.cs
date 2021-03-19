@@ -28,10 +28,15 @@ namespace StarSalvager.UI
         [Serializable]
         public struct SliderPartUI
         {
+            public bool isFilled => Math.Abs(foregroundImage.fillAmount - 1f) < 0.02f;
+
             [Required, FoldoutGroup("$NAME")]
             public Image backgroundImage;
             [Required, FoldoutGroup("$NAME")]
             public Image foregroundImage;
+            
+            [Required, FoldoutGroup("$NAME")]
+            public Image secondPartImage;
 
             [Required, FoldoutGroup("$NAME")]
             public Image triggerInputImage;
@@ -60,6 +65,10 @@ namespace StarSalvager.UI
             {
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
+            }
+            public void SetSecondSprite(in Sprite partSprite)
+            {
+                secondPartImage.sprite = partSprite;
             }
 
             public void SetColor(in Color color)
@@ -704,7 +713,24 @@ namespace StarSalvager.UI
             SliderPartUis[index].SetSprite(sprite);
             SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
         }
+        public void SetSecondIconImage(int index, in PART_TYPE partType)
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (index < 0) return;
 
+            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+
+            SliderPartUis[index].SetSecondSprite(sprite);
+        }
+
+        public bool GetIsFilled(in int index)
+        {
+            if (index < 0) 
+                return false;
+            return SliderPartUis[index].isFilled;
+        }
+        
         public void SetFill(int index, float fillValue)
         {
             if (index < 0) return;

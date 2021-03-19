@@ -125,6 +125,15 @@ namespace StarSalvager
 
         public void TrySwapPart(in DIRECTION direction)
         {
+            var test = new List<BIT_TYPE>
+            {
+                BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                BIT_TYPE.GREEN,
+                BIT_TYPE.GREY,
+                BIT_TYPE.BLUE,
+            };
+            
             var checkCoordinate = direction.ToVector2Int();
             var partIndex = bot.AttachedBlocks.FindIndex(x =>
                 x.Coordinate == checkCoordinate && x is Part p && p.Type != PART_TYPE.EMPTY);
@@ -132,6 +141,11 @@ namespace StarSalvager
             if (partIndex < 0 || !(bot.AttachedBlocks[partIndex] is Part part))
                 return;
 
+            //Use this to prevent the players from being able to swap a part thats not done cooling down
+            var isFilled = GameUI.GetIsFilled(test.FindIndex(x => x == part.category));
+            if (!isFilled)
+                return;
+            
             var partsRemote = FactoryManager.Instance.PartsRemoteData;
             
             //Get list of available parts that are
@@ -140,11 +154,11 @@ namespace StarSalvager
                 .OfType<PartData>()
                 .Where(x => x.Type != (int) part.Type)
                 .FirstOrDefault(x => part.category == partsRemote.GetRemoteData((PART_TYPE) x.Type).category);
-            
+
             if(storedPart.Type == 0)
                 return;
             
-            
+            PlayerDataManager.RemovePartFromStorage(storedPart);
             PlayerDataManager.AddPartToStorage(part.ToBlockData());
             Recycler.Recycle<Part>(part);
             
@@ -205,14 +219,31 @@ namespace StarSalvager
         private void InitPartData()
         {
             var partRemote = FactoryManager.Instance.PartsRemoteData;
-            
+
             void SetIcon(in int index, in BIT_TYPE bitType)
             {
                 var type = bitType;
                 var part = _parts.FirstOrDefault(x => x.category == type);
 
                 GameUI.SetIconImage(index, part is null ? PART_TYPE.EMPTY : part.Type);
+
+                
+                var partsInStorage = PlayerDataManager.GetCurrentPartsInStorage();
+                var switchPart = partsInStorage
+                    .OfType<PartData>()
+                    .Select(x => new
+                    {
+                        type = (PART_TYPE)x.Type,
+                        partRemote.GetRemoteData(x.Type).category
+                    })
+                    .FirstOrDefault(x => x.category == type);
+
+                
+                GameUI.SetSecondIconImage(index, switchPart is null? PART_TYPE.EMPTY : switchPart.type);
             }
+            
+
+            
             /*if (_magnetOverride > 0)
             {
                 MagnetCount = _magnetOverride;

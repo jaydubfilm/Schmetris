@@ -33,6 +33,10 @@ namespace StarSalvager.ScriptableObjects
         [Space(10f)]
         public List<PartRemoteData> partRemoteData = new List<PartRemoteData>();
 
+        public PartRemoteData GetRemoteData(in int Type)
+        {
+            return GetRemoteData((PART_TYPE) Type);
+        }
         public PartRemoteData GetRemoteData(PART_TYPE Type)
         {
             return partRemoteData
