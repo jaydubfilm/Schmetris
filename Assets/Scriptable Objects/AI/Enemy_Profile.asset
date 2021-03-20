@@ -24,7 +24,7 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
-    m_projectileType: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
+    m_projectileType: 50ee7b1f-b231-4f93-9e1d-40033a7919a5
   - EnemyName: DataLeech
     m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
