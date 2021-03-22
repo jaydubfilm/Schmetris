@@ -869,7 +869,7 @@ namespace StarSalvager
             }
             var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
             
-            Vector3 totarget = target.transform.position - part.transform.position;
+            Vector3 totarget = target.Position - part.transform.position;
 
             float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
             float b = 2 * Vector3.Dot(targetVelocity, totarget);
@@ -893,9 +893,12 @@ namespace StarSalvager
 
             Vector3 aimSpot = target.transform.position + targetVelocity * t;
             Vector3 bulletPath = aimSpot - part.transform.position;
+            
+            //Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
+            //Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
+            //Debug.Break();
 
             return bulletPath;
-            //float timeToImpact = bulletPath.Length() / bullet.speed;//speed must be in units per second
         }
 
         private float GetProjectileRange(in Part part, in string projectileID)

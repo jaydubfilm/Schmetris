@@ -21,6 +21,8 @@ namespace StarSalvager.AI
     [RequireComponent(typeof(StateAnimator))]
     public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
+        
+        
         protected static EnemyManager EnemyManager
         {
             get
@@ -38,7 +40,9 @@ namespace StarSalvager.AI
 
         public abstract bool SpawnAboveScreen { get; }
 
-        public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
+        public float EnemyMovementSpeed => _enemyMovementSpeed;
+        protected float _enemyMovementSpeed { get; set; }
+
         public string EnemyName => m_enemyData.Name;
 
         //ICanBeSeen Properties
@@ -100,6 +104,7 @@ namespace StarSalvager.AI
         public virtual void Init(EnemyData enemyData)
         {
             m_enemyData = enemyData;
+            _enemyMovementSpeed = enemyData.MovementSpeed;
             
             SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
             
@@ -119,9 +124,12 @@ namespace StarSalvager.AI
 
         protected void ApplyFallMotion()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
+            Vector3 fallAmount = Vector3.down * (Constants.gridCellSize * Time.deltaTime / Globals.TimeForAsteroidToFallOneSquare);
+            transform.position += fallAmount;
+            
+            
             MostRecentMovementDirection = Vector3.down;
+            _enemyMovementSpeed = Constants.gridCellSize / Globals.TimeForAsteroidToFallOneSquare;
 
             if (transform.position.y < -10)
                 SetState(STATE.DEATH);
@@ -131,6 +139,9 @@ namespace StarSalvager.AI
         {
             var currentPosition = transform.position;
             var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
+
+            if(m_enemyData.MovementSpeed > 0)
+                _enemyMovementSpeed = m_enemyData.MovementSpeed;
                 
                 
             currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
