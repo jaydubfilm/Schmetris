@@ -34,6 +34,8 @@ namespace StarSalvager.AI
         private int burstCount;
         private int _burstCount;
 
+        [SerializeField] private float collisionDamage = 30;
+
         //====================================================================================================================//
         
 
@@ -86,6 +88,19 @@ namespace StarSalvager.AI
             SetState(STATE.IDLE);
         }
 
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
+        {
+            if (IsRecycled)
+                return;
+
+            if (!(gameObject.GetComponent<Bot>() is Bot bot))
+                return;
+
+
+            bot.TryHitAt(worldHitPoint, collisionDamage);
+            CreateExplosionEffect(worldHitPoint);
+            SetState(STATE.DEATH);
+        }
 
         //====================================================================================================================//
         
