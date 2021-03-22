@@ -44,7 +44,7 @@ namespace StarSalvager.Values
 
         
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
-        public static int Magnetism => m_gameSettings.magnetAmount;
+        //public static int Magnetism => m_gameSettings.magnetAmount;
         
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
@@ -59,7 +59,7 @@ namespace StarSalvager.Values
         public static float DashSpeed => m_gameSettings.dashSpeed;
         public static float DashCooldown => m_gameSettings.dashCooldown;
         
-        public static float BotStartingHealth => m_gameSettings.botHealth;
+        //public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float DASTime => m_gameSettings.DASTime;
