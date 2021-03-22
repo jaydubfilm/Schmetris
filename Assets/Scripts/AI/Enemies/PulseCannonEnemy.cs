@@ -49,11 +49,34 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            float GetNewXPosition(in Vector2 range)
+            {
+                //Used to ensure the CameraVisibleRect is updated
+                CameraController.IsPointInCameraRect(Vector2.zero, Constants.VISIBLE_GAME_AREA);
+            
+                var cameraRect = CameraController.VisibleCameraRect;
+                var xBounds = new Vector2(cameraRect.xMin, cameraRect.xMax);
+                //var yBounds = new Vector2(cameraRect.yMin, cameraRect.yMax);
+
+                return Mathf.Lerp(xBounds.x, xBounds.y, Random.Range(range.x, range.y));
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             base.LateInit();
+
+            var currentPosition = Position;
+            var leftSide = Random.value > 0.5;
+            var xPos = GetNewXPosition(leftSide ? new Vector2(0f, 0.15f) : new Vector2(0.85f, 1f));
+            currentPosition.x = xPos;
+            transform.position = currentPosition;
+            
             
             //TODO Need to choose a facing direction (Default is left Facing)
             var botPosition = (Vector2)LevelManager.Instance.BotInLevel.transform.position;
-            var dir = botPosition - (Vector2) transform.position;
+            var dir = botPosition - (Vector2) currentPosition;
             _flipped = dir.x > 0f;
 
             _checkDirection = (Quaternion.Euler(0, 0, -45 * (_flipped ? -1f : 1f)) * Vector3.down).normalized;
