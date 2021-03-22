@@ -12,7 +12,8 @@ namespace StarSalvager.Factories.Data
         {
             JunkBit,
             Mine,
-            Bumper
+            Bumper,
+            Bomb
         }
         
         public string ProjectileType => m_projectileType;

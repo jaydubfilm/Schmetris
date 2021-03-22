@@ -64,7 +64,7 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
-    m_projectileType: d76d5226-688c-4147-af1d-6ce99705d0cf
+    m_projectileType: 18a7dbbc-5f0d-4629-abcc-f6466f7b7ece
   - EnemyName: ToughMother
     m_sprite: {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf,
       type: 3}
