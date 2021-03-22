@@ -681,8 +681,7 @@ namespace StarSalvager
                     CreateProjectile(part, partRemoteData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
-                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
-                                     part.transform.position).normalized;
+                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) - bot.transform.position).normalized;
 
                     var lineShrink = FactoryManager.Instance
                         .GetFactory<EffectFactory>()
@@ -695,7 +694,7 @@ namespace StarSalvager
                     lineShrink.Init(part.transform.position,
                         didHitTarget
                             ? fireTarget.transform.position
-                            : part.transform.position + direction * 100);
+                            : bot.transform.position + direction * 100);
 
                     if (didHitTarget)
                     {
@@ -826,9 +825,9 @@ namespace StarSalvager
             }*/
 
 
-            var position = part.transform.position;
+            var position = bot.transform.position;
             var shootDirection = ShouldUseGunTurret(partRemoteData)
-                ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
+                ? GetAimedProjectileAngle(collidableTarget, bot.transform.position, projectileId)
                 : part.transform.up.normalized;
 
             //--------------------------------------------------------------------------------------------------------//
@@ -858,7 +857,7 @@ namespace StarSalvager
                     true);
         }
 
-        private Vector3 GetAimedProjectileAngle(CollidableBase target, Part part, string projectileId)
+        private static Vector3 GetAimedProjectileAngle(in Actor2DBase target, in Vector3 partPosition, string projectileId)
         {
             Vector3 targetVelocity;
             switch(target)
@@ -872,7 +871,7 @@ namespace StarSalvager
             }
             var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
             
-            Vector3 totarget = target.Position - part.transform.position;
+            Vector3 totarget = target.Position - partPosition;
 
             float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
             float b = 2 * Vector3.Dot(targetVelocity, totarget);
@@ -894,8 +893,8 @@ namespace StarSalvager
                 t = t1;
             }
 
-            Vector3 aimSpot = target.transform.position + targetVelocity * t;
-            Vector3 bulletPath = aimSpot - part.transform.position;
+            Vector3 aimSpot = target.Position + targetVelocity * t;
+            Vector3 bulletPath = aimSpot - partPosition;
             
             //Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
             //Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
@@ -1752,7 +1751,7 @@ namespace StarSalvager
         //FIXME The turret setup feels shit, need to clean this
         private void CreateTurretEffect(in Part part)
         {
-            if(_turrets.IsNullOrEmpty())
+            /*if(_turrets.IsNullOrEmpty())
                 _turrets = new Dictionary<Part, Transform>();
 
             if (_turrets.ContainsKey(part))
@@ -1767,7 +1766,7 @@ namespace StarSalvager
             
             effect.transform.SetParent(part.transform, false);
             
-            _turrets.Add(part, effect.transform);
+            _turrets.Add(part, effect.transform);*/
         }
 
         private void CreateBombEffect(in IAttachable attachable, in float range)

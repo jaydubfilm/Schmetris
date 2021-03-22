@@ -97,7 +97,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public Vector2 Position => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
+        public Vector2 ShootAtPosition => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
         
 
         public bool IsInvulnerable
