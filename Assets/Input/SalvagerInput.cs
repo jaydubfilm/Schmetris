@@ -263,7 +263,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""id"": ""626d3d1b-580b-4cf2-b8a6-d8305cd616b2"",
                     ""path"": ""<Gamepad>/leftStick/x"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""AxisDeadzone"",
                     ""groups"": """",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
