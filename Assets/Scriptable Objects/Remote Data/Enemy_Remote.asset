@@ -230,7 +230,7 @@ MonoBehaviour:
     m_health: 60
     m_movementSpeed: 5
     m_rateOfFire: 1
-    m_dimensions: {x: 2, y: 2}
+    m_dimensions: {x: 3, y: 3}
     m_rdsTableData:
     - Name: Loot Drop
       AlwaysDrops: 1
