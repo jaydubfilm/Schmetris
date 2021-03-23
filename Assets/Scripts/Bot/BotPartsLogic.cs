@@ -165,28 +165,37 @@ namespace StarSalvager
         }
 
         //==============================================================================================================//
-
         public void TrySwapPart(in DIRECTION direction)
         {
-            var test = new List<BIT_TYPE>
+            BIT_TYPE category;
+            switch (direction)
             {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            };
+                case DIRECTION.LEFT:
+                    category = BIT_TYPE.RED;
+                    break;
+                case DIRECTION.UP:
+                    category = BIT_TYPE.YELLOW;
+                    break;
+                case DIRECTION.RIGHT:
+                    category = BIT_TYPE.GREY;
+                    break;
+                case DIRECTION.DOWN:
+                    category = BIT_TYPE.BLUE;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
 
-            var checkCoordinate = direction.ToVector2Int();
+            TrySwapPart(category);
+        }
+        public void TrySwapPart(in BIT_TYPE category)
+        {
+            var temp = category;
             var partIndex = bot.AttachedBlocks.FindIndex(x =>
-                x.Coordinate == checkCoordinate && x is Part p && p.Type != PART_TYPE.EMPTY);
+                x is Part p && p.Type != PART_TYPE.EMPTY &&  p.category == temp);
+
 
             if (partIndex < 0 || !(bot.AttachedBlocks[partIndex] is Part part))
-                return;
-
-            //Use this to prevent the players from being able to swap a part thats not done cooling down
-            var isFilled = GameUI.GetIsFilled(test.FindIndex(x => x == part.category));
-            if (!isFilled)
                 return;
 
             var partsRemote = FactoryManager.Instance.PartsRemoteData;
@@ -229,6 +238,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             
             var coordinate = part.Coordinate;
+            var pos = part.Position;
             
             PlayerDataManager.RemovePartFromStorage(swapToPart);
             
@@ -254,6 +264,7 @@ namespace StarSalvager
             PlayerDataManager.SetBlockData(bot.GetBlockDatas());
 
             newPart.transform.localScale = endScale;
+            newPart.transform.position = pos;
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -468,7 +479,7 @@ namespace StarSalvager
         //Parts Update Loop
         //============================================================================================================//
 
-        private static List<BIT_TYPE> types = new List<BIT_TYPE>
+        private static List<BIT_TYPE> bitTypes = new List<BIT_TYPE>
         {
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
@@ -535,7 +546,7 @@ namespace StarSalvager
                 if (part.Type == PART_TYPE.SHIELD && _shieldActive)
                     return;
                 
-                var uiIndex = types.FindIndex(x => x == partRemoteData.category);
+                var uiIndex = bitTypes.FindIndex(x => x == partRemoteData.category);
                 var fill = 1f - cooldownData.Value;
                 GameUI.SetFill(uiIndex, fill);
             }
@@ -1059,7 +1070,7 @@ namespace StarSalvager
 
             //Find the index of the ui element to show cooldown
             var tempPart = part;
-            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            var uiIndex = bitTypes.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//

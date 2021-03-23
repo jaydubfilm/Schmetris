@@ -635,61 +635,6 @@
                     "action": "SwapPart",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "IJKL",
-                    "id": "70174226-9278-4c9a-9370-f78cc8338898",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwapPart",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "74462f58-6d99-481c-b307-9b910f124531",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwapPart",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "0960a586-b84a-4eb1-ba2a-43b68e80bcdc",
-                    "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwapPart",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "0dbf0825-7490-45b3-a00c-b34206242696",
-                    "path": "<Keyboard>/j",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwapPart",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "b9e15c9a-a86f-4a57-aa39-4ba23c3e8d90",
-                    "path": "<Keyboard>/l",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwapPart",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },

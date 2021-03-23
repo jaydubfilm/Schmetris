@@ -147,6 +147,8 @@ namespace StarSalvager.Utilities.Inputs
         //Unity Functions
         //============================================================================================================//
 
+        private bool _controlPressed;
+
         #region Unity Functions
 
         private void Start()
@@ -157,6 +159,11 @@ namespace StarSalvager.Utilities.Inputs
 
         private void Update()
         {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftControl))
+                _controlPressed = true;
+            else if(UnityEngine.Input.GetKeyUp(KeyCode.LeftControl))
+                _controlPressed = false;
+            
             DasChecksMovement();
             DasChecksRotate();
 
@@ -399,7 +406,33 @@ namespace StarSalvager.Utilities.Inputs
 
         private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
         {
-            _triggersPressed[index] = ctx.ReadValue<float>() == 1f;
+            var isPressed = ctx.ReadValue<float>() == 1f;
+
+            if (isPressed && _controlPressed)
+            {
+                switch (index)
+                {
+                    case 0: //Blue, West
+                        _bots[0].BotPartsLogic.TrySwapPart(BIT_TYPE.RED);
+                        break;
+                    case 1: //Red, South
+                        _bots[0].BotPartsLogic.TrySwapPart(BIT_TYPE.YELLOW);
+                        break;
+                    case 2: //Grey, North
+                        _bots[0].BotPartsLogic.TrySwapPart(BIT_TYPE.GREY);
+                        break;
+                    case 3: //Yellow, East
+                        _bots[0].BotPartsLogic.TrySwapPart(BIT_TYPE.BLUE);
+                        break;
+                }
+
+                return;
+            }
+            
+            
+            _triggersPressed[index] = isPressed;
+
+            
         }
 
         private void TryUpdateTriggers()
