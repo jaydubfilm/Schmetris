@@ -37,6 +37,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 54ef5003-668f-48e1-bd6b-9bfb3221d9d0
     m_sprite: {fileID: 21300012, guid: a6d1b10b2671f96418d37196aacabe1b, type: 3}
     m_projectileType: Better Projectile
@@ -54,6 +56,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 315b7ca5-bf86-4e37-88db-d055fbea3f00
     m_sprite: {fileID: 21300014, guid: e7495963a94ea8c4d875690bf0db95e4, type: 3}
     m_projectileType: Best Projectile
@@ -71,6 +75,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 80e17eca-2642-4846-b12f-02a08cab40e9
     m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -89,6 +95,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 8f0be7e3-1231-4c2c-81ca-460162be6318
     m_sprite: {fileID: 21300002, guid: e05867bf595405c46a8ee4ae392e9180, type: 3}
     m_projectileType: Ballhead Blast
@@ -106,6 +114,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: cac32cbf-8978-4092-ad94-3ab8e384a0c7
     m_sprite: {fileID: -27257796672442213, guid: cd42b1419861ceb4dae39c1c9ad09fb2,
       type: 3}
@@ -124,6 +134,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 30aba478-81d5-4d02-a410-9c321a671732
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -142,6 +154,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: fcd28cae-267c-4f46-ac9c-8da7a14e8f94
     m_sprite: {fileID: 3878735451401828320, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -160,6 +174,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 00c01728-210c-4944-b1a3-0c3bf2183d42
     m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -178,6 +194,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: b352a285-3a9e-4b4e-86a0-9418fbad3f29
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -196,6 +214,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 5591628b-3b62-4bea-b915-78c355070c11
     m_sprite: {fileID: -7191923045049933382, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -214,6 +234,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 1
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: ae3ac0f2-5d55-435b-915c-4f07d7d778d3
     m_sprite: {fileID: 0}
     m_projectileType: Junk Bit
@@ -231,6 +253,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: d76d5226-688c-4147-af1d-6ce99705d0cf
     m_sprite: {fileID: 0}
     m_projectileType: Mine
@@ -248,6 +272,8 @@ MonoBehaviour:
     m_towType: 1
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 50ee7b1f-b231-4f93-9e1d-40033a7919a5
     m_sprite: {fileID: 0}
     m_projectileType: Bumper
@@ -265,6 +291,8 @@ MonoBehaviour:
     m_towType: 2
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: f4741159-a277-4dc0-97ca-849327e73192
     m_sprite: {fileID: 8060306004869834615, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -283,6 +311,8 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: a814f17b-460b-4dfb-b939-67a72e3f2d29
     m_sprite: {fileID: -3311313229851740455, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
       type: 3}
@@ -301,8 +331,10 @@ MonoBehaviour:
     m_towType: 0
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 0
+    deathEffectPrefab: {fileID: 0}
   - m_projectileTypeID: 18a7dbbc-5f0d-4629-abcc-f6466f7b7ece
-    m_sprite: {fileID: 0}
+    m_sprite: {fileID: 21300012, guid: 5c8ba4eb3da948d4482cf3c9e41aaa50, type: 3}
     m_projectileType: Bomb
     useTrail: 0
     color: {r: 1, g: 1, b: 1, a: 1}
@@ -314,7 +346,10 @@ MonoBehaviour:
     fireTowardsTarget: 0
     m_spreadAngle: 0
     m_sprayCount: 0
-    m_isTow: 1
+    m_isTow: 0
     m_towType: 3
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0
+    destroyAtScreenBottom: 1
+    deathEffectPrefab: {fileID: 2165056553181583225, guid: b44088c05643106409287cb77e8c56f6,
+      type: 3}
