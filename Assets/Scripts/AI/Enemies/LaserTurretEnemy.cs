@@ -13,6 +13,8 @@ namespace StarSalvager.AI
     {
         private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
         const float DISTANCE = 100f;
+        
+        public override Vector3 Position => ((BoxCollider2D)collider).bounds.center;
 
         //====================================================================================================================//
         
@@ -63,6 +65,8 @@ namespace StarSalvager.AI
                 };
 
             SetState(STATE.ANTICIPATION );
+            
+            MostRecentMovementDirection = Vector3.down;
             
         }
 

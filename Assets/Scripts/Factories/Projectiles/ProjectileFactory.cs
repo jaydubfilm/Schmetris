@@ -14,6 +14,7 @@ namespace StarSalvager.Factories
 {
     public class ProjectileFactory : FactoryBase
     {
+        private readonly BombProjectile m_bombPrefab;
         private readonly GameObject m_prefab;
         private readonly GameObject m_towPrefab;
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
@@ -25,6 +26,8 @@ namespace StarSalvager.Factories
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
             m_towPrefab = projectileProfile.m_towPrefab;
+
+            m_bombPrefab = projectileProfile.bombPrefab;
         }
 
         //============================================================================================================//
@@ -105,22 +108,27 @@ namespace StarSalvager.Factories
                     {
                         case ProjectileProfileData.TowType.JunkBit:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
-                            projectileTowObject.SetColliderActive(false);
                             break;
                         case ProjectileProfileData.TowType.Bumper:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
-                            projectileTowObject.SetColliderActive(false);
                             break;
                         case ProjectileProfileData.TowType.Mine:
                             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");
                             
                             towObject = LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, fromPosition).gameObject;
+                            break;
+                        case ProjectileProfileData.TowType.Bomb:
+                            var bomb = Object.Instantiate(m_bombPrefab);
+                            bomb.Init(projectileProfile.ProjectileDamage);
                             
-                            projectileTowObject.SetColliderActive(false);
+                            towObject = bomb.gameObject;
                             break;
                         default:
                             throw new Exception("Missing data for towObject");
                     }
+
+                    projectileTowObject.SetColliderActive(false);
+
                     LevelManager.Instance.ObstacleManager.AddToRoot(towObject);
                     towObject.transform.position = fromPosition;
                     
@@ -242,7 +250,8 @@ namespace StarSalvager.Factories
             return projectiles.ToArray();
         }
 
-        //============================================================================================================//
+
+        //====================================================================================================================//
 
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
@@ -351,6 +360,8 @@ namespace StarSalvager.Factories
             direction = Quaternion.Euler(angles) * direction;
             return direction + pivot;
         }*/
+        
+        
     }
 }
 

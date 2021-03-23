@@ -4,6 +4,7 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
+using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
@@ -517,8 +518,12 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
+                    var startingHealth = FactoryManager.Instance.PartsRemoteData
+                        .GetRemoteData(PART_TYPE.CORE)
+                        .GetDataValue<float>(PartProperties.KEYS.Health);
+                    
                     PlayerDataManager.SetRunStarted();
-                    PlayerDataManager.SetBotHealth(Globals.BotStartingHealth);
+                    PlayerDataManager.SetBotHealth(startingHealth);
                     
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                     IntroScene.gameObject.SetActive(true);

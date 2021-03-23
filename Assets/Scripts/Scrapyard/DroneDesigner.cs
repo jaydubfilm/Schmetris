@@ -20,6 +20,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Factories.Data;
+using StarSalvager.Parts.Data;
 
 namespace StarSalvager
 {
@@ -608,8 +609,10 @@ namespace StarSalvager
             {
                 return;
             }
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             
-            var startingHealth = Globals.BotStartingHealth;
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
             
 
@@ -634,7 +637,8 @@ namespace StarSalvager
                 var partRemoteData = FactoryManager.Instance.PartsRemoteData;
                 var starterParts = new[]
                 {
-                    partRemoteData.starterGreen,
+                    PART_TYPE.CORE,
+                    //partRemoteData.starterGreen,
                     partRemoteData.starterBlue,
                     partRemoteData.starterYellow
                 };
@@ -999,7 +1003,8 @@ namespace StarSalvager
 
         public void RepairDrone()
         {
-            var startingHealth = Globals.BotStartingHealth;
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             var currentHealth = PlayerDataManager.GetBotHealth();
             
             
