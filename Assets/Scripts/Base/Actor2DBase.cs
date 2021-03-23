@@ -6,6 +6,7 @@ namespace StarSalvager
     [RequireComponent(typeof(SpriteRenderer))]
     public abstract class Actor2DBase : MonoBehaviour, IRecycled, ISetSpriteLayer
     {
+        public virtual Vector3 Position => transform.position;
         
         //IRecycle Properties
         //====================================================================================================================//

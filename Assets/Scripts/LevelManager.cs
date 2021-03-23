@@ -23,6 +23,7 @@ using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
+using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 
 namespace StarSalvager
@@ -487,8 +488,9 @@ namespace StarSalvager
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
-            
-            var startingHealth = Globals.BotStartingHealth;
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
 
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);

@@ -15,6 +15,8 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required]
         public GameObject m_towPrefab;
 
+        [SerializeField, Required] public BombProjectile bombPrefab;
+
         public List<ProjectileProfileData> m_projectileProfileData = new List<ProjectileProfileData>();
 
         public ProjectileProfileData GetProjectileProfileData(string Type)
