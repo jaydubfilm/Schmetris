@@ -42,6 +42,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static float PartSwapTime => m_gameSettings.partSwapTime;
+
 
         public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;

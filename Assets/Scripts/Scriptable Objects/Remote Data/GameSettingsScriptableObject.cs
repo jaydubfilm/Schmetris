@@ -76,6 +76,9 @@ namespace StarSalvager.ScriptableObjects
         //Bot Properties
         //====================================================================================================================//
 
+        [BoxGroup("Bot"), SuffixLabel("s", true)] 
+        public float partSwapTime = 1f;
+        
         //[BoxGroup("Bot")]
         //public float botHealth = 100f;
         [BoxGroup("Bot")]

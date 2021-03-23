@@ -17,6 +17,8 @@ namespace StarSalvager.Utilities.FileIO
 {
     public static class Files
     {
+        private const Formatting JSON_FORMAT = Formatting.Indented;
+        
         private const string PLAYER_PATTERN = "*.player";
 
         private const string BUILDDATA_PATH = "BuildData";
@@ -102,7 +104,7 @@ namespace StarSalvager.Utilities.FileIO
 #elif UNITY_STANDALONE_OSX
             var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
-            var jsonToExport = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var jsonToExport = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
 
 
             File.WriteAllText(path, jsonToExport);
@@ -190,7 +192,7 @@ namespace StarSalvager.Utilities.FileIO
 
         public static string ExportGameMetaData(GameMetadata editorData)
         {
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var export = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
             File.WriteAllText(GAME_META_PATH, export);
 
             return export;
@@ -222,7 +224,7 @@ namespace StarSalvager.Utilities.FileIO
         {
             playerMetaData.SaveData();
 
-            var export = JsonConvert.SerializeObject(playerMetaData, Formatting.None);
+            var export = JsonConvert.SerializeObject(playerMetaData, JSON_FORMAT);
             File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);
 
             return export;
@@ -248,7 +250,7 @@ namespace StarSalvager.Utilities.FileIO
 
         public static string ExportLayoutData(List<ScrapyardLayout> editorData)
         {
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var export = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
 
             File.WriteAllText(Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE), export);
 
@@ -289,7 +291,7 @@ namespace StarSalvager.Utilities.FileIO
 
             var path = Path.Combine(directory, $"{fileName}.session");
 
-            var json = JsonConvert.SerializeObject(sessionData, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(sessionData, JSON_FORMAT);
 
             File.WriteAllText(path, json);
 

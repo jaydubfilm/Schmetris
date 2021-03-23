@@ -26,6 +26,45 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
+
+        //====================================================================================================================//
+        
+        private class CooldownData
+        {
+            public float Value => current / max;
+
+            public readonly float max;
+            public float current { get; private set; }
+
+            public CooldownData(in float max, in bool startNow = false)
+            {
+                this.max = max;
+                current = startNow ? this.max : 0f;
+            }
+
+            public void StartCooldown()
+            {
+                current = max;
+            }
+
+            public bool HasCooldown(in bool update = true)
+            {
+                if (current <= 0f)
+                {
+                    current = 0;
+                    return false;
+                }
+
+                if(update)
+                    current -= Time.deltaTime;
+
+                return true;
+            }
+            
+        }
+        
+        //====================================================================================================================//
+        
         private static readonly BIT_TYPE[] _bitTypes = {
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
@@ -85,7 +124,6 @@ namespace StarSalvager
 
         [ShowInInspector, BoxGroup("Bot Part Data"), ReadOnly]
         public int MagnetCount { get; private set; }
-        //private int _magnetOverride;
 
         //==============================================================================================================//
 
@@ -95,27 +133,19 @@ namespace StarSalvager
         private GameObject _healObject;
         private float _healActiveTimer;
 
-        private Dictionary<Part, Transform> _turrets;
+        //private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
 
         private List<Part> _parts;
         private List<Part> _triggerParts;
-        private static int MAXTriggerParts => 4;
 
         private Dictionary<Part, bool> _playingSounds;
         
         private Dictionary<Part, FlashSprite> _flashes;
         
-        private Dictionary<Part, float> _partCooldownTimers;
+        private Dictionary<Part, CooldownData> _partCooldownTimers;
         private Dictionary<Part, float> _shieldTimers;
 
-
-        /*private Dictionary<Part, float> _projectileTimers;
-        private Dictionary<Part, float> _triggerPartTimers;
-
-        private Dictionary<Part, float> _repairTimers;
-        private Dictionary<Part, float> _shieldTimers;*/
-        //private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -162,51 +192,99 @@ namespace StarSalvager
             var partsRemote = FactoryManager.Instance.PartsRemoteData;
 
             //Get list of available parts that are
-            var storedPart = PlayerDataManager
+            var storedPartData = PlayerDataManager
                 .GetCurrentPartsInStorage()
                 .OfType<PartData>()
                 .Where(x => x.Type != (int) part.Type)
                 .FirstOrDefault(x => part.category == partsRemote.GetRemoteData((PART_TYPE) x.Type).category);
 
-            if(storedPart.Type == 0)
+            if(storedPartData.Type == 0)
                 return;
 
-            PlayerDataManager.RemovePartFromStorage(storedPart);
-            PlayerDataManager.AddPartToStorage(part.ToBlockData());
+            StartCoroutine(PartSwapCoroutine(part, storedPartData));
+
+        }
+
+        private IEnumerator PartSwapCoroutine(Part part, PartData swapToPart)
+        {
+            var cooldown = Globals.PartSwapTime / 2f;
+            var t = cooldown;
+            var startScale = Vector3.one;
+            var endScale = new Vector3(1, 0f, 1f);
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            _partCooldownTimers[part] = new CooldownData(cooldown, true);
+            var targetTrans = part.transform;
+
+            while (t > 0f)
+            {
+                targetTrans.localScale = Vector3.Lerp(startScale, endScale, 1f - (t / cooldown));
+                
+                t -= Time.deltaTime;
+                
+                yield return null;
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var coordinate = part.Coordinate;
+            
+            PlayerDataManager.RemovePartFromStorage(swapToPart);
+            
+            var blockData = part.ToBlockData();
+            blockData.Coordinate = Vector2Int.zero;
+            
+            PlayerDataManager.AddPartToStorage(blockData);
             Recycler.Recycle<Part>(part);
 
-            var newPart = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                .CreateObject<Part>(storedPart);
+            var newPart = FactoryManager.Instance
+                .GetFactory<PartAttachableFactory>()
+                .CreateObject<Part>(swapToPart);
 
             ClearList();
 
-            bot.AttachNewBlock(checkCoordinate, newPart,
+            bot.AttachNewBlock(coordinate, newPart,
                 false,
                 false,
                 false,
                 false,
                 true);
+            
+            PlayerDataManager.SetBlockData(bot.GetBlockDatas());
 
-        }
+            newPart.transform.localScale = endScale;
 
-        /*public Dictionary<PART_TYPE, bool> GetPartStates()
-        {
-            var outData = new Dictionary<PART_TYPE, bool>();
-            foreach (var part in _parts)
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //_partCooldownTimers[newPart] = cooldown;
+            _partCooldownTimers[newPart] = new CooldownData(cooldown, true);
+            targetTrans = newPart.transform;
+            t = cooldown;
+
+            while (t > 0f)
             {
-                var partType = part.Type;
-
-                if (partType == PART_TYPE.EMPTY /*|| partType == PART_TYPE.CORE#1#)
-                    continue;
-
-                if(outData.ContainsKey(partType))
-                    continue;
-
-                outData.Add(partType, !part.Disabled);
+                targetTrans.localScale = Vector3.Lerp(endScale, startScale, 1f - (t / cooldown));
+                
+                t -= Time.deltaTime;
+                
+                yield return null;
             }
 
-            return outData;
-        }*/
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(newPart.Type);
+            
+            //Checks if the part will need to use a cooldown value, if not we'll remove it
+            if(TryGetPartProperty(PartProperties.KEYS.Cooldown, newPart, partRemoteData, out cooldown))
+                _partCooldownTimers[newPart] = new CooldownData(cooldown);
+            else
+                _partCooldownTimers.Remove(newPart);
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+        }
+
+        //====================================================================================================================//
+        
 
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -259,10 +337,10 @@ namespace StarSalvager
                 GameUI.SetSecondIconImage(index, switchPart is null? PART_TYPE.EMPTY : switchPart.type);
             }
 
-
             //--------------------------------------------------------------------------------------------------------//
             
-            if (_partCooldownTimers == null) _partCooldownTimers = new Dictionary<Part, float>();
+            if (_partCooldownTimers == null) 
+                _partCooldownTimers = new Dictionary<Part, CooldownData>();
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Bit>();
@@ -296,6 +374,11 @@ namespace StarSalvager
 
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
+                
+                if (TryGetPartProperty(PartProperties.KEYS.Cooldown, part, partRemoteData, out var cooldown) && !_partCooldownTimers.ContainsKey(part))
+                {
+                    _partCooldownTimers.Add(part, new CooldownData(cooldown));
+                }
 
                 //FIXME Need to determine how things can become enabled/disabled
                 //part.Disabled = !HasPartGrade(part, partRemoteData, out _);
@@ -320,11 +403,6 @@ namespace StarSalvager
 
                         PlayerDataManager.OnCapacitiesChanged?.Invoke();
 
-                        /*if (HasPartGrade(part, partRemoteData, out var floatValue))
-                        {
-                            MagnetCount += (int)floatValue;
-                        }*/
-
                         break;
                     case PART_TYPE.SHIELD:
                         if (_shieldTimers == null)
@@ -335,59 +413,54 @@ namespace StarSalvager
 
                         _shieldTimers.Add(part, 0f);
                         break;
-                    /*case PART_TYPE.VAMPIRE:
-                        if (_vampireTimers == null)
-                            _vampireTimers = new Dictionary<Part, float>();
-
-                        if (_vampireTimers.ContainsKey(part))
-                            break;
-
-                        _vampireTimers.Add(part, 0f);
-                        break;*/
 
                     case PART_TYPE.REPAIR:
-                        //if (_repairTimers == null)
-                        //    _repairTimers = new Dictionary<Part, float>();
-
-                        if (!_partCooldownTimers.ContainsKey(part))
-                            _partCooldownTimers.Add(part, 0f);
-
                         _repairTarget.Add(part, null);
                         break;
                     case PART_TYPE.GUN:
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.MISSILE:
+                        
+                        /*if (!_partCooldownTimers.ContainsKey(part))
+                        {
+                            var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
+                
+                            _partCooldownTimers.Add(part, new CooldownData(cooldown * cooldownBoost));
+                        }*/
 
                         _gunTargets.Add(part, null);
 
-                        if (ShouldUseGunTurret(partRemoteData))
-                            CreateTurretEffect(part);
+                        /*if (ShouldUseGunTurret(partRemoteData))
+                            CreateTurretEffect(part);*/
                         break;
                 }
             }
 
-            /*if (_triggerPartTimers == null)
-                _triggerPartTimers = new Dictionary<Part, float>();*/
-
-            foreach (var triggerPart in _triggerParts)
+            /*foreach (var triggerPart in _triggerParts)
             {
+                var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
+                    .GetRemoteData(triggerPart.Type);
+                
                 if (_partCooldownTimers.ContainsKey(triggerPart))
                     continue;
+                
+                if (!partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float triggerCooldown))
+                    throw new ArgumentException($"Remote data for {partRemoteData.name} does not contain a value for {nameof(PartProperties.KEYS.Cooldown)}");
 
-                _partCooldownTimers.Add(triggerPart, 0f);
-            }
+                _partCooldownTimers.Add(triggerPart, new CooldownData(triggerCooldown));
+            }*/
 
             SetupGunRangeValues();
 
-            if (!_turrets.IsNullOrEmpty())
+            /*if (!_turrets.IsNullOrEmpty())
             {
                 foreach (var kvp in _turrets)
                 {
                     var turret = kvp.Value.gameObject;
                     turret.GetComponent<SpriteRenderer>().color = kvp.Key.Disabled ? Color.gray : Color.white;
                 }
-            }
+            }*/
 
             bot.ForceCheckMagnets();
         }
@@ -395,12 +468,22 @@ namespace StarSalvager
         //Parts Update Loop
         //============================================================================================================//
 
+        private static List<BIT_TYPE> types = new List<BIT_TYPE>
+        {
+            BIT_TYPE.RED,
+            BIT_TYPE.YELLOW,
+            BIT_TYPE.GREEN,
+            BIT_TYPE.GREY,
+            BIT_TYPE.BLUE,
+        };
+        
         //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
         public void PartsUpdateLoop()
         {
+            
             var deltaTime = Time.deltaTime;
 
             //Be careful to not use return here
@@ -441,13 +524,27 @@ namespace StarSalvager
                         HealUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
+
+                if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
+                    continue;
+                
+                /*if (!cooldownData.HasCooldown(false))
+                    return;*/
+                
+                //Wait for the shield to be inactive before the cooldown can begin
+                if (part.Type == PART_TYPE.SHIELD && _shieldActive)
+                    return;
+                
+                var uiIndex = types.FindIndex(x => x == partRemoteData.category);
+                var fill = 1f - cooldownData.Value;
+                GameUI.SetFill(uiIndex, fill);
             }
 
-            foreach (var triggerPart in _triggerParts)
+            /*foreach (var triggerPart in _triggerParts)
             {
                 var partRemoteData = GetPartData(triggerPart);
                 TriggerPartUpdates(triggerPart, partRemoteData, deltaTime);
-            }
+            }*/
         }
 
         private PartRemoteData GetPartData(in Part part)
@@ -465,14 +562,11 @@ namespace StarSalvager
         //FIXME Need to restructure this to only trigger after cooldown time
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            var timer = _partCooldownTimers[part];
+            //var timer = _partCooldownTimers[part];
 
-            if (timer > 0f)
+            if (_partCooldownTimers[part].HasCooldown())
             {
-                timer -= deltaTime;
-                _partCooldownTimers[part] = timer;
-
-                return;
+               return;
             }
 
 
@@ -532,13 +626,12 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Cooldown, part, partRemoteData, out var cooldown))
-                throw new ArgumentOutOfRangeException();
+            
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
                 throw new ArgumentOutOfRangeException();
 
-            _partCooldownTimers[part] = cooldown;
+            _partCooldownTimers[part].StartCooldown();
             toRepair.ChangeHealth(repairAmount * deltaTime);
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
@@ -572,12 +665,6 @@ namespace StarSalvager
 
         private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            /*if (_healActiveTimer <= 0)
-            {
-                return;
-            }
-            _healActiveTimer -= Time.deltaTime;*/
-
             var repairTarget = bot;
 
             if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
@@ -626,25 +713,24 @@ namespace StarSalvager
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
-            //if (_projectileTimers == null)
-            //    _projectileTimers = new Dictionary<Part, float>();
-
-            if (!_partCooldownTimers.ContainsKey(part))
-                _partCooldownTimers.Add(part, 0f);
+            /*if (!_partCooldownTimers.ContainsKey(part))
+            {
+                var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
+                
+                _partCooldownTimers.Add(part, new CooldownData(cooldown));
+            }*/
 
             //Cooldown
             //--------------------------------------------------------------------------------------------//
 
-            var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            //cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
+            
 
-            if (_partCooldownTimers[part] > cooldown)
+            if (_partCooldownTimers[part].HasCooldown())
             {
-                _partCooldownTimers[part] -= deltaTime;
                 return;
             }
 
-            _partCooldownTimers[part] = cooldown;
+            _partCooldownTimers[part].StartCooldown();
 
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
@@ -673,27 +759,24 @@ namespace StarSalvager
         {
             //TODO Need to determine if the shoot type is looking for enemies or not
             //--------------------------------------------------------------------------------------------//
-            //if (_projectileTimers == null)
-            //    _projectileTimers = new Dictionary<Part, float>();
 
-            if (!_partCooldownTimers.ContainsKey(part))
-                _partCooldownTimers.Add(part, 0f);
+            
 
             //Aim the Turret Effect
             //--------------------------------------------------------------------------------------------//
 
             var target = _gunTargets[part];
 
-            if (target &&
+            /*if (target &&
                 target.IsRecycled == false &&
-                !_turrets.IsNullOrEmpty() &&
-                _turrets.TryGetValue(part, out var turretTransform))
+                /*!_turrets.IsNullOrEmpty() &&
+                _turrets.TryGetValue(part, out var turretTransform)#1#)
             {
                 var targetTransform = target.transform;
                 var normDirection = (targetTransform.position - part.transform.position).normalized;
                 turretTransform.up = normDirection;
             }
-            else if (target && target.IsRecycled)
+            else */if (target && target.IsRecycled)
             {
                 _gunTargets[part] = null;
             }
@@ -702,16 +785,13 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             //FIXME This now might more sense to count down instead of counting up
-            var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-            var cooldownBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
+            
 
-            if (_partCooldownTimers[part] > 0)
+            if (_partCooldownTimers[part].HasCooldown())
             {
-                _partCooldownTimers[part] -= deltaTime;
                 return;
             }
 
-            _partCooldownTimers[part] = cooldown * cooldownBoost;
 
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
@@ -777,9 +857,6 @@ namespace StarSalvager
 
                     if (didHitTarget)
                     {
-                        /*var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
-                        var damageBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);*/
-
                         if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
                             throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
@@ -793,61 +870,10 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            
+            _partCooldownTimers[part].StartCooldown();
 
             //--------------------------------------------------------------------------------------------//
-        }
-
-        private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
-        {
-            var types = new List<BIT_TYPE>
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            };
-            //TODO This still needs to account for multiple bombs
-            if (!_partCooldownTimers.TryGetValue(part, out var timer))
-                return;
-
-            if (timer <= 0f)
-                return;
-
-            //Wait for the shield to be inactive before the cooldown can begin
-            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
-                return;
-
-            //Find the index of the ui element to show cooldown
-            var tempPart = part;
-            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
-
-            //Get the max cooldown value
-            //--------------------------------------------------------------------------------------------------------//
-
-            if (!partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float triggerCooldown))
-                throw new ArgumentException($"Remote data for {partRemoteData.name} does not contain a value for {nameof(PartProperties.KEYS.Cooldown)}");
-
-            //Update the timer value for this frame
-            //--------------------------------------------------------------------------------------------------------//
-
-            timer -= deltaTime;
-            var fill = 1f - timer / triggerCooldown;
-            GameUI.SetFill(uiIndex, fill);
-
-            _partCooldownTimers[part] = timer;
-
-            //--------------------------------------------------------------------------------------------------------//
-
-            //if (timer < 1f)
-            //    return;
-
-            //var canAfford = CanAffordAmmo(part, partRemoteData, out _);
-
-            //TODO Setup Can Afford
-            //var hasPartGrade = HasPartGrade(part, out _);
-
-            //GameUI.SetInteractable(uiIndex, fill >= 1f && canAfford);
         }
 
         #endregion //Part Updates
@@ -1009,7 +1035,46 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Trigger Parts
+        
+        private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            /*var types = new List<BIT_TYPE>
+            {
+                BIT_TYPE.RED,
+                BIT_TYPE.YELLOW,
+                BIT_TYPE.GREEN,
+                BIT_TYPE.GREY,
+                BIT_TYPE.BLUE,
+            };*/
 
+            if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
+                return;
+
+            if (!cooldownData.HasCooldown())
+                return;
+
+            //Wait for the shield to be inactive before the cooldown can begin
+            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
+                return;
+
+            //Find the index of the ui element to show cooldown
+            var tempPart = part;
+            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+
+            //Get the max cooldown value
+            //--------------------------------------------------------------------------------------------------------//
+
+            /*if (!partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float triggerCooldown))
+                throw new ArgumentException($"Remote data for {partRemoteData.name} does not contain a value for {nameof(PartProperties.KEYS.Cooldown)}");*/
+
+            //Update the timer value for this frame
+            //--------------------------------------------------------------------------------------------------------//
+
+            var fill = 1f - cooldownData.Value;
+            GameUI.SetFill(uiIndex, fill);
+
+            //--------------------------------------------------------------------------------------------------------//
+        }
         /// <summary>
         /// This should use values similar to an array (ie. starts at [0])
         /// </summary>
@@ -1092,9 +1157,8 @@ namespace StarSalvager
                 return false;
 
             //If the bomb is still recharging, we tell the player that its unavailable
-            if (_partCooldownTimers[part] > 0f)
+            if (_partCooldownTimers[part].HasCooldown(false))
             {
-                //AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
             }
 
@@ -1102,10 +1166,10 @@ namespace StarSalvager
                 .GetFactory<PartAttachableFactory>()
                 .GetRemoteData(part.Type);
 
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
+            /*if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
-            }
+            }*/
 
             if (!CanAffordAmmo(part, partRemoteData, out _))
             {
@@ -1121,7 +1185,7 @@ namespace StarSalvager
 
             //resource.SubtractAmmo(ammoCost);
 
-            _partCooldownTimers[part] = cooldown;
+            _partCooldownTimers[part].StartCooldown();
 
             return true;
         }
@@ -1300,9 +1364,6 @@ namespace StarSalvager
                 return;
 
             //Damage all the enemies
-            /*if (!partRemoteData.TryGetValue(PartProperties.KEYS.Damage, out float damage))
-                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");*/
-
             if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
                 throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
 
@@ -1311,7 +1372,6 @@ namespace StarSalvager
             var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
             for (int i = 0; i < bits.Count; i++)
             {
-                //EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
                 CreateBombEffect(bits[i], 5f);
 
                 Recycler.Recycle<Bit>(bits[i]);
@@ -1715,20 +1775,11 @@ namespace StarSalvager
 
         private void TryClearPartDictionaries()
         {
-            /*CheckShouldRecycle(ref _shields, (ShieldData data) =>
-            {
-                Recycler.Recycle<Shield>(data.gameObject);
-            });*/
-
             CheckShouldRecycle(ref _flashes, (FlashSprite data) =>
             {
                 Recycler.Recycle<FlashSprite>(data.gameObject);
             });
-            CheckShouldRecycle(ref _partCooldownTimers, (Part _) =>
-            {
-                //var index = _triggerParts.FindIndex(0, _triggerParts.Count, x => x == part);
-                //GameUI.ShowIcon(index, false);
-            });
+            CheckShouldRecycle(ref _partCooldownTimers, (Part _) => { });
         }
 
         public void ClearList()
@@ -1812,7 +1863,7 @@ namespace StarSalvager
         private Dictionary<Part, Bit> _repairTarget;
         private Dictionary<Bit, GameObject> _repairEffects;
 
-        private FlashSprite GetAlertIcon(Part part)
+        /*private FlashSprite GetAlertIcon(Part part)
         {
             if(_flashes == null)
                 _flashes = new Dictionary<Part, FlashSprite>();
@@ -1829,10 +1880,10 @@ namespace StarSalvager
             _flashes.Add(part, flash);
 
             return _flashes[part];
-        }
+        }*/
 
         //FIXME The turret setup feels shit, need to clean this
-        private void CreateTurretEffect(in Part part)
+        /*private void CreateTurretEffect(in Part part)
         {
             if(_turrets.IsNullOrEmpty())
                 _turrets = new Dictionary<Part, Transform>();
@@ -1850,7 +1901,7 @@ namespace StarSalvager
             effect.transform.SetParent(part.transform, false);
 
             _turrets.Add(part, effect.transform);
-        }
+        }*/
 
         private void CreateBombEffect(in IAttachable attachable, in float range)
         {
@@ -1944,7 +1995,7 @@ namespace StarSalvager
 
         private void CleanEffects()
         {
-            if (!_turrets.IsNullOrEmpty())
+            /*if (!_turrets.IsNullOrEmpty())
             {
                 var turrets = _turrets.Values;
                 foreach (var turret in turrets)
@@ -1956,7 +2007,7 @@ namespace StarSalvager
                 }
 
                 _turrets = new Dictionary<Part, Transform>();
-            }
+            }*/
 
             if (!_repairEffects.IsNullOrEmpty())
             {
@@ -1988,10 +2039,10 @@ namespace StarSalvager
 
         private void CheckShouldRecycleEffects()
         {
-            CheckShouldRecycle(ref _turrets, (Transform data) =>
+            /*CheckShouldRecycle(ref _turrets, (Transform data) =>
             {
                 Destroy(data.gameObject);
-            });
+            });*/
 
             CheckShouldRecycle(ref _repairEffects, (GameObject data) =>
             {
@@ -2004,20 +2055,6 @@ namespace StarSalvager
         }
 
         #endregion //Effects
-
-        //============================================================================================================//
-
-        /*public float GetVampireValue()
-        {
-            var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
-
-            if (part == null || part.Disabled)
-                return 0f;
-
-            var value = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.VAMPIRE).defaultValue;
-
-            return value;
-        }*/
 
         //====================================================================================================================//
 

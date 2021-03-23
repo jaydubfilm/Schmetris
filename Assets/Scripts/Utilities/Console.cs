@@ -387,6 +387,7 @@ namespace StarSalvager.Utilities
                                 for (var i = 0; i < addAmount; i++)
                                 {
                                     PlayerDataManager.AddPartToStorage(partBlockData);
+                                    PlayerDataManager.SavePlayerAccountData();
                                 }
                                 break;
                             }
