@@ -76,16 +76,16 @@ namespace StarSalvager.ScriptableObjects
         //Bot Properties
         //====================================================================================================================//
 
-        [BoxGroup("Bot")]
-        public float botHealth = 100f;
+        //[BoxGroup("Bot")]
+        //public float botHealth = 100f;
         [BoxGroup("Bot")]
         public float greenHealAmount = 10f;
         
         [BoxGroup("Bot")]
         public float decoyDroneHealth = 20f;
         
-        [BoxGroup("Bot")]
-        public int magnetAmount = 10;
+        //[BoxGroup("Bot")]
+        //public int magnetAmount = 10;
 
         [BoxGroup("Bot")]
         public float botEnterScreenMaxSize = 1.5f;

@@ -16,6 +16,8 @@ MonoBehaviour:
     type: 3}
   m_towPrefab: {fileID: 7094775417863100966, guid: cd3cc508b01465048bf256fbf64e99a3,
     type: 3}
+  bombPrefab: {fileID: 3121390149299874959, guid: 338a95e4b94dec14eb424a991eec57c5,
+    type: 3}
   m_projectileProfileData:
   - m_projectileTypeID: 083be790-7a08-4f27-b506-e8e09a116bc8
     m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
@@ -297,5 +299,22 @@ MonoBehaviour:
     m_sprayCount: 0
     m_isTow: 0
     m_towType: 0
+    m_canHitAsteroids: 0
+    m_addVelocityToProjectiles: 0
+  - m_projectileTypeID: 18a7dbbc-5f0d-4629-abcc-f6466f7b7ece
+    m_sprite: {fileID: 0}
+    m_projectileType: Bomb
+    useTrail: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+    m_projectileDamage: 30
+    m_projectileSpeed: 15
+    m_projectileRange: 0
+    m_requiredRotate: 0
+    fireType: 2
+    fireTowardsTarget: 0
+    m_spreadAngle: 0
+    m_sprayCount: 0
+    m_isTow: 1
+    m_towType: 3
     m_canHitAsteroids: 0
     m_addVelocityToProjectiles: 0

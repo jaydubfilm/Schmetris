@@ -127,12 +127,14 @@ namespace StarSalvager.UI.Scrapyard
 
                 _droneDesigner.SaveBlockData();
 
-                if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
+                /*if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
                 {
                     PlayerDataManager.SetStarted(true);
                     Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
                     return;
-                }
+                }*/
+                
+                PlayerDataManager.SetStarted(true);
 
                 PlayerDataManager.SetCanChoosePart(false);
                 partChoiceWindow.SetActive(false);

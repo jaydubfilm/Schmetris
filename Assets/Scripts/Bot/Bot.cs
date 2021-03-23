@@ -301,7 +301,10 @@ namespace StarSalvager
 
         public void CoreShuffle(DIRECTION direction)
         {
-            var start = AttachedBlocks.GetAttachableInDirection(AttachedBlocks[0], direction.Reflected());
+            //FIXME Might want to store this at the start, so I don't have to keep searching for it
+            var corePart = AttachedBlocks.OfType<Part>().FirstOrDefault(x => x.Type == PART_TYPE.CORE);
+            
+            var start = AttachedBlocks.GetAttachableInDirection(corePart, direction.Reflected());
 
             //Checks to see if the shuffle will cause a disconnect, and prevents it
             if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
@@ -491,7 +494,7 @@ namespace StarSalvager
 
             //Add core component
             //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
-            /*var core = partFactory.CreateObject<Part>(
+            var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.EMPTY,
@@ -499,11 +502,14 @@ namespace StarSalvager
                     //Patches = new PatchData[patchSockets]
                 });
 
-            AttachNewBlock(Vector2Int.zero, core);*/
+            AttachNewBlock(Vector2Int.zero, core);
 
             List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
+                if (botLayout[i] == Vector2Int.zero)
+                    continue;
+                
                 if (AttachedBlocks != null && AttachedBlocks.Any(b => b.Coordinate == botLayout[i]))
                 {
                     continue;
@@ -514,7 +520,6 @@ namespace StarSalvager
                     {
                         Type = (int)PART_TYPE.EMPTY,
                         Coordinate = botLayout[i],
-                        //Patches = new PatchData[patchSockets]
                     });
                 emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{botLayout[i]}";
 

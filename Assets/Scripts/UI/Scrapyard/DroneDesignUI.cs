@@ -219,8 +219,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitHealthBar()
         {
+            var startingHealth = FactoryManager.Instance.PartsRemoteData
+                .GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
+            
             healthSliderText.Init(true);
-            healthSliderText.SetBounds(0f, Globals.BotStartingHealth);
+            healthSliderText.SetBounds(0f, startingHealth);
         }
 
         #endregion //Init
@@ -423,7 +427,9 @@ namespace StarSalvager.UI.Scrapyard
         private void CheckCanRepair()
         {
             var currentHealth = PlayerDataManager.GetBotHealth();
-            var startingHealth = Globals.BotStartingHealth;
+            var startingHealth = FactoryManager.Instance.PartsRemoteData
+                .GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             
             var canRepair = currentHealth < startingHealth;
 
@@ -494,6 +500,10 @@ namespace StarSalvager.UI.Scrapyard
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
+                if(i >= patchUis.Length)
+                    continue;
+                
+                
                 var patchData = partData.Patches[i];
                 var type = (PATCH_TYPE) patchData.Type;
 

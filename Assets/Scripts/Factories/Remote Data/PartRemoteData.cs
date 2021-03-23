@@ -88,14 +88,17 @@ namespace StarSalvager.Factories.Data
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (dataValue.Equals(null))
-                return default;
+                throw new MissingFieldException($"{key} missing from {partType} remote data");
 
-            if (!(dataValue.GetValue() is T i))
-                return default;
+            var value = dataValue.GetValue();
+
+            if (!(value is T i))
+                throw new InvalidCastException($"{key} is not of type {typeof(T)}. Expected {value.GetType()}");
 
             return i;
         }
 
+        //FIXME I think i want to have a "safe" version of this function that will throw the exception itself
         public bool TryGetValue<T>(PartProperties.KEYS key, out T value)
         {
             value = default;
@@ -103,13 +106,31 @@ namespace StarSalvager.Factories.Data
             var keyString = PartProperties.Names[(int)key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
-            if (dataValue.Equals(null))
+            if (string.IsNullOrEmpty(dataValue.key) || dataValue.Equals(null))
                 return false;
 
             if (!(dataValue.GetValue() is T i))
                 return false;
 
             value = i;
+
+            return true;
+        }
+        
+        public bool TryGetValue(PartProperties.KEYS key, out object value)
+        {
+            value = default;
+
+            var keyString = PartProperties.Names[(int)key];
+            var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
+
+            if (string.IsNullOrEmpty(dataValue.key) || dataValue.Equals(null))
+                return false;
+
+            //if (!(dataValue.GetValue() is T i))
+            //    return false;
+
+            value = dataValue.GetValue();
 
             return true;
         }
