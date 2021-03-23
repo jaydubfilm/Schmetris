@@ -103,13 +103,18 @@ namespace StarSalvager
         private static int MAXTriggerParts => 4;
 
         private Dictionary<Part, bool> _playingSounds;
-
-        private Dictionary<Part, float> _projectileTimers;
+        
         private Dictionary<Part, FlashSprite> _flashes;
+        
+        private Dictionary<Part, float> _partCooldownTimers;
+        private Dictionary<Part, float> _shieldTimers;
+
+
+        /*private Dictionary<Part, float> _projectileTimers;
         private Dictionary<Part, float> _triggerPartTimers;
 
         private Dictionary<Part, float> _repairTimers;
-        private Dictionary<Part, float> _shieldTimers;
+        private Dictionary<Part, float> _shieldTimers;*/
         //private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
@@ -229,6 +234,9 @@ namespace StarSalvager
 
             var partRemote = FactoryManager.Instance.PartsRemoteData;
 
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             void SetIcon(in int index, in BIT_TYPE bitType)
             {
                 var type = bitType;
@@ -252,11 +260,9 @@ namespace StarSalvager
             }
 
 
-
-            /*if (_magnetOverride > 0)
-            {
-                MagnetCount = _magnetOverride;
-            }*/
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (_partCooldownTimers == null) _partCooldownTimers = new Dictionary<Part, float>();
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
             _repairTarget = new Dictionary<Part, Bit>();
@@ -340,11 +346,11 @@ namespace StarSalvager
                         break;*/
 
                     case PART_TYPE.REPAIR:
-                        if (_repairTimers == null)
-                            _repairTimers = new Dictionary<Part, float>();
+                        //if (_repairTimers == null)
+                        //    _repairTimers = new Dictionary<Part, float>();
 
-                        if (!_repairTimers.ContainsKey(part))
-                            _repairTimers.Add(part, 0f);
+                        if (!_partCooldownTimers.ContainsKey(part))
+                            _partCooldownTimers.Add(part, 0f);
 
                         _repairTarget.Add(part, null);
                         break;
@@ -361,15 +367,15 @@ namespace StarSalvager
                 }
             }
 
-            if (_triggerPartTimers == null)
-                _triggerPartTimers = new Dictionary<Part, float>();
+            /*if (_triggerPartTimers == null)
+                _triggerPartTimers = new Dictionary<Part, float>();*/
 
             foreach (var triggerPart in _triggerParts)
             {
-                if (_triggerPartTimers.ContainsKey(triggerPart))
+                if (_partCooldownTimers.ContainsKey(triggerPart))
                     continue;
 
-                _triggerPartTimers.Add(triggerPart, 0f);
+                _partCooldownTimers.Add(triggerPart, 0f);
             }
 
             SetupGunRangeValues();
@@ -459,12 +465,12 @@ namespace StarSalvager
         //FIXME Need to restructure this to only trigger after cooldown time
         private void RepairUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            var timer = _repairTimers[part];
+            var timer = _partCooldownTimers[part];
 
             if (timer > 0f)
             {
                 timer -= deltaTime;
-                _repairTimers[part] = timer;
+                _partCooldownTimers[part] = timer;
 
                 return;
             }
@@ -532,7 +538,7 @@ namespace StarSalvager
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
                 throw new ArgumentOutOfRangeException();
 
-            _repairTimers[part] = cooldown;
+            _partCooldownTimers[part] = cooldown;
             toRepair.ChangeHealth(repairAmount * deltaTime);
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, toRepair.CurrentHealth < toRepair.StartingHealth);
@@ -620,11 +626,11 @@ namespace StarSalvager
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
-            if (_projectileTimers == null)
-                _projectileTimers = new Dictionary<Part, float>();
+            //if (_projectileTimers == null)
+            //    _projectileTimers = new Dictionary<Part, float>();
 
-            if (!_projectileTimers.ContainsKey(part))
-                _projectileTimers.Add(part, 0f);
+            if (!_partCooldownTimers.ContainsKey(part))
+                _partCooldownTimers.Add(part, 0f);
 
             //Cooldown
             //--------------------------------------------------------------------------------------------//
@@ -632,13 +638,13 @@ namespace StarSalvager
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
             //cooldown /= GetBoostValue(PART_TYPE.BOOSTRATE, part);
 
-            if (_projectileTimers[part] < cooldown)
+            if (_partCooldownTimers[part] > cooldown)
             {
-                _projectileTimers[part] += deltaTime;
+                _partCooldownTimers[part] -= deltaTime;
                 return;
             }
 
-            _projectileTimers[part] = 0f;
+            _partCooldownTimers[part] = cooldown;
 
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
@@ -667,11 +673,11 @@ namespace StarSalvager
         {
             //TODO Need to determine if the shoot type is looking for enemies or not
             //--------------------------------------------------------------------------------------------//
-            if (_projectileTimers == null)
-                _projectileTimers = new Dictionary<Part, float>();
+            //if (_projectileTimers == null)
+            //    _projectileTimers = new Dictionary<Part, float>();
 
-            if (!_projectileTimers.ContainsKey(part))
-                _projectileTimers.Add(part, 0f);
+            if (!_partCooldownTimers.ContainsKey(part))
+                _partCooldownTimers.Add(part, 0f);
 
             //Aim the Turret Effect
             //--------------------------------------------------------------------------------------------//
@@ -699,13 +705,13 @@ namespace StarSalvager
             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
             var cooldownBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
 
-            if (_projectileTimers[part] < cooldown * cooldownBoost)
+            if (_partCooldownTimers[part] > 0)
             {
-                _projectileTimers[part] += deltaTime;
+                _partCooldownTimers[part] -= deltaTime;
                 return;
             }
 
-            _projectileTimers[part] = 0f;
+            _partCooldownTimers[part] = cooldown * cooldownBoost;
 
             //Check if we have a target before removing resources
             //--------------------------------------------------------------------------------------------//
@@ -802,7 +808,7 @@ namespace StarSalvager
                 BIT_TYPE.BLUE,
             };
             //TODO This still needs to account for multiple bombs
-            if (!_triggerPartTimers.TryGetValue(part, out var timer))
+            if (!_partCooldownTimers.TryGetValue(part, out var timer))
                 return;
 
             if (timer <= 0f)
@@ -829,7 +835,7 @@ namespace StarSalvager
             var fill = 1f - timer / triggerCooldown;
             GameUI.SetFill(uiIndex, fill);
 
-            _triggerPartTimers[part] = timer;
+            _partCooldownTimers[part] = timer;
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -1082,11 +1088,11 @@ namespace StarSalvager
         {
             partRemoteData = null;
 
-            if (_triggerPartTimers == null || _triggerPartTimers.Count == 0)
+            if (_partCooldownTimers.IsNullOrEmpty())
                 return false;
 
             //If the bomb is still recharging, we tell the player that its unavailable
-            if (_triggerPartTimers[part] > 0f)
+            if (_partCooldownTimers[part] > 0f)
             {
                 //AudioController.PlaySound(SOUND.BOMB_CLICK);
                 return false;
@@ -1115,7 +1121,7 @@ namespace StarSalvager
 
             //resource.SubtractAmmo(ammoCost);
 
-            _triggerPartTimers[part] = cooldown;
+            _partCooldownTimers[part] = cooldown;
 
             return true;
         }
@@ -1174,6 +1180,8 @@ namespace StarSalvager
 
         private void TriggerShield(in Part part)
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
             void SetShieldSize()
             {
                 if (_shieldObject == null)
@@ -1200,6 +1208,8 @@ namespace StarSalvager
                 _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
             }
 
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
@@ -1714,7 +1724,7 @@ namespace StarSalvager
             {
                 Recycler.Recycle<FlashSprite>(data.gameObject);
             });
-            CheckShouldRecycle(ref _triggerPartTimers, (Part _) =>
+            CheckShouldRecycle(ref _partCooldownTimers, (Part _) =>
             {
                 //var index = _triggerParts.FindIndex(0, _triggerParts.Count, x => x == part);
                 //GameUI.ShowIcon(index, false);
