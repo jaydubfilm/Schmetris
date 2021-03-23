@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f0b61dbe4de28a41a174085ffc4416e, type: 3}
   m_Name: Part Remote
   m_EditorClassIdentifier: 
+  starterGreen: 0
   starterBlue: 1
   starterYellow: 1
   basicWeapons: 0400000024000000
@@ -297,3 +298,18 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 0
     PatchSockets: 3
+  - name: Sabre
+    partType: 42
+    lockRotation: 1
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 10
+    - key: Time
+      value: 2
+    - key: Radius
+      value: 3
+    isManual: 1
+    category: 3
+    ammoUseCost: 0
+    PatchSockets: 2

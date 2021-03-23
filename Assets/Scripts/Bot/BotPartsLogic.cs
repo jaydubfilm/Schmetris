@@ -999,6 +999,9 @@ namespace StarSalvager
                 case PART_TYPE.HOOVER:
                     TriggerHoover(part);
                     break;
+                case PART_TYPE.SABRE:
+                    TriggerHoover(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1338,6 +1341,52 @@ namespace StarSalvager
             bot.CheckAllForCombos();
             bot.ForceCheckMagnets();
             bot.ForceUpdateColliderGeometry();
+        }
+        
+        private void TriggerSabre(in Part part)
+        {
+            void SetShieldSize()
+            {
+                if (_shieldObject == null)
+                    CreateShieldEffect();
+                
+                _shieldObject.SetActive(true);
+            
+                //TODO Set the shield Size
+                var coordinates = bot.AttachedBlocks
+                    .Select(x => new
+                    {
+                        x = Mathf.Abs(x.Coordinate.x),
+                        y = Mathf.Abs(x.Coordinate.y)
+                    })
+                    .ToArray();
+                
+                var max = Mathf.Max(
+                    coordinates.Max(x => x.x),
+                    coordinates.Max(x => x.y)) + 1;
+
+                max *= 2;
+                max--;
+                
+                _shieldObject.transform.localScale = Vector3.one * (max * 1.3f);
+            }
+            
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Time, out var seconds))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
+            }
+            
+            //Set the shielded time
+            _shieldTimers[part] = seconds;
+
+            _shieldActive = true;
+
+            SetShieldSize();
         }
 
         #endregion
