@@ -301,7 +301,10 @@ namespace StarSalvager
 
         public void CoreShuffle(DIRECTION direction)
         {
-            var start = AttachedBlocks.GetAttachableInDirection(AttachedBlocks[0], direction.Reflected());
+            //FIXME Might want to store this at the start, so I don't have to keep searching for it
+            var corePart = AttachedBlocks.OfType<Part>().FirstOrDefault(x => x.Type == PART_TYPE.CORE);
+            
+            var start = AttachedBlocks.GetAttachableInDirection(corePart, direction.Reflected());
 
             //Checks to see if the shuffle will cause a disconnect, and prevents it
             if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
