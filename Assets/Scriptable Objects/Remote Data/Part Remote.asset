@@ -309,6 +309,8 @@ MonoBehaviour:
       value: 2
     - key: Radius
       value: 3
+    - key: Damage
+      value: 70
     isManual: 1
     category: 3
     ammoUseCost: 0
