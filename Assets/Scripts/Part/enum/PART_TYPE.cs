@@ -54,6 +54,7 @@
         HEAL = 39,
         REGEN = 40,
         BITSPLOSION = 41,
+        SABRE = 42
 
     } 
 }

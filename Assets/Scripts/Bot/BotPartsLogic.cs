@@ -118,6 +118,15 @@ namespace StarSalvager
 
         private static PartAttachableFactory _partAttachableFactory;
 
+        //Sabre Properties
+        //====================================================================================================================//
+        private Part _corePart;
+        
+        private bool _sabreActive;
+        private Sabre _sabreObject;
+        private Dictionary<Part, float> _sabreTimers;
+
+
         #endregion //Properties
 
         //Unity Functions
@@ -246,7 +255,7 @@ namespace StarSalvager
                         {
                             MagnetCount += (int)floatValue;
                         }*/
-
+                        _corePart = part;
                         break;
                     case PART_TYPE.SHIELD:
                         if (_shieldTimers == null)
@@ -285,6 +294,16 @@ namespace StarSalvager
                         
                         if (ShouldUseGunTurret(partRemoteData))
                             CreateTurretEffect(part);
+                        break;
+                    
+                    case PART_TYPE.SABRE:
+                        if (_sabreTimers == null)
+                            _sabreTimers = new Dictionary<Part, float>();
+
+                        if (_sabreTimers.ContainsKey(part))
+                            break;
+                        
+                        _sabreTimers.Add(part, 0f);                        
                         break;
                 }
             }
@@ -361,6 +380,11 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.CORE:
                         HealUpdate(part, partRemoteData, deltaTime);
+                        break;
+
+                    //--------------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.SABRE:
+                        SabreUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
             }
@@ -543,6 +567,29 @@ namespace StarSalvager
             }
 
             _shieldTimers[part] = timer;
+        }
+        
+        private void SabreUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            if (!_sabreActive)
+                return;
+
+            var timer = _sabreTimers[part];
+
+            timer -= deltaTime;
+
+            if (timer <= 0f)
+            {
+                _sabreActive = false;
+                _sabreObject.SetActive(false);
+            }
+
+            _sabreTimers[part] = timer;
+            
+            var dir = (part.Position - _corePart.Position).normalized;
+            var pos = part.Position + (dir * (_sabreObject.size / 2));
+
+            _sabreObject.SetTransform(pos, dir);
         }
 
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -738,6 +785,9 @@ namespace StarSalvager
 
             //Wait for the shield to be inactive before the cooldown can begin
             if (part.Type == PART_TYPE.SHIELD && _shieldActive)
+                return;
+            
+            if (part.Type == PART_TYPE.SABRE && _sabreActive)
                 return;
             
             //Find the index of the ui element to show cooldown
@@ -998,6 +1048,9 @@ namespace StarSalvager
                     break;
                 case PART_TYPE.HOOVER:
                     TriggerHoover(part);
+                    break;
+                case PART_TYPE.SABRE:
+                    TriggerSabre(part);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
@@ -1338,6 +1391,61 @@ namespace StarSalvager
             bot.CheckAllForCombos();
             bot.ForceCheckMagnets();
             bot.ForceUpdateColliderGeometry();
+        }
+        
+        private void TriggerSabre(in Part part)
+        {
+            var partPos = part.Position;
+            var corePos = _corePart.Position;
+            
+            void SetupSabre(in int size)
+            {
+                //TODO Check to see if the object needs to be instantiated
+                if (_sabreObject == null)
+                {
+                    _sabreObject = FactoryManager.Instance.GetFactory<BotFactory>().CreateSabreObject();
+                    Physics2D.IgnoreCollision(bot.Collider, _sabreObject.collider);
+                }
+                else
+                {
+                    _sabreObject.SetActive(true);
+                }
+
+                //TODO Find the direction to the core and invert it
+
+                var dir = (partPos - corePos).normalized;
+                var pos = partPos + (dir * (size / 2));
+
+                _sabreObject.SetTransform(pos, dir);
+
+            }
+            
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+            
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Time, out var seconds))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
+            }
+            
+            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var radius))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+            
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+            }
+            
+            _sabreTimers[part] = seconds;
+
+            _sabreActive = true;
+
+            SetupSabre(radius + 1);
+            
+            _sabreObject.Init(damage, radius);
+
         }
 
         #endregion
@@ -1889,6 +1997,12 @@ namespace StarSalvager
             
             if(_shieldObject != null)
                 Destroy(_shieldObject);
+
+            if (_sabreObject != null)
+            {
+                Recycler.Recycle<Sabre>(_sabreObject);
+                _sabreObject = null;
+            }
             
             /*if (!_boostEffects.IsNullOrEmpty())
             {

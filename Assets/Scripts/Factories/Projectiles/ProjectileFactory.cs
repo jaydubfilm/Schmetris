@@ -14,7 +14,6 @@ namespace StarSalvager.Factories
 {
     public class ProjectileFactory : FactoryBase
     {
-        private readonly BombProjectile m_bombPrefab;
         private readonly GameObject m_prefab;
         private readonly GameObject m_towPrefab;
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
@@ -26,8 +25,6 @@ namespace StarSalvager.Factories
             m_projectileProfile = projectileProfile;
             m_prefab = projectileProfile.m_prefab;
             m_towPrefab = projectileProfile.m_towPrefab;
-
-            m_bombPrefab = projectileProfile.bombPrefab;
         }
 
         //============================================================================================================//
@@ -116,12 +113,6 @@ namespace StarSalvager.Factories
                             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");
                             
                             towObject = LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, fromPosition).gameObject;
-                            break;
-                        case ProjectileProfileData.TowType.Bomb:
-                            var bomb = Object.Instantiate(m_bombPrefab);
-                            bomb.Init(projectileProfile.ProjectileDamage);
-                            
-                            towObject = bomb.gameObject;
                             break;
                         default:
                             throw new Exception("Missing data for towObject");
