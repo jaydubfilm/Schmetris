@@ -862,6 +862,10 @@ namespace StarSalvager
                         true, this);
                     break;
                 case STAGE_TYPE.FULLSCREEN:
+
+                    SpawnResourcesData(m_previousStageData, new Vector2(0, 1), false, true,
+                        m_previousStageData.SpawningObstacleMultiplier, true);
+
                     SpawnObstacleData(m_previousStageData.StageObstacleData, new Vector2(0, 1), false, true,
                         m_previousStageData.SpawningObstacleMultiplier, true);
                     break;
@@ -916,11 +920,31 @@ namespace StarSalvager
             }
         }
 
+        private float GetOverrideDensity(float spawnsPerScreenWidthPerMinute)
+        {
+            float GetDensityFromSpawnsPerScreenWidthPerMinute()
+            {
+                float rowsPerMinute = 60.0f / Globals.TimeForAsteroidToFallOneSquare;
+                float columnWidth = Globals.ColumnsOnScreen;
+
+                float density = spawnsPerScreenWidthPerMinute / (columnWidth * rowsPerMinute);
+
+                return density;
+            }
+            
+            float m_density = Mathf.Pow(GetDensityFromSpawnsPerScreenWidthPerMinute(), 0.315f) / Constants.VISIBLE_GAME_AREA;
+            
+            return  (m_density * m_density * m_density) / Globals.ObstacleDensityReductionModifier;
+        }
+
         public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, bool allowOverlap,
             bool forceSpawn, float spawningMultiplier, bool isPrevious, bool inRandomYLevel = false)
         {
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
+                if (stageObstacleData.SelectionType == SELECTION_TYPE.SHAPE)
+                    continue;
+                
                 //This spawnVariable defines "how much of this thing should be spawned"
                 float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
 
@@ -958,6 +982,57 @@ namespace StarSalvager
                     SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName,
                         stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation,
                         columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                }
+            }
+        }
+        
+        public void SpawnResourcesData(StageRemoteData stageRemoteData, Vector2 columnFieldRange, bool allowOverlap,
+            bool forceSpawn, float spawningMultiplier, bool isPrevious, bool inRandomYLevel = false)
+        {
+            
+            //TODO Get a list of all available categories
+            var bitTypes = LevelManager.Instance.BotInLevel.AttachedBlocks
+                .OfType<Part>()
+                .Where(x => x.Type != PART_TYPE.EMPTY)
+                .Select(x => x.category)
+                .ToList();
+
+            foreach (var bitType in bitTypes)
+            {
+                //This spawnVariable defines "how much of this thing should be spawned"
+                float spawnVariable = GetOverrideDensity(stageRemoteData.bitSpawns) * spawningMultiplier *
+                                      ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
+
+                if (m_currentStageData.StageBlendPeriod > 0)
+                {
+                    if (isPrevious)
+                    {
+                        spawnVariable *= Mathf.Lerp(1, 0, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
+                    else if (m_previousStageData != null && m_blendTimer <= m_currentStageData.StageBlendPeriod)
+                    {
+                        spawnVariable *= Mathf.Lerp(0, 1, m_blendTimer / m_currentStageData.StageBlendPeriod);
+                    }
+                }
+                else if (isPrevious)
+                {
+                    return;
+                }
+
+                while (spawnVariable >= 1)
+                {
+                    SpawnObstacle(bitType, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                    spawnVariable -= 1;
+                }
+
+                if (spawnVariable == 0)
+                    continue;
+
+                float random = Random.Range(0.0f, 1.0f);
+
+                if (random <= spawnVariable)
+                {
+                    SpawnObstacle(bitType, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
                 }
             }
         }
@@ -1110,6 +1185,26 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
+
+            PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
+        }
+        
+        private void SpawnObstacle(BIT_TYPE bitType, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
+            bool inRandomYLevel)
+        {
+            IObstacle obstacle;
+            int radiusAround = 0;
+
+            IObstacle newObstacle = FactoryManager.Instance
+                .GetFactory<BitAttachableFactory>()
+                .CreateObject<IObstacle>(bitType);
+
+            if (LevelManager.Instance != null)
+                LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);
+
+            AddObstacleToList(newObstacle);
+                    
+            obstacle = newObstacle;
 
             PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
         }

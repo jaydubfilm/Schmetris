@@ -66,6 +66,7 @@ namespace StarSalvager.AI
                 m_wallBlendFieldRight = new Vector2(m_bufferFieldRight.y, m_wallFieldRight.x);
             }
 
+            obstacleManager.SpawnResourcesData(stageRemoteData, m_centerColumnFieldRange, false, true, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
             obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_centerColumnFieldRange, false, true, stageRemoteData.SpawningObstacleMultiplier, isPrevious);
 
             obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_bufferFieldLeft, true, false, stageRemoteData.SpawningObstacleMultiplier, isPrevious);

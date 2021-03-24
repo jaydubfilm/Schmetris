@@ -26,6 +26,10 @@ namespace StarSalvager.AI
         private float m_centerChannelWidth = 0.5f;
         [ShowInInspector, ShowIf("m_stageType", STAGE_TYPE.STANDARD), DisplayAsString]
         private string m_numColumns => (Globals.GridSizeX * m_centerChannelWidth).ToString();
+
+        [Range(0, 100)]
+        public int bitSpawns = 25;
+        
         [SerializeField, HideIf("m_stageType", STAGE_TYPE.CUSTOM)]
         private List<StageObstacleData> m_stageObstacleData;
 
