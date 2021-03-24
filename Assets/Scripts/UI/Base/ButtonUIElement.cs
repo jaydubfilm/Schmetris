@@ -27,6 +27,11 @@ namespace StarSalvager.UI
         {
             this.data = data;
         }
+
+        /*protected void ForceSetButton(in Button button)
+        {
+            _button = button;
+        }*/
     } 
 }
 

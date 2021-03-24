@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AverageOrbitDistance: 6.5
-  LaserDamage: 1
+  LaserDamage: 5
   collisionMask:
     serializedVersion: 2
     m_Bits: 256

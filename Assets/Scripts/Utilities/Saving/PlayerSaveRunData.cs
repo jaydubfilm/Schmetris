@@ -32,15 +32,15 @@ namespace StarSalvager.Utilities.Saving
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Gears => _gears;
+        public int Components => _components;
 
-        [JsonProperty] private int _gears;
+        [JsonProperty] private int _components;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
         public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
 
-        public List<PatchData> patchesInStorage = new List<PatchData>();
+        //public List<PatchData> patchesInStorage = new List<PatchData>();
 
         public int currentModularSectorIndex = 0;
 
@@ -66,6 +66,12 @@ namespace StarSalvager.Utilities.Saving
         {
             0
         };
+
+        [JsonIgnore]
+        public IReadOnlyList<PatchData> PatchDatas => _patchDatas;
+        [JsonProperty]
+
+        private List<PatchData> _patchDatas = new List<PatchData>();
 
         //============================================================================================================//
 
@@ -103,19 +109,19 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetGears(int value)
         {
-            _gears = value;
+            _components = value;
         }
 
         //============================================================================================================//
 
         public void AddGears(int amount)
         {
-            _gears += Mathf.Abs(amount);
+            _components += Mathf.Abs(amount);
         }
 
         public void SubtractGears(int amount)
         {
-            _gears -= Mathf.Abs(amount);
+            _components -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//
@@ -192,7 +198,7 @@ namespace StarSalvager.Utilities.Saving
 
         //Patches
         //====================================================================================================================//
-        public List<PatchData> GetCurrentPatchesInStorage()
+        /*public List<PatchData> GetCurrentPatchesInStorage()
         {
             return patchesInStorage;
         }
@@ -221,7 +227,25 @@ namespace StarSalvager.Utilities.Saving
             patchesInStorage.RemoveAt(index);
         }
 
+        //====================================================================================================================//*/
+
+        public void SetPatches(in IEnumerable<PatchData> patches)
+        {
+            _patchDatas = new List<PatchData>(patches);
+        }
+
+        public void ClearAllPatches()
+        {
+            _patchDatas.Clear();
+        }
+
+        public void RemovePatchAtIndex(in int index)
+        {
+            _patchDatas.RemoveAt(index);
+        }
+
         //====================================================================================================================//
+        
 
 
         public void SaveData()

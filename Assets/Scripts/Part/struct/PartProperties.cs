@@ -1,6 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace StarSalvager.Parts.Data
 {
@@ -23,6 +24,9 @@ namespace StarSalvager.Parts.Data
             Probability,
             PartCapacity,
             Multiplier,
+            Speed,
+            Health,
+            
         }
 
         public static readonly string[] Names =
@@ -41,6 +45,8 @@ namespace StarSalvager.Parts.Data
             "Probability",
             "PartCapacity",
             "Multiplier",
+            "Speed",
+            "Health"
         };
 
         [ValueDropdown(nameof(Names)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -76,6 +82,8 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Cooldown:
                 case KEYS.Probability:
                 case KEYS.Multiplier:
+                case KEYS.Speed:
+                case KEYS.Health:
                     return float.Parse(value);
 
                 case KEYS.Projectile:
@@ -103,6 +111,11 @@ namespace StarSalvager.Parts.Data
             {
                 return ((key != null ? key.GetHashCode() : 0) * 397) ^ value.GetHashCode();
             }*/
+        }
+
+        public static string GetPropertyName(in KEYS key)
+        {
+            return Names[(int) key];
         }
 
 #if UNITY_EDITOR
@@ -142,6 +155,7 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Cooldown:
                 case KEYS.Probability:
                 case KEYS.Multiplier:
+                case KEYS.Health:
                     return $"{@out} should be of type float";
 
                 case KEYS.Projectile:

@@ -72,9 +72,7 @@ namespace StarSalvager.AI
 
         protected override void StateUpdate()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
-            m_mostRecentMovementDirection = Vector3.down;
+            ApplyFallMotion();
 
             switch (currentState)
             {

@@ -18,7 +18,7 @@ namespace StarSalvager.Factories
         public enum PART_OPTION_TYPE
         {
             BasicWeapon,
-            PowerWeapon,
+            //PowerWeapon,
             Any
         }
         
@@ -74,9 +74,9 @@ namespace StarSalvager.Factories
                 case PART_OPTION_TYPE.BasicWeapon:
                     partTypes = new List<PART_TYPE>(remotePartData.basicWeapons);
                     break;
-                case PART_OPTION_TYPE.PowerWeapon:
-                    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
-                    break;
+                //case PART_OPTION_TYPE.PowerWeapon:
+                //    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
+                //    break;
                 case PART_OPTION_TYPE.Any:
                     partTypes = new List<PART_TYPE>(remotePartData.anyParts);
                     break;
@@ -89,6 +89,9 @@ namespace StarSalvager.Factories
 
             if (partTypes.IsNullOrEmpty())
                 throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
+
+            if (partTypes.Count < options.Length)
+                throw new ArgumentOutOfRangeException(nameof(partTypes), partTypes, "Ran out of part options to present to the player");
 
             for (int i = 0; i < options.Length; i++)
             {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.AI;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
+using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -25,7 +27,9 @@ namespace StarSalvager.Values
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         
-        public static int CurrentRing = 0;
+        public static int CurrentRingIndex = 0;
+        public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
+
         public static int CurrentWave = 0;
         public static Action<ORIENTATION> OrientationChange;
         public static int GridSizeY;
@@ -40,7 +44,7 @@ namespace StarSalvager.Values
 
         
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
-        public static int Magnetism => m_gameSettings.magnetAmount;
+        //public static int Magnetism => m_gameSettings.magnetAmount;
         
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
@@ -55,7 +59,7 @@ namespace StarSalvager.Values
         public static float DashSpeed => m_gameSettings.dashSpeed;
         public static float DashCooldown => m_gameSettings.dashCooldown;
         
-        public static float BotStartingHealth => m_gameSettings.botHealth;
+        //public static float BotStartingHealth => m_gameSettings.botHealth;
         public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float DASTime => m_gameSettings.DASTime;

@@ -109,7 +109,7 @@ namespace StarSalvager.AI
                 case STATE.PURSUE:
                     break;
                 case STATE.ATTACK:
-                    m_mostRecentMovementDirection = Vector3.zero;
+                    MostRecentMovementDirection = Vector3.zero;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<DataLeechEnemy>(this);
@@ -141,8 +141,7 @@ namespace StarSalvager.AI
 
         private void IdleState()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
+            ApplyFallMotion();
         }
 
         private void PursueState()
@@ -151,7 +150,7 @@ namespace StarSalvager.AI
             currentPosition = Vector3.MoveTowards(currentPosition, _playerLocation,
                 m_enemyData.MovementSpeed * Time.deltaTime);
 
-            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
+            MostRecentMovementDirection = GetMovementDirection(currentPosition);
 
             transform.position = currentPosition;
         }

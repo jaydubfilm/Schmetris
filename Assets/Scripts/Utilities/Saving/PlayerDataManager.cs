@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Math;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
@@ -119,9 +120,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetGears()
+        public static int GetComponents()
         {
-            return PlayerRunData.Gears;
+            return PlayerRunData.Components;
         }
 
         public static List<IBlockData> GetBlockDatas()
@@ -146,52 +147,16 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.SetShipBlockData(blockData);
         }
 
-        public static void RemoveAllBits()
+        public static void RemoveAllNonParts()
         {
-            void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
-            {
-                var data = coordinate;
-                var index = blockDatas.FindIndex(x => x.Coordinate == data);
-
-                if (index < 0)
-                    throw new ArgumentOutOfRangeException(nameof(index), index,
-                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{Newtonsoft.Json.JsonConvert.SerializeObject(blockDatas)}");
-
-                blockDatas.RemoveAt(index);
-            }
-
             var droneBlockData = new List<IBlockData>(GetBlockDatas());
-            var originalBackup = new List<IBlockData>(droneBlockData);
 
-            var bitsToRemove = droneBlockData
-                .OfType<BitData>()
-                .OrderBy(x => x.Coordinate.magnitude)
-                .ToList();
-
-            for (int i = bitsToRemove.Count - 1; i >= 0; i--)
+            for (var i = droneBlockData.Count - 1; i >= 0 ; i--)
             {
-                var bitData = bitsToRemove[i];
-
-                var orphanData = new List<OrphanMoveBlockData>();
-                droneBlockData.CheckForOrphansFromProcessing(bitData, ref orphanData);
-
-                //droneBlockData.Remove(bitData);
-                RemoveBit(ref droneBlockData, bitData.Coordinate);
-                bitsToRemove.RemoveAt(i);
-                for (int ii = 0; ii < orphanData.Count; ii++)
-                {
-                    var data = orphanData[ii];
-                    var index = droneBlockData.FindIndex(x => x.Coordinate == data.startingCoordinates);
-
-                    droneBlockData[index].Coordinate = data.intendedCoordinates;
-                }
-            }
-
-
-            //Review all the bits (After having moved) to ensure there is no one floating
-            if (droneBlockData.OfType<BitData>().Any(bitData => !droneBlockData.HasPathToCore(bitData)))
-            {
-                throw new Exception($"No Path to Core found\nOriginal: {Newtonsoft.Json.JsonConvert.SerializeObject(originalBackup)}\nSolved: {Newtonsoft.Json.JsonConvert.SerializeObject(droneBlockData)}");
+                if(droneBlockData[i] is PartData)
+                    continue;
+                
+                droneBlockData.RemoveAt(i);
             }
 
             SetBlockData(droneBlockData);
@@ -367,6 +332,7 @@ namespace StarSalvager.Utilities.Saving
         //Patches
         //====================================================================================================================//
 
+        /*
         public static IReadOnlyList<PatchData> GetCurrentPatchesInStorage()
         {
             return PlayerRunData.GetCurrentPatchesInStorage();
@@ -391,7 +357,7 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.RemovePatchFromStorageAtIndex(index);
 
             OnValuesChanged?.Invoke();
-        }
+        }*/
 
         //====================================================================================================================//
         
@@ -407,19 +373,19 @@ namespace StarSalvager.Utilities.Saving
         //Account Data Functions
         //====================================================================================================================//
 
-        public static int GetExperience()
+        public static int GetXP()
         {
-            return PlayerAccountData.Experience;
+            return PlayerAccountData.XP;
         }
 
-        public static int GetExperienceThisRun()
+        public static int GetXPThisRun()
         {
-            return PlayerAccountData.Experience - PlayerAccountData.ExperienceAtRunBeginning;
+            return PlayerAccountData.XP - PlayerAccountData.XPAtRunBeginning;
         }
 
-        public static void ChangeExperience(int amount)
+        public static void ChangeXP(int amount)
         {
-            PlayerAccountData.ChangeExperience(amount);
+            PlayerAccountData.ChangeXP(amount);
 
             OnValuesChanged?.Invoke();
         }
@@ -686,6 +652,23 @@ namespace StarSalvager.Utilities.Saving
             return GameMetaData.SaveFiles;
         }
 
+        //Patches
+        //====================================================================================================================//
+        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
+        
+        public static void SetPatches(in IEnumerable<PatchData> patches)
+        {
+            PlayerRunData.SetPatches(patches);
+        }
+        public static void ClearAllPatches()
+        {
+            PlayerRunData.ClearAllPatches();
+        }
+        public static void RemovePatchAtIndex(in int index)
+        {
+            PlayerRunData.RemovePatchAtIndex(index);
+        }
+        
         //====================================================================================================================//
 
         public static void CustomOnApplicationQuit()
@@ -702,7 +685,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetAccountSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetExperience()}, this run: {GetExperienceThisRun()}\n";
+            summaryText += $"Total Gears: {GetXP()}, this run: {GetXPThisRun()}\n";
             summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
             summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
 
@@ -733,7 +716,7 @@ namespace StarSalvager.Utilities.Saving
         public static string GetRunSummaryString()
         {
             string summaryText = string.Empty;
-            summaryText += $"{GetAsTitle("Total Gears:")} {GetExperienceThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Gears:")} {GetXPThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
             summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
 

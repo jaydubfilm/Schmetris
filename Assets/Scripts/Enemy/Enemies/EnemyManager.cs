@@ -111,19 +111,20 @@ namespace StarSalvager
         {
             for (int i = m_enemies.Count - 1; i >= 0; i--)
             {
-                //Need to ensure that the fall through order has the base class at the bottom, and inheritors at the top
+                Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
+                /*//Need to ensure that the fall through order has the base class at the bottom, and inheritors at the top
                 switch (m_enemies[i])
                 {
-                    case EnemyAttachable _:
+                    case EnemyAttachable enemyAttachable:
                         Recycler.Recycle<EnemyAttachable>(m_enemies[i].gameObject);
                         break;
 
-                    case Enemy _:
+                    case Enemy enemy:
                         Recycler.Recycle<Enemy>(m_enemies[i].gameObject);
                         break;
                     default:
                         throw new ArgumentException();
-                }
+                }*/
 
                 m_enemies.RemoveAt(i);
             }
@@ -134,6 +135,7 @@ namespace StarSalvager
         private void HandleEnemyUpdate()
         {
             Vector3 playerBotPosition = LevelManager.Instance.BotInLevel.Position;
+            
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];
@@ -199,29 +201,7 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
         }
 
-        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
-        {
-            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
-        }
 
-        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
-        {
-            if (timeDelay > 0)
-                yield return new WaitForSeconds(timeDelay);
-
-            if (isPaused)
-                yield return new WaitUntil(() => !isPaused);
-
-            if (!LevelManager.Instance.gameObject.activeSelf)
-                yield break;
-
-            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
-
-            for (int i = 0; i < count; i++)
-            {
-                SpawnEnemy(enemyId);
-            }
-        }
 
         private void CheckSpawns()
         {
@@ -237,7 +217,7 @@ namespace StarSalvager
             }
         }
 
-        public void SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
+        public Enemy SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
         {
             Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
 
@@ -249,19 +229,13 @@ namespace StarSalvager
 
             newEnemy.transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot.transform;
 
-            if (spawnLocationOverride.HasValue)
-            {
-                newEnemy.transform.localPosition = spawnLocationOverride.Value;
-            }
-            else
-            {
-                newEnemy.transform.localPosition =
-                    LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
-            }
+            newEnemy.transform.localPosition = spawnLocationOverride ?? LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
 
             newEnemy.LateInit();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
+
+            return newEnemy;
         }
 
         public void AddEnemy(Enemy newEnemy)
@@ -292,6 +266,36 @@ namespace StarSalvager
         {
             LevelManager.Instance.ObstacleManager.AddTransformToRoot(enemy.transform);
         }
+
+        //====================================================================================================================//
+        
+        #region Console Spawn
+        
+        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
+        {
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+        }
+
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        {
+            if (timeDelay > 0)
+                yield return new WaitForSeconds(timeDelay);
+
+            if (isPaused)
+                yield return new WaitUntil(() => !isPaused);
+
+            if (!LevelManager.Instance.gameObject.activeSelf)
+                yield break;
+
+            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
+
+            for (int i = 0; i < count; i++)
+            {
+                SpawnEnemy(enemyId);
+            }
+        }
+        
+        #endregion //Console Spawn
 
         //============================================================================================================//
 

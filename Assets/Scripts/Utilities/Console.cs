@@ -319,7 +319,7 @@ namespace StarSalvager.Utilities
                         break;
                     }
 
-                    PlayerDataManager.ChangeExperience(intAmount);
+                    PlayerDataManager.ChangeXP(intAmount);
 
                     break;
                 case "liquid":

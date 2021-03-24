@@ -12,72 +12,169 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59c6b39881711a4296e83fe97d9a858, type: 3}
   m_Name: Wave_Remote_PB2_1_1
   m_EditorClassIdentifier: 
-  WaveSeed: 50
+  WaveSeed: 0
   BonusShapes: []
   StageRemoteData:
-  - testWidth: 50
-    m_stageDuration: 60
+  - m_stageDuration: 20
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData:
+    - m_enemyType: 1543e014-58ee-4141-ba9d-9e5998b5c71b
+      m_enemyCount: 16
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
+    m_stageObstacleData:
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: Singles
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20951016
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  - m_stageDuration: 20
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
     m_stageObstacleData:
-    - m_selectionType: 4
-      m_shapeName: 
-      m_category: 
-      bitType: 2
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: Singles
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2247666
+      m_density: 0.21550845
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
-    - m_selectionType: 4
-      m_shapeName: 
+    - m_selectionType: 0
+      m_shapeName: GreySingle
       m_category: 
-      bitType: 2
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2247666
-      m_spawnsPerScreenWidthPerMinute: 15
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 4
-      m_shapeName: 
-      m_category: 
-      bitType: 3
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.2247666
-      m_spawnsPerScreenWidthPerMinute: 15
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 4
-      m_shapeName: 
-      m_category: 
-      bitType: 4
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.2247666
-      m_spawnsPerScreenWidthPerMinute: 15
-      m_maxOut: 0
-      spawningMultiplier: 1
-    - m_selectionType: 4
-      m_shapeName: 
-      m_category: 
-      bitType: 5
-      m_rotation: 0
-      m_asteroidSize: 0
-      m_density: 0.2247666
+      m_density: 0.21550845
       m_spawnsPerScreenWidthPerMinute: 15
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 3
       m_shapeName: 
       m_category: 
-      bitType: 0
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.2640062
-      m_spawnsPerScreenWidthPerMinute: 25
+      m_density: 0.20088044
+      m_spawnsPerScreenWidthPerMinute: 12
       m_maxOut: 0
       spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  - m_stageDuration: 10
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData: []
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
+    m_stageObstacleData:
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: Singles
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20951016
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  - m_stageDuration: 10
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData:
+    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+      m_enemyCount: 2
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
+    m_stageObstacleData: []
+    m_stageColumnGroupObstacleData: []
+  - m_stageDuration: 10
+    m_stageBlendPeriod: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_stageEnemyData:
+    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+      m_enemyCount: 1
+    - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+      m_enemyCount: 1
+    m_stageType: 0
+    m_spawningObstacleMultiplier: 1
+    m_centerChannelWidth: 0.5
+    m_stageObstacleData:
+    - m_selectionType: 0
+      m_shapeName: RedSingle
+      m_category: Singles
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.24989758
+      m_spawnsPerScreenWidthPerMinute: 24
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 3
+      m_shapeName: 
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20951016
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    m_stageColumnGroupObstacleData: []
+  maxDrops: 0
+  RDSEndOfWaveLoot: []

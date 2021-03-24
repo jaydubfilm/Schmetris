@@ -25,8 +25,8 @@ namespace StarSalvager.AI
 
         protected TrailRenderer _trailRenderer;
 
-        private IHealth _vampirismCaster;
-        private float _vampirismValue;
+        /*private IHealth _vampirismCaster;
+        private float _vampirismValue;*/
 
         //============================================================================================================//
 
@@ -38,6 +38,15 @@ namespace StarSalvager.AI
 
             if (_hasRange)
                 CheckLifeTime();
+
+            if (ProjectileData.DestroyAtScreenBottom && Position.y <= 0)
+            {
+                Recycler.Recycle<Projectile>(this);
+
+                TryCreateDeathEffect();
+                
+                return;
+            }
 
 
             if (!CameraController.IsPointInCameraRect(transform.position))
@@ -86,8 +95,8 @@ namespace StarSalvager.AI
                 CreateTrailEffect(ProjectileData.Color);
             }
 
-            _vampirismCaster = vampirismCaster;
-            _vampirismValue = vampirismValue;
+            /*_vampirismCaster = vampirismCaster;
+            _vampirismValue = vampirismValue;*/
         }
 
         private void CheckLifeTime()
@@ -165,15 +174,18 @@ namespace StarSalvager.AI
 
             if (!ProjectileData.CanHitAsteroids && canBeHit is Asteroid)
                 return;
+            
 
             if (!canBeHit.TryHitAt(transform.position, _damageAmount)) 
                 return;
-            
-            SolveVampirism(_damageAmount);
+
+            TryCreateDeathEffect();
+
+            //SolveVampirism(_damageAmount);
             Recycler.Recycle<Projectile>(this);
         }
 
-        private void SolveVampirism(/*in ICanBeHit hitTarget, */in float damage)
+        /*private void SolveVampirism(/*in ICanBeHit hitTarget, #1#in float damage)
         {
             if (_vampirismCaster is null)
                 return;
@@ -198,7 +210,7 @@ namespace StarSalvager.AI
             var stolenHealth = _vampirismValue * damage;
 
             _vampirismCaster.ChangeHealth(stolenHealth);
-        }
+        }*/
 
         //====================================================================================================================//
 
@@ -214,6 +226,14 @@ namespace StarSalvager.AI
 
 
         //====================================================================================================================//
+
+        private void TryCreateDeathEffect()
+        {
+            if (!ProjectileData.EffectOnDeath)
+                return;
+            
+            CreateExplosionEffect(Position);
+        }
 
         private void CreateTrailEffect(Color color)
         {
@@ -241,6 +261,8 @@ namespace StarSalvager.AI
 
         public virtual void CustomRecycle(params object[] args)
         {
+            
+            
             transform.rotation = Quaternion.identity;
             _target = null;
             _hasRange = false;
@@ -248,7 +270,7 @@ namespace StarSalvager.AI
 
             renderer.flipX = renderer.flipY = false;
 
-            _vampirismCaster = null;
+            //_vampirismCaster = null;
 
             if (_trailRenderer)
                 Destroy(_trailRenderer);

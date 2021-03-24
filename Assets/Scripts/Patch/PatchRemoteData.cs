@@ -31,8 +31,10 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$name")]
         public List<Data> Levels;
-        
-        [FoldoutGroup("$name")] public PART_TYPE[] allowedParts;
+
+        [FoldoutGroup("$name")] public bool fitsAnyPart;
+        [FoldoutGroup("$name"), DisableIf("fitsAnyPart")] 
+        public PART_TYPE[] allowedParts;
 
         //====================================================================================================================//
         

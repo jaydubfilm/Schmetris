@@ -17,7 +17,7 @@ namespace Recycling
 			get
 			{
 				if (_transform == null)
-					_transform = Instance.gameObject.transform;
+					_transform = Instance?.gameObject.transform;
 
 				return _transform;
 			}

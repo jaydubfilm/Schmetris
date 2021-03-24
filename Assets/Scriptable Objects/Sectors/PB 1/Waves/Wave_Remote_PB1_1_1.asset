@@ -18,7 +18,9 @@ MonoBehaviour:
   - m_stageDuration: 45
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
+      m_enemyCount: 3
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -145,33 +147,33 @@ MonoBehaviour:
     m_stageColumnGroupObstacleData: []
   maxDrops: 3
   RDSEndOfWaveLoot:
-  - rdsData: 6
+  - showProbability: 0
+    lootType: 0
+    value: 0
     type: 0
-    amount: 0
-    level: 0
-    probability: 0
-    isGearRange: 0
-    gearValue: 100
-    gearDropRange: {x: 0, y: 0}
-    isUniqueSpawn: 0
-    isAlwaysSpawn: 0
-  - rdsData: 5
+    lvl: 0
+    weight: 0
+    rng: 0
+    count: 1
+    min: 0
+    max: 0
+  - showProbability: 0
+    lootType: 0
+    value: 0
     type: 0
-    amount: 0
-    level: 1
-    probability: 0
-    isGearRange: 0
-    gearValue: 0
-    gearDropRange: {x: 0, y: 0}
-    isUniqueSpawn: 1
-    isAlwaysSpawn: 1
-  - rdsData: 4
+    lvl: 1
+    weight: 0
+    rng: 0
+    count: 1
+    min: 0
+    max: 0
+  - showProbability: 0
+    lootType: 0
+    value: 0
     type: 0
-    amount: 0
-    level: 0
-    probability: 0
-    isGearRange: 0
-    gearValue: 0
-    gearDropRange: {x: 0, y: 0}
-    isUniqueSpawn: 1
-    isAlwaysSpawn: 1
+    lvl: 0
+    weight: 0
+    rng: 0
+    count: 1
+    min: 0
+    max: 0

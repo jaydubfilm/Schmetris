@@ -251,16 +251,7 @@ namespace StarSalvager
 
         public Vector2 GetLocalPositionOfSpawnPositionForEnemy(Enemy enemy)
         {
-            if (enemy.SpawnAboveScreen)
-            {
-                //Spawn above the screen
-                return GetVerticalSpawnPositionForEnemy();
-            }
-            else
-            {
-                //Spawn to the edges of the screen
-                return GetHorizontalSpawnPositionForEnemy();
-            }
+            return enemy.SpawnAboveScreen ? GetVerticalSpawnPositionForEnemy() : GetHorizontalSpawnPositionForEnemy();
         }
 
         //TODO: When the screen size and camera size and grid cell size systems all start working in a scaling fashion, this will need to adjust

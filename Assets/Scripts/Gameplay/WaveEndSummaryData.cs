@@ -11,7 +11,7 @@ public class WaveEndSummaryData
     public int NumBonusShapesMatched;
     public int NumTotalBonusShapesSpawned;
     
-    public int NumGearsGained;
+    public int XPGained;
     public int NumLevelsGained;
     
     
@@ -39,7 +39,7 @@ public class WaveEndSummaryData
         _numTotalEnemiesSpawned = 0;
         _dictEnemiesKilled = new Dictionary<string, int>();
         _dictTotalEnemiesSpawned = new Dictionary<string, int>();
-        NumGearsGained = 0;
+        XPGained = 0;
         NumLevelsGained = 0;
         _blueprintsUnlockedStrings = new List<string>();
         _resourcesConsumed = new Dictionary<BIT_TYPE, float>();
@@ -49,7 +49,7 @@ public class WaveEndSummaryData
     {
         var outStringList = new List<string>
         {
-            $"{GetAsTitle("Gears Gained")} {NumGearsGained}",
+            $"{GetAsTitle("Gears Gained")} {XPGained}",
         };
 
         if (NumTotalBonusShapesSpawned > 0)
@@ -100,9 +100,9 @@ public class WaveEndSummaryData
 
     //====================================================================================================================//
 
-    public void AddGearsGained(int gearsAmount)
+    public void AddXPGained(int xpAmount)
     {
-        NumGearsGained += gearsAmount;
+        XPGained += xpAmount;
     }
 
     public void AddEnemyKilled(string enemyName)
@@ -160,7 +160,7 @@ public class WaveEndSummaryData
         
         return new Dictionary<string, object>
         {
-            {AnalyticsManager.GearsGained, NumGearsGained },
+            {AnalyticsManager.GearsGained, XPGained },
             {AnalyticsManager.LevelsGained, NumLevelsGained },
             {AnalyticsManager.EnemiesKilled, _numEnemiesKilled },
             {AnalyticsManager.EnemiesKilledPercentage, enemiesKilledPercentage },

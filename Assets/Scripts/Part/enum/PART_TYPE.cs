@@ -2,7 +2,7 @@
 {
     public enum PART_TYPE 
     {
-        //CORE = 0,
+        CORE = 0,
         EMPTY = 1,
         REPAIR = 2,
         ARMOR = 3,
@@ -54,6 +54,7 @@
         HEAL = 39,
         REGEN = 40,
         BITSPLOSION = 41,
+        SABRE = 42
 
     } 
 }

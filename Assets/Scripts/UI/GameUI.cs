@@ -26,6 +26,73 @@ namespace StarSalvager.UI
     public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
         [Serializable]
+        public struct SliderPartUI
+        {
+            [Required, FoldoutGroup("$NAME")]
+            public Image backgroundImage;
+            [Required, FoldoutGroup("$NAME")]
+            public Image foregroundImage;
+
+            [Required, FoldoutGroup("$NAME")]
+            public Image triggerInputImage;
+            
+#if UNITY_EDITOR
+            [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
+            private string NAME;
+#endif
+            public void Reset()
+            {
+                SetFill(1f);
+            }
+
+            public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
+            {
+                backgroundImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.gameObject.SetActive(isTrigger);
+
+                if (!isTrigger)
+                    return;
+
+                triggerInputImage.sprite = triggerSprite;
+            }
+
+            public void SetSprite(in Sprite partSprite)
+            {
+                backgroundImage.sprite = partSprite;
+                foregroundImage.sprite = partSprite;
+            }
+
+            public void SetColor(in Color color)
+            {
+                foregroundImage.color = color;
+            }
+            
+            public void SetBackgroundColor(in Color color)
+            {
+                backgroundImage.color = color;
+            }
+
+            public void SetFill(float val)
+            {
+                foregroundImage.fillAmount = val;
+            }
+        }
+
+        [Serializable]
+        public struct InputIcon
+        {
+#if UNITY_EDITOR
+            [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
+            private string NAME;
+#endif
+            
+            [Required, FoldoutGroup("$NAME")]
+            public Sprite keyboardSprite;
+            [Required, FoldoutGroup("$NAME")]
+            public Sprite controllerSprite;
+        }
+        
+        /*[Serializable, Obsolete]
         public struct TriggerPartUI
         {
             [Required, FoldoutGroup("$NAME")]
@@ -80,7 +147,7 @@ namespace StarSalvager.UI
             }
         }
 
-        [Serializable]
+        [Serializable, Obsolete]
         public struct TriggerPartIcon
         {
             #if UNITY_EDITOR
@@ -103,7 +170,7 @@ namespace StarSalvager.UI
 
                 return color;
             }
-        }
+        }*/
 
         [Serializable]
         public struct WindowSpriteSet
@@ -145,8 +212,9 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Slider gearsSlider;
+        [FormerlySerializedAs("patchPointsText")] 
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
-        private TMP_Text patchPointsText;
+        private TMP_Text componentsText;
 
         //Top Right Window
         //====================================================================================================================//
@@ -172,13 +240,19 @@ namespace StarSalvager.UI
         //Right Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("Trigger Parts")]
+        /*[SerializeField, Required, FoldoutGroup("Trigger Parts")]
         [FormerlySerializedAs("SmartWeaponIcons")]
         private TriggerPartIcon[] triggerPartIcons;
 
          [SerializeField, Required, FoldoutGroup("Trigger Parts")]
          [FormerlySerializedAs("SmartWeaponsUI")]
-        private TriggerPartUI[] triggerPartUI;
+        private TriggerPartUI[] triggerPartUI;*/
+
+        [SerializeField, Required, FoldoutGroup("Trigger Parts")]
+        private SliderPartUI[] SliderPartUis;
+
+        [SerializeField, Required, FoldoutGroup("Trigger Parts")]
+        private InputIcon[] inputIcons;
 
 
 
@@ -367,7 +441,7 @@ namespace StarSalvager.UI
         {
             SetupAmmoBars();
 
-            InitSmartWeaponUI();
+            //InitSmartWeaponUI();
             ResetIcons();
 
 
@@ -387,7 +461,7 @@ namespace StarSalvager.UI
             FadeBackground(false, true);
         }
 
-        private void InitSmartWeaponUI()
+        /*private void InitSmartWeaponUI()
         {
 
             for (var i = 0; i < triggerPartUI.Length; i++)
@@ -405,7 +479,7 @@ namespace StarSalvager.UI
                 });
 
             }
-        }
+        }*/
 
 
         //============================================================================================================//
@@ -413,17 +487,17 @@ namespace StarSalvager.UI
         readonly BIT_TYPE[] _bitTypes = {
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
+            BIT_TYPE.GREEN,
             BIT_TYPE.GREY,
             BIT_TYPE.BLUE,
-            BIT_TYPE.GREEN
         };
 
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
 
-            SetPlayerXP(0);
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            SetPlayerComponents(PlayerDataManager.GetComponents());
 
             UpdateAmmoBars();
         }
@@ -505,7 +579,9 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            //SetPlayerXP(PlayerDataManager.get);
 
             UpdateAmmoBars();
         }
@@ -519,18 +595,18 @@ namespace StarSalvager.UI
                 ShowAbortWindow(false);
         }
 
-        public void SetPlayerXP(int xp)
+        public void SetPlayerXP(in int xp)
         {
             gearsText.text = $"{xp} XP";
         }
 
-        public void SetPlayerComponents(int points)
+        public void SetPlayerComponents(in int points)
         {
-            patchPointsText.text = $"{points}";
+            componentsText.text = $"{points}";
         }
 
 
-        public void SetLevelProgressSlider(float value)
+        public void SetLevelProgressSlider(in float value)
         {
             progressSlider.value = value;
         }
@@ -579,51 +655,69 @@ namespace StarSalvager.UI
             _flashingBorder = false;
         }
 
-        public void SetIconImage(int index, PART_TYPE partType)
+        public void SetIconImage(int index, in PART_TYPE partType)
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Sprite GetInputSprite(in BIT_TYPE bitType)
+            {
+                int bitIndex;
+                switch (bitType)
+                {
+                    case BIT_TYPE.RED:
+                        bitIndex = 0;
+                        break;
+                    case BIT_TYPE.YELLOW:
+                        bitIndex = 1;
+                        break;
+                    case BIT_TYPE.GREY:
+                        bitIndex = 2;
+                        break;
+                    case BIT_TYPE.BLUE:
+                        bitIndex = 3;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
+                }
+                
+                return inputIcons[bitIndex].keyboardSprite;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (index < 0) return;
 
-            var triggerPartIcon = triggerPartIcons.FirstOrDefault(x => x.Type == partType);
-
-            if (triggerPartIcon.UISprite != null)
+            if (partType == PART_TYPE.EMPTY)
             {
-                var color = triggerPartIcon.Color;
-                triggerPartUI[index].buttonImage.color = color;
-
-                triggerPartUI[index].iconImage.color = color;
-                triggerPartUI[index].iconImage.sprite = triggerPartIcon.UISprite;
-
+                SliderPartUis[index].SetIsTrigger(false, null);
+                SliderPartUis[index].SetSprite(null);
+                SliderPartUis[index].SetColor(Color.clear);
                 return;
             }
 
-            triggerPartUI[index].buttonImage.color = Color.white;
-            triggerPartUI[index].iconImage.sprite = null;
-        }
-        public void ShowIcon(int index, bool state)
-        {
-            if (index < 0) return;
-            triggerPartUI[index].SetActive(state);
-        }
+            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
 
-        public void SetInteractable(int index, bool state)
-        {
-            if (index < 0) return;
-            triggerPartUI[index].SetInteractable(state);
+            var isTrigger = partRemoteData.isManual;
+            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+
+            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
+            SliderPartUis[index].SetSprite(sprite);
+            SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
         }
 
         public void SetFill(int index, float fillValue)
         {
             if (index < 0) return;
-            triggerPartUI[index].SetFill(fillValue);
+            SliderPartUis[index].SetFill(fillValue);
         }
 
         public void ResetIcons()
         {
-            for (var i = 0; i < triggerPartUI.Length; i++)
+            for (var i = 0; i < SliderPartUis.Length; i++)
             {
                 //FIXME Need to determine if we're still using the number text here
                 /*SmartWeaponsUI[i].keyText.text = $"{i + 1}";*/
-                triggerPartUI[i].Reset();
+                SliderPartUis[i].Reset();
             }
         }
 

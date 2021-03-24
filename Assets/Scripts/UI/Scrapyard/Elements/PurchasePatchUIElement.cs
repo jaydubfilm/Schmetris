@@ -9,9 +9,9 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class PurchasePatchUIElement : UIElement<Purchase_PatchData>
+    public class PurchasePatchUIElement : ButtonReturnUIElement<Purchase_PatchData, Purchase_PatchData>
     {
-        [SerializeField] private Button purchaseButton;
+        //[SerializeField] private Button purchaseButton;
 
         [SerializeField] private TMP_Text titleText;
         
@@ -26,25 +26,28 @@ namespace StarSalvager.UI.Scrapyard
             PlayerDataManager.OnValuesChanged -= CheckCanAfford;
         }
 
-        public override void Init(Purchase_PatchData data)
+        public override void Init(Purchase_PatchData data, Action<Purchase_PatchData> onButtonPressed)
         {
             this.data = data;
 
             var patchName = FactoryManager.Instance.PatchRemoteData.GetRemoteData(data.PatchData.Type).name;
             titleText.text = $"{patchName} {data.PatchData.Level + 1}\nCost: {data.cost}";
 
-            purchaseButton.onClick.RemoveAllListeners();
-            purchaseButton.onClick.AddListener(OnPurchasePressed);
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() =>
+            {
+                onButtonPressed?.Invoke(this.data);
+            });
 
             CheckCanAfford();
         }
 
         private void CheckCanAfford()
         {
-            purchaseButton.interactable = PlayerDataManager.GetGears() >= data.cost;
+            button.interactable = PlayerDataManager.GetComponents() >= data.cost;
         }
         
-        private void OnPurchasePressed()
+        /*private void OnPurchasePressed()
         {
             var currentComponents = PlayerDataManager.GetGears();
             if (currentComponents < data.cost)
@@ -55,19 +58,19 @@ namespace StarSalvager.UI.Scrapyard
             PlayerDataManager.SetGears(currentComponents);
             PlayerDataManager.AddPatchToStorage(data.PatchData);
 
-        }
+        }*/
     }
 
     public struct Purchase_PatchData : IEquatable<Purchase_PatchData>
     {
+        public int index;
         public int cost;
         public PatchData PatchData;
 
         #region IEquatable
-
         public bool Equals(Purchase_PatchData other)
         {
-            return cost == other.cost && PatchData.Equals(other.PatchData);
+            return index == other.index && cost == other.cost && PatchData.Equals(other.PatchData);
         }
 
         public override bool Equals(object obj)
@@ -79,11 +82,15 @@ namespace StarSalvager.UI.Scrapyard
         {
             unchecked
             {
-                return (cost * 397) ^ PatchData.GetHashCode();
+                var hashCode = index;
+                hashCode = (hashCode * 397) ^ cost;
+                hashCode = (hashCode * 397) ^ PatchData.GetHashCode();
+                return hashCode;
             }
         }
-
         #endregion //IEquatable
+
+
     }
 
     [Serializable]

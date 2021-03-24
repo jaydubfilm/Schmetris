@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 
 namespace StarSalvager.UI.Scrapyard
 {
-    public class PatchUIElement : UIElement<Patch_Storage>,IBeginDragHandler, IDragHandler, IEndDragHandler
+    [Obsolete]
+    public class PatchUIElement : UIElement<Patch_Storage>/*,IBeginDragHandler, IDragHandler, IEndDragHandler*/
     {
         [SerializeField] private TMP_Text titleText;
 
@@ -54,7 +55,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        public void OnBeginDrag(PointerEventData eventData)
+        /*public void OnBeginDrag(PointerEventData eventData)
         {
             RectTransformUtility.ScreenPointToWorldPointInRectangle(_canvas.transform as RectTransform,
                 Input.mousePosition,
@@ -84,7 +85,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             //throw new NotImplementedException();
             droneDesigner.EndDragPatch();
-        }
+        }*/
 
         //====================================================================================================================//
         

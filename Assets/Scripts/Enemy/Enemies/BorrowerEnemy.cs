@@ -111,7 +111,18 @@ namespace StarSalvager.AI
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
-            return playerLocation - (Vector2)transform.position;
+            Vector2 direction;
+            switch (currentState)
+            {
+                case STATE.FLEE:
+                    direction = (Vector2) transform.position - playerLocation;
+                    break;
+                default:
+                    direction = playerLocation - (Vector2)transform.position;
+                    break;
+            }
+
+            return direction.normalized;
         }
 
         public Bit FindClosestBitOnBot()
@@ -224,8 +235,7 @@ namespace StarSalvager.AI
         
         private void IdleState()
         {
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-            transform.position -= fallAmount;
+            ApplyFallMotion();
         }
 
         private void PursueState()
@@ -235,7 +245,10 @@ namespace StarSalvager.AI
             {
                 var test = FindClosestBitOnBot();
                 if (test == null)
+                {
+                    ApplyFleeMotion();
                     return;
+                }
                 
                 EnemyManager.SetBorrowerTarget(this, test);
                 _attachTarget = test;
@@ -251,7 +264,7 @@ namespace StarSalvager.AI
             var currentPosition = transform.position;
             var targetPosition = _attachTarget.transform.position;
 
-            m_mostRecentMovementDirection = GetMovementDirection(targetPosition);
+            MostRecentMovementDirection = GetMovementDirection(targetPosition);
 
             currentPosition = Vector3.MoveTowards(currentPosition, targetPosition,
                 m_enemyData.MovementSpeed * Time.deltaTime);
@@ -262,6 +275,13 @@ namespace StarSalvager.AI
 
         private void AnticipationState()
         {
+
+            if (_attachTarget == null)
+            {
+                SetState(STATE.PURSUE);
+                return;
+            }
+            
             //After wait time, move to attack state
             //If the Bit fell off the Bot, then we can attempt to steal it
             if (_anticipationTime > 0 && _attachTarget.Attached)
@@ -309,26 +329,8 @@ namespace StarSalvager.AI
 
         private void FleeState()
         {
-            bool IsOffScreen()
-            {
-                var dif = 3 * Constants.gridCellSize;
-                var screenRect = CameraController.VisibleCameraRect;
-                var pos = _carryingBit.transform.position;
-
-                if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
-                    return true;
-                
-                if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
-                    return true;
-                    
-                
-                return false;
-            }
-
-            
-            
             //If off screen, destroy bit, then set to pursue state
-            if (IsOffScreen())
+            if (IsOffScreen(_carryingBit.transform.position))
             {
                 Recycler.Recycle<Bit>(_carryingBit);
                 _carryingBit = null;
@@ -345,7 +347,7 @@ namespace StarSalvager.AI
             
             currentPosition += direction  * (carrySpeed * Time.deltaTime);
 
-            m_mostRecentMovementDirection = GetMovementDirection(currentPosition);
+            MostRecentMovementDirection = GetMovementDirection(currentPosition);
 
             transform.position = currentPosition;
             
@@ -353,7 +355,30 @@ namespace StarSalvager.AI
         }
 
         #endregion //States
+
+        protected override void ApplyFleeMotion()
+        {
+            if (IsOffScreen(transform.position))
+                return;
+            
+            base.ApplyFleeMotion();
+        }
+
         
+        private bool IsOffScreen(in Vector2 pos)
+        {
+            var dif = 3 * Constants.gridCellSize;
+            var screenRect = CameraController.VisibleCameraRect;
+
+            if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
+                return true;
+                
+            if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
+                return true;
+                    
+                
+            return false;
+        }
 
         //============================================================================================================//
         

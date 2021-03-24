@@ -8,10 +8,10 @@ namespace StarSalvager.Utilities.Extensions
 {
     public static class PatchIEnumerableExtensions
     {
-        public static int GetPatchUpgradersSum(this IEnumerable<PatchData> patches)
+        /*public static int GetPatchUpgradersSum(this IEnumerable<PatchData> patches)
         {
             return patches.Where(x => x.Type == (int) PATCH_TYPE.GRADE).Sum(x => x.Level + 1);
-        }
+        }*/
         
         public static float GetPatchMultiplier(this IEnumerable<PatchData> patches, in PATCH_TYPE patchType)
         {
@@ -22,12 +22,12 @@ namespace StarSalvager.Utilities.Extensions
             if (patchesOfType.Count == 0)
                 return 1;
 
-            var remoteData = FactoryManager.Instance.PatchRemoteData;
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             
             var total = 0f;
             foreach (var patchData in patchesOfType)
             {
-                var data = remoteData.GetRemoteData(patchType)
+                var data = patchRemoteData.GetRemoteData(patchType)
                     .GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
 
                 total += data;
@@ -35,20 +35,18 @@ namespace StarSalvager.Utilities.Extensions
 
             switch (patchType)
             {
-                case PATCH_TYPE.DAMAGE:
+                case PATCH_TYPE.POWER:
                 case PATCH_TYPE.RANGE:
                     return 1 + total;
+                case PATCH_TYPE.REINFORCED:
+                case PATCH_TYPE.EFFICIENCY:
                 case PATCH_TYPE.FIRE_RATE:
                     return  1 - total;
                 
-                case PATCH_TYPE.EFFICIENCY:
-                case PATCH_TYPE.DURATION:
-                case PATCH_TYPE.CRITICAL:
-                case PATCH_TYPE.ELECTRIC:
-                case PATCH_TYPE.CORROSIVE:
-                case PATCH_TYPE.REINFORCED:
-                case PATCH_TYPE.SPECIALIST:
+                case PATCH_TYPE.AOE:
+                case PATCH_TYPE.BURN:
                     throw new NotImplementedException($"{patchType} not yet implemented");
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(patchType), patchType, null);
             }

@@ -49,6 +49,9 @@ namespace StarSalvager
 
         private Vector3 GetTowardsPlayer()
         {
+            if (IsRecycled)
+                return Vector3.zero;
+            
             var playerLocation = LevelManager.Instance.BotInLevel.transform.position;
             var direction = (Vector2)(playerLocation - transform.position).normalized;
 

@@ -7,6 +7,8 @@ namespace StarSalvager.UI
 {
     public abstract class UIElement<T> : MonoBehaviour, IRecycled, ICustomRecycle where T: IEquatable<T>
     {
+        protected UIElementContentScrollViewBase contentScrollView;
+        
         [ShowInInspector, ReadOnly]
         public T data { get; protected set; }
 
@@ -28,6 +30,11 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         public abstract void Init(T data);
+
+        public void SetContainer(in UIElementContentScrollViewBase container)
+        {
+            contentScrollView = container;
+        }
 
         //============================================================================================================//
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,6 +17,27 @@ namespace StarSalvager.Utilities.JsonDataTypes
         public int Type { get; set; }
 
         public PatchData[] Patches { get; set; }
+
+        public PartData(in PartData partData)
+        {
+            Coordinate = partData.Coordinate;
+            Type = partData.Type;
+            Patches = new List<PatchData>(partData.Patches).ToArray();
+        }
+        
+        public void AddPatch(in PatchData patchData)
+        {
+            for (int i = 0; i < Patches.Length; i++)
+            {
+                if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
+                    continue;
+
+                Patches[i] = patchData;
+                return;
+            }
+
+            throw new Exception("No available space for new patch");
+        }
 
         #region IEquatable
 

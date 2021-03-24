@@ -23,6 +23,7 @@ using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
+using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 
 namespace StarSalvager
@@ -47,7 +48,7 @@ namespace StarSalvager
         //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
 
         public WaveRemoteDataScriptableObject CurrentWaveData =>
-            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRing].GetRemoteData(Globals.CurrentWave);
+            FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRingIndex].GetRemoteData(Globals.CurrentWave);
 
         [SerializeField, Required]
         private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
@@ -489,8 +490,9 @@ namespace StarSalvager
             
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
-            
-            var startingHealth = Globals.BotStartingHealth;
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
 
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);

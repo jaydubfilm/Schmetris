@@ -21,6 +21,8 @@ namespace StarSalvager.AI
     [RequireComponent(typeof(StateAnimator))]
     public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
+        
+        
         protected static EnemyManager EnemyManager
         {
             get
@@ -38,7 +40,9 @@ namespace StarSalvager.AI
 
         public abstract bool SpawnAboveScreen { get; }
 
-        public float EnemyMovementSpeed => m_enemyData.MovementSpeed;
+        public float EnemyMovementSpeed => _enemyMovementSpeed;
+        protected float _enemyMovementSpeed { get; set; }
+
         public string EnemyName => m_enemyData.Name;
 
         //ICanBeSeen Properties
@@ -66,8 +70,7 @@ namespace StarSalvager.AI
         private float horizontalFarRightX;
         private float verticalLowestAllowed;*/
 
-        [NonSerialized]
-        public Vector3 m_mostRecentMovementDirection = Vector3.zero;
+        public Vector3 MostRecentMovementDirection { get; protected set; }
 
         public bool Disabled { get; protected set; }
 
@@ -101,6 +104,9 @@ namespace StarSalvager.AI
         public virtual void Init(EnemyData enemyData)
         {
             m_enemyData = enemyData;
+            _enemyMovementSpeed = enemyData.MovementSpeed;
+
+            ((BoxCollider2D) collider).size = m_enemyData.Dimensions;
             
             SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
             
@@ -116,6 +122,32 @@ namespace StarSalvager.AI
         public void SetFrozen(float time)
         {
             FreezeTime = time;
+        }
+
+        protected void ApplyFallMotion()
+        {
+            Vector3 fallAmount = Vector3.down * (Constants.gridCellSize * Time.deltaTime / Globals.TimeForAsteroidToFallOneSquare);
+            transform.position += fallAmount;
+            
+            
+            MostRecentMovementDirection = Vector3.down;
+            _enemyMovementSpeed = Constants.gridCellSize / Globals.TimeForAsteroidToFallOneSquare;
+
+            if (transform.position.y < -10)
+                SetState(STATE.DEATH);
+        }
+        
+        protected virtual void ApplyFleeMotion()
+        {
+            var currentPosition = transform.position;
+            var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
+
+            if(m_enemyData.MovementSpeed > 0)
+                _enemyMovementSpeed = m_enemyData.MovementSpeed;
+                
+                
+            currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
+            transform.position = currentPosition;
         }
 
         //States
@@ -211,20 +243,17 @@ namespace StarSalvager.AI
             
             if (Disabled)
             {
-                Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare);
-                transform.position -= fallAmount;
-                
+                ApplyFallMotion();
                 return false;
             }
 
             if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
             {
-                var currentPosition = transform.position;
-                var dir = (LevelManager.Instance.BotInLevel.transform.position - currentPosition).normalized;
+                //FIXME Might be better to broadcast to every enemy that the level has concluded
+                if(this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
+                    enemyAttachable.SetAttached(false);
                 
-                
-                currentPosition -= dir * EnemyMovementSpeed;
-                transform.position = currentPosition;
+                ApplyFleeMotion();
                 
                 return false;
             }
@@ -379,7 +408,7 @@ namespace StarSalvager.AI
         {
             CleanStateData();
             
-            m_mostRecentMovementDirection = Vector3.zero;
+            MostRecentMovementDirection = Vector3.zero;
 
             FreezeTime = 0f;
             Disabled = false;
@@ -388,8 +417,6 @@ namespace StarSalvager.AI
         }
 
         public abstract Type GetOverrideType();
-
-
 
         //============================================================================================================//
 

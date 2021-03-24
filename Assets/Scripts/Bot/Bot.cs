@@ -63,11 +63,6 @@ namespace StarSalvager
         public Action OnFullMagnet;
         public Action OnBitShift;
 
-        [BoxGroup("Smoke Particles")]
-        public ParticleSystem TEST_ParticleSystem;
-        [BoxGroup("Smoke Particles")]
-        public ParticleSystemForceField TEST_ParticleSystemForceField;
-
         //============================================================================================================//
 
         public bool IsRecycled { get; set; }
@@ -221,51 +216,6 @@ namespace StarSalvager
             Destroy("Core Destroyed");
         }
 
-        //Particle Tests
-        //====================================================================================================================//
-
-        private void SetParticles()
-        {
-            if (Destroyed)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-
-            //This should be the core
-            if (!(AttachedBlocks[0] is IHealth iHealth))
-                return;
-
-            var health = iHealth.CurrentHealth / iHealth.StartingHealth;
-
-            if(health < 0.25f && !TEST_ParticleSystem.isPlaying)
-                TEST_ParticleSystem.Play();
-            else if (health >= 1f)
-            {
-                TEST_ParticleSystem.Stop();
-                return;
-            }
-
-
-            //FIXME This is only here as a proof of concept
-            switch (Globals.MovingDirection)
-            {
-                case DIRECTION.NULL:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(0f);
-                    break;
-                case DIRECTION.LEFT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(10f);
-                    break;
-                case DIRECTION.RIGHT:
-                    TEST_ParticleSystemForceField.directionX = new ParticleSystem.MinMaxCurve(-10f);
-                    break;
-            }
-
-
-            //var emission = TEST_ParticleSystem.sizeOverLifetime;
-            //emission.sizeMultiplier = 1f - healthValue;
-        }
-
         //============================================================================================================//
 
         #region Unity Functions
@@ -281,9 +231,6 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
-
-
-            SetParticles();
 
             //See if the bot has completed the current wave
             //FIXME I Don't like accessing the external value here. I should consider other ways of checking this value
@@ -354,7 +301,10 @@ namespace StarSalvager
 
         public void CoreShuffle(DIRECTION direction)
         {
-            var start = AttachedBlocks.GetAttachableInDirection(AttachedBlocks[0], direction.Reflected());
+            //FIXME Might want to store this at the start, so I don't have to keep searching for it
+            var corePart = AttachedBlocks.OfType<Part>().FirstOrDefault(x => x.Type == PART_TYPE.CORE);
+            
+            var start = AttachedBlocks.GetAttachableInDirection(corePart, direction.Reflected());
 
             //Checks to see if the shuffle will cause a disconnect, and prevents it
             if (Globals.ShuffleCanDisconnect == false && start is ISaveable saveable && DoesShiftCauseDisconnect(direction, saveable.ToBlockData()))
@@ -544,7 +494,7 @@ namespace StarSalvager
 
             //Add core component
             //var patchSockets = partFactory.GetRemoteData(PART_TYPE.CORE).PatchSockets;
-            /*var core = partFactory.CreateObject<Part>(
+            var core = partFactory.CreateObject<Part>(
                 new PartData
                 {
                     Type = (int)PART_TYPE.EMPTY,
@@ -552,11 +502,14 @@ namespace StarSalvager
                     //Patches = new PatchData[patchSockets]
                 });
 
-            AttachNewBlock(Vector2Int.zero, core);*/
+            AttachNewBlock(Vector2Int.zero, core);
 
             List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
+                if (botLayout[i] == Vector2Int.zero)
+                    continue;
+                
                 if (AttachedBlocks != null && AttachedBlocks.Any(b => b.Coordinate == botLayout[i]))
                 {
                     continue;
@@ -567,7 +520,6 @@ namespace StarSalvager
                     {
                         Type = (int)PART_TYPE.EMPTY,
                         Coordinate = botLayout[i],
-                        //Patches = new PatchData[patchSockets]
                     });
                 emptyPart.gameObject.name = $"{PART_TYPE.EMPTY}_{botLayout[i]}";
 
@@ -736,9 +688,6 @@ namespace StarSalvager
 
             rotation = Mathf.MoveTowardsAngle(rotation, targetRotation, rotationAmount * Time.deltaTime);
             transform.rotation = Quaternion.Euler(0,0,rotation);
-
-            //FIXME Remove this when ready
-            TEST_ParticleSystem.transform.rotation = Quaternion.identity;
 
             //Here we check how close to the final rotation we are.
             var remainingDegrees = Mathf.Abs(Mathf.DeltaAngle(rotation, targetRotation));
@@ -1036,7 +985,7 @@ namespace StarSalvager
             return true;
         }
 
-        public IAttachable GetClosestAttachable(Vector2 location, float maxDistance = 999f)
+        public IAttachable GetClosestAttachable(Vector2 worldPosition, float maxDistance = 999f)
         {
             IAttachable selected = null;
 
@@ -1048,7 +997,7 @@ namespace StarSalvager
                 if (attached.CountAsConnectedToCore == false)
                     continue;
 
-                var dist = Vector2.Distance(attached.transform.position, location);
+                var dist = Vector2.Distance(attached.transform.position, worldPosition);
 
                 if (dist > maxDistance)
                     continue;
@@ -1342,6 +1291,12 @@ namespace StarSalvager
             return true;
         }
 
+        public void TryHitAt(in float damage)
+        {
+            var part = AttachedBlocks.FirstOrDefault(x => x is Part);
+            TryHitAt(part, damage);
+        }
+        
         public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
             SessionDataProcessor.Instance.ReceivedDamage(damage);
@@ -2565,6 +2520,7 @@ _isShifting = true;
                     case PartData _:
                         currentCoordinate += dir;
                         continue;
+                    case JunkBitData _:
                     case BitData _:
                     {
                         IBlockData nextCheck;
@@ -2577,7 +2533,7 @@ _isShifting = true;
                             //TODO I think that I can combine both the While Loop and the Linq expression
                             nextCheck = inLine.FirstOrDefault(x => x.Coordinate == coordinate);
 
-                            if (nextCheck is null || nextCheck is BitData) 
+                            if (nextCheck is null || nextCheck is BitData || nextCheck is JunkBitData) 
                                 break;
 
 
@@ -2701,7 +2657,7 @@ _isShifting = true;
 
 
                 //Remove the Shape
-                PlayerDataManager.ChangeExperience(gears);
+                PlayerDataManager.ChangeXP(gears);
                 obstacleManager.MatchBonusShape(shape);
 
 
@@ -3138,6 +3094,9 @@ _isShifting = true;
         {
             void AddBitAmmo(in BIT_TYPE bitType, in int amount)
             {
+                if(amount == 0)
+                    return;
+
                 PlayerDataManager.GetResource(bitType).AddAmmo(amount);
             }
 
@@ -3231,22 +3190,32 @@ _isShifting = true;
                 {
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points
-                    PlayerDataManager.ChangeExperience(gearsToAdd);
+                    PlayerDataManager.ChangeXP(gearsToAdd);
 
                     _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
 
 
                     var bit = closestToCore as Bit;
-                    if (bit != null && bit.level == 1)
+
+                    if (bit != null)
                     {
-                        AddBitAmmo(bit.Type, 10);
-                        CheckForCombosAround(AttachedBlocks.OfType<Bit>());
+                        switch (bit.level)
+                        {
+                            case 1:
+                                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
+                                break;
+                            case 2:
+                                DestroyAttachable(bit);
+                                break;
+                        }
+
+                        var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                            .FirstOrDefault(x => x.level == bit.level)
+                            .ammoEarned;
+                        
+                        AddBitAmmo(bit.Type, ammoEarned);
                     }
-                    else if (bit != null && bit.level == 2)
-                    {
-                        AddBitAmmo(bit.Type, 50);
-                        DestroyAttachable(bit);
-                    }
+
 
                     CheckForBonusShapeMatches();
 

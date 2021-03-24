@@ -31,6 +31,8 @@ namespace StarSalvager.UI.Scrapyard
         //====================================================================================================================//
 
         [SerializeField] private PurchasePatchUIElementScrollView purchasePatchUIElementScrollView;
+        
+        
 
         //============================================================================================================//
 
@@ -55,8 +57,21 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //====================================================================================================================//
-        
 
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private GameObject partUpgradeWindow;
+        
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private TMP_Text upgradeWindowHeaderText;
+
+        [SerializeField, FoldoutGroup("Part Upgrade UI"), Required]
+        private Button closePartUpgradeWindowButton;
+        
+        [SerializeField, FoldoutGroup("Part Upgrade UI")] 
+        private UpgradeUIElementScrollView partUpgradeUIElementScrollView;
+
+        //====================================================================================================================//
+        
         [SerializeField, FoldoutGroup("Part Details Window")]
         private RectTransform partDetailsContainerRectTransform;
 
@@ -65,9 +80,11 @@ namespace StarSalvager.UI.Scrapyard
 
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
-
         [SerializeField, FoldoutGroup("Part Details Window")]
-        private TMP_Text otherPartDetailsText;
+        private TMP_Text partDescriptionText;
+
+        //[SerializeField, FoldoutGroup("Part Details Window")]
+        //private TMP_Text otherPartDetailsText;
 
         [FormerlySerializedAs("PatchUis")] [SerializeField, FoldoutGroup("Part Details Window")]
         private PatchUI[] patchUis;
@@ -75,12 +92,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partDetailsText;
 
-        [FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
-        private GradeUI[] gradeUis;
-
+        /*[FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
+        private GradeUI[] gradeUis;*/
 
         //====================================================================================================================//
-
 
         [SerializeField, Required, BoxGroup("Repairs Buttons")]
         private Button repairButton;
@@ -106,6 +121,8 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public bool HoveringStoragePartUIElement { get; private set; }
+
         private DroneDesigner DroneDesigner
         {
             get
@@ -120,6 +137,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required] private DroneDesigner _droneDesigner;
 
         private ScrapyardLayout currentSelected;
+
+        public bool UpgradeWindowOpen => partUpgradeWindow.activeInHierarchy;
 
         public bool IsPopupActive => Alert.Displayed;
         private bool _currentlyOverwriting;
@@ -142,10 +161,8 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-
-            InitPurchasePatches();
-
-            ShowPartDetails(false, null);
+            HidePartDetails();
+            SetUpgradeWindowActive(false);
         }
 
         private void OnEnable()
@@ -155,13 +172,17 @@ namespace StarSalvager.UI.Scrapyard
 
             UpdateHealthBar();
             CheckCanRepair();
+            
+            InitPurchasePatches();
         }
 
         private void OnDisable()
         {
             Camera.onPostRender -= _droneDesigner.DrawGL;
             PlayerDataManager.OnValuesChanged -= CheckCanRepair;
-            _droneDesigner.RecycleDrone();
+            
+            if(_droneDesigner)
+                _droneDesigner.RecycleDrone();
 
             Globals.ScaleCamera(Globals.CameraScaleSize);
         }
@@ -186,6 +207,11 @@ namespace StarSalvager.UI.Scrapyard
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
             });
+            
+            closePartUpgradeWindowButton.onClick.AddListener(() =>
+            {
+                SetUpgradeWindowActive(false);
+            });
 
             //--------------------------------------------------------------------------------------------------------//
 
@@ -193,8 +219,12 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitHealthBar()
         {
+            var startingHealth = FactoryManager.Instance.PartsRemoteData
+                .GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
+            
             healthSliderText.Init(true);
-            healthSliderText.SetBounds(0f, Globals.BotStartingHealth);
+            healthSliderText.SetBounds(0f, startingHealth);
         }
 
         #endregion //Init
@@ -203,61 +233,182 @@ namespace StarSalvager.UI.Scrapyard
 
         #region Scroll Views
 
-        private void InitPurchasePatches()
+        public void InitPurchasePatches()
         {
-            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            purchasePatchUIElementScrollView.ClearElements();
             
-            var patches = new[]
-            {
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.RANGE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.RANGE
-                    }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.DAMAGE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.DAMAGE
-                    }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.FIRE_RATE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.FIRE_RATE
-                    }
-                },
-                new Purchase_PatchData
-                {
-                    cost = patchRemoteData.GetRemoteData(PATCH_TYPE.GRADE).Levels[0].cost,
-                    PatchData = new PatchData
-                    {
-                        Level = 0,
-                        Type = (int) PATCH_TYPE.GRADE
-                    }
-                }
-            };
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            var patches = PlayerDataManager.Patches;
 
-            foreach (var t in patches)
+            if (patches.IsNullOrEmpty())
+                return;
+
+            var purchasePatchData = new List<Purchase_PatchData>();
+            for (var i = 0; i < patches.Count; i++)
+            {
+                var patchData = patches[i];
+                var patchType = (PATCH_TYPE) patchData.Type;
+                var remoteData = patchRemoteData.GetRemoteData(patchType);
+                var cost = remoteData.Levels[patchData.Level].cost;
+
+                purchasePatchData.Add(new Purchase_PatchData
+                {
+                    index = i,
+                    cost = cost,
+                    PatchData = patchData
+                });
+            }
+
+            foreach (var t in purchasePatchData)
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
-                element.Init(t);
+                element.Init(t, ShowPartUpgradeSelectionWindow);
             }
             
         }
 
+        /// <summary>
+        /// Gets a collection of all parts that the player currently has, then lays them out on a grid to allow the
+        /// player to pick a part to be upgraded.
+        /// </summary>
+        /// <param name="purchasePatchData"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private void ShowPartUpgradeSelectionWindow(Purchase_PatchData purchasePatchData)
+        {
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //FIXME I need to sort this list By Enabled & Name
+            void AddPartsToView(in IReadOnlyList<IBlockData> blockDatas, in bool isAttached = false)
+            {
+                for (var i = 0; i < blockDatas.Count; i++)
+                {
+                    if (!(blockDatas[i] is PartData partData && partData.Type != (int)PART_TYPE.EMPTY))
+                        continue;
+
+                    //var storageBlockData = storedParts[i];
+                    var type = (PART_TYPE) partData.Type;
+
+                    var blockIndex = i;
+                    var partUpgrd = new TEST_PartUpgrd
+                    {
+                        PartData = partData,
+                        itemIndex = blockIndex,
+                        isAttached = isAttached,
+                    
+                        PurchasePatchData = purchasePatchData
+                    };
+
+                    var temp = partUpgradeUIElementScrollView.AddElement(partUpgrd,
+                        $"{type}_UIElement",
+                        allowDuplicate: true);
+                
+                    temp.Init(partUpgrd, OnPurchasedPatch);
+                }
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var patchType = (PATCH_TYPE)purchasePatchData.PatchData.Type;
+            
+            partUpgradeUIElementScrollView.ClearElements();
+
+            //Parts in Storage
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //TODO Need to include the attached parts
+            var storedParts = PlayerDataManager.GetCurrentPartsInStorage();
+            AddPartsToView(storedParts);
+
+            
+            //Parts On Bot
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var attachedParts = PlayerDataManager.GetBlockDatas();
+            AddPartsToView(attachedParts, true);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            partUpgradeUIElementScrollView.SortList();
+            
+            var patchData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
+
+            SetUpgradeWindowActive(true, $"{patchData.name} {purchasePatchData.PatchData.Level + 1}", patchData.description);
+        }
+
+
+
         #endregion //Scroll Views
 
         //====================================================================================================================//
+
+        #region Upgrade Parts
+
+        private void SetUpgradeWindowActive(in bool state, in string title, in string description)
+        {
+            upgradeWindowHeaderText.text = $"{title}\n{description}";
+            
+            SetUpgradeWindowActive(state);
+
+        }
+        private void SetUpgradeWindowActive(in bool state)
+        {
+            partUpgradeWindow.SetActive(state);
+        }
+
+        private void OnPurchasedPatch(TEST_PartUpgrd partUpgrd)
+        {
+            //Remove Components
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var patchData = partUpgrd.PurchasePatchData;
+            var currentComponents = PlayerDataManager.GetComponents();
+            if (currentComponents < patchData.cost)
+                return;
+
+            currentComponents -= patchData.cost;
+
+            PlayerDataManager.SetGears(currentComponents);
+
+            //Add Patch to Selected Part
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partUpgrd.isAttached)
+            {
+                if (!(DroneDesigner._scrapyardBot.AttachedBlocks[partUpgrd.itemIndex] is ScrapyardPart scrapyardPart))
+                    throw new Exception(
+                        $"{nameof(ScrapyardPart)} was expected at {nameof(DroneDesigner._scrapyardBot.AttachedBlocks)}[{partUpgrd.itemIndex}]");
+                
+                scrapyardPart.AddPatch(partUpgrd.PurchasePatchData.PatchData);
+            }
+            else
+            {
+                var partsInStorage = PlayerDataManager.GetCurrentPartsInStorage().ToList();
+                if(!(partsInStorage[partUpgrd.itemIndex] is PartData))
+                    throw new Exception(
+                        $"{nameof(PartData)} was expected at {nameof(PlayerDataManager.GetCurrentPartsInStorage)}[{partUpgrd.itemIndex}]");
+                
+                ((PartData)partsInStorage[partUpgrd.itemIndex]).AddPatch(partUpgrd.PurchasePatchData.PatchData);
+
+                PlayerDataManager.SetCurrentPartsInStorage(partsInStorage);
+            }
+            
+            //Once its been purchased it should be removed
+            //purchasePatchUIElementScrollView.RemoveElementAtIndex(partUpgrd.PurchasePatchData.index);
+            PlayerDataManager.RemovePatchAtIndex(partUpgrd.PurchasePatchData.index);
+            InitPurchasePatches();
+
+            //Refresh Data
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //TODO Will need to reload the
+            
+            SetUpgradeWindowActive(false);
+        }
+        
+        #endregion //Upgrade Parts
+
+        //====================================================================================================================//
+        
 
         #region Other
 
@@ -276,7 +427,9 @@ namespace StarSalvager.UI.Scrapyard
         private void CheckCanRepair()
         {
             var currentHealth = PlayerDataManager.GetBotHealth();
-            var startingHealth = Globals.BotStartingHealth;
+            var startingHealth = FactoryManager.Instance.PartsRemoteData
+                .GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             
             var canRepair = currentHealth < startingHealth;
 
@@ -285,8 +438,8 @@ namespace StarSalvager.UI.Scrapyard
             if (!canRepair)
                 return;
 
-            var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetGears();
+            var cost = Mathf.CeilToInt(startingHealth - currentHealth);
+            var components = PlayerDataManager.GetComponents();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
@@ -298,9 +451,122 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        public void HidePartDetails()
+        {
+            ShowPartDetails(false, null);
+            HoveringStoragePartUIElement = false;
+        }
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
 
+            if (!show)
+                return;
+
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+            //TODO Get the world position of the object, convert to canvas space
+            var screenPoint =
+                CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            partDetailsContainerRectTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+
+            var partData = scrapyardPart.ToBlockData();
+
+            //====================================================================================================================//
+
+            var partType = (PART_TYPE) partData.Type;
+
+            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+
+            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+
+
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+
+            //====================================================================================================================//
+
+            partNameText.text = partRemote.name;
+            partDescriptionText.text = partRemote.description;
+            partImage.sprite = partProfile.Sprite;
+
+            var altDetails = partData.GetPartDetails(partRemote);
+            //partDetailsText.text = $"{partRemote.description}\n{altDetails}";
+            partDetailsText.text = $"{altDetails}";
+
+            for (var i = 0; i < partData.Patches.Length; i++)
+            {
+                if(i >= patchUis.Length)
+                    continue;
+                
+                
+                var patchData = partData.Patches[i];
+                var type = (PATCH_TYPE) patchData.Type;
+
+                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
+
+                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
+                    ? string.Empty
+                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
+
+            }
+
+            //====================================================================================================================//
+        }
+        
+        public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
+        {
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
+
+            HoveringStoragePartUIElement = show;
+
+            if (!show)
+                return;
+
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+
+            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
+            
+            
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            partDetailsContainerRectTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+            var partType = (PART_TYPE) partData.Type;
+            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+
+            //====================================================================================================================//
+
+            partNameText.text = partRemote.name;
+            partDescriptionText.text = partRemote.description;
+            partImage.sprite = partProfile.Sprite;
+
+            partDetailsText.text = partData.GetPartDetails( partRemote);
+
+            for (var i = 0; i < partData.Patches.Length; i++)
+            {
+                var patchData = partData.Patches[i];
+                var type = (PATCH_TYPE) patchData.Type;
+
+                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
+
+                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
+                    ? string.Empty
+                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
+
+            }
+
+            //====================================================================================================================//
         }
 
         //====================================================================================================================//

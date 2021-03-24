@@ -20,12 +20,13 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Factories.Data;
+using StarSalvager.Parts.Data;
 
 namespace StarSalvager
 {
     public class DroneDesigner : AttachableEditorToolBase, IReset, IInput, IHasHintElement
     {
-        private DroneDesignUI DroneDesignUi
+        public DroneDesignUI DroneDesignUi
         {
             get
             {
@@ -140,7 +141,7 @@ namespace StarSalvager
         #endregion
 
         //====================================================================================================================//
-        private PatchUIElement _draggingPatch;
+        /*private PatchUIElement _draggingPatch;
         public void BeginDragPatch(in PatchUIElement patchUIElement)
         {
             _draggingPatch = patchUIElement;
@@ -177,7 +178,7 @@ namespace StarSalvager
             var partType = part.Type;
 
             //Check if the part is allowed to have this Patch
-            if (!patchRemoteData.allowedParts.Contains(partType))
+            if (!patchRemoteData.fitsAnyPart && !patchRemoteData.allowedParts.Contains(partType))
             {
                 _draggingPatch.ResetInScrollview();
                 _draggingPatch = null;
@@ -202,7 +203,7 @@ namespace StarSalvager
             
             _draggingPatch.ResetInScrollview();
             _draggingPatch = null;
-        }
+        }*/
 
         //============================================================================================================//
 
@@ -214,7 +215,7 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            PlayerDataManager.RemoveAllBits();
+            PlayerDataManager.RemoveAllNonParts();
             
             //SellBits();
             SetupDrone();
@@ -526,6 +527,9 @@ namespace StarSalvager
 
         private void CheckForMousePartHover()
         {
+            if (DroneDesignUi.HoveringStoragePartUIElement)
+                return;
+            
             var show = TryHoverPart(out var partData);
 
             DroneDesignUi.ShowPartDetails(show, partData);
@@ -534,8 +538,11 @@ namespace StarSalvager
         private bool TryHoverPart(out ScrapyardPart scrapyardPart)
         {
             scrapyardPart = null;
-            
-            if(_draggingPatch /*|| _isDragging */|| PlayerDataManager.GetCanChoosePart())
+
+            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.GetCanChoosePart())
+                return false;
+
+            if (DroneDesignUi.UpgradeWindowOpen)
                 return false;
             
             if (!IsMouseInEditorGrid(out Vector2Int mouseCoordinate))
@@ -602,8 +609,10 @@ namespace StarSalvager
             {
                 return;
             }
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             
-            var startingHealth = Globals.BotStartingHealth;
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
             
 
@@ -625,13 +634,13 @@ namespace StarSalvager
             bool notYetStarted = PlayerDataManager.GetStarted();
             if (!notYetStarted)
             {
-
+                var partRemoteData = FactoryManager.Instance.PartsRemoteData;
                 var starterParts = new[]
                 {
-                    PART_TYPE.REPAIR, //GREEN
-                    //PART_TYPE.SHIELD,
-                    PART_TYPE.REGEN, //BLUE
-                    PART_TYPE.WILDCARD //YELLOW
+                    PART_TYPE.CORE,
+                    //partRemoteData.starterGreen,
+                    partRemoteData.starterBlue,
+                    partRemoteData.starterYellow
                 };
                 
                 var remoteData = FactoryManager.Instance.PartsRemoteData;
@@ -639,6 +648,9 @@ namespace StarSalvager
 
                 foreach (var partType in starterParts)
                 {
+                    if(partType == PART_TYPE.EMPTY)
+                        continue;
+                    
                     var patchCount = remoteData.GetRemoteData(partType).PatchSockets;
                     var partData = new PartData
                     {
@@ -695,7 +707,7 @@ namespace StarSalvager
                 return;
             }
 
-            Recycling.Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
+            Recycler.Recycle<ScrapyardBot>(_scrapyardBot.gameObject);
             _scrapyardBot = null;
         }
 
@@ -991,12 +1003,13 @@ namespace StarSalvager
 
         public void RepairDrone()
         {
-            var startingHealth = Globals.BotStartingHealth;
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
             var currentHealth = PlayerDataManager.GetBotHealth();
             
             
-            var cost = startingHealth - currentHealth;
-            var components = PlayerDataManager.GetGears();
+            var cost = Mathf.CeilToInt(startingHealth - currentHealth);
+            var components = PlayerDataManager.GetComponents();
 
             if (components == 0)
                 throw new Exception();
@@ -1004,10 +1017,10 @@ namespace StarSalvager
             var finalCost = Mathf.Min(cost, components);
             
             
-            PlayerDataManager.SubtractGears((int)finalCost);
+            PlayerDataManager.SubtractGears(finalCost);
             
             //var startingHealth = currentHealth + (int)finalCost;
-            var newHealth = Mathf.Clamp(currentHealth + (int) finalCost, 0, startingHealth);
+            var newHealth = Mathf.Clamp(currentHealth + finalCost, 0, startingHealth);
             
             _scrapyardBot.SetupHealthValues(startingHealth, newHealth);
             PlayerDataManager.SetBotHealth(newHealth);
@@ -1035,14 +1048,18 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
             var attachableAtCoordinates = _scrapyardBot.AttachedBlocks.GetAttachableAtCoordinates(categoryCoordinate);
 
-            if (!(attachableAtCoordinates is ScrapyardPart scrapPart && scrapPart.Type != PART_TYPE.EMPTY))
+            if (!(attachableAtCoordinates is ScrapyardPart scrapPart))
                 return;
 
-            var toRemoveBlockData = scrapPart.ToBlockData();
-            toRemoveBlockData.Coordinate = categoryCoordinate;
-            _scrapyardBot.TryRemoveAttachableAt(categoryCoordinate);
+            //Only want to remove the part if it is present, empty parts should be regarded as an open slot
+            if (scrapPart.Type != PART_TYPE.EMPTY)
+            {
+                var toRemoveBlockData = scrapPart.ToBlockData();
+                toRemoveBlockData.Coordinate = categoryCoordinate;
+                _scrapyardBot.TryRemoveAttachableAt(categoryCoordinate);
 
-            PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
+                PlayerDataManager.AddPartToStorage(scrapPart.ToBlockData());
+            }
 
             //Adds Part to location
             //--------------------------------------------------------------------------------------------------------//
@@ -1057,6 +1074,8 @@ namespace StarSalvager
             SaveBlockData();
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            DroneDesignUi.HidePartDetails();
 
         }
 

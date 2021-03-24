@@ -59,8 +59,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
-        [SerializeField, Required, FoldoutGroup("Gears Indicator")]
-        private TMP_Text gearsNumber;
+        [SerializeField, Required, FoldoutGroup("Components Indicator")]
+        private TMP_Text componentsNumber;
 
         //====================================================================================================================//
 
@@ -103,7 +103,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Update()
         {
-            gearsNumber.text = $"{PlayerDataManager.GetGears()}";
+            componentsNumber.text = $"Components: {PlayerDataManager.GetComponents()}";
         }
 
         private void OnEnable()
@@ -128,10 +128,14 @@ namespace StarSalvager.UI.Scrapyard
                 if (!notYetStarted)
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon);
+                    PlayerDataManager.ClearAllPatches();
                 }
                 else
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+                    
+                    PlayerDataManager.SetPatches(Globals.CurrentRing.GenerateRingPatches());
+                    _droneDesigner.DroneDesignUi.InitPurchasePatches();
                 }
             }
 
@@ -184,6 +188,8 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             ScreenFade.Fade(() =>
                             {
+                                
+                                settingsWindowObject.SetActive(false);
                                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
 

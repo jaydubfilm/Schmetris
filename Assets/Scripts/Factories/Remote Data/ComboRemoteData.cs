@@ -13,12 +13,12 @@ namespace StarSalvager.Factories.Data
         public int points;
         [FoldoutGroup("$type")]
         public int addLevels;
-
+        
         public static ComboRemoteData zero => new ComboRemoteData
         {
             type = COMBO.NONE,
             points = 0,
-            addLevels = 0
+            addLevels = 0,
         };
     }
 }

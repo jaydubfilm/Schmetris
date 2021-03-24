@@ -15,8 +15,7 @@ MonoBehaviour:
   m_enemyRemoteData:
   - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     m_name: JunkFly
-    cost: 1
-    m_health: 20
+    m_health: 15
     m_movementSpeed: 9
     m_rateOfFire: 0.7
     m_dimensions: {x: 1, y: 1}
@@ -65,8 +64,7 @@ MonoBehaviour:
         max: 0
   - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
     m_name: DataLeech
-    cost: 0
-    m_health: 40
+    m_health: 30
     m_movementSpeed: 6
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
@@ -115,8 +113,7 @@ MonoBehaviour:
         max: 0
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
     m_name: MoonMiner
-    cost: 0
-    m_health: 100
+    m_health: 45
     m_movementSpeed: 3
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 2}
@@ -181,8 +178,7 @@ MonoBehaviour:
         max: 0
   - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     m_name: Volt
-    cost: 0
-    m_health: 50
+    m_health: 25
     m_movementSpeed: 4
     m_rateOfFire: 0.6
     m_dimensions: {x: 1, y: 1}
@@ -231,49 +227,211 @@ MonoBehaviour:
         max: 0
   - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
     m_name: Squart
-    cost: 0
-    m_health: 100
-    m_movementSpeed: 12
+    m_health: 60
+    m_movementSpeed: 5
     m_rateOfFire: 1
-    m_dimensions: {x: 2, y: 2}
-    m_rdsTableData: []
+    m_dimensions: {x: 3, y: 3}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
     m_name: ToughMother
-    cost: 0
     m_health: 100
     m_movementSpeed: 5
     m_rateOfFire: 0.15
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
     m_name: Shard
-    cost: 0
     m_health: 20
     m_movementSpeed: 5
     m_rateOfFire: 0
-    m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_dimensions: {x: 1, y: 2}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
     m_name: Sleeper Mine
-    cost: 0
-    m_health: 0
+    m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
     m_dimensions: {x: 0, y: 0}
     m_rdsTableData: []
   - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
     m_name: Sensor Mine
-    cost: 0
-    m_health: 0
+    m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
     m_dimensions: {x: 0, y: 0}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
     m_name: Borrower
-    cost: 0
     m_health: 20
-    m_movementSpeed: 12
+    m_movementSpeed: 9
     m_rateOfFire: 2
     m_dimensions: {x: 1, y: 1}
     m_rdsTableData:
@@ -351,9 +509,99 @@ MonoBehaviour:
         max: 0
   - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
     m_name: LaserTurret
-    cost: 0
-    m_health: 100
+    m_health: 25
     m_movementSpeed: 0
-    m_rateOfFire: 0
-    m_dimensions: {x: 0, y: 0}
-    m_rdsTableData: []
+    m_rateOfFire: 0.4
+    m_dimensions: {x: 1, y: 1}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 10
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 0
+        lootType: 0
+        value: 0
+        type: 2
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+  - m_enemyType: 1543e014-58ee-4141-ba9d-9e5998b5c71b
+    m_name: PulseCannon
+    m_health: 20
+    m_movementSpeed: 0
+    m_rateOfFire: 0.4
+    m_dimensions: {x: 1, y: 1}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0

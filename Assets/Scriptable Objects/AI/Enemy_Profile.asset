@@ -64,7 +64,7 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
-    m_projectileType: d76d5226-688c-4147-af1d-6ce99705d0cf
+    m_projectileType: 18a7dbbc-5f0d-4629-abcc-f6466f7b7ece
   - EnemyName: ToughMother
     m_sprite: {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf,
       type: 3}
@@ -117,3 +117,11 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
+  - EnemyName: PulseCannon
+    m_sprite: {fileID: 21300000, guid: e8efd2a2d1434f745a014103ec3401fc, type: 3}
+    m_enemyPrefab: {fileID: 5323334717173405649, guid: 8f4edb22c125ad84a80dd511c9561c5d,
+      type: 3}
+    m_enemyTypeID: 1543e014-58ee-4141-ba9d-9e5998b5c71b
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 0}
+    m_projectileType: a814f17b-460b-4dfb-b939-67a72e3f2d29
