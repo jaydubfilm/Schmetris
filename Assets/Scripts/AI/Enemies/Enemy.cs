@@ -105,6 +105,8 @@ namespace StarSalvager.AI
         {
             m_enemyData = enemyData;
             _enemyMovementSpeed = enemyData.MovementSpeed;
+
+            ((BoxCollider2D) collider).size = m_enemyData.Dimensions;
             
             SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
             

@@ -72,6 +72,8 @@ MonoBehaviour:
     type: 3}
   scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,
     type: 3}
+  sabrePrefab: {fileID: 2080657388811090661, guid: 8a443ebe268aab0409f0352e224bace5,
+    type: 3}
   comboRemoteData: {fileID: 11400000, guid: e98ad69cab8c1364baddf1bc6ae8b077, type: 2}
   effectProfileScriptableObject: {fileID: 11400000, guid: 10c33090867e24649a511823d5b0f3f3,
     type: 2}

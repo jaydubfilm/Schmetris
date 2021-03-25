@@ -105,22 +105,21 @@ namespace StarSalvager.Factories
                     {
                         case ProjectileProfileData.TowType.JunkBit:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
-                            projectileTowObject.SetColliderActive(false);
                             break;
                         case ProjectileProfileData.TowType.Bumper:
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
-                            projectileTowObject.SetColliderActive(false);
                             break;
                         case ProjectileProfileData.TowType.Mine:
                             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");
                             
                             towObject = LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, fromPosition).gameObject;
-                            
-                            projectileTowObject.SetColliderActive(false);
                             break;
                         default:
                             throw new Exception("Missing data for towObject");
                     }
+
+                    projectileTowObject.SetColliderActive(false);
+
                     LevelManager.Instance.ObstacleManager.AddToRoot(towObject);
                     towObject.transform.position = fromPosition;
                     
@@ -242,7 +241,8 @@ namespace StarSalvager.Factories
             return projectiles.ToArray();
         }
 
-        //============================================================================================================//
+
+        //====================================================================================================================//
 
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
@@ -351,6 +351,8 @@ namespace StarSalvager.Factories
             direction = Quaternion.Euler(angles) * direction;
             return direction + pivot;
         }*/
+        
+        
     }
 }
 

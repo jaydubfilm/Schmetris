@@ -30,6 +30,7 @@ namespace StarSalvager.AI
         [SerializeField]
         private float attackTime;
         private float _attackTimer;
+        private float _attackEffectTimer;
 
         private Vector2 _playerPosition;
 
@@ -88,6 +89,7 @@ namespace StarSalvager.AI
                 case STATE.ATTACK:
                     SetBeamsActive(true);
                     _attackTimer = attackTime;
+                    _attackEffectTimer = 0;
                     break;
                 case STATE.DEATH:
                     //Recycle ya boy
@@ -172,6 +174,16 @@ namespace StarSalvager.AI
                 var damageToApply = damage * Time.deltaTime;
 
                 var attachable = bot.GetClosestAttachable(raycastHit2D.point);
+
+                if (_attackEffectTimer <= 0f)
+                {
+                    _attackEffectTimer = 0.5f;
+                    CreateExplosionEffect(raycastHit2D.point);
+                }
+                else
+                {
+                    _attackEffectTimer -= Time.deltaTime;
+                }
 
                 bot.TryHitAt(attachable, damageToApply);
 

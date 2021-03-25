@@ -12,12 +12,15 @@ namespace StarSalvager.Factories
         private readonly GameObject alertIconPrefab;*/
         private readonly GameObject scrapyardPrefab;
         
+        private readonly Sabre sabrePrefab;
+        
         //============================================================================================================//
 
-        public BotFactory(GameObject prefab, GameObject scrapyardPrefab/*, GameObject shieldPrototypePrefab, GameObject alertIconPrefab*/)
+        public BotFactory(GameObject prefab, GameObject scrapyardPrefab, Sabre sabrePrefab/*, GameObject shieldPrototypePrefab, GameObject alertIconPrefab*/)
         {
             this.prefab = prefab;
             this.scrapyardPrefab = scrapyardPrefab;
+            this.sabrePrefab = sabrePrefab;
 
             /*this.shieldPrototypePrefab = shieldPrototypePrefab;
             this.alertIconPrefab = alertIconPrefab;*/
@@ -81,6 +84,16 @@ namespace StarSalvager.Factories
         }
 
         //============================================================================================================//
+
+        public Sabre CreateSabreObject()
+        {
+            var outData = !Recycler.TryGrab(out Sabre sabre)
+                ? Object.Instantiate(sabrePrefab)
+                : sabre;
+            
+            outData.name = nameof(Sabre);
+            return outData;
+        }
 
     }
 }

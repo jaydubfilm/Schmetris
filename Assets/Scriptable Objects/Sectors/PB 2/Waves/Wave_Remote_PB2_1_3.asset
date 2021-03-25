@@ -20,7 +20,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
-      m_enemyCount: 3
+      m_enemyCount: 2
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -84,10 +84,8 @@ MonoBehaviour:
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+    - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
       m_enemyCount: 2
-    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-      m_enemyCount: 3
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -116,6 +114,8 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
+      m_enemyCount: 2
+    - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
       m_enemyCount: 2
     m_stageType: 0
     m_spawningObstacleMultiplier: 1

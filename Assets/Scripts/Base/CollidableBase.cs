@@ -19,7 +19,7 @@ namespace StarSalvager
     {
         private bool _useCollision = true;
 
-        protected string CollisionTag { get; set; } = "Player";
+        protected virtual string CollisionTag { get; set; } = "Player";
 
         //============================================================================================================//
 

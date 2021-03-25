@@ -125,6 +125,8 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+      m_enemyCount: 2
+    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
       m_enemyCount: 6
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
@@ -154,7 +156,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
-      m_enemyCount: 6
+      m_enemyCount: 5
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5

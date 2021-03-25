@@ -230,36 +230,204 @@ MonoBehaviour:
     m_health: 60
     m_movementSpeed: 5
     m_rateOfFire: 1
-    m_dimensions: {x: 2, y: 2}
-    m_rdsTableData: []
+    m_dimensions: {x: 3, y: 3}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
     m_name: ToughMother
     m_health: 100
     m_movementSpeed: 5
     m_rateOfFire: 0.15
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
     m_name: Shard
     m_health: 20
     m_movementSpeed: 5
     m_rateOfFire: 0
     m_dimensions: {x: 1, y: 2}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
     m_name: Sleeper Mine
     m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
-    m_dimensions: {x: 0, y: 0}
+    m_dimensions: {x: 1, y: 1}
     m_rdsTableData: []
   - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
     m_name: Sensor Mine
     m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
-    m_dimensions: {x: 0, y: 0}
-    m_rdsTableData: []
+    m_dimensions: {x: 1, y: 1}
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
     m_name: Borrower
     m_health: 20
@@ -394,4 +562,46 @@ MonoBehaviour:
     m_movementSpeed: 0
     m_rateOfFire: 0.4
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 2, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 15
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 5
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0

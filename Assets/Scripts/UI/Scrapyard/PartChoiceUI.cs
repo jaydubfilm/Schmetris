@@ -21,6 +21,7 @@ namespace StarSalvager.UI.Scrapyard
         private struct PartSelectionUI
         {
             public Button optionButton;
+            public PartChoiceButtonHover PartChoiceButtonHover;
             public Image optionImage;
             public TMP_Text optionText;
         }
@@ -63,6 +64,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var category = partRemoteData.GetRemoteData(partType).category;
                 
+                selectionUis[index].PartChoiceButtonHover.SetPartType(partType);
                 selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
                 selectionUis[index].optionImage.color = bitProfiles.GetProfile(category).color;
                 selectionUis[index].optionText.text = $"{partType}";
@@ -123,16 +125,20 @@ namespace StarSalvager.UI.Scrapyard
 
                 _droneDesigner.SaveBlockData();
 
-                if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
+                /*if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
                 {
                     PlayerDataManager.SetStarted(true);
                     Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
                     return;
-                }
+                }*/
+                
+                PlayerDataManager.SetStarted(true);
 
                 PlayerDataManager.SetCanChoosePart(false);
                 
                 partChoiceWindow.SetActive(false);
+                
+                _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
             }
 
             for (int i = 0; i < selectionUis.Length; i++)
