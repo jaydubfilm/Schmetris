@@ -43,6 +43,8 @@ namespace StarSalvager.Values
         private static GameSettingsScriptableObject m_gameSettings = null;
 
         
+        public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
+        
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
         //public static int Magnetism => m_gameSettings.magnetAmount;
         
