@@ -972,7 +972,12 @@ namespace StarSalvager
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
         {
-            var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            if (partRemoteData == null)
+                return false;
+
+            if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
+                return false;
+            
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
