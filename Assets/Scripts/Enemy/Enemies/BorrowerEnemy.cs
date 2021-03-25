@@ -26,6 +26,8 @@ namespace StarSalvager.AI
         private Bit _carryingBit;
         private Bit _attachTarget;
 
+        private float _carrySpeed;
+
         public override void LateInit()
         {
             base.LateInit();
@@ -59,36 +61,6 @@ namespace StarSalvager.AI
 
         }
 
-        /*public override void ChangeHealth(float amount)
-        {
-            CurrentHealth += amount;
-            
-            if (amount < 0)
-            {
-                FloatingText.Create($"{Mathf.Abs(amount)}", transform.position, Color.red);
-            }
-
-            if (CurrentHealth > 0)
-                return;
-
-            if (AttachedBot)
-            {
-                AttachedBot.ForceDetach(this);
-                AttachedBot = null;
-            }
-            
-            transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
-            DropLoot();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-            
-            SetState(STATE.DEATH);
-        }*/
-
         public override void OnBumped()
         {
             base.OnBumped();
@@ -109,21 +81,7 @@ namespace StarSalvager.AI
             StateUpdate();
         }
 
-        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
-        {
-            Vector2 direction;
-            switch (currentState)
-            {
-                case STATE.FLEE:
-                    direction = (Vector2) transform.position - playerLocation;
-                    break;
-                default:
-                    direction = playerLocation - (Vector2)transform.position;
-                    break;
-            }
-
-            return direction.normalized;
-        }
+        
 
         public Bit FindClosestBitOnBot()
         {
@@ -175,9 +133,15 @@ namespace StarSalvager.AI
                     _attachTarget = FindClosestBitOnBot();
 
                     EnemyManager.SetBorrowerTarget(this, _attachTarget);
+                    _enemyMovementSpeed = m_enemyData.MovementSpeed;
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
+                    _enemyMovementSpeed = 0f;
+
+                    _carrySpeed = m_enemyData.MovementSpeed / 2f;
+                    _enemyMovementSpeed = _carrySpeed;
+
                     break;
                 case STATE.ATTACK:
                     break;
@@ -289,6 +253,8 @@ namespace StarSalvager.AI
                 _anticipationTime -= Time.deltaTime;
                 return;
             }
+
+            MostRecentMovementDirection = GetMovementDirection(_attachTarget.transform.position);
             
             SetState(STATE.ATTACK);
         }
@@ -343,9 +309,9 @@ namespace StarSalvager.AI
             var currentPosition = (Vector2)transform.position;
             //Away from the player
             var direction = (currentPosition - _playerLocation).normalized;
-            var carrySpeed = EnemyMovementSpeed / 2f;
-            
-            currentPosition += direction  * (carrySpeed * Time.deltaTime);
+
+
+            currentPosition += direction  * (_carrySpeed * Time.deltaTime);
 
             MostRecentMovementDirection = GetMovementDirection(currentPosition);
 

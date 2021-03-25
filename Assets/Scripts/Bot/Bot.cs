@@ -97,7 +97,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public Vector2 Position => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
+        public Vector2 ShootAtPosition => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
         
 
         public bool IsInvulnerable
@@ -3188,11 +3188,14 @@ _isShifting = true;
                 Globals.ComboMergeTime,
                 () =>
                 {
+                    var position = closestToCore.transform.position;
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points
                     PlayerDataManager.ChangeXP(gearsToAdd);
 
-                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", position, Color.white);
+                    
+                    CreateBonusShapeParticleEffect(position);
 
 
                     var bit = closestToCore as Bit;

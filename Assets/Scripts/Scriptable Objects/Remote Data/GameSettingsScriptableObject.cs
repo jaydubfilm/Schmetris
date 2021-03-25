@@ -8,6 +8,9 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Star Salvager/Scriptable Objects/Game Settings")]
     public class GameSettingsScriptableObject : ScriptableObject
     {
+        
+        [BoxGroup("Prototyping")]
+        public bool useCenterFiring = true;
         [BoxGroup("Prototyping")]
         public bool useShuffleDance = true;
         [BoxGroup("Prototyping")]

@@ -377,14 +377,14 @@ MonoBehaviour:
     m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
-    m_dimensions: {x: 0, y: 0}
+    m_dimensions: {x: 1, y: 1}
     m_rdsTableData: []
   - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
     m_name: Sensor Mine
     m_health: 10
     m_movementSpeed: 0
     m_rateOfFire: 0
-    m_dimensions: {x: 0, y: 0}
+    m_dimensions: {x: 1, y: 1}
     m_rdsTableData:
     - Name: Loot Drop
       AlwaysDrops: 1

@@ -292,7 +292,7 @@ namespace StarSalvager
                         
                         _gunTargets.Add(part, null);
                         
-                        if (ShouldUseGunTurret(partRemoteData))
+                        if (Globals.UseCenterFiring == false && ShouldUseGunTurret(partRemoteData))
                             CreateTurretEffect(part);
                         break;
                     
@@ -498,17 +498,19 @@ namespace StarSalvager
             {
                 return;
             }
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
 
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
             
-            if (TryUseAmmo(part, partRemoteData, Time.deltaTime) == false)
+            if (TryUseAmmo(part, partRemoteData, Time.deltaTime / repairAmount) == false)
                 return;
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
-                throw new ArgumentOutOfRangeException();
+            
             
             repairTarget.ChangeHealth(repairAmount * deltaTime);
 
@@ -728,8 +730,7 @@ namespace StarSalvager
                     CreateProjectile(part, partRemoteData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
-                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
-                                     part.transform.position).normalized;
+                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) - bot.transform.position).normalized;
 
                     var lineShrink = FactoryManager.Instance
                         .GetFactory<EffectFactory>()
@@ -742,7 +743,7 @@ namespace StarSalvager
                     lineShrink.Init(part.transform.position,
                         didHitTarget
                             ? fireTarget.transform.position
-                            : part.transform.position + direction * 100);
+                            : bot.transform.position + direction * 100);
 
                     if (didHitTarget)
                     {
@@ -876,9 +877,10 @@ namespace StarSalvager
             }*/
 
 
-            var position = part.transform.position;
+            var position = bot.transform.position;
             var shootDirection = ShouldUseGunTurret(partRemoteData)
-                ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
+                ? GetAimedProjectileAngle(collidableTarget,
+                    Globals.UseCenterFiring ? bot.transform.position : part.Position, projectileId)
                 : part.transform.up.normalized;
 
             //--------------------------------------------------------------------------------------------------------//
@@ -908,7 +910,7 @@ namespace StarSalvager
                     true);
         }
 
-        private Vector3 GetAimedProjectileAngle(CollidableBase target, Part part, string projectileId)
+        private static Vector3 GetAimedProjectileAngle(in Actor2DBase target, in Vector3 partPosition, string projectileId)
         {
             Vector3 targetVelocity;
             switch(target)
@@ -922,7 +924,7 @@ namespace StarSalvager
             }
             var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
             
-            Vector3 totarget = target.Position - part.transform.position;
+            Vector3 totarget = target.Position - partPosition;
 
             float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
             float b = 2 * Vector3.Dot(targetVelocity, totarget);
@@ -944,11 +946,11 @@ namespace StarSalvager
                 t = t1;
             }
 
-            Vector3 aimSpot = target.transform.position + targetVelocity * t;
-            Vector3 bulletPath = aimSpot - part.transform.position;
+            Vector3 aimSpot = target.Position + targetVelocity * t;
+            Vector3 bulletPath = aimSpot - partPosition;
             
-            //Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
-            //Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
+            Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
+            Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
             //Debug.Break();
 
             return bulletPath;
@@ -970,7 +972,12 @@ namespace StarSalvager
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
         {
-            var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            if (partRemoteData == null)
+                return false;
+
+            if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
+                return false;
+            
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;

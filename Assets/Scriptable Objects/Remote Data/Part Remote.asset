@@ -17,7 +17,7 @@ MonoBehaviour:
   starterYellow: 1
   basicWeapons: 0400000024000000
   powerWeapons: 0600000007000000
-  anyParts: 040000000e000000240000000700000006000000030000000500000002000000
+  anyParts: 040000000e00000024000000070000000600000003000000050000002a000000
   partRemoteData:
   - name: Empty Part
     partType: 1
@@ -296,7 +296,7 @@ MonoBehaviour:
       value: 10
     isManual: 0
     category: 2
-    ammoUseCost: 0
+    ammoUseCost: 5
     PatchSockets: 3
   - name: Sabre
     partType: 42
@@ -304,14 +304,14 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 10
+      value: 3
     - key: Time
-      value: 2
+      value: 8
     - key: Radius
       value: 3
     - key: Damage
-      value: 70
+      value: 10
     isManual: 1
     category: 3
-    ammoUseCost: 0
+    ammoUseCost: 5
     PatchSockets: 2
