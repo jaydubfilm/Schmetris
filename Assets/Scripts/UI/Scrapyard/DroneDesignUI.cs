@@ -81,6 +81,8 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
         [SerializeField, FoldoutGroup("Part Details Window")]
+        private TMP_Text partUseTypeText;
+        [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partDescriptionText;
 
         //[SerializeField, FoldoutGroup("Part Details Window")]
@@ -491,6 +493,7 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             partNameText.text = partRemote.name;
+            partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
             partDescriptionText.text = partRemote.description;
             partImage.sprite = partProfile.Sprite;
 
@@ -548,6 +551,7 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             partNameText.text = partRemote.name;
+            partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
             partDescriptionText.text = partRemote.description;
             partImage.sprite = partProfile.Sprite;
 

@@ -296,7 +296,7 @@ MonoBehaviour:
       value: 10
     isManual: 0
     category: 2
-    ammoUseCost: 0
+    ammoUseCost: 5
     PatchSockets: 3
   - name: Sabre
     partType: 42
@@ -304,14 +304,14 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 10
+      value: 3
     - key: Time
-      value: 2
+      value: 8
     - key: Radius
       value: 3
     - key: Damage
-      value: 70
+      value: 10
     isManual: 1
     category: 3
-    ammoUseCost: 0
+    ammoUseCost: 5
     PatchSockets: 2
