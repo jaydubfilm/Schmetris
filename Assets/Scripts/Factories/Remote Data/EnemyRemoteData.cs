@@ -43,7 +43,7 @@ namespace StarSalvager.Factories.Data
         private float m_rateOfFire;
 
         [SerializeField, FoldoutGroup("$Name")]
-        private Vector2Int m_dimensions;
+        private Vector2Int m_dimensions = Vector2Int.one;
 
         [SerializeField, FoldoutGroup("$Name"), LabelText("Loot Drops")]
         private List<RDSTableData> m_rdsTableData;

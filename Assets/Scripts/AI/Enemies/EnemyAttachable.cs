@@ -152,6 +152,22 @@ namespace StarSalvager.AI
         //Enemy Overrides
         //====================================================================================================================//
         
+        protected override Vector2 GetMovementDirection(Vector2 playerLocation)
+        {
+            Vector2 direction;
+            switch (currentState)
+            {
+                case STATE.FLEE:
+                    direction = (Vector2) transform.position - playerLocation;
+                    break;
+                default:
+                    direction = playerLocation - (Vector2)transform.position;
+                    break;
+            }
+
+            return direction.normalized;
+        }
+        
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
             if (Disabled)

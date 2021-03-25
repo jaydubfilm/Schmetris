@@ -498,17 +498,19 @@ namespace StarSalvager
             {
                 return;
             }
+            
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
 
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
             
-            if (TryUseAmmo(part, partRemoteData, Time.deltaTime) == false)
+            if (TryUseAmmo(part, partRemoteData, Time.deltaTime / repairAmount) == false)
                 return;
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
-                throw new ArgumentOutOfRangeException();
+            
             
             repairTarget.ChangeHealth(repairAmount * deltaTime);
 
@@ -947,8 +949,8 @@ namespace StarSalvager
             Vector3 aimSpot = target.transform.position + targetVelocity * t;
             Vector3 bulletPath = aimSpot - part.transform.position;
             
-            //Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
-            //Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
+            Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
+            Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
             //Debug.Break();
 
             return bulletPath;

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class SleeperMineEnemy : Enemy, IOverrideRecycleType
+    public class SleeperMineEnemy : Enemy
     {
         public float anticipationTime = 1f;
 

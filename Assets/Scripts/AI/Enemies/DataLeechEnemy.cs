@@ -107,9 +107,11 @@ namespace StarSalvager.AI
                 case STATE.IDLE:
                     break;
                 case STATE.PURSUE:
+                    _enemyMovementSpeed = m_enemyData.MovementSpeed;
                     break;
                 case STATE.ATTACK:
-                    MostRecentMovementDirection = Vector3.zero;
+                    //MostRecentMovementDirection = Vector3.zero;
+                    _enemyMovementSpeed = 0f;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<DataLeechEnemy>(this);
