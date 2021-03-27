@@ -185,7 +185,7 @@ MonoBehaviour:
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 20
+  - m_stageDuration: 10
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData: []
