@@ -304,11 +304,11 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Cooldown
-      value: 3
+      value: 0.5
     - key: Time
-      value: 8
-    - key: Radius
       value: 3
+    - key: Radius
+      value: 4
     - key: Damage
       value: 10
     isManual: 1
