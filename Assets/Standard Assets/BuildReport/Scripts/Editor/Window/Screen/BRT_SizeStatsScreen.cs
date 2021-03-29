@@ -24,10 +24,11 @@ namespace BuildReportTool.Window.Screen
 		bool _hasUnityEngineDLLsToDisplay;
 		bool _hasScriptDLLsToDisplay;
 
-		public override void DrawGUI(Rect position, BuildReportTool.BuildInfo buildReportToDisplay, AssetDependencies assetDependencies, out bool requestRepaint)
+		public override void DrawGUI(Rect position, BuildReportTool.BuildInfo buildReportToDisplay,
+			AssetDependencies assetDependencies, out bool requestRepaint)
 		{
 			requestRepaint = false;
-			
+
 			if (Event.current.type == EventType.Layout)
 			{
 				_hasTotalBuildSize = !string.IsNullOrEmpty(buildReportToDisplay.TotalBuildSize) &&
@@ -289,7 +290,8 @@ namespace BuildReportTool.Window.Screen
 			GUILayout.EndHorizontal();
 		}
 
-		void DrawScriptDLLsList(BuildReportTool.BuildInfo buildReportToDisplay, BuildReportTool.BuildPlatform buildPlatform)
+		void DrawScriptDLLsList(BuildReportTool.BuildInfo buildReportToDisplay,
+			BuildReportTool.BuildPlatform buildPlatform)
 		{
 			if (!_hasScriptDLLsToDisplay)
 			{
@@ -319,8 +321,8 @@ namespace BuildReportTool.Window.Screen
 			{
 				if (b.IsTotal) continue;
 				string styleToUse = useAlt
-					? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
-					: BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
+					                    ? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
+					                    : BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
 				GUILayout.Label(b.Name, styleToUse);
 				useAlt = !useAlt;
 			}
@@ -341,8 +343,8 @@ namespace BuildReportTool.Window.Screen
 			{
 				if (b.IsTotal) continue;
 				string styleToUse = useAlt
-					? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
-					: BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
+					                    ? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
+					                    : BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
 				GUILayout.Label(b.Size, styleToUse);
 				useAlt = !useAlt;
 			}
@@ -363,8 +365,8 @@ namespace BuildReportTool.Window.Screen
 			{
 				if (b.IsTotal) continue;
 				string styleToUse = useAlt
-					? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
-					: BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
+					                    ? BuildReportTool.Window.Settings.LIST_NORMAL_ALT_STYLE_NAME
+					                    : BuildReportTool.Window.Settings.LIST_NORMAL_STYLE_NAME;
 				GUILayout.Label(string.Format("{0}%", b.Percentage.ToString(CultureInfo.InvariantCulture)), styleToUse);
 				useAlt = !useAlt;
 			}

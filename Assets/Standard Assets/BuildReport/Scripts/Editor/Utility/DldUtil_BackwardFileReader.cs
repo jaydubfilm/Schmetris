@@ -22,7 +22,7 @@ namespace DldUtil
 		{
 			fs.Seek(lineNumber, SeekOrigin.Begin);
 		}
-		
+
 		public string ReadLine()
 		{
 			var text = new byte[1];
@@ -70,7 +70,7 @@ namespace DldUtil
 					}
 				}
 			}
-			
+
 			var count = int.Parse((position - fs.Position).ToString());
 			var line = new byte[count];
 			fs.Read(line, 0, count);
@@ -89,5 +89,4 @@ namespace DldUtil
 			fs.Close();
 		}
 	}
-
 }

@@ -663,7 +663,8 @@ namespace BuildReportTool.Window.Screen
 						}
 
 						var initialListViewHeight =
-							(BRT_BuildReportWindow.LIST_HEIGHT * selectedAssetDependencies.Users.Count) + 10; // 10 for some padding;
+							(BRT_BuildReportWindow.LIST_HEIGHT * selectedAssetDependencies.Users.Count) +
+							10; // 10 for some padding;
 
 						assetUsageListRealHeight =
 							(BRT_BuildReportWindow.LIST_HEIGHT * countToUse) + 10; // 10 for some padding
@@ -673,6 +674,7 @@ namespace BuildReportTool.Window.Screen
 						{
 							_preferredDirectAssetUserListViewHeight = initialListViewHeight;
 						}
+
 						if (assetUsageListRealHeight > _preferredDirectAssetUserListViewHeight)
 						{
 							_preferredDirectAssetUserListViewHeight = assetUsageListRealHeight;
@@ -802,19 +804,19 @@ namespace BuildReportTool.Window.Screen
 						var assetToShowDirectUsersOf = selectedAsset.Name;
 
 						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
-							 _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
+						    _assetUserCrumbActiveIdx < _assetUserCrumbs.Count)
 						{
 							assetToShowDirectUsersOf = _assetUserCrumbs[_assetUserCrumbActiveIdx].AssetPath;
 						}
 
 						List<string> users = null;
+					{
+						DependencyEntry entry;
+						if (dependencies.TryGetValue(assetToShowDirectUsersOf, out entry))
 						{
-							DependencyEntry entry;
-							if (dependencies.TryGetValue(assetToShowDirectUsersOf, out entry))
-							{
-								users = entry.Users;
-							}
+							users = entry.Users;
 						}
+					}
 
 						DrawDirectAssetUsers(scrollViewRect.width, assetUsageScrollViewHeight,
 							assetUsageListScrollViewHeightIsClamped,
@@ -896,7 +898,8 @@ namespace BuildReportTool.Window.Screen
 
 		void ChangeAssetUserCrumbRootIfNeeded(string assetPath)
 		{
-			if (_assetUserCrumbs.Count == 0 || !_assetUserCrumbs[0].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
+			if (_assetUserCrumbs.Count == 0 ||
+			    !_assetUserCrumbs[0].AssetPath.Equals(assetPath, StringComparison.OrdinalIgnoreCase))
 			{
 				_assetUserCrumbs.Clear();
 
@@ -1010,8 +1013,8 @@ namespace BuildReportTool.Window.Screen
 				var useAlt = (directUserN % 2) == 0;
 
 				var styleToUse = useAlt
-					? listAltEntryStyle
-					: listEntryStyle;
+					                 ? listAltEntryStyle
+					                 : listEntryStyle;
 				if (_selectedAssetUserIdx == directUserN)
 				{
 					styleToUse = listSelectedEntryStyle;
@@ -1263,14 +1266,13 @@ namespace BuildReportTool.Window.Screen
 			EditorGUIUtility.SetIconSize(BRT_BuildReportWindow.IconSize);
 
 
-
 			for (; endUserN < endUserLen; ++endUserN)
 			{
 				var useAlt = (endUserN % 2) == 0;
 
 				var styleToUse = useAlt
-					? listAltEntryStyle
-					: listEntryStyle;
+					                 ? listAltEntryStyle
+					                 : listEntryStyle;
 				if (_selectedAssetUserIdx == endUserN)
 				{
 					styleToUse = listSelectedEntryStyle;
@@ -1487,8 +1489,8 @@ namespace BuildReportTool.Window.Screen
 				var useAlt = ((usersFlattened[userFlattenedN].IndentLevel % 2) == 0);
 
 				var styleToUse = useAlt
-					? listAltEntryStyle
-					: listEntryStyle;
+					                 ? listAltEntryStyle
+					                 : listEntryStyle;
 				if (_selectedAssetUserIdx == userFlattenedN)
 				{
 					styleToUse = listSelectedEntryStyle;
@@ -1612,8 +1614,8 @@ namespace BuildReportTool.Window.Screen
 				var prevColor = GUI.color;
 				GUI.color = new Color(0, 0, 0, 0.5f);
 				for (int indentN = 1, indentLen = usersFlattened[userFlattenedN].IndentLevel;
-					indentN < indentLen;
-					++indentN)
+				     indentN < indentLen;
+				     ++indentN)
 				{
 					var indentRect = new Rect(pingButtonUsedWidth + ((indentN - 1) * 20), currentY, 20, 20);
 					GUI.DrawTexture(indentRect, _indentLine, ScaleMode.StretchToFill);
@@ -1696,7 +1698,6 @@ namespace BuildReportTool.Window.Screen
 		}
 
 
-
 		void DrawAssetInfoPanel(Rect position, float availableWidth, BuildInfo buildReportToDisplay,
 			AssetDependencies assetDependencies)
 		{
@@ -1733,7 +1734,7 @@ namespace BuildReportTool.Window.Screen
 					_assetUsageEntryLabel.image = AssetDatabase.GetCachedIcon(_assetUserCrumbs[crumbN].AssetPath);
 
 					if (GUILayout.Toggle(_assetUserCrumbActiveIdx == crumbN, _assetUsageEntryLabel,
-						"GUIEditor.BreadcrumbMid") && _assetUserCrumbActiveIdx != crumbN)
+						    "GUIEditor.BreadcrumbMid") && _assetUserCrumbActiveIdx != crumbN)
 					{
 						// before switching, store the scrollbar pos so that we can return to it
 						if (_assetUserCrumbs.Count > 0 && _assetUserCrumbActiveIdx >= 0 &&
@@ -1774,14 +1775,15 @@ namespace BuildReportTool.Window.Screen
 			GUI.Box(bgRect, "", "ListButton");
 
 			const int EXPAND_BUTTON_WIDTH = 150;
-			var expandButtonRect = new Rect(bgRect.x + ((bgRect.width - EXPAND_BUTTON_WIDTH)/2), bgRect.y,
+			var expandButtonRect = new Rect(bgRect.x + ((bgRect.width - EXPAND_BUTTON_WIDTH) / 2), bgRect.y,
 				EXPAND_BUTTON_WIDTH, ASSET_INFO_TOOLBAR_HEIGHT);
 
 			var showAllUsagesLabel = _showAssetUsagesList
-				? "Hide"
-				: "Show More Usages";
+				                         ? "Hide"
+				                         : "Show More Usages";
 
-			var newShowAssetUsersList = GUI.Toggle(expandButtonRect, _showAssetUsagesList, showAllUsagesLabel, "ExpandButton");
+			var newShowAssetUsersList =
+				GUI.Toggle(expandButtonRect, _showAssetUsagesList, showAllUsagesLabel, "ExpandButton");
 
 			if (newShowAssetUsersList != _showAssetUsagesList)
 			{
@@ -1861,7 +1863,8 @@ namespace BuildReportTool.Window.Screen
 		}
 
 
-		void DrawAssetUsageAncestry(Rect position, float availableWidth, BuildInfo buildReportToDisplay, AssetDependencies assetDependencies)
+		void DrawAssetUsageAncestry(Rect position, float availableWidth, BuildInfo buildReportToDisplay,
+			AssetDependencies assetDependencies)
 		{
 			var assetStyle = GUI.skin.GetStyle("Asset");
 			var assetHoveredStyle = GUI.skin.GetStyle("AssetHovered");
@@ -1990,7 +1993,8 @@ namespace BuildReportTool.Window.Screen
 						}
 						else if (isAResourcesAsset)
 						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
+							widthToAdd = assetLabelInBetweenStyle
+							             .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
 						}
 						else if (isAssetUsedByScript)
 						{
@@ -2277,7 +2281,8 @@ namespace BuildReportTool.Window.Screen
 						}
 						else if (list[n].AssetPath.IsInResourcesFolder())
 						{
-							widthToAdd = assetLabelInBetweenStyle.CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
+							widthToAdd = assetLabelInBetweenStyle
+							             .CalcSize(AssetUsageWhichIsAResourcesAssetButAlsoUsedByLabel).x;
 						}
 						else if ((n < len - 1) && list[n + 1].AssetPath.IsFileOfType(".cs"))
 						{
@@ -2357,13 +2362,6 @@ namespace BuildReportTool.Window.Screen
 		}
 
 
-
-
-
-
-
-
-
 		/// <summary>
 		/// Trace the ancestry
 		/// "end user" is either a scene that's included in the build, or a Resources asset.
@@ -2372,6 +2370,11 @@ namespace BuildReportTool.Window.Screen
 		/// <param name="assetDependencies"></param>
 		void SetAssetUsageHistoryToFirstEndUser(string rootAsset, AssetDependencies assetDependencies)
 		{
+			if (assetDependencies == null)
+			{
+				return;
+			}
+
 			var dependencies = assetDependencies.GetAssetDependencies();
 
 			if (!dependencies.ContainsKey(rootAsset))
@@ -2465,7 +2468,8 @@ namespace BuildReportTool.Window.Screen
 		/// <param name="source">Entire asset usage chain</param>
 		/// <param name="idxChosenFromSource"></param>
 		/// <param name="rootAsset">the asset whose usage we are inspecting</param>
-		static void SetAssetUsageAncestry(List<AssetUsageAncestry> destination, List<AssetUserFlattened> source, int idxChosenFromSource, string rootAsset)
+		static void SetAssetUsageAncestry(List<AssetUsageAncestry> destination, List<AssetUserFlattened> source,
+			int idxChosenFromSource, string rootAsset)
 		{
 			destination.Clear();
 
