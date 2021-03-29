@@ -93,6 +93,7 @@ namespace StarSalvager
         private GameObject _shieldObject;
         private GameObject _healObject;
         private float _healActiveTimer;
+
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -126,6 +127,16 @@ namespace StarSalvager
         private Sabre _sabreObject;
         private Dictionary<Part, float> _sabreTimers;
 
+
+        //Heal Cooldown Timer
+        //====================================================================================================================//
+        
+        private float _healWaitTimer;
+
+        public void ResetHealCooldown()
+        {
+            _healWaitTimer = Globals.BotHealWaitTime;
+        }
 
         #endregion //Properties
 
@@ -538,6 +549,13 @@ namespace StarSalvager
                 return;
             }
             _healActiveTimer -= Time.deltaTime;*/
+
+            if (_healWaitTimer > 0f)
+            {
+                _healWaitTimer -= deltaTime;
+                return;
+            }
+            
             
             var repairTarget = bot;
 

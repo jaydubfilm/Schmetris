@@ -42,6 +42,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
+
 
         public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
         

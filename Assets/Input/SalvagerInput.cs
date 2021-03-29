@@ -871,6 +871,17 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""22d2c091-9dc3-4ea7-803c-cda3be58a5c8"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Navigate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""31fefdc1-88a3-4fff-b273-f95b568f75b4"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",

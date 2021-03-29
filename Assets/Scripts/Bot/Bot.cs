@@ -1365,6 +1365,7 @@ namespace StarSalvager
             {
                 case Part _:
                     closestHealth = this;
+                    BotPartsLogic.ResetHealCooldown();
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
