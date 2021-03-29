@@ -1326,30 +1326,30 @@ namespace StarSalvager
         {
             if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
+            
+            BotPartsLogic.TryHitArmor(ref damage);
 
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (damage <= 0f)
+                return;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             IHealth closestHealth;
-
+            
             switch (closestAttachable)
             {
                 case Part _:
                     closestHealth = this;
-                    BotPartsLogic.TryHitArmor(ref damage);
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
                     break;
             }
 
-
             //--------------------------------------------------------------------------------------------------------//
-
-            /*//Don't want to apply shields to the Enemy
-            if (!(closestAttachable is EnemyAttachable))
-                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);*/
-
-            if (damage <= 0f)
-                return;
-
+            
             //If something hit a part, we actually want to damage the bot as a whole
             if (closestAttachable is Part)
             {
