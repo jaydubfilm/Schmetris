@@ -123,6 +123,7 @@ namespace StarSalvager
         private float _currentInput;
 
         public override bool Rotating => _rotating;
+        public bool ContinousRotation => isContinuousRotation;
         public ROTATION MostRecentRotate;
 
         private bool _rotating;

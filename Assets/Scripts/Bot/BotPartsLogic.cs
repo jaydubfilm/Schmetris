@@ -621,9 +621,14 @@ namespace StarSalvager
             }
 
             _sabreTimers[part] = timer;
+
+            var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
+
+            var size = _sabreObject.size * (bot.ContinousRotation ? multiplier : 1f);
+            _sabreObject.SetSize(size);
             
             var dir = (part.Position - _corePart.Position).normalized;
-            var pos = part.Position + (dir * (_sabreObject.size / 2));
+            var pos = part.Position + (dir * (size / 2)) + (dir * (Constants.gridCellSize / 2f));
 
             _sabreObject.SetTransform(pos, dir);
         }

@@ -308,9 +308,11 @@ MonoBehaviour:
     - key: Time
       value: 3
     - key: Radius
-      value: 4
+      value: 1
     - key: Damage
       value: 10
+    - key: Multiplier
+      value: 8
     isManual: 1
     category: 3
     ammoUseCost: 5
