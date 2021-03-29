@@ -215,7 +215,8 @@ namespace StarSalvager
 
             GameTimer.SetPaused(true);
 
-            PlayerDataManager.RemoveAllNonParts();
+            //PlayerDataManager.RemoveAllNonParts();
+            PlayerDataManager.DowngradeAllBits(1, false);
             
             //SellBits();
             SetupDrone();
