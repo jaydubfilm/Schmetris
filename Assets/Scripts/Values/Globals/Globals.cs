@@ -42,6 +42,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+
+        public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
         
         public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
         
@@ -62,7 +64,7 @@ namespace StarSalvager.Values
         public static float DashCooldown => m_gameSettings.dashCooldown;
         
         //public static float BotStartingHealth => m_gameSettings.botHealth;
-        public static float GreenHealAmount => m_gameSettings.greenHealAmount;
+        //public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;

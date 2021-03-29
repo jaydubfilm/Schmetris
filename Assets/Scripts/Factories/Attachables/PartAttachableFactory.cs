@@ -40,13 +40,13 @@ namespace StarSalvager.Factories
             Color color;
             if (remoteData.partType == PART_TYPE.EMPTY)
             {
-                color = FactoryManager.Instance.BitProfileData.GetProfile(PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)).color;
+                color = PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate).GetColor();
             }
             else
             {
                 color = remoteData.category == BIT_TYPE.NONE
                     ? Color.white
-                    : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+                    : remoteData.category.GetColor();
             }
 
             part.SetSprite(sprite);
@@ -188,7 +188,7 @@ namespace StarSalvager.Factories
             var remoteData = remotePartData.GetRemoteData(type);
             var color = remoteData.category == BIT_TYPE.NONE
                 ? Color.white
-                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+                : remoteData.category.GetColor();
 
             temp.SetSprite(sprite);
             temp.SetColor(color);
@@ -246,7 +246,7 @@ namespace StarSalvager.Factories
             var remoteData = remotePartData.GetRemoteData(type);
             var color = remoteData.category == BIT_TYPE.NONE
                 ? Color.white
-                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+                :remoteData.category.GetColor();
 
             temp.LoadBlockData(partData);
             temp.SetSprite(sprite);
@@ -263,7 +263,7 @@ namespace StarSalvager.Factories
             var remoteData = remotePartData.GetRemoteData(overrideType);
             var color = remoteData.category == BIT_TYPE.NONE
                 ? Color.white
-                : FactoryManager.Instance.BitProfileData.GetProfile(remoteData.category).color;
+                : remoteData.category.GetColor();
             
             var profile = factoryProfile.GetProfile(overrideType);
             var sprite = profile.GetSprite(0);

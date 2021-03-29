@@ -42,7 +42,9 @@ namespace StarSalvager
 
         public bool CountTowardsMagnetism => true;
 
-        public bool HasCollided = false;
+        public bool HasCollided;
+
+        public bool toBeCollected;
 
         //ICanCombo Properties
         //====================================================================================================================//
@@ -81,8 +83,6 @@ namespace StarSalvager
         private LayerMask collisionMask;
 
         private Damage _damage;
-
-        public bool IsFromEnemyLoot;
 
         //IAttachable Functions
         //============================================================================================================//

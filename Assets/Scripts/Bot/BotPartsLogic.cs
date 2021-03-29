@@ -1871,7 +1871,7 @@ namespace StarSalvager
 
             
             var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
+            var bitColor = burnType.GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 

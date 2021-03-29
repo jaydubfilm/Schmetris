@@ -506,9 +506,7 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < _bitTypes.Length; i++)
             {
-                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
-
-                sliderImages[i].color = color;
+                sliderImages[i].color = _bitTypes[i].GetColor();
 
                 sliders[i].minValue = 0;
             }
@@ -702,7 +700,7 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
             SliderPartUis[index].SetSprite(sprite);
-            SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
+            SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
         }
 
         public void SetFill(int index, float fillValue)
