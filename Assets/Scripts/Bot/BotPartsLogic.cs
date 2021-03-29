@@ -137,6 +137,19 @@ namespace StarSalvager
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
         }
 
+        private void LateUpdate()
+        {
+            if (!GameManager.IsState(GameState.LevelActiveEndSequence))
+                return;
+
+            if (_sabreActive && _sabreObject)
+            {
+                _sabreObject.SetActive(false);
+                _sabreActive = false;
+            }
+            
+        }
+
         //====================================================================================================================//
 
         public Dictionary<PART_TYPE, bool> GetPartStates()
@@ -574,6 +587,9 @@ namespace StarSalvager
         private void SabreUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             if (!_sabreActive)
+                return;
+
+            if (_sabreObject == null)
                 return;
 
             var timer = _sabreTimers[part];
