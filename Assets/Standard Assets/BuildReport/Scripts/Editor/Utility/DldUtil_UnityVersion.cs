@@ -6,12 +6,11 @@ namespace DldUtil
 {
 	public static class UnityVersion
 	{
-		
-
 		public static void GetUnityVersionNumbers(string unityVersionString, out int major, out int minor, out int patch)
 		{
-			var splits = unityVersionString.Split(new[] {"Unity", ".", "a", "b", "rc", "f"}, StringSplitOptions.RemoveEmptyEntries);
-			
+			var splits = unityVersionString.Split(new[] {"Unity", ".", "a", "b", "rc", "f"},
+				StringSplitOptions.RemoveEmptyEntries);
+
 			major = -1;
 			minor = -1;
 			patch = -1;
@@ -31,7 +30,7 @@ namespace DldUtil
 				int.TryParse(splits[2], out patch);
 			}
 		}
-		
+
 		public static void GetUnityVersionNumbers(out int major, out int minor, out int patch)
 		{
 			GetUnityVersionNumbers(Application.unityVersion, out major, out minor, out patch);
@@ -62,7 +61,8 @@ namespace DldUtil
 		}
 
 
-		public static bool IsUnityVersionAtLeast(string unityVersionString, int majorAtLeast, int minorAtLeast, int patchAtLeast)
+		public static bool IsUnityVersionAtLeast(string unityVersionString, int majorAtLeast, int minorAtLeast,
+			int patchAtLeast)
 		{
 			int unityMajor;
 			int unityMinor;
@@ -73,7 +73,8 @@ namespace DldUtil
 			return (unityMajor >= majorAtLeast) && (unityMinor >= minorAtLeast) && (unityPatch >= patchAtLeast);
 		}
 
-		public static bool IsUnityVersionAtMost(string unityVersionString, int majorAtMost, int minorAtMost, int patchAtMost)
+		public static bool IsUnityVersionAtMost(string unityVersionString, int majorAtMost, int minorAtMost,
+			int patchAtMost)
 		{
 			int unityMajor;
 			int unityMinor;

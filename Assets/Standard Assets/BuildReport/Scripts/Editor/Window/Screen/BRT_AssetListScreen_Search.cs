@@ -46,7 +46,8 @@ namespace BuildReportTool.Window.Screen
 
 				_searchViewOffset = 0;
 			}
-			else if ((timeNow - _lastSearchTime >= SEARCH_DELAY) && !_searchTextInput.Equals(_lastSearchText, StringComparison.Ordinal))
+			else if ((timeNow - _lastSearchTime >= SEARCH_DELAY) &&
+			         !_searchTextInput.Equals(_lastSearchText, StringComparison.Ordinal))
 			{
 				// update search
 				_lastSearchText = _searchTextInput;
@@ -71,7 +72,7 @@ namespace BuildReportTool.Window.Screen
 				_searchResults = null;
 				return;
 			}
-			
+
 			BuildReportTool.AssetList list = GetAssetListToDisplay(buildReportToDisplay);
 
 
@@ -112,7 +113,8 @@ namespace BuildReportTool.Window.Screen
 			}
 
 			System.Array.Sort(assetList, (entry1, entry2) =>
-				GetFuzzyEqualityScore(searchText, entry1.Name).CompareTo(GetFuzzyEqualityScore(searchText, entry2.Name)));
+				GetFuzzyEqualityScore(searchText, entry1.Name)
+					.CompareTo(GetFuzzyEqualityScore(searchText, entry2.Name)));
 		}
 
 		bool IsANearStringMatch(string source, string target)

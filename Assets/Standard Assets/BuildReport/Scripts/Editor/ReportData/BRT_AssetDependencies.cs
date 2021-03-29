@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -57,7 +56,6 @@ namespace BuildReportTool
 		}
 
 
-
 		public bool HasContents
 		{
 			get { return _assetDependencies.Count > 0; }
@@ -87,6 +85,7 @@ namespace BuildReportTool
 			{
 				Assets = new List<string>();
 			}
+
 			Assets.AddRange(_assetDependencies.Keys);
 
 			if (Dependencies != null)
@@ -97,6 +96,7 @@ namespace BuildReportTool
 			{
 				Dependencies = new List<DependencyEntry>();
 			}
+
 			Dependencies.AddRange(_assetDependencies.Values);
 		}
 
@@ -146,7 +146,8 @@ namespace BuildReportTool
 			PopulateAssetEndUsers(rootAsset, destination, assetDependencies);
 		}
 
-		public static void PopulateAssetEndUsers(string rootAsset, List<GUIContent> destination, AssetDependencies assetDependencies)
+		public static void PopulateAssetEndUsers(string rootAsset, List<GUIContent> destination,
+			AssetDependencies assetDependencies)
 		{
 			if (assetDependencies == null)
 			{

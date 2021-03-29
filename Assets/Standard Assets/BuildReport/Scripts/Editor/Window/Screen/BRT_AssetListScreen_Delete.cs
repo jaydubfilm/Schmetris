@@ -241,8 +241,10 @@ namespace BuildReportTool.Window.Screen
 
 			EditorApplication.Beep();
 			if (!EditorUtility.DisplayDialog("Delete?",
-				string.Format("Among {0} file{1} in your project, {2} will be deleted.\n\nBuild Report Tool assets themselves, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion. You can force-delete those by selecting them (via the checkbox) and use \"Delete selected\", or simply delete them the normal way in your project view.\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nAre you sure about this?\n\nThe file{1} can be recovered from your {3}.",
-					all.Length.ToString(), plural, filesToDeleteCount.ToString(), BuildReportTool.Util.NameOfOSTrashFolder), "Yes", "No"))
+				    string.Format(
+					    "Among {0} file{1} in your project, {2} will be deleted.\n\nBuild Report Tool assets themselves, Unity editor assets, version control metadata, and Unix-style hidden files will not be included for deletion. You can force-delete those by selecting them (via the checkbox) and use \"Delete selected\", or simply delete them the normal way in your project view.\n\nDeleting a large number of files may take a long time as Unity will rebuild the project's Library folder.\n\nAre you sure about this?\n\nThe file{1} can be recovered from your {3}.",
+					    all.Length.ToString(), plural, filesToDeleteCount.ToString(),
+					    BuildReportTool.Util.NameOfOSTrashFolder), "Yes", "No"))
 			{
 				return;
 			}
@@ -288,7 +290,8 @@ namespace BuildReportTool.Window.Screen
 			list.ClearSelection();
 
 
-			string finalMessage = string.Format("{0} file{1} removed from your project. They can be recovered from your {2}.",
+			string finalMessage = string.Format(
+				"{0} file{1} removed from your project. They can be recovered from your {2}.",
 				filesToDeleteCount.ToString(), plural, BuildReportTool.Util.NameOfOSTrashFolder);
 			Debug.LogWarning(finalMessage);
 

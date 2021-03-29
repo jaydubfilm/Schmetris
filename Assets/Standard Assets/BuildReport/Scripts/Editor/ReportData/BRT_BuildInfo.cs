@@ -1,4 +1,3 @@
-
 using UnityEditor;
 
 namespace BuildReportTool
@@ -12,12 +11,12 @@ namespace BuildReportTool
 	{
 		// General Info
 		// ==================================================================================
-		
+
 		/// <summary>
 		/// Name of project folder.
 		/// </summary>
 		public string ProjectName;
-		
+
 		/// <summary>
 		/// Type of build, as reported by the Unity Editor log, but as a string.
 		/// </summary>
@@ -51,13 +50,13 @@ namespace BuildReportTool
 		/// This is the full path where the Unity Editor executable is.
 		/// </summary>
 		public string EditorAppContentsPath = "";
-		
+
 		/// <summary>
 		/// Value of <see cref="UnityEngine.Application.dataPath"/> during time of build.
 		/// This is the full path where the project folder is.
 		/// </summary>
 		public string ProjectAssetsPath = "";
-		
+
 		/// <summary>
 		/// Value of <see cref="EditorUserBuildSettings.GetBuildLocation"/> during time of build.
 		/// This is the full path where the build output is.
@@ -72,7 +71,7 @@ namespace BuildReportTool
 		/// If this Build Report recorded the various Build Settings when project was built.
 		/// </summary>
 		public bool HasUnityBuildSettings;
-		
+
 		/// <summary>
 		/// Various Build Settings when project was built.
 		/// </summary>
@@ -88,13 +87,13 @@ namespace BuildReportTool
 		/// If the output for an Android build additionally had an .obb file beside the .apk file.
 		/// </summary>
 		public bool AndroidUseAPKExpansionFiles;
-		
+
 		/// <summary>
 		/// If the output for an Android build was a project instead of an .apk file.
 		/// </summary>
 		public bool AndroidCreateProject;
 
-		
+
 		// Total sizes
 		// ==================================================================================
 
@@ -102,14 +101,14 @@ namespace BuildReportTool
 		/// Total size of output, in readable format.
 		/// </summary>
 		public string TotalBuildSize = "";
-		
+
 		/// <summary>
 		/// Not used anymore. This is kept here for compatibility
 		/// with opening and displaying old Build Report files.
 		/// This was the total size of output, in readable format.
 		/// </summary>
 		public string CompressedBuildSize = "";
-		
+
 		/// <summary>
 		/// Total size of all assets used in the build, in readable format.
 		/// </summary>
@@ -119,29 +118,28 @@ namespace BuildReportTool
 		/// Total size of all assets *not* used in the build, in readable format.
 		/// </summary>
 		public string UnusedTotalSize = "";
-		
+
 		/// <summary>
 		/// Total size of StreamingAssets folder (if present), in readable format.
 		/// </summary>
 		public string StreamingAssetsSize = "";
 
 
-
 		// Per-platform specific sizes
 		// -------------------------------------------
-		
+
 		/// <summary>
 		/// Not used anymore. This is kept here for compatibility
 		/// with opening and displaying old Build Report files.
 		/// This was the size of the .unity3d web build file, in readable format.
 		/// </summary>
 		public string WebFileBuildSize = "";
-		
+
 		/// <summary>
 		/// For Android builds, this is the size of the .apk file, in readable format.
 		/// </summary>
 		public string AndroidApkFileBuildSize = "";
-		
+
 		/// <summary>
 		/// For Android builds that generated an additional .obb file,
 		/// this is the size of the .obb file, in readable format.
@@ -197,7 +195,7 @@ namespace BuildReportTool
 		/// </summary>
 		public SceneInBuild[] ScenesInBuild;
 
-		
+
 		// Build Report Tool Options used at time of Build Report creation
 		// ==================================================================================
 
