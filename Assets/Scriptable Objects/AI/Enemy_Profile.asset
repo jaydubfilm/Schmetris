@@ -125,3 +125,12 @@ MonoBehaviour:
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: a814f17b-460b-4dfb-b939-67a72e3f2d29
+  - EnemyName: IceWing
+    m_sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
+      type: 3}
+    m_enemyPrefab: {fileID: 5001496015518308229, guid: c5c7db82cf37cee4a897ac20c606f3fc,
+      type: 3}
+    m_enemyTypeID: ce5f2bab-c14f-469a-910c-f2ffce165cc2
+    m_isAttachable: 0
+    m_enemyAnimationController: {fileID: 0}
+    m_projectileType: 
