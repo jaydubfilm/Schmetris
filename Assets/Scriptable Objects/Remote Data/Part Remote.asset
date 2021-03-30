@@ -296,7 +296,7 @@ MonoBehaviour:
       value: 10
     isManual: 0
     category: 2
-    ammoUseCost: 5
+    ammoUseCost: 1
     PatchSockets: 3
   - name: Sabre
     partType: 42
@@ -308,11 +308,11 @@ MonoBehaviour:
     - key: Time
       value: 3
     - key: Radius
-      value: 1
+      value: 2
     - key: Damage
       value: 10
     - key: Multiplier
-      value: 8
+      value: 2.5
     isManual: 1
     category: 3
     ammoUseCost: 5

@@ -93,8 +93,9 @@ MonoBehaviour:
     gearsValue: 1000
   asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
-  greenHealAmount: 10
+  botHealWaitTime: 1.5
   decoyDroneHealth: 20
+  bitDropCollectionMultiplier: 1
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
   unmergeLargeBitsOnRefine: 1
