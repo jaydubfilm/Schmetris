@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze
     {
         //IAttachable properties
         //============================================================================================================//
@@ -71,6 +71,12 @@ namespace StarSalvager
         public bool IsRegistered { get; set; } = false;
 
         public bool IsMarkedOnGrid { get; set; } = false;
+
+        //ICanFreeze Properties
+        //====================================================================================================================//
+
+        public bool Frozen => FreezeTime > 0f;
+        public float FreezeTime { get; private set; }
 
         //Bit Properties
         //============================================================================================================//
@@ -160,8 +166,8 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            //Debug.Break();
-            
+            if (Frozen)
+                return;
             
             var bot = gameObject.GetComponent<Bot>();
 
@@ -223,6 +229,13 @@ namespace StarSalvager
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
 
+        //ICanFreeze Functions
+        //====================================================================================================================//
+        
+        public void SetFrozen(in float time)
+        {
+            FreezeTime = time;
+        }
 
         //ISaveable Functions
         //============================================================================================================//
@@ -292,6 +305,5 @@ namespace StarSalvager
             return ToBlockData();
         }
 
-        
     }
 }
