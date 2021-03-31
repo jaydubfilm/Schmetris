@@ -8,7 +8,8 @@ public class Sabre : CollidableBase
 {
     private float _damage;
     
-    public float size { get; private set; }
+    public float minSize { get; private set; }
+    public float maxSize { get; private set; }
     
     protected override string CollisionTag => "Enemy";
 
@@ -18,13 +19,14 @@ public class Sabre : CollidableBase
 
     //====================================================================================================================//
 
-    public void Init(in float damage, in float size)
+    public void Init(in float damage, in float minSize, in float maxSize)
     {
         _damage = damage;
         
-        this.size = size;
+        this.minSize = minSize;
+        this.maxSize = maxSize;
 
-        SetSize(this.size);
+        SetSize(this.minSize);
     }
 
     //====================================================================================================================//

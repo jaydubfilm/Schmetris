@@ -150,7 +150,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!GameManager.IsState(GameState.LevelActiveEndSequence))
+            if (!GameManager.IsState(GameState.LevelEndWave))
                 return;
 
             if (_sabreActive && _sabreObject)
@@ -622,9 +622,9 @@ namespace StarSalvager
 
             _sabreTimers[part] = timer;
 
-            var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
+            //var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
 
-            var size = _sabreObject.size * (bot.ContinousRotation ? multiplier : 1f);
+            var size =bot.ContinousRotation ? _sabreObject.maxSize : _sabreObject.minSize;
             _sabreObject.SetSize(size);
             
             var dir = (part.Position - _corePart.Position).normalized;
@@ -1477,7 +1477,11 @@ namespace StarSalvager
                 throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
             
-            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var radius))
+            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var minSize))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Boost, out var maxSize))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
             }
@@ -1491,9 +1495,9 @@ namespace StarSalvager
 
             _sabreActive = true;
 
-            SetupSabre(radius + 1);
+            SetupSabre(minSize + 1);
             
-            _sabreObject.Init(damage, radius);
+            _sabreObject.Init(damage, minSize, maxSize);
 
         }
 
