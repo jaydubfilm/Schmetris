@@ -972,6 +972,9 @@ namespace StarSalvager
             float p = -b / (2 * a);
             float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
 
+            /*if (float.IsNaN(q))
+                return totarget.normalized;*/
+
             float t1 = p - q;
             float t2 = p + q;
             float t;

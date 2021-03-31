@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Recycling;
+using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
@@ -19,34 +19,37 @@ namespace StarSalvager.AI
         //Properties
         //====================================================================================================================//
 
-        [SerializeField]
-        private float freezeTime;
-        
-        [SerializeField, Range(1,10)]
-        private int attackPasses = 2;
-        [SerializeField, Range(1,10)]
-        private int attackSwoops = 2;
-
-        [SerializeField]
-        private float attackSwoopHeight;
-        
-        [SerializeField]
-        private float apexWaitTime;
-        
-        [SerializeField, Range(0f,10f)]
+        [SerializeField, Range(0f, 10f), SuffixLabel("sec", true)]
         private float anticipationWaitTime = 3f;
 
+        [SerializeField, Range(1, 10), BoxGroup("Attack")]
+        private int attackPasses = 2;
 
-        [SerializeField]
-        private float checkDistance;
-        [SerializeField, Range(0f, 1f), Tooltip("1.0 is 100% accurate and 0.0 is anywhere in front")]
+        [SerializeField, Range(1, 10), BoxGroup("Attack")]
+        private int attackSwoops = 2;
+
+        [SerializeField, BoxGroup("Attack"), SuffixLabel("units", true)]
+        private float attackSwoopHeight;
+
+        [SerializeField, BoxGroup("Attack"), SuffixLabel("sec", true)]
+        private float apexWaitTime;
+
+        [SerializeField, BoxGroup("Attack Beam"), SuffixLabel("sec", true)]
+        private float freezeTime;
+
+        [FormerlySerializedAs("checkDistance")] 
+        [SerializeField, BoxGroup("Attack Beam"), SuffixLabel("units", true), DisableInPlayMode]
+        private float beamLength;
+
+        [SerializeField, Range(0f, 1f), Tooltip("1.0 is 100% accurate and 0.0 is anywhere in front"),
+         BoxGroup("Attack Beam"), DisableInPlayMode]
         private float dotThreshold = 0.1f;
 
-        [SerializeField]
-        private LineRenderer lineRenderer;
 
         //====================================================================================================================//
-        
+
+        private LineRenderer _lineRenderer;
+
         private float _travelTime;
         private bool _isLeftPos;
 
@@ -57,18 +60,17 @@ namespace StarSalvager.AI
         private float _t;
         private Vector2 _targetLocation;
         private Vector2 _startLocation;
-        
-        
+
+
         private Vector2 _currentPosition;
         private Vector2 _lastPosition;
 
         //====================================================================================================================//
-        
+
         public override void LateInit()
         {
-
             //--------------------------------------------------------------------------------------------------------//
-            
+
             //https://www.calculator.net/right-triangle-calculator.html
             float CalculateEndWidth(in float dotThreshold, in float castDistance)
             {
@@ -80,23 +82,25 @@ namespace StarSalvager.AI
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             base.LateInit();
 
             _attackPassCount = 0;
             _attackSwoopCount = 0;
             _waitTimer = 0f;
 
-            lineRenderer.startWidth = 0;
-            lineRenderer.endWidth = 1f;
-            lineRenderer.widthMultiplier = CalculateEndWidth(dotThreshold, checkDistance);
-            lineRenderer.enabled = false;
+            if (!_lineRenderer) _lineRenderer = GetComponentInChildren<LineRenderer>();
+
+            _lineRenderer.startWidth = 0;
+            _lineRenderer.endWidth = 1f;
+            _lineRenderer.widthMultiplier = CalculateEndWidth(dotThreshold, beamLength);
+            _lineRenderer.enabled = false;
 
             SetState(STATE.MOVE);
         }
 
         //====================================================================================================================//
-        
+
         protected override void StateChanged(STATE newState)
         {
             switch (newState)
@@ -107,6 +111,7 @@ namespace StarSalvager.AI
                     _isLeftPos = Random.value > 0.5f;
                     //TODO Determine if the enemy is on the left or right side of the screen
                     _targetLocation = GetNewPosition(GetPos(_isLeftPos));
+                    _enemyMovementSpeed = m_enemyData.MovementSpeed;
                     break;
                 case STATE.FLEE:
                     break;
@@ -141,16 +146,23 @@ namespace StarSalvager.AI
             _lastPosition = _currentPosition;
             _currentPosition = Position;
 
-            Debug.DrawRay(_currentPosition, 
-                (_currentPosition - _lastPosition).normalized,
-                Color.red);
             
+            /*Debug.DrawRay(_currentPosition,
+                (_currentPosition - _lastPosition).normalized,
+                Color.red);*/
+
             if (_waitTimer > 0f)
             {
                 _waitTimer -= Time.deltaTime;
+                
+                _enemyMovementSpeed = 0;
+                MostRecentMovementDirection = Vector3.zero;
                 return;
             }
             
+            MostRecentMovementDirection = (_currentPosition - _lastPosition).normalized;
+
+
             switch (currentState)
             {
                 case STATE.NONE:
@@ -180,13 +192,13 @@ namespace StarSalvager.AI
 
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
             {
-                transform.position = Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
-                MostRecentMovementDirection = (transform.position - currentPosition).normalized;
+                transform.position =
+                    Vector2.MoveTowards(currentPosition, _targetLocation, EnemyMovementSpeed * Time.deltaTime);
                 return;
             }
 
             SetState(STATE.ATTACK);
-            
+
         }
 
         private void FleeState()
@@ -201,7 +213,7 @@ namespace StarSalvager.AI
 
             if (CameraController.IsPointInCameraRect(currentPosition))
                 return;
-            
+
             //TODO When no longer visible, recycle this
             SetState(STATE.DEATH);
         }
@@ -215,7 +227,7 @@ namespace StarSalvager.AI
         {
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void TryFindBits(in Vector2 checkDirection)
             {
                 var currentPosition = Position;
@@ -230,13 +242,13 @@ namespace StarSalvager.AI
 
                 foreach (var dir in rayDirections)
                 {
-                    Debug.DrawRay(currentPosition, dir * checkDistance, Color.yellow);
-                    
+                    Debug.DrawRay(currentPosition, dir * beamLength, Color.yellow);
+
                     var hit = Physics2D.Raycast(currentPosition, dir);
-                    
-                    if(hit.transform == null)
+
+                    if (hit.transform == null)
                         continue;
-                    
+
                     var hitCollidable = hit.transform.gameObject.GetComponent<ICanBeHit>();
 
                     switch (hitCollidable)
@@ -251,17 +263,17 @@ namespace StarSalvager.AI
                         case Bit bit when bit.Frozen == false:
                             bit.SetFrozen(freezeTime);
                             break;
-                            
+
                     }
                 }
 
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
 
             var t = _t / _travelTime;
-            
+
             if (t >= 1f)
             {
                 _isLeftPos = !_isLeftPos;
@@ -272,53 +284,56 @@ namespace StarSalvager.AI
                 }
                 else
                     SetState(STATE.ATTACK);
-                
-                
+
+
                 return;
             }
 
             var attacking = t >= 0.25f && t <= 0.55f;
-            lineRenderer.enabled = attacking;
+            _lineRenderer.enabled = attacking;
 
             if (attacking)
             {
                 var currentPosition = Position;
                 var checkDirection = (_currentPosition - _lastPosition).normalized;
-                
+
                 #region Unity Editor
 
 #if UNITY_EDITOR
                 void DebugLines()
                 {
-                
-                    Debug.DrawRay(currentPosition, checkDirection * checkDistance, Color.cyan);
+
+                    Debug.DrawRay(currentPosition, checkDirection * beamLength, Color.cyan);
 
                     var angle = Mathf.Acos(dotThreshold) * Mathf.Rad2Deg;
-                    var up = Quaternion.Euler(0, 0, angle ) * checkDirection;
+                    var up = Quaternion.Euler(0, 0, angle) * checkDirection;
                     var down = Quaternion.Euler(0, 0, -angle) * checkDirection;
 
-                    Debug.DrawRay(currentPosition, up * checkDistance, Color.blue);
-                    Debug.DrawRay(currentPosition, down * checkDistance, Color.blue);
+                    Debug.DrawRay(currentPosition, up * beamLength, Color.blue);
+                    Debug.DrawRay(currentPosition, down * beamLength, Color.blue);
                 }
 
                 DebugLines();
 #endif
+
                 #endregion //Unity Editor
 
                 TryFindBits(checkDirection);
-                
-                lineRenderer.SetPositions(new []
+
+                _lineRenderer.SetPositions(new[]
                 {
                     currentPosition,
-                    currentPosition + (Vector3)(checkDirection * checkDistance)
+                    currentPosition + (Vector3) (checkDirection * beamLength)
                 });
-                
+
             }
-            
+
             var newPosition = Mathfx.Hermite(_startLocation, _targetLocation, t);
             newPosition.y = Mathfx.HermiteCubed(newPosition.y, attackSwoopHeight, t);
 
             transform.position = newPosition;
+            
+            _enemyMovementSpeed = (_currentPosition - _lastPosition).magnitude / Time.deltaTime;
 
             _t += Time.deltaTime;
         }
@@ -329,7 +344,7 @@ namespace StarSalvager.AI
         {
             //Used to ensure the CameraVisibleRect is updated
             CameraController.IsPointInCameraRect(Vector2.zero, Constants.VISIBLE_GAME_AREA);
-            
+
             var cameraRect = CameraController.VisibleCameraRect;
             var xBounds = new Vector2(cameraRect.xMin, cameraRect.xMax);
             var yBounds = new Vector2(cameraRect.yMin, cameraRect.yMax);
@@ -348,7 +363,7 @@ namespace StarSalvager.AI
 
         //Enemy Functions
         //====================================================================================================================//
-        
+
 
         public override void UpdateEnemy(Vector2 playerLocation)
         {

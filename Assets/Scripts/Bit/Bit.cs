@@ -90,6 +90,20 @@ namespace StarSalvager
 
         private Damage _damage;
 
+        //Unity Functions
+        //====================================================================================================================//
+
+        private void Update()
+        {
+            if (!Frozen) 
+                return;
+            
+            FreezeTime -= Time.deltaTime;
+            
+            //If the change sets this no longer frozen, change the color back
+            if(FreezeTime <= 0) SetColor(Color.white);
+        }
+
         //IAttachable Functions
         //============================================================================================================//
 
@@ -235,6 +249,9 @@ namespace StarSalvager
         public void SetFrozen(in float time)
         {
             FreezeTime = time;
+            
+            if(Frozen)
+                SetColor(Color.cyan);
         }
 
         //ISaveable Functions
