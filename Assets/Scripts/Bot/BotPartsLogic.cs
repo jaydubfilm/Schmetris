@@ -150,7 +150,7 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (!GameManager.IsState(GameState.LevelActiveEndSequence))
+            if (!GameManager.IsState(GameState.LevelEndWave))
                 return;
 
             if (_sabreActive && _sabreObject)
@@ -567,17 +567,22 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = repairAmount * deltaTime;
+            var cost = ammoCost * Time.deltaTime;
             
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            
             if (ammoResource.Ammo < cost)
                 return;
+            
             ammoResource.SubtractAmmo(cost);
             
-            repairTarget.ChangeHealth(cost);
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
             
             
 
@@ -622,9 +627,9 @@ namespace StarSalvager
 
             _sabreTimers[part] = timer;
 
-            var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
+            //var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
 
-            var size = _sabreObject.size * (bot.ContinousRotation ? multiplier : 1f);
+            var size =bot.ContinousRotation ? _sabreObject.maxSize : _sabreObject.minSize;
             _sabreObject.SetSize(size);
             
             var dir = (part.Position - _corePart.Position).normalized;
@@ -971,6 +976,9 @@ namespace StarSalvager
 
             float p = -b / (2 * a);
             float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
+
+            /*if (float.IsNaN(q))
+                return totarget.normalized;*/
 
             float t1 = p - q;
             float t2 = p + q;
@@ -1474,7 +1482,11 @@ namespace StarSalvager
                 throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
             
-            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var radius))
+            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var minSize))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Boost, out var maxSize))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
             }
@@ -1488,9 +1500,9 @@ namespace StarSalvager
 
             _sabreActive = true;
 
-            SetupSabre(radius + 1);
+            SetupSabre(minSize + 1);
             
-            _sabreObject.Init(damage, radius);
+            _sabreObject.Init(damage, minSize, maxSize);
 
         }
 

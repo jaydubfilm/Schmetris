@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze
     {
         //IAttachable properties
         //============================================================================================================//
@@ -72,6 +72,12 @@ namespace StarSalvager
 
         public bool IsMarkedOnGrid { get; set; } = false;
 
+        //ICanFreeze Properties
+        //====================================================================================================================//
+
+        public bool Frozen => FreezeTime > 0f;
+        public float FreezeTime { get; private set; }
+
         //Bit Properties
         //============================================================================================================//
         [ShowInInspector, ReadOnly]
@@ -83,6 +89,20 @@ namespace StarSalvager
         private LayerMask collisionMask;
 
         private Damage _damage;
+
+        //Unity Functions
+        //====================================================================================================================//
+
+        private void Update()
+        {
+            if (!Frozen) 
+                return;
+            
+            FreezeTime -= Time.deltaTime;
+            
+            //If the change sets this no longer frozen, change the color back
+            if(FreezeTime <= 0) SetColor(Color.white);
+        }
 
         //IAttachable Functions
         //============================================================================================================//
@@ -160,8 +180,8 @@ namespace StarSalvager
 
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            //Debug.Break();
-            
+            if (Frozen)
+                return;
             
             var bot = gameObject.GetComponent<Bot>();
 
@@ -223,6 +243,16 @@ namespace StarSalvager
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
 
+        //ICanFreeze Functions
+        //====================================================================================================================//
+        
+        public void SetFrozen(in float time)
+        {
+            FreezeTime = time;
+            
+            if(Frozen)
+                SetColor(Color.cyan);
+        }
 
         //ISaveable Functions
         //============================================================================================================//
@@ -292,6 +322,5 @@ namespace StarSalvager
             return ToBlockData();
         }
 
-        
     }
 }

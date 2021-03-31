@@ -309,10 +309,10 @@ MonoBehaviour:
       value: 3
     - key: Radius
       value: 2
+    - key: Boost
+      value: 5
     - key: Damage
       value: 10
-    - key: Multiplier
-      value: 2.5
     isManual: 1
     category: 3
     ammoUseCost: 5
