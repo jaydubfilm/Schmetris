@@ -21,6 +21,8 @@ namespace StarSalvager.Utilities.Inputs
     }
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+        public static Action<string> InputDeviceChanged;
+        
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
 
@@ -152,6 +154,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
+            
         }
 
         private void Update()
@@ -290,6 +293,36 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Inputs
+
+        //FIXME This functions but could use reorganizing
+        public static string CurrentInputDeviceName => Instance._currentInputDevice;
+        private string _currentInputDevice = "Keyboard";
+        private void CheckForInputDeviceChange(in InputAction.CallbackContext callbackContext)
+        {
+            CheckForInputDeviceChange(callbackContext.control.device);
+        }
+        private void CheckForInputDeviceChange(in InputDevice inputDevice)
+        {
+            const string KEYBOARD = "Keyboard";
+            const string MOUSE = "Mouse";
+            
+            var deviceName = inputDevice.name;
+            
+            if (deviceName.Equals(KEYBOARD) || deviceName.Equals(MOUSE))
+                deviceName = KEYBOARD;
+            
+            if (_currentInputDevice.Equals(deviceName))
+                return;
+
+            _currentInputDevice = deviceName;
+            
+            Debug.Log($"New Device Name: {deviceName}");
+            //TODO Notify whoever that the 
+            InputDeviceChanged?.Invoke(deviceName);
+        }
+        
+        
+        
         private void SetupInputs()
         {
             var actionMap = playerInput.currentActionMap.actions;
@@ -381,6 +414,8 @@ namespace StarSalvager.Utilities.Inputs
 
         private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
         {
+            CheckForInputDeviceChange(ctx);
+            
             _triggersPressed[index] = ctx.ReadValue<float>() == 1f;
         }
 
@@ -448,6 +483,8 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
+            CheckForInputDeviceChange(ctx);
+            
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
                 return;
             
@@ -469,6 +506,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
+
+            CheckForInputDeviceChange(ctx);
             
             switch (ctx.action.name)
             {
@@ -856,6 +895,8 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
 
+            CheckForInputDeviceChange(ctx);
+            
             if (GameManager.IsState(GameState.LevelEndWave))
                 return;
 
