@@ -285,7 +285,7 @@ MonoBehaviour:
   Hash9: []
   Hash10: []
   _enableRegistrator: 0
-  _saveInFolder: SCENE
+  _saveInFolder: FOLDER
   _mFavoritCategorySelected: 0
   m_GetHash_IconImageKey: []
   m_GetHash_IconImageValue: []
