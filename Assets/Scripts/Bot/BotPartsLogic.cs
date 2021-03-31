@@ -567,17 +567,22 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = repairAmount * deltaTime;
+            var cost = ammoCost * Time.deltaTime;
             
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            
             if (ammoResource.Ammo < cost)
                 return;
+            
             ammoResource.SubtractAmmo(cost);
             
-            repairTarget.ChangeHealth(cost);
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
             
             
 
