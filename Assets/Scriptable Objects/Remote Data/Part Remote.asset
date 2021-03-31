@@ -311,7 +311,7 @@ MonoBehaviour:
       value: 1
     - key: Damage
       value: 10
-    - key: Multiplier
+    - key: Boost
       value: 8
     isManual: 1
     category: 3
