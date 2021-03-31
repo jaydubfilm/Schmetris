@@ -92,12 +92,12 @@ MonoBehaviour:
       to all cells within its radius. '
     dataTest:
     - key: Cooldown
-      value: 15
+      value: 6
     - key: Time
       value: 2
     isManual: 1
     category: 1
-    ammoUseCost: 5
+    ammoUseCost: 10
     PatchSockets: 2
   - name: Bomb
     partType: 7

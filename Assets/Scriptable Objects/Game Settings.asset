@@ -95,7 +95,7 @@ MonoBehaviour:
   timeAfterWaveEndFlyOut: 8
   botHealWaitTime: 1.5
   decoyDroneHealth: 20
-  bitDropCollectionMultiplier: 1
+  bitDropCollectionMultiplier: 0.5
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
   unmergeLargeBitsOnRefine: 1
