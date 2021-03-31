@@ -19,7 +19,7 @@ using StarSalvager.Utilities.Particles;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
     {
         
         
@@ -75,7 +75,7 @@ namespace StarSalvager.AI
         public bool Disabled { get; protected set; }
 
         public bool Frozen => FreezeTime > 0f;
-        protected float FreezeTime { get; set; }
+        public float FreezeTime { get; private set; }
 
         //IStateAnimation Properties 
         //============================================================================================================//
@@ -119,7 +119,7 @@ namespace StarSalvager.AI
         public virtual void LateInit()
         { }
 
-        public void SetFrozen(float time)
+        public void SetFrozen(in float time)
         {
             FreezeTime = time;
         }
@@ -257,14 +257,13 @@ namespace StarSalvager.AI
                 
                 return false;
             }
-            
-            if (FreezeTime > 0)
-            {
-                FreezeTime -= Time.deltaTime;
-                return false;
-            }
 
-            return true;
+            if (!Frozen) 
+                return true;
+            
+            FreezeTime -= Time.deltaTime;
+            return false;
+
         }
 
         public abstract void UpdateEnemy(Vector2 playerLocation);
