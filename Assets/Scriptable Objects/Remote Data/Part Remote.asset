@@ -296,7 +296,7 @@ MonoBehaviour:
       value: 10
     isManual: 0
     category: 2
-    ammoUseCost: 1
+    ammoUseCost: 5
     PatchSockets: 3
   - name: Sabre
     partType: 42
