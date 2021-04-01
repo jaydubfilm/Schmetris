@@ -132,8 +132,8 @@ namespace StarSalvager.UI.Scrapyard
                     selectionUis[i].partButton.onClick.RemoveAllListeners();
                     selectionUis[i].partButton.onClick.AddListener(() =>
                     {
+                        _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
                         FindAndDestroyPart(partType);
-                        
                         partDisposeWindow.SetActive(false);
                     });
                 }
