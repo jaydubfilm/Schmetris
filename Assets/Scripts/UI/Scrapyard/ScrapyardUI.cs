@@ -34,6 +34,7 @@ namespace StarSalvager.UI.Scrapyard
         private struct SelectionUI
         {
             public Button partButton;
+            public PartChoiceButtonHover PartChoiceButtonHover;
             public TMP_Text partTitle;
         }
         
@@ -124,7 +125,9 @@ namespace StarSalvager.UI.Scrapyard
                     
                     selectionUis[i].partTitle.text = partRemoteData.name;
                     selectionUis[i].partButton.image.sprite = partProfile.GetProfile(partType).Sprite;
-                    selectionUis[i].partButton.image.color = bitProfile.GetProfile(partRemoteData.category).color;
+                    selectionUis[i].partButton.image.color = partRemoteData.category.GetColor();
+                    
+                    selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
                     
                     selectionUis[i].partButton.onClick.RemoveAllListeners();
                     selectionUis[i].partButton.onClick.AddListener(() =>

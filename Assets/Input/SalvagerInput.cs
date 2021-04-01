@@ -234,39 +234,6 @@ namespace StarSalvager.Utilities.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""D-Pad"",
-                    ""id"": ""1135902d-d7e1-4c58-81e6-27dcd1fec064"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": ""Press(behavior=2)"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Negative"",
-                    ""id"": ""81e53de8-46cb-41cb-8619-7e7837959b9a"",
-                    ""path"": ""<Gamepad>/dpad/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""94f163f2-aff0-47fb-9d38-84b08bcd58b8"",
-                    ""path"": ""<Gamepad>/dpad/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Side Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""626d3d1b-580b-4cf2-b8a6-d8305cd616b2"",
                     ""path"": ""<Gamepad>/leftStick/x"",
@@ -690,7 +657,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/dpad"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SwapPart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

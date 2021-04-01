@@ -133,7 +133,7 @@ namespace StarSalvager
         private GameObject _healObject;
         private float _healActiveTimer;
 
-        //private Dictionary<Part, Transform> _turrets;
+        private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
 
         private List<Part> _parts;
@@ -202,16 +202,16 @@ namespace StarSalvager
             switch (direction)
             {
                 case DIRECTION.LEFT:
-                    category = BIT_TYPE.RED;
+                    category = BIT_TYPE.BLUE;
                     break;
                 case DIRECTION.UP:
-                    category = BIT_TYPE.YELLOW;
+                    category = BIT_TYPE.RED;
                     break;
                 case DIRECTION.RIGHT:
-                    category = BIT_TYPE.GREY;
+                    category = BIT_TYPE.YELLOW;
                     break;
                 case DIRECTION.DOWN:
-                    category = BIT_TYPE.BLUE;
+                    category = BIT_TYPE.GREY;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
@@ -2062,7 +2062,7 @@ namespace StarSalvager
         }*/
 
         //FIXME The turret setup feels shit, need to clean this
-        /*private void CreateTurretEffect(in Part part)
+        private void CreateTurretEffect(in Part part)
         {
             if(_turrets.IsNullOrEmpty())
                 _turrets = new Dictionary<Part, Transform>();
@@ -2080,7 +2080,7 @@ namespace StarSalvager
             effect.transform.SetParent(part.transform, false);
 
             _turrets.Add(part, effect.transform);
-        }*/
+        }
 
         private void CreateBombEffect(in IAttachable attachable, in float range)
         {

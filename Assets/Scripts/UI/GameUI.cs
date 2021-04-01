@@ -58,7 +58,9 @@ namespace StarSalvager.UI
                 if (!isTrigger)
                     return;
 
-                triggerInputImage.sprite = triggerSprite;
+                Debug.Log($"{nameof(SetIsTrigger)} is not implemented for this Prototype");
+                triggerInputImage.gameObject.SetActive(false);
+                //triggerInputImage.sprite = triggerSprite;
             }
 
             public void SetSprite(in Sprite partSprite)
@@ -74,6 +76,7 @@ namespace StarSalvager.UI
             public void SetColor(in Color color)
             {
                 foregroundImage.color = color;
+                secondPartImage.color = color;
             }
             
             public void SetBackgroundColor(in Color color)
@@ -681,6 +684,8 @@ namespace StarSalvager.UI
 
         private void TryUpdateInputSprites(string newDeviceName)
         {
+            Debug.Log($"{nameof(TryUpdateInputSprites)} is not implemented for this Prototype");
+            return;
             var indices = new[]
             {
                 0, 1, 3, 4
