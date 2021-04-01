@@ -166,7 +166,7 @@ Transform:
   m_GameObject: {fileID: 5001496015518308229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2474494921476057341}
   m_Father: {fileID: 0}
@@ -184,15 +184,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbc167c0a10ef3149b90f1f627b74729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  freezeTime: 1
+  anticipationWaitTime: 1
   attackPasses: 2
   attackSwoops: 2
   attackSwoopHeight: 10
   apexWaitTime: 0.5
-  anticipationWaitTime: 1
-  checkDistance: 5
+  freezeTime: 1
+  beamLength: 5
   dotThreshold: 0.9
-  lineRenderer: {fileID: 1356842176369333367}
 --- !u!114 &5281014837887147867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,8 +248,7 @@ SpriteRenderer:
   m_SortingLayerID: 1579873703
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7277472957222873379, guid: 44ac14a3eed46b34db93362775527939,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: a45352b77a2ce7e4f8b6d76339336da8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -278,7 +276,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2.015625, y: 1.4296875}
     newSize: {x: 1.28, y: 1.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
