@@ -88,6 +88,8 @@ MonoBehaviour:
       m_enemyCount: 6
     - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
       m_enemyCount: 2
+    - m_enemyType: ce5f2bab-c14f-469a-910c-f2ffce165cc2
+      m_enemyCount: 2
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
