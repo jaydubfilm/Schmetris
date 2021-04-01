@@ -189,8 +189,8 @@ MonoBehaviour:
   attackSwoops: 2
   attackSwoopHeight: 10
   apexWaitTime: 0.5
-  freezeTime: 1
-  beamLength: 5
+  freezeTime: 15
+  beamLength: 10
   dotThreshold: 0.9
 --- !u!114 &5281014837887147867
 MonoBehaviour:
