@@ -78,7 +78,7 @@ namespace StarSalvager.AI
                 var lengthC = castDistance / Mathf.Cos(angleA);
                 var lengthA = Mathf.Sqrt(Mathf.Pow(lengthC, 2) - Mathf.Pow(castDistance, 2));
 
-                return lengthA / 2f;
+                return lengthA;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -288,14 +288,17 @@ namespace StarSalvager.AI
 
                 return;
             }
+            
+            var newPosition = Mathfx.Hermite(_startLocation, _targetLocation, t);
+            newPosition.y = Mathfx.HermiteCubed(newPosition.y, attackSwoopHeight, t);
 
             var attacking = t >= 0.25f && t <= 0.55f;
             _lineRenderer.enabled = attacking;
 
             if (attacking)
             {
-                var currentPosition = Position;
-                var checkDirection = (_currentPosition - _lastPosition).normalized;
+                //var currentPosition = newPosition;
+                var checkDirection = Vector2.down/*(_currentPosition - _lastPosition).normalized*/;
 
                 #region Unity Editor
 
@@ -303,14 +306,14 @@ namespace StarSalvager.AI
                 void DebugLines()
                 {
 
-                    Debug.DrawRay(currentPosition, checkDirection * beamLength, Color.cyan);
+                    Debug.DrawRay(newPosition, checkDirection * beamLength, Color.cyan);
 
                     var angle = Mathf.Acos(dotThreshold) * Mathf.Rad2Deg;
                     var up = Quaternion.Euler(0, 0, angle) * checkDirection;
                     var down = Quaternion.Euler(0, 0, -angle) * checkDirection;
 
-                    Debug.DrawRay(currentPosition, up * beamLength, Color.blue);
-                    Debug.DrawRay(currentPosition, down * beamLength, Color.blue);
+                    Debug.DrawRay(newPosition, up * beamLength, Color.blue);
+                    Debug.DrawRay(newPosition, down * beamLength, Color.blue);
                 }
 
                 DebugLines();
@@ -322,14 +325,11 @@ namespace StarSalvager.AI
 
                 _lineRenderer.SetPositions(new[]
                 {
-                    currentPosition,
-                    currentPosition + (Vector3) (checkDirection * beamLength)
+                    (Vector3)newPosition,
+                    (Vector3)newPosition + (Vector3)(checkDirection * beamLength)
                 });
 
             }
-
-            var newPosition = Mathfx.Hermite(_startLocation, _targetLocation, t);
-            newPosition.y = Mathfx.HermiteCubed(newPosition.y, attackSwoopHeight, t);
 
             transform.position = newPosition;
             
@@ -340,6 +340,8 @@ namespace StarSalvager.AI
 
         #endregion //State Updates
 
+        //====================================================================================================================//
+        
         private static Vector2 GetNewPosition(in float xPos, in float yPos = 0.85f)
         {
             //Used to ensure the CameraVisibleRect is updated

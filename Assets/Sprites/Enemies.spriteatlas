@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 699a5a3d9a1b3864dbd7fa4531cfb259, type: 3}
-    totalSpriteSurfaceArea: 713339
+    totalSpriteSurfaceArea: 807767
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -43,6 +43,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ea4b6755f70e570469d74520f7a49c15, type: 3}
   - {fileID: -7907493562552774039, guid: e39fc475f37ab474e86c256fc9072631, type: 3}
   - {fileID: -1846019054644241930, guid: f4d5f736a41c2f547bebbabafdcdeb7f, type: 3}
+  - {fileID: 21300000, guid: a45352b77a2ce7e4f8b6d76339336da8, type: 3}
+  - {fileID: 21300000, guid: 91961c08449dadf4fa8f35a8e3f060c6, type: 3}
   - {fileID: 21300000, guid: f973c4f91ba92864289522853488cfb8, type: 3}
   - {fileID: 21300000, guid: a1a6060a50d17f94182fe9ee1edc138b, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -54,6 +56,8 @@ SpriteAtlas:
   - Mine_Sleeper
   - Theif_Blue_0
   - AstroidSnake_GreenYellow_0
+  - IceWing
+  - IceWingRed
   - Mine_proximity
   - enemy_TRIPLESENTRIE_0_v1
   m_Tag: Enemies
