@@ -582,6 +582,17 @@ namespace StarSalvager
                         SabreUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
+
+                if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
+                    continue;
+                
+                //Wait for the shield to be inactive before the cooldown can begin
+                if (part.Type == PART_TYPE.SHIELD && _shieldActive)
+                    return;
+
+                //Wait for the Sabre to be inactive before the cooldown can begin
+                if (part.Type == PART_TYPE.SABRE && _sabreActive)
+                    return;
                 
                 foreach (var triggerPart in _triggerParts)
                 {
@@ -589,15 +600,10 @@ namespace StarSalvager
                     TriggerPartUpdates(triggerPart, null, deltaTime);
                 }
 
-                if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
-                    continue;
-
                 /*if (!cooldownData.HasCooldown(false))
                     return;*/
 
-                //Wait for the shield to be inactive before the cooldown can begin
-                if (part.Type == PART_TYPE.SHIELD && _shieldActive)
-                    return;
+                
 
                 var uiIndex = bitTypes.FindIndex(x => x == partRemoteData.category);
                 var fill = 1f - cooldownData.Value;
