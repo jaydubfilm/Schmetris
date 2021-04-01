@@ -560,17 +560,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "888c49cb-81d8-45fc-86ff-6b5dc3e7a132",
-                    "path": "<Gamepad>/dpad/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "SpeedChange",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "ZC",
                     "id": "85f76224-edfc-4b2f-bdb6-18f7ef85d1ab",
                     "path": "1DAxis",
