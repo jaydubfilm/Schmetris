@@ -163,7 +163,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
 
-        /*public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
+        public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
@@ -172,7 +172,7 @@ namespace StarSalvager.Utilities.Saving
 
                 if (index < 0)
                     throw new ArgumentOutOfRangeException(nameof(index), index,
-                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{Newtonsoft.Json.JsonConvert.SerializeObject(blockDatas)}");
+                        $"Trying to remove bit at [{coordinate}] which was not in List:\n{JsonConvert.SerializeObject(blockDatas)}");
 
                 blockDatas.RemoveAt(index);
             }
@@ -209,7 +209,7 @@ namespace StarSalvager.Utilities.Saving
             //Review all the bits (After having moved) to ensure there is no one floating
             if (droneBlockData.OfType<BitData>().Any(bitData => !droneBlockData.HasPathToCore(bitData)))
             {
-                throw new Exception($"No Path to Core found\nOriginal: {Newtonsoft.Json.JsonConvert.SerializeObject(originalBackup)}\nSolved: {Newtonsoft.Json.JsonConvert.SerializeObject(droneBlockData)}");
+                throw new Exception($"No Path to Core found\nOriginal: {JsonConvert.SerializeObject(originalBackup)}\nSolved: {JsonConvert.SerializeObject(droneBlockData)}");
             }
 
             if (downgradeBits)
@@ -226,7 +226,7 @@ namespace StarSalvager.Utilities.Saving
 
            
             SetBlockData(droneBlockData);
-        }*/
+        }
 
         //============================================================================================================//
 

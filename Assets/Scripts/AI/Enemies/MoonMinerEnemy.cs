@@ -15,6 +15,8 @@ namespace StarSalvager.AI
 {
     public class MoonMinerEnemy : Enemy
     {
+        private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
+
         public float anticipationTime = 1f;
         
         //====================================================================================================================//
@@ -37,6 +39,8 @@ namespace StarSalvager.AI
         private float _anticipationTime;
         private float _attackTime;
         private int _attackCount = 4;
+        
+        private float _attackEffectTimer;
 
         [SerializeField]
         private float damage;
@@ -45,6 +49,9 @@ namespace StarSalvager.AI
         [SerializeField]
         private GameObject beamObject;
 
+        private SpriteRenderer _beamSpriteRenderer;
+        private Transform _beamTransform;
+
         //====================================================================================================================//
         
         public override void LateInit()
@@ -52,6 +59,8 @@ namespace StarSalvager.AI
             base.LateInit();
             
             beamObject.SetActive(false);
+            _beamTransform = beamObject.transform;
+            _beamSpriteRenderer = beamObject.GetComponent<SpriteRenderer>();
             
             SetState(STATE.MOVE);
             
@@ -122,11 +131,14 @@ namespace StarSalvager.AI
                 case STATE.FLEE:
                     break;
                 case STATE.ANTICIPATION:
+                    SetBeamActive(true, SEMI_TRANSPARENT);
                     _anticipationTime = anticipationTime;
                     break;
                 case STATE.ATTACK:
-                    beamObject.SetActive(true);
+                    SetBeamActive(true);
+                    //beamObject.SetActive(true);
                     _attackTime = 2f;
+                    _attackEffectTimer = 0;
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<MoonMinerEnemy>(this);
@@ -204,6 +216,9 @@ namespace StarSalvager.AI
 
         private void AnticipationState()
         {
+            //beamObject.SetActive(true);
+            //_beamSpriteRenderer.color
+            
             //TODO Wait x Seconds
             if (_anticipationTime > 0f)
             {
@@ -217,22 +232,42 @@ namespace StarSalvager.AI
 
         private void AttackState()
         {
+            const float DISTANCE = 100f;
             //--------------------------------------------------------------------------------------------------------//
 
-            var raycastHit = Physics2D.Raycast(transform.position, Vector2.down, 100, collisionMask.value);
+            var raycastHit2D = Physics2D.Raycast(transform.position, Vector2.down, DISTANCE, collisionMask.value);
 
-            if (raycastHit.collider != null)
+            if (raycastHit2D.collider != null)
             {
-                if (!(raycastHit.transform.GetComponent<Bot>() is Bot bot))
+                if (!(raycastHit2D.transform.GetComponent<Bot>() is Bot bot))
                     throw new Exception();
 
                 var damageToApply = damage * Time.deltaTime;
 
-                var toHit = bot.GetAttachablesInColumn(raycastHit.point);
+                var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
+                bot.TryHitAt(closestAttachable, damageToApply);
+
+                SetBeamLengthPosition(Position, Vector2.down, raycastHit2D.distance);
+
+                if (_attackEffectTimer <= 0f)
+                {
+                    _attackEffectTimer = 0.5f;
+                    CreateExplosionEffect(raycastHit2D.point);
+                }
+                else
+                {
+                    _attackEffectTimer -= Time.deltaTime;
+                }
+
+                /*var toHit = bot.GetAttachablesInColumn(raycastHit.point);
                 foreach (var attachable in toHit)
                 {
                     bot.TryHitAt(attachable, damageToApply, false);
-                }
+                }*/
+            }
+            else
+            {
+                SetBeamLengthPosition(Position, Vector2.down, DISTANCE);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -271,6 +306,37 @@ namespace StarSalvager.AI
         #endregion*/
 
         //====================================================================================================================//
+        
+        private void SetBeamActive(in bool state)
+        {
+            SetBeamActive(state, Color.white);
+        }
+        
+        private void SetBeamActive(in bool state, in Color color)
+        {
+            _beamSpriteRenderer.color = color;
+            beamObject.SetActive(state);
+            
+            /*foreach (var spriteRenderer in beamSpriteRenderers)
+            {
+                if(state)
+                    spriteRenderer.color = color;
+                
+                spriteRenderer.gameObject.SetActive(state);
+            }*/
+        }
+        private void SetBeamLengthPosition(in Vector2 worldPosition, in Vector2 direction, in float length)
+        {
+            //var targetTransform = _beamSpriteRenderer.transform;
+            var size = _beamSpriteRenderer.size;
+            size.y = length;
+                
+            _beamSpriteRenderer.size = size;
+                
+            _beamTransform.up = direction;
+
+            _beamTransform.position = worldPosition + direction * (length / 2);
+        }
 
         private static Vector2 GetNewPosition()
         {

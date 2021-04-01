@@ -13,7 +13,6 @@ namespace StarSalvager.Factories.Data
             JunkBit,
             Mine,
             Bumper,
-            Bomb
         }
         
         public string ProjectileType => m_projectileType;
@@ -43,6 +42,9 @@ namespace StarSalvager.Factories.Data
         public TowType TowObjectType => m_towType;
         public bool CanHitAsteroids => m_canHitAsteroids;
         public bool AddVelocityToProjectiles => m_addVelocityToProjectiles;
+        
+        public bool DestroyAtScreenBottom => destroyAtScreenBottom;
+        public bool EffectOnDeath => effectOnDeath;
 
         //====================================================================================================================//
 
@@ -124,6 +126,12 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
         private bool m_addVelocityToProjectiles;
+        
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool destroyAtScreenBottom;
+        
+        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        private bool effectOnDeath;
 
         //====================================================================================================================//
 

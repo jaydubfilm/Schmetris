@@ -22,6 +22,8 @@ namespace StarSalvager.Utilities.Inputs
     }
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+        public static Action<string> InputDeviceChanged;
+
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
 
@@ -155,6 +157,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
+
         }
 
         private void Update()
@@ -163,7 +166,7 @@ namespace StarSalvager.Utilities.Inputs
                 _controlPressed = true;
             else if(UnityEngine.Input.GetKeyUp(KeyCode.LeftControl))
                 _controlPressed = false;
-            
+
             DasChecksMovement();
             DasChecksRotate();
 
@@ -245,7 +248,7 @@ namespace StarSalvager.Utilities.Inputs
 
             _moveOnInput.Add(toAdd);
         }
-        
+
         //IInput Functions
         //============================================================================================================//
 
@@ -298,6 +301,36 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Inputs
+
+        //FIXME This functions but could use reorganizing
+        public static string CurrentInputDeviceName => Instance._currentInputDevice;
+        private string _currentInputDevice = "Keyboard";
+        private void CheckForInputDeviceChange(in InputAction.CallbackContext callbackContext)
+        {
+            CheckForInputDeviceChange(callbackContext.control.device);
+        }
+        private void CheckForInputDeviceChange(in InputDevice inputDevice)
+        {
+            const string KEYBOARD = "Keyboard";
+            const string MOUSE = "Mouse";
+
+            var deviceName = inputDevice.name;
+
+            if (deviceName.Equals(KEYBOARD) || deviceName.Equals(MOUSE))
+                deviceName = KEYBOARD;
+
+            if (_currentInputDevice.Equals(deviceName))
+                return;
+
+            _currentInputDevice = deviceName;
+
+            Debug.Log($"New Device Name: {deviceName}");
+            //TODO Notify whoever that the
+            InputDeviceChanged?.Invoke(deviceName);
+        }
+
+
+
         private void SetupInputs()
         {
             var actionMap = playerInput.currentActionMap.actions;
@@ -379,9 +412,9 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             var direction = vector2.ToDirection();
-            
+
             Debug.Log($"Try swap {direction} part");
-            
+
             _bots[0].BotPartsLogic.TrySwapPart(direction);
         }
 
@@ -428,11 +461,11 @@ namespace StarSalvager.Utilities.Inputs
 
                 return;
             }
-            
-            
+            CheckForInputDeviceChange(ctx);
+
             _triggersPressed[index] = isPressed;
 
-            
+
         }
 
         private void TryUpdateTriggers()
@@ -478,7 +511,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
-            
+
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
 
@@ -493,19 +526,21 @@ namespace StarSalvager.Utilities.Inputs
                 Globals.IncreaseFallSpeed();
             }
         }
-        
+
         private void Dash(InputAction.CallbackContext ctx)
         {
             if (Console.Open)
                 return;
-            
-            if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
+
+            CheckForInputDeviceChange(ctx);
+
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
-            
+
             var direction = ctx.ReadValue<float>();
-            
+
             _bots[0].Dash(direction, Globals.DashDistance);
-            
+
             /*if (direction < 0)
             {
                 Globals.DecreaseFallSpeed();
@@ -520,7 +555,9 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
-            
+
+            CheckForInputDeviceChange(ctx);
+
             switch (ctx.action.name)
             {
                 case "Side Movement":
@@ -553,7 +590,7 @@ namespace StarSalvager.Utilities.Inputs
             //If the input is already set to the updated value, we can ignore it.
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
-            
+
             if(Globals.UseShuffleDance)
                 TrySideShuffleDance(Mathf.RoundToInt(newValue));
 
@@ -694,12 +731,12 @@ namespace StarSalvager.Utilities.Inputs
                 newValue = 1f;
             else
                 newValue = 0f;
-            
+
             //If the input is already set to the updated value, we can ignore it.
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
-            
-            
+
+
         }*/
 
         private void UpdateShuffleCountdown()
@@ -906,6 +943,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
+
+            CheckForInputDeviceChange(ctx);
 
             if (GameManager.IsState(GameState.LevelEndWave))
                 return;

@@ -26,7 +26,7 @@ namespace StarSalvager.Values
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
-        
+
         public static int CurrentRingIndex = 0;
         public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
 
@@ -46,13 +46,19 @@ namespace StarSalvager.Values
 
 
         public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
+        public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
+
+
+        public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
+
+        public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
         //public static int Magnetism => m_gameSettings.magnetAmount;
-        
+
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
         public static int StartingAmmo => m_gameSettings.startingAmmo;
-        
+
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
         public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
 
@@ -61,9 +67,9 @@ namespace StarSalvager.Values
         public static int AsteroidBounceDistance => m_gameSettings.bounceDistance;
         public static float DashSpeed => m_gameSettings.dashSpeed;
         public static float DashCooldown => m_gameSettings.dashCooldown;
-        
+
         //public static float BotStartingHealth => m_gameSettings.botHealth;
-        public static float GreenHealAmount => m_gameSettings.greenHealAmount;
+        //public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float DASTime => m_gameSettings.DASTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;

@@ -87,6 +87,7 @@ namespace StarSalvager.UI
             }
         }
 
+        //Used sprites from: https://thoseawesomeguys.com/prompts/
         [Serializable]
         public struct InputIcon
         {
@@ -94,11 +95,26 @@ namespace StarSalvager.UI
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
 #endif
-            
-            [Required, FoldoutGroup("$NAME")]
-            public Sprite keyboardSprite;
-            [Required, FoldoutGroup("$NAME")]
-            public Sprite controllerSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite keyboardSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite xboxControllerSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite playstationControllerSprite;
+
+            public Sprite GetInputSprite(in string deviceName)
+            {
+                if (deviceName.Equals("Keyboard") || deviceName.Equals("Mouse"))
+                    return keyboardSprite;
+
+                if (deviceName.Contains("XInputControllerWindows"))
+                    return xboxControllerSprite;
+
+                if (deviceName.Contains("DualShock"))
+                    return playstationControllerSprite;
+
+                throw new Exception();
+            }
         }
         
         /*[Serializable, Obsolete]
@@ -384,6 +400,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
+            InputManager.InputDeviceChanged += TryUpdateInputSprites;
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
 
             InitValues();
@@ -515,9 +532,7 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < _bitTypes.Length; i++)
             {
-                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
-
-                sliderImages[i].color = color;
+                sliderImages[i].color = _bitTypes[i].GetColor();
 
                 sliders[i].minValue = 0;
             }
@@ -664,6 +679,26 @@ namespace StarSalvager.UI
             _flashingBorder = false;
         }
 
+        private void TryUpdateInputSprites(string newDeviceName)
+        {
+            var indices = new[]
+            {
+                0, 1, 3, 4
+            };
+            for (var i = 0; i < indices.Length; i++)
+            {
+                var index = indices[i];
+                var sliderPartUi = SliderPartUis[index];
+
+                if (!sliderPartUi.triggerInputImage.gameObject.activeInHierarchy)
+                    continue;
+
+                sliderPartUi.triggerInputImage.sprite =
+                    inputIcons[i].GetInputSprite(newDeviceName);
+
+            }
+        }
+
         public void SetIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
@@ -689,7 +724,7 @@ namespace StarSalvager.UI
                         throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
                 }
                 
-                return inputIcons[bitIndex].keyboardSprite;
+                return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -711,7 +746,7 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
             SliderPartUis[index].SetSprite(sprite);
-            SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
+            SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
         }
         public void SetSecondIconImage(int index, in PART_TYPE partType)
         {

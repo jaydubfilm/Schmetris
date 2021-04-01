@@ -21,6 +21,7 @@ namespace StarSalvager.UI.Scrapyard
         private struct PartSelectionUI
         {
             public Button optionButton;
+            public PartChoiceButtonHover PartChoiceButtonHover;
             public Image optionImage;
             public TMP_Text optionText;
         }
@@ -66,12 +67,13 @@ namespace StarSalvager.UI.Scrapyard
             void SetUI(in int index, in PART_TYPE partType)
             {
                 var category = partRemoteData.GetRemoteData(partType).category;
-                
+
+                selectionUis[index].PartChoiceButtonHover.SetPartType(partType);
                 selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
                 selectionUis[index].optionImage.color = bitProfiles.GetProfile(category).color;
                 selectionUis[index].optionText.text = $"{partType}";
             }
-            
+
             Random.InitState(DateTime.Now.Millisecond);
 
             var partsOnBot = PlayerDataManager
@@ -84,7 +86,7 @@ namespace StarSalvager.UI.Scrapyard
                 .GetCurrentPartsInStorage()
                 .OfType<PartData>()
                 .Select(x => (PART_TYPE) x.Type);
-            
+
             partsOnBot.AddRange(partsInStorage);
 
             partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
@@ -104,11 +106,11 @@ namespace StarSalvager.UI.Scrapyard
             {
                 return _partOptions[index];
             }
-            
+
             void CreatePart(PART_TYPE partType)
             {
                 var patchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).PatchSockets;
-                
+
                 var partData = new PartData
                 {
                     Type = (int)partType,
@@ -133,13 +135,14 @@ namespace StarSalvager.UI.Scrapyard
                     Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
                     return;
                 }*/
-                
+
                 PlayerDataManager.SetStarted(true);
 
                 PlayerDataManager.SetCanChoosePart(false);
                 partChoiceWindow.SetActive(false);
 
                 FindObjectOfType<ScrapyardUI>().CheckForPartOverage();
+                _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
             }
 
             for (int i = 0; i < selectionUis.Length; i++)

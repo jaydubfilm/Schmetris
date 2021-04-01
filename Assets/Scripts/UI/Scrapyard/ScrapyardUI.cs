@@ -10,6 +10,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -216,9 +217,10 @@ namespace StarSalvager.UI.Scrapyard
             partDisposeWindow.SetActive(false);
         }
 
+        //FIXME This does not need to be in Update
         private void Update()
         {
-            componentsNumber.text = $"Components: {PlayerDataManager.GetComponents()}";
+            componentsNumber.text = $"{TMP_SpriteMap.GEAR_ICON} {PlayerDataManager.GetComponents()}";
         }
 
         private void OnEnable()

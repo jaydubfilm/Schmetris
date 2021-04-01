@@ -964,8 +964,6 @@ namespace StarSalvager
 
         public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
-            
-
             List<IObstacle> _obstacles = new List<IObstacle>();
 
             for (int i = 0; i < rdsObjects.Count; i++)
@@ -979,12 +977,12 @@ namespace StarSalvager
                         {
                             case nameof(Bit):
                                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                    .CreateObject<Bit>((BIT_TYPE)rdsValueBlockData.rdsValue.Type,
+                                    .CreateObject<Bit>((BIT_TYPE) rdsValueBlockData.rdsValue.Type,
                                         rdsValueBlockData.rdsValue.Level);
                                 //AddObstacleToList(newBit);
                                 /*PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
                                 bitExplosionPositions.RemoveAt(0);*/
-                                newBit.IsFromEnemyLoot = isFromEnemyLoot;
+                                newBit.toBeCollected = isFromEnemyLoot;
                                 _obstacles.Add(newBit);
                                 break;
                             case nameof(Asteroid):
@@ -996,7 +994,8 @@ namespace StarSalvager
                                 _obstacles.Add(newAsteroid);
                                 break;
                             default:
-                                Debug.LogError(rdsValueBlockData.rdsValue.ClassType + " in SpawnBitExplosion and not handled");
+                                Debug.LogError(rdsValueBlockData.rdsValue.ClassType +
+                                               " in SpawnBitExplosion and not handled");
                                 break;
                         }
                     }
@@ -1006,7 +1005,8 @@ namespace StarSalvager
                     int count = rdsValueAsteroidSize.GetCount();
                     for (int k = 0; k < count; k++)
                     {
-                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>().CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
+                        Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
+                            .CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
                         /*PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
                         bitExplosionPositions.RemoveAt(0);*/
                         _obstacles.Add(newAsteroid);
@@ -1017,7 +1017,8 @@ namespace StarSalvager
                     int count = rdsValueGearsAmount.GetCount();
                     for (int k = 0; k < count; k++)
                     {
-                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>().CreateObject<Component>(rdsValueGearsAmount.rdsValue);
+                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
+                            .CreateObject<Component>(rdsValueGearsAmount.rdsValue);
                         //AddObstacleToList(newComponent);
                         /*PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
                         bitExplosionPositions.RemoveAt(0);*/
@@ -1029,8 +1030,8 @@ namespace StarSalvager
                     Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
                 }
             }
-            
-            
+
+
             var explosionPositions =
                 LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, _obstacles.Count, 15, 6);
 
@@ -1038,7 +1039,7 @@ namespace StarSalvager
             {
                 PlaceMovableOffGrid(_obstacles[i], startingLocation, explosionPositions[i], 0.5f);
             }
-            
+
         }
 
         private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,

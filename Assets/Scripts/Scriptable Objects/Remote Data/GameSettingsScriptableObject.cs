@@ -8,6 +8,9 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Star Salvager/Scriptable Objects/Game Settings")]
     public class GameSettingsScriptableObject : ScriptableObject
     {
+        
+        [BoxGroup("Prototyping")]
+        public bool useCenterFiring = true;
         [BoxGroup("Prototyping")]
         public int maxPartTypeCount = 2;
         [BoxGroup("Prototyping")]
@@ -81,11 +84,17 @@ namespace StarSalvager.ScriptableObjects
         
         //[BoxGroup("Bot")]
         //public float botHealth = 100f;
-        [BoxGroup("Bot")]
-        public float greenHealAmount = 10f;
+        /*[BoxGroup("Bot")]
+        public float greenHealAmount = 10f;*/
+        
+        [BoxGroup("Bot"), Range(0f,10f)]
+        public float botHealWaitTime = 2f;
         
         [BoxGroup("Bot")]
         public float decoyDroneHealth = 20f;
+        
+        [BoxGroup("Bot"), Range(0f,1f)]
+        public float bitDropCollectionMultiplier = 1f;
         
         //[BoxGroup("Bot")]
         //public int magnetAmount = 10;

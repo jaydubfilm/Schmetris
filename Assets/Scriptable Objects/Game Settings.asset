@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
+  useCenterFiring: 1
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
@@ -92,10 +93,9 @@ MonoBehaviour:
     gearsValue: 1000
   asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
-  botHealth: 100
-  greenHealAmount: 10
+  botHealWaitTime: 1.5
   decoyDroneHealth: 20
-  magnetAmount: 50
+  bitDropCollectionMultiplier: 0.5
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
   unmergeLargeBitsOnRefine: 1

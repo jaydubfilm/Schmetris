@@ -71,12 +71,12 @@ namespace BuildReportTool
 #endif
 
 #if UNITY_4
-			// NaCl and Flash build support was up to Unity 4
-			case BuildTarget.NaCl:
-				return BuildPlatform.Web;
+				// NaCl and Flash build support was up to Unity 4
+				case BuildTarget.NaCl:
+					return BuildPlatform.Web;
 
-			case BuildTarget.FlashPlayer:
-				return BuildPlatform.Flash;
+				case BuildTarget.FlashPlayer:
+					return BuildPlatform.Flash;
 #endif
 				case BuildTarget.WebGL:
 					return BuildPlatform.WebGL;
@@ -85,7 +85,7 @@ namespace BuildReportTool
 				// Mobile builds
 
 #if UNITY_4
-			case BuildTarget.iPhone:
+				case BuildTarget.iPhone:
 #else
 				case BuildTarget.iOS:
 #endif
@@ -112,13 +112,13 @@ namespace BuildReportTool
 				case BuildTarget.PS4:
 					return BuildPlatform.PS4;
 #if UNITY_5_2_OR_NEWER && !UNITY_2018_1_OR_NEWER
-			// WiiU support was from Unity 5.2 to Unity 2017.4
-			case BuildTarget.WiiU:
-				return BuildPlatform.WiiU;
+				// WiiU support was from Unity 5.2 to Unity 2017.4
+				case BuildTarget.WiiU:
+					return BuildPlatform.WiiU;
 #endif
 #if UNITY_5_6_OR_NEWER || UNITY_2017_1_OR_NEWER
-			case BuildTarget.Switch:
-				return BuildPlatform.Switch;
+				case BuildTarget.Switch:
+					return BuildPlatform.Switch;
 #endif
 
 				// -----------------------------------
@@ -137,23 +137,26 @@ namespace BuildReportTool
 				// Linux builds
 
 #if UNITY_4_AND_GREATER
+#if !(UNITY_2019_2_OR_NEWER)
+				// note: Linux 32-bit and Universal support was from Unity 4 to Unity 2019.1
 				case BuildTarget.StandaloneLinux:
 					return BuildPlatform.Linux32;
 
+				case BuildTarget.StandaloneLinuxUniversal:
+					return BuildPlatform.LinuxUniversal;
+#endif
+				// starting from Unity 2019.2, Linux builds are now only 64-bit builds
 				case BuildTarget.StandaloneLinux64:
 					return BuildPlatform.Linux64;
-
-				case BuildTarget.StandaloneLinuxUniversal: // note: universal will be removed in a future version
-					return BuildPlatform.LinuxUniversal;
 #endif
 
 				// -----------------------------------
 				// Mac OS X builds
 
 #if UNITY_2017_3_OR_NEWER
-			// in Unity 2017.3, OSX builds are now only Intel 64-bit builds
-			case BuildTarget.StandaloneOSX:
-				return BuildPlatform.MacOSX64;
+				// in Unity 2017.3, OSX builds are now only Intel 64-bit builds
+				case BuildTarget.StandaloneOSX:
+					return BuildPlatform.MacOSX64;
 #else
 				case BuildTarget.StandaloneOSXIntel:
 					return BuildPlatform.MacOSX32;
@@ -734,7 +737,8 @@ namespace BuildReportTool
 
 		public static bool IsInStreamingAssetsFolder(this string me)
 		{
-			return !string.IsNullOrEmpty(me) && me.StartsWith("Assets/StreamingAssets/", StringComparison.OrdinalIgnoreCase);
+			return !string.IsNullOrEmpty(me) &&
+			       me.StartsWith("Assets/StreamingAssets/", StringComparison.OrdinalIgnoreCase);
 		}
 
 		public static bool IsInPackagesFolder(this string me)
@@ -746,7 +750,7 @@ namespace BuildReportTool
 		{
 			return !string.IsNullOrEmpty(me) &&
 			       (me.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase) ||
-			       me.StartsWith("Packages/", StringComparison.OrdinalIgnoreCase));
+			        me.StartsWith("Packages/", StringComparison.OrdinalIgnoreCase));
 		}
 
 		/// <summary>
@@ -1079,8 +1083,8 @@ namespace BuildReportTool
 			{
 				string homePath = (System.Environment.OSVersion.Platform == PlatformID.Unix ||
 				                   System.Environment.OSVersion.Platform == PlatformID.MacOSX)
-					? System.Environment.GetEnvironmentVariable("HOME")
-					: System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+					                  ? System.Environment.GetEnvironmentVariable("HOME")
+					                  : System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
 
 				return homePath;
 			}
@@ -1525,16 +1529,16 @@ namespace BuildReportTool
 				"C:/Program Files (x86)/Unity/Data/Mono/lib/mono",
 				"C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono",
 #if UNITY_3_5
-			"/Applications/Unity3/Unity.app/Contents/Frameworks/Mono/lib/mono",
-			"/Applications/Unity 3/Unity.app/Contents/Frameworks/Mono/lib/mono",
-			"/Applications/Unity3.5/Unity.app/Contents/Frameworks/Mono/lib/mono",
-			"/Applications/Unity 3.5/Unity.app/Contents/Frameworks/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity3/Data/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity 3/Data/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity3.5/Data/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity 3.5/Data/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity3/Editor/Data/Mono/lib/mono",
-			"C:/Program Files (x86)/Unity 3/Editor/Data/Mono/lib/mono",
+				"/Applications/Unity3/Unity.app/Contents/Frameworks/Mono/lib/mono",
+				"/Applications/Unity 3/Unity.app/Contents/Frameworks/Mono/lib/mono",
+				"/Applications/Unity3.5/Unity.app/Contents/Frameworks/Mono/lib/mono",
+				"/Applications/Unity 3.5/Unity.app/Contents/Frameworks/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity3/Data/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity 3/Data/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity3.5/Data/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity 3.5/Data/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity3/Editor/Data/Mono/lib/mono",
+				"C:/Program Files (x86)/Unity 3/Editor/Data/Mono/lib/mono",
 #endif
 #if UNITY_4_AND_GREATER
 				"/Applications/Unity4/Unity.app/Contents/Frameworks/Mono/lib/mono",
@@ -1798,7 +1802,8 @@ namespace BuildReportTool
 			return string.Format("{0}-{1}-{2}.xml", projectName, buildType, timeGot.ToString("yyyyMMMdd-HHmmss"));
 		}
 
-		public static string GetAssetDependenciesDefaultFilename(string projectName, string buildType, System.DateTime timeGot)
+		public static string GetAssetDependenciesDefaultFilename(string projectName, string buildType,
+			System.DateTime timeGot)
 		{
 			return string.Format("DEP-{0}-{1}-{2}.xml", projectName, buildType, timeGot.ToString("yyyyMMMdd-HHmmss"));
 		}
@@ -1879,7 +1884,8 @@ namespace BuildReportTool
 			return ret;
 		}
 
-		public static string SerializeAssetDependenciesAtFolder(AssetDependencies assetDependencies, string folderPathToSaveTo)
+		public static string SerializeAssetDependenciesAtFolder(AssetDependencies assetDependencies,
+			string folderPathToSaveTo)
 		{
 			string filePath = folderPathToSaveTo;
 			if (!string.IsNullOrEmpty(folderPathToSaveTo))
@@ -1914,7 +1920,5 @@ namespace BuildReportTool
 
 			Debug.Log("Build Report Tool: Saved asset dependencies at \"" + assetDependencies.SavedPath + "\"");
 		}
-
-
 	}
 } // namespace BuildReportTool

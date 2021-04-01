@@ -14,7 +14,7 @@ namespace BuildReportTool
 			public bool Enabled;
 			public string Path;
 		}
-		
+
 		// Queries
 		// ==================================================================================
 
@@ -36,7 +36,7 @@ namespace BuildReportTool
 		{
 			return DldUtil.UnityVersion.IsUnityVersionAtMost(UnityVersion, majorAtMost, minorAtMost, patchAtMost);
 		}
-		
+
 		public string SuitableTitle
 		{
 			get
@@ -83,7 +83,7 @@ namespace BuildReportTool
 		{
 			return BuildReportTool.Util.GetAssetDependenciesDefaultFilename(ProjectName, BuildType, TimeGot);
 		}
-		
+
 		// old size values were only TotalBuildSize and CompressedBuildSize
 		public bool HasOldSizeValues
 		{
@@ -113,7 +113,7 @@ namespace BuildReportTool
 		{
 			get { return StreamingAssetsSize != "0 B"; }
 		}
-		
+
 		// Commands
 		// ==================================================================================
 
@@ -124,7 +124,7 @@ namespace BuildReportTool
 			get { return _reportGenerationTime; }
 			set { _reportGenerationTime = value; }
 		}
-		
+
 		public void UnescapeAssetNames()
 		{
 			if (UsedAssets != null)
@@ -137,7 +137,7 @@ namespace BuildReportTool
 				UnusedAssets.UnescapeAssetNames();
 			}
 		}
-		
+
 		public void RecategorizeAssetLists()
 		{
 			FileFilterGroup fileFiltersToUse = FileFilters;
@@ -225,7 +225,7 @@ namespace BuildReportTool
 				}
 			}
 		}
-		
+
 		public void SortSizes()
 		{
 			System.Array.Sort(BuildSizes, delegate(BuildReportTool.SizePart b1, BuildReportTool.SizePart b2)
@@ -238,8 +238,8 @@ namespace BuildReportTool
 				return 0;
 			});
 		}
-		
-		
+
+
 		/// <summary>
 		/// This is called right after generating a build report.
 		/// </summary>
@@ -317,7 +317,7 @@ namespace BuildReportTool
 			// this is most noticeable when the percentages
 			// indicated don't really total up to 100, not even close to 90
 			RecalculatePercentages();
-		
+
 			// sort sizes again since we modified them
 			SortSizes();
 #endif
@@ -338,7 +338,7 @@ namespace BuildReportTool
 
 		// Helper methods
 		// ==================================================================================
-		
+
 		double GetTotalSize()
 		{
 			if (BuildSizes == null)
@@ -393,8 +393,9 @@ namespace BuildReportTool
 			}
 
 			return UsedAssets.All.Where(part =>
-					BuildReportTool.Util.IsFileInAPath(part.Name, assetFolderName) && fileTypePredicate(part.Name))
-				.Sum(part => BRT_LibCacheUtil.GetImportedFileSize(part.Name));
+				                 BuildReportTool.Util.IsFileInAPath(part.Name, assetFolderName) &&
+				                 fileTypePredicate(part.Name))
+			                 .Sum(part => BRT_LibCacheUtil.GetImportedFileSize(part.Name));
 		}
 
 		static void AddToSize(BuildReportTool.SizePart buildSize, long sizeToAdd)
@@ -479,7 +480,7 @@ namespace BuildReportTool
 		/// How long it took to create this Build Report.
 		/// </summary>
 		System.TimeSpan _reportGenerationTime;
-		
+
 		/// <summary>
 		/// Needed for ParseDLLs
 		/// </summary>
@@ -491,7 +492,7 @@ namespace BuildReportTool
 		/// </summary>
 		[System.Xml.Serialization.XmlIgnore]
 		public StrippingLevel CodeStrippingLevel;
-		
+
 
 		public void SetScenes(EditorBuildSettingsScene[] newScenes)
 		{

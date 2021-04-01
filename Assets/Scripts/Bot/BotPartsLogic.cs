@@ -28,7 +28,7 @@ namespace StarSalvager
     {
 
         //====================================================================================================================//
-        
+
         private class CooldownData
         {
             public float Value => current / max;
@@ -60,11 +60,11 @@ namespace StarSalvager
 
                 return true;
             }
-            
+
         }
-        
+
         //====================================================================================================================//
-        
+
         private static readonly BIT_TYPE[] _bitTypes = {
             BIT_TYPE.RED,
             BIT_TYPE.YELLOW,
@@ -140,9 +140,9 @@ namespace StarSalvager
         private List<Part> _triggerParts;
 
         private Dictionary<Part, bool> _playingSounds;
-        
+
         private Dictionary<Part, FlashSprite> _flashes;
-        
+
         private Dictionary<Part, CooldownData> _partCooldownTimers;
         private Dictionary<Part, float> _shieldTimers;
 
@@ -154,6 +154,25 @@ namespace StarSalvager
 
         private static PartAttachableFactory _partAttachableFactory;
 
+        //Sabre Properties
+        //====================================================================================================================//
+        private Part _corePart;
+
+        private bool _sabreActive;
+        private Sabre _sabreObject;
+        private Dictionary<Part, float> _sabreTimers;
+
+
+        //Heal Cooldown Timer
+        //====================================================================================================================//
+
+        private float _healWaitTimer;
+
+        public void ResetHealCooldown()
+        {
+            _healWaitTimer = Globals.BotHealWaitTime;
+        }
+
         #endregion //Properties
 
         //Unity Functions
@@ -164,6 +183,18 @@ namespace StarSalvager
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
         }
 
+        private void LateUpdate()
+        {
+            if (!GameManager.IsState(GameState.LevelEndWave))
+                return;
+
+            if (_sabreActive && _sabreObject)
+            {
+                _sabreObject.SetActive(false);
+                _sabreActive = false;
+            }
+
+        }
         //==============================================================================================================//
         public void TrySwapPart(in DIRECTION direction)
         {
@@ -220,31 +251,31 @@ namespace StarSalvager
             var t = cooldown;
             var startScale = Vector3.one;
             var endScale = new Vector3(1, 0f, 1f);
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
             _partCooldownTimers[part] = new CooldownData(cooldown, true);
             var targetTrans = part.transform;
 
             while (t > 0f)
             {
                 targetTrans.localScale = Vector3.Lerp(startScale, endScale, 1f - (t / cooldown));
-                
+
                 t -= Time.deltaTime;
-                
+
                 yield return null;
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
             var coordinate = part.Coordinate;
             var pos = part.Position;
-            
+
             PlayerDataManager.RemovePartFromStorage(swapToPart);
-            
+
             var blockData = part.ToBlockData();
             blockData.Coordinate = Vector2Int.zero;
-            
+
             PlayerDataManager.AddPartToStorage(blockData);
             Recycler.Recycle<Part>(part);
 
@@ -260,14 +291,14 @@ namespace StarSalvager
                 false,
                 false,
                 true);
-            
+
             PlayerDataManager.SetBlockData(bot.GetBlockDatas());
 
             newPart.transform.localScale = endScale;
             newPart.transform.position = pos;
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             //_partCooldownTimers[newPart] = cooldown;
             _partCooldownTimers[newPart] = new CooldownData(cooldown, true);
             targetTrans = newPart.transform;
@@ -276,26 +307,26 @@ namespace StarSalvager
             while (t > 0f)
             {
                 targetTrans.localScale = Vector3.Lerp(endScale, startScale, 1f - (t / cooldown));
-                
+
                 t -= Time.deltaTime;
-                
+
                 yield return null;
             }
 
             var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(newPart.Type);
-            
+
             //Checks if the part will need to use a cooldown value, if not we'll remove it
             if(TryGetPartProperty(PartProperties.KEYS.Cooldown, newPart, partRemoteData, out cooldown))
                 _partCooldownTimers[newPart] = new CooldownData(cooldown);
             else
                 _partCooldownTimers.Remove(newPart);
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
         }
 
         //====================================================================================================================//
-        
+
 
         /// <summary>
         /// Called when new Parts are added to the attachable List. Allows for a short list of parts to exist to ease call
@@ -325,7 +356,7 @@ namespace StarSalvager
 
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void SetIcon(in int index, in BIT_TYPE bitType)
             {
                 var type = bitType;
@@ -349,8 +380,8 @@ namespace StarSalvager
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
-            if (_partCooldownTimers == null) 
+
+            if (_partCooldownTimers == null)
                 _partCooldownTimers = new Dictionary<Part, CooldownData>();
 
             _gunTargets = new Dictionary<Part, CollidableBase>();
@@ -385,7 +416,7 @@ namespace StarSalvager
 
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(part.Type);
-                
+
                 if (TryGetPartProperty(PartProperties.KEYS.Cooldown, part, partRemoteData, out var cooldown) && !_partCooldownTimers.ContainsKey(part))
                 {
                     _partCooldownTimers.Add(part, new CooldownData(cooldown));
@@ -412,6 +443,7 @@ namespace StarSalvager
                             resource.SetAmmoCapacity(capacityAmount, false);
                         }
 
+                        _corePart = part;
                         PlayerDataManager.OnCapacitiesChanged?.Invoke();
 
                         break;
@@ -432,18 +464,28 @@ namespace StarSalvager
                     case PART_TYPE.SNIPER:
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.MISSILE:
-                        
+
                         /*if (!_partCooldownTimers.ContainsKey(part))
                         {
                             var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-                
+
                             _partCooldownTimers.Add(part, new CooldownData(cooldown * cooldownBoost));
                         }*/
 
                         _gunTargets.Add(part, null);
 
-                        /*if (ShouldUseGunTurret(partRemoteData))
-                            CreateTurretEffect(part);*/
+                        if (Globals.UseCenterFiring == false && ShouldUseGunTurret(partRemoteData))
+                            CreateTurretEffect(part);
+                        break;
+
+                    case PART_TYPE.SABRE:
+                        if (_sabreTimers == null)
+                            _sabreTimers = new Dictionary<Part, float>();
+
+                        if (_sabreTimers.ContainsKey(part))
+                            break;
+
+                        _sabreTimers.Add(part, 0f);
                         break;
                 }
             }
@@ -452,10 +494,10 @@ namespace StarSalvager
             {
                 var partRemoteData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
                     .GetRemoteData(triggerPart.Type);
-                
+
                 if (_partCooldownTimers.ContainsKey(triggerPart))
                     continue;
-                
+
                 if (!partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float triggerCooldown))
                     throw new ArgumentException($"Remote data for {partRemoteData.name} does not contain a value for {nameof(PartProperties.KEYS.Cooldown)}");
 
@@ -487,14 +529,14 @@ namespace StarSalvager
             BIT_TYPE.GREY,
             BIT_TYPE.BLUE,
         };
-        
+
         //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
         /// </summary>
         public void PartsUpdateLoop()
         {
-            
+
             var deltaTime = Time.deltaTime;
 
             //Be careful to not use return here
@@ -534,18 +576,23 @@ namespace StarSalvager
                     case PART_TYPE.CORE:
                         HealUpdate(part, partRemoteData, deltaTime);
                         break;
+
+                    //--------------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.SABRE:
+                        SabreUpdate(part, partRemoteData, deltaTime);
+                        break;
                 }
 
                 if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
                     continue;
-                
+
                 /*if (!cooldownData.HasCooldown(false))
                     return;*/
-                
+
                 //Wait for the shield to be inactive before the cooldown can begin
                 if (part.Type == PART_TYPE.SHIELD && _shieldActive)
                     return;
-                
+
                 var uiIndex = bitTypes.FindIndex(x => x == partRemoteData.category);
                 var fill = 1f - cooldownData.Value;
                 GameUI.SetFill(uiIndex, fill);
@@ -637,7 +684,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            
+
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
                 throw new ArgumentOutOfRangeException();
@@ -657,16 +704,18 @@ namespace StarSalvager
                 return;
             }
 
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+                throw new ArgumentOutOfRangeException();
+
             //Get Cost
             //--------------------------------------------------------------------------------------------------------//
 
-            if (TryUseAmmo(part, partRemoteData, Time.deltaTime) == false)
+            if (TryUseAmmo(part, partRemoteData, Time.deltaTime / repairAmount) == false)
                 return;
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
-                throw new ArgumentOutOfRangeException();
+
 
             repairTarget.ChangeHealth(repairAmount * deltaTime);
 
@@ -676,6 +725,19 @@ namespace StarSalvager
 
         private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
+            /*if (_healActiveTimer <= 0)
+            {
+                return;
+            }
+            _healActiveTimer -= Time.deltaTime;*/
+
+            if (_healWaitTimer > 0f)
+            {
+                _healWaitTimer -= deltaTime;
+                return;
+            }
+
+
             var repairTarget = bot;
 
             if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
@@ -686,17 +748,22 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = repairAmount * deltaTime;
+            var cost = ammoCost * Time.deltaTime;
 
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+
             if (ammoResource.Ammo < cost)
                 return;
+
             ammoResource.SubtractAmmo(cost);
 
-            repairTarget.ChangeHealth(cost);
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
 
 
 
@@ -721,20 +788,51 @@ namespace StarSalvager
             _shieldTimers[part] = timer;
         }
 
+        private void SabreUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            if (!_sabreActive)
+                return;
+
+            if (_sabreObject == null)
+                return;
+
+            var timer = _sabreTimers[part];
+
+            timer -= deltaTime;
+
+            if (timer <= 0f)
+            {
+                _sabreActive = false;
+                _sabreObject.SetActive(false);
+            }
+
+            _sabreTimers[part] = timer;
+
+            //var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
+
+            var size =bot.ContinousRotation ? _sabreObject.maxSize : _sabreObject.minSize;
+            _sabreObject.SetSize(size);
+
+            var dir = (part.Position - _corePart.Position).normalized;
+            var pos = part.Position + (dir * (size / 2)) + (dir * (Constants.gridCellSize / 2f));
+
+            _sabreObject.SetTransform(pos, dir);
+        }
+
         private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
             /*if (!_partCooldownTimers.ContainsKey(part))
             {
                 var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
-                
+
                 _partCooldownTimers.Add(part, new CooldownData(cooldown));
             }*/
 
             //Cooldown
             //--------------------------------------------------------------------------------------------//
 
-            
+
 
             if (_partCooldownTimers[part].HasCooldown())
             {
@@ -771,7 +869,7 @@ namespace StarSalvager
             //TODO Need to determine if the shoot type is looking for enemies or not
             //--------------------------------------------------------------------------------------------//
 
-            
+
 
             //Aim the Turret Effect
             //--------------------------------------------------------------------------------------------//
@@ -796,7 +894,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
 
             //FIXME This now might more sense to count down instead of counting up
-            
+
 
             if (_partCooldownTimers[part].HasCooldown())
             {
@@ -850,8 +948,7 @@ namespace StarSalvager
                     CreateProjectile(part, partRemoteData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
-                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) -
-                                     part.transform.position).normalized;
+                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) - bot.transform.position).normalized;
 
                     var lineShrink = FactoryManager.Instance
                         .GetFactory<EffectFactory>()
@@ -864,7 +961,7 @@ namespace StarSalvager
                     lineShrink.Init(part.transform.position,
                         didHitTarget
                             ? fireTarget.transform.position
-                            : part.transform.position + direction * 100);
+                            : bot.transform.position + direction * 100);
 
                     if (didHitTarget)
                     {
@@ -881,7 +978,7 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             _partCooldownTimers[part].StartCooldown();
 
             //--------------------------------------------------------------------------------------------//
@@ -941,9 +1038,10 @@ namespace StarSalvager
             }*/
 
 
-            var position = part.transform.position;
+            var position = bot.transform.position;
             var shootDirection = ShouldUseGunTurret(partRemoteData)
-                ? GetAimedProjectileAngle(collidableTarget, part, projectileId)
+                ? GetAimedProjectileAngle(collidableTarget,
+                    Globals.UseCenterFiring ? bot.transform.position : part.Position, projectileId)
                 : part.transform.up.normalized;
 
             //--------------------------------------------------------------------------------------------------------//
@@ -973,7 +1071,7 @@ namespace StarSalvager
                     true);
         }
 
-        private Vector3 GetAimedProjectileAngle(CollidableBase target, Part part, string projectileId)
+        private static Vector3 GetAimedProjectileAngle(in Actor2DBase target, in Vector3 partPosition, string projectileId)
         {
             Vector3 targetVelocity;
             switch(target)
@@ -987,7 +1085,7 @@ namespace StarSalvager
             }
             var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
-            Vector3 totarget = target.Position - part.transform.position;
+            Vector3 totarget = target.Position - partPosition;
 
             float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
             float b = 2 * Vector3.Dot(targetVelocity, totarget);
@@ -995,6 +1093,9 @@ namespace StarSalvager
 
             float p = -b / (2 * a);
             float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
+
+            /*if (float.IsNaN(q))
+                return totarget.normalized;*/
 
             float t1 = p - q;
             float t2 = p + q;
@@ -1009,11 +1110,11 @@ namespace StarSalvager
                 t = t1;
             }
 
-            Vector3 aimSpot = target.transform.position + targetVelocity * t;
-            Vector3 bulletPath = aimSpot - part.transform.position;
+            Vector3 aimSpot = target.Position + targetVelocity * t;
+            Vector3 bulletPath = aimSpot - partPosition;
 
-            //Debug.DrawRay(part.transform.position, totarget.normalized * 10, Color.yellow, 1f);
-            //Debug.DrawRay(part.transform.position, bulletPath.normalized * 10, Color.green, 1f);
+            Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
+            Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
             //Debug.Break();
 
             return bulletPath;
@@ -1035,7 +1136,12 @@ namespace StarSalvager
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
         {
-            var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            if (partRemoteData == null)
+                return false;
+
+            if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
+                return false;
+
             var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
@@ -1046,7 +1152,7 @@ namespace StarSalvager
         //============================================================================================================//
 
         #region Trigger Parts
-        
+
         private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             /*var types = new List<BIT_TYPE>
@@ -1153,6 +1259,9 @@ namespace StarSalvager
                 case PART_TYPE.HOOVER:
                     TriggerHoover(part);
                     break;
+                case PART_TYPE.SABRE:
+                    TriggerSabre(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1256,7 +1365,7 @@ namespace StarSalvager
         private void TriggerShield(in Part part)
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void SetShieldSize()
             {
                 if (_shieldObject == null)
@@ -1284,7 +1393,7 @@ namespace StarSalvager
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
@@ -1491,6 +1600,65 @@ namespace StarSalvager
             bot.CheckAllForCombos();
             bot.ForceCheckMagnets();
             bot.ForceUpdateColliderGeometry();
+        }
+
+        private void TriggerSabre(in Part part)
+        {
+            var partPos = part.Position;
+            var corePos = _corePart.Position;
+
+            void SetupSabre(in int size)
+            {
+                //TODO Check to see if the object needs to be instantiated
+                if (_sabreObject == null)
+                {
+                    _sabreObject = FactoryManager.Instance.GetFactory<BotFactory>().CreateSabreObject();
+                    Physics2D.IgnoreCollision(bot.Collider, _sabreObject.collider);
+                }
+                else
+                {
+                    _sabreObject.SetActive(true);
+                }
+
+                //TODO Find the direction to the core and invert it
+
+                var dir = (partPos - corePos).normalized;
+                var pos = partPos + (dir * (size / 2));
+
+                _sabreObject.SetTransform(pos, dir);
+
+            }
+
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Time, out var seconds))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
+            }
+
+            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var minSize))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Boost, out var maxSize))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
+            }
+
+            _sabreTimers[part] = seconds;
+
+            _sabreActive = true;
+
+            SetupSabre(minSize + 1);
+
+            _sabreObject.Init(damage, minSize, maxSize);
+
         }
 
         #endregion
@@ -1884,7 +2052,7 @@ namespace StarSalvager
 
 
             var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
+            var bitColor = burnType.GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 
@@ -2033,6 +2201,12 @@ namespace StarSalvager
 
             if(_shieldObject != null)
                 Destroy(_shieldObject);
+
+            if (_sabreObject != null)
+            {
+                Recycler.Recycle<Sabre>(_sabreObject);
+                _sabreObject = null;
+            }
 
             /*if (!_boostEffects.IsNullOrEmpty())
             {

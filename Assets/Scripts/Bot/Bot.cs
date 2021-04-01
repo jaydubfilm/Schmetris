@@ -97,7 +97,7 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public Vector2 Position => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
+        public Vector2 ShootAtPosition => DecoyDrone != null ? DecoyDrone.transform.position : transform.position;
         
 
         public bool IsInvulnerable
@@ -123,6 +123,7 @@ namespace StarSalvager
         private float _currentInput;
 
         public override bool Rotating => _rotating;
+        public bool ContinousRotation => isContinuousRotation;
         public ROTATION MostRecentRotate;
 
         private bool _rotating;
@@ -845,14 +846,37 @@ namespace StarSalvager
                                 return false;
                             }
 
-                            PlayerDataManager.RecordBitConnection(bit.Type);
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
+                            //If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
+                            //--------------------------------------------------------------------------------------------------------//
+                            
+                            if (bit.toBeCollected)
+                            {
+                                //TODO Get the value and add
+                                var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                                    .FirstOrDefault(x => x.level == bit.level)
+                                    .ammoEarned * Globals.BitDropCollectionMultiplier);
+
+                                if (ammoEarned != 0)
+                                {
+                                    PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                                    FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
+                                }
+
+                                bit.toBeCollected = false;
+                            }
+
+                            //--------------------------------------------------------------------------------------------------------//
+                            
                             CheckForBonusShapeMatches();
 
                             AudioController.PlayBitConnectSound(bit.Type);
+
                             SessionDataProcessor.Instance.BitCollected(bit.Type);
+                            PlayerDataManager.RecordBitConnection(bit.Type);
+
                             break;
                         case BIT_TYPE.WHITE:
                             //bounce white bit off of bot
@@ -1326,30 +1350,31 @@ namespace StarSalvager
         {
             if (!CanBeDamaged && closestAttachable.Coordinate == Vector2Int.zero)
                 return;
+            
+            BotPartsLogic.TryHitArmor(ref damage);
 
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (damage <= 0f)
+                return;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             IHealth closestHealth;
-
+            
             switch (closestAttachable)
             {
                 case Part _:
                     closestHealth = this;
-                    BotPartsLogic.TryHitArmor(ref damage);
+                    BotPartsLogic.ResetHealCooldown();
                     break;
                 default:
                     closestHealth = (IHealth) closestAttachable;
                     break;
             }
 
-
             //--------------------------------------------------------------------------------------------------------//
-
-            /*//Don't want to apply shields to the Enemy
-            if (!(closestAttachable is EnemyAttachable))
-                damage = BotPartsLogic.TryHitShield(closestAttachable.Coordinate, damage);*/
-
-            if (damage <= 0f)
-                return;
-
+            
             //If something hit a part, we actually want to damage the bot as a whole
             if (closestAttachable is Part)
             {
@@ -3188,11 +3213,14 @@ _isShifting = true;
                 Globals.ComboMergeTime,
                 () =>
                 {
+                    var position = closestToCore.transform.position;
                     var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
                     //Waits till after combo finishes combining to add the points
                     PlayerDataManager.ChangeXP(gearsToAdd);
 
-                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", closestToCore.transform.position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", position, Color.white);
+                    
+                    CreateBonusShapeParticleEffect(position);
 
 
                     var bit = closestToCore as Bit;
@@ -3800,9 +3828,9 @@ _isShifting = true;
 
             var mergeColor = Color.white;
 
-            if (target is Bit bitColor)
+            if (target is Bit targetBit)
             {
-                mergeColor = FactoryManager.Instance.BitProfileData.GetProfile(bitColor.Type).color;
+                mergeColor = targetBit.Type.GetColor();
             }
 
 

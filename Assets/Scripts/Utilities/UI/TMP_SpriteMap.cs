@@ -5,6 +5,11 @@ namespace StarSalvager.Utilities.UI
 {
     public static class TMP_SpriteMap
     {
+        //Gear Icon
+        //====================================================================================================================//
+
+        public  const string GEAR_ICON = "<sprite=\"Gear\" name=\"Gear_1\">";
+        
         //Material Icons
         //====================================================================================================================//
 
