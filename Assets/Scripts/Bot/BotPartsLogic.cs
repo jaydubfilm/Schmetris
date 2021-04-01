@@ -582,6 +582,12 @@ namespace StarSalvager
                         SabreUpdate(part, partRemoteData, deltaTime);
                         break;
                 }
+                
+                foreach (var triggerPart in _triggerParts)
+                {
+                    //var partRemoteData = GetPartData(triggerPart);
+                    TriggerPartUpdates(triggerPart, null, deltaTime);
+                }
 
                 if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
                     continue;
@@ -598,11 +604,7 @@ namespace StarSalvager
                 GameUI.SetFill(uiIndex, fill);
             }
 
-            /*foreach (var triggerPart in _triggerParts)
-            {
-                var partRemoteData = GetPartData(triggerPart);
-                TriggerPartUpdates(triggerPart, partRemoteData, deltaTime);
-            }*/
+            
         }
 
         private PartRemoteData GetPartData(in Part part)
