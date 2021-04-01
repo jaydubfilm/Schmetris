@@ -248,6 +248,9 @@ namespace StarSalvager
         
         public void SetFrozen(in float time)
         {
+            if (Frozen)
+                return;
+            
             FreezeTime = time;
             
             if(Frozen)
