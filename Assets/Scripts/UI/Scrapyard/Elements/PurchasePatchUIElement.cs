@@ -14,6 +14,7 @@ namespace StarSalvager.UI.Scrapyard
     {
         //[SerializeField] private Button purchaseButton;
 
+        [SerializeField] private TMP_Text buyButtonText;
         [SerializeField] private TMP_Text titleText;
         
         private void OnEnable()
@@ -32,7 +33,9 @@ namespace StarSalvager.UI.Scrapyard
             this.data = data;
 
             var patchName = FactoryManager.Instance.PatchRemoteData.GetRemoteData(data.PatchData.Type).name;
-            titleText.text = $"{patchName} {data.PatchData.Level + 1}\n{TMP_SpriteMap.GEAR_ICON} {data.cost}";
+            titleText.text = $"{patchName} {data.PatchData.Level + 1}";
+
+            buyButtonText.text = $"{data.cost}{TMP_SpriteMap.GEAR_ICON}";
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>

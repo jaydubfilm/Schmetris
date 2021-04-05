@@ -73,6 +73,7 @@ namespace StarSalvager.UI.Scrapyard
             //ShowPreviewChanges(this.data.PartData);
             
             partImage.sprite = partProfile.GetProfile(partType).Sprite;
+            partImage.color = partRemote.GetRemoteData(partType).category.GetColor();
 
             SetSelected(false);
 

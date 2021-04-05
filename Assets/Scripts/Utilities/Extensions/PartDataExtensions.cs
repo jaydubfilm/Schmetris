@@ -64,7 +64,7 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 && partData.Type != (int)PART_TYPE.CORE)
+            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
                 outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
             
             foreach (var property in partProperties)
@@ -225,8 +225,15 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 && partData.Type != (int)PART_TYPE.CORE)
-                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
+            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
+            {
+                var preview = GetPartDetailInfo(partRemote.ammoUseCost, PATCH_TYPE.EFFICIENCY, previewType, previewMultipliers);
+
+                var total = partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY];
+                var partDetail = new PartDetail("Ammo", total, preview);
+                outList.Add(partDetail);
+                
+            }//outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
             
             foreach (var property in partProperties)
             {
