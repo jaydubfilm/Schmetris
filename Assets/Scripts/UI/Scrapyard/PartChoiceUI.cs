@@ -113,25 +113,26 @@ namespace StarSalvager.UI.Scrapyard
                     Patches = new PatchData[patchCount]
                 };
 
-                if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.Any)
+                var category = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category;
+                var botCoordinate = PlayerDataManager.GetCoordinateForCategory(category);
+
+                //If the player has an empty part at the location, auto equip it
+                if (!_droneDesigner._scrapyardBot.AttachedBlocks
+                    .OfType<ScrapyardPart>()
+                    .Any(x => x.Type != PART_TYPE.EMPTY && x.Coordinate == botCoordinate))
                 {
-                    PlayerDataManager.AddPartToStorage(partData);
+                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
+                    _droneDesigner._scrapyardBot.AttachNewBit(botCoordinate, attachable);
                 }
                 else
                 {
-                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
-                    _droneDesigner._scrapyardBot.AttachNewBit(PlayerDataManager.GetCoordinateForCategory(FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category), attachable);
+                    //Should I switch with what's currently equipped
+                    PlayerDataManager.AddPartToStorage(partData);
                 }
+
 
                 _droneDesigner.SaveBlockData();
 
-                /*if (_partOptionType == PartAttachableFactory.PART_OPTION_TYPE.BasicWeapon)
-                {
-                    PlayerDataManager.SetStarted(true);
-                    Init(PartAttachableFactory.PART_OPTION_TYPE.PowerWeapon);
-                    return;
-                }*/
-                
                 PlayerDataManager.SetStarted(true);
 
                 PlayerDataManager.SetCanChoosePart(false);

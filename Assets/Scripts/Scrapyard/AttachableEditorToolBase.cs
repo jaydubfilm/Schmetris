@@ -35,7 +35,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public virtual void SelectPartFromStorage(IBlockData blockData, int index, bool returnIfNotPlaced = false)
+        public virtual void SelectPartFromStorage(in int index, in IBlockData blockData, in bool returnIfNotPlaced = false)
         {
             SelectedBrick = blockData;
             SelectedIndex = index;

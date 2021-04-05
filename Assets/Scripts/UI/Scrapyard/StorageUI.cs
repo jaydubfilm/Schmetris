@@ -89,7 +89,7 @@ namespace StarSalvager.UI.Scrapyard
                     allowDuplicate: true);
                 temp.Init(testStorage, data =>
                 {
-                    DroneDesigner.SelectPartFromStorage(data.blockData, tempInt);
+                    DroneDesigner.SelectPartFromStorage(tempInt, data.blockData);
                 });
             }
 

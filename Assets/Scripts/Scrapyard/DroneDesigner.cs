@@ -1034,7 +1034,7 @@ namespace StarSalvager
         //Overrides
         //====================================================================================================================//
 
-        public override void SelectPartFromStorage(IBlockData blockData, int index, bool returnIfNotPlaced = false)
+        public override void SelectPartFromStorage(in int index, in IBlockData blockData, in bool returnIfNotPlaced = false)
         {
             if (!(blockData is PartData partData))
                 throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick,
