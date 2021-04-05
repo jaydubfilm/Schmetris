@@ -481,7 +481,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""55433e3b-dc06-4c82-ad9f-0a89ef36ac77"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -503,7 +503,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""f26edeed-e68a-4ce7-9db8-866a810b401a"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -525,7 +525,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""cca2e7d1-5007-4001-977d-3336d5c6c41e"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",

@@ -17,7 +17,7 @@ namespace StarSalvager.Factories
     {
         public enum PART_OPTION_TYPE
         {
-            BasicWeapon,
+            InitialSelection,
             //PowerWeapon,
             Any
         }
@@ -71,7 +71,7 @@ namespace StarSalvager.Factories
 
             switch (partOptionType)
             {
-                case PART_OPTION_TYPE.BasicWeapon:
+                case PART_OPTION_TYPE.InitialSelection:
                     partTypes = new List<PART_TYPE>(remotePartData.basicWeapons);
                     break;
                 //case PART_OPTION_TYPE.PowerWeapon:

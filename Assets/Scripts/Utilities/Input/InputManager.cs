@@ -49,7 +49,7 @@ namespace StarSalvager.Utilities.Inputs
 
         #region Properties
 
-        private readonly bool[] _triggersPressed = new bool[4];
+        private readonly bool[] _triggersPressed = new bool[5];
 
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
@@ -392,23 +392,36 @@ namespace StarSalvager.Utilities.Inputs
             }*/
         }
 
-
+        //Smart Actions
+        //====================================================================================================================//
+        /*public static readonly BIT_TYPE[] BIT_ORDER = 
+        {
+            BIT_TYPE.YELLOW,    /*Up#1#        
+            BIT_TYPE.GREY,      /*Down#1#    
+            BIT_TYPE.GREEN,     /*BR Window#1#    
+            BIT_TYPE.BLUE,      /*Left#1#    
+            BIT_TYPE.RED,       /*Right#1#
+        };*/
 
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
+            //Up
             TriggerSmartWeapon(ctx, 0);
         }
         private void SmartAction2(InputAction.CallbackContext ctx)
         {
+            //Down
             TriggerSmartWeapon(ctx, 1);
         }
         private void SmartAction3(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 2);
+            //Left
+            TriggerSmartWeapon(ctx, 3);
         }
         private void SmartAction4(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 3);
+            //Right
+            TriggerSmartWeapon(ctx, 4);
         }
 
 
@@ -442,6 +455,8 @@ namespace StarSalvager.Utilities.Inputs
             _bots[0].BotPartsLogic.TryTriggerPart(index);
         }
 
+        //====================================================================================================================//
+        
         private void SelfDestruct(InputAction.CallbackContext ctx)
         {
             if (Console.Open)

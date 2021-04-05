@@ -1918,7 +1918,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1788845824711042761}
   m_Layer: 5
-  m_Name: GreyGroup
+  m_Name: Down_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1940,7 +1940,7 @@ RectTransform:
   - {fileID: 268875239139994716}
   - {fileID: 4113666087179479324}
   m_Father: {fileID: 7739130787870485926}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2654,7 +2654,7 @@ GameObject:
   - component: {fileID: 4542966241952954883}
   - component: {fileID: 2289749327659623934}
   m_Layer: 5
-  m_Name: Slider_0
+  m_Name: Left_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2817,7 +2817,7 @@ GameObject:
   - component: {fileID: 8355127909089327986}
   - component: {fileID: 6492735457205182417}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Right_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2942,10 +2942,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7319230410516976216}
-  - {fileID: 3041973926504925507}
   - {fileID: 8983362764388497081}
   - {fileID: 1788845824711042761}
+  - {fileID: 7319230410516976216}
+  - {fileID: 3041973926504925507}
   m_Father: {fileID: 3524719922920009749}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5762,7 +5762,7 @@ GameObject:
   - component: {fileID: 506044404748442483}
   - component: {fileID: 5219180772520848661}
   m_Layer: 5
-  m_Name: Slider_0
+  m_Name: Down_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6467,7 +6467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7319230410516976216}
   m_Layer: 5
-  m_Name: BlueGroup
+  m_Name: Left_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6489,7 +6489,7 @@ RectTransform:
   - {fileID: 7336800142422349094}
   - {fileID: 2128009897976059032}
   m_Father: {fileID: 7739130787870485926}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7624,7 +7624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3041973926504925507}
   m_Layer: 5
-  m_Name: RedGroup
+  m_Name: Right_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7646,7 +7646,7 @@ RectTransform:
   - {fileID: 4187153979299936091}
   - {fileID: 5797138666305734278}
   m_Father: {fileID: 7739130787870485926}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9886,47 +9886,61 @@ MonoBehaviour:
   - backgroundImage: {fileID: 6982459668019580442}
     foregroundImage: {fileID: 2174386639231694417}
     triggerInputImage: {fileID: 6107029288207883055}
-    NAME: Red
-  - backgroundImage: {fileID: 2617879541848712618}
-    foregroundImage: {fileID: 4427307113292607095}
-    triggerInputImage: {fileID: 2424751873816249695}
-    NAME: Yellow
-  - backgroundImage: {fileID: 664513197396581100}
-    foregroundImage: {fileID: 7051385455465489649}
-    triggerInputImage: {fileID: 7554332234536154081}
-    NAME: Green
+    slider: {fileID: 6245549572273726664}
+    fillImage: {fileID: 6492735457205182417}
+    NAME: UP [RED]
   - backgroundImage: {fileID: 8013297397004784498}
     foregroundImage: {fileID: 6927536478320441709}
     triggerInputImage: {fileID: 6189880793132229600}
-    NAME: Grey
+    slider: {fileID: 5219180772520848661}
+    fillImage: {fileID: 2311218549224896399}
+    NAME: DOWN [GREY]
+  - backgroundImage: {fileID: 664513197396581100}
+    foregroundImage: {fileID: 7051385455465489649}
+    triggerInputImage: {fileID: 7554332234536154081}
+    slider: {fileID: 4429408957387983997}
+    fillImage: {fileID: 217715934040384940}
+    NAME: Bottom-Right [GREEN]
   - backgroundImage: {fileID: 5720593999672955517}
     foregroundImage: {fileID: 904628938373586987}
     triggerInputImage: {fileID: 7504204278699497344}
-    NAME: Blue
+    slider: {fileID: 2289749327659623934}
+    fillImage: {fileID: 8222479956639942558}
+    NAME: LEFT [BLUE]
+  - backgroundImage: {fileID: 2617879541848712618}
+    foregroundImage: {fileID: 4427307113292607095}
+    triggerInputImage: {fileID: 2424751873816249695}
+    slider: {fileID: 3363909345630800466}
+    fillImage: {fileID: 3960756761390416293}
+    NAME: RIGHT [YELLOW]
   inputIcons:
-  - NAME: '[0]'
+  - NAME: Up[0]
     keyboardSprite: {fileID: 21300000, guid: 18c3d1b669096984a9f4c2fbb88af95a, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 6b46abe21f945c54f8c62c4f4f2978cb,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: c92a3f64b637ef64db482ddac1b5e5ca,
       type: 3}
-  - NAME: Yellow[1]
-    keyboardSprite: {fileID: 21300000, guid: 57b994860e8a98c45ac30c8ec298ee15, type: 3}
-    xboxControllerSprite: {fileID: 21300000, guid: 8d1afd623d8fd2d49b0c2b3a9db30393,
-      type: 3}
-    playstationControllerSprite: {fileID: 21300000, guid: 38ef96a827093524c917d2ffd1c24570,
-      type: 3}
-  - NAME: Grey[2]
+  - NAME: Down[1]
     keyboardSprite: {fileID: 21300000, guid: 1b123d1f758102745a189e04bcdba4fa, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 6bbc26aec2ef7394e9c32ccecfc4926e,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: c4c4a6a848bec8947b83de6866ee65bd,
       type: 3}
-  - NAME: Blue[3]
+  - NAME: GREEN
+    keyboardSprite: {fileID: 0}
+    xboxControllerSprite: {fileID: 0}
+    playstationControllerSprite: {fileID: 0}
+  - NAME: Left[3]
     keyboardSprite: {fileID: 21300000, guid: bb43cc51b88d34f43af9f19b70e52e17, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 2dc5aadd939fb3a49a8bc6572e11dd11,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: 15bbb4a0d4ff37a40818a689ac9c3dec,
+      type: 3}
+  - NAME: Right[4]
+    keyboardSprite: {fileID: 21300000, guid: 57b994860e8a98c45ac30c8ec298ee15, type: 3}
+    xboxControllerSprite: {fileID: 21300000, guid: 8d1afd623d8fd2d49b0c2b3a9db30393,
+      type: 3}
+    playstationControllerSprite: {fileID: 21300000, guid: 38ef96a827093524c917d2ffd1c24570,
       type: 3}
   botHealthBarImage: {fileID: 59081399505849756}
   carryCapacitySlider: {fileID: 3491303033471104785}
@@ -10093,18 +10107,6 @@ MonoBehaviour:
     m_PreInfinity: 1
     m_PostInfinity: 1
     m_RotationOrder: 4
-  sliders:
-  - {fileID: 6245549572273726664}
-  - {fileID: 3363909345630800466}
-  - {fileID: 4429408957387983997}
-  - {fileID: 5219180772520848661}
-  - {fileID: 2289749327659623934}
-  sliderImages:
-  - {fileID: 6492735457205182417}
-  - {fileID: 3960756761390416293}
-  - {fileID: 217715934040384940}
-  - {fileID: 2311218549224896399}
-  - {fileID: 8222479956639942558}
 --- !u!1 &5522319499635563682
 GameObject:
   m_ObjectHideFlags: 0
@@ -10690,7 +10692,7 @@ GameObject:
   - component: {fileID: 8790576220639180689}
   - component: {fileID: 3960756761390416293}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Up_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11585,7 +11587,7 @@ GameObject:
   - component: {fileID: 4766155970896210257}
   - component: {fileID: 217715934040384940}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Green_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12186,7 +12188,7 @@ GameObject:
   - component: {fileID: 9129160456622053184}
   - component: {fileID: 3363909345630800466}
   m_Layer: 5
-  m_Name: Slider_0
+  m_Name: Up_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12504,7 +12506,7 @@ GameObject:
   - component: {fileID: 6969969360241952378}
   - component: {fileID: 8222479956639942558}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Left_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14241,7 +14243,7 @@ GameObject:
   - component: {fileID: 1441884543969579972}
   - component: {fileID: 4429408957387983997}
   m_Layer: 5
-  m_Name: Slider_0
+  m_Name: Green_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15545,7 +15547,7 @@ GameObject:
   - component: {fileID: 8039525699702633196}
   - component: {fileID: 2311218549224896399}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: Down_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15764,7 +15766,7 @@ GameObject:
   - component: {fileID: 2083253194999572721}
   - component: {fileID: 6245549572273726664}
   m_Layer: 5
-  m_Name: Slider_1
+  m_Name: Right_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15925,7 +15927,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8983362764388497081}
   m_Layer: 5
-  m_Name: YellowGroup
+  m_Name: Up_Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15947,7 +15949,7 @@ RectTransform:
   - {fileID: 8131253301687841423}
   - {fileID: 4535098110149122056}
   m_Father: {fileID: 7739130787870485926}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

@@ -35,6 +35,9 @@ namespace StarSalvager.UI
 
             [Required, FoldoutGroup("$NAME")]
             public Image triggerInputImage;
+
+            [Required, FoldoutGroup("$NAME")] public Slider slider;
+            [Required, FoldoutGroup("$NAME")] public Image fillImage;
             
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
@@ -375,10 +378,10 @@ namespace StarSalvager.UI
 
         #endregion //Properties
 
-        [SerializeField]
+        /*[SerializeField]
         private Slider[] sliders;
         [SerializeField]
-        private Image[] sliderImages;
+        private Image[] sliderImages;*/
 
 
         //====================================================================================================================//
@@ -501,14 +504,6 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        readonly BIT_TYPE[] _bitTypes = {
-            BIT_TYPE.RED,
-            BIT_TYPE.YELLOW,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.GREY,
-            BIT_TYPE.BLUE,
-        };
-
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
@@ -521,22 +516,22 @@ namespace StarSalvager.UI
 
         private void SetupAmmoBars()
         {
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                sliderImages[i].color = _bitTypes[i].GetColor();
+                SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
-                sliders[i].minValue = 0;
+                SliderPartUis[i].slider.minValue = 0;
             }
         }
 
         private void UpdateAmmoBars()
         {
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                var resource = PlayerDataManager.GetResource(_bitTypes[i]);
+                var resource = PlayerDataManager.GetResource(Constants.BIT_ORDER[i]);
 
-                sliders[i].maxValue = resource.AmmoCapacity;
-                sliders[i].value = resource.Ammo;
+                SliderPartUis[i].slider.maxValue = resource.AmmoCapacity;
+                SliderPartUis[i].slider.value = resource.Ammo;
             }
         }
 
@@ -676,6 +671,7 @@ namespace StarSalvager.UI
             {
                 0, 1, 3, 4
             };
+            
             for (var i = 0; i < indices.Length; i++)
             {
                 var index = indices[i];
@@ -685,7 +681,7 @@ namespace StarSalvager.UI
                     continue;
 
                 sliderPartUi.triggerInputImage.sprite =
-                    inputIcons[i].GetInputSprite(newDeviceName);
+                    inputIcons[index].GetInputSprite(newDeviceName);
 
             }
         }
@@ -694,9 +690,9 @@ namespace StarSalvager.UI
         {
             //--------------------------------------------------------------------------------------------------------//
             
-            Sprite GetInputSprite(in BIT_TYPE bitType)
+            Sprite GetInputSprite(in int bitIndex)
             {
-                int bitIndex;
+                /*int bitIndex;
                 switch (bitType)
                 {
                     case BIT_TYPE.RED:
@@ -713,7 +709,7 @@ namespace StarSalvager.UI
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-                }
+                }*/
                 
                 return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
@@ -735,7 +731,7 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
+            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);
             SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
         }

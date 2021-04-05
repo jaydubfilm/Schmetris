@@ -25,14 +25,6 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
-        private static readonly BIT_TYPE[] _bitTypes = {
-            BIT_TYPE.RED,
-            BIT_TYPE.YELLOW,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.GREY,
-            BIT_TYPE.BLUE,
-        };
-        
         private static PART_TYPE[] TriggerPartTypes
         {
             get
@@ -231,9 +223,9 @@ namespace StarSalvager
             GameUI.ResetIcons();
 
             //Using a fixed order for the BIT_TYPES since the UI needs it in this order
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                SetIcon(i, _bitTypes[i]);
+                SetIcon(i, Constants.BIT_ORDER[i]);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -267,7 +259,7 @@ namespace StarSalvager
 
                         MagnetCount = magnetAmount;
 
-                        foreach (var bitType in _bitTypes)
+                        foreach (var bitType in Constants.BIT_ORDER)
                         {
                             var resource = PlayerDataManager.GetResource(bitType);
                             resource.SetAmmoCapacity(capacityAmount, false);
@@ -1042,18 +1034,19 @@ namespace StarSalvager
         /// <param name="index"></param>
         public void TryTriggerPart(in int index)
         {
-            Part GetPart(in BIT_TYPE bitType)
+            Part GetPart(in BIT_TYPE type)
             {
-                var temp = bitType;
-                
+                var temp = type;
                 return _triggerParts.FirstOrDefault(x => x.category == temp);
             }
             
             if (_triggerParts == null || _triggerParts.Count == 0)
                 return;
 
-            Part part = null;
-            switch (index)
+            var bitType = Constants.BIT_ORDER[index];
+            var part = GetPart(bitType);
+
+            /*switch (index)
             {
                 case 0: //Blue, West
                     part = GetPart(BIT_TYPE.RED);
@@ -1067,7 +1060,7 @@ namespace StarSalvager
                 case 3: //Yellow, East
                     part =  GetPart(BIT_TYPE.BLUE);
                     break;
-            }
+            }*/
 
             if (part is null)
                 return;
