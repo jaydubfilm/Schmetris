@@ -123,6 +123,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""TriggerPart"",
+                    ""type"": ""Value"",
+                    ""id"": ""44be190b-8deb-42f7-b633-e0a3f2305d6b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -675,6 +683,116 @@ namespace StarSalvager.Utilities.Inputs
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Controller"",
+                    ""id"": ""ecf7f3d1-6edb-449f-993f-7bbc716b68b6"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""abee97c1-47a1-4923-bf86-bd4f1615a46a"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""9b453833-c496-4ae3-893f-8f5e5903174a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""8943dae4-5c4c-4e38-9864-4a299316a00b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""a96e6ad9-5dc7-4c7a-9691-7208cf1e7d7a"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""id"": ""2cf54db1-a1b2-44e2-9683-082b8ab11933"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""ea17d960-834a-4fbc-892a-d345140c4b27"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""0c8307f8-5f81-4ac5-ae20-8f7dcec5fd66"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fed224b2-9945-44b4-b5b4-1b54756cefee"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""00c06e7c-cecc-4595-9a3f-4ed54e09370b"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1060,6 +1178,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
             m_Default_SpeedChange = m_Default.FindAction("SpeedChange", throwIfNotFound: true);
             m_Default_Dash = m_Default.FindAction("Dash", throwIfNotFound: true);
+            m_Default_TriggerPart = m_Default.FindAction("TriggerPart", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -1132,6 +1251,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SelfDestruct;
         private readonly InputAction m_Default_SpeedChange;
         private readonly InputAction m_Default_Dash;
+        private readonly InputAction m_Default_TriggerPart;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -1149,6 +1269,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
             public InputAction @SpeedChange => m_Wrapper.m_Default_SpeedChange;
             public InputAction @Dash => m_Wrapper.m_Default_Dash;
+            public InputAction @TriggerPart => m_Wrapper.m_Default_TriggerPart;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1197,6 +1318,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Dash.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
                     @Dash.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
                     @Dash.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
+                    @TriggerPart.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
+                    @TriggerPart.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
+                    @TriggerPart.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1240,6 +1364,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Dash.started += instance.OnDash;
                     @Dash.performed += instance.OnDash;
                     @Dash.canceled += instance.OnDash;
+                    @TriggerPart.started += instance.OnTriggerPart;
+                    @TriggerPart.performed += instance.OnTriggerPart;
+                    @TriggerPart.canceled += instance.OnTriggerPart;
                 }
             }
         }
@@ -1366,6 +1493,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSelfDestruct(InputAction.CallbackContext context);
             void OnSpeedChange(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
+            void OnTriggerPart(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {

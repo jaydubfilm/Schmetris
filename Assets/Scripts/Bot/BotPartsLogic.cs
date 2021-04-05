@@ -805,14 +805,6 @@ namespace StarSalvager
         
         private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            var types = new List<BIT_TYPE>
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            };
             //TODO This still needs to account for multiple bombs
             if (!_triggerPartTimers.TryGetValue(part, out var timer))
                 return;
@@ -829,7 +821,8 @@ namespace StarSalvager
             
             //Find the index of the ui element to show cooldown
             var tempPart = part;
-            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            //FIXME Ew...
+            var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//

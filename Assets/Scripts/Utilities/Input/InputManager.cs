@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
@@ -348,6 +349,9 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Pause, Pause
                 },
                 {
+                    Input.Actions.Default.TriggerPart, TriggerPart
+                },
+                /*{
                     Input.Actions.Default.SmartAction1, SmartAction1
                 },
                 {
@@ -358,7 +362,7 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.SmartAction4, SmartAction4
-                },
+                },*/
                 {
                     Input.Actions.Default.LeftClick, LeftClick
                 },
@@ -406,30 +410,65 @@ namespace StarSalvager.Utilities.Inputs
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
             //Up
-            TriggerSmartWeapon(ctx, 0);
+            //TriggerSmartWeapon(ctx, 0);
         }
         private void SmartAction2(InputAction.CallbackContext ctx)
         {
             //Down
-            TriggerSmartWeapon(ctx, 1);
+            //TriggerSmartWeapon(ctx, 1);
         }
         private void SmartAction3(InputAction.CallbackContext ctx)
         {
             //Left
-            TriggerSmartWeapon(ctx, 3);
+            //TriggerSmartWeapon(ctx, 3);
         }
         private void SmartAction4(InputAction.CallbackContext ctx)
         {
             //Right
-            TriggerSmartWeapon(ctx, 4);
+            //TriggerSmartWeapon(ctx, 4);
         }
 
-
-        private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
+        private void TriggerPart(InputAction.CallbackContext ctx)
         {
             CheckForInputDeviceChange(ctx);
+
+            var rawDirection = ctx.ReadValue<Vector2>();
+            var direction = rawDirection.ToDirection();
+
+            if (direction == DIRECTION.NULL)
+            {
+                TriggerSmartWeapon(0, 0);
+                TriggerSmartWeapon(1, 0);
+                TriggerSmartWeapon(3, 0);
+                TriggerSmartWeapon(4, 0);
+                return;
+            }
+
+            var input = new Vector2(Mathf.Abs(rawDirection.x), Mathf.Abs(rawDirection.y));
             
-            _triggersPressed[index] = ctx.ReadValue<float>() == 1f;
+            switch (direction)
+            {
+                case DIRECTION.UP:
+                    TriggerSmartWeapon(0, input.y);
+                    break;
+                case DIRECTION.DOWN:
+                    TriggerSmartWeapon(1, input.y);
+                    break;
+                case DIRECTION.LEFT:
+                    TriggerSmartWeapon(3, input.x);
+                    break;
+                case DIRECTION.RIGHT:
+                    TriggerSmartWeapon(4, input.x);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void TriggerSmartWeapon(in int index, in float input)
+        {
+            _triggersPressed[index] = input == 1f;
         }
 
         private void TryUpdateTriggers()
