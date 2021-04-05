@@ -1065,7 +1065,7 @@ MonoBehaviour:
     contentTransform: {fileID: 4623226693895520633}
     contentPrefab: {fileID: 8662621323246322072, guid: c37e2c705ee60134baa17ecf007f1cfe,
       type: 3}
-  dottedLineImage: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,
+  dottedLineImagePrefab: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,
     type: 3}
   botDisplayRectTransform: {fileID: 5059624597965075289}
 --- !u!223 &5553311265099259240
@@ -1143,7 +1143,7 @@ MonoBehaviour:
   m_Content: {fileID: 5553311265975264999}
   m_Horizontal: 1
   m_Vertical: 1
-  m_MovementType: 0
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
