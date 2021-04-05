@@ -446,10 +446,11 @@ namespace StarSalvager.UI
                 case HINT.NONE:
                     return null;
                 case HINT.MAGNET:
-                    return new object[]
+                    return null;
+                    /*return new object[]
                     {
                         magnetFlash.transform as RectTransform
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

@@ -78,6 +78,9 @@ namespace StarSalvager.Utilities.UI
 
         public void FlashOnce()
         {
+            if (!gameObject.activeInHierarchy)
+                return;
+            
             if (Image.enabled)
                 return;
             
