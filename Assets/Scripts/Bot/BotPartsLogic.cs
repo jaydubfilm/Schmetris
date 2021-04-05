@@ -193,18 +193,19 @@ namespace StarSalvager
             BIT_TYPE category;
             switch (direction)
             {
-                case DIRECTION.LEFT:
-                    category = BIT_TYPE.BLUE;
-                    break;
                 case DIRECTION.UP:
-                    category = BIT_TYPE.RED;
-                    break;
-                case DIRECTION.RIGHT:
-                    category = BIT_TYPE.YELLOW;
+                    category = Constants.BIT_ORDER[0];
                     break;
                 case DIRECTION.DOWN:
-                    category = BIT_TYPE.GREY;
+                    category = Constants.BIT_ORDER[1];
                     break;
+                case DIRECTION.LEFT:
+                    category = Constants.BIT_ORDER[3];
+                    break;
+                case DIRECTION.RIGHT:
+                    category = Constants.BIT_ORDER[4];
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
@@ -513,15 +514,6 @@ namespace StarSalvager
         //Parts Update Loop
         //============================================================================================================//
 
-        private static List<BIT_TYPE> bitTypes = new List<BIT_TYPE>
-        {
-            BIT_TYPE.RED,
-            BIT_TYPE.YELLOW,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.GREY,
-            BIT_TYPE.BLUE,
-        };
-
         //FIXME I Will want to separate these functions as this is getting too large
         /// <summary>
         /// Parts specific update Loop. Updates all part information based on currently attached parts.
@@ -592,12 +584,7 @@ namespace StarSalvager
                     TriggerPartUpdates(triggerPart, null, deltaTime);
                 }
 
-                /*if (!cooldownData.HasCooldown(false))
-                    return;*/
-
-
-
-                var uiIndex = bitTypes.FindIndex(x => x == partRemoteData.category);
+                var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == partRemoteData.category);
                 var fill = 1f - cooldownData.Value;
                 GameUI.SetFill(uiIndex, fill);
             }
@@ -1155,14 +1142,6 @@ namespace StarSalvager
 
         private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            /*var types = new List<BIT_TYPE>
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            };*/
 
             if (!_partCooldownTimers.TryGetValue(part, out var cooldownData))
                 return;
@@ -1176,7 +1155,7 @@ namespace StarSalvager
 
             //Find the index of the ui element to show cooldown
             var tempPart = part;
-            var uiIndex = bitTypes.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//
