@@ -10,6 +10,7 @@ using StarSalvager.Audio.Data;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
+using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Serialization;
@@ -19,10 +20,10 @@ namespace StarSalvager.Audio
 {
     public class AudioController : Singleton<AudioController>
     {
-        private const string MASTER_VOLUME ="Master_Volume";
-        private const string MUSIC_VOLUME ="Music_Volume";
-        private const string SFX_VOLUME ="SFX_Volume";
-        private const string SFX_PITCH ="SFX_Pitch";
+        public const string MASTER_VOLUME ="Master_Volume";
+        public const string MUSIC_VOLUME ="Music_Volume";
+        public const string SFX_VOLUME ="SFX_Volume";
+        public const string SFX_PITCH ="SFX_Pitch";
 
         private const int MAX_CHANNELS = 2;
 
@@ -266,6 +267,12 @@ namespace StarSalvager.Audio
             }
             
             CrossFadeMusic(startingMusic);
+
+            var musicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME, 1f);
+            var sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME, 1f);
+            
+            SetMusicVolume(musicVolume);
+            SetSFXVolume(sfxVolume);
         }
 
         //============================================================================================================//
@@ -473,6 +480,9 @@ namespace StarSalvager.Audio
             volume = Mathf.Clamp(volume, 0.001f, 1f);
             
             masterMixer.SetFloat(parameterName, Mathf.Log(volume) * 13);
+
+            //Save the setting
+            PlayerPrefs.SetFloat(parameterName, volume);
         }
         
         private float InverseVolume(float volume)
