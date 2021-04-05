@@ -165,6 +165,7 @@ namespace StarSalvager.UI.Hints
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.MAGNET:
+                    return;
                     objectsToHighlight = GameUI.Instance.GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
