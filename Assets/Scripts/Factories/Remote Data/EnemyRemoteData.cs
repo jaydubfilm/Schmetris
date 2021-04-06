@@ -28,6 +28,8 @@ namespace StarSalvager.Factories.Data
         }
 
 #endif
+
+        [FoldoutGroup("$Name")] public bool isImplemented;
         
         [SerializeField, FoldoutGroup("$Name")]
         private string m_name;

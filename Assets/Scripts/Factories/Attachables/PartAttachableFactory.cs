@@ -78,7 +78,7 @@ namespace StarSalvager.Factories
                 //    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
                 //    break;
                 case PART_OPTION_TYPE.Any:
-                    partTypes = new List<PART_TYPE>(remotePartData.anyParts);
+                    partTypes = new List<PART_TYPE>(remotePartData.AnyParts);
                     break;
             }
 
