@@ -123,6 +123,14 @@ namespace StarSalvager.Utilities.Inputs
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""TriggerPart"",
+                    ""type"": ""Value"",
+                    ""id"": ""44be190b-8deb-42f7-b633-e0a3f2305d6b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -143,7 +151,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -154,7 +162,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -176,7 +184,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -187,7 +195,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -209,7 +217,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -220,7 +228,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/slash"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -242,7 +250,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -253,7 +261,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -264,7 +272,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/leftStick/x"",
                     ""interactions"": """",
                     ""processors"": ""AxisDeadzone"",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Side Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -286,7 +294,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -297,7 +305,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -319,7 +327,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -330,7 +338,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -352,7 +360,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/k"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -363,7 +371,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/semicolon"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -385,7 +393,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -396,7 +404,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -407,7 +415,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Left Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -418,7 +426,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Right Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -429,7 +437,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -440,7 +448,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -451,7 +459,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SmartAction1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -459,10 +467,10 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""6b1ba9bc-b466-44d1-9a15-89f064727662"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SmartAction1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -473,7 +481,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SmartAction2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -484,7 +492,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SmartAction2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -495,7 +503,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SmartAction3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -503,10 +511,10 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": """",
                     ""id"": ""f26edeed-e68a-4ce7-9db8-866a810b401a"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SmartAction3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -517,7 +525,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/4"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SmartAction4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -528,7 +536,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SmartAction4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -539,7 +547,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Continue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -550,7 +558,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Continue"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -561,7 +569,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SelfDestruct"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -583,7 +591,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -594,7 +602,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -605,7 +613,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/dpad/y"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""SpeedChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -627,7 +635,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -638,7 +646,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -660,7 +668,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -671,8 +679,118 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Controller"",
+                    ""id"": ""ecf7f3d1-6edb-449f-993f-7bbc716b68b6"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""abee97c1-47a1-4923-bf86-bd4f1615a46a"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""9b453833-c496-4ae3-893f-8f5e5903174a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""8943dae4-5c4c-4e38-9864-4a299316a00b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""a96e6ad9-5dc7-4c7a-9691-7208cf1e7d7a"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""id"": ""2cf54db1-a1b2-44e2-9683-082b8ab11933"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""ea17d960-834a-4fbc-892a-d345140c4b27"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""0c8307f8-5f81-4ac5-ae20-8f7dcec5fd66"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""fed224b2-9945-44b4-b5b4-1b54756cefee"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""00c06e7c-cecc-4595-9a3f-4ed54e09370b"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""TriggerPart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -754,7 +872,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/dpad"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -776,7 +894,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -787,7 +905,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -798,7 +916,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -809,7 +927,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -831,7 +949,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -842,7 +960,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -853,7 +971,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -864,10 +982,21 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Navigate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""22d2c091-9dc3-4ea7-803c-cda3be58a5c8"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": ""StickDeadzone"",
+                    ""groups"": """",
+                    ""action"": ""Navigate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -875,7 +1004,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Left Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -897,7 +1026,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Point"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -919,7 +1048,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""*/{Submit}"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard;Gamepad"",
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -930,7 +1059,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -941,7 +1070,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard;Gamepad"",
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -952,7 +1081,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -963,7 +1092,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -974,7 +1103,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -985,7 +1114,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/scroll"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Scroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -996,7 +1125,7 @@ namespace StarSalvager.Utilities.Inputs
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Right Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1004,7 +1133,35 @@ namespace StarSalvager.Utilities.Inputs
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""Mouse & Keyboard"",
+            ""bindingGroup"": ""Mouse & Keyboard"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Gamepad"",
+            ""bindingGroup"": ""Gamepad"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Gamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
             // Default
             m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
@@ -1021,6 +1178,7 @@ namespace StarSalvager.Utilities.Inputs
             m_Default_SelfDestruct = m_Default.FindAction("SelfDestruct", throwIfNotFound: true);
             m_Default_SpeedChange = m_Default.FindAction("SpeedChange", throwIfNotFound: true);
             m_Default_Dash = m_Default.FindAction("Dash", throwIfNotFound: true);
+            m_Default_TriggerPart = m_Default.FindAction("TriggerPart", throwIfNotFound: true);
             // Menu Controls
             m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
             m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -1093,6 +1251,7 @@ namespace StarSalvager.Utilities.Inputs
         private readonly InputAction m_Default_SelfDestruct;
         private readonly InputAction m_Default_SpeedChange;
         private readonly InputAction m_Default_Dash;
+        private readonly InputAction m_Default_TriggerPart;
         public struct DefaultActions
         {
             private @SalvagerInput m_Wrapper;
@@ -1110,6 +1269,7 @@ namespace StarSalvager.Utilities.Inputs
             public InputAction @SelfDestruct => m_Wrapper.m_Default_SelfDestruct;
             public InputAction @SpeedChange => m_Wrapper.m_Default_SpeedChange;
             public InputAction @Dash => m_Wrapper.m_Default_Dash;
+            public InputAction @TriggerPart => m_Wrapper.m_Default_TriggerPart;
             public InputActionMap Get() { return m_Wrapper.m_Default; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1158,6 +1318,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Dash.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
                     @Dash.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
                     @Dash.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnDash;
+                    @TriggerPart.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
+                    @TriggerPart.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
+                    @TriggerPart.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnTriggerPart;
                 }
                 m_Wrapper.m_DefaultActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1201,6 +1364,9 @@ namespace StarSalvager.Utilities.Inputs
                     @Dash.started += instance.OnDash;
                     @Dash.performed += instance.OnDash;
                     @Dash.canceled += instance.OnDash;
+                    @TriggerPart.started += instance.OnTriggerPart;
+                    @TriggerPart.performed += instance.OnTriggerPart;
+                    @TriggerPart.canceled += instance.OnTriggerPart;
                 }
             }
         }
@@ -1294,6 +1460,24 @@ namespace StarSalvager.Utilities.Inputs
             }
         }
         public MenuControlsActions @MenuControls => new MenuControlsActions(this);
+        private int m_MouseKeyboardSchemeIndex = -1;
+        public InputControlScheme MouseKeyboardScheme
+        {
+            get
+            {
+                if (m_MouseKeyboardSchemeIndex == -1) m_MouseKeyboardSchemeIndex = asset.FindControlSchemeIndex("Mouse & Keyboard");
+                return asset.controlSchemes[m_MouseKeyboardSchemeIndex];
+            }
+        }
+        private int m_GamepadSchemeIndex = -1;
+        public InputControlScheme GamepadScheme
+        {
+            get
+            {
+                if (m_GamepadSchemeIndex == -1) m_GamepadSchemeIndex = asset.FindControlSchemeIndex("Gamepad");
+                return asset.controlSchemes[m_GamepadSchemeIndex];
+            }
+        }
         public interface IDefaultActions
         {
             void OnSideMovement(InputAction.CallbackContext context);
@@ -1309,6 +1493,7 @@ namespace StarSalvager.Utilities.Inputs
             void OnSelfDestruct(InputAction.CallbackContext context);
             void OnSpeedChange(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
+            void OnTriggerPart(InputAction.CallbackContext context);
         }
         public interface IMenuControlsActions
         {

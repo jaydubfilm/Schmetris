@@ -129,7 +129,7 @@ PlayerSettings:
     16:10: 0
     16:9: 1
     Others: 0
-  bundleVersion: 0.3.8.26
+  bundleVersion: 0.3.9.11
   preloadedAssets:
   - {fileID: 11400000, guid: bf0c805c5e0627a4998d083738cc59b3, type: 2}
   metroInputSource: 0
@@ -646,7 +646,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: ODIN_INSPECTOR
+    1: ODIN_INSPECTOR;ODIN_INSPECTOR_3
     4: 
     7: 
   platformArchitecture: {}

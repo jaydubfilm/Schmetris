@@ -1,4 +1,3 @@
-
 namespace BuildReportTool
 {
 	[System.Serializable]

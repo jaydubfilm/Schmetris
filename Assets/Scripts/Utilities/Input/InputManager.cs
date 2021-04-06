@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace StarSalvager.Utilities.Inputs
     }
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+        public static Action<string> InputDeviceChanged;
+        
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
 
@@ -47,7 +50,7 @@ namespace StarSalvager.Utilities.Inputs
 
         #region Properties
 
-        private readonly bool[] _triggersPressed = new bool[4];
+        private readonly bool[] _triggersPressed = new bool[5];
 
         private Bot[] _bots;
         private ScrapyardBot[] _scrapyardBots;
@@ -152,6 +155,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
+            
         }
 
         private void Update()
@@ -290,6 +294,36 @@ namespace StarSalvager.Utilities.Inputs
         //============================================================================================================//
 
         #region Inputs
+
+        //FIXME This functions but could use reorganizing
+        public static string CurrentInputDeviceName => Instance._currentInputDevice;
+        private string _currentInputDevice = "Keyboard";
+        private void CheckForInputDeviceChange(in InputAction.CallbackContext callbackContext)
+        {
+            CheckForInputDeviceChange(callbackContext.control.device);
+        }
+        private void CheckForInputDeviceChange(in InputDevice inputDevice)
+        {
+            const string KEYBOARD = "Keyboard";
+            const string MOUSE = "Mouse";
+            
+            var deviceName = inputDevice.name;
+            
+            if (deviceName.Equals(KEYBOARD) || deviceName.Equals(MOUSE))
+                deviceName = KEYBOARD;
+            
+            if (_currentInputDevice.Equals(deviceName))
+                return;
+
+            _currentInputDevice = deviceName;
+            
+            Debug.Log($"New Device Name: {deviceName}");
+            //TODO Notify whoever that the 
+            InputDeviceChanged?.Invoke(deviceName);
+        }
+        
+        
+        
         private void SetupInputs()
         {
             var actionMap = playerInput.currentActionMap.actions;
@@ -315,6 +349,9 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Pause, Pause
                 },
                 {
+                    Input.Actions.Default.TriggerPart, TriggerPart
+                },
+                /*{
                     Input.Actions.Default.SmartAction1, SmartAction1
                 },
                 {
@@ -325,7 +362,7 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.SmartAction4, SmartAction4
-                },
+                },*/
                 {
                     Input.Actions.Default.LeftClick, LeftClick
                 },
@@ -359,29 +396,79 @@ namespace StarSalvager.Utilities.Inputs
             }*/
         }
 
-
+        //Smart Actions
+        //====================================================================================================================//
+        /*public static readonly BIT_TYPE[] BIT_ORDER = 
+        {
+            BIT_TYPE.YELLOW,    /*Up#1#        
+            BIT_TYPE.GREY,      /*Down#1#    
+            BIT_TYPE.GREEN,     /*BR Window#1#    
+            BIT_TYPE.BLUE,      /*Left#1#    
+            BIT_TYPE.RED,       /*Right#1#
+        };*/
 
         private void SmartAction1(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 0);
+            //Up
+            //TriggerSmartWeapon(ctx, 0);
         }
         private void SmartAction2(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 1);
+            //Down
+            //TriggerSmartWeapon(ctx, 1);
         }
         private void SmartAction3(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 2);
+            //Left
+            //TriggerSmartWeapon(ctx, 3);
         }
         private void SmartAction4(InputAction.CallbackContext ctx)
         {
-            TriggerSmartWeapon(ctx, 3);
+            //Right
+            //TriggerSmartWeapon(ctx, 4);
         }
 
-
-        private void TriggerSmartWeapon(InputAction.CallbackContext ctx, int index)
+        private void TriggerPart(InputAction.CallbackContext ctx)
         {
-            _triggersPressed[index] = ctx.ReadValue<float>() == 1f;
+            CheckForInputDeviceChange(ctx);
+
+            var rawDirection = ctx.ReadValue<Vector2>();
+            var direction = rawDirection.ToDirection();
+
+            if (direction == DIRECTION.NULL)
+            {
+                TriggerSmartWeapon(0, 0);
+                TriggerSmartWeapon(1, 0);
+                TriggerSmartWeapon(3, 0);
+                TriggerSmartWeapon(4, 0);
+                return;
+            }
+
+            var input = new Vector2(Mathf.Abs(rawDirection.x), Mathf.Abs(rawDirection.y));
+            
+            switch (direction)
+            {
+                case DIRECTION.UP:
+                    TriggerSmartWeapon(0, input.y);
+                    break;
+                case DIRECTION.DOWN:
+                    TriggerSmartWeapon(1, input.y);
+                    break;
+                case DIRECTION.LEFT:
+                    TriggerSmartWeapon(3, input.x);
+                    break;
+                case DIRECTION.RIGHT:
+                    TriggerSmartWeapon(4, input.x);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void TriggerSmartWeapon(in int index, in float input)
+        {
+            _triggersPressed[index] = input == 1f;
         }
 
         private void TryUpdateTriggers()
@@ -407,6 +494,8 @@ namespace StarSalvager.Utilities.Inputs
             _bots[0].BotPartsLogic.TryTriggerPart(index);
         }
 
+        //====================================================================================================================//
+        
         private void SelfDestruct(InputAction.CallbackContext ctx)
         {
             if (Console.Open)
@@ -448,6 +537,8 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
             
+            CheckForInputDeviceChange(ctx);
+            
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
                 return;
             
@@ -469,6 +560,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
+
+            CheckForInputDeviceChange(ctx);
             
             switch (ctx.action.name)
             {
@@ -856,6 +949,8 @@ namespace StarSalvager.Utilities.Inputs
             if (Console.Open)
                 return;
 
+            CheckForInputDeviceChange(ctx);
+            
             if (GameManager.IsState(GameState.LevelEndWave))
                 return;
 

@@ -23,6 +23,7 @@ namespace StarSalvager
 
         LEVEL_ACTIVE = LevelActive | LevelActiveEndSequence,
         LEVEL = LEVEL_ACTIVE | LevelEndWave | LevelBotDead,
+
     }
     
     //Don't need to set this, Singleton already triggers [DefaultExecutionOrder]

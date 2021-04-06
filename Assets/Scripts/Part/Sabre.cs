@@ -8,19 +8,31 @@ public class Sabre : CollidableBase
 {
     private float _damage;
     
-    public float size { get; private set; }
-    protected override string CollisionTag => "Enemy";
+    public float minSize { get; private set; }
+    public float maxSize { get; private set; }
     
+    protected override string CollisionTag => "Enemy";
+
+    protected override bool useCollisionStay => false;
+
     private BoxCollider2D BoxCollider2D => collider as BoxCollider2D;
 
     //====================================================================================================================//
 
-    public void Init(in float damage, in float size)
+    public void Init(in float damage, in float minSize, in float maxSize)
     {
         _damage = damage;
         
-        this.size = size;
-        
+        this.minSize = minSize;
+        this.maxSize = maxSize;
+
+        SetSize(this.minSize);
+    }
+
+    //====================================================================================================================//
+
+    public void SetSize(in float size)
+    {
         var vSize = new Vector2(1, size);
         renderer.size = vSize;
         BoxCollider2D.size = vSize;
@@ -46,6 +58,6 @@ public class Sabre : CollidableBase
         if (!(gameObject.GetComponent<ICanBeHit>() is ICanBeHit iCanBeHit))
             return;
 
-        iCanBeHit.TryHitAt(worldHitPoint, _damage * Time.deltaTime);
+        iCanBeHit.TryHitAt(worldHitPoint, _damage/* * Time.deltaTime*/);
     }
 }

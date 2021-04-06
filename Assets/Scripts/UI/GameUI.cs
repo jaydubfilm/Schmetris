@@ -35,6 +35,9 @@ namespace StarSalvager.UI
 
             [Required, FoldoutGroup("$NAME")]
             public Image triggerInputImage;
+
+            [Required, FoldoutGroup("$NAME")] public Slider slider;
+            [Required, FoldoutGroup("$NAME")] public Image fillImage;
             
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
@@ -78,6 +81,7 @@ namespace StarSalvager.UI
             }
         }
 
+        //Used sprites from: https://thoseawesomeguys.com/prompts/
         [Serializable]
         public struct InputIcon
         {
@@ -85,11 +89,26 @@ namespace StarSalvager.UI
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
 #endif
-            
-            [Required, FoldoutGroup("$NAME")]
-            public Sprite keyboardSprite;
-            [Required, FoldoutGroup("$NAME")]
-            public Sprite controllerSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite keyboardSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite xboxControllerSprite;
+            [SerializeField, Required, FoldoutGroup("$NAME")]
+            private Sprite playstationControllerSprite;
+
+            public Sprite GetInputSprite(in string deviceName)
+            {
+                if (deviceName.Equals("Keyboard") || deviceName.Equals("Mouse"))
+                    return keyboardSprite;
+
+                if (deviceName.Contains("XInputControllerWindows"))
+                    return xboxControllerSprite;
+
+                if (deviceName.Contains("DualShock"))
+                    return playstationControllerSprite;
+
+                throw new Exception();
+            }
         }
         
         /*[Serializable, Obsolete]
@@ -359,10 +378,10 @@ namespace StarSalvager.UI
 
         #endregion //Properties
 
-        [SerializeField]
+        /*[SerializeField]
         private Slider[] sliders;
         [SerializeField]
-        private Image[] sliderImages;
+        private Image[] sliderImages;*/
 
 
         //====================================================================================================================//
@@ -375,6 +394,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
+            InputManager.InputDeviceChanged += TryUpdateInputSprites;
             ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
 
             InitValues();
@@ -426,10 +446,11 @@ namespace StarSalvager.UI
                 case HINT.NONE:
                     return null;
                 case HINT.MAGNET:
-                    return new object[]
+                    return null;
+                    /*return new object[]
                     {
                         magnetFlash.transform as RectTransform
-                    };
+                    };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -484,14 +505,6 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
-        readonly BIT_TYPE[] _bitTypes = {
-            BIT_TYPE.RED,
-            BIT_TYPE.YELLOW,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.GREY,
-            BIT_TYPE.BLUE,
-        };
-
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
@@ -504,24 +517,22 @@ namespace StarSalvager.UI
 
         private void SetupAmmoBars()
         {
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                var color = FactoryManager.Instance.BitProfileData.GetProfile(_bitTypes[i]).color;
+                SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
-                sliderImages[i].color = color;
-
-                sliders[i].minValue = 0;
+                SliderPartUis[i].slider.minValue = 0;
             }
         }
 
         private void UpdateAmmoBars()
         {
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                var resource = PlayerDataManager.GetResource(_bitTypes[i]);
+                var resource = PlayerDataManager.GetResource(Constants.BIT_ORDER[i]);
 
-                sliders[i].maxValue = resource.AmmoCapacity;
-                sliders[i].value = resource.Ammo;
+                SliderPartUis[i].slider.maxValue = resource.AmmoCapacity;
+                SliderPartUis[i].slider.value = resource.Ammo;
             }
         }
 
@@ -655,13 +666,34 @@ namespace StarSalvager.UI
             _flashingBorder = false;
         }
 
+        private void TryUpdateInputSprites(string newDeviceName)
+        {
+            var indices = new[]
+            {
+                0, 1, 3, 4
+            };
+            
+            for (var i = 0; i < indices.Length; i++)
+            {
+                var index = indices[i];
+                var sliderPartUi = SliderPartUis[index];
+
+                if (!sliderPartUi.triggerInputImage.gameObject.activeInHierarchy)
+                    continue;
+
+                sliderPartUi.triggerInputImage.sprite =
+                    inputIcons[index].GetInputSprite(newDeviceName);
+
+            }
+        }
+
         public void SetIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
             
-            Sprite GetInputSprite(in BIT_TYPE bitType)
+            Sprite GetInputSprite(in int bitIndex)
             {
-                int bitIndex;
+                /*int bitIndex;
                 switch (bitType)
                 {
                     case BIT_TYPE.RED:
@@ -678,9 +710,9 @@ namespace StarSalvager.UI
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-                }
+                }*/
                 
-                return inputIcons[bitIndex].keyboardSprite;
+                return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -700,9 +732,9 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(partRemoteData.category) : null);
+            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);
-            SliderPartUis[index].SetColor(FactoryManager.Instance.BitProfileData.GetProfile(partRemoteData.category).color);
+            SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
         }
 
         public void SetFill(int index, float fillValue)

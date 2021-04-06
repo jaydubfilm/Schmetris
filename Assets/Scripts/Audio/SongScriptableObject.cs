@@ -120,6 +120,19 @@ namespace StarSalvager.Audio.ScriptableObjects
         [FoldoutGroup("$name"), Range(0f, 1f)]
         public float maxLevel;
 
+        public FadeData GetFadeData(in FADE fadeDirection)
+        {
+            switch (fadeDirection)
+            {
+                case FADE.IN:
+                    return fadeIn;
+                case FADE.OUT:
+                    return fadeOut;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fadeDirection), fadeDirection, null);
+            }
+        }
+        
         public float GetFadeTime(FADE fadeDirection)
         {
             switch (fadeDirection)

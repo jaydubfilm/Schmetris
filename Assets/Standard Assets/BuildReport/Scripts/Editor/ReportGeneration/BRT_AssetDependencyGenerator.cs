@@ -87,7 +87,8 @@ namespace BuildReportTool
 
 		// ==================================================================================
 
-		public static void CreateFromIncludedScenes(AssetDependencies data, bool debugLog = false, bool recursiveGetDependencies = false)
+		public static void CreateFromIncludedScenes(AssetDependencies data, bool debugLog = false,
+			bool recursiveGetDependencies = false)
 		{
 			var startingOpenSet = new Queue<string>();
 
@@ -104,7 +105,8 @@ namespace BuildReportTool
 			Create(data, startingOpenSet, debugLog, recursiveGetDependencies);
 		}
 
-		public static void Create(AssetDependencies data, BuildReportTool.BuildInfo.SceneInBuild[] scenes, bool debugLog = false)
+		public static void Create(AssetDependencies data, BuildReportTool.BuildInfo.SceneInBuild[] scenes,
+			bool debugLog = false)
 		{
 			var startingOpenSet = new Queue<string>();
 
@@ -120,7 +122,8 @@ namespace BuildReportTool
 			Create(data, startingOpenSet, debugLog);
 		}
 
-		public static void CreateForUsedAssetsOnly(AssetDependencies data, BuildReportTool.BuildInfo buildInfo, bool debugLog = false)
+		public static void CreateForUsedAssetsOnly(AssetDependencies data, BuildReportTool.BuildInfo buildInfo,
+			bool debugLog = false)
 		{
 			if (buildInfo == null)
 			{
@@ -149,7 +152,8 @@ namespace BuildReportTool
 				var allUsedAssets = buildInfo.UsedAssets.All;
 				for (int n = 0, len = allUsedAssets.Length; n < len; ++n)
 				{
-					if (!string.IsNullOrEmpty(allUsedAssets[n].Name) && allUsedAssets[n].Name.IndexOf("/Resources/", StringComparison.OrdinalIgnoreCase) > -1)
+					if (!string.IsNullOrEmpty(allUsedAssets[n].Name) &&
+					    allUsedAssets[n].Name.IndexOf("/Resources/", StringComparison.OrdinalIgnoreCase) > -1)
 					{
 						startingOpenSet.Enqueue(allUsedAssets[n].Name);
 					}
@@ -159,7 +163,8 @@ namespace BuildReportTool
 			Create(data, startingOpenSet, debugLog);
 		}
 
-		public static void CreateForAllAssets(AssetDependencies data, BuildReportTool.BuildInfo buildInfo, bool debugLog = false)
+		public static void CreateForAllAssets(AssetDependencies data, BuildReportTool.BuildInfo buildInfo,
+			bool debugLog = false)
 		{
 			if (buildInfo == null)
 			{
@@ -177,6 +182,7 @@ namespace BuildReportTool
 					{
 						continue;
 					}
+
 					startingOpenSet.Enqueue(allUsedAssets[n].Name);
 				}
 			}
@@ -190,6 +196,7 @@ namespace BuildReportTool
 					{
 						continue;
 					}
+
 					startingOpenSet.Enqueue(allUnusedAssets[n].Name);
 				}
 			}
@@ -199,7 +206,8 @@ namespace BuildReportTool
 
 		// ==================================================================================
 
-		public static bool IsFileTypeBeforeAnother(List<AssetUserFlattened> list, int idx, string fileTypeInPrevious, string fileTypeInIdx, out int idxOfPrevious)
+		public static bool IsFileTypeBeforeAnother(List<AssetUserFlattened> list, int idx, string fileTypeInPrevious,
+			string fileTypeInIdx, out int idxOfPrevious)
 		{
 			if (idx <= 0)
 			{
@@ -249,7 +257,8 @@ namespace BuildReportTool
 			return false;
 		}
 
-		static bool IsInstanceOfFbxUsingMaterial(string fbxAssetPath, string assetUsingFbxAssetPath, string materialAssetPath,
+		static bool IsInstanceOfFbxUsingMaterial(string fbxAssetPath, string assetUsingFbxAssetPath,
+			string materialAssetPath,
 			Dictionary<string, DependencyEntry> assetDependencies, bool debugLog = false)
 		{
 			if (!assetDependencies.ContainsKey(assetUsingFbxAssetPath))
@@ -410,7 +419,7 @@ namespace BuildReportTool
 		/// <returns></returns>
 		static bool Contains(List<AssetUserFlattened> list, AssetUserFlattened check, string assetParentOfCheck)
 		{
-			for (int n = list.Count-1; n >= 0; --n)
+			for (int n = list.Count - 1; n >= 0; --n)
 			{
 				if (list[n].IndentLevel < check.IndentLevel)
 				{
@@ -431,7 +440,8 @@ namespace BuildReportTool
 
 		// ==================================================================================
 
-		static void Create(AssetDependencies data, Queue<string> openSet, bool debugLog = false, bool recursiveGetDependencies = false)
+		static void Create(AssetDependencies data, Queue<string> openSet, bool debugLog = false,
+			bool recursiveGetDependencies = false)
 		{
 			var assetDependencies = data.GetAssetDependencies();
 			assetDependencies.Clear();
@@ -644,8 +654,9 @@ namespace BuildReportTool
 							if (debugLog && pair.Key.Contains("Runtime-Only DLL/TextMeshPro.dll") &&
 							    userAsset.AssetPath.Contains("AbilityEntry Settings.asset"))
 							{
-								Debug.LogFormat("=========================================================\nChecking for cyclic dependencies for {0} at index {1}\nLooking for Indent Level {2}",
-									userAsset.AssetPath, usersFlattened.Count-1, currentIndentLevel);
+								Debug.LogFormat(
+									"=========================================================\nChecking for cyclic dependencies for {0} at index {1}\nLooking for Indent Level {2}",
+									userAsset.AssetPath, (usersFlattened.Count - 1).ToString(), currentIndentLevel);
 							}
 
 							// start just before our own position in the list, then go backwards
@@ -659,7 +670,7 @@ namespace BuildReportTool
 									    userAsset.AssetPath.Contains("AbilityEntry Settings.asset"))
 									{
 										Debug.LogFormat("Skipped element {0} since its indent level is: {1} (looking for {2})",
-											traceN, usersFlattened[traceN].IndentLevel, currentIndentLevel);
+											traceN, usersFlattened[traceN].IndentLevel.ToString(), currentIndentLevel);
 									}
 
 									continue;
@@ -671,14 +682,14 @@ namespace BuildReportTool
 								    userAsset.AssetPath.Contains("AbilityEntry Settings.asset"))
 								{
 									Debug.LogFormat("Now at element {0}: {1} at indent level {2}. Checking if same as {3}",
-										traceN, usersFlattened[traceN].AssetPath, usersFlattened[traceN].IndentLevel,
+										traceN, usersFlattened[traceN].AssetPath, usersFlattened[traceN].IndentLevel.ToString(),
 										userAsset.AssetPath);
 								}
 
 								currentIndentLevel = usersFlattened[traceN].IndentLevel - 1;
 
 								if (usersFlattened[traceN].AssetPath
-									.Equals(userAsset.AssetPath, StringComparison.OrdinalIgnoreCase))
+								                          .Equals(userAsset.AssetPath, StringComparison.OrdinalIgnoreCase))
 								{
 									// this is an asset we've been in earlier.
 									// should not add users of this asset, because that includes the
@@ -710,7 +721,7 @@ namespace BuildReportTool
 									    userAsset.AssetPath.Contains("AbilityEntry Settings.asset"))
 									{
 										Debug.LogFormat("Element {0} has indent level of {1} so aborting the check",
-											traceN, usersFlattened[traceN].IndentLevel);
+											traceN, usersFlattened[traceN].IndentLevel.ToString());
 									}
 
 									break;
@@ -722,7 +733,7 @@ namespace BuildReportTool
 							{
 								Debug.LogFormat(
 									"=========================================================\nDone checking for cyclic dependencies for {0} at index {1}",
-									userAsset.AssetPath, usersFlattened.Count - 1);
+									userAsset.AssetPath, (usersFlattened.Count - 1).ToString());
 							}
 						}
 
@@ -820,7 +831,7 @@ namespace BuildReportTool
 							if (userAssetIsFbxUsingMaterial)
 							{
 								if (!IsInstanceOfFbxUsingMaterial(userAsset.AssetPath, usersOfUser[n],
-									materialAssignedAsDefault, assetDependencies, debugLog))
+									    materialAssignedAsDefault, assetDependencies, debugLog))
 								{
 									continue;
 								}

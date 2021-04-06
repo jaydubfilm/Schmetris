@@ -25,14 +25,6 @@ namespace StarSalvager
     [RequireComponent(typeof(Bot))]
     public class BotPartsLogic : MonoBehaviour
     {
-        private static readonly BIT_TYPE[] _bitTypes = {
-            BIT_TYPE.RED,
-            BIT_TYPE.YELLOW,
-            BIT_TYPE.GREEN,
-            BIT_TYPE.GREY,
-            BIT_TYPE.BLUE,
-        };
-        
         private static PART_TYPE[] TriggerPartTypes
         {
             get
@@ -93,6 +85,7 @@ namespace StarSalvager
         private GameObject _shieldObject;
         private GameObject _healObject;
         private float _healActiveTimer;
+
         
         private Dictionary<Part, Transform> _turrets;
         private Dictionary<Part, CollidableBase> _gunTargets;
@@ -127,6 +120,16 @@ namespace StarSalvager
         private Dictionary<Part, float> _sabreTimers;
 
 
+        //Heal Cooldown Timer
+        //====================================================================================================================//
+        
+        private float _healWaitTimer;
+
+        public void ResetHealCooldown()
+        {
+            _healWaitTimer = Globals.BotHealWaitTime;
+        }
+
         #endregion //Properties
 
         //Unity Functions
@@ -135,6 +138,19 @@ namespace StarSalvager
         private void Start()
         {
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+        }
+
+        private void LateUpdate()
+        {
+            if (!GameManager.IsState(GameState.LevelEndWave))
+                return;
+
+            if (_sabreActive && _sabreObject)
+            {
+                _sabreObject.SetActive(false);
+                _sabreActive = false;
+            }
+            
         }
 
         //====================================================================================================================//
@@ -207,9 +223,9 @@ namespace StarSalvager
             GameUI.ResetIcons();
 
             //Using a fixed order for the BIT_TYPES since the UI needs it in this order
-            for (var i = 0; i < _bitTypes.Length; i++)
+            for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                SetIcon(i, _bitTypes[i]);
+                SetIcon(i, Constants.BIT_ORDER[i]);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -243,7 +259,7 @@ namespace StarSalvager
 
                         MagnetCount = magnetAmount;
 
-                        foreach (var bitType in _bitTypes)
+                        foreach (var bitType in Constants.BIT_ORDER)
                         {
                             var resource = PlayerDataManager.GetResource(bitType);
                             resource.SetAmmoCapacity(capacityAmount, false);
@@ -525,6 +541,13 @@ namespace StarSalvager
                 return;
             }
             _healActiveTimer -= Time.deltaTime;*/
+
+            if (_healWaitTimer > 0f)
+            {
+                _healWaitTimer -= deltaTime;
+                return;
+            }
+            
             
             var repairTarget = bot;
 
@@ -536,17 +559,22 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var repairAmount))
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = repairAmount * deltaTime;
+            var cost = ammoCost * Time.deltaTime;
             
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            
             if (ammoResource.Ammo < cost)
                 return;
+            
             ammoResource.SubtractAmmo(cost);
             
-            repairTarget.ChangeHealth(cost);
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
             
             
 
@@ -576,6 +604,9 @@ namespace StarSalvager
             if (!_sabreActive)
                 return;
 
+            if (_sabreObject == null)
+                return;
+
             var timer = _sabreTimers[part];
 
             timer -= deltaTime;
@@ -587,9 +618,14 @@ namespace StarSalvager
             }
 
             _sabreTimers[part] = timer;
+
+            //var multiplier = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Multiplier);
+
+            var size =bot.ContinousRotation ? _sabreObject.maxSize : _sabreObject.minSize;
+            _sabreObject.SetSize(size);
             
             var dir = (part.Position - _corePart.Position).normalized;
-            var pos = part.Position + (dir * (_sabreObject.size / 2));
+            var pos = part.Position + (dir * (size / 2)) + (dir * (Constants.gridCellSize / 2f));
 
             _sabreObject.SetTransform(pos, dir);
         }
@@ -769,14 +805,6 @@ namespace StarSalvager
         
         private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            var types = new List<BIT_TYPE>
-            {
-                BIT_TYPE.RED,
-                BIT_TYPE.YELLOW,
-                BIT_TYPE.GREEN,
-                BIT_TYPE.GREY,
-                BIT_TYPE.BLUE,
-            };
             //TODO This still needs to account for multiple bombs
             if (!_triggerPartTimers.TryGetValue(part, out var timer))
                 return;
@@ -793,7 +821,8 @@ namespace StarSalvager
             
             //Find the index of the ui element to show cooldown
             var tempPart = part;
-            var uiIndex = types.FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            //FIXME Ew...
+            var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//
@@ -933,6 +962,9 @@ namespace StarSalvager
             float p = -b / (2 * a);
             float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
 
+            /*if (float.IsNaN(q))
+                return totarget.normalized;*/
+
             float t1 = p - q;
             float t2 = p + q;
             float t;
@@ -995,18 +1027,19 @@ namespace StarSalvager
         /// <param name="index"></param>
         public void TryTriggerPart(in int index)
         {
-            Part GetPart(in BIT_TYPE bitType)
+            Part GetPart(in BIT_TYPE type)
             {
-                var temp = bitType;
-                
+                var temp = type;
                 return _triggerParts.FirstOrDefault(x => x.category == temp);
             }
             
             if (_triggerParts == null || _triggerParts.Count == 0)
                 return;
 
-            Part part = null;
-            switch (index)
+            var bitType = Constants.BIT_ORDER[index];
+            var part = GetPart(bitType);
+
+            /*switch (index)
             {
                 case 0: //Blue, West
                     part = GetPart(BIT_TYPE.RED);
@@ -1020,7 +1053,7 @@ namespace StarSalvager
                 case 3: //Yellow, East
                     part =  GetPart(BIT_TYPE.BLUE);
                     break;
-            }
+            }*/
 
             if (part is null)
                 return;
@@ -1435,7 +1468,11 @@ namespace StarSalvager
                 throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
             
-            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var radius))
+            if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var minSize))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
+            }
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Boost, out var maxSize))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
             }
@@ -1449,9 +1486,9 @@ namespace StarSalvager
 
             _sabreActive = true;
 
-            SetupSabre(radius + 1);
+            SetupSabre(minSize + 1);
             
-            _sabreObject.Init(damage, radius);
+            _sabreObject.Init(damage, minSize, maxSize);
 
         }
 
@@ -1855,7 +1892,7 @@ namespace StarSalvager
 
             
             var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = FactoryManager.Instance.GetFactory<BitAttachableFactory>().GetBitProfile(burnType).color;
+            var bitColor = burnType.GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 

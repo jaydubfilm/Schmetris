@@ -21,6 +21,8 @@ namespace StarSalvager
 
         protected virtual string CollisionTag { get; set; } = "Player";
 
+        protected virtual bool useCollisionStay => true;
+
         //============================================================================================================//
 
         public new Collider2D collider
@@ -64,7 +66,7 @@ namespace StarSalvager
         //TODO Consider how best to avoid using the Collision Stay
         private void OnCollisionStay2D(Collision2D other)
         {
-            if (!_useCollision)
+            if (!_useCollision || !useCollisionStay)
                 return;
             
             if (!other.gameObject.CompareTag(CollisionTag))

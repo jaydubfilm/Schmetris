@@ -39,7 +39,7 @@ namespace StarSalvager.Factories
             if(profile == null)
                 throw new Exception($"No profile found for enemy ID [{enemyTypeID}]");
                 
-            Debug.Log($"Setting up enemy: {remoteData.Name}");
+            //Debug.Log($"Setting up enemy: {remoteData.Name}");
 
             EnemyData enemyData = new EnemyData(remoteData, profile);
 

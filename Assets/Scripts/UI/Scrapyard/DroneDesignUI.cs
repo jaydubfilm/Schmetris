@@ -495,7 +495,9 @@ namespace StarSalvager.UI.Scrapyard
             partNameText.text = partRemote.name;
             partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
             partDescriptionText.text = partRemote.description;
+            
             partImage.sprite = partProfile.Sprite;
+            partImage.color = partRemote.category.GetColor();
 
             var altDetails = partData.GetPartDetails(partRemote);
             //partDetailsText.text = $"{partRemote.description}\n{altDetails}";
@@ -553,7 +555,9 @@ namespace StarSalvager.UI.Scrapyard
             partNameText.text = partRemote.name;
             partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
             partDescriptionText.text = partRemote.description;
+            
             partImage.sprite = partProfile.Sprite;
+            partImage.color = partRemote.category.GetColor();
 
             partDetailsText.text = partData.GetPartDetails( partRemote);
 

@@ -132,6 +132,11 @@ namespace StarSalvager.AI
             StateUpdate();
         }
         
+        protected override void ApplyFleeMotion()
+        {
+            ApplyFallMotion();
+        }
+        
 
         #endregion
 

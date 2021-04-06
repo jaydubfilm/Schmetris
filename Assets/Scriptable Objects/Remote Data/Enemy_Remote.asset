@@ -605,3 +605,10 @@ MonoBehaviour:
         count: 1
         min: 0
         max: 0
+  - m_enemyType: ce5f2bab-c14f-469a-910c-f2ffce165cc2
+    m_name: IceWing
+    m_health: 50
+    m_movementSpeed: 5
+    m_rateOfFire: 0
+    m_dimensions: {x: 2, y: 2}
+    m_rdsTableData: []
