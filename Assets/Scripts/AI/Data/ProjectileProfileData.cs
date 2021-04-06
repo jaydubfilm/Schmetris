@@ -14,7 +14,12 @@ namespace StarSalvager.Factories.Data
             Mine,
             Bumper,
         }
-        
+
+        //Properties
+        //====================================================================================================================//
+
+        #region Public Properties
+
         public string ProjectileType => m_projectileType;
 
         public string ProjectileTypeID => m_projectileTypeID;
@@ -46,58 +51,51 @@ namespace StarSalvager.Factories.Data
         public bool DestroyAtScreenBottom => destroyAtScreenBottom;
         public bool EffectOnDeath => effectOnDeath;
 
-        //====================================================================================================================//
+        #endregion //Public Properties
 
-        [SerializeField, FoldoutGroup("$ProjectileType"), HorizontalGroup("$ProjectileType/row1"), DisplayAsString]
+        [SerializeField, FoldoutGroup("$title"), HorizontalGroup("$title/row1"), DisplayAsString]
         private string m_projectileTypeID = System.Guid.NewGuid().ToString();
 
-#if UNITY_EDITOR
-        [Button("Copy"), HorizontalGroup("$ProjectileType/row1", 45)]
-        private void CopyID()
-        {
-            GUIUtility.systemCopyBuffer = m_projectileTypeID;
-        }
-
-#endif
-
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
-         HorizontalGroup("$ProjectileType/row2", 65), VerticalGroup("$ProjectileType/row2/left"), HideLabel]
+         HorizontalGroup("$title/row2", 65), VerticalGroup("$title/row2/left"), HideLabel]
         private Sprite m_sprite;
+        
+        [VerticalGroup("$title/row2/right")]
+        public bool isImplemented = true;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, VerticalGroup("$title/row2/right")]
         private string m_projectileType;
 
-        [SerializeField, HorizontalGroup("$ProjectileType/row2/right/trail")]
+        [SerializeField, HorizontalGroup("$title/row2/right/trail")]
         private bool useTrail;
 
-        [SerializeField, HorizontalGroup("$ProjectileType/row2/right/trail"), HideLabel, EnableIf("useTrail")]
+        [SerializeField, HorizontalGroup("$title/row2/right/trail"), HideLabel, EnableIf("useTrail")]
         private Color color = Color.white;
+        
+        
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private float m_projectileDamage;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private float m_projectileSpeed;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
+        [SerializeField,FoldoutGroup("$title"),
          InfoBox("A value of 0 means that the projectile will continue until offscreen", VisibleIf = "noRange"),
          SuffixLabel("units", true)]
         private float m_projectileRange;
 
         private bool noRange => m_projectileRange == 0f;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), LabelText("Sprite Must Rotate")]
+        [SerializeField, FoldoutGroup("$title"), LabelText("Sprite Must Rotate")]
         private bool m_requiredRotate;
 
         //====================================================================================================================//
-
-        /*[SerializeField, VerticalGroup("$ProjectileType/row2/right")]
-        private ENEMY_ATTACKTYPE m_attackType;*/
         
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private FIRE_TYPE fireType;
         
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool fireTowardsTarget;
 
         private bool showSpreadAngle => fireType == FIRE_TYPE.FIXED_SPRAY || showSprayCount;
@@ -108,32 +106,46 @@ namespace StarSalvager.Factories.Data
 
 
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf(nameof(showSpreadAngle))]
+        [SerializeField, FoldoutGroup("$title"), ShowIf(nameof(showSpreadAngle))]
         private float m_spreadAngle;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"),
+        [SerializeField, FoldoutGroup("$title"),
          ShowIf(nameof(showSprayCount))]
         private int m_sprayCount;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool m_isTow;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right"), ShowIf("m_isTow")]
+        [SerializeField, FoldoutGroup("$title"), ShowIf("m_isTow")]
         private TowType m_towType;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool m_canHitAsteroids;
 
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool m_addVelocityToProjectiles;
         
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool destroyAtScreenBottom;
         
-        [SerializeField, VerticalGroup("$ProjectileType/row2/right")]
+        [SerializeField, FoldoutGroup("$title")]
         private bool effectOnDeath;
 
+        //Unity Editor
         //====================================================================================================================//
+        
+        public string title => $"{ProjectileType} {(isImplemented ? string.Empty : "[NOT IMPLEMENTED]")}";
 
+#if UNITY_EDITOR
+        [Button("Copy"), HorizontalGroup("$title/row1", 45)]
+        private void CopyID()
+        {
+            GUIUtility.systemCopyBuffer = m_projectileTypeID;
+        }
+
+#endif
+
+        //====================================================================================================================//
+        
     }
 }

@@ -4,8 +4,10 @@ using StarSalvager.AI;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Linq;
 using StarSalvager.Utilities.Animations;
 using Unity.Collections;
+using UnityEditor;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
@@ -14,44 +16,41 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class EnemyProfileData
     {
-        [Sirenix.OdinInspector.ReadOnly, FoldoutGroup("$GetEnemyType")]
-        public string EnemyName;
+        public string EnemyName
+        {
+            get
+            {
+#if UNITY_EDITOR
+                return GetName();
+#else
+    return string.empty;
+#endif
+            }
+        }
 
-        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$GetEnemyType/row2", 65), VerticalGroup("$GetEnemyType/row2/left"), HideLabel]
+        [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
+         HorizontalGroup("$EnemyName/row2", 65), VerticalGroup("$EnemyName/row2/left"), HideLabel]
         private Sprite m_sprite;
 
-        [SerializeField, VerticalGroup("$GetEnemyType/row2/right")]
-        private GameObject m_enemyPrefab;
-
-        [SerializeField, VerticalGroup("$GetEnemyType/row2/right"), ValueDropdown("GetEnemyTypes")]
+        [SerializeField, LabelText("Enemy Type"), VerticalGroup("$EnemyName/row2/right"),
+         HorizontalGroup("$EnemyName/row2/right/row1"),
+         ValueDropdown("GetEnemyTypes")]
         private string m_enemyTypeID;
 
-        [SerializeField, VerticalGroup("$GetEnemyType/row2/right")]
+        [SerializeField, LabelText("Prefab"), VerticalGroup("$EnemyName/row2/right")]
+        private GameObject m_enemyPrefab;
+
+
+
+        [SerializeField, VerticalGroup("$EnemyName/row2/right")]
         private bool m_isAttachable;
-        
-        [SerializeField, FoldoutGroup("$GetEnemyType"), OnValueChanged("OnAnimationValueChanged")]
+
+        [SerializeField, LabelText("Animation Controller"), FoldoutGroup("$EnemyName"),
+         OnValueChanged("OnAnimationValueChanged")]
         private AnimationControllerScriptableObject m_enemyAnimationController;
-        
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ValueDropdown("GetProjectileTypes")]
+
+        [SerializeField, FoldoutGroup("$EnemyName"), ValueDropdown("GetProjectileTypes")]
         private string m_projectileType;
-
-        //Variables that are only shown based on the EnemyType
-        /*private bool showOscillationsPerSecond => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("showOscillationsPerSecond")]
-        private float m_oscillationsPerSeconds;
-
-        private bool showOscillationAngleRange => m_movementType == ENEMY_MOVETYPE.Oscillate || m_movementType == ENEMY_MOVETYPE.OscillateHorizontal;
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("showOscillationAngleRange")]
-        private float m_oscillationAngleRange;
-
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.Orbit)]
-        private float m_orbitRadius;
-
-        [SerializeField, FoldoutGroup("$GetEnemyType"), ShowIf("m_movementType", ENEMY_MOVETYPE.HorizontalDescend)]
-        private float m_numberCellsDescend;
-
-        [SerializeField, FoldoutGroup("$GetEnemyType")]
-        private bool m_ignoreObstacleAvoidance;*/
 
         //====================================================================================================================//
 
@@ -60,24 +59,40 @@ namespace StarSalvager.Factories.Data
         public string EnemyID => m_enemyTypeID;
 
         public Sprite Sprite => m_sprite;
-        
+
         public AnimationControllerScriptableObject AnimationController => m_enemyAnimationController;
 
         public bool IsAttachable => m_isAttachable;
 
         public string ProjectileType => m_projectileType;
 
-        /*public float OscillationsPerSeconds => m_oscillationsPerSeconds;
+#if UNITY_EDITOR
 
-        public float OscillationAngleRange => m_oscillationAngleRange;
+        [Button("To Remote"), HorizontalGroup("$EnemyName/row2/right/row1"), EnableIf(nameof(HasRemoteDataSimple))]
+        private void GoToProfileData()
+        {
+            var path = AssetDatabase.GetAssetPath(Object.FindObjectOfType<FactoryManager>().EnemyRemoteData);
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
+        }
 
-        public float OrbitRadius => m_orbitRadius;
+        private string GetName()
+        {
+            return HasRemoteData(out var remoteData) == false ? "NO REMOTE DATA" : remoteData.title;
+        }
 
-        public float NumberCellsDescend => m_numberCellsDescend;
+        private bool HasRemoteDataSimple()
+        {
+            var partRemoteData = Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyRemoteData(EnemyID);
 
-        public bool IgnoreObstacleAvoidance => m_ignoreObstacleAvoidance;*/
+            return !(partRemoteData is null);
+        }
 
-        #if UNITY_EDITOR
+        private bool HasRemoteData(out EnemyRemoteData enemyRemoteData)
+        {
+            enemyRemoteData = Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyRemoteData(EnemyID);
+
+            return !(enemyRemoteData is null);
+        }
 
         private void OnAnimationValueChanged()
         {
@@ -88,25 +103,24 @@ namespace StarSalvager.Factories.Data
             }
             m_sprite = AnimationController.GetAnimation("Default").GetFrame(0);*/
         }
-        
+
         private IEnumerable GetProjectileTypes()
         {
-            ValueDropdownList<string> projectileTypes = new ValueDropdownList<string>();
-            foreach (ProjectileProfileData data in Object.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData)
+            var projectiles = Object.FindObjectOfType<FactoryManager>().ProjectileProfile.m_projectileProfileData.Where(
+                x => x.isImplemented);
+
+            var projectileTypes = new ValueDropdownList<string>();
+            foreach (var data in projectiles)
             {
                 projectileTypes.Add(data.ProjectileType, data.ProjectileTypeID);
             }
+
             return projectileTypes;
-        }
-        private string GetEnemyType()
-        {
-            EnemyName = UnityEngine.Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyName(EnemyID);
-            return EnemyName;
         }
 
         private static IEnumerable GetEnemyTypes()
         {
-            return UnityEngine.Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyTypes();
+            return Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyTypes();
         }
 #endif
 

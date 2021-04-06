@@ -11,11 +11,15 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Enemy_Profile", menuName = "Star Salvager/Scriptable Objects/Enemy Profile")]
     public class EnemyProfileScriptableObject : ScriptableObject
     {
+        //Properties
+        //====================================================================================================================//
+        
         [SerializeField, Required] public GameObject m_enemyDecoy;
 
         [SerializeField]
         private List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
-
+        
+        //====================================================================================================================//
         
         public EnemyProfileData GetEnemyProfileData(string typeID)
         {
@@ -28,8 +32,12 @@ namespace StarSalvager.ScriptableObjects
             return m_enemyProfileData
                 .FirstOrDefault(p => p.EnemyName.Equals(enemyName));
         }
-        
-        
+
+        //Unity Editor
+        //====================================================================================================================//
+
+        #region Unity Editor
+
 #if UNITY_EDITOR
         
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
@@ -55,7 +63,10 @@ namespace StarSalvager.ScriptableObjects
         }
         
 #endif
-        
+
+        #endregion //Unity Editor
+
+        //====================================================================================================================//
         
     }
 
