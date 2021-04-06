@@ -81,37 +81,14 @@ namespace StarSalvager.AI
         public override void UpdateEnemy(Vector2 playerLocation)
         {
             StateUpdate();
-            
-            /*if (m_pauseMovement)
-            {
-                m_pauseMovementTimer -= Time.deltaTime;
-                if (m_pauseMovementTimer <= 0.0f)
-                {
-                    m_pauseMovement = false;
-                    m_pauseMovementTimer = 1.0f;
-                    FireAttack();
-                }
-                return;
-            }*/
-
-            //base.ProcessState(playerLocation);
         }
-
-        /*protected override Vector2 GetMovementDirection(Vector2 playerLocation)
+        
+        protected override void ApplyFleeMotion()
         {
-            if (Vector2.Distance(transform.position, currentDestination) <= 0.1f)
-            {
-                currentDestination = new Vector2(playerLocation.x + Random.Range(horizontalFarLeftX, horizontalFarRightX),
-                    Random.Range(LevelManager.Instance.WorldGrid.m_screenGridCellRange.y * verticalLowestAllowed, LevelManager.Instance.WorldGrid.m_screenGridCellRange.y));
-
-                if (CameraController.IsPointInCameraRect(transform.position, 0.6f))
-                {
-                    m_pauseMovement = true;
-                }
-            }
-
-            return currentDestination - (Vector2)transform.position;
-        }*/
+            SetBeamActive(false);
+            
+            base.ApplyFleeMotion();
+        }
 
         #endregion
 

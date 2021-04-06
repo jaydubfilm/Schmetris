@@ -267,6 +267,11 @@ namespace StarSalvager.AI
             transform.eulerAngles = eulerAngles;
         }
         
+        protected override void ApplyFleeMotion()
+        {
+            
+        }
+        
 
         #endregion
 
