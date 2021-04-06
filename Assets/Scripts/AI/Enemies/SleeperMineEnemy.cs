@@ -122,7 +122,7 @@ namespace StarSalvager.AI
         
         protected override void ApplyFleeMotion()
         {
-            
+            ApplyFallMotion();
         }
 
         #endregion

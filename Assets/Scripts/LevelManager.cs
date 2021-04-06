@@ -457,10 +457,9 @@ namespace StarSalvager
             if (Globals.UsingTutorial)
                 return;
             
-            //var duration = CurrentWaveData.GetWaveDuration();
             var timeLeft = _afterWaveTimer;
 
-            if (_audioCountDown < WARNING_COUNT || timeLeft >= _audioCountDown) 
+            if (_audioCountDown < 1 || timeLeft >= _audioCountDown) 
                 return;
             
             _audioCountDown--;
