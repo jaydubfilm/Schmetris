@@ -14,20 +14,21 @@ namespace StarSalvager.Audio
         [ShowInInspector, ProgressBar(0f, 1f, 0.15f, 0.74f, 0.47f), ReadOnly]
         public float CurrentVolume { get; private set; }
 
-        [ShowInInspector, ReadOnly] 
-        public bool IsPlaying => CurrentVolume > 0f;
+        [ShowInInspector, ReadOnly] public bool IsPlaying => CurrentVolume > 0f;
 
-        [SerializeField, Required]
-        private SongScriptableObject song;
+        [SerializeField, Required] private SongScriptableObject song;
 
         /*[SerializeField] private bool startMuted = true;*/
 
-        private bool _fading;
+        //private bool _fading;
+
+        private float _targetVolume;
+        private Coroutine _coroutine;
 
         //Volume Functions
         //====================================================================================================================//
-        
-        
+
+
         [Button, DisableInEditorMode, HorizontalGroup("Row1")]
         public void SetFullVolume()
         {
@@ -38,6 +39,7 @@ namespace StarSalvager.Audio
 
             CurrentVolume = 1f;
         }
+
         [Button, DisableInEditorMode, HorizontalGroup("Row1")]
         public void Mute()
         {
@@ -55,82 +57,86 @@ namespace StarSalvager.Audio
         [Button, DisableInEditorMode, HorizontalGroup("Row2")]
         public void FadeInTrack()
         {
-            if (_fading)
-                return;
+            //Debug.Log($"Fade In {Music}");
+            
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                ForceComplete();
+                _coroutine = null;
+            }
 
             if (CurrentVolume >= 1f)
                 return;
 
-            StartCoroutine(FadeTrack(StemData.FADE.IN));
+            _coroutine = StartCoroutine(FadeTrack(StemData.FADE.IN));
         }
+
         [Button, DisableInEditorMode, HorizontalGroup("Row2")]
         public void FadeOutTrack()
         {
-            if (_fading)
-                return;
+            //Debug.Log($"Fade Out {Music}");
             
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                ForceComplete();
+                _coroutine = null;
+            }
+
             if (CurrentVolume == 0f)
                 return;
 
-            StartCoroutine(FadeTrack(StemData.FADE.OUT));
+            _coroutine = StartCoroutine(FadeTrack(StemData.FADE.OUT));
         }
 
         //Coroutines
         //====================================================================================================================//
-        
-        private  IEnumerator FadeTrack(StemData.FADE fadeDirection)
+
+        private IEnumerator FadeTrack(StemData.FADE fadeDirection)
         {
-            _fading = true;
-            
             var maxFadeTime = song.stems.Max(s => s.GetFadeTime(fadeDirection));
-            var stems = song.stems;
+            var fadeData = song.stems.Select(x => x.GetFadeData(fadeDirection)).ToArray();
 
-            foreach (var t in stems)
-            {
-                StartCoroutine(FadeStemCoroutine(t, fadeDirection));
-            }
+            float start;
 
-            float start, target;
-            
             switch (fadeDirection)
             {
                 case StemData.FADE.IN:
                     start = 0f;
-                    target = 1f;
+                    _targetVolume = 1f;
                     break;
                 case StemData.FADE.OUT:
                     start = 1f;
-                    target = 0f;
+                    _targetVolume = 0f;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(fadeDirection), fadeDirection, null);
             }
 
-            var wait = 0f;
-            while (wait <= maxFadeTime)
+            var totalTime = 0f;
+            while (totalTime <= maxFadeTime)
             {
 
-                CurrentVolume = Mathf.Lerp(start, target, wait / maxFadeTime);
-                
-                wait += Time.unscaledDeltaTime;
-                
+                CurrentVolume = Mathf.Lerp(start, _targetVolume, totalTime / maxFadeTime);
+
+
+                for (var i = 0; i < fadeData.Length; i++)
+                {
+                    FadeStem(ref song.stems[i], fadeData[i], totalTime);
+                }
+
+
+                totalTime += Time.unscaledDeltaTime;
+
                 yield return null;
             }
 
-            CurrentVolume = target;
-            
-            //Force set everyones volume, after to ensure that all are where they're meant to be
-            foreach (var stemData in stems)
-            {
-                stemData.SetVolume(Mathf.Lerp(0f, stemData.maxLevel, target));
-            }
+            ForceComplete();
 
-            //IsPlaying = fadeDirection == StemData.FADE.IN;
-            
-            _fading = false;
         }
-        
-        private static IEnumerator FadeStemCoroutine(StemData stemData, StemData.FADE fade)
+
+        /*private static IEnumerator FadeStemCoroutine(StemData stemData, StemData.FADE fade)
         {
             FadeData fadeData;
             switch (fade)
@@ -166,11 +172,35 @@ namespace StarSalvager.Audio
                 yield return null;
             }
 
-        }
+        }*/
 
         //====================================================================================================================//
-        
-        [Button, DisableInPlayMode]
+
+        private static void FadeStem(ref StemData stemData, in FadeData fadeData, in float totalTime)
+        {
+            if (fadeData.startDelay > 0 && totalTime < fadeData.startDelay)
+                return;
+
+            var timeIn = totalTime - fadeData.startDelay;
+
+            var td = fadeData.curve.Evaluate(timeIn / fadeData.time);
+            var vol = Mathf.Lerp(0f, stemData.maxLevel, td);
+
+            stemData.SetVolume(vol);
+        }
+
+        private void ForceComplete()
+        {
+            CurrentVolume = _targetVolume;
+
+            //Force set everyones volume, after to ensure that all are where they're meant to be
+            for (var i = 0; i < song.stems.Length; i++)
+            {
+                song.stems[i].SetVolume(Mathf.Lerp(0f, song.stems[i].maxLevel, _targetVolume));
+            }
+        }
+
+    [Button, DisableInPlayMode]
         private void SetupObject()
         {
             gameObject.name = $"{song.TrackName}_TrackSource";

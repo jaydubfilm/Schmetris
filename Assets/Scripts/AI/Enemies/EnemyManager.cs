@@ -88,7 +88,7 @@ namespace StarSalvager
                 _hasActiveEnemies = false;
 
                 //TODO Get the Level Track
-                AudioController.CrossFadeTrack(MUSIC.FRINGE);
+                AudioController.CrossFadeTrack(GameManager.IsState(GameState.LevelEndWave) ? MUSIC.NONE : MUSIC.FRINGE);
 
                 /*if (m_enemies.Count == 0 && GameManager.IsState(GameState.LEVEL_ACTIVE))
                 {
