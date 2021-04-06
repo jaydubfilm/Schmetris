@@ -1265,7 +1265,6 @@ namespace StarSalvager
                 bounceTravelDistance *= 5;
                 bounceSpeedAdjustment /= 5;
                 despawnOnEnd = true;
-                Debug.Log("Bounce Bumper");
             }
 
             var localPosition = obstacle.transform.localPosition;
