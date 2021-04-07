@@ -125,6 +125,20 @@ namespace StarSalvager.ScriptableObjects
             }
             return partTypes;
         }
+        
+        public static IEnumerable GetDropPartTypes()
+        {
+            var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
+
+            var partTypes = new ValueDropdownList<PART_TYPE>();
+            
+            foreach (var partType in partRemote.AnyParts)
+            {
+                var data = partRemote.GetRemoteData(partType);
+                partTypes.Add(data.partType == PART_TYPE.EMPTY ? "NONE" : $"{data.name}", data.partType);
+            }
+            return partTypes;
+        }
 
         private void CheckPartList()
         {

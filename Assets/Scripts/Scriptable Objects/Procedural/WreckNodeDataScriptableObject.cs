@@ -18,7 +18,7 @@ namespace StarSalvager.ScriptableObjects.Procedural
         [Serializable]
         public struct PartDropData
         {
-            [TableColumnWidth(50)]
+            [TableColumnWidth(50), ValueDropdown("GetDropPartTypes")]
             public PART_TYPE partType;
             [Range(1, 10)]
             public int weight;
@@ -28,6 +28,12 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
             [HideInTables]
             public float chanceValue;
+
+#if UNITY_EDITOR
+
+            private IEnumerable GetDropPartTypes() => RemotePartProfileScriptableObject.GetDropPartTypes();
+
+#endif
         }
         
         [Serializable]
@@ -49,9 +55,9 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
         //====================================================================================================================//
         
-        [Space(10f), TableList, OnValueChanged("UpdateChances", true)]
+        [Space(10f), TableList(AlwaysExpanded = true), OnValueChanged("UpdateChances", true)]
         public List<PartDropData> partsAvailable;
-        [Space(10f), TableList, OnValueChanged("UpdateChances", true)]
+        [Space(10f), TableList(AlwaysExpanded = true), OnValueChanged("UpdateChances", true)]
         public List<PatchDropData> patchesAvailable;
 
         //Editor Functionality
