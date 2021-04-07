@@ -16,40 +16,28 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class EnemyProfileData
     {
-        public string EnemyName
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return GetName();
-#else
-    return string.empty;
-#endif
-            }
-        }
-
         [SerializeField, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
-         HorizontalGroup("$EnemyName/row2", 65), VerticalGroup("$EnemyName/row2/left"), HideLabel]
+         HorizontalGroup("$title/row2", 65), VerticalGroup("$title/row2/left"), HideLabel]
         private Sprite m_sprite;
 
-        [SerializeField, LabelText("Enemy Type"), VerticalGroup("$EnemyName/row2/right"),
-         HorizontalGroup("$EnemyName/row2/right/row1"),
+        [SerializeField, LabelText("Enemy Type"), VerticalGroup("$title/row2/right"),
+         HorizontalGroup("$title/row2/right/row1"),
          ValueDropdown("GetEnemyTypes")]
         private string m_enemyTypeID;
 
-        [SerializeField, LabelText("Prefab"), VerticalGroup("$EnemyName/row2/right")]
+        [SerializeField, LabelText("Prefab"), VerticalGroup("$title/row2/right")]
         private GameObject m_enemyPrefab;
 
 
 
-        [SerializeField, VerticalGroup("$EnemyName/row2/right")]
+        [SerializeField, VerticalGroup("$title/row2/right")]
         private bool m_isAttachable;
 
-        [SerializeField, LabelText("Animation Controller"), FoldoutGroup("$EnemyName"),
+        [SerializeField, LabelText("Animation Controller"), FoldoutGroup("$title"),
          OnValueChanged("OnAnimationValueChanged")]
         private AnimationControllerScriptableObject m_enemyAnimationController;
 
-        [SerializeField, FoldoutGroup("$EnemyName"), ValueDropdown("GetProjectileTypes")]
+        [SerializeField, FoldoutGroup("$title"), ValueDropdown("GetProjectileTypes")]
         private string m_projectileType;
 
         //====================================================================================================================//
@@ -68,7 +56,11 @@ namespace StarSalvager.Factories.Data
 
 #if UNITY_EDITOR
 
-        [Button("To Remote"), HorizontalGroup("$EnemyName/row2/right/row1"), EnableIf(nameof(HasRemoteDataSimple))]
+        private string title => GetName();
+        
+        public string EnemyName => !HasRemoteData(out var enemyRemoteData) ? string.Empty : enemyRemoteData.Name;
+
+        [Button("To Remote"), HorizontalGroup("$title/row2/right/row1"), EnableIf(nameof(HasRemoteDataSimple))]
         private void GoToProfileData()
         {
             var path = AssetDatabase.GetAssetPath(Object.FindObjectOfType<FactoryManager>().EnemyRemoteData);

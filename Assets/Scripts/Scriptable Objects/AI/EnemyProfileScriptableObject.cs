@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Factories;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -29,8 +30,13 @@ namespace StarSalvager.ScriptableObjects
         
         public EnemyProfileData GetEnemyProfileDataByName(string enemyName)
         {
-            return m_enemyProfileData
-                .FirstOrDefault(p => p.EnemyName.Equals(enemyName));
+            var enemyID = FactoryManager.Instance
+                .EnemyRemoteData
+                .m_enemyRemoteData
+                .FirstOrDefault(x => x.Name == enemyName)
+                ?.EnemyID;
+
+            return GetEnemyProfileData(enemyID);
         }
 
         //Unity Editor
