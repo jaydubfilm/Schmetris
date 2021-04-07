@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using StarSalvager.AI;
 using System.Collections;
 using Sirenix.OdinInspector;
-
+using Object = UnityEngine.Object;
 #if UNITY_EDITOR
+using StarSalvager.Factories;
 using UnityEditor;
 #endif
 
@@ -36,7 +37,7 @@ namespace StarSalvager.ScriptableObjects
         
 #if UNITY_EDITOR
 
-        public void OnEnable()
+        /*public void OnEnable()
         {
             Selection.selectionChanged += EditorOnSelectionChanged;
             
@@ -67,29 +68,28 @@ namespace StarSalvager.ScriptableObjects
             }
             
             
-        }
+        }*/
 
-        public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
-        {
-            var outList = m_enemyRemoteData.Select(x => (x.Name, x.EnemyID)).ToList();
-
-            return outList;
-        }
-
+        /*
         public string GetEnemyName(string id)
         {
             return GetEnemyRemoteData(id)?.Name;
-        }
+        }*/
 
         
 
-        public IEnumerable GetEnemyTypes()
+        public static IEnumerable GetEnemyTypes()
         {
-            ValueDropdownList<string> enemyTypes = new ValueDropdownList<string>();
-            foreach (var (enemyName, enemyID) in GetAllEnemyNamesIds())
+            var enemyRemoteData = FindObjectOfType<FactoryManager>().EnemyRemoteData.m_enemyRemoteData;
+            
+            var enemyNamesIds = enemyRemoteData.Select(x => (x.Name, x.EnemyID)).ToList();
+
+            var enemyTypes = new ValueDropdownList<string>();
+            foreach (var (enemyName, enemyID) in enemyNamesIds)
             {
                 enemyTypes.Add(enemyName, enemyID);
             }
+            
             return enemyTypes;
         }
 

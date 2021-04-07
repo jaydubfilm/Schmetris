@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using System.Linq;
+using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Animations;
 using Unity.Collections;
 using UnityEditor;
@@ -110,10 +111,7 @@ namespace StarSalvager.Factories.Data
             return projectileTypes;
         }
 
-        private static IEnumerable GetEnemyTypes()
-        {
-            return Object.FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyTypes();
-        }
+        private static IEnumerable GetEnemyTypes() => EnemyRemoteDataScriptableObject.GetEnemyTypes();
 #endif
 
     }

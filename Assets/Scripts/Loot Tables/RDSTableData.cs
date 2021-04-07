@@ -110,7 +110,8 @@ namespace StarSalvager
             m_dropChance = _dropChance;
         }
 
-        public void EditorUpdateChildren()
+        [OnInspectorInit]
+        private void EditorUpdateChildren()
         {
             for (var i = 0; i < m_rdsLootDatas.Count; i++)
             {

@@ -92,13 +92,13 @@ namespace StarSalvager.Factories.Data
             GUIUtility.systemCopyBuffer = m_enemyType;
         }
 
-        public void EditorUpdateChildren()
+        /*public void EditorUpdateChildren()
         {
             foreach (var rdsTableData in m_rdsTableData)
             {
                 rdsTableData.EditorUpdateChildren();
             }
-        }
+        }*/
 
         private bool HasProfileSimple()
         {

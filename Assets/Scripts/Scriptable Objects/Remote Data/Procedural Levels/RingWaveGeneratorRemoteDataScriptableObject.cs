@@ -41,10 +41,7 @@ namespace StarSalvager.ScriptableObjects
                 this.cost = cost;
             }
 
-            private static IEnumerable GetEnemyTypes()
-            {
-                return FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyTypes();
-            }
+            private static IEnumerable GetEnemyTypes() => EnemyRemoteDataScriptableObject.GetEnemyTypes();
 
 #endif
         }
