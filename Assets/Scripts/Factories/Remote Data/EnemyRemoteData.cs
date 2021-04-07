@@ -27,6 +27,8 @@ namespace StarSalvager.Factories.Data
         public string Name => m_name;
 
         public int Health => m_health;
+        
+        public int Cost => cost;
 
         public float MovementSpeed => m_movementSpeed;
 
@@ -47,7 +49,7 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
         private string m_name;
 
-        [SerializeField, FoldoutGroup("$Name")]
+        [SerializeField, FoldoutGroup("$title")]
         private int cost;
 
         [SerializeField, FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
@@ -72,10 +74,6 @@ namespace StarSalvager.Factories.Data
 #if UNITY_EDITOR
         public string title => $"{Name} {(isImplemented ? string.Empty : "[NOT IMPLEMENTED]")}";
 
-        public int Cost => cost;
-
-        public int Health => m_health;
-        
         [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
          HorizontalGroup("$title/row2", 65), VerticalGroup("$title/row2/left"), HideLabel, PropertyOrder(-100),
          ReadOnly]
