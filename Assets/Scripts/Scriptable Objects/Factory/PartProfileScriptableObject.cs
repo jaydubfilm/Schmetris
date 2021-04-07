@@ -13,6 +13,7 @@ namespace StarSalvager.ScriptableObjects
         private Sprite[] damagedSprites;
 
         public Sprite EmptySprite => emptySprite;
+        
         [SerializeField, PropertyOrder(-10)]
         private Sprite emptySprite;
 

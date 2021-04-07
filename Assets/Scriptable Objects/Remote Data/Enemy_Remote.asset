@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_enemyRemoteData:
   - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+    isImplemented: 1
     m_name: JunkFly
     m_health: 15
     m_movementSpeed: 9
@@ -63,6 +64,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
+    isImplemented: 1
     m_name: DataLeech
     m_health: 30
     m_movementSpeed: 6
@@ -112,6 +114,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: f3c96622-609f-498c-be89-8cc575e46fe0
+    isImplemented: 1
     m_name: MoonMiner
     m_health: 45
     m_movementSpeed: 3
@@ -177,6 +180,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+    isImplemented: 1
     m_name: Volt
     m_health: 25
     m_movementSpeed: 4
@@ -226,6 +230,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
+    isImplemented: 1
     m_name: Squart
     m_health: 60
     m_movementSpeed: 5
@@ -275,6 +280,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
+    isImplemented: 1
     m_name: ToughMother
     m_health: 100
     m_movementSpeed: 5
@@ -324,6 +330,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    isImplemented: 1
     m_name: Shard
     m_health: 20
     m_movementSpeed: 5
@@ -373,6 +380,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
+    isImplemented: 1
     m_name: Sleeper Mine
     m_health: 10
     m_movementSpeed: 0
@@ -380,6 +388,7 @@ MonoBehaviour:
     m_dimensions: {x: 1, y: 1}
     m_rdsTableData: []
   - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
+    isImplemented: 1
     m_name: Sensor Mine
     m_health: 10
     m_movementSpeed: 0
@@ -429,6 +438,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+    isImplemented: 1
     m_name: Borrower
     m_health: 20
     m_movementSpeed: 9
@@ -508,6 +518,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
+    isImplemented: 1
     m_name: LaserTurret
     m_health: 25
     m_movementSpeed: 0
@@ -557,6 +568,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: 1543e014-58ee-4141-ba9d-9e5998b5c71b
+    isImplemented: 1
     m_name: PulseCannon
     m_health: 20
     m_movementSpeed: 0
@@ -606,6 +618,7 @@ MonoBehaviour:
         min: 0
         max: 0
   - m_enemyType: ce5f2bab-c14f-469a-910c-f2ffce165cc2
+    isImplemented: 1
     m_name: IceWing
     m_health: 50
     m_movementSpeed: 5

@@ -22,6 +22,8 @@ namespace StarSalvager.Factories.Data
             [FoldoutGroup("$name")]
             public PartProperties[] Properties;
         }
+
+        [FoldoutGroup("$name")] public bool isImplemented;
         
         [FoldoutGroup("$name")] public string name;
 
