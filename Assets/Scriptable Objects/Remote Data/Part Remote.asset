@@ -70,10 +70,6 @@ MonoBehaviour:
     partType: Tractor Beam
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
   - canDrop: 1
-    PartType: 39
-    partType: Heal
-    color: {r: 0, g: 0.9620137, b: 1, a: 1}
-  - canDrop: 1
     PartType: 41
     partType: Bitsplosion
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
@@ -296,7 +292,7 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 1
     PatchSockets: 2
-  - isImplemented: 1
+  - isImplemented: 0
     partType: 39
     name: Heal
     lockRotation: 0
