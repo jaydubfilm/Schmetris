@@ -27,8 +27,6 @@ namespace StarSalvager.Factories.Data
             public int level;
 #endif
         }
-        
-        
 
         //Properties
         //====================================================================================================================//
@@ -44,46 +42,12 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$title"), TableList(AlwaysExpanded = true),LabelText("Patch Level Data"), OnValueChanged("UpdateLevels")]
         public List<Data> Levels;
 
-
-
         //====================================================================================================================//
 
         public float GetMultiplier(in int level)
         {
             return Levels[level].multiplier;
         }
-        
-        /*public T GetDataValue<T>(in int level, PartProperties.KEYS key)
-        {
-            var keyString = PartProperties.Names[(int)key];
-            var dataValue = Levels[level].Properties.FirstOrDefault(d => d.key.Equals(keyString));
-
-            if (dataValue.Equals(null))
-                return default;
-
-            if (!(dataValue.GetValue() is T i))
-                return default;
-
-            return i;
-        }
-
-        public bool TryGetValue<T>(in int level, PartProperties.KEYS key, out T value)
-        {
-            value = default;
-
-            var keyString = PartProperties.Names[(int)key];
-            var dataValue = Levels[level].Properties.FirstOrDefault(d => d.key.Equals(keyString));
-
-            if (dataValue.Equals(null))
-                return false;
-
-            if (!(dataValue.GetValue() is T i))
-                return false;
-
-            value = i;
-
-            return true;
-        }*/
 
         //Unity Editor
         //====================================================================================================================//
