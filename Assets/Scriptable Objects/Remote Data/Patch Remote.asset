@@ -13,93 +13,100 @@ MonoBehaviour:
   m_Name: Patch Remote
   m_EditorClassIdentifier: 
   patchRemoteData:
-  - name: POWER
+  - isImplemented: 0
+    name: POWER
     type: 1
     description: 
     Levels:
     - level: 1
-      cost: 10
+      cost: 100
       Properties:
       - key: Multiplier
         value: 0.25
     - level: 2
-      cost: 20
+      cost: 250
       Properties:
       - key: Multiplier
         value: 0.5
     fitsAnyPart: 0
     allowedParts: 04000000070000000e0000000700000024000000
-  - name: AREA OF EFFECT
+  - isImplemented: 0
+    name: AREA OF EFFECT
     type: 10
     description: 
     Levels: []
     fitsAnyPart: 0
     allowedParts: 
-  - name: FIRE RATE
+  - isImplemented: 0
+    name: FIRE RATE
     type: 3
     description: 
     Levels:
     - level: 1
-      cost: 10
+      cost: 100
       Properties:
       - key: Multiplier
         value: 0.25
     - level: 2
-      cost: 20
+      cost: 250
       Properties:
       - key: Multiplier
         value: 0.5
     fitsAnyPart: 0
     allowedParts: 040000000e000000
-  - name: EFFECIENCY
+  - isImplemented: 0
+    name: EFFECIENCY
     type: 4
     description: 
     Levels:
     - level: 1
-      cost: 10
+      cost: 100
       Properties:
       - key: Multiplier
         value: 0.25
     - level: 2
-      cost: 20
+      cost: 250
       Properties:
       - key: Multiplier
         value: 0.5
     fitsAnyPart: 1
     allowedParts: 
-  - name: RANGE
+  - isImplemented: 0
+    name: RANGE
     type: 2
     description: 
     Levels:
     - level: 1
-      cost: 10
+      cost: 100
       Properties:
       - key: Multiplier
         value: 0.25
     - level: 2
-      cost: 20
+      cost: 250
       Properties:
       - key: Multiplier
         value: 0.5
     fitsAnyPart: 0
     allowedParts: 040000000700000006000000
-  - name: BURN
+  - isImplemented: 0
+    name: BURN
     type: 8
     description: 
     Levels: []
     fitsAnyPart: 0
     allowedParts: 
-  - name: REINFORCED
+  - isImplemented: 0
+    name: REINFORCED
     type: 9
     description: 
     Levels:
     - level: 1
-      cost: 10
+      cost: 100
       Properties:
       - key: Multiplier
         value: .5
     - level: 2
-      cost: 20
+      cost: 250
       Properties:
       - key: Multiplier
         value: .75

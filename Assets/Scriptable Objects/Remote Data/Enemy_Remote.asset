@@ -29,12 +29,12 @@ MonoBehaviour:
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 10
+        value: 5
         type: 0
         lvl: 0
         weight: 1
         rng: 0
-        count: 1
+        count: 3
         min: 0
         max: 0
     - Name: Loot Drop
@@ -79,7 +79,7 @@ MonoBehaviour:
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 5
+        value: 10
         type: 0
         lvl: 0
         weight: 1
@@ -129,7 +129,7 @@ MonoBehaviour:
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 10
+        value: 15
         type: 0
         lvl: 0
         weight: 1
@@ -240,7 +240,7 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 2, y: 0}
+      m_numDrops: {x: 4, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
@@ -290,12 +290,12 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 2, y: 0}
+      m_numDrops: {x: 5, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 15
+        value: 20
         type: 0
         lvl: 0
         weight: 1
@@ -345,7 +345,7 @@ MonoBehaviour:
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 15
+        value: 10
         type: 0
         lvl: 0
         weight: 1
@@ -386,7 +386,49 @@ MonoBehaviour:
     m_movementSpeed: 0
     m_rateOfFire: 0
     m_dimensions: {x: 1, y: 1}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 10
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 1
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 1
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
   - m_enemyType: 9ac61077-b742-47af-890b-545efdc00870
     isImplemented: 1
     m_name: Sensor Mine
@@ -398,12 +440,12 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 2, y: 0}
+      m_numDrops: {x: 1, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 15
+        value: 10
         type: 0
         lvl: 0
         weight: 1
@@ -448,7 +490,7 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 1, y: 0}
+      m_numDrops: {x: 2, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
@@ -528,12 +570,12 @@ MonoBehaviour:
     - Name: Loot Drop
       AlwaysDrops: 1
       m_dropChance: 100
-      m_numDrops: {x: 1, y: 0}
+      m_numDrops: {x: 5, y: 0}
       m_weightingType: 0
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 10
+        value: 5
         type: 0
         lvl: 0
         weight: 1
@@ -583,7 +625,7 @@ MonoBehaviour:
       m_rdsLootDatas:
       - showProbability: 0
         lootType: 2
-        value: 15
+        value: 10
         type: 0
         lvl: 0
         weight: 1
@@ -624,4 +666,46 @@ MonoBehaviour:
     m_movementSpeed: 5
     m_rateOfFire: 0
     m_dimensions: {x: 2, y: 2}
-    m_rdsTableData: []
+    m_rdsTableData:
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 5, y: 0}
+      m_weightingType: 0
+      m_rdsLootDatas:
+      - showProbability: 0
+        lootType: 2
+        value: 10
+        type: 0
+        lvl: 0
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+    - Name: Loot Drop
+      AlwaysDrops: 1
+      m_dropChance: 100
+      m_numDrops: {x: 1, y: 3}
+      m_weightingType: 1
+      m_rdsLootDatas:
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 4
+        lvl: 0
+        weight: 4
+        rng: 0
+        count: 1
+        min: 0
+        max: 0
+      - showProbability: 1
+        lootType: 0
+        value: 0
+        type: 2
+        lvl: 1
+        weight: 1
+        rng: 0
+        count: 1
+        min: 0
+        max: 0

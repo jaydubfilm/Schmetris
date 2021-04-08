@@ -154,7 +154,7 @@ MonoBehaviour:
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
     - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
-      m_enemyCount: 2
+      m_enemyCount: 4
     - m_enemyType: e53a480e-724c-41a2-acd4-ca8e1683d2ea
       m_enemyCount: 2
     m_stageType: 0
