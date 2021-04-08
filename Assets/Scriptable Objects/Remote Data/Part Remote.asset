@@ -208,14 +208,14 @@ MonoBehaviour:
     description: A long range, very accurate weapon with a slow rate of fire.
     dataTest:
     - key: Damage
-      value: 25
+      value: 15
     - key: Cooldown
       value: 3
     - key: Probability
       value: 0.7
     isManual: 0
     category: 3
-    ammoUseCost: 2
+    ammoUseCost: 3
     PatchSockets: 2
   - isImplemented: 0
     partType: 15
@@ -371,7 +371,7 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Magnet
-      value: 50
+      value: 24
     - key: Capacity
       value: 100
     - key: Health

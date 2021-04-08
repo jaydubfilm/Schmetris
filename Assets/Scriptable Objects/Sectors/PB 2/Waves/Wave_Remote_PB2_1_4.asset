@@ -154,7 +154,9 @@ MonoBehaviour:
   - m_stageDuration: 10
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
-    m_stageEnemyData: []
+    m_stageEnemyData:
+    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+      m_enemyCount: 6
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
