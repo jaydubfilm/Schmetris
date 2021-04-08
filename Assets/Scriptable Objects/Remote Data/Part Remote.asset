@@ -21,7 +21,7 @@ MonoBehaviour:
     PartType: 0
     partType: Core
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
-  - canDrop: 1
+  - canDrop: 0
     PartType: 2
     partType: Repairer
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
