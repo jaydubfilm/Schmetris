@@ -85,23 +85,21 @@ namespace StarSalvager.UI.Scrapyard
             canUsePart = canUse;
             
         }
-        
+
         private bool CanSelectPart(in PatchData patchData)
         {
-            var patchType = (PATCH_TYPE)patchData.Type;
+            var patchType = (PATCH_TYPE) patchData.Type;
             //Determine if the patches are all full
             if (data.PartData.Patches.All(x => x.Type != (int) PATCH_TYPE.EMPTY))
                 return false;
-            
-            //Determine if this patch can fit on this part
-            var patchRemoteDataData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
-            var partType = (PART_TYPE) data.PartData.Type;
 
-            return patchRemoteDataData.fitsAnyPart || patchRemoteDataData.allowedParts.Contains(partType);
+            //Determine if this patch can fit on this part
+            return FactoryManager.Instance.PatchRemoteData.IsPartPatchAllowed(patchType,
+                (PART_TYPE) data.PartData.Type);
         }
 
-        
-        
+
+
         //====================================================================================================================//
 
         public void SetSelected(in bool selected)

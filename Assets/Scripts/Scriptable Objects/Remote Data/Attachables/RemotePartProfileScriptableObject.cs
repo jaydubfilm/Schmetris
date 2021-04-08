@@ -8,9 +8,14 @@ using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Extensions;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.ScriptableObjects
 {
+
+
+    //====================================================================================================================//
+    
     [CreateAssetMenu(fileName = "Part Remote", menuName = "Star Salvager/Scriptable Objects/Part Remote Data")]
     public class RemotePartProfileScriptableObject : ScriptableObject
     {
@@ -24,16 +29,26 @@ namespace StarSalvager.ScriptableObjects
         {
             [TableColumnWidth(30, false)]
             public bool canDrop;
-            [ValueDropdown("GetPartTypes"), GUIColor("GetColor")]
-            public PART_TYPE PartType;
+            /*[ValueDropdown("GetPartTypes"), GUIColor("GetColor")]*/
+            [HideInTables, OnValueChanged("UpdateName")]
+            public PART_TYPE PartType; 
             
 
 #if UNITY_EDITOR
+
+            [ShowInInspector, GUIColor("GetColor"), EnableIf("canDrop")]
+            public string partType;
 
             [HideInTables]
             public Color color;
             
             private static IEnumerable GetPartTypes() => RemotePartProfileScriptableObject.GetPartTypes();
+
+            [OnInspectorInit]
+            private void UpdateName()
+            {
+                partType = Object.FindObjectOfType<FactoryManager>().PartsRemoteData.GetRemoteData(PartType).name;
+            }
 
             
             private Color GetColor() => canDrop ? color : Color.gray;
@@ -57,7 +72,7 @@ namespace StarSalvager.ScriptableObjects
 
         public List<PART_TYPE> AnyParts => partDrops.Where(x => x.canDrop).Select(x => x.PartType).ToList();
         
-        [SerializeField, FoldoutGroup("Part Drops"),TitleGroup("Part Drops/Part Drops"), ValueDropdown("GetPartTypes"), TableList(AlwaysExpanded = true, HideToolbar = true), OnInspectorInit("CheckPartList")]
+        [SerializeField, FoldoutGroup("Part Drops"),TitleGroup("Part Drops/Part Drops"), TableList(AlwaysExpanded = true, HideToolbar = true), OnInspectorInit("CheckPartList")]
         private List<PartDrop> partDrops;
 
         //====================================================================================================================//
@@ -143,8 +158,8 @@ namespace StarSalvager.ScriptableObjects
         private void CheckPartList()
         {
             var partProfile = FindObjectOfType<FactoryManager>().PartsProfileData;
-            var bitProfile = FindObjectOfType<FactoryManager>().BitProfileData;
-
+            var requiresUpdate = false;
+            
             foreach (PART_TYPE partType in Enum.GetValues(typeof(PART_TYPE)))
             {
                 if (partType == PART_TYPE.EMPTY)
@@ -154,8 +169,8 @@ namespace StarSalvager.ScriptableObjects
 
                 if (remoteData == null || partProfile.GetProfile(partType) == null || remoteData.isImplemented == false)
                 {
-                    //TODO Make sure its not currently in the list
-                    //TODO Remove if it is
+                    requiresUpdate = true;
+                    partDrops.RemoveAll(x => x.PartType == partType);                    
                     continue;
                 }
 
@@ -168,12 +183,14 @@ namespace StarSalvager.ScriptableObjects
                     PartType = partType,
                     color = remoteData.category.GetColor()
                 });
+                requiresUpdate = true;
             }
+
+            if (!requiresUpdate)
+                return;
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
-
         }
 
 #endif

@@ -10,68 +10,70 @@ namespace StarSalvager.Factories.Data
     [Serializable]
     public class PatchRemoteData
     {
+        //Structs
+        //====================================================================================================================//
+        
         [Serializable]
         public struct Data
         {
-            public string name => $"Level {level}";
 
-            [FoldoutGroup("$name")]
-            public int level;
-            [FoldoutGroup("$name")]
+            [TableColumnWidth(75, false)]
             public int cost;
-            [FoldoutGroup("$name")]
-            public PartProperties[] Properties;
+            [TableColumnWidth(300, true), Range(0f, 1f)]
+            public float multiplier;
+
+#if UNITY_EDITOR
+            [DisplayAsString, PropertyOrder(-100), TableColumnWidth(50, false)]
+            public int level;
+#endif
         }
 
-        [FoldoutGroup("$name")] public bool isImplemented;
-        
-        [FoldoutGroup("$name")] public string name;
-
-        [FoldoutGroup("$name")] public PATCH_TYPE type;
-
-        [TextArea, FoldoutGroup("$name")] public string description;
-
-        [FoldoutGroup("$name")]
-        public List<Data> Levels;
-
-        [FoldoutGroup("$name")] public bool fitsAnyPart;
-        [FoldoutGroup("$name"), DisableIf("fitsAnyPart")] 
-        public PART_TYPE[] allowedParts;
-
+        //Properties
         //====================================================================================================================//
         
-        public T GetDataValue<T>(in int level, PartProperties.KEYS key)
+        [FoldoutGroup("$title")] public bool isImplemented;
+        
+        [FoldoutGroup("$title")] public string name;
+
+        [FoldoutGroup("$title")] public PATCH_TYPE type;
+
+        [TextArea, FoldoutGroup("$title")] public string description;
+
+        [FoldoutGroup("$title"), TableList(AlwaysExpanded = true),LabelText("Patch Level Data"), OnValueChanged("UpdateLevels")]
+        public List<Data> Levels;
+
+        //====================================================================================================================//
+
+        public float GetMultiplier(in int level)
         {
-            var keyString = PartProperties.Names[(int)key];
-            var dataValue = Levels[level].Properties.FirstOrDefault(d => d.key.Equals(keyString));
-
-            if (dataValue.Equals(null))
-                return default;
-
-            if (!(dataValue.GetValue() is T i))
-                return default;
-
-            return i;
+            return Levels[level].multiplier;
         }
 
-        public bool TryGetValue<T>(in int level, PartProperties.KEYS key, out T value)
+        //Unity Editor
+        //====================================================================================================================//
+
+        #region Unity Editor
+
+#if UNITY_EDITOR
+        
+        public string title => $"{name} {(isImplemented ? string.Empty : "[NOT IMPLEMENTED]")}";
+
+        [OnInspectorInit]
+        private void UpdateLevels()
         {
-            value = default;
+            for (var i = 0; i < Levels.Count; i++)
+            {
+                var level = Levels[i];
+                level.level = i + 1;
 
-            var keyString = PartProperties.Names[(int)key];
-            var dataValue = Levels[level].Properties.FirstOrDefault(d => d.key.Equals(keyString));
-
-            if (dataValue.Equals(null))
-                return false;
-
-            if (!(dataValue.GetValue() is T i))
-                return false;
-
-            value = i;
-
-            return true;
+                Levels[i] = level;
+            }
         }
+        
+#endif
 
+        #endregion //Unity Editor
+        
         //====================================================================================================================//
         
     }
