@@ -173,6 +173,8 @@ namespace StarSalvager.UI
         public void Activate()
         {
             Globals.ScaleCamera(Globals.CameraScaleSize);
+            musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
         }
 
         public void Reset()
@@ -541,8 +543,7 @@ namespace StarSalvager.UI
         
         private void SetupSettingsButtons()
         {
-            musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
-            sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
+
             
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);

@@ -110,6 +110,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
+            
             CameraController.CameraOffset(Vector3.zero, true);
             CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
 
@@ -211,8 +214,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitSettings()
         {
-            musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
 
+            
+            musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
 
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>

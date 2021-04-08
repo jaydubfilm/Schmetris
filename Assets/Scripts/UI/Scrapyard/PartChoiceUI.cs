@@ -174,6 +174,18 @@ namespace StarSalvager.UI.Scrapyard
 
         #endregion //Init
 
+        //Unity Editor
         //============================================================================================================//
+
+#if UNITY_EDITOR
+
+        [Button]
+        private void ShowPartSelection()
+        {
+            partChoiceWindow.SetActive(true);
+            Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+        }
+        
+#endif
     }
 }
