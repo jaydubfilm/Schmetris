@@ -175,17 +175,19 @@ namespace StarSalvager.AI
 
                 var attachable = bot.GetClosestAttachable(raycastHit2D.point);
 
+                var playSound = false;
                 if (_attackEffectTimer <= 0f)
                 {
                     _attackEffectTimer = 0.5f;
                     CreateExplosionEffect(raycastHit2D.point);
+                    playSound = true;
                 }
                 else
                 {
                     _attackEffectTimer -= Time.deltaTime;
                 }
 
-                bot.TryHitAt(attachable, damageToApply);
+                bot.TryHitAt(attachable, damageToApply, playSound);
 
                 //bot.TryHitAt(damageToApply);
 
