@@ -32,7 +32,7 @@ namespace StarSalvager.ScriptableObjects
         where T: IProfile
         where U: Enum
     {
-        [SerializeField]
+        [SerializeField, ListDrawerSettings(ShowPaging = false)]
         public T[] profiles;
 
         public abstract T GetProfile(U Type);

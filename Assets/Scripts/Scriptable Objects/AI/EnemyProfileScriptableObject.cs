@@ -5,17 +5,22 @@ using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
+using StarSalvager.Factories;
 
 namespace StarSalvager.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Enemy_Profile", menuName = "Star Salvager/Scriptable Objects/Enemy Profile")]
     public class EnemyProfileScriptableObject : ScriptableObject
     {
+        //Properties
+        //====================================================================================================================//
+        
         [SerializeField, Required] public GameObject m_enemyDecoy;
 
         [SerializeField]
         private List<EnemyProfileData> m_enemyProfileData = new List<EnemyProfileData>();
-
+        
+        //====================================================================================================================//
         
         public EnemyProfileData GetEnemyProfileData(string typeID)
         {
@@ -25,11 +30,20 @@ namespace StarSalvager.ScriptableObjects
         
         public EnemyProfileData GetEnemyProfileDataByName(string enemyName)
         {
-            return m_enemyProfileData
-                .FirstOrDefault(p => p.EnemyName.Equals(enemyName));
+            var enemyID = FactoryManager.Instance
+                .EnemyRemoteData
+                .m_enemyRemoteData
+                .FirstOrDefault(x => x.Name == enemyName)
+                ?.EnemyID;
+
+            return GetEnemyProfileData(enemyID);
         }
-        
-        
+
+        //Unity Editor
+        //====================================================================================================================//
+
+        #region Unity Editor
+
 #if UNITY_EDITOR
         
         public IEnumerable<(string EnemyName, string EnemyID)> GetAllEnemyNamesIds()
@@ -55,7 +69,10 @@ namespace StarSalvager.ScriptableObjects
         }
         
 #endif
-        
+
+        #endregion //Unity Editor
+
+        //====================================================================================================================//
         
     }
 

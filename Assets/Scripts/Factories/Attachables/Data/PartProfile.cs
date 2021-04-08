@@ -5,10 +5,16 @@ using StarSalvager.Utilities.Animations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
+#if UNITY_EDITOR
+
+using UnityEditor;
+
+#endif
+
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
-    public struct PartProfile : IProfile
+    public class PartProfile : IProfile
     {
         public string Name
         {
@@ -20,11 +26,23 @@ namespace StarSalvager.Factories.Data
             set => throw new NotImplementedException();
         }
 
-
+        //Part Type
+        //====================================================================================================================//
+        
         public int Type => (int) partType;
-        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
+        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right"), HorizontalGroup("$Name/row2/right/row1")]
         public PART_TYPE partType;
 
+        //Sprite
+        //====================================================================================================================//
+        
+        public Sprite Sprite => _sprite;
+        [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
+        private Sprite _sprite;
+
+        //Animation
+        //====================================================================================================================//
+        
         public AnimationScriptableObject animation
         {
             get => _animation;
@@ -33,19 +51,29 @@ namespace StarSalvager.Factories.Data
         [SerializeField, FoldoutGroup("$Name"), VerticalGroup("$Name/row2/right")]
         private AnimationScriptableObject _animation;
 
-        public Sprite Sprite => _sprite;
-        [SerializeField, FoldoutGroup("$Name"), ListDrawerSettings(ShowIndexLabels = true), Space(10f)]
-        private Sprite _sprite;
-
+        //====================================================================================================================//
+        
         public Sprite[] Sprites
         {
             get => null;
             set => Debug.LogError("Trying to get Sprites List from Part Profile, this is a defunct variable");
         }
 
+        //Unity Editor
+        //====================================================================================================================//
+        
         #region UNITY_EDITOR
 
+
+
         #if UNITY_EDITOR
+        
+        [Button("To Remote"), HorizontalGroup("$Name/row2/right/row1"), EnableIf(nameof(HasRemoteDataSimple))]
+        private void GoToRemote()
+        {
+            var path = AssetDatabase.GetAssetPath(Object.FindObjectOfType<FactoryManager>().PartsRemoteData);
+            Selection.activeObject=AssetDatabase.LoadMainAssetAtPath(path);
+        }
         
         [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right), HorizontalGroup("$Name/row2", 65), VerticalGroup("$Name/row2/left"), HideLabel, PropertyOrder(-100), ReadOnly]
         private Sprite spritePreview
@@ -58,8 +86,20 @@ namespace StarSalvager.Factories.Data
 
         private string GetName()
         {
-            var remoteData = Object.FindObjectOfType<FactoryManager>().PartsRemoteData.GetRemoteData(partType);
-            return remoteData is null ? "NO REMOTE DATA" : remoteData.name;
+            return HasRemoteData(out var remoteData) == false ? "NO REMOTE DATA" : remoteData.title;
+        }
+
+        private bool HasRemoteDataSimple()
+        {
+            var partRemoteData = Object.FindObjectOfType<FactoryManager>().PartsRemoteData.GetRemoteData(partType);
+
+            return !(partRemoteData is null);
+        }
+        private bool HasRemoteData(out PartRemoteData partRemoteData)
+        {
+            partRemoteData = Object.FindObjectOfType<FactoryManager>().PartsRemoteData.GetRemoteData(partType);
+
+            return !(partRemoteData is null);
         }
 
 #endif

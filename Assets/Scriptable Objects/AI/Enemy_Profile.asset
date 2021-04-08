@@ -15,121 +15,108 @@ MonoBehaviour:
   m_enemyDecoy: {fileID: 2872490251766154883, guid: 418c04d3512abf54eb0379640ed526b8,
     type: 3}
   m_enemyProfileData:
-  - EnemyName: JunkFly
-    m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: 4ed71d54470c9b941ac7a7a192f79791,
+  - m_sprite: {fileID: 1787451676159490296, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: 4ed71d54470c9b941ac7a7a192f79791,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 771806d5ec0835544862fa727f69e841,
       type: 2}
     m_projectileType: 50ee7b1f-b231-4f93-9e1d-40033a7919a5
-  - EnemyName: DataLeech
-    m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 8322691194490933072, guid: 0f1dfe6066df21841a7226f6d733b11a,
+  - m_sprite: {fileID: -5824616232445339094, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 4eeac5cf-1c0c-492d-82a1-86108b574464
+    m_enemyPrefab: {fileID: 8322691194490933072, guid: 0f1dfe6066df21841a7226f6d733b11a,
+      type: 3}
     m_isAttachable: 1
     m_enemyAnimationController: {fileID: 11400000, guid: ae007e5b94b7cd047bd759c04c2ec622,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: MoonMiner
-    m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: d70704a85df94da40a769f2b524939d4,
+  - m_sprite: {fileID: -3458481019890854514, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: f3c96622-609f-498c-be89-8cc575e46fe0
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: d70704a85df94da40a769f2b524939d4,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 9a67d56bcff91044590444220f102079,
       type: 2}
     m_projectileType: 8f0be7e3-1231-4c2c-81ca-460162be6318
-  - EnemyName: Volt
-    m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: 024fbffb30921ee4aa3c52839ca7cee2,
+  - m_sprite: {fileID: -726978950283654466, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: 024fbffb30921ee4aa3c52839ca7cee2,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 0dd910dbe7dbc1c4e84db8fb870ec59d,
       type: 2}
     m_projectileType: cac32cbf-8978-4092-ad94-3ab8e384a0c7
-  - EnemyName: Squart
-    m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: 91d308a1a4e3b1e429f938d809c4bff2,
+  - m_sprite: {fileID: 9057433924631887438, guid: 44ac14a3eed46b34db93362775527939,
       type: 3}
     m_enemyTypeID: 71b8347a-1d17-4ade-81d4-85930af8210e
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: 91d308a1a4e3b1e429f938d809c4bff2,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 1d48aa33d2525f7468ce1854b45407fd,
       type: 2}
     m_projectileType: 18a7dbbc-5f0d-4629-abcc-f6466f7b7ece
-  - EnemyName: ToughMother
-    m_sprite: {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: 12fcfecdb9b7bf34dbe568eea74386df,
+  - m_sprite: {fileID: 7605971627856740971, guid: 6d81abf3e8e538147b86607c404b5dbf,
       type: 3}
     m_enemyTypeID: e53a480e-724c-41a2-acd4-ca8e1683d2ea
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: 12fcfecdb9b7bf34dbe568eea74386df,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: Shard
-    m_sprite: {fileID: 5074050927133369148, guid: b5386671a00ee86428886a0c1e9fcc31,
-      type: 3}
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: a0936226dbbe28640ac0190ae7ee6c78,
+  - m_sprite: {fileID: 5074050927133369148, guid: b5386671a00ee86428886a0c1e9fcc31,
       type: 3}
     m_enemyTypeID: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    m_enemyPrefab: {fileID: 6795578211728555506, guid: a0936226dbbe28640ac0190ae7ee6c78,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: Sleeper Mine
-    m_sprite: {fileID: 21300000, guid: ea4b6755f70e570469d74520f7a49c15, type: 3}
+  - m_sprite: {fileID: 21300000, guid: ea4b6755f70e570469d74520f7a49c15, type: 3}
+    m_enemyTypeID: 603bd8a5-ca60-4089-95bd-680be431941a
     m_enemyPrefab: {fileID: 7101777928287725812, guid: 3acddc667667a244b8ffd1c5e3e17236,
       type: 3}
-    m_enemyTypeID: 603bd8a5-ca60-4089-95bd-680be431941a
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: Sensor Mine
-    m_sprite: {fileID: 21300000, guid: f973c4f91ba92864289522853488cfb8, type: 3}
+  - m_sprite: {fileID: 21300000, guid: f973c4f91ba92864289522853488cfb8, type: 3}
+    m_enemyTypeID: 9ac61077-b742-47af-890b-545efdc00870
     m_enemyPrefab: {fileID: 5323334717173405649, guid: e1260dbdcf05a514e913b58af98213ce,
       type: 3}
-    m_enemyTypeID: 9ac61077-b742-47af-890b-545efdc00870
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: Borrower
-    m_sprite: {fileID: -7907493562552774039, guid: e39fc475f37ab474e86c256fc9072631,
-      type: 3}
-    m_enemyPrefab: {fileID: 552858350625524321, guid: dc178a0596d61e44084739b9385b01ef,
+  - m_sprite: {fileID: -7907493562552774039, guid: e39fc475f37ab474e86c256fc9072631,
       type: 3}
     m_enemyTypeID: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
+    m_enemyPrefab: {fileID: 552858350625524321, guid: dc178a0596d61e44084739b9385b01ef,
+      type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 11400000, guid: 664e16696cc0fe04fb5d099965730870,
       type: 2}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: LaserTurret
-    m_sprite: {fileID: 21300000, guid: a1a6060a50d17f94182fe9ee1edc138b, type: 3}
+  - m_sprite: {fileID: 21300000, guid: a1a6060a50d17f94182fe9ee1edc138b, type: 3}
+    m_enemyTypeID: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
     m_enemyPrefab: {fileID: 5323334717173405649, guid: 6a418ce366687b74f9eb1edda0428808,
       type: 3}
-    m_enemyTypeID: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 083be790-7a08-4f27-b506-e8e09a116bc8
-  - EnemyName: PulseCannon
-    m_sprite: {fileID: 21300000, guid: e8efd2a2d1434f745a014103ec3401fc, type: 3}
+  - m_sprite: {fileID: 21300000, guid: e8efd2a2d1434f745a014103ec3401fc, type: 3}
+    m_enemyTypeID: 1543e014-58ee-4141-ba9d-9e5998b5c71b
     m_enemyPrefab: {fileID: 5323334717173405649, guid: 8f4edb22c125ad84a80dd511c9561c5d,
       type: 3}
-    m_enemyTypeID: 1543e014-58ee-4141-ba9d-9e5998b5c71b
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: a814f17b-460b-4dfb-b939-67a72e3f2d29
-  - EnemyName: IceWing
-    m_sprite: {fileID: 21300000, guid: a45352b77a2ce7e4f8b6d76339336da8, type: 3}
+  - m_sprite: {fileID: 21300000, guid: a45352b77a2ce7e4f8b6d76339336da8, type: 3}
+    m_enemyTypeID: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     m_enemyPrefab: {fileID: 5001496015518308229, guid: c5c7db82cf37cee4a897ac20c606f3fc,
       type: 3}
-    m_enemyTypeID: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}
     m_projectileType: 

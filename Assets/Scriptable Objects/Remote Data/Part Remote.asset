@@ -16,11 +16,71 @@ MonoBehaviour:
   starterBlue: 1
   starterYellow: 1
   basicWeapons: 0400000024000000
-  powerWeapons: 0600000007000000
-  anyParts: 040000000e00000024000000070000000600000003000000050000002a000000
+  partDrops:
+  - canDrop: 0
+    PartType: 0
+    partType: Core
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+  - canDrop: 1
+    PartType: 2
+    partType: Repairer
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+  - canDrop: 1
+    PartType: 3
+    partType: Armor
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - canDrop: 1
+    PartType: 4
+    partType: Gun
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 1
+    PartType: 5
+    partType: Shield
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - canDrop: 1
+    PartType: 6
+    partType: Freeze
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - canDrop: 1
+    PartType: 7
+    partType: Bomb
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - canDrop: 1
+    PartType: 14
+    partType: Sniper
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 1
+    PartType: 29
+    partType: Decoy
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - canDrop: 1
+    PartType: 31
+    partType: Hoover
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - canDrop: 1
+    PartType: 35
+    partType: Wild Card
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - canDrop: 1
+    PartType: 36
+    partType: Railgun
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 1
+    PartType: 38
+    partType: Tractor Beam
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - canDrop: 1
+    PartType: 41
+    partType: Bitsplosion
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - canDrop: 1
+    PartType: 42
+    partType: Sabre
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   partRemoteData:
-  - name: Empty Part
+  - isImplemented: 1
     partType: 1
+    name: Empty Part
     lockRotation: 0
     description: 
     dataTest: []
@@ -28,8 +88,9 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 0
-  - name: Repairer
+  - isImplemented: 1
     partType: 2
+    name: Repairer
     lockRotation: 0
     description: Uses plasma to repair damaged parts within range.
     dataTest:
@@ -43,8 +104,9 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 2
     PatchSockets: 2
-  - name: Armor
+  - isImplemented: 1
     partType: 3
+    name: Armor
     lockRotation: 0
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
@@ -53,8 +115,9 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 2
     PatchSockets: 2
-  - name: Gun
+  - isImplemented: 1
     partType: 4
+    name: Gun
     lockRotation: 0
     description: This basic offensive weapon will fire on any enemy within range
       and consumes scrap metal ammunition.  Aim leaves something to be desired.
@@ -69,8 +132,9 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 1
     PatchSockets: 2
-  - name: Triple Shot
+  - isImplemented: 0
     partType: 12
+    name: Triple Shot
     lockRotation: 1
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
@@ -85,8 +149,9 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 2
-  - name: Shield
+  - isImplemented: 1
     partType: 5
+    name: Shield
     lockRotation: 0
     description: 'When fully charged, this hydrogen-powered shield absorbs damage
       to all cells within its radius. '
@@ -99,8 +164,9 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 10
     PatchSockets: 2
-  - name: Bomb
+  - isImplemented: 1
     partType: 7
+    name: Bomb
     lockRotation: 0
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
@@ -115,8 +181,9 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
-  - name: Missile
+  - isImplemented: 0
     partType: 13
+    name: Missile
     lockRotation: 0
     description: This medium-range heat-seeking projectile almost always hits.
     dataTest:
@@ -130,23 +197,25 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 2
-  - name: Sniper
+  - isImplemented: 1
     partType: 14
+    name: Sniper
     lockRotation: 0
     description: A long range, very accurate weapon with a slow rate of fire.
     dataTest:
     - key: Damage
-      value: 25
+      value: 15
     - key: Cooldown
       value: 3
     - key: Probability
       value: 0.7
     isManual: 0
     category: 3
-    ammoUseCost: 2
+    ammoUseCost: 3
     PatchSockets: 2
-  - name: Blaster
+  - isImplemented: 0
     partType: 15
+    name: Blaster
     lockRotation: 0
     description: Destroys asteroids, extracting valuable minerals.
     dataTest: []
@@ -154,8 +223,9 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 2
-  - name: Freeze
+  - isImplemented: 1
     partType: 6
+    name: Freeze
     lockRotation: 0
     description: Sends out a shock wave of cold, which temporarily paralyzes most
       enemies.
@@ -170,8 +240,9 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
-  - name: Upgrader
+  - isImplemented: 0
     partType: 34
+    name: Upgrader
     lockRotation: 0
     description: 
     dataTest:
@@ -181,8 +252,9 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 10
     PatchSockets: 0
-  - name: Wild Card
+  - isImplemented: 1
     partType: 35
+    name: Wild Card
     lockRotation: 0
     description: 
     dataTest: []
@@ -190,8 +262,9 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 3
     PatchSockets: 2
-  - name: Railgun
+  - isImplemented: 1
     partType: 36
+    name: Railgun
     lockRotation: 0
     description: 
     dataTest:
@@ -205,8 +278,9 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 2
     PatchSockets: 2
-  - name: Tractor Beam
+  - isImplemented: 1
     partType: 38
+    name: Tractor Beam
     lockRotation: 0
     description: 
     dataTest:
@@ -218,8 +292,9 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 1
     PatchSockets: 2
-  - name: Heal
+  - isImplemented: 0
     partType: 39
+    name: Heal
     lockRotation: 0
     description: 
     dataTest:
@@ -233,8 +308,9 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 10
     PatchSockets: 2
-  - name: Regen
+  - isImplemented: 0
     partType: 40
+    name: Regen
     lockRotation: 0
     description: 
     dataTest:
@@ -244,8 +320,9 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 1
     PatchSockets: 2
-  - name: Decoy
+  - isImplemented: 1
     partType: 29
+    name: Decoy
     lockRotation: 0
     description: 
     dataTest:
@@ -255,8 +332,9 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 5
     PatchSockets: 2
-  - name: Bitsplosion
+  - isImplemented: 1
     partType: 41
+    name: Bitsplosion
     lockRotation: 0
     description: 
     dataTest:
@@ -270,8 +348,9 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 5
     PatchSockets: 2
-  - name: Hoover
+  - isImplemented: 1
     partType: 31
+    name: Hoover
     lockRotation: 0
     description: 
     dataTest:
@@ -281,13 +360,14 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 10
     PatchSockets: 2
-  - name: Core
+  - isImplemented: 1
     partType: 0
+    name: Core
     lockRotation: 0
     description: 
     dataTest:
     - key: Magnet
-      value: 50
+      value: 24
     - key: Capacity
       value: 100
     - key: Health
@@ -298,8 +378,9 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 5
     PatchSockets: 3
-  - name: Sabre
+  - isImplemented: 1
     partType: 42
+    name: Sabre
     lockRotation: 1
     description: 
     dataTest:

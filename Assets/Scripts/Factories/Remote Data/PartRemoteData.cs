@@ -5,41 +5,54 @@ using Sirenix.OdinInspector;
 using StarSalvager.Parts.Data;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using Object = UnityEngine.Object;
+
+#if UNITY_EDITOR
+
+using UnityEditor;
+
+#endif
 
 namespace StarSalvager.Factories.Data
 {
     [Serializable]
     public class PartRemoteData : RemoteDataBase
     {
-        [FoldoutGroup("$name")]
-        public string name;
-        
-        [FoldoutGroup("$name")]
+        //Properties
+        //====================================================================================================================//
+
+        [FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
+        public bool isImplemented;
+
+        [FoldoutGroup("$title"), VerticalGroup("$title/row2/right"), HorizontalGroup("$title/row2/right/row1")]
         public PART_TYPE partType;
 
-        [FoldoutGroup("$name")]
+        [FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
+        public string name;
+
+
+
+        [FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
         public bool lockRotation;
 
-        [TextArea, FoldoutGroup("$name")]
-        public string description;
+        [TextArea, FoldoutGroup("$title")] public string description;
 
-        [FoldoutGroup("$name")]
-        public PartProperties[] dataTest;
+        [FoldoutGroup("$title"), LabelText("Part Properties")] public PartProperties[] dataTest;
 
-        [SerializeField, FoldoutGroup("$name")]
+        [SerializeField, FoldoutGroup("$title")]
         public bool isManual;
 
-        [FoldoutGroup("$name")]
-        public BIT_TYPE category;
+        [FoldoutGroup("$title")] public BIT_TYPE category;
 
-        [FoldoutGroup("$name")] 
-        public int ammoUseCost;
+        [FoldoutGroup("$title")] public int ammoUseCost;
 
-        [FoldoutGroup("$name")] 
-        public int PatchSockets = 2;
+        [FoldoutGroup("$title")] public int PatchSockets = 2;
 
+
+        //====================================================================================================================//
 
         //This only compares Type and not all individual properties
+
         #region IEquatable
 
         /// <summary>
@@ -80,11 +93,16 @@ namespace StarSalvager.Factories.Data
             //}
             return base.GetHashCode();
         }
+
         #endregion //IEquatable
+
+
+        //Get PartProprty Key Values
+        //====================================================================================================================//
 
         public T GetDataValue<T>(PartProperties.KEYS key)
         {
-            var keyString = PartProperties.Names[(int)key];
+            var keyString = PartProperties.Names[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (dataValue.Equals(null))
@@ -103,7 +121,7 @@ namespace StarSalvager.Factories.Data
         {
             value = default;
 
-            var keyString = PartProperties.Names[(int)key];
+            var keyString = PartProperties.Names[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (string.IsNullOrEmpty(dataValue.key) || dataValue.Equals(null))
@@ -116,12 +134,12 @@ namespace StarSalvager.Factories.Data
 
             return true;
         }
-        
+
         public bool TryGetValue(PartProperties.KEYS key, out object value)
         {
             value = default;
 
-            var keyString = PartProperties.Names[(int)key];
+            var keyString = PartProperties.Names[(int) key];
             var dataValue = dataTest.FirstOrDefault(d => d.key.Equals(keyString));
 
             if (string.IsNullOrEmpty(dataValue.key) || dataValue.Equals(null))
@@ -134,6 +152,40 @@ namespace StarSalvager.Factories.Data
 
             return true;
         }
+
+        //====================================================================================================================//
+
+#if UNITY_EDITOR
+
+        public string title => $"{name} {(isImplemented ? string.Empty : "[NOT IMPLEMENTED]")}";
+
+        [ShowInInspector, PreviewField(Height = 65, Alignment = ObjectFieldAlignment.Right),
+         HorizontalGroup("$title/row2", 65), VerticalGroup("$title/row2/left"), HideLabel, PropertyOrder(-100),
+         ReadOnly]
+        public Sprite Sprite => !HasProfile(out var profile) ? null : profile.Sprite;
+
+        [Button("To Profile"), HorizontalGroup("$title/row2/right/row1"), EnableIf(nameof(HasProfileSimple))]
+        private void GoToProfileData()
+        {
+            var path = AssetDatabase.GetAssetPath(Object.FindObjectOfType<FactoryManager>().PartsProfileData);
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
+        }
+
+        private bool HasProfileSimple()
+        {
+            var partProfile = Object.FindObjectOfType<FactoryManager>().PartsProfileData.GetProfile(partType);
+
+            return !(partProfile is null);
+        }
+
+        private bool HasProfile(out PartProfile partProfile)
+        {
+            partProfile = Object.FindObjectOfType<FactoryManager>().PartsProfileData.GetProfile(partType);
+
+            return !(partProfile is null);
+        }
+
+#endif
     }
 }
 
