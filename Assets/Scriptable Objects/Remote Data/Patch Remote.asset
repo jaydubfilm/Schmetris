@@ -12,96 +12,230 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ade67e9c6a64a949965ee394a0a8979, type: 3}
   m_Name: Patch Remote
   m_EditorClassIdentifier: 
+  allowedParts:
+  - PartType: 0
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Core
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+  - PartType: 2
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Repairer
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+  - PartType: 3
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Armor
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - PartType: 4
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Gun
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - PartType: 5
+    POWER: 0
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Shield
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - PartType: 6
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Freeze
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - PartType: 7
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Bomb
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - PartType: 14
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Sniper
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - PartType: 29
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Decoy
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - PartType: 31
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Hoover
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - PartType: 35
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Wild Card
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - PartType: 36
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Railgun
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - PartType: 38
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Tractor Beam
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+  - PartType: 39
+    POWER: 1
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Heal
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - PartType: 41
+    POWER: 0
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Bitsplosion
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - PartType: 42
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 1
+    BURN: 0
+    RFRCD: 0
+    part: Sabre
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   patchRemoteData:
-  - name: POWER
+  - isImplemented: 1
+    name: POWER
     type: 1
     description: 
     Levels:
-    - level: 1
-      cost: 10
-      Properties:
-      - key: Multiplier
-        value: 0.25
-    - level: 2
-      cost: 20
-      Properties:
-      - key: Multiplier
-        value: 0.5
-    fitsAnyPart: 0
-    allowedParts: 04000000070000000e0000000700000024000000
-  - name: AREA OF EFFECT
+    - cost: 10
+      multiplier: 0.25
+      level: 1
+    - cost: 20
+      multiplier: 0.5
+      level: 2
+  - isImplemented: 0
+    name: AREA OF EFFECT
     type: 10
     description: 
     Levels: []
-    fitsAnyPart: 0
-    allowedParts: 
-  - name: FIRE RATE
+  - isImplemented: 1
+    name: FIRE RATE
     type: 3
     description: 
     Levels:
-    - level: 1
-      cost: 10
-      Properties:
-      - key: Multiplier
-        value: 0.25
-    - level: 2
-      cost: 20
-      Properties:
-      - key: Multiplier
-        value: 0.5
-    fitsAnyPart: 0
-    allowedParts: 040000000e000000
-  - name: EFFECIENCY
+    - cost: 10
+      multiplier: 0.25
+      level: 1
+    - cost: 20
+      multiplier: 0.5
+      level: 2
+  - isImplemented: 1
+    name: EFFECIENCY
     type: 4
     description: 
     Levels:
-    - level: 1
-      cost: 10
-      Properties:
-      - key: Multiplier
-        value: 0.25
-    - level: 2
-      cost: 20
-      Properties:
-      - key: Multiplier
-        value: 0.5
-    fitsAnyPart: 1
-    allowedParts: 
-  - name: RANGE
+    - cost: 10
+      multiplier: 0.25
+      level: 1
+    - cost: 20
+      multiplier: 0.5
+      level: 2
+  - isImplemented: 1
+    name: RANGE
     type: 2
     description: 
     Levels:
-    - level: 1
-      cost: 10
-      Properties:
-      - key: Multiplier
-        value: 0.25
-    - level: 2
-      cost: 20
-      Properties:
-      - key: Multiplier
-        value: 0.5
-    fitsAnyPart: 0
-    allowedParts: 040000000700000006000000
-  - name: BURN
+    - cost: 10
+      multiplier: 0.25
+      level: 1
+    - cost: 20
+      multiplier: 0.5
+      level: 2
+  - isImplemented: 0
+    name: BURN
     type: 8
     description: 
     Levels: []
-    fitsAnyPart: 0
-    allowedParts: 
-  - name: REINFORCED
+  - isImplemented: 0
+    name: REINFORCED
     type: 9
     description: 
     Levels:
-    - level: 1
-      cost: 10
-      Properties:
-      - key: Multiplier
-        value: .5
-    - level: 2
-      cost: 20
-      Properties:
-      - key: Multiplier
-        value: .75
-    fitsAnyPart: 1
-    allowedParts: 
+    - cost: 10
+      multiplier: 0
+      level: 1
+    - cost: 20
+      multiplier: 0
+      level: 2

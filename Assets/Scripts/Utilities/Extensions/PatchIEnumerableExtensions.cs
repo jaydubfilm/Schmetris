@@ -27,8 +27,8 @@ namespace StarSalvager.Utilities.Extensions
             var total = 0f;
             foreach (var patchData in patchesOfType)
             {
-                var data = patchRemoteData.GetRemoteData(patchType)
-                    .GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
+                var data = patchRemoteData.GetRemoteData(patchType).GetMultiplier(patchData.Level);
+                    //.GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
 
                 total += data;
             }
