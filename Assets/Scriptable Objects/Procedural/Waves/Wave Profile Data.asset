@@ -16,4 +16,19 @@ MonoBehaviour:
   Sprite: {fileID: 0}
   spritePreview: {fileID: 0}
   WaveType: 0
-  waveTimeRange: {x: 0, y: 0}
+  waveTimeRange: {x: 26, y: 63}
+  stages: []
+  enemyBudget: {x: 4, y: 11}
+  enemies:
+  - enemy: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+    weight: 2
+    cost: 2
+    chance: 66.7 %
+    chanceValue: 0.6666667
+    spawns: 1 - 4
+  - enemy: ce5f2bab-c14f-469a-910c-f2ffce165cc2
+    weight: 1
+    cost: 4
+    chance: 33.3 %
+    chanceValue: 0.33333334
+    spawns: 0 - 1
