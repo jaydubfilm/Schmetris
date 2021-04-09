@@ -19,22 +19,22 @@ MonoBehaviour:
   waveType: 0
   waveTimeRange: {x: 26, y: 63}
   stages:
-  - asset: {fileID: 11400000, guid: d9dfe59c32c52b743a9042049c64c62c, type: 2}
+  - asset: {fileID: 11400000, guid: da5da0d064acc3d4bbe1b5a58d24fe85, type: 2}
     weight: 1
-    name: Hello
+    name: 
     chance: 100.0 %
     chanceValue: 1
   enemyBudget: {x: 4, y: 11}
   enemies:
   - enemy: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-    weight: 2
+    weight: 3
     cost: 2
-    chance: 66.7 %
-    chanceValue: 0.6666667
-    spawns: 1 - 4
+    chance: 75.0 %
+    chanceValue: 0.75
+    spawns: 1 - 5
   - enemy: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     weight: 1
     cost: 6
-    chance: 33.3 %
-    chanceValue: 0.33333334
+    chance: 25.0 %
+    chanceValue: 0.25
     spawns: 0 - 1

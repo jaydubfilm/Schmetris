@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager;
 using StarSalvager.AI;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects.Procedural
 {
-    [CreateAssetMenu(fileName = "Stage Profile Data", menuName = "Star Salvager/Scriptable Objects/Stage Profile Data")]
-    public class StageProfileDataScriptableObject : ScriptableObject
+    [CreateAssetMenu(fileName = "Stage Profile", menuName = "Star Salvager/Procedural/Stage Profile")]
+    public class StageProfileDataSO : ScriptableObject
     {
+
+
         //Enums
         //====================================================================================================================//
-        
+
         public enum TYPE
         {
             ASTEROID,
@@ -30,15 +32,16 @@ namespace StarSalvager.ScriptableObjects.Procedural
             [InfoBox("Clouds are not yet implemented", InfoMessageType.Warning, VisibleIf = "@type == TYPE.CLOUD")]
             [HorizontalGroup("Type"), HideLabel]
             public TYPE type;
+
             [HorizontalGroup("Type"), ShowIf("type", TYPE.ASTEROID), LabelWidth(40)]
             public ASTEROID_SIZE size;
 
-            [MinMaxSlider(0,500, true), DisableIf("type", TYPE.CLOUD)]
+            [MinMaxSlider(0, 500, true), DisableIf("type", TYPE.CLOUD)]
             public Vector2Int spawnsPerMin;
 
 #if UNITY_EDITOR
-            
-            private bool HideCheck() =>type == TYPE.ASTEROID;
+
+            private bool HideCheck() => type == TYPE.ASTEROID;
 #endif
         }
 
@@ -46,9 +49,8 @@ namespace StarSalvager.ScriptableObjects.Procedural
         //====================================================================================================================//
 
         public string name;
-        
-        [MinMaxSlider(0,500, true)]
-        public Vector2Int bitSpawnsPerMin;
+
+        [MinMaxSlider(0, 500, true)] public Vector2Int bitSpawnsPerMin;
 
         [Tooltip("Dynamic spawning takes into consideration the players current state to decide what to spawn")]
         public bool useDynamicBitSpawning = true;
@@ -57,33 +59,37 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
         [HideIfGroup("useDynamicBitSpawning")]
         [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.RED)"), OnValueChanged("BalanceBits")]
+        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.RED)"),
+         OnValueChanged("BalanceBits")]
         private int redBitsPercentage;
 
         [HideIfGroup("useDynamicBitSpawning")]
         [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Blue Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.BLUE)"), OnValueChanged("BalanceBits")]
+        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.BLUE)"),
+         OnValueChanged("BalanceBits")]
         private int blueBitsPercentage;
 
         [HideIfGroup("useDynamicBitSpawning")]
         [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Green Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREEN)"), OnValueChanged("BalanceBits")]
+        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREEN)"),
+         OnValueChanged("BalanceBits")]
         private int greenBitsPercentage;
 
         [HideIfGroup("useDynamicBitSpawning")]
         [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Yellow Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.YELLOW)"), OnValueChanged("BalanceBits")]
+        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.YELLOW)"),
+         OnValueChanged("BalanceBits")]
         private int yellowBitsPercentage;
 
         [HideIfGroup("useDynamicBitSpawning")]
         [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Grey Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREY)"), OnValueChanged("BalanceBits")]
+        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREY)"),
+         OnValueChanged("BalanceBits")]
         private int greyBitsPercentage;
 
         #endregion //Fixed Bit Spawing
 
-        [TableList(AlwaysExpanded = true)]
-        public List<StageData> stageData;
+        [TableList(AlwaysExpanded = true)] public List<StageData> stageData;
 
         //Unity Editor
         //====================================================================================================================//
@@ -91,10 +97,10 @@ namespace StarSalvager.ScriptableObjects.Procedural
 #if UNITY_EDITOR
 
         private Color GetColor(BIT_TYPE bitType) => bitType.GetColor();
-        
+
         private void BalanceBits()
         {
-            
+
             var sum = redBitsPercentage + blueBitsPercentage + greenBitsPercentage + yellowBitsPercentage +
                       greyBitsPercentage;
 
@@ -113,10 +119,10 @@ namespace StarSalvager.ScriptableObjects.Procedural
             redBitsPercentage =
                 blueBitsPercentage = greenBitsPercentage = yellowBitsPercentage = greyBitsPercentage = 20;
         }
-        
+
 #endif
 
         //====================================================================================================================//
-        
+
     }
 }

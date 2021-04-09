@@ -42,7 +42,7 @@ namespace StarSalvager.ScriptableObjects.Procedural
         public struct StageSpawnData
         {
             [OnValueChanged("UpdateName", true)]
-            public StageProfileDataScriptableObject asset;
+            public StageProfileDataSO asset;
             
             [Range(1, 10), HideIf("@asset == null")] public int weight;
             

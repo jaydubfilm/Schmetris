@@ -68,7 +68,7 @@ MonoBehaviour:
     AOE: 0
     RATE: 1
     EFF: 1
-    RANGE: 1
+    RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Freeze
@@ -143,16 +143,6 @@ MonoBehaviour:
     RFRCD: 0
     part: Tractor Beam
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
-  - PartType: 39
-    POWER: 1
-    AOE: 0
-    RATE: 0
-    EFF: 0
-    RANGE: 0
-    BURN: 0
-    RFRCD: 0
-    part: Heal
-    color: {r: 0, g: 0.9620137, b: 1, a: 1}
   - PartType: 41
     POWER: 0
     AOE: 0

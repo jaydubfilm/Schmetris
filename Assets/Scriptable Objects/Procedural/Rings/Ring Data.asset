@@ -16,23 +16,40 @@ MonoBehaviour:
   sectorsRange: {x: 4, y: 5}
   nodesRange: {x: 1, y: 3}
   pathsRange: {x: 0, y: 0}
-  wreckSpawnBalance: 18
+  wreckSpawnBalance: 8
   wreckSpawnDatas:
+  - asset: {fileID: 11400000, guid: 2242d77296c0fe64f8653b9174d15dbc, type: 2}
+    weight: 6
+    Name: Space Probe
+    chance: 85.7 %
+    chanceValue: 0.85714287
   - asset: {fileID: 11400000, guid: 2242d77296c0fe64f8653b9174d15dbc, type: 2}
     weight: 1
     Name: Space Probe
-    chance: 100.0 %
-    chanceValue: 1
-  waveSpawnBalance: 82
+    chance: 14.3 %
+    chanceValue: 0.14285715
+  waveSpawnBalance: 92
   waveSpawnDatas:
+  - type: 0
+    asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
+    weight: 5
+    name: Normal - SURVIVAL
+    chance: 55.6 %
+    chanceValue: 0.5555556
+  - type: 0
+    asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
+    weight: 3
+    name: Normal - SURVIVAL
+    chance: 33.3 %
+    chanceValue: 0.33333334
   - type: 0
     asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
     weight: 1
     name: Normal - SURVIVAL
-    chance: 100.0 %
-    chanceValue: 1
+    chance: 11.1 %
+    chanceValue: 0.11111111
   nodesPerSector: {x: 2, y: 4}
-  expectedSectors: 2 - 2
+  expectedSectors: 2 - 1
   wreckSpawns: {x: 1, y: 4}
   wreckSpawnDataRANGE:
   - asset: {fileID: 0}
@@ -40,19 +57,13 @@ MonoBehaviour:
     Name: 
     chance: 100.0 %
     chanceValue: 1
-  survivalSpawns: {x: 3, y: 5}
-  survivalWaveSpawnData:
-  - type: 0
-    asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
-    weight: 1
-    name: Normal
-    chance: 100.0 %
-    chanceValue: 1
+  survivalSpawns: {x: 2, y: 6}
+  survivalWaveSpawnData: []
   defenceSpawns: {x: 0, y: 0}
   defenceWaveSpawnData: []
   BonusSpawns: {x: 0, y: 0}
   bonusWaveSpawnData: []
   bossSpawns: {x: 0, y: 0}
   bossWaveSpawnData: []
-  wreckNodeCount: 0-2 nodes
-  waveNodeCount: 3-12 nodes
+  wreckNodeCount: 0-1 nodes
+  waveNodeCount: 3-13 nodes
