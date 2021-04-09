@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62eee18b4eff5ed4191b7a110cec17d7, type: 3}
   m_Name: Wave Profile Data
   m_EditorClassIdentifier: 
-  name: 
+  name: Normal
   Sprite: {fileID: 0}
   spritePreview: {fileID: 0}
   WaveType: 0
@@ -22,13 +22,13 @@ MonoBehaviour:
   enemies:
   - enemy: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     weight: 2
-    cost: 2
+    cost: 0
     chance: 66.7 %
     chanceValue: 0.6666667
-    spawns: 1 - 4
+    spawns: Infinite
   - enemy: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     weight: 1
-    cost: 4
+    cost: 0
     chance: 33.3 %
     chanceValue: 0.33333334
-    spawns: 0 - 1
+    spawns: Infinite

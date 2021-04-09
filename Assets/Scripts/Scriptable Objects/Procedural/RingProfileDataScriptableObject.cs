@@ -77,14 +77,14 @@ namespace StarSalvager.ScriptableObjects.Procedural
                 }
                 else
                 {
-                    type = asset.WaveType;
+                    type = asset.waveType;
                     name = $"{asset.name} - {type}";
                 }
             }
 
             private bool IsWaveType(WaveProfileDataScriptableObject obj)
             {
-                return obj.WaveType == type;
+                return obj.waveType == type;
             }
 #endif
         }

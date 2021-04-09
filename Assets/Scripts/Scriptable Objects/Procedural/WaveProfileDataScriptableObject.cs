@@ -96,17 +96,19 @@ namespace StarSalvager.ScriptableObjects.Procedural
         //Properties
         //====================================================================================================================//
 
-        [EnumToggleButtons, LabelWidth(90)] public WAVE_TYPE WaveType;
+        [EnumToggleButtons, LabelWidth(90), VerticalGroup("row1/col2"), Space(10f)]
+        public WAVE_TYPE waveType;
 
-        [MinMaxSlider(10, 300), Tooltip("Time is in Seconds"), ShowIf("ShowTime")]
+        [MinMaxSlider(10, 300), Tooltip("Time is in Seconds"), ShowIf("ShowTime"), VerticalGroup("row1/col2")]
         public Vector2Int waveTimeRange;
 
+        [TitleGroup("Stages")]
         public List<StageProfileDataScriptableObject> stages;
 
-        [MinMaxSlider(0, 100, true), OnValueChanged("UpdateEnemyChances")]
+        [TitleGroup("Enemies"), MinMaxSlider(0, 100, true), OnValueChanged("UpdateEnemyChances")]
         public Vector2Int enemyBudget;
 
-        [TableList(AlwaysExpanded = true), OnValueChanged("UpdateEnemyChances", true)]
+        [TitleGroup("Enemies"), TableList(AlwaysExpanded = true), OnValueChanged("UpdateEnemyChances", true)]
         public List<EnemySpawnData> enemies;
 
 
@@ -117,7 +119,7 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
 #if UNITY_EDITOR
 
-        private bool ShowTime => WaveType == WAVE_TYPE.BONUS || WaveType == WAVE_TYPE.SURVIVAL;
+        private bool ShowTime => waveType == WAVE_TYPE.BONUS || waveType == WAVE_TYPE.SURVIVAL;
 
         [OnInspectorInit]
         private void UpdateEnemyChances()

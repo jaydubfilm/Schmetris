@@ -16,8 +16,27 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 93496f12941950f4d9aca591f5279c14, type: 3}
   spritePreview: {fileID: 21300000, guid: 93496f12941950f4d9aca591f5279c14, type: 3}
   partsAvailable:
-  - partType: 0
+  - partType: 4
+    weight: 3
+    chance: 50.0 %
+    chanceValue: 0.5
+  - partType: 36
+    weight: 2
+    chance: 33.3 %
+    chanceValue: 0.33333334
+  - partType: 14
     weight: 1
-    chance: 100.0 %
-    chanceValue: 1
-  patchesAvailable: []
+    chance: 16.7 %
+    chanceValue: 0.16666667
+  patchDrops: {x: 1, y: 3}
+  patchesAvailable:
+  - patchType: 1
+    level: 1
+    weight: 6
+    chance: 85.7 %
+    chanceValue: 0.85714287
+  - patchType: 1
+    level: 2
+    weight: 1
+    chance: 14.3 %
+    chanceValue: 0.14285715

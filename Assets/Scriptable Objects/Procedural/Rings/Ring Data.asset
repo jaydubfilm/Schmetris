@@ -12,24 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e845ea8f3636ca04e93ed2c9ba8109c6, type: 3}
   m_Name: Ring Data
   m_EditorClassIdentifier: 
-  sectorsRange: {x: 4, y: 6}
+  sectorsRange: {x: 4, y: 5}
   nodesRange: {x: 1, y: 3}
   pathsRange: {x: 0, y: 0}
-  wrecks:
-  - {fileID: 11400000, guid: 2242d77296c0fe64f8653b9174d15dbc, type: 2}
-  survivalWaveSpawnData:
-    WaveType: 0
-    waves: []
-    count: {x: 0, y: 0}
-  bonusWaveSpawnData:
-    WaveType: 2
-    waves: []
-    count: {x: 0, y: 0}
-  defenceWaveSpawnData:
-    WaveType: 1
-    waves: []
-    count: {x: 0, y: 0}
-  miniBossWaveSpawnData:
-    WaveType: 3
-    waves: []
-    count: {x: 0, y: 0}
+  wreckSpawnBalance: 18
+  wreckSpawnDatas:
+  - asset: {fileID: 11400000, guid: 2242d77296c0fe64f8653b9174d15dbc, type: 2}
+    weight: 1
+    Name: Space Probe
+    chance: 100.0 %
+    chanceValue: 1
+  waveSpawnBalance: 82
+  waveSpawnDatas:
+  - type: 0
+    asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
+    weight: 1
+    name: Normal - SURVIVAL
+    chance: 100.0 %
+    chanceValue: 1
+  wreckNodeCount: 0-2 nodes
+  waveNodeCount: 3-12 nodes

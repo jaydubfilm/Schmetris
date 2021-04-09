@@ -236,7 +236,7 @@ MonoBehaviour:
   - m_enemyType: 71b8347a-1d17-4ade-81d4-85930af8210e
     isImplemented: 1
     m_name: Squart
-    cost: 15
+    cost: 0
     m_health: 60
     m_movementSpeed: 5
     m_rateOfFire: 1
@@ -674,7 +674,7 @@ MonoBehaviour:
   - m_enemyType: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     isImplemented: 1
     m_name: IceWing
-    cost: 4
+    cost: 6
     m_health: 50
     m_movementSpeed: 5
     m_rateOfFire: 0

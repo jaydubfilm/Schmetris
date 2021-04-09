@@ -128,7 +128,7 @@ namespace StarSalvager.ScriptableObjects
             return partTypes;
         }
         
-        private static IEnumerable GetPartTypes()
+        public static IEnumerable GetPartTypes()
         {
             var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
 
