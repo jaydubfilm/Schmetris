@@ -1375,28 +1375,19 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
             
-            //If something hit a part, we actually want to damage the bot as a whole
-            if (closestAttachable is Part)
-            {
-                ChangeHealth(-Mathf.Abs(damage));
-                return;
-            }
-
-            /*if (!(closestAttachable is IHealth closestHealth))
-                return;*/
-
-            closestHealth.ChangeHealth(-Mathf.Abs(damage));
-
             var attachableDestroyed = closestHealth.CurrentHealth <= 0f;
 
             switch (closestAttachable)
             {
                 case Bit _ when withSound:
                     AudioController.PlaySound(attachableDestroyed ? SOUND.BIT_EXPLODE : SOUND.BIT_DAMAGE);
+                    closestHealth.ChangeHealth(-Mathf.Abs(damage));
                     break;
-                /*case Part _ when withSound:
-                    AudioController.PlaySound(attachableDestroyed ? SOUND.PART_EXPLODE : SOUND.PART_DAMAGE);
-                    break;*/
+                case Part _:
+                    if(withSound) AudioController.PlaySound(SOUND.PART_DAMAGE);
+                    //If something hit a part, we actually want to damage the bot as a whole
+                    ChangeHealth(-Mathf.Abs(damage));
+                    return;
             }
 
             if(withSound && !attachableDestroyed)
