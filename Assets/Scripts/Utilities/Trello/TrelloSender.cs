@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.TrelloAPI;
 using DG.Util;
 using Sirenix.OdinInspector;
+using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Inputs;
@@ -119,14 +120,14 @@ namespace StarSalvager.Utilities.Trello
 
         //====================================================================================================================//
 
-        private ACTION_MAP _previousInputMap;
+        //private ACTION_MAP _previousInputMap;
 
         private void OpenBugSubmissionWindow()
         {
             if (bugWindowObject.activeInHierarchy) 
                 return;
 
-            _previousInputMap = InputManager.CurrentActionMap;
+            //_previousInputMap = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             
             StartCoroutine(TakeScreenshotRoutine(() =>
@@ -190,8 +191,10 @@ namespace StarSalvager.Utilities.Trello
 
         private void ResetInput()
         {
-            InputManager.SwitchCurrentActionMap(_previousInputMap);
-            _previousInputMap = ACTION_MAP.NULL;
+            /*InputManager.SwitchCurrentActionMap(_previousInputMap);
+            _previousInputMap = ACTION_MAP.NULL;*/
+            InputManager.SetToExpectedActionMap();
+            Alert.Instance.SetActive(false);
         }
         
         //====================================================================================================================//

@@ -275,6 +275,15 @@ namespace StarSalvager
         {
             StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
         }
+        public void InsertAllEnemySpawns(int count, float timeDelay)
+        {
+            var implementedEnemyNames = FactoryManager.Instance.EnemyRemoteData.m_enemyRemoteData
+                .Where(x => x.isImplemented).Select(x => x.Name);
+            foreach (var enemyName in implementedEnemyNames)
+            {
+                StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+            }
+        }
 
         private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
         {

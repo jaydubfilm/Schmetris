@@ -158,7 +158,7 @@ namespace StarSalvager.AI
             if (hit.collider == null)
                 return;
             
-            if (!(hit.transform.GetComponent<Bot>() is Bot))
+            if (!(hit.transform.GetComponent<BotBase>() is BotBase))
                 throw new Exception();
 
             SetState(STATE.ATTACK);
@@ -182,17 +182,27 @@ namespace StarSalvager.AI
             if (hit.collider == null)
                 return;
 
-            if (!(hit.transform.GetComponent<Bot>() is Bot bot))
+            if (!(hit.transform.GetComponent<BotBase>() is BotBase botBase))
                 throw new Exception();
-
-            var closestAttachable = bot.GetClosestAttachable(hit.point);
-            var coordinateBelow = closestAttachable.Coordinate + Vector2Int.down;
-
-            bot.TryHitAt(closestAttachable, damage);
             
-            var belowAttachable = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coordinateBelow);
-            if(!(belowAttachable is null))
-                bot.TryHitAt(belowAttachable, damage);
+            switch (botBase)
+            {
+                case Bot bot:
+                    var closestAttachable = bot.GetClosestAttachable(hit.point);
+                    var coordinateBelow = closestAttachable.Coordinate + Vector2Int.down;
+
+                    bot.TryHitAt(closestAttachable, damage);
+            
+                    var belowAttachable = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coordinateBelow);
+                    if(!(belowAttachable is null))
+                        bot.TryHitAt(belowAttachable, damage);
+                    break;
+                case DecoyDrone decoyDrone:
+                    decoyDrone.TryHitAt(damage);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+            }
 
             SetState(STATE.DEATH);
         }

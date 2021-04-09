@@ -166,15 +166,11 @@ namespace StarSalvager.AI
                     return DISTANCE;
                 }
 
-                if (!(raycastHit2D.transform.GetComponent<Bot>() is Bot bot))
+                if (!(raycastHit2D.transform.GetComponent<BotBase>() is BotBase botBase))
                     throw new Exception();
                 
                 Debug.DrawRay(rayStartPosition, direction * DISTANCE, Color.green);
-
-                var damageToApply = damage * Time.deltaTime;
-
-                var attachable = bot.GetClosestAttachable(raycastHit2D.point);
-
+                
                 var playSound = false;
                 if (_attackEffectTimer <= 0f)
                 {
@@ -187,9 +183,20 @@ namespace StarSalvager.AI
                     _attackEffectTimer -= Time.deltaTime;
                 }
 
-                bot.TryHitAt(attachable, damageToApply, playSound);
-
-                //bot.TryHitAt(damageToApply);
+                var damageToApply = damage * Time.deltaTime;
+                
+                switch (botBase)
+                {
+                    case Bot bot:
+                        var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
+                        bot.TryHitAt(closestAttachable, damageToApply, playSound);
+                        break;
+                    case DecoyDrone decoyDrone:
+                        decoyDrone.TryHitAt(damageToApply);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+                }
 
                 return raycastHit2D.distance;
             }

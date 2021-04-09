@@ -30,6 +30,7 @@ namespace StarSalvager
     //[DefaultExecutionOrder(-10000)]
     public class GameManager : Singleton<GameManager>
     {
+        public static GameState CurrentGameState => m_currentGameState;
         //FIXME The game state can likely be stored as static, since we don't gain anything by accessing it through the instance
         private static GameState m_currentGameState = GameState.MainMenu;
         
