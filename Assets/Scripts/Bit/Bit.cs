@@ -253,8 +253,7 @@ namespace StarSalvager
             
             FreezeTime = time;
             
-            if(Frozen)
-                SetColor(Color.cyan);
+            if(Frozen) SetColor(Color.cyan);
         }
 
         //ISaveable Functions
@@ -284,6 +283,11 @@ namespace StarSalvager
 
         public virtual void CustomRecycle(params object[] args)
         {
+            //Make sure we unfreeze if destroyed before solved
+            FreezeTime = 0;
+            SetColor(Color.white);
+            
+            
             SetAttached(false);
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;

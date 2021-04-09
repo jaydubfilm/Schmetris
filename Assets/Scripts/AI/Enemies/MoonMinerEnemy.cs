@@ -213,13 +213,24 @@ namespace StarSalvager.AI
 
             if (raycastHit2D.collider != null)
             {
-                if (!(raycastHit2D.transform.GetComponent<Bot>() is Bot bot))
+                if (!(raycastHit2D.transform.GetComponent<BotBase>() is BotBase botBase))
                     throw new Exception();
 
                 var damageToApply = damage * Time.deltaTime;
 
-                var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
-                bot.TryHitAt(closestAttachable, damageToApply);
+                switch (botBase)
+                {
+                    case Bot bot:
+                        var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
+                        bot.TryHitAt(closestAttachable, damageToApply);
+                        break;
+                    case DecoyDrone decoyDrone:
+                        decoyDrone.TryHitAt(damageToApply);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+                }
+              
 
                 SetBeamLengthPosition(Position, Vector2.down, raycastHit2D.distance);
 
