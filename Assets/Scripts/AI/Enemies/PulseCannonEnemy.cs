@@ -93,11 +93,11 @@ namespace StarSalvager.AI
             if (IsRecycled)
                 return;
 
-            if (!(gameObject.GetComponent<Bot>() is Bot bot))
+            if (!(gameObject.GetComponent<BotBase>() is BotBase botBase))
                 return;
 
 
-            bot.TryHitAt(worldHitPoint, collisionDamage);
+            botBase.TryHitAt(worldHitPoint, collisionDamage);
             CreateExplosionEffect(worldHitPoint);
             SetState(STATE.DEATH);
         }

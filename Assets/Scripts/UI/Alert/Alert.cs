@@ -291,7 +291,7 @@ namespace StarSalvager.UI
         
         //============================================================================================================//
 
-        private void SetActive(bool state)
+        public void SetActive(bool state)
         {
             windowObject.SetActive(state);
         }

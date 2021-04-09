@@ -100,6 +100,11 @@ namespace StarSalvager
 
         public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
+            return TryHitAt(damage);
+        }
+        
+        public bool TryHitAt(in float damage)
+        {
             ChangeHealth(-damage);
             
             FloatingText.Create($"{-damage}", transform.position, Color.red);
