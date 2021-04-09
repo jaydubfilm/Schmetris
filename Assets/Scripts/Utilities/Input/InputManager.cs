@@ -221,6 +221,61 @@ namespace StarSalvager.Utilities.Inputs
 
         }
 
+        public static void SetToExpectedActionMap()
+        {
+            ACTION_MAP actionMap;
+
+            if (GameTimer.IsPaused)
+                actionMap = ACTION_MAP.MENU;
+            else
+            {
+                switch (GameManager.CurrentGameState)
+                {
+                    case GameState.MainMenu:
+                    case GameState.AccountMenu:
+                    case GameState.Scrapyard:
+                    case GameState.UniverseMap:
+                        actionMap = ACTION_MAP.MENU;
+                        break;
+                    case GameState.LevelActive:
+                    case GameState.LevelActiveEndSequence:
+                    case GameState.LevelEndWave:
+                    case GameState.LevelBotDead:
+                    case GameState.LEVEL_ACTIVE:
+                    case GameState.LEVEL:
+                        actionMap = ACTION_MAP.DEFAULT;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            
+            switch (actionMap)
+            {
+                case ACTION_MAP.DEFAULT:
+
+
+                    Input.Actions.Default.Enable();
+                    Input.Actions.MenuControls.Disable();
+                    break;
+                case ACTION_MAP.MENU:
+                    if(Instance)
+                    {
+                        Instance.ProcessMovementInput(0);
+                        Instance.ProcessRotateInput(0);
+                    }
+
+                    Input.Actions.Default.Disable();
+                    Input.Actions.MenuControls.Enable();
+                    break;
+            }
+
+            Instance.currentActionMap = CurrentActionMap = actionMap;
+
+            var actionMapName = GetActionMapName(actionMap);
+            Instance.playerInput.SwitchCurrentActionMap(actionMapName);
+        }
+
         private static string GetActionMapName(in ACTION_MAP actionMap)
         {
             switch (actionMap)
