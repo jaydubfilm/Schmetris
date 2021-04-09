@@ -39,6 +39,29 @@ namespace StarSalvager.ScriptableObjects.Procedural
         #region Structs
 
         [Serializable]
+        public struct StageSpawnData
+        {
+            [OnValueChanged("UpdateName", true)]
+            public StageProfileDataScriptableObject asset;
+            
+            [Range(1, 10), HideIf("@asset == null")] public int weight;
+            
+#if UNITY_EDITOR
+            [PropertyOrder(-100), DisplayAsString]
+            public string name;
+
+            
+            [DisplayAsString, TableColumnWidth(75, Resizable = false), HideIf("@asset == null")]
+            public string chance;
+
+            [HideInTables] public float chanceValue;
+
+            [OnInspectorInit]
+            private void UpdateName() => name = asset == null ? string.Empty : asset.name;
+#endif
+        }
+        
+        [Serializable]
         public struct EnemySpawnData
         {
             [ValueDropdown("GetEnemies"), PropertyOrder(-100), OnValueChanged("UpdateValues"), HorizontalGroup("Enemy"),
@@ -102,8 +125,8 @@ namespace StarSalvager.ScriptableObjects.Procedural
         [MinMaxSlider(10, 300), Tooltip("Time is in Seconds"), ShowIf("ShowTime"), VerticalGroup("row1/col2")]
         public Vector2Int waveTimeRange;
 
-        [TitleGroup("Stages")]
-        public List<StageProfileDataScriptableObject> stages;
+        [TitleGroup("Stages"),TableList(AlwaysExpanded = true), OnValueChanged("UpdateStageChances", true), HideLabel]
+        public List<StageSpawnData> stages;
 
         [TitleGroup("Enemies"), MinMaxSlider(0, 100, true), OnValueChanged("UpdateEnemyChances")]
         public Vector2Int enemyBudget;
@@ -144,6 +167,21 @@ namespace StarSalvager.ScriptableObjects.Procedural
                 }
 
                 enemies[i] = dropData;
+            }
+        }
+        
+        [OnInspectorInit]
+        private void UpdateStageChances()
+        {
+            var sum = stages.Sum(x => x.weight);
+
+            for (int i = 0; i < stages.Count; i++)
+            {
+                var dropData = stages[i];
+                dropData.chanceValue = dropData.weight / (float) sum;
+                dropData.chance = $"{dropData.chanceValue:P1}";
+
+                stages[i] = dropData;
             }
         }
 #endif

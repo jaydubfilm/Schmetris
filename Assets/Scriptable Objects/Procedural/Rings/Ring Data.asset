@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e845ea8f3636ca04e93ed2c9ba8109c6, type: 3}
   m_Name: Ring Data
   m_EditorClassIdentifier: 
+  type: 0
   sectorsRange: {x: 4, y: 5}
   nodesRange: {x: 1, y: 3}
   pathsRange: {x: 0, y: 0}
@@ -30,5 +31,28 @@ MonoBehaviour:
     name: Normal - SURVIVAL
     chance: 100.0 %
     chanceValue: 1
+  nodesPerSector: {x: 2, y: 4}
+  expectedSectors: 2 - 2
+  wreckSpawns: {x: 1, y: 4}
+  wreckSpawnDataRANGE:
+  - asset: {fileID: 0}
+    weight: 1
+    Name: 
+    chance: 100.0 %
+    chanceValue: 1
+  survivalSpawns: {x: 3, y: 5}
+  survivalWaveSpawnData:
+  - type: 0
+    asset: {fileID: 11400000, guid: 8a5791061a82361468031a722f037e96, type: 2}
+    weight: 1
+    name: Normal
+    chance: 100.0 %
+    chanceValue: 1
+  defenceSpawns: {x: 0, y: 0}
+  defenceWaveSpawnData: []
+  BonusSpawns: {x: 0, y: 0}
+  bonusWaveSpawnData: []
+  bossSpawns: {x: 0, y: 0}
+  bossWaveSpawnData: []
   wreckNodeCount: 0-2 nodes
   waveNodeCount: 3-12 nodes

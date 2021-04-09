@@ -13,22 +13,28 @@ MonoBehaviour:
   m_Name: Wave Profile Data
   m_EditorClassIdentifier: 
   name: Normal
-  Sprite: {fileID: 0}
-  spritePreview: {fileID: 0}
-  WaveType: 0
+  Sprite: {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437, type: 3}
+  spritePreview: {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437,
+    type: 3}
+  waveType: 0
   waveTimeRange: {x: 26, y: 63}
-  stages: []
+  stages:
+  - asset: {fileID: 11400000, guid: d9dfe59c32c52b743a9042049c64c62c, type: 2}
+    weight: 1
+    name: Hello
+    chance: 100.0 %
+    chanceValue: 1
   enemyBudget: {x: 4, y: 11}
   enemies:
   - enemy: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     weight: 2
-    cost: 0
+    cost: 2
     chance: 66.7 %
     chanceValue: 0.6666667
-    spawns: Infinite
+    spawns: 1 - 4
   - enemy: ce5f2bab-c14f-469a-910c-f2ffce165cc2
     weight: 1
-    cost: 0
+    cost: 6
     chance: 33.3 %
     chanceValue: 0.33333334
-    spawns: Infinite
+    spawns: 0 - 1
