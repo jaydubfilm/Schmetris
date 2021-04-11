@@ -374,7 +374,7 @@ MonoBehaviour:
     - key: Health
       value: 100
     - key: Heal
-      value: 10
+      value: 5
     isManual: 0
     category: 2
     ammoUseCost: 5
