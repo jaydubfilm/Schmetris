@@ -269,11 +269,12 @@ namespace StarSalvager.AI
             switch (Target)
             {
                 case IRecycled recyclable when recyclable.IsRecycled:
+                    break;
                 case Part _:
                     return;
-                    Target = null;
+                    /*Target = null;
                     AttachedBot.ForceDetach(this);
-                    return;
+                    return;*/
             }
 
             //Here we're making sure that the target is still part of what we're attacking
