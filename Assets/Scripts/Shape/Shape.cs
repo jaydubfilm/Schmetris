@@ -16,7 +16,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     [RequireComponent(typeof(CompositeCollider2D))]
-    public class Shape : CollidableBase, IObstacle, ICustomRecycle, ICanBeHit, IHasBounds
+    public class Shape : CollidableBase, IObstacle, ICanBeHit, IHasBounds
     {
         //================================================================================================================//
 
@@ -304,8 +304,10 @@ namespace StarSalvager
             }
         }
 
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             if (_fadeSprites != null)
             {
                 foreach (var fadeSprite in _fadeSprites)

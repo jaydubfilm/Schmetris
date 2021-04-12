@@ -165,10 +165,13 @@ namespace StarSalvager.Utilities.Saving
 
         public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
-                var data = coordinate;
-                var index = blockDatas.FindIndex(x => x.Coordinate == data);
+                var tempCoordinate = coordinate;
+                //Need to make sure that we only remove Bits and NOT parts!
+                var index = blockDatas.FindIndex(x =>x is BitData bitData && bitData.Coordinate == tempCoordinate);
 
                 if (index < 0)
                     throw new ArgumentOutOfRangeException(nameof(index), index,
@@ -177,10 +180,11 @@ namespace StarSalvager.Utilities.Saving
                 blockDatas.RemoveAt(index);
             }
 
+            //--------------------------------------------------------------------------------------------------------//
+            
             var droneBlockData = new List<IBlockData>(GetBlockDatas());
             var originalBackup = new List<IBlockData>(droneBlockData);
 
-            
             var bitsToRemove = droneBlockData
                 .OfType<BitData>()
                 .Where(x => x.Level < removeBelowLevel)
