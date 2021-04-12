@@ -66,6 +66,14 @@ namespace StarSalvager
 
         private static GameUI GameUI => GameUI.Instance;
 
+        //Fire Line Properties
+        //====================================================================================================================//
+        
+        [SerializeField, Required, BoxGroup("Fire Line")]
+        private LineRenderer fireLineRenderer;
+        [SerializeField, Range(4, 90), BoxGroup("Fire Line"), LabelText("Gun Circle Segments")]
+        private int slices = 36;
+
         //Magnet Properties
         //====================================================================================================================//
         
@@ -135,9 +143,12 @@ namespace StarSalvager
         //Unity Functions
         //==============================================================================================================//
 
+        #region Unity Functions
+
         private void Start()
         {
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
+
         }
 
         private void LateUpdate()
@@ -153,7 +164,12 @@ namespace StarSalvager
             
         }
 
+        #endregion //Unity Functions
+
+        //Init Parts
         //====================================================================================================================//
+
+        #region Init Parts
 
         public Dictionary<PART_TYPE, bool> GetPartStates()
         {
@@ -306,12 +322,17 @@ namespace StarSalvager
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.MISSILE:
                         
+                        InitFireLine(part, partRemoteData);
+                        
                         _gunTargets.Add(part, null);
                         
                         if (Globals.UseCenterFiring == false && ShouldUseGunTurret(partRemoteData))
                             CreateTurretEffect(part);
                         break;
-                    
+                    case PART_TYPE.BLASTER:
+                    case PART_TYPE.RAILGUN:
+                        InitFireLine(part, partRemoteData);
+                        break;
                     case PART_TYPE.SABRE:
                         if (_sabreTimers == null)
                             _sabreTimers = new Dictionary<Part, float>();
@@ -349,6 +370,8 @@ namespace StarSalvager
             bot.ForceCheckMagnets();
         }
 
+        #endregion //Init Parts
+
         //Parts Update Loop
         //============================================================================================================//
 
@@ -384,6 +407,7 @@ namespace StarSalvager
                     case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
                         GunUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SHIELD:
@@ -730,7 +754,7 @@ namespace StarSalvager
             
             //TODO: Make us able to pass multiple tags so a shot can hit multiple types of targets
             CollidableBase fireTarget = EnemyManager.GetClosestEnemy(part.transform.position, range);
-            string tag = "Enemy";
+            var tag = "Enemy";
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (fireTarget == null)
             {
@@ -953,20 +977,20 @@ namespace StarSalvager
             }
             var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
             
-            Vector3 totarget = target.Position - partPosition;
+            var totarget = target.Position - partPosition;
 
-            float a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
-            float b = 2 * Vector3.Dot(targetVelocity, totarget);
-            float c = Vector3.Dot(totarget, totarget);
+            var a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
+            var b = 2 * Vector3.Dot(targetVelocity, totarget);
+            var c = Vector3.Dot(totarget, totarget);
 
-            float p = -b / (2 * a);
-            float q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
+            var p = -b / (2 * a);
+            var q = (float)Math.Sqrt((b * b) - 4 * a * c) / (2 * a);
 
             /*if (float.IsNaN(q))
                 return totarget.normalized;*/
 
-            float t1 = p - q;
-            float t2 = p + q;
+            var t1 = p - q;
+            var t2 = p + q;
             float t;
 
             if (t1 > t2 && t2 > 0)
@@ -978,8 +1002,8 @@ namespace StarSalvager
                 t = t1;
             }
 
-            Vector3 aimSpot = target.Position + targetVelocity * t;
-            Vector3 bulletPath = aimSpot - partPosition;
+            var aimSpot = target.Position + targetVelocity * t;
+            var bulletPath = aimSpot - partPosition;
             
             Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
             Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
@@ -1320,7 +1344,7 @@ namespace StarSalvager
             EnemyManager.DamageAllEnemies(damage);
 
             var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
-            for (int i = 0; i < bits.Count; i++)
+            for (var i = 0; i < bits.Count; i++)
             {
                 //EnemyManager.DamageAllEnemiesInRange(damage, bits[i].transform.position, 5f);
                 CreateBombEffect(bits[i], 5f);
@@ -1379,7 +1403,7 @@ namespace StarSalvager
                 var currentlyAttached = bot.AttachedBlocks;
                 var success = false;
 
-                for (int i = 0; i <= 5; i++)
+                for (var i = 0; i <= 5; i++)
                 {
                     var startIndex = startIndices[i];
 
@@ -1393,7 +1417,7 @@ namespace StarSalvager
 
                     var coordinates = GetCoordinates(i, offsets, startCoordinate);
 
-                    for (int ii = 0; ii < count; ii++)
+                    for (var ii = 0; ii < count; ii++)
                     {
                         var coordinateIndex = startIndex + (flip ? totalOffset.x : totalOffset.y);
                         
@@ -1726,6 +1750,8 @@ namespace StarSalvager
         //Ammo
         //====================================================================================================================//
 
+        #region Ammo
+
         private bool CanAffordAmmo(in Part part, in PartRemoteData partRemoteData, out float ammoCost, float additional = 1f)
         {
             var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY);
@@ -1746,6 +1772,8 @@ namespace StarSalvager
             
             return true;
         }
+
+        #endregion //Ammo
 
         //====================================================================================================================//
 
@@ -2078,22 +2106,103 @@ namespace StarSalvager
                 Destroy(data.gameObject);
             });*/
         }
+        
 
         #endregion //Effects
 
-        //============================================================================================================//
 
-        /*public float GetVampireValue()
+        private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
-            var part = _parts.FirstOrDefault(x => x.Disabled == false && x.Type == PART_TYPE.VAMPIRE);
+            //--------------------------------------------------------------------------------------------------------//
             
-            if (part == null || part.Disabled)
-                return 0f;
+            Vector3 GetAsPoint(in float degrees, in float range = 1f)
+            {
+                var radians = degrees * Mathf.Deg2Rad;
 
-            var value = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.VAMPIRE).defaultValue;
+                var x = Mathf.Cos(radians);
+                var y = Mathf.Sin(radians);
+                return new Vector3(x, y, 0) * range; //Vector2 is fine, if you're in 2D
+            }
 
-            return value;
-        }*/
+            //--------------------------------------------------------------------------------------------------------//
+
+            var firePosition = Globals.UseCenterFiring ? Vector3.zero : part.transform.localPosition;
+            
+            var loop = false;
+            var worldSpace = false;
+            Vector3[] points;
+            
+            switch (part.Type)
+            {
+                case PART_TYPE.GUN:
+                {
+                    var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+                    var range = FactoryManager.Instance.ProjectileProfile.GetProjectileProfileData(projectileId)
+                        .ProjectileRange;
+
+                    var pointList = new List<Vector3>();
+                    var degree = 360f / slices;
+
+                    for (var i = 0; i < slices; i++)
+                    {
+                        var point = firePosition + GetAsPoint(i * degree, range);
+                        pointList.Add(point);
+                    }
+
+                    loop = true;
+                    points = pointList.ToArray();
+                    break;
+                }
+                case PART_TYPE.BLASTER:
+                {
+                    //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
+                    var rot = part.transform.eulerAngles.z + 90;
+                    
+                    var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+                    var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+
+                    var rightDeg = (degrees / 2f) + rot;
+                    var leftDeg = (360f - (degrees / 2f)) + rot;
+
+                    points = new[]
+                    {
+                        GetAsPoint(leftDeg, range),
+                        firePosition,
+                        GetAsPoint(rightDeg, range),
+                    };
+                    break;
+                }
+                case PART_TYPE.RAILGUN:
+                    points = new[]
+                    {
+                        firePosition, 
+                        Vector3.up * 100 
+                    };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            fireLineRenderer.loop = loop;
+            fireLineRenderer.useWorldSpace = worldSpace;
+            fireLineRenderer.positionCount = points.Length;
+            fireLineRenderer.SetPositions(points);
+        }
+
+        private void UpdateFireLine(in Part part, in PartRemoteData partRemoteData)
+        {
+            switch (part.Type)
+            {
+                case PART_TYPE.GUN:
+                case PART_TYPE.RAILGUN:
+                    fireLineRenderer.transform.rotation = Quaternion.identity;
+                    break;
+                case PART_TYPE.BLASTER:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         //====================================================================================================================//
 

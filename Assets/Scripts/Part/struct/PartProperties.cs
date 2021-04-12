@@ -26,6 +26,7 @@ namespace StarSalvager.Parts.Data
             Multiplier,
             Speed,
             Health,
+            Degrees
             
         }
 
@@ -46,7 +47,8 @@ namespace StarSalvager.Parts.Data
             "PartCapacity",
             "Multiplier",
             "Speed",
-            "Health"
+            "Health",
+            "Degrees"
         };
 
         [ValueDropdown(nameof(Names)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -84,6 +86,7 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Multiplier:
                 case KEYS.Speed:
                 case KEYS.Health:
+                case KEYS.Degrees:
                     return float.Parse(value);
 
                 case KEYS.Projectile:

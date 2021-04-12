@@ -77,6 +77,10 @@ MonoBehaviour:
     PartType: 42
     partType: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 0
+    PartType: 15
+    partType: Blaster
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   partRemoteData:
   - isImplemented: 1
     partType: 1
@@ -216,12 +220,20 @@ MonoBehaviour:
   - isImplemented: 0
     partType: 15
     name: Blaster
-    lockRotation: 0
+    lockRotation: 1
     description: A short-range wide blast weapon, that changes direction with your
       drone.
-    dataTest: []
-    isManual: 0
-    category: 0
+    dataTest:
+    - key: Damage
+      value: 10
+    - key: Cooldown
+      value: 1
+    - key: Radius
+      value: 10
+    - key: Degrees
+      value: 90
+    isManual: 1
+    category: 3
     ammoUseCost: 0
     PatchSockets: 2
   - isImplemented: 1
