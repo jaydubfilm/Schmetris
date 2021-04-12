@@ -16,7 +16,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager
 {
-    public class Asteroid : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, IAdditiveMove
+    public class Asteroid : CollidableBase, IHealth, IObstacle, ICanBeHit, IRotate, IAdditiveMove
     {
 
         //IRotate properties
@@ -252,8 +252,10 @@ namespace StarSalvager
         //ICustomRecycle Function
         //====================================================================================================================//
         
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 

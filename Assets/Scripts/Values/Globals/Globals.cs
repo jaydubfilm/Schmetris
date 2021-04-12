@@ -13,6 +13,11 @@ namespace StarSalvager.Values
 {
     public static class Globals
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         //Values that don't change throughout gameplay
         public static string UserID = string.Empty;
         //public static string UserID = AnalyticsSessionInfo.userId;
@@ -37,8 +42,29 @@ namespace StarSalvager.Values
         public static float TimeForAsteroidToFallOneSquareOriginal;
 
         //FIXME This is a mess, and must be organized
+
+
+        //Values set by Game Settings - do not set values here
+        public static bool TestingFeatures;
+        public static float AsteroidFallTimer;
+        
+        public static ORIENTATION Orientation
+        {
+            get => _orientation;
+            set
+            {
+                _orientation = value;
+                OrientationChange?.Invoke(_orientation);
+            }
+        }
+        private static ORIENTATION _orientation;
+
+        #endregion //Properties
+        
         //Game Settings Values
         //====================================================================================================================//
+
+        #region Game Settings Properties
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
@@ -78,7 +104,7 @@ namespace StarSalvager.Values
         public static float WaveMessageReminderFrequency => m_gameSettings.waveMessageReminderFrequency;
         public static bool CameraUseInputMotion => m_gameSettings.cameraUseInputMotion;
         public static float CameraSmoothing => m_gameSettings.cameraSmoothing;
-        public static float CameraOffsetBounds => Constants.gridCellSize * Globals.ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
+        public static float CameraOffsetBounds => Constants.gridCellSize * ColumnsOnScreen * m_gameSettings.cameraOffsetBounds / 2;
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
@@ -99,18 +125,27 @@ namespace StarSalvager.Values
         public static bool UnmergeLargeBitsOnRefine => m_gameSettings.unmergeLargeBitsOnRefine;
         public static bool SendExcessResourceToBase => m_gameSettings.sendExcessResourceToBase;
 
-        //Values set by Game Settings - do not set values here
-        public static bool TestingFeatures;
-        public static float AsteroidFallTimer;
+        #endregion //Game Settings Properties
 
         //====================================================================================================================//
-
-
         public static void Init()
         {
             TimeForAsteroidToFallOneSquare = m_gameSettings.timeForAsteroidToFallOneSquare;
             TimeForAsteroidToFallOneSquareOriginal = m_gameSettings.timeForAsteroidToFallOneSquare;
         }
+
+        public static void SetGameSettings(GameSettingsScriptableObject gameSettings)
+        {
+            m_gameSettings = gameSettings;
+
+            TestingFeatures = m_gameSettings.testingFeatures;
+            AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
+        }
+        
+        //Fall Speed
+        //====================================================================================================================//
+
+        #region Fall Speed
 
         public static void ResetFallSpeed()
         {
@@ -133,17 +168,10 @@ namespace StarSalvager.Values
             }
         }
 
-        public static ORIENTATION Orientation
-        {
-            get => _orientation;
-            set
-            {
-                _orientation = value;
-                OrientationChange?.Invoke(_orientation);
-            }
-        }
-        private static ORIENTATION _orientation;
+        #endregion //Fall Speed
 
+        //====================================================================================================================//
+        
         public static int GetBonusShapeGearRewards(int numCells, int numColours)
         {
             BonusShapeGearsValue bonusShapeValue = m_gameSettings.bonusShapeGearsRewards.FirstOrDefault(b => b.numCells == numCells && b.numColours == numColours);
@@ -155,14 +183,6 @@ namespace StarSalvager.Values
 
             Debug.Log("Missing value for bonus shape gears reward, calculating a filler value");
             return numCells * numColours * 25;
-        }
-
-        public static void SetGameSettings(GameSettingsScriptableObject gameSettings)
-        {
-            m_gameSettings = gameSettings;
-
-            TestingFeatures = m_gameSettings.testingFeatures;
-            AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
 
         public static void ScaleCamera(float cameraZoomScalerValue)
@@ -188,5 +208,8 @@ namespace StarSalvager.Values
                 GridSizeY = (int)((CameraController.Camera.orthographicSize * GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
             }
         }
+
+        //====================================================================================================================//
+        
     }
 }

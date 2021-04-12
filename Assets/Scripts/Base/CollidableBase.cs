@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Recycling;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Debugging;
@@ -15,7 +16,7 @@ namespace StarSalvager
     /// Any object that can touch a bot should use this base class
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
-    public abstract class CollidableBase : Actor2DBase
+    public abstract class CollidableBase : Actor2DBase, ICustomRecycle
     {
         private bool _useCollision = true;
 
@@ -90,6 +91,9 @@ namespace StarSalvager
             if (other.collider != _waitCollider)
                 return;
 
+            if (IsRecycled)
+                return;
+            
             //FIXME I'd like to find a better solution to this, as the coroutine seems cumbersome 
             //Only reset these properties x sec after exit. This prevents checking collisions again too early
             StartCoroutine(WaitForCollisionResetCoroutine(this, 0.1f));
@@ -238,6 +242,12 @@ namespace StarSalvager
             
             return true;
         }
+
+        public virtual void CustomRecycle(params object[] args)
+        {
+            _useCollision = true;
+            _waitCollider = null;
+        }
         
         //============================================================================================================//
 
@@ -252,6 +262,7 @@ namespace StarSalvager
             
             Destroy(explosion, time);
         }
-        
+
+
     }
 }

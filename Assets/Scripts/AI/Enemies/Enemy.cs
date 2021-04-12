@@ -19,7 +19,7 @@ using StarSalvager.Utilities.Particles;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICustomRecycle, ICanBeSeen, IOverrideRecycleType
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType
     {
         
         
@@ -403,8 +403,10 @@ namespace StarSalvager.AI
         }
         //============================================================================================================//
 
-        public virtual void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             CleanStateData();
             
             MostRecentMovementDirection = Vector3.zero;

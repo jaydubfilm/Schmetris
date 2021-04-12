@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace StarSalvager
 {
     //FIXME This can be combined with the Bit class a little
-    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<JunkBitData>, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanDetach
+    public class JunkBit : CollidableBase, IAttachable, IHealth, ISaveable<JunkBitData>, IObstacle, ICanBeHit, IRotate, ICanDetach
     {
         public IAttachable iAttachable => this;
         
@@ -163,8 +163,10 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public virtual void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             SetAttached(false);
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
