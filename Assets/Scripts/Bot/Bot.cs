@@ -212,7 +212,7 @@ namespace StarSalvager
             CreateCoreDeathEffect();
 
             cinemachineImpulseSource.GenerateImpulse(5);
-            GameUi.FlashBorder();
+            GameUi.FlashNeonBorder();
 
             Destroy("Core Destroyed");
         }

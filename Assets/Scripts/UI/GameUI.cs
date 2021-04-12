@@ -25,6 +25,11 @@ namespace StarSalvager.UI
 {
     public class GameUI : SceneSingleton<GameUI>, IHasHintElement
     {
+        //Structs
+        //====================================================================================================================//
+
+        #region Structs
+
         [Serializable]
         public struct SliderPartUI
         {
@@ -110,86 +115,6 @@ namespace StarSalvager.UI
                 throw new Exception();
             }
         }
-        
-        /*[Serializable, Obsolete]
-        public struct TriggerPartUI
-        {
-            [Required, FoldoutGroup("$NAME")]
-            public Button buttonObject;
-            [Required, FoldoutGroup("$NAME")]
-            public Image buttonImage;
-            [Required, FoldoutGroup("$NAME")]
-            public Image iconImage;
-            [Required, FoldoutGroup("$NAME")]
-            public Slider Slider;
-            [Required, FoldoutGroup("$NAME")]
-            public GameObject buttonUnCover;
-
-            [Required, FoldoutGroup("$NAME")]
-            public GameObject buttonCover;
-
-#if UNITY_EDITOR
-            [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
-            private string NAME;
-#endif
-
-            public void Reset()
-            {
-                SetFill(1f);
-                //SetHasResource(true);
-                SetActive(false);
-                SetInteractable(buttonObject.interactable);
-            }
-
-            public void SetActive(bool state)
-            {
-                buttonCover.SetActive(!state);
-                buttonUnCover.SetActive(state);
-            }
-
-            public void SetColor(Color color)
-            {
-                buttonImage.color = color;
-            }
-
-            public void SetFill(float val)
-            {
-                Slider.value = val;
-
-                //buttonObject.interactable = val >= 1f;
-                //SetInteractable(val >= 1f);
-            }
-
-            public void SetInteractable(in bool interactable)
-            {
-                buttonObject.interactable = interactable;
-            }
-        }
-
-        [Serializable, Obsolete]
-        public struct TriggerPartIcon
-        {
-            #if UNITY_EDITOR
-            private string NAME => Type.ToString();
-            #endif
-
-            [FoldoutGroup("$NAME")]
-            public PART_TYPE Type;
-            [Required, FoldoutGroup("$NAME")]
-            public Sprite UISprite;
-
-            public Color Color => GetPartColor(Type);
-
-            private static Color GetPartColor(PART_TYPE type)
-            {
-                var factoryManager = FactoryManager.Instance;
-                var category = factoryManager.PartsRemoteData.GetRemoteData(type).category;
-
-                var color = factoryManager.BitProfileData.GetProfile(category).color;
-
-                return color;
-            }
-        }*/
 
         [Serializable]
         public struct WindowSpriteSet
@@ -213,6 +138,8 @@ namespace StarSalvager.UI
             [FoldoutGroup("$type")] public Color titleColor;
             [FoldoutGroup("$type")] public Color textColor;
         }
+
+        #endregion //Structs
 
         //============================================================================================================//
 
@@ -375,22 +302,20 @@ namespace StarSalvager.UI
         [SerializeField, FoldoutGroup("Extras/Neon Border")]
         private AnimationCurve flashCurve;
         private bool _flashingBorder;
-
-        #endregion //Properties
-
-        /*[SerializeField]
-        private Slider[] sliders;
-        [SerializeField]
-        private Image[] sliderImages;*/
-
-
-        //====================================================================================================================//
-
+        
+        
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
+        
+        private Canvas _canvas;
 
+        #endregion //Properties
+        
+        //Unity Functions
         //============================================================================================================//
+
+        #region Unity Functions
 
         private void Start()
         {
@@ -417,26 +342,9 @@ namespace StarSalvager.UI
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
         }
 
-        //============================================================================================================//
+        #endregion //Unity Functions
 
-        private Canvas _canvas;
-        public Vector2 GetViewSizeNormalize()
-        {
-            if(_canvas is null)
-                _canvas = GetComponentInParent<Canvas>();
-
-            var canvasSize = (_canvas.transform as RectTransform).sizeDelta;
-
-            var size = viewableAreaTransform.rect.size;
-
-            return new Vector2
-            {
-                x = size.x / canvasSize.x,
-                y = size.y / canvasSize.y,
-            };
-        }
-
-
+        //Hint UI
         //============================================================================================================//
 
         public object[] GetHintElements(HINT hint)
@@ -456,11 +364,14 @@ namespace StarSalvager.UI
             }
         }
 
+        //Init UI
         //====================================================================================================================//
+
+        #region Init UI
 
         private void InitValues()
         {
-            SetupAmmoBars();
+            SetupAmmoSliders();
 
             //InitSmartWeaponUI();
             ResetIcons();
@@ -481,30 +392,7 @@ namespace StarSalvager.UI
             SetDancersActive(false);
             FadeBackground(false, true);
         }
-
-        /*private void InitSmartWeaponUI()
-        {
-
-            for (var i = 0; i < triggerPartUI.Length; i++)
-            {
-                int index = i;
-                var temp = triggerPartUI[i];
-
-                //temp.sprites = sprites;
-
-                triggerPartUI[i] = temp;
-                triggerPartUI[i].buttonObject.onClick.RemoveAllListeners();
-                triggerPartUI[i].buttonObject.onClick.AddListener(() =>
-                {
-                    InputManager.Instance.TriggerSmartWeapon(index);
-                });
-
-            }
-        }*/
-
-
-        //============================================================================================================//
-
+        
         private void SetupPlayerValues()
         {
             ShowAbortWindow(false);
@@ -512,10 +400,17 @@ namespace StarSalvager.UI
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
             SetPlayerComponents(PlayerDataManager.GetComponents());
 
-            UpdateAmmoBars();
+            UpdateAmmoSliders();
         }
 
-        private void SetupAmmoBars()
+        #endregion //Init UI
+        
+        //Ammo Sliders
+        //============================================================================================================//
+
+        #region Ammo Sliders
+
+        private void SetupAmmoSliders()
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
@@ -525,7 +420,7 @@ namespace StarSalvager.UI
             }
         }
 
-        private void UpdateAmmoBars()
+        private void UpdateAmmoSliders()
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
@@ -536,7 +431,12 @@ namespace StarSalvager.UI
             }
         }
 
+        #endregion //Ammo Sliders
+
+        //Magnets
         //============================================================================================================//
+
+        #region Magnets
 
         public void SetCarryCapacity(float value, int max)
         {
@@ -555,7 +455,12 @@ namespace StarSalvager.UI
             magnetFlash.FlashOnce();
         }
 
+        #endregion //Magnets
+
+        //Abort Window
         //============================================================================================================//
+
+        #region Abort Window
 
         private bool _abortWindowShown = true;
         public void ShowAbortWindow(bool shown)
@@ -585,18 +490,7 @@ namespace StarSalvager.UI
 
             abortButton.onClick.AddListener(AbortPressed);
         }
-
-        //============================================================================================================//
-
-        private void ValuesUpdated()
-        {
-            SetPlayerComponents(PlayerDataManager.GetComponents());
-            SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            //SetPlayerXP(PlayerDataManager.get);
-
-            UpdateAmmoBars();
-        }
-
+        
         public void AbortPressed()
         {
             LevelManager.Instance.BotInLevel.TrySelfDestruct();
@@ -604,6 +498,39 @@ namespace StarSalvager.UI
             //If the bot was able to be killed, hide this window
             if(LevelManager.Instance.BotInLevel.Destroyed)
                 ShowAbortWindow(false);
+        }
+
+        #endregion //Abort Window
+
+        //Update UI
+        //============================================================================================================//
+
+        #region Update UI
+
+        private void ValuesUpdated()
+        {
+            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            //SetPlayerXP(PlayerDataManager.get);
+
+            UpdateAmmoSliders();
+        }
+
+        public void SetHealthValue(float value)
+        {
+            var inverse = 1f - value;
+
+            var crackIncrement = 1f / crackImages.Length;
+
+            for (int i = 0; i < crackImages.Length; i++)
+            {
+                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
+            }
+
+
+            botHealthBarImage.color = Color.Lerp(Color.red, Color.green, value);
+            botHealthBarImage.fillAmount = value;
+
         }
 
         public void SetPlayerXP(in int xp)
@@ -622,11 +549,25 @@ namespace StarSalvager.UI
             progressSlider.value = value;
         }
 
+        public void SetCurrentWaveText(int sector, int wave)
+        {
+            sectorText.text = $"Sector {sector}.{wave}";
+        }
 
+        public void SetCurrentWaveText(string text)
+        {
+            sectorText.text = text;
+        }
+        
+        #endregion //Update UI
+
+        //Neon Border Flashing
         //============================================================================================================//
 
+        #region Neon Border Flashing
+
         [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Extras/Neon Border")]
-        public void FlashBorder()
+        public void FlashNeonBorder()
         {
             if (_flashingBorder)
                 return;
@@ -635,10 +576,10 @@ namespace StarSalvager.UI
 
             var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
 
-            StartCoroutine(BorderFlashingCoroutine(time));
+            StartCoroutine(NeonBorderFlashingCoroutine(time));
         }
 
-        private IEnumerator BorderFlashingCoroutine(float time)
+        private IEnumerator NeonBorderFlashingCoroutine(float time)
         {
             float t = 0f;
             Color startBorderGlowColor = borderGlow.color;
@@ -665,6 +606,13 @@ namespace StarSalvager.UI
 
             _flashingBorder = false;
         }
+
+        #endregion //Neon Border Flashing
+
+        //Part UI
+        //====================================================================================================================//
+
+        #region Part UI
 
         private void TryUpdateInputSprites(string newDeviceName)
         {
@@ -693,25 +641,6 @@ namespace StarSalvager.UI
             
             Sprite GetInputSprite(in int bitIndex)
             {
-                /*int bitIndex;
-                switch (bitType)
-                {
-                    case BIT_TYPE.RED:
-                        bitIndex = 0;
-                        break;
-                    case BIT_TYPE.YELLOW:
-                        bitIndex = 1;
-                        break;
-                    case BIT_TYPE.GREY:
-                        bitIndex = 2;
-                        break;
-                    case BIT_TYPE.BLUE:
-                        bitIndex = 3;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
-                }*/
-                
                 return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
 
@@ -753,36 +682,7 @@ namespace StarSalvager.UI
             }
         }
 
-        //============================================================================================================//
-
-        public void SetCurrentWaveText(int sector, int wave)
-        {
-            sectorText.text = $"Sector {sector}.{wave}";
-        }
-
-        public void SetCurrentWaveText(string text)
-        {
-            sectorText.text = text;
-        }
-
-        //============================================================================================================//
-
-        public void SetHealthValue(float value)
-        {
-            var inverse = 1f - value;
-
-            var crackIncrement = 1f / crackImages.Length;
-
-            for (int i = 0; i < crackImages.Length; i++)
-            {
-                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
-            }
-
-
-            botHealthBarImage.color = Color.Lerp(Color.red, Color.green, value);
-            botHealthBarImage.fillAmount = value;
-
-        }
+        #endregion //Part UI
 
         //Wave Summary Window Functions
         //====================================================================================================================//
@@ -885,6 +785,9 @@ namespace StarSalvager.UI
 
         #endregion //Wave Summary Window
 
+        //Dancers
+        //====================================================================================================================//
+        
         #region Dancers
 
         public void SetDancersActive(bool state)
@@ -893,6 +796,11 @@ namespace StarSalvager.UI
         }
 
         #endregion
+
+        //Fading
+        //====================================================================================================================//
+
+        #region Fading
 
         public void FadeBackground(bool fadeIn, bool instant = false)
         {
@@ -937,10 +845,12 @@ namespace StarSalvager.UI
             _fading = false;
         }
 
-
+        #endregion //Fading
 
         //Patch point Effect
         //====================================================================================================================//
+
+        #region Patch Point Effects
 
         [Button, DisableInEditorMode]
         public void CreatePatchPointEffect()
@@ -958,7 +868,6 @@ namespace StarSalvager.UI
 
 
             var patchSprite = FactoryManager.Instance.PatchSprite;
-
 
             var botWorldPosition = LevelManager.Instance.BotInLevel.transform.position;
 
@@ -1050,14 +959,41 @@ namespace StarSalvager.UI
 
         }
 
+        #endregion //Patch Point Effects
+
+        //Ammo Effect
+        //====================================================================================================================//
+        public void CreateAmmoEffect(in int minCount, in int maxCount, in float minDelay, in float maxDelay)
+        {
+            var count = Random.Range(minCount, maxCount);
+            
+            var botWorldPosition = LevelManager.Instance.BotInLevel.transform.position;
+            var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                effectArea,
+                screenPoint,
+                null,
+                out var newPosition);
+
+            StartCoroutine(AmmoEffectCoroutine(newPosition, 
+                count, 
+                new Vector2(minDelay, maxDelay)));
+        }
+
+        private IEnumerator AmmoEffectCoroutine(Vector3 startPosition, int count, Vector2 delayRange)
+        {
+            throw new NotImplementedException();
+        }
+
+        //====================================================================================================================//
+        
         public static void ClearEventSelected()
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
 
-
         //====================================================================================================================//
-
-
+        
     }
 }
