@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze
     {
         //IAttachable properties
         //============================================================================================================//
@@ -281,8 +281,10 @@ namespace StarSalvager
 
         //============================================================================================================//
 
-        public virtual void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             //Make sure we unfreeze if destroyed before solved
             FreezeTime = 0;
             SetColor(Color.white);

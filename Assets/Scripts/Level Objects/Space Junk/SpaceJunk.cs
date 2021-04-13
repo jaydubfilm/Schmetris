@@ -15,7 +15,7 @@ using StarSalvager.Prototype;
 
 namespace StarSalvager
 {
-    public class SpaceJunk : CollidableBase, IHealth, IObstacle, ICustomRecycle, ICanBeHit, IRotate
+    public class SpaceJunk : CollidableBase, IHealth, IObstacle, ICanBeHit, IRotate
     {
 
         //IRotate properties
@@ -212,6 +212,8 @@ namespace StarSalvager
         
         public void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             transform.rotation = Quaternion.identity;
             SetRotating(false);
 

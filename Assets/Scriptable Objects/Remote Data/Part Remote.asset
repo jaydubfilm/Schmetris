@@ -77,6 +77,10 @@ MonoBehaviour:
     PartType: 42
     partType: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 0
+    PartType: 15
+    partType: Blaster
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   partRemoteData:
   - isImplemented: 1
     partType: 1
@@ -216,11 +220,20 @@ MonoBehaviour:
   - isImplemented: 0
     partType: 15
     name: Blaster
-    lockRotation: 0
-    description: Destroys asteroids, extracting valuable minerals.
-    dataTest: []
-    isManual: 0
-    category: 0
+    lockRotation: 1
+    description: A short-range wide blast weapon, that changes direction with your
+      drone.
+    dataTest:
+    - key: Damage
+      value: 10
+    - key: Cooldown
+      value: 1
+    - key: Radius
+      value: 10
+    - key: Degrees
+      value: 90
+    isManual: 1
+    category: 3
     ammoUseCost: 0
     PatchSockets: 2
   - isImplemented: 1
@@ -256,7 +269,7 @@ MonoBehaviour:
     partType: 35
     name: Wild Card
     lockRotation: 0
-    description: 
+    description: Forms combos with two other resource bits of any colour or level.
     dataTest: []
     isManual: 0
     category: 5
@@ -266,7 +279,7 @@ MonoBehaviour:
     partType: 36
     name: Railgun
     lockRotation: 0
-    description: 
+    description: A long range, trigger-fired projectile weapon.  Has a quick cooldown.
     dataTest:
     - key: Damage
       value: 10
@@ -282,7 +295,7 @@ MonoBehaviour:
     partType: 38
     name: Tractor Beam
     lockRotation: 0
-    description: 
+    description: Sucks the next bit in its path toward the drone with great speed.
     dataTest:
     - key: Cooldown
       value: 1
@@ -324,7 +337,7 @@ MonoBehaviour:
     partType: 29
     name: Decoy
     lockRotation: 0
-    description: 
+    description: Send out a decoy drone to attract all enemy fire.  Lasts until destroyed.
     dataTest:
     - key: Cooldown
       value: 5
@@ -336,7 +349,7 @@ MonoBehaviour:
     partType: 41
     name: Bitsplosion
     lockRotation: 0
-    description: 
+    description: Turns all free-floating bits into mini-bombs, which blow up simultaneously.
     dataTest:
     - key: Cooldown
       value: 10
@@ -352,7 +365,7 @@ MonoBehaviour:
     partType: 31
     name: Hoover
     lockRotation: 0
-    description: 
+    description: Suck all the free-floating bits on the screen to your drone.
     dataTest:
     - key: Cooldown
       value: 2
@@ -364,7 +377,7 @@ MonoBehaviour:
     partType: 0
     name: Core
     lockRotation: 0
-    description: 
+    description: The heart of your drone.  Heals you when you are damaged.
     dataTest:
     - key: Magnet
       value: 24
@@ -373,7 +386,7 @@ MonoBehaviour:
     - key: Health
       value: 100
     - key: Heal
-      value: 10
+      value: 5
     isManual: 0
     category: 2
     ammoUseCost: 5
@@ -382,7 +395,7 @@ MonoBehaviour:
     partType: 42
     name: Sabre
     lockRotation: 1
-    description: 
+    description: A short-range melee weapon.  Gets longer when you rotate!
     dataTest:
     - key: Cooldown
       value: 0.5
