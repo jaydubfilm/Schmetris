@@ -36,8 +36,8 @@ namespace StarSalvager
 
             m_anchorPoint = Vector2.left *
                 ((m_gridSizeX / 2.0f) * Constants.gridCellSize)
-                + (Vector2.left * Constants.gridCellSize * 0.5f)
-                + (Vector2.down * Values.Constants.gridCellSize / 2);
+                + (Vector2.left * (Constants.gridCellSize * 0.5f))
+                + (Vector2.down * Constants.gridCellSize / 2);
 
             m_gridArray = new GridSquare[m_gridSizeX * m_gridSizeY];
 
@@ -267,7 +267,7 @@ namespace StarSalvager
         }
 
         //Finds a random available position in the grid region that is somewhat spaced from other currently existing objects
-        public Vector2? GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool allowOverlap, bool forceSpawn, bool inRandomYLevel)
+        /*public Vector2? GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool allowOverlap, bool forceSpawn, bool inRandomYLevel)
         {
             if (!randomPositionFindingLists.ContainsKey(gridRegion))
             {
@@ -357,6 +357,81 @@ namespace StarSalvager
                     return null;
                 }
             }
+        }*/
+        
+        public Vector2? GetLocalPositionOfRandomGridSquareInGridRegion(int scanRadius, int minScanRadius, Vector2 gridRegion, bool allowOverlap, bool forceSpawn, int yLevel)
+        {
+            if (!randomPositionFindingLists.ContainsKey(gridRegion))
+            {
+                randomPositionFindingLists.Add(gridRegion, new List<int>());
+
+                int beginIndex = (int)(m_gridSizeX * (double)gridRegion.x);
+                int endIndex = (int)(m_gridSizeX * (double)gridRegion.y);
+
+                for (int i = beginIndex; i <= endIndex && i < m_gridSizeX; i++)
+                {
+                    randomPositionFindingLists[gridRegion].Add(i);
+                }
+            }
+
+            List<int> randomGridRegion = randomPositionFindingLists[gridRegion];
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                int temp = randomGridRegion[i];
+                int randomIndex = UnityEngine.Random.Range(i, randomGridRegion.Count);
+                randomGridRegion[i] = randomGridRegion[randomIndex];
+                randomGridRegion[randomIndex] = temp;
+            }
+
+            if (allowOverlap)
+            {
+                return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], yLevel));
+            }
+
+            for (int i = 0; i < randomGridRegion.Count; i++)
+            {
+                Vector2Int topPosition = new Vector2Int(randomGridRegion[i], yLevel);
+
+                bool isFreeSpace = true;
+                Vector2Int obstacleGridScanMinimum = new Vector2Int(
+                    Math.Max(0, topPosition.x - scanRadius),
+                    Math.Max(0, topPosition.y - scanRadius));
+                Vector2Int obstacleGridScanMaximum = new Vector2Int(
+                    Math.Min(m_gridSizeX - 1, topPosition.x + scanRadius),
+                    Math.Min(m_gridSizeY - 1, topPosition.y + scanRadius));
+                //Check each position in the box for whether an obstacle is there
+                for (int j = obstacleGridScanMinimum.x; j <= obstacleGridScanMaximum.x; j++)
+                {
+                    for (int k = obstacleGridScanMinimum.y; k <= obstacleGridScanMaximum.y; k++)
+                    {
+                        if (LevelManager.Instance.WorldGrid.GetGridSquareAtCoordinates(j, k).ObstacleInSquare)
+                        {
+                            isFreeSpace = false;
+                            break;
+                        }
+                    }
+                    if (!isFreeSpace)
+                        break;
+                }
+
+                if (isFreeSpace)
+                {
+                    return GetLocalPositionOfCenterOfGridSquareAtCoordinates(topPosition);
+                }
+            }
+
+            if (scanRadius > minScanRadius)
+            {
+                return GetLocalPositionOfRandomGridSquareInGridRegion(scanRadius - 1, minScanRadius, gridRegion, false, forceSpawn, yLevel);
+            }
+
+            if (!forceSpawn) 
+                return null;
+            
+            Debug.LogError("Couldn't find position to spawn. Possible overlap occurring in grid region " + false + (double)gridRegion.x + ", " + (double)gridRegion.y);
+            
+            return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
         }
 
         public Vector2Int[] SelectBitExplosionPositions(Vector2 startingLocation, int numBits, int verticalExplosionRange, int horizontalExplosionRange)

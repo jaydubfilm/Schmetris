@@ -17,6 +17,9 @@ namespace StarSalvager.ScriptableObjects
         public bool shuffleCanDisconnect = true;
         [BoxGroup("Prototyping"), Range(0.01f, 1f)]
         public float shuffleTimeThreshold = 0.3f;
+
+        [BoxGroup("Prototyping"), PropertyRange(0, 50)]
+        public int preSpawnedRows;
         
         
         [BoxGroup("Prototyping")]
