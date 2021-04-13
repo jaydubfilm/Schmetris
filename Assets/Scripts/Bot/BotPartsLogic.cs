@@ -2134,6 +2134,8 @@ namespace StarSalvager
             
             switch (part.Type)
             {
+                case PART_TYPE.SNIPER:
+                    return;
                 case PART_TYPE.GUN:
                 {
                     var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
@@ -2193,6 +2195,8 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
+                case PART_TYPE.SNIPER:
+                    return;
                 case PART_TYPE.GUN:
                 case PART_TYPE.RAILGUN:
                     fireLineRenderer.transform.rotation = Quaternion.identity;

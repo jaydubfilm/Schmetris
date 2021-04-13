@@ -111,6 +111,13 @@ namespace Recycling
 
 			}
 
+
+			//Change the parent so that we can adjust scale/Rot correctly
+			//--------------------------------------------------------------------------------------------------------//
+			
+			gameObject.transform.parent = transform;
+			gameObject.transform.rotation = Quaternion.identity;
+
 			//If the object wants to do anything special before being placed in the bin, Now is when we call that
 			//--------------------------------------------------------------------------------------------------------//
 			
@@ -120,8 +127,7 @@ namespace Recycling
 			//--------------------------------------------------------------------------------------------------------//
 			
 			bin.Store(gameObject);
-			gameObject.transform.parent = transform;
-			gameObject.transform.rotation = Quaternion.identity;
+
 			
 			gameObject.SetActive(false);
 			

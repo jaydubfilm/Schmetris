@@ -288,6 +288,22 @@ namespace StarSalvager.UI
 
         #endregion //Patch Point Effect
 
+        //Combo Effect Properties
+        //====================================================================================================================//
+
+        #region Combo Effect Properties
+
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(1,10,true)]
+        private Vector2Int effectElementCount;
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(0,2,true)]
+        private Vector2 moveTimeRange;
+        [SerializeField, BoxGroup("Combo Effect")]
+        private Sprite[] bitEffectSprites;
+        [SerializeField, BoxGroup("Combo Effect")]
+        private RectTransform[] sliderTargets;
+
+        #endregion //Combo Effect Properties
+
         //Other
         //============================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras")]
@@ -887,7 +903,7 @@ namespace StarSalvager.UI
             }*/
         }
 
-        private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition,Sprite sprite, int count)
+        private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition, Sprite sprite, int count)
         {
             var transforms = new RectTransform[count];
             var spawnPositions = new Vector2[count];
@@ -963,12 +979,29 @@ namespace StarSalvager.UI
 
         //Ammo Effect
         //====================================================================================================================//
-        public void CreateAmmoEffect(in int minCount, in int maxCount, in float minDelay, in float maxDelay)
+
+        //FIXME Adding ammo in this method could cause a loss either from early destruction of the coroutine, or division
+        #region Ammo Effect
+
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
         {
-            var count = Random.Range(minCount, maxCount);
+            CreateAmmoEffect(bitType, 
+                amount,
+                startPosition, 
+                effectElementCount.x, effectElementCount.y,
+                moveTimeRange);
+        }
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange)
+        {
+            const float RADIUS = 50;
             
-            var botWorldPosition = LevelManager.Instance.BotInLevel.transform.position;
-            var screenPoint = CameraController.Camera.WorldToScreenPoint(botWorldPosition);
+            var sprite = bitEffectSprites[(int) bitType - 1];
+            var targetTransform = sliderTargets[(int) bitType - 1];
+            
+            var count = Random.Range(minCount, maxCount);
+            var dividedAmount = amount / count;
+            
+            var screenPoint = CameraController.Camera.WorldToScreenPoint(startPosition);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 effectArea,
@@ -976,15 +1009,137 @@ namespace StarSalvager.UI
                 null,
                 out var newPosition);
 
-            StartCoroutine(AmmoEffectCoroutine(newPosition, 
+
+            StartCoroutine(AmmoEffectCoroutine(
+                bitType,
+                dividedAmount,
+                targetTransform,
+                newPosition, 
+                sprite,
+                RADIUS,
                 count, 
-                new Vector2(minDelay, maxDelay)));
+                moveTimeRange));
         }
 
-        private IEnumerator AmmoEffectCoroutine(Vector3 startPosition, int count, Vector2 delayRange)
+        private IEnumerator AmmoEffectCoroutine(
+            BIT_TYPE bitType,
+            float dividedAmount,
+            Transform targetTransform, 
+            Vector2 startPosition, 
+            Sprite sprite,
+            float radius, 
+            int count, 
+            Vector2 delayRange)
         {
-            throw new NotImplementedException();
+            Vector3 TARGET_SCALE = Vector3.one * 0.2f;
+            
+            var transforms = new RectTransform[count];
+            var rotateDirection = new bool[count];
+
+            for (var i = 0; i < count; i++)
+            {
+                var image = Instantiate(imagePrefab);
+                image.sprite = sprite;
+
+                var trans = (RectTransform) image.transform;
+                trans.sizeDelta = Vector2.one * imageSize;
+                trans.SetParent(effectArea, false);
+                trans.localScale = Vector3.zero;
+                trans.localPosition = startPosition + Random.insideUnitCircle * radius;
+                transforms[i] = trans;
+
+                rotateDirection[i] = Random.value > 0.5f;
+            }
+
+            var t = 0f;
+            var fastSpawnTime = spawnTime / 2f;
+
+            while (t / fastSpawnTime <= 1f)
+            {
+                var deltaTime = Time.deltaTime;
+                var td = spawnCurve.Evaluate(t / fastSpawnTime);
+
+                for (int i = 0; i < count; i++)
+                {
+                    transforms[i].localScale = Vector3.Lerp(Vector3.zero, TARGET_SCALE, td);
+                    transforms[i].localEulerAngles +=
+                        Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                }
+
+                t += deltaTime;
+                yield return null;
+            }
+            
+            var targetPosition = effectArea.transform.InverseTransformPoint(targetTransform.position);
+            
+            for (int i = 0; i < count; i++)
+            {
+                StartCoroutine(AmmoElementMoveCoroutine(
+                    bitType,
+                    dividedAmount,
+                    transforms[i],
+                    targetPosition,
+                    TARGET_SCALE,
+                    rotateDirection[i],
+                    Random.Range(moveTimeRange.x, moveTimeRange.y)
+                ));
+            }
         }
+
+        private IEnumerator AmmoElementMoveCoroutine(
+            BIT_TYPE bitType,
+            float dividedAmount,
+            Transform movingTransform,
+            Vector2 targetPosition,
+            Vector2 targetScale,
+            bool rotationDirection,
+            float moveTime)
+        {
+            var t = 0f;
+            var startPosition = movingTransform.localPosition;
+
+            yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
+            
+            while (t / moveTime <= 1f)
+            {
+                var deltaTime = Time.deltaTime;
+                var td = moveCurve.Evaluate(t / moveTime);
+
+                movingTransform.localPosition = Vector2.Lerp(startPosition, targetPosition, td);
+                movingTransform.localScale =
+                    Vector3.Lerp(targetScale, Vector3.zero, spawnCurve.Evaluate(t / moveTime));
+                movingTransform.localEulerAngles +=
+                    Vector3.forward * (rotationSpeed * (rotationDirection ? 1f : -1f) * deltaTime);
+
+                t += deltaTime;
+                yield return null;
+            }
+
+            var resource = PlayerDataManager.GetResource(bitType);
+            resource.AddAmmo(dividedAmount);
+            
+            
+            Destroy(movingTransform.gameObject);
+        }
+        
+#if UNITY_EDITOR
+        [Button, BoxGroup("Combo Effect"), DisableInEditorMode]
+        private void TestComboEffect()
+        {
+            var bitType = (BIT_TYPE) Random.Range(1, 6);
+            var count = LevelManager.Instance.BotInLevel.AttachedBlocks.Count;
+            var startPosition = LevelManager.Instance.BotInLevel.AttachedBlocks[Random.Range(0, count)].transform
+                .position;
+
+            CreateAmmoEffect(bitType, 
+                Random.Range(5, 50),
+                startPosition, 
+                effectElementCount.x, effectElementCount.y,
+                moveTimeRange);
+        }
+#endif
+
+        #endregion //Ammo Effect
 
         //====================================================================================================================//
         

@@ -549,7 +549,7 @@ namespace StarSalvager
             //Only want to update the parts list after everyone has loaded
             foreach (var attachable in botAttachables)
             {
-                AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false);
+                AttachNewBlock(attachable.Coordinate, attachable, updatePartList: false, checkForCombo: false);
             }
 
 
@@ -559,6 +559,8 @@ namespace StarSalvager
             camera.ResetCameraPosition();
 
             BotPartsLogic.PopulatePartsList();
+
+            CheckAllForCombos();
             //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
         }
@@ -861,7 +863,8 @@ namespace StarSalvager
 
                                 if (ammoEarned != 0)
                                 {
-                                    PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                                    //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                                    GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
                                     FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
                                 }
 
@@ -1751,7 +1754,7 @@ namespace StarSalvager
 
                     /*if(existingAttachable is Part part)
                         TryAutoProcessBit(bit, part);*/
-
+                    
                     AttachedChanged();
                     break;
                 case Part _ when updatePartList:
@@ -3108,14 +3111,6 @@ _isShifting = true;
         /// <exception cref="Exception"></exception>
         private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
         {
-            void AddBitAmmo(in BIT_TYPE bitType, in int amount)
-            {
-                if(amount == 0)
-                    return;
-
-                PlayerDataManager.GetResource(bitType).AddAmmo(amount);
-            }
-
             ICanCombo closestToCore = null;
             var shortest = 999f;
 
@@ -3232,7 +3227,10 @@ _isShifting = true;
                             .FirstOrDefault(x => x.level == bit.level)
                             .ammoEarned;
                         
-                        AddBitAmmo(bit.Type, ammoEarned);
+                        GameUi.CreateAmmoEffect(bit.Type, ammoEarned, position);
+                        /* if(amount == 0)
+                            return;
+                        PlayerDataManager.GetResource(bitType).AddAmmo(amount);*/
                     }
 
 
