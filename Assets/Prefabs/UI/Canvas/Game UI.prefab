@@ -2817,7 +2817,7 @@ GameObject:
   - component: {fileID: 8355127909089327986}
   - component: {fileID: 6492735457205182417}
   m_Layer: 5
-  m_Name: Right_Fill
+  m_Name: Up_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7624,7 +7624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3041973926504925507}
   m_Layer: 5
-  m_Name: Right_Group
+  m_Name: Up Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10043,6 +10043,20 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  effectElementCount: {x: 5, y: 10}
+  moveTimeRange: {x: 0.3, y: 0.6}
+  bitEffectSprites:
+  - {fileID: 21300000, guid: 15144320bb1e8c841909757fe4dcda32, type: 3}
+  - {fileID: 21300000, guid: c5108c8ba9abdd44b8c5ae2af42def3f, type: 3}
+  - {fileID: 21300000, guid: 39f113a78282f0745b4e44e9b646d570, type: 3}
+  - {fileID: 21300000, guid: aae1de7a5269f6f469d080f5cb98e5d5, type: 3}
+  - {fileID: 21300000, guid: cb192d36b49dede43a715f1ce24f990e, type: 3}
+  sliderTargets:
+  - {fileID: 4542966241952954883}
+  - {fileID: 1441884543969579972}
+  - {fileID: 506044404748442483}
+  - {fileID: 9129160456622053184}
+  - {fileID: 2083253194999572721}
   magnetFlash: {fileID: 1067242931904072947}
   flashTimeRange: {x: 0.4, y: 0.7}
   borderGlow: {fileID: 7443690187230298321}
@@ -10692,7 +10706,7 @@ GameObject:
   - component: {fileID: 8790576220639180689}
   - component: {fileID: 3960756761390416293}
   m_Layer: 5
-  m_Name: Up_Fill
+  m_Name: Right_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12188,7 +12202,7 @@ GameObject:
   - component: {fileID: 9129160456622053184}
   - component: {fileID: 3363909345630800466}
   m_Layer: 5
-  m_Name: Up_Slider
+  m_Name: Right_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15766,7 +15780,7 @@ GameObject:
   - component: {fileID: 2083253194999572721}
   - component: {fileID: 6245549572273726664}
   m_Layer: 5
-  m_Name: Right_Slider
+  m_Name: Up_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15927,7 +15941,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8983362764388497081}
   m_Layer: 5
-  m_Name: Up_Group
+  m_Name: Right Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

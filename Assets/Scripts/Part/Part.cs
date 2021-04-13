@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart, ICustomRecycle
+    public class Part : CollidableBase, IAttachable, ICustomRotate, ISaveable<PartData>, IPart
     {
         //IAttachable Properties
         //============================================================================================================//
@@ -19,7 +19,6 @@ namespace StarSalvager
         public Vector2Int Coordinate { get; set; }
 
         public bool Attached => true;
-
         public bool CountAsConnectedToCore => true;
         public bool CanShift => false;
         public bool CountTowardsMagnetism => false;
@@ -149,8 +148,10 @@ namespace StarSalvager
         //============================================================================================================//
 
 
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             SetSortingLayer(LayerHelper.ACTORS);
             
             SetColor(Color.white);

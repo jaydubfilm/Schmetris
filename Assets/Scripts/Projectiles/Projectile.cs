@@ -11,7 +11,7 @@ using StarSalvager.Utilities;
 namespace StarSalvager.AI
 {
     //TODO: Handle proper setting of the collision tag
-    public class Projectile : CollidableBase, ICustomRecycle
+    public class Projectile : CollidableBase
     {
         protected Vector3 TravelDirectionNormalized { get; set; }
         protected Vector3 EnemyVelocityModifier { get; set; }
@@ -259,9 +259,9 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public virtual void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
-            
+            base.CustomRecycle(args);
             
             transform.rotation = Quaternion.identity;
             _target = null;
