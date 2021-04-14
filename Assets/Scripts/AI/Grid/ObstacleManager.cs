@@ -930,7 +930,7 @@ namespace StarSalvager
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                float random = Random.value;
 
                 if (random <= spawnVariable)
                 {

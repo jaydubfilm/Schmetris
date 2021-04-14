@@ -116,8 +116,7 @@ namespace StarSalvager.AI
             for (int i = 1; i <= Globals.PreSpawnedRows; i++)
             {
                 var yLevel = Globals.GridSizeY - (1 + i);
-                obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_centerColumnFieldRange, false, true,
-                    stageRemoteData.SpawningObstacleMultiplier, isPrevious, yLevel);
+                SetObstacleDataSpawns(stageRemoteData, isPrevious, obstacleManager, yLevel);
             }
 
         }
