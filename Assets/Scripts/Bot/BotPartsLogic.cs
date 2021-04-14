@@ -2140,7 +2140,9 @@ namespace StarSalvager
             
             switch (part.Type)
             {
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
+                    fireLineRenderer.gameObject.SetActive(false);
                     return;
                 case PART_TYPE.GUN:
                 {
@@ -2191,6 +2193,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException();
             }
             
+            fireLineRenderer.gameObject.SetActive(true);
             fireLineRenderer.loop = loop;
             fireLineRenderer.useWorldSpace = worldSpace;
             fireLineRenderer.positionCount = points.Length;
@@ -2201,6 +2204,7 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
                     return;
                 case PART_TYPE.GUN:
