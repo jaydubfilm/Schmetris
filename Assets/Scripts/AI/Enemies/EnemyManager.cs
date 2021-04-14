@@ -432,6 +432,36 @@ namespace StarSalvager
 
             return outList;
         }
+        
+        public List<Enemy> GetEnemiesInCone(Vector2 position, float range, Vector2 direction, float dotThreshold)
+        {
+            var outList = new List<Enemy>();
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                var enemyPos = (Vector2)enemy.transform.position;
+
+                if (!CameraController.IsPointInCameraRect(enemyPos))
+                    continue;
+
+                var dist = Vector2.Distance(position, enemyPos);
+
+                if (dist > range)
+                    continue;
+
+                var dir = (enemyPos - position).normalized;
+                
+                if (Vector2.Dot(dir, direction) < dotThreshold)
+                    continue;
+                
+
+                outList.Add(enemy);
+            }
+
+            return outList;
+        }
 
         public void SetEnemiesInert(bool inert)
         {

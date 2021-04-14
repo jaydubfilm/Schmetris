@@ -217,7 +217,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 3
     PatchSockets: 2
-  - isImplemented: 0
+  - isImplemented: 1
     partType: 15
     name: Blaster
     lockRotation: 1
@@ -225,16 +225,18 @@ MonoBehaviour:
       drone.
     dataTest:
     - key: Damage
-      value: 10
+      value: 50
     - key: Cooldown
       value: 1
     - key: Radius
       value: 10
     - key: Degrees
       value: 90
+    - key: Time
+      value: 0.35
     isManual: 1
     category: 3
-    ammoUseCost: 0
+    ammoUseCost: 10
     PatchSockets: 2
   - isImplemented: 1
     partType: 6

@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Parts.Data;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -399,7 +400,7 @@ namespace StarSalvager
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
-                        BlasterUpdate(part, partRemoteData, deltaTime);
+                        //BlasterUpdate(part, partRemoteData, deltaTime);
                         UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
@@ -660,7 +661,7 @@ namespace StarSalvager
             _sabreObject.SetTransform(pos, dir);
         }
 
-        private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        /*private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
             if (_projectileTimers == null)
@@ -704,7 +705,7 @@ namespace StarSalvager
             //TODO Create projectile shooting at new target
 
             CreateProjectile(part, partRemoteData, asteroid, "Asteroid");
-        }
+        }*/
 
         private void GunUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
@@ -1122,6 +1123,9 @@ namespace StarSalvager
                 case PART_TYPE.SABRE:
                     TriggerSabre(part);
                     break;
+                case PART_TYPE.BLASTER:
+                    TriggerBlaster(part);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1520,6 +1524,34 @@ namespace StarSalvager
             
             _sabreObject.Init(damage, minSize, maxSize);
 
+        }
+
+        [SerializeField]
+        private BlasterProjectile blasterProjectilePrefab;
+        private void TriggerBlaster(in Part part)
+        {
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var fromPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
+
+            var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+            var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+            var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            
+            var rot = part.transform.eulerAngles.z + 90;
+            
+            var blasterProjectile = Instantiate(blasterProjectilePrefab, fromPosition, Quaternion.identity);
+            blasterProjectile.Init(rot, degrees, range, fireTime);
+
+            var dotThreshold = 1f / (180 / degrees);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, part.transform.up.normalized, dotThreshold);
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
+            
         }
 
         #endregion
@@ -2119,19 +2151,6 @@ namespace StarSalvager
 
         private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
-            //--------------------------------------------------------------------------------------------------------//
-            
-            Vector3 GetAsPoint(in float degrees, in float range = 1f)
-            {
-                var radians = degrees * Mathf.Deg2Rad;
-
-                var x = Mathf.Cos(radians);
-                var y = Mathf.Sin(radians);
-                return new Vector3(x, y, 0) * range; //Vector2 is fine, if you're in 2D
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-
             var firePosition = Globals.UseCenterFiring ? Vector3.zero : part.transform.localPosition;
             
             var loop = false;
@@ -2155,7 +2174,7 @@ namespace StarSalvager
 
                     for (var i = 0; i < slices; i++)
                     {
-                        var point = firePosition + GetAsPoint(i * degree, range);
+                        var point = firePosition + (Vector3)Mathfx.GetAsPoint(i * degree, range);
                         pointList.Add(point);
                     }
 
@@ -2176,9 +2195,9 @@ namespace StarSalvager
 
                     points = new[]
                     {
-                        GetAsPoint(leftDeg, range),
+                        (Vector3)Mathfx.GetAsPoint(leftDeg, range),
                         firePosition,
-                        GetAsPoint(rightDeg, range),
+                        (Vector3)Mathfx.GetAsPoint(rightDeg, range),
                     };
                     break;
                 }
@@ -2204,6 +2223,7 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
+                case PART_TYPE.BLASTER:
                 case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
                     return;
@@ -2211,8 +2231,6 @@ namespace StarSalvager
                 case PART_TYPE.RAILGUN:
                     fireLineRenderer.transform.rotation = Quaternion.identity;
                     break;
-                case PART_TYPE.BLASTER:
-                    throw new NotImplementedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
