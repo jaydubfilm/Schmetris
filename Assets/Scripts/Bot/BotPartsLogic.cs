@@ -400,6 +400,7 @@ namespace StarSalvager
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
                         BlasterUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SNIPER:
@@ -426,6 +427,11 @@ namespace StarSalvager
                     case PART_TYPE.SABRE:
                         SabreUpdate(part, partRemoteData, deltaTime);
                         break;
+                    //--------------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.RAILGUN:
+                        UpdateFireLine(part, partRemoteData);
+                        break;
+                    //--------------------------------------------------------------------------------------------------------//
                 }
             }
 
