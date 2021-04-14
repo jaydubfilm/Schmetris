@@ -120,6 +120,8 @@ namespace StarSalvager.ScriptableObjects
         [FoldoutGroup("Bot/Movement")]
         public float DASTime = 0.15f;
         [FoldoutGroup("Bot/Movement")]
+        public float DARTime = 0.11f;
+        [FoldoutGroup("Bot/Movement")]
         public float botHorizontalSpeed = 30.0f;
         [FoldoutGroup("Bot/Movement")]
         public float botRotationSpeed = 500.0f;
