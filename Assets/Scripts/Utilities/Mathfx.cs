@@ -7,6 +7,19 @@ namespace StarSalvager.Utilities
     //From: https://wiki.unity3d.com/index.php/Mathfx
     public sealed class Mathfx
     {
+        public static Vector2 GetAsPoint(in float degrees, in float range = 1f)
+        {
+            if(range == 0)
+                return Vector2.zero;
+            
+            var radians = degrees * Mathf.Deg2Rad;
+
+            var x = Mathf.Cos(radians);
+            var y = Mathf.Sin(radians);
+            
+            return new Vector2(x, y) * range; //Vector2 is fine, if you're in 2D
+        }
+        
         //Custom Additions
         //====================================================================================================================//
 
