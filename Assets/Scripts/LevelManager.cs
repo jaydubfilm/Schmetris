@@ -32,7 +32,9 @@ namespace StarSalvager
     {
         //Properties
         //====================================================================================================================//
-
+        private float yTopPosition => Constants.gridCellSize * Globals.GridSizeY;
+        private bool BotIsInPosition => m_bots[0].transform.position.y >= yTopPosition;
+        
         [SerializeField, Required, BoxGroup("Prototyping")]
         private OutroScene OutroScene;
 
@@ -41,8 +43,7 @@ namespace StarSalvager
         private List<Bot> m_bots = new List<Bot>();
         public Bot BotInLevel => m_bots.Count > 0 ? m_bots[0] : null;
 
-        [SerializeField, Space(10f)]
-        private CameraController m_cameraController;
+        [SerializeField, Space(10f)] private CameraController m_cameraController;
         public CameraController CameraController => m_cameraController;
 
         //public SectorRemoteDataScriptableObject CurrentSector => FactoryManager.Instance.SectorRemoteData[Globals.CurrentSector];
@@ -50,13 +51,14 @@ namespace StarSalvager
         public WaveRemoteDataScriptableObject CurrentWaveData =>
             FactoryManager.Instance.RingRemoteDatas[Globals.CurrentRingIndex].GetRemoteData(Globals.CurrentWave);
 
-        [SerializeField, Required]
-        private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
+        [SerializeField, Required] private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
         public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
         [SerializeField, Required]
         private PlayerLevelRemoteDataScriptableObject m_playerlevelRemoteDataScriptableObject;
-        public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject => m_playerlevelRemoteDataScriptableObject;
+
+        public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject =>
+            m_playerlevelRemoteDataScriptableObject;
 
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;
@@ -86,6 +88,7 @@ namespace StarSalvager
                 return m_AIObstacleAvoidance;
             }
         }
+
         private AIObstacleAvoidance m_AIObstacleAvoidance;
 
         public EnemyManager EnemyManager
@@ -98,6 +101,7 @@ namespace StarSalvager
                 return m_enemyManager;
             }
         }
+
         private EnemyManager m_enemyManager;
 
         public ObstacleManager ObstacleManager
@@ -110,6 +114,7 @@ namespace StarSalvager
                 return m_obstacleManager;
             }
         }
+
         private ObstacleManager m_obstacleManager;
 
         public TutorialManager TutorialManager
@@ -122,9 +127,12 @@ namespace StarSalvager
                 return _tutorialManager;
             }
         }
+
         private TutorialManager _tutorialManager;
 
-        public ProjectileManager ProjectileManager => m_projectileManager ?? (m_projectileManager = new ProjectileManager());
+        public ProjectileManager ProjectileManager =>
+            m_projectileManager ?? (m_projectileManager = new ProjectileManager());
+
         private ProjectileManager m_projectileManager;
 
         public WaveEndSummaryData WaveEndSummaryData => m_waveEndSummaryData;
@@ -140,6 +148,7 @@ namespace StarSalvager
                 return _gameUi;
             }
         }
+
         private GameUI _gameUi;
 
         public Dictionary<BIT_TYPE, float> LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
@@ -155,22 +164,35 @@ namespace StarSalvager
 
         #endregion //Properties
 
+
+        [SerializeField] private AnimationCurve enterCurve;
+
+        private GameObject _thrusterEffectObject;
+
+
         private const int WARNING_COUNT = 4;
         private int _audioCountDown = WARNING_COUNT;
         private float _afterWaveTimer;
 
+        private float _enterTime => 1.3f;
+        private float _t;
+        private float _startY;
+
+
 
         //Unity Functions
         //====================================================================================================================//
+
+        #region Unity Functions
 
         private void Start()
         {
             RegisterPausable();
 
             _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
-            
+
             m_bots = new List<Bot>();
-            
+
             m_levelManagerUI = FindObjectOfType<LevelManagerUI>();
             _gameUi = m_levelManagerUI.GetComponentInChildren<GameUI>(true);
 
@@ -180,33 +202,15 @@ namespace StarSalvager
         private void Update()
         {
             if (isPaused)
-            {
                 return;
-            }
 
             if (!GameManager.IsState(GameState.LEVEL))
-            {
                 return;
-            }
-
-            /*if (GameManager.IsState(GameState.LEVEL_ACTIVE))
-            {
-                if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
-                {
-                    Globals.DecreaseFallSpeed();
-                }
-                else if (UnityEngine.Input.GetKeyDown(KeyCode.E))
-                {
-                    Globals.IncreaseFallSpeed();
-                }
-            }*/
 
             CheckBotPositions();
 
             if (Globals.UsingTutorial)
-            {
                 return;
-            }
 
             if (GameManager.IsState(GameState.LevelActiveEndSequence))
             {
@@ -216,7 +220,7 @@ namespace StarSalvager
             {
                 ProgressStage();
             }
-            else if (BotIsInPosition())
+            else if (BotIsInPosition)
             {
                 ProcessEndOfWave();
             }
@@ -228,19 +232,120 @@ namespace StarSalvager
 
         private void LateUpdate()
         {
-            if (GameManager.IsState(GameState.LevelEndWave)) 
+            if (GameManager.IsState(GameState.LevelEndWave))
                 return;
-            
+
             UpdateUIClock();
             CheckPlayWarningSound();
         }
 
+        #endregion //Unity Functions
+
+        //Level Init Functions
+        //====================================================================================================================//
+
+        #region Level Init Functions
+
+        private void InitLevel()
+        {
+            AudioController.CrossFadeTrack(MUSIC.FRINGE);
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            m_worldGrid = null;
+            m_waveEndSummaryData = new WaveEndSummaryData();
+
+            //Setup Bot
+            //--------------------------------------------------------------------------------------------------------//
+
+            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
+                .GetDataValue<float>(PartProperties.KEYS.Health);
+
+            m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
+            BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
+
+            var botDataToLoad = PlayerDataManager.GetBlockDatas();
+
+            if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
+            {
+                BotInLevel.InitBot();
+                BotInLevel.SetupHealthValues(startingHealth, startingHealth);
+            }
+            else
+            {
+                BotInLevel.InitBot(botDataToLoad.ImportBlockDatas(false));
+                BotInLevel.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
+            }
+
+            BotInLevel.transform.parent = null;
+            SceneManager.MoveGameObjectToScene(BotInLevel.gameObject, gameObject.scene);
+
+
+            //Post Bot Setup
+            //--------------------------------------------------------------------------------------------------------//
+
+            InputManager.Instance.InitInput();
+            InputManager.Instance.LockRotation = true;
+
+            //FIXME
+            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
+
+            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen,
+                BotInLevel.transform.position);
+            if (Globals.Orientation == ORIENTATION.VERTICAL)
+            {
+                Globals.GridSizeY =
+                    (int) ((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2) /
+                           Constants.gridCellSize);
+            }
+            else
+            {
+                Globals.GridSizeY =
+                    (int) ((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2 *
+                            (Screen.width / (float) Screen.height)) / Constants.gridCellSize);
+            }
+
+
+            WorldGrid.SetupGrid();
+            ProjectileManager.Activate();
+
+            m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
+            GameTimer.SetPaused(false);
+
+            if (Globals.UsingTutorial)
+            {
+                TutorialManager.SetupTutorial();
+                return;
+            }
+
+            SetupLevelAnalytics();
+
+            Random.InitState(CurrentWaveData.WaveSeed);
+            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
+
+            SetBotBelowScreen();
+            SetBotExitScreen(false);
+            SetBotEnterScreen(true);
+
+            //CheckPlayerWater();
+        }
+
+        private void SetupLevelAnalytics()
+        {
+            Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
+            {
+
+            };
+            string levelStartString = $"{Globals.CurrentWave}";
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart,
+                eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
+        }
+
+        #endregion //Level Init Functions
+
         //LevelManager Update Functions
         //====================================================================================================================//
 
-        private float _enterTime = 1.3f;
-        private float _t;
-        private float _startY;
         //FIXME Does this need to be happening every frame? This function is for the zoom in/out of level, it likely does not need to run every frame
         private void CheckBotPositions()
         {
@@ -266,24 +371,25 @@ namespace StarSalvager
 
                     //See if we need to show any hints to the player once the bot is on screen
                     BotInLevel.DisplayHints();
-                    
+
                     _t = 0f;
                     _startY = 0f;
-                    
+
                     continue;
                 }
 
                 var t = enterCurve.Evaluate(_t / _enterTime);
-                
-                var newY = Mathf.Lerp(_startY, 5 * Constants.gridCellSize,  t);
+
+                var newY = Mathf.Lerp(_startY, 5 * Constants.gridCellSize, t);
                 pos.y = newY;
-                
+
                 bot.transform.position = pos;
-                float scale = Mathf.Lerp(Globals.BotEnterScreenMaxSize, 1,  t/*bot.transform.position.y / (5 * Constants.gridCellSize)*/);
+                float scale = Mathf.Lerp(Globals.BotEnterScreenMaxSize, 1,
+                    t /*bot.transform.position.y / (5 * Constants.gridCellSize)*/);
                 bot.transform.localScale = Vector3.one * scale;
 
                 _t += Time.deltaTime;
-                
+
                 m_cameraController.SetTrackedOffset(y: (5 * Constants.gridCellSize) - newY);
             }
 
@@ -293,8 +399,9 @@ namespace StarSalvager
             }
         }
 
+        //Stage Functions
         //====================================================================================================================//
-        
+
         private void ProgressStage()
         {
             if (GameManager.IsState(GameState.LEVEL_ACTIVE))
@@ -309,21 +416,23 @@ namespace StarSalvager
                 {
                     ObstacleManager.SetupStage(m_currentStage);
                 }
+
                 return;
             }
-            
+
             if (m_currentStage == currentStage + 1)
                 TransitionToEndWaveState();
         }
 
         public void SetStage(int stage)
         {
-            if (stage >= CurrentWaveData.StageRemoteData.Count)
+            throw new NotImplementedException();
+            /*if (stage >= CurrentWaveData.StageRemoteData.Count)
             {
                 Debug.LogError("Tried to set stage that does not exist in this wave");
                 return;
             }
-            
+
             float waveTimer = 0;
 
             for (int i = 0; i < stage; i++)
@@ -340,294 +449,27 @@ namespace StarSalvager
                 {
                     ObstacleManager.SetupStage(m_currentStage);
                 }
+
                 return;
             }
 
             if (m_currentStage == currentStage + 1)
-                TransitionToEndWaveState();
-        }
-
-        //This triggers when the wave ends, not when the timer hits 0
-        private void ProcessEndOfWave()
-        {
-            if (GameManager.IsState(GameState.LevelBotDead))
-            {
-                return;
-            }
-
-            BotInLevel.IsInvulnerable = false;
-
-            var botBlockData = BotInLevel.GetBlockDatas();
-            SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
-            SessionDataProcessor.Instance.EndActiveWave();
-
-            GameUi.SetLevelProgressSlider(1f);
-            foreach (var bot in m_bots)
-            {
-                bot.ResetRotationToIdentity();
-            }
-            SavePlayerData();
-            GameTimer.SetPaused(true);
-            
-            //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
-            AudioController.CrossFadeTrack(MUSIC.NONE);
-                
-            m_levelManagerUI.ShowSummaryWindow(
-                WaveEndSummaryData.WaveEndTitle,
-                m_waveEndSummaryData.GetWaveEndSummaryDataString(),
-                () => 
-            {
-
-                GameManager.SetCurrentGameState(GameState.UniverseMap);
-                ProcessScrapyardUsageBeginAnalytics();
-                PlayerDataManager.SetCanChoosePart(true);
-
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL);
-                });
-            },
-                "Continue");
-
-            Dictionary<string, object> levelCompleteAnalyticsDictionary =
-                WaveEndSummaryData.GetWaveEndSummaryAnalytics();
-            string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
-                eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
-
-            m_waveEndSummaryData = new WaveEndSummaryData();
-            ObstacleManager.MoveToNewWave();
-            EnemyManager.MoveToNewWave();
-            EnemyManager.SetEnemiesInert(false);
-            EnemyManager.RecycleAllEnemies();
-            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
-            
-            ProjectileManager.CleanProjectiles();
-            Globals.ResetFallSpeed();
-        }
-
-        //FIXME This will need to be cleaned up
-        private void MoveBotOffScreen()
-        {
-            const float offset = Constants.gridCellSize * 5;
-            
-            var yPos = Constants.gridCellSize * Globals.GridSizeY;
-            if (botMoveOffScreenSpeed < 20)
-            {
-                botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
-            }
-
-            foreach (var bot in m_bots)
-            {
-                bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
-                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
-                    (bot.transform.position.y - offset) / (yPos - offset));
-                bot.transform.localScale = new Vector2(scale, scale);
-                
-                m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
-            }
+                TransitionToEndWaveState();*/
         }
 
         //====================================================================================================================//
-        
-        private LineRenderer _towLineRenderer;
-        private void CreateTowEffect()
+        public void ForceSetTimeRemaining(float timeLeft)
         {
-            _towLineRenderer = FactoryManager.Instance.GetFactory<EffectFactory>()
-                .CreateEffect(EffectFactory.EFFECT.LINE).GetComponent<LineRenderer>();
-
-            _towLineRenderer.widthMultiplier = 0.2f;
-            _towLineRenderer.startColor = _towLineRenderer.endColor = Color.gray;
+            m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
         }
 
-        //====================================================================================================================//
-
-        private void UpdateUIClock()
-        {
-            //Displays the time in timespan & the fill value
-            var duration = CurrentWaveData.GetWaveDuration();
-            var timeLeft = duration - m_waveTimer;
-            
-            GameUi.SetLevelProgressSlider(1f - timeLeft / duration);
-
-        }
-
-        private void CheckPlayWarningSound()
-        {
-            if (Globals.UsingTutorial)
-                return;
-            
-            var timeLeft = _afterWaveTimer;
-
-            if (_audioCountDown < 1 || timeLeft >= _audioCountDown) 
-                return;
-            
-            _audioCountDown--;
-            AudioController.PlaySound(SOUND.END_WAVE_COUNT);
-        }
-
-        private bool BotIsInPosition()
-        {
-            var yPos = Constants.gridCellSize * Globals.GridSizeY;
-
-            return m_bots[0].transform.position.y >= yPos;
-        }
-
-        //LevelManager Functions
-        //====================================================================================================================//
-
-        private void InitLevel()
-        {
-            AudioController.CrossFadeTrack(MUSIC.FRINGE);
-            
-            //--------------------------------------------------------------------------------------------------------//
-            
-            m_worldGrid = null;
-            m_waveEndSummaryData = new WaveEndSummaryData();
-            
-            //Setup Bot
-            //--------------------------------------------------------------------------------------------------------//
-
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
-                .GetDataValue<float>(PartProperties.KEYS.Health);
-
-            m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
-            BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
-
-            var botDataToLoad = PlayerDataManager.GetBlockDatas();
-
-            if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
-            {
-                BotInLevel.InitBot();
-                BotInLevel.SetupHealthValues(startingHealth,startingHealth);
-            }
-            else
-            {
-                BotInLevel.InitBot(botDataToLoad.ImportBlockDatas(false));
-                BotInLevel.SetupHealthValues(startingHealth,PlayerDataManager.GetBotHealth());
-            }
-            
-            BotInLevel.transform.parent = null;
-            SceneManager.MoveGameObjectToScene(BotInLevel.gameObject, gameObject.scene);
-            
-            
-            //Post Bot Setup
-            //--------------------------------------------------------------------------------------------------------//
-
-            InputManager.Instance.InitInput();
-            InputManager.Instance.LockRotation = true;
-
-            //FIXME
-            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
-            
-            CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen, BotInLevel.transform.position);
-            if (Globals.Orientation == ORIENTATION.VERTICAL)
-            {
-                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2) / Constants.gridCellSize);
-            }
-            else
-            {
-                Globals.GridSizeY = (int)((CameraController.Camera.orthographicSize * Globals.GridHeightRelativeToScreen * 2 * (Screen.width / (float)Screen.height)) / Constants.gridCellSize);
-            }
-            
-            
-            WorldGrid.SetupGrid();
-            ProjectileManager.Activate();
-
-            m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
-            GameTimer.SetPaused(false);
-
-            if (Globals.UsingTutorial)
-            {
-                TutorialManager.SetupTutorial();
-                return;
-            }
-
-            /*if (PlayerPersistentData.PlayerData.firstFlight)
-            {
-                PlayerPersistentData.PlayerData.firstFlight = false;
-                Toast.AddToast(
-                    "<b>Move: AD or Left/Right\nRotate: WS or Up/Down</b>",
-                    time: 10.0f,
-                    verticalLayout: Toast.Layout.End,
-                    horizontalLayout: Toast.Layout.Middle);
-            }*/
-
-            SetupLevelAnalytics();
-
-            Random.InitState(CurrentWaveData.WaveSeed);
-            Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
-
-            SetBotBelowScreen();
-            SetBotExitScreen(false);
-            SetBotEnterScreen(true);
-
-            //CheckPlayerWater();
-        }
-
-        private void CleanLevel()
-        {
-            for (int i = m_bots.Count - 1; i >= 0; i--)
-            {
-                if (m_bots == null)
-                    continue;
-
-                Recycler.Recycle<Bot>(m_bots[i]);
-                m_bots.RemoveAt(i);
-            }
-
-            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
-
-            m_waveEndSummaryData = null;
-            m_waveTimer = 0;
-
-            _audioCountDown = WARNING_COUNT;
-            _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
-
-            SetBotEnterScreen(false);
-            SetBotExitScreen(false);
-
-            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
-            ProjectileManager.Reset();
-            m_runLostState = false;
-            m_endLevelOverride = false;
-
-
-            if (_towLineRenderer)
-                Destroy(_towLineRenderer.gameObject);
-        }
-
-        private void SetupLevelAnalytics()
-        {
-            Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
-            {
-
-            };
-            string levelStartString = $"{Globals.CurrentWave}";
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart, eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
-        }
-        
+        //Wave End State
         //============================================================================================================//
-        
-        //This triggers when the timer hits 0 and the level is moving into completed state. This is not when the level pauses and the summaryy screen shows
-        private void TransitionToEndWaveState()
-        {
-            if (GameManager.IsState(GameState.LevelBotDead))
-            {
-                return;
-            }
 
-            //Prevent the bot from burning anymore resources at the end of a wave
-            if (BotInLevel.CanUseResources)
-            {
-                GameUi.SetCurrentWaveText("Complete");
-                
-                BotInLevel.CanUseResources = false;
-            }
-            
-            
-            GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
-            EnemyManager.SetEnemiesFallEndLevel();
+        public void CompleteWave()
+        {
+            m_endLevelOverride = true;
+            TransitionToEndWaveState();
         }
 
         //This handles cleanup for when you've entered the end wave state above. This and the above function likely should be combined in some way, I don't recall why it was originally set up like this and its on the list to fix.
@@ -639,7 +481,7 @@ namespace StarSalvager
                 CheckPlayWarningSound();
                 return;
             }
-            
+
             AudioController.PlaySound(SOUND.END_WAVE);
 
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
@@ -689,40 +531,107 @@ namespace StarSalvager
             }
         }
 
-
-        //====================================================================================================================//
-
-        private GameObject _effect;
-
-        private void CreateThrustEffect(Bot bot)
+        //This triggers when the timer hits 0 and the level is moving into completed state. This is not when the level pauses and the summaryy screen shows
+        private void TransitionToEndWaveState()
         {
-            if (_effect != null)
-                return;
-
-            if (bot.Rotating)
+            if (GameManager.IsState(GameState.LevelBotDead))
             {
-                bot.ForceCompleteRotation();
+                return;
             }
-            
-            var lowestCoordinate =
-                bot.AttachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
 
-            var localPosition = bot.transform.position + (Vector3)(lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
-            
-            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
-            var effectTransform = effect.transform;
-            effectTransform.SetParent(bot.transform);
-            effectTransform.localPosition = bot.transform.InverseTransformPoint(localPosition);
+            //Prevent the bot from burning anymore resources at the end of a wave
+            if (BotInLevel.CanUseResources)
+            {
+                GameUi.SetCurrentWaveText("Complete");
 
-            _effect = effect;
+                BotInLevel.CanUseResources = false;
+            }
+
+
+            GameManager.SetCurrentGameState(GameState.LevelActiveEndSequence);
+            EnemyManager.SetEnemiesFallEndLevel();
         }
-        
-        
-        //====================================================================================================================//
 
-        [SerializeField]
-        private AnimationCurve enterCurve;
-        
+        //This triggers when the wave ends, not when the timer hits 0
+        private void ProcessEndOfWave()
+        {
+            if (GameManager.IsState(GameState.LevelBotDead))
+            {
+                return;
+            }
+
+            BotInLevel.IsInvulnerable = false;
+
+            var botBlockData = BotInLevel.GetBlockDatas();
+            SessionDataProcessor.Instance.SetEndingLayout(botBlockData);
+            SessionDataProcessor.Instance.EndActiveWave();
+
+            GameUi.SetLevelProgressSlider(1f);
+            foreach (var bot in m_bots)
+            {
+                bot.ResetRotationToIdentity();
+            }
+
+            SavePlayerData();
+            GameTimer.SetPaused(true);
+
+            //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
+            AudioController.CrossFadeTrack(MUSIC.NONE);
+
+            m_levelManagerUI.ShowSummaryWindow(
+                WaveEndSummaryData.WaveEndTitle,
+                m_waveEndSummaryData.GetWaveEndSummaryDataString(),
+                () =>
+                {
+
+                    GameManager.SetCurrentGameState(GameState.UniverseMap);
+                    ProcessScrapyardUsageBeginAnalytics();
+                    PlayerDataManager.SetCanChoosePart(true);
+
+                    ScreenFade.Fade(() => { SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL); });
+                },
+                "Continue");
+
+            Dictionary<string, object> levelCompleteAnalyticsDictionary =
+                WaveEndSummaryData.GetWaveEndSummaryAnalytics();
+            string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
+            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
+                eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
+
+            m_waveEndSummaryData = new WaveEndSummaryData();
+            ObstacleManager.MoveToNewWave();
+            EnemyManager.MoveToNewWave();
+            EnemyManager.SetEnemiesInert(false);
+            EnemyManager.RecycleAllEnemies();
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
+
+            ProjectileManager.CleanProjectiles();
+            Globals.ResetFallSpeed();
+        }
+
+        //Bot offscreen Movement
+        //====================================================================================================================//
+        //FIXME This will need to be cleaned up
+        private void MoveBotOffScreen()
+        {
+            const float offset = Constants.gridCellSize * 5;
+
+            var yPos = Constants.gridCellSize * Globals.GridSizeY;
+            if (botMoveOffScreenSpeed < 20)
+            {
+                botMoveOffScreenSpeed += Time.deltaTime * botMoveOffScreenSpeed * 2;
+            }
+
+            foreach (var bot in m_bots)
+            {
+                bot.transform.position += Vector3.up * (botMoveOffScreenSpeed * Time.deltaTime);
+                float scale = Mathf.Lerp(1.0f, Globals.BotExitScreenMaxSize,
+                    (bot.transform.position.y - offset) / (yPos - offset));
+                bot.transform.localScale = new Vector2(scale, scale);
+
+                m_cameraController.SetTrackedOffset(y: offset + -bot.transform.position.y);
+            }
+        }
 
         public void SetBotBelowScreen()
         {
@@ -731,25 +640,25 @@ namespace StarSalvager
             {
                 m_bots[i].transform.position = Vector3.down * 5;
             }
-            
-            _startY = -5f; 
+
+            _startY = -5f;
 
         }
 
         public void SetBotEnterScreen(bool value)
         {
             m_botEnterScreen = value;
-            
+
             if (value)
             {
                 AudioController.PlaySound(SOUND.BOT_ARRIVES);
                 CreateThrustEffect(BotInLevel);
                 BotInLevel.IsInvulnerable = true;
             }
-            else if (_effect)
+            else if (_thrusterEffectObject)
             {
                 InputManager.Instance.LockRotation = false;
-                Destroy(_effect);
+                Destroy(_thrusterEffectObject);
             }
         }
 
@@ -761,46 +670,29 @@ namespace StarSalvager
             }
 
             m_botZoomOffScreen = value;
-            
+
             if (!value)
             {
                 botMoveOffScreenSpeed = 1.0f;
             }
 
-            if (value && !_effect)
+            if (value && !_thrusterEffectObject)
             {
                 AudioController.PlaySound(SOUND.BOT_DEPARTS);
                 CreateThrustEffect(BotInLevel);
             }
-            else if (!value && _effect)
+            else if (!value && _thrusterEffectObject)
             {
-                Destroy(_effect);
+                Destroy(_thrusterEffectObject);
             }
         }
+
+        //====================================================================================================================//
 
         //FIXME Does this need to be in the LevelManager?
         public void DropLoot(List<IRDSObject> loot, Vector3 position, bool isFromEnemyLoot)
         {
             ObstacleManager.SpawnObstacleExplosion(position, loot, isFromEnemyLoot);
-        }
-
-        public void SavePlayerData()
-        {
-            if (Globals.UsingTutorial)
-                return;
-
-            foreach (Bot bot in m_bots)
-            {
-                
-                
-                var blockData = bot.GetBlockDatas();
-                /*if (!blockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE))
-                    blockData = new List<IBlockData>();*/
-
-                
-                PlayerDataManager.SetBotHealth(bot.CurrentHealth);
-                PlayerDataManager.SetBlockData(blockData);
-            }
         }
 
         public void RestartLevel()
@@ -809,11 +701,8 @@ namespace StarSalvager
             GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
             GameTimer.SetPaused(false);
 
-            ScreenFade.Fade(() =>
-            {
-                SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL);
-            });
-            
+            ScreenFade.Fade(() => { SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.LEVEL); });
+
         }
 
         private void OnBotDied(Bot _, string deathMethod)
@@ -870,6 +759,103 @@ namespace StarSalvager
             GameUI.Instance.FadeBackground(true);
         }
 
+        //====================================================================================================================//
+        private void SavePlayerData()
+        {
+            if (Globals.UsingTutorial)
+                return;
+
+            foreach (Bot bot in m_bots)
+            {
+                var blockData = bot.GetBlockDatas();
+
+                PlayerDataManager.SetBotHealth(bot.CurrentHealth);
+                PlayerDataManager.SetBlockData(blockData);
+            }
+        }
+
+        private void CleanLevel()
+        {
+            for (int i = m_bots.Count - 1; i >= 0; i--)
+            {
+                if (m_bots == null)
+                    continue;
+
+                Recycler.Recycle<Bot>(m_bots[i]);
+                m_bots.RemoveAt(i);
+            }
+
+            ObstacleManager.WorldElementsRoot.transform.position = Vector3.zero;
+
+            m_waveEndSummaryData = null;
+            m_waveTimer = 0;
+
+            _audioCountDown = WARNING_COUNT;
+            _afterWaveTimer = Globals.TimeAfterWaveEndFlyOut;
+
+            SetBotEnterScreen(false);
+            SetBotExitScreen(false);
+
+            CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
+            ProjectileManager.Reset();
+            m_runLostState = false;
+            m_endLevelOverride = false;
+
+
+        }
+
+        //UI Functions
+        //====================================================================================================================//
+
+        private void UpdateUIClock()
+        {
+            //Displays the time in timespan & the fill value
+            var duration = CurrentWaveData.GetWaveDuration();
+            var timeLeft = duration - m_waveTimer;
+
+            GameUi.SetLevelProgressSlider(1f - timeLeft / duration);
+        }
+
+        //Effects Functions
+        //====================================================================================================================//
+
+        private void CreateThrustEffect(in Bot bot)
+        {
+            if (_thrusterEffectObject != null)
+                return;
+
+            if (bot.Rotating)
+            {
+                bot.ForceCompleteRotation();
+            }
+
+            var lowestCoordinate =
+                bot.AttachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
+
+            var localPosition = bot.transform.position + (Vector3) (lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
+
+            var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
+            var effectTransform = effect.transform;
+            effectTransform.SetParent(bot.transform);
+            effectTransform.localPosition = bot.transform.InverseTransformPoint(localPosition);
+
+            _thrusterEffectObject = effect;
+        }
+
+        private void CheckPlayWarningSound()
+        {
+            if (Globals.UsingTutorial)
+                return;
+
+            var timeLeft = _afterWaveTimer;
+
+            if (_audioCountDown < 1 || timeLeft >= _audioCountDown)
+                return;
+
+            _audioCountDown--;
+            AudioController.PlaySound(SOUND.END_WAVE_COUNT);
+        }
+
         //IReset Functions
         //====================================================================================================================//
 
@@ -878,9 +864,9 @@ namespace StarSalvager
         public void Activate()
         {
             GameManager.SetCurrentGameState(GameState.LevelActive);
-            
+
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
-            
+
             InitLevel();
         }
 
@@ -938,19 +924,6 @@ namespace StarSalvager
 
         #endregion //Analytics Functions
 
-        //====================================================================================================================//
-
-        public void ForceSetTimeRemaining(float timeLeft)
-        {
-            m_waveTimer = CurrentWaveData.GetWaveDuration() - timeLeft;
-        }
-
-        public void CompleteWave()
-        {
-            m_endLevelOverride = true;
-            TransitionToEndWaveState();
-        }
-
         //Unity Editor
         //====================================================================================================================//
 
@@ -958,8 +931,7 @@ namespace StarSalvager
 
 #if UNITY_EDITOR
 
-        [SerializeField]
-        private bool drawGrid = true;
+        [SerializeField] private bool drawGrid = true;
 
         private void OnDrawGizmos()
         {
@@ -978,11 +950,11 @@ namespace StarSalvager
 
         public void OnApplicationQuit()
         {
-            if (m_runLostState)
-            {
-                PlayerDataManager.ResetPlayerRunData();
-                PlayerDataManager.SavePlayerAccountData();
-            }
+            if (!m_runLostState)
+                return;
+
+            PlayerDataManager.ResetPlayerRunData();
+            PlayerDataManager.SavePlayerAccountData();
         }
 
     }

@@ -15,7 +15,7 @@ namespace StarSalvager.Values
     {
         //Properties
         //====================================================================================================================//
-        
+
         #region Properties
 
         //Values that don't change throughout gameplay
@@ -47,7 +47,7 @@ namespace StarSalvager.Values
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;
         public static float AsteroidFallTimer;
-        
+
         public static ORIENTATION Orientation
         {
             get => _orientation;
@@ -60,7 +60,7 @@ namespace StarSalvager.Values
         private static ORIENTATION _orientation;
 
         #endregion //Properties
-        
+
         //Game Settings Values
         //====================================================================================================================//
 
@@ -72,6 +72,7 @@ namespace StarSalvager.Values
 
 
         public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
+        public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
         public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
 
 
@@ -144,7 +145,7 @@ namespace StarSalvager.Values
             TestingFeatures = m_gameSettings.testingFeatures;
             AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
-        
+
         //Fall Speed
         //====================================================================================================================//
 
@@ -174,7 +175,7 @@ namespace StarSalvager.Values
         #endregion //Fall Speed
 
         //====================================================================================================================//
-        
+
         public static int GetBonusShapeGearRewards(int numCells, int numColours)
         {
             BonusShapeGearsValue bonusShapeValue = m_gameSettings.bonusShapeGearsRewards.FirstOrDefault(b => b.numCells == numCells && b.numColours == numColours);
@@ -213,6 +214,6 @@ namespace StarSalvager.Values
         }
 
         //====================================================================================================================//
-        
+
     }
 }

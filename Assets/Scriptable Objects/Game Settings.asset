@@ -16,6 +16,7 @@ MonoBehaviour:
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
+  preSpawnedRows: 6
   startingAmmo: 0
   testingFeatures: 0
   asteroidDamage: 20
