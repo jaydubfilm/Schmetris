@@ -77,7 +77,7 @@ MonoBehaviour:
     PartType: 42
     partType: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
-  - canDrop: 0
+  - canDrop: 1
     PartType: 15
     partType: Blaster
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
