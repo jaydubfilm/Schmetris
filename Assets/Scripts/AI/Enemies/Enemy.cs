@@ -235,32 +235,34 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
         #region Movement
-        
+
         public bool CanMove()
         {
-            if(GameTimer.IsPaused )
+            if (GameTimer.IsPaused)
                 return false;
-            
+
             if (Disabled)
             {
                 ApplyFallMotion();
                 return false;
             }
 
-            if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
+            if (!GameManager.IsState(GameState.LevelActive) || 
+                GameManager.IsState(GameState.LevelActiveEndSequence) ||
+                GameManager.IsState(GameState.LevelBotDead))
             {
                 //FIXME Might be better to broadcast to every enemy that the level has concluded
-                if(this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
+                if (this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
                     enemyAttachable.SetAttached(false);
-                
+
                 ApplyFleeMotion();
-                
+
                 return false;
             }
 
-            if (!Frozen) 
+            if (!Frozen)
                 return true;
-            
+
             FreezeTime -= Time.deltaTime;
             return false;
 

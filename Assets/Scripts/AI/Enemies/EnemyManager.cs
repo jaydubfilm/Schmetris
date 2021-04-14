@@ -57,8 +57,15 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
+            if (!GameManager.IsState(GameState.LEVEL))
             {
+                return;
+            }
+            
+            //I still want the enemies to move, but now they should be doing their flee action
+            if (GameManager.IsState(GameState.LevelBotDead))
+            {
+                HandleEnemyUpdate();
                 return;
             }
 
