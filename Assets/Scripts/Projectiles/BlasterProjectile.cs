@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using StarSalvager.Utilities;
 using UnityEngine;
 
 namespace StarSalvager.Projectiles
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class BlasterProjectile : MonoBehaviour
+    public class BlasterProjectile : Actor2DBase
     {
         //Properties
         //====================================================================================================================//
-
-        //[SerializeField] private int segments;
 
         [SerializeField] private AnimationCurve lineRangeCurve;
         [SerializeField] private AnimationCurve lineSizeCurve;
@@ -20,29 +17,28 @@ namespace StarSalvager.Projectiles
         
         [SerializeField] private float lineTargetSize;
         [SerializeField] private Color lineTargetColor = Color.white;
-
-        private LineRenderer _lineRenderer;
-        private new Transform transform;
-
+        
         private float[] _degrees;
 
-        //Unity Functions
-        //====================================================================================================================//
 
-        // Start is called before the first frame update
-        private void Start()
+        public new LineRenderer renderer
         {
+            get
+            {
+                if (_lineRenderer == null)
+                    _lineRenderer = gameObject.GetComponent<LineRenderer>();
 
+                return _lineRenderer;
+            }
         }
+        private LineRenderer _lineRenderer;
+
 
         //Blaster Projectile Functions
         //====================================================================================================================//
 
         public void Init(in float startDegrees, in float degreesOffset, in float range, in float fireTime)
         {
-            transform = gameObject.transform;
-            _lineRenderer = GetComponent<LineRenderer>();
-
             var deg = degreesOffset / 4f;
             
             _degrees = new[]
@@ -55,7 +51,8 @@ namespace StarSalvager.Projectiles
                 startDegrees - deg * 2f
             };
 
-            _lineRenderer.positionCount = _degrees.Length;
+            
+            renderer.positionCount = _degrees.Length;
             StartCoroutine(LineGrowCoroutine(fireTime, range));
         }
 
@@ -82,12 +79,12 @@ namespace StarSalvager.Projectiles
 
                 for (var i = 0; i < _degrees.Length; i++)
                 {
-                    positions[i] = startPosition + (Vector3) Mathfx.GetAsPoint(_degrees[i], range);
+                    positions[i] = startPosition + (Vector3) Mathfx.GetAsPointOnCircle(_degrees[i], range);
                 }
 
-                _lineRenderer.SetPositions(positions);
-                _lineRenderer.widthMultiplier = scale;
-                _lineRenderer.startColor = _lineRenderer.endColor = color;
+                renderer.SetPositions(positions);
+                renderer.widthMultiplier = scale;
+                SetColor(color);
 
                 t += Time.deltaTime;
 
@@ -96,5 +93,17 @@ namespace StarSalvager.Projectiles
 
             Destroy(gameObject);
         }
+
+        //Actor2DBase Overrides
+        //====================================================================================================================//
+        public override void SetColor(Color color)
+        {
+            renderer.startColor = renderer.endColor = color;
+        }
+
+        public override void SetSprite(Sprite sprite) => throw new NotImplementedException();
+
+        //====================================================================================================================//
+        
     }
 }
