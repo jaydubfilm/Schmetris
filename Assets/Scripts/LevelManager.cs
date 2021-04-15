@@ -258,8 +258,7 @@ namespace StarSalvager
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
 
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
-                .GetDataValue<float>(PartProperties.KEYS.Health);
+            var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
 
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);

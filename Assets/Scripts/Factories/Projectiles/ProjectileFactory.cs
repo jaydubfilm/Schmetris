@@ -242,8 +242,21 @@ namespace StarSalvager.Factories
         }
 
 
+        //Static Functions
         //====================================================================================================================//
 
+        public static ProjectileProfileData GetProfile(in string projectileId)
+        {
+#if UNITY_EDITOR
+            return (FactoryManager.Instance == null
+                ? Object.FindObjectOfType<FactoryManager>()
+                : FactoryManager.Instance).ProjectileProfile.GetProjectileProfileData(projectileId);
+#else
+            return FactoryManager.Instance.ProjectileProfile.GetProjectileProfileData(projectileId);
+
+#endif
+        }
+        
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
             /*Vector2 targetPosition,*/
@@ -323,16 +336,7 @@ namespace StarSalvager.Factories
 
             return fireDirections;
         }
-
-        //Get the location that enemy is firing at, then create the firing projectile from the factory
-        /*private static Vector2 GetSpiralAttackDirection(Vector2 fromPosition, ref Vector2 spiralAttackDirection)
-        {
-            spiralAttackDirection =
-                GetDestinationForRotatePositionAroundPivot(spiralAttackDirection + fromPosition,
-                    fromPosition, Vector3.forward * 30) - (Vector3)fromPosition;
-
-            return spiralAttackDirection;
-        }*/
+        
         
         //Rotate point around pivot by angles amount
         private static Vector3 GetDestinationForRotatePositionAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
@@ -341,17 +345,8 @@ namespace StarSalvager.Factories
             direction = Quaternion.Euler(angles) * direction;
             return direction + pivot;
         }
-        
-        /*private static Vector3 GetDestinationForRotatePositionAroundPivotAtDistance(Vector3 point, Vector3 pivot,
-            Vector3 angles, float distance)
-        {
-            Vector3 direction = point - pivot;
-            direction.Normalize();
-            direction *= distance;
-            direction = Quaternion.Euler(angles) * direction;
-            return direction + pivot;
-        }*/
-        
+
+        //====================================================================================================================//
         
     }
 }

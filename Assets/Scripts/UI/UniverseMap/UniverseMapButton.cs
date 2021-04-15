@@ -116,7 +116,7 @@ namespace StarSalvager
             if (!transform)
                 transform = gameObject.transform as RectTransform;
             
-            BotImage.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.EMPTY).GetSprite(0);
+            BotImage.sprite = PART_TYPE.EMPTY.GetSprite();
 
             this.nodeIndex = nodeIndex;
 

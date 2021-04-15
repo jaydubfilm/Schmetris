@@ -672,10 +672,10 @@ namespace StarSalvager.UI
                 return;
             }
 
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            var partRemoteData = partType.GetRemoteData();
 
             var isTrigger = partRemoteData.isManual;
-            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+            var sprite = partType.GetSprite();
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);

@@ -982,7 +982,7 @@ namespace StarSalvager
                     targetVelocity = Vector3.zero;
                     break;
             }
-            var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileProfile = ProjectileFactory.GetProfile(projectileId);
             
             var totarget = target.Position - partPosition;
 
@@ -1023,7 +1023,7 @@ namespace StarSalvager
 
         private float GetProjectileRange(in Part part, in string projectileID)
         {
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
+            var projectileData = ProjectileFactory.GetProfile(projectileID);
 
             var range = projectileData.ProjectileRange;
 
@@ -1043,7 +1043,7 @@ namespace StarSalvager
             if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
                 return false;
             
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileData = ProjectileFactory.GetProfile(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
         }
@@ -1591,7 +1591,7 @@ namespace StarSalvager
             if (armors.IsNullOrEmpty())
                 return false;
             
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
+            var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
 
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
@@ -1972,8 +1972,7 @@ namespace StarSalvager
                 return _flashes[part];
 
             
-            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = burnType.GetColor();
+            var bitColor = part.Type.GetCategory().GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 
