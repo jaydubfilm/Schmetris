@@ -1124,10 +1124,11 @@ namespace StarSalvager
 
             Vector3 aimSpot = target.Position + targetVelocity * t;
             Vector3 bulletPath = aimSpot - partPosition;
-
+#if UNITY_EDITOR
             Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
             Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
-            //Debug.Break();
+#endif
+
 
             return bulletPath;
         }
@@ -1669,10 +1670,23 @@ namespace StarSalvager
 
         }
 
-        [SerializeField]
-        private BlasterProjectile blasterProjectilePrefab;
+        //[SerializeField]
+        //private BlasterProjectile blasterProjectilePrefab;
         private void TriggerBlaster(in Part part)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            BlasterProjectile CreateBlasterEffect()
+            {
+                return FactoryManager.Instance
+                    .GetFactory<EffectFactory>()
+                    .CreateEffect(EffectFactory.EFFECT.CURVE_LINE)
+                    .GetComponent<BlasterProjectile>();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
@@ -1685,7 +1699,7 @@ namespace StarSalvager
 
             var rot = part.transform.eulerAngles.z + 90;
 
-            var blasterProjectile = Instantiate(blasterProjectilePrefab, fromPosition, Quaternion.identity);
+            var blasterProjectile = CreateBlasterEffect();
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
@@ -2282,6 +2296,8 @@ namespace StarSalvager
 
         #endregion //Effects
 
+        //Fireline
+        //====================================================================================================================//
 
         private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
@@ -2308,7 +2324,7 @@ namespace StarSalvager
 
                     for (var i = 0; i < slices; i++)
                     {
-                        var point = firePosition + (Vector3)Mathfx.GetAsPoint(i * degree, range);
+                        var point = firePosition + (Vector3)Mathfx.GetAsPointOnCircle(i * degree, range);
                         pointList.Add(point);
                     }
 
@@ -2329,9 +2345,9 @@ namespace StarSalvager
 
                     points = new[]
                     {
-                        (Vector3)Mathfx.GetAsPoint(leftDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(leftDeg, range),
                         firePosition,
-                        (Vector3)Mathfx.GetAsPoint(rightDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(rightDeg, range),
                     };
                     break;
                 }

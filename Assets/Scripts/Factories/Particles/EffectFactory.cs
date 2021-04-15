@@ -23,7 +23,8 @@ namespace StarSalvager.Factories
             TRAIL,
             BONUS_SHAPE,
             BONUS_SHAPE_PARTICLE,
-            BIT_DEATH
+            BIT_DEATH,
+            CURVE_LINE
         }
 
         public enum PART_EFFECT
@@ -163,6 +164,9 @@ namespace StarSalvager.Factories
                     break;
                 case EFFECT.BONUS_SHAPE_PARTICLE:
                     gameObject = Object.Instantiate(_effectProfileScriptableObject.bonusShapeParticlesPrefab);
+                    break;
+                case EFFECT.CURVE_LINE:
+                    gameObject = Object.Instantiate(_effectProfileScriptableObject.blasterLineEffectPrefab);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(effect), effect, null);

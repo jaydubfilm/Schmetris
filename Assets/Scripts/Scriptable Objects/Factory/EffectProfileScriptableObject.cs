@@ -79,6 +79,9 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject shieldEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Part Effects")]
+        public GameObject blasterLineEffectPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//
