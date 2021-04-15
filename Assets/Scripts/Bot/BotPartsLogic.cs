@@ -1011,10 +1011,12 @@ namespace StarSalvager
 
             var aimSpot = target.Position + targetVelocity * t;
             var bulletPath = aimSpot - partPosition;
-            
+
+#if UNITY_EDITOR
             Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
             Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
-            //Debug.Break();
+#endif
+
 
             return bulletPath;
         }
@@ -2161,7 +2163,9 @@ namespace StarSalvager
 
         #endregion //Effects
 
-
+        //Fireline
+        //====================================================================================================================//
+        
         private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
             var firePosition = Globals.UseCenterFiring ? Vector3.zero : part.transform.localPosition;
