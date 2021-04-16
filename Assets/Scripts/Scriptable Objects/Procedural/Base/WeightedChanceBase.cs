@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Sirenix.OdinInspector;
-using StarSalvager.ScriptableObjects.Procedural;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects.Procedural
@@ -31,7 +28,7 @@ namespace StarSalvager.ScriptableObjects.Procedural
         [PropertyOrder(-100), DisplayAsString] public string name;
 
         [OnInspectorInit]
-        private void UpdateName() => name = asset == null ? string.Empty : asset.name;
+        protected virtual void UpdateName() => name = asset is IHasName ihn ? ihn.Name : string.Empty;
 
         protected override bool ShouldHide()
         {

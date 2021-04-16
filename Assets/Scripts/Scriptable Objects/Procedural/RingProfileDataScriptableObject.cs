@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
+using UnityEditor;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects.Procedural
@@ -24,99 +27,27 @@ namespace StarSalvager.ScriptableObjects.Procedural
         #region Spawn Structs
 
         [Serializable]
-        public struct WreckSpawnData
-        {
-            [OnValueChanged("UpdateName")] public WreckNodeDataScriptableObject asset;
-
-            [Range(1, 10)] public int weight;
-
-
-#if UNITY_EDITOR
-
-            [DisplayAsString, PropertyOrder(-100), TableColumnWidth(150, false)]
-            public string Name;
-
-            [DisplayAsString, TableColumnWidth(75, Resizable = false)]
-            public string chance;
-
-            [HideInTables] public float chanceValue;
-
-            /*[Button("Edit"), HideLabel]
-            private void Edit()
-            {
-                //TODO Show the InLine Editor?
-            }*/
-
-            private void UpdateName()
-            {
-                Name = asset == null ? string.Empty : asset.name;
-            }
-
-#endif
-        }
+        public class WreckSpawnData : WeightedChanceAssetBase<WreckNodeDataScriptableObject> { }
 
         [Serializable]
-        public struct WaveSpawnData
+        public class WaveSpawnData : WeightedChanceAssetBase<WaveProfileDataScriptableObject>
         {
-            [HideInTables, OnInspectorInit("UpdateType")]
+#if UNITY_EDITOR
+            [HideInTables, OnInspectorInit("UpdateName")]
             public WaveProfileDataScriptableObject.WAVE_TYPE type;
-
-            [OnValueChanged("UpdateType", true)] public WaveProfileDataScriptableObject asset;
-
-            [Range(1, 10)] public int weight;
-
-
-#if UNITY_EDITOR
-
-            [DisplayAsString, TableColumnWidth(150, false), PropertyOrder(-100)]
-            public string name;
-
-            [DisplayAsString, TableColumnWidth(75, Resizable = false)]
-            public string chance;
-
-            [HideInTables] public float chanceValue;
-
-            private void UpdateType()
-            {
-                if (asset == null)
-                {
-                    name = string.Empty;
-                }
-                else
-                {
-                    type = asset.waveType;
-                    name = $"{asset.name} - {type}";
-                }
-            }
-
-            private bool IsWaveType(WaveProfileDataScriptableObject obj)
-            {
-                return obj.waveType == type;
-            }
+            
+            [OnInspectorInit]
+            protected override void UpdateName() =>
+                name = asset is IHasName ihn ? $"{ihn.Name} - {asset.waveType}" : string.Empty;
 #endif
         }
 
         [Serializable]
-        public struct WaveSpawnDataALT
+        public class WaveSpawnDataALT : WeightedChanceAssetBase<WaveProfileDataScriptableObject>
         {
             [HideInTables] public WaveProfileDataScriptableObject.WAVE_TYPE type;
 
-            [AssetList(CustomFilterMethod = "IsWaveType"), OnValueChanged("UpdateName")]
-            public WaveProfileDataScriptableObject asset;
-
-            [Range(1, 10), HideIf("@asset == null")]
-            public int weight;
-
-
 #if UNITY_EDITOR
-
-            [DisplayAsString, TableColumnWidth(150, false), PropertyOrder(-100)]
-            public string name;
-
-            [DisplayAsString, TableColumnWidth(75, Resizable = false), HideIf("@asset == null")]
-            public string chance;
-
-            [HideInTables] public float chanceValue;
 
             private bool IsWaveType(WaveProfileDataScriptableObject obj)
             {
@@ -124,10 +55,53 @@ namespace StarSalvager.ScriptableObjects.Procedural
             }
 
             [OnInspectorInit]
-            private void UpdateName()
+            protected override void UpdateName()
             {
-                name = asset == null ? string.Empty : $"{asset.name}";
+                name = asset is IHasName ihs ? $"{ihs.Name}" : string.Empty;
                 weight = asset == null ? 0 : weight;
+            }
+#endif
+        }
+        
+        [Serializable]
+        public class EnemySpawnData : WeightedChanceBase
+        {
+            [ValueDropdown("GetEnemies"), PropertyOrder(-100), OnValueChanged("UpdateValues"), HorizontalGroup("Enemy"),
+             HideLabel]
+            public string enemy;
+
+#if UNITY_EDITOR
+
+            [ShowInInspector, PreviewField(Height = 35, Alignment = ObjectFieldAlignment.Center), HideLabel, PropertyOrder(-1000),
+             ReadOnly, TableColumnWidth(50,false)]
+            public Sprite Sprite => !HasProfile(out var profile) ? null : profile.Sprite;
+            
+            [DisplayAsString, TableColumnWidth(45, Resizable = false), PropertyOrder(-90)]
+            public int cost;
+
+            private IEnumerable GetEnemies() => EnemyRemoteDataScriptableObject.GetEnemyTypes();
+
+            [OnInspectorInit]
+            private void UpdateValues()
+            {
+                if (string.IsNullOrEmpty(enemy))
+                    return;
+
+                cost = FindObjectOfType<FactoryManager>().EnemyRemoteData.GetEnemyRemoteData(enemy).Cost;
+            }
+
+            [Button, HorizontalGroup("Enemy")]
+            private void Edit()
+            {
+                var path = AssetDatabase.GetAssetPath(FindObjectOfType<FactoryManager>().EnemyRemoteData);
+                Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
+            }
+            
+            private bool HasProfile(out EnemyProfileData enemyProfileData)
+            {
+                enemyProfileData = FindObjectOfType<FactoryManager>().EnemyProfile.GetEnemyProfileData(enemy);
+
+                return !(enemyProfileData is null);
             }
 #endif
         }
@@ -137,19 +111,28 @@ namespace StarSalvager.ScriptableObjects.Procedural
         //Properties
         //====================================================================================================================//
 
+        public AnimationCurve difficultyCurve = new AnimationCurve
+        {
+            keys = new[]
+            {
+                new Keyframe(0, 0.5f, 0f, 0f),
+                new Keyframe(1, 2f,0f, 0f)
+            }
+        };
+        
         [EnumToggleButtons, PropertyOrder(-1000)]
         public TYPE type;
 
         #region Weighted
 
-        [MinMaxSlider(3, 10, true), OnValueChanged("BalanceNodes"), ShowIf("@type == TYPE.WEIGHTED")]
-        public Vector2Int sectorsRange = Vector2Int.one;
+        [BoxGroup("Sectors"), HideLabel, OnValueChanged("BalanceNodes", true), ShowIf("@type == TYPE.WEIGHTED")]
+        public RangeFixed sectors = new RangeFixed(3,10);
 
-        [MinMaxSlider(1, 5, true), OnValueChanged("BalanceNodes"), ShowIf("@type == TYPE.WEIGHTED")]
-        public Vector2Int nodesRange = Vector2Int.one;
+        [BoxGroup("Nodes Per Sector"), HideLabel, OnValueChanged("BalanceNodes"), ShowIf("@type == TYPE.WEIGHTED")]
+        public RangeFixed nodes = new RangeFixed(1, 5);
 
-        [MinMaxSlider(1, 3, true), ReadOnly, ShowIf("@type == TYPE.WEIGHTED")]
-        public Vector2Int pathsRange = Vector2Int.one;
+        [BoxGroup("Paths"), HideLabel, ReadOnly, ShowIf("@type == TYPE.WEIGHTED")]
+        public RangeFixed pathsRange = new RangeFixed(1, 3);
 
         [SerializeField, Required, Range(0, 100), OnValueChanged("BalanceNodes"), TitleGroup("Wreck Spawn"),
          HorizontalGroup("Wreck Spawn/row1"), SuffixLabel("%", true), ShowIf("@type == TYPE.WEIGHTED")]
@@ -228,6 +211,12 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
         #endregion //Range
 
+        //Enemies
+        //====================================================================================================================//
+        
+        [TitleGroup("Enemies"), TableList(AlwaysExpanded = true), OnValueChanged("UpdateEnemyChances", true)]
+        public List<EnemySpawnData> enemies;
+
         //Unity Editor
         //====================================================================================================================//
 #if UNITY_EDITOR
@@ -283,8 +272,8 @@ namespace StarSalvager.ScriptableObjects.Procedural
             waveSpawnBalance = Mathf.RoundToInt(((float) waveSpawnBalance / sum) * 100f);
             wreckSpawnBalance = Mathf.RoundToInt(((float) wreckSpawnBalance / sum) * 100f);
 
-            var minNodes = sectorsRange.x * nodesRange.x;
-            var maxNodes = sectorsRange.y * nodesRange.y;
+            var minNodes = sectors.range.x * nodes.range.x;
+            var maxNodes = sectors.range.y * nodes.range.y;
 
             var wavePercent = (waveSpawnBalance / 100f);
             var wreckPercent = (wreckSpawnBalance / 100f);
@@ -379,6 +368,23 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
         #endregion //Range
 
+        //Enemies
+        //====================================================================================================================//
+        
+        [OnInspectorInit]
+        private void UpdateEnemyChances()
+        {
+            var sum = enemies.Sum(x => x.weight);
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                var dropData = enemies[i];
+                dropData.chanceValue = dropData.weight / (float) sum;
+                dropData.chance = $"{dropData.chanceValue:P1}";
+
+                enemies[i] = dropData;
+            }
+        }
 #endif
     }
 }

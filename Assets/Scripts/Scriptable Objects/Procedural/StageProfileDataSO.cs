@@ -10,10 +10,8 @@ using UnityEngine;
 namespace StarSalvager.ScriptableObjects.Procedural
 {
     [CreateAssetMenu(fileName = "Stage Profile", menuName = "Star Salvager/Procedural/Stage Profile")]
-    public class StageProfileDataSO : ScriptableObject
+    public class StageProfileDataSO : ScriptableObject, IHasName
     {
-
-
         //Enums
         //====================================================================================================================//
 
@@ -30,33 +28,34 @@ namespace StarSalvager.ScriptableObjects.Procedural
         #region Structs
 
         [Serializable]
-        public struct StageData
+        public class StageData
         {
+            [TableColumnWidth(150)]
             [InfoBox("Clouds are not yet implemented", InfoMessageType.Warning, VisibleIf = "@type == TYPE.CLOUD")]
             [HorizontalGroup("Type"), HideLabel]
             public TYPE type;
 
-            [HorizontalGroup("Type"), ShowIf("type", TYPE.ASTEROID), LabelWidth(40)]
+            [HorizontalGroup("Type"), ShowIf("type", TYPE.ASTEROID), LabelWidth(30)]
             public ASTEROID_SIZE size;
 
-            [MinMaxSlider(0, 500, true), DisableIf("type", TYPE.CLOUD)]
-            public Vector2Int spawnsPerMin;
+            [HorizontalGroup("Spawns Per Min"), HideLabel, TableColumnWidth(200)]
+            public RangeFixed spawnsPerMin = new RangeFixed(0, 500);
 
 #if UNITY_EDITOR
-
             private bool HideCheck() => type == TYPE.ASTEROID;
+
 #endif
         }
-        
+
         [Serializable]
         public class BitSpawnData : WeightedChanceBase
         {
-            [HideInTables]
-            public BIT_TYPE bitType;
+            [HideInTables] public BIT_TYPE bitType;
 
 #if UNITY_EDITOR
             [GUIColor("GetColor"), PropertyOrder(-1000), TableColumnWidth(120, false)]
             public string BitType;
+
             private Color GetColor() => bitType.GetColor();
 
             [OnInspectorInit]
@@ -68,24 +67,26 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
         //Properties
         //====================================================================================================================//
-
+        public string Name => name;
+        
         public string name;
 
-        [MinMaxSlider(0, 500, true)] public Vector2Int bitSpawnsPerMin;
+        [BoxGroup("Bits Per Min"), HideLabel] public RangeFixed bitSpawns = new RangeFixed(0, 500);
 
         [Tooltip("Dynamic spawning takes into consideration the players current state to decide what to spawn")]
         public bool useDynamicBitSpawning = true;
 
         #region Fixed Bit Spawing
-        
-        [HideIf("useDynamicBitSpawning"), TableList(AlwaysExpanded = true), OnValueChanged("UpdateBitSpawnChances", true), HideLabel]
+
+        [HideIf("useDynamicBitSpawning"), TableList(AlwaysExpanded = true),
+         OnValueChanged("UpdateBitSpawnChances", true), HideLabel]
         public List<BitSpawnData> BitSpawnDatas = new List<BitSpawnData>()
         {
-            new BitSpawnData { bitType = BIT_TYPE.RED },
-            new BitSpawnData { bitType = BIT_TYPE.BLUE },
-            new BitSpawnData { bitType = BIT_TYPE.GREEN },
-            new BitSpawnData { bitType = BIT_TYPE.YELLOW },
-            new BitSpawnData { bitType = BIT_TYPE.GREY },
+            new BitSpawnData {bitType = BIT_TYPE.RED},
+            new BitSpawnData {bitType = BIT_TYPE.BLUE},
+            new BitSpawnData {bitType = BIT_TYPE.GREEN},
+            new BitSpawnData {bitType = BIT_TYPE.YELLOW},
+            new BitSpawnData {bitType = BIT_TYPE.GREY},
         };
 
         #endregion //Fixed Bit Spawing

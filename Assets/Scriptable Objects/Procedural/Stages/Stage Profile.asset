@@ -12,3 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae9f351f4330de4491b8eb12a20986f, type: 3}
   m_Name: Stage Profile
   m_EditorClassIdentifier: 
+  name: Hello
+  bitSpawns:
+    useRange: 1
+    range: {x: 238, y: 238}
+    fixed: 238
+  useDynamicBitSpawning: 1
+  BitSpawnDatas:
+  - weight: 6
+    chance: 42.9 %
+    chanceValue: 0.42857143
+    bitType: 4
+    BitType: RED
+  - weight: 1
+    chance: 7.1 %
+    chanceValue: 0.071428575
+    bitType: 1
+    BitType: BLUE
+  - weight: 1
+    chance: 7.1 %
+    chanceValue: 0.071428575
+    bitType: 2
+    BitType: GREEN
+  - weight: 5
+    chance: 35.7 %
+    chanceValue: 0.35714287
+    bitType: 5
+    BitType: YELLOW
+  - weight: 1
+    chance: 7.1 %
+    chanceValue: 0.071428575
+    bitType: 3
+    BitType: GREY
+  stageData:
+  - type: 0
+    size: 0
+    spawnsPerMin:
+      useRange: 1
+      range: {x: 0, y: 0}
+      fixed: 0

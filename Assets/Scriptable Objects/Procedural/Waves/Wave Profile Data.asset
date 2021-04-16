@@ -17,24 +17,46 @@ MonoBehaviour:
   spritePreview: {fileID: 3623618048574350569, guid: 6805d750135d8f2489f25887cc37b437,
     type: 3}
   waveType: 0
-  waveTimeRange: {x: 26, y: 63}
+  waveTime:
+    useRange: 0
+    range: {x: 10, y: 10}
+    fixed: 10
+  excitementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   stages:
-  - asset: {fileID: 11400000, guid: da5da0d064acc3d4bbe1b5a58d24fe85, type: 2}
-    weight: 1
-    name: 
-    chance: 100.0 %
-    chanceValue: 1
-  enemyBudget: {x: 4, y: 11}
-  enemies:
-  - enemy: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
-    weight: 3
-    cost: 2
-    chance: 75.0 %
-    chanceValue: 0.75
-    spawns: 1 - 5
-  - enemy: ce5f2bab-c14f-469a-910c-f2ffce165cc2
-    weight: 1
-    cost: 6
-    chance: 25.0 %
-    chanceValue: 0.25
-    spawns: 0 - 1
+  - weight: 1
+    chance: 50.0 %
+    chanceValue: 0.5
+    asset: {fileID: 11400000, guid: da5da0d064acc3d4bbe1b5a58d24fe85, type: 2}
+    name: Hello
+  - weight: 1
+    chance: 50.0 %
+    chanceValue: 0.5
+    asset: {fileID: 11400000, guid: da5da0d064acc3d4bbe1b5a58d24fe85, type: 2}
+    name: Hello
+  enemyBudget:
+    useRange: 1
+    range: {x: 37, y: 37}
+    fixed: 37

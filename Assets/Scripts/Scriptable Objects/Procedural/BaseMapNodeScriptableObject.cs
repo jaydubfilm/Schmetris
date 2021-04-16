@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects.Procedural
 {
-    public abstract class BaseMapNodeScriptableObject : ScriptableObject
+    
+    public abstract class BaseMapNodeScriptableObject : ScriptableObject, IHasName
     {
-        
+        public string Name => name;
         
         [LabelWidth(35), VerticalGroup("row1/col2")]
         public string name;
