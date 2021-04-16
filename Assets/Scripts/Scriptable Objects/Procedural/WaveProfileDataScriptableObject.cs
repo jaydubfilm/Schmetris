@@ -39,36 +39,14 @@ namespace StarSalvager.ScriptableObjects.Procedural
         #region Structs
 
         [Serializable]
-        public struct StageSpawnData
-        {
-            [OnValueChanged("UpdateName", true)]
-            public StageProfileDataSO asset;
-            
-            [Range(1, 10), HideIf("@asset == null")] public int weight;
-            
-#if UNITY_EDITOR
-            [PropertyOrder(-100), DisplayAsString]
-            public string name;
-
-            
-            [DisplayAsString, TableColumnWidth(75, Resizable = false), HideIf("@asset == null")]
-            public string chance;
-
-            [HideInTables] public float chanceValue;
-
-            [OnInspectorInit]
-            private void UpdateName() => name = asset == null ? string.Empty : asset.name;
-#endif
-        }
+        public class StageSpawnData : WeightedChanceAssetBase<StageProfileDataSO> { }
         
         [Serializable]
-        public struct EnemySpawnData
+        public class EnemySpawnData : WeightedChanceBase
         {
             [ValueDropdown("GetEnemies"), PropertyOrder(-100), OnValueChanged("UpdateValues"), HorizontalGroup("Enemy"),
              HideLabel]
             public string enemy;
-
-            [Range(1, 10)] public int weight;
 
 #if UNITY_EDITOR
 
@@ -78,11 +56,6 @@ namespace StarSalvager.ScriptableObjects.Procedural
             
             [DisplayAsString, TableColumnWidth(45, Resizable = false), PropertyOrder(-90)]
             public int cost;
-
-            [DisplayAsString, TableColumnWidth(75, Resizable = false)]
-            public string chance;
-
-            [HideInTables] public float chanceValue;
 
             [DisplayAsString, TableColumnWidth(95, Resizable = false)]
             public string spawns;

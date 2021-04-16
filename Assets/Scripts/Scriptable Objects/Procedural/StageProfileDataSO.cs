@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager;
 using StarSalvager.AI;
@@ -26,6 +27,8 @@ namespace StarSalvager.ScriptableObjects.Procedural
         //Structs
         //====================================================================================================================//
 
+        #region Structs
+
         [Serializable]
         public struct StageData
         {
@@ -44,6 +47,24 @@ namespace StarSalvager.ScriptableObjects.Procedural
             private bool HideCheck() => type == TYPE.ASTEROID;
 #endif
         }
+        
+        [Serializable]
+        public class BitSpawnData : WeightedChanceBase
+        {
+            [HideInTables]
+            public BIT_TYPE bitType;
+
+#if UNITY_EDITOR
+            [GUIColor("GetColor"), PropertyOrder(-1000), TableColumnWidth(120, false)]
+            public string BitType;
+            private Color GetColor() => bitType.GetColor();
+
+            [OnInspectorInit]
+            private void SetName() => BitType = $"{bitType}";
+#endif
+        }
+
+        #endregion //Structs
 
         //Properties
         //====================================================================================================================//
@@ -56,36 +77,16 @@ namespace StarSalvager.ScriptableObjects.Procedural
         public bool useDynamicBitSpawning = true;
 
         #region Fixed Bit Spawing
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Red Bit %"), LabelWidth(75), Space(10f)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.RED)"),
-         OnValueChanged("BalanceBits")]
-        private int redBitsPercentage;
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Blue Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.BLUE)"),
-         OnValueChanged("BalanceBits")]
-        private int blueBitsPercentage;
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Green Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREEN)"),
-         OnValueChanged("BalanceBits")]
-        private int greenBitsPercentage;
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Yellow Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.YELLOW)"),
-         OnValueChanged("BalanceBits")]
-        private int yellowBitsPercentage;
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios"), LabelText("Grey Bit %"), LabelWidth(75)]
-        [SerializeField, Required, ProgressBar(0, 100, ColorGetter = "@GetColor(BIT_TYPE.GREY)"),
-         OnValueChanged("BalanceBits")]
-        private int greyBitsPercentage;
+        
+        [HideIf("useDynamicBitSpawning"), TableList(AlwaysExpanded = true), OnValueChanged("UpdateBitSpawnChances", true), HideLabel]
+        public List<BitSpawnData> BitSpawnDatas = new List<BitSpawnData>()
+        {
+            new BitSpawnData { bitType = BIT_TYPE.RED },
+            new BitSpawnData { bitType = BIT_TYPE.BLUE },
+            new BitSpawnData { bitType = BIT_TYPE.GREEN },
+            new BitSpawnData { bitType = BIT_TYPE.YELLOW },
+            new BitSpawnData { bitType = BIT_TYPE.GREY },
+        };
 
         #endregion //Fixed Bit Spawing
 
@@ -96,28 +97,19 @@ namespace StarSalvager.ScriptableObjects.Procedural
 
 #if UNITY_EDITOR
 
-        private Color GetColor(BIT_TYPE bitType) => bitType.GetColor();
-
-        private void BalanceBits()
+        [OnInspectorInit]
+        private void UpdateBitSpawnChances()
         {
+            var sum = BitSpawnDatas.Sum(x => x.weight);
 
-            var sum = redBitsPercentage + blueBitsPercentage + greenBitsPercentage + yellowBitsPercentage +
-                      greyBitsPercentage;
+            for (int i = 0; i < BitSpawnDatas.Count; i++)
+            {
+                var dropData = BitSpawnDatas[i];
+                dropData.chanceValue = dropData.weight / (float) sum;
+                dropData.chance = $"{dropData.chanceValue:P1}";
 
-            redBitsPercentage = Mathf.RoundToInt(((float) redBitsPercentage / sum) * 100f);
-            blueBitsPercentage = Mathf.RoundToInt(((float) blueBitsPercentage / sum) * 100f);
-            greenBitsPercentage = Mathf.RoundToInt(((float) greenBitsPercentage / sum) * 100f);
-            yellowBitsPercentage = Mathf.RoundToInt(((float) yellowBitsPercentage / sum) * 100f);
-            greyBitsPercentage = Mathf.RoundToInt(((float) greyBitsPercentage / sum) * 100f);
-
-        }
-
-        [HideIfGroup("useDynamicBitSpawning")]
-        [Button("Balance Bits"), BoxGroup("useDynamicBitSpawning/Bit Spawn Ratios")]
-        private void Reset()
-        {
-            redBitsPercentage =
-                blueBitsPercentage = greenBitsPercentage = yellowBitsPercentage = greyBitsPercentage = 20;
+                BitSpawnDatas[i] = dropData;
+            }
         }
 
 #endif
