@@ -1277,14 +1277,44 @@ namespace StarSalvager
 
         private void TriggerRailgun(in Part part)
         {
+            const float WIDTH = 5f;
+            const float LENGTH = 50f;
+            const float TIME = 0.4f;
+
             if (bot.Rotating)
                 return;
-            
+
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             //--------------------------------------------------------------------------------------------------------//
+            var startPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
 
-            CreateProjectile(part, partRemoteData, null);
+            var direction = Vector3.up;
+
+            var lineShrink = FactoryManager.Instance
+                .GetFactory<EffectFactory>()
+                .CreateObject<LineShrink>();
+
+            lineShrink.Init(startPosition, startPosition + direction * LENGTH, WIDTH, TIME);
+
+            AudioController.PlaySound(SOUND.BIT_EXPLODE);
+
+            bot.cinemachineImpulseSource.GenerateImpulse(Random.Range(1f, 2f));
+            GameUI.FlashNeonBorder(Random.Range(TIME,  TIME * 2f));
+
+            var currentPos = startPosition + direction * (LENGTH / 2f);
+            var size = new Vector2(WIDTH, LENGTH);
+            var enemies = EnemyManager.GetEnemiesInBounds(new Bounds(currentPos, size));
+
+            if (enemies.Count <= 0)
+                return;
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
 
         }
 

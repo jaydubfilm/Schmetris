@@ -585,12 +585,14 @@ namespace StarSalvager.UI
         [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Extras/Neon Border")]
         public void FlashNeonBorder()
         {
+            FlashNeonBorder(Random.Range(flashTimeRange.x, flashTimeRange.y));
+        }
+        public void FlashNeonBorder(in float time)
+        {
             if (_flashingBorder)
                 return;
 
             _flashingBorder = true;
-
-            var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
 
             StartCoroutine(NeonBorderFlashingCoroutine(time));
         }
