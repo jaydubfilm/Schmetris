@@ -115,7 +115,8 @@ namespace StarSalvager.UI.Scrapyard
             
             void CreatePart(PART_TYPE partType)
             {
-                var patchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).PatchSockets;
+                var partRemoteData = partType.GetRemoteData();
+                var patchCount = partRemoteData.PatchSockets;
                 
                 var partData = new PartData
                 {
@@ -123,7 +124,7 @@ namespace StarSalvager.UI.Scrapyard
                     Patches = new PatchData[patchCount]
                 };
 
-                var category = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category;
+                var category = partRemoteData.category;
                 var botCoordinate = PlayerDataManager.GetCoordinateForCategory(category);
 
                 //If the player has an empty part at the location, auto equip it

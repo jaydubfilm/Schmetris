@@ -20,13 +20,13 @@ namespace StarSalvager
         {
             get
             {
-                if (_renderer == null)
-                    _renderer = gameObject.GetComponent<SpriteRenderer>();
+                if (_spriteRenderer == null)
+                    _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-                return _renderer;
+                return _spriteRenderer;
             }
         }
-        private SpriteRenderer _renderer;
+        private SpriteRenderer _spriteRenderer;
         
         public new Transform transform
         {

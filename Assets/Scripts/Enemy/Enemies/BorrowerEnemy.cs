@@ -138,14 +138,14 @@ namespace StarSalvager.AI
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
                     _enemyMovementSpeed = 0f;
-
-                    _carrySpeed = m_enemyData.MovementSpeed / 2f;
-                    _enemyMovementSpeed = _carrySpeed;
-
                     break;
                 case STATE.ATTACK:
                     break;
                 case STATE.FLEE:
+                    
+                    _carrySpeed = m_enemyData.MovementSpeed / 2f;
+                    _enemyMovementSpeed = _carrySpeed;
+                    
                     Target = null;
                     AttachedBot?.ForceDetach(this);
                     AttachedBot = null;
@@ -245,6 +245,8 @@ namespace StarSalvager.AI
                 SetState(STATE.PURSUE);
                 return;
             }
+
+            MostRecentMovementDirection = Vector3.zero;
             
             //After wait time, move to attack state
             //If the Bit fell off the Bot, then we can attempt to steal it

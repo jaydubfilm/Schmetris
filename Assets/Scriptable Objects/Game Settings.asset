@@ -16,6 +16,7 @@ MonoBehaviour:
   useShuffleDance: 1
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.19
+  preSpawnedRows: 15
   startingAmmo: 0
   testingFeatures: 0
   asteroidDamage: 20
@@ -105,6 +106,7 @@ MonoBehaviour:
   bitShiftTime: 0.17
   comboMergeTime: 0.17
   DASTime: 0.11
+  DARTime: 0.2
   botHorizontalSpeed: 30
   botRotationSpeed: 650
   botContinuousRotationSpeed: 900

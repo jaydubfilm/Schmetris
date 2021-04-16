@@ -166,16 +166,23 @@ namespace StarSalvager.Utilities.Saving
         public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void RemoveBit(ref List<IBlockData> blockDatas, in Vector2Int coordinate)
             {
                 var tempCoordinate = coordinate;
                 //Need to make sure that we only remove Bits and NOT parts!
-                var index = blockDatas.FindIndex(x =>x is BitData bitData && bitData.Coordinate == tempCoordinate);
+                var index = blockDatas.FindIndex(x => x is BitData bitData && bitData.Coordinate == tempCoordinate);
 
                 if (index < 0)
+                {
+#if UNITY_EDITOR
                     throw new ArgumentOutOfRangeException(nameof(index), index,
                         $"Trying to remove bit at [{coordinate}] which was not in List:\n{JsonConvert.SerializeObject(blockDatas)}");
+#else
+                    return;
+#endif
+                }
+
 
                 blockDatas.RemoveAt(index);
             }

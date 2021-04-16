@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Parts.Data;
+using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -399,7 +400,8 @@ namespace StarSalvager
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
-                        BlasterUpdate(part, partRemoteData, deltaTime);
+                        //BlasterUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SNIPER:
@@ -426,6 +428,11 @@ namespace StarSalvager
                     case PART_TYPE.SABRE:
                         SabreUpdate(part, partRemoteData, deltaTime);
                         break;
+                    //--------------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.RAILGUN:
+                        UpdateFireLine(part, partRemoteData);
+                        break;
+                    //--------------------------------------------------------------------------------------------------------//
                 }
             }
 
@@ -654,7 +661,7 @@ namespace StarSalvager
             _sabreObject.SetTransform(pos, dir);
         }
 
-        private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        /*private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
             if (_projectileTimers == null)
@@ -698,7 +705,7 @@ namespace StarSalvager
             //TODO Create projectile shooting at new target
 
             CreateProjectile(part, partRemoteData, asteroid, "Asteroid");
-        }
+        }*/
 
         private void GunUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
@@ -975,7 +982,7 @@ namespace StarSalvager
                     targetVelocity = Vector3.zero;
                     break;
             }
-            var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileProfile = ProjectileFactory.GetProfile(projectileId);
             
             var totarget = target.Position - partPosition;
 
@@ -1004,17 +1011,19 @@ namespace StarSalvager
 
             var aimSpot = target.Position + targetVelocity * t;
             var bulletPath = aimSpot - partPosition;
-            
+
+#if UNITY_EDITOR
             Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
             Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
-            //Debug.Break();
+#endif
+
 
             return bulletPath;
         }
 
         private float GetProjectileRange(in Part part, in string projectileID)
         {
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
+            var projectileData = ProjectileFactory.GetProfile(projectileID);
 
             var range = projectileData.ProjectileRange;
 
@@ -1034,7 +1043,7 @@ namespace StarSalvager
             if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
                 return false;
             
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileData = ProjectileFactory.GetProfile(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
         }
@@ -1115,6 +1124,9 @@ namespace StarSalvager
                     break;
                 case PART_TYPE.SABRE:
                     TriggerSabre(part);
+                    break;
+                case PART_TYPE.BLASTER:
+                    TriggerBlaster(part);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
@@ -1265,14 +1277,44 @@ namespace StarSalvager
 
         private void TriggerRailgun(in Part part)
         {
+            const float WIDTH = 5f;
+            const float LENGTH = 50f;
+            const float TIME = 0.4f;
+
             if (bot.Rotating)
                 return;
-            
+
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             //--------------------------------------------------------------------------------------------------------//
+            var startPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
 
-            CreateProjectile(part, partRemoteData, null);
+            var direction = Vector3.up;
+
+            var lineShrink = FactoryManager.Instance
+                .GetFactory<EffectFactory>()
+                .CreateObject<LineShrink>();
+
+            lineShrink.Init(startPosition, startPosition + direction * LENGTH, WIDTH, TIME);
+
+            AudioController.PlaySound(SOUND.BIT_EXPLODE);
+
+            bot.cinemachineImpulseSource.GenerateImpulse(Random.Range(1f, 2f));
+            GameUI.FlashNeonBorder(Random.Range(TIME,  TIME * 2f));
+
+            var currentPos = startPosition + direction * (LENGTH / 2f);
+            var size = new Vector2(WIDTH, LENGTH);
+            var enemies = EnemyManager.GetEnemiesInBounds(new Bounds(currentPos, size));
+
+            if (enemies.Count <= 0)
+                return;
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
 
         }
 
@@ -1516,6 +1558,47 @@ namespace StarSalvager
 
         }
 
+        //[SerializeField]
+        //private BlasterProjectile blasterProjectilePrefab;
+        private void TriggerBlaster(in Part part)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            BlasterProjectile CreateBlasterEffect()
+            {
+                return FactoryManager.Instance
+                    .GetFactory<EffectFactory>()
+                    .CreateEffect(EffectFactory.EFFECT.CURVE_LINE)
+                    .GetComponent<BlasterProjectile>();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var fromPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
+
+            var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+            var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+            var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            
+            var rot = part.transform.eulerAngles.z + 90;
+            
+            var blasterProjectile = CreateBlasterEffect();
+            blasterProjectile.Init(rot, degrees, range, fireTime);
+
+            var dotThreshold = 1f / (180 / degrees);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, part.transform.up.normalized, dotThreshold);
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
+            
+        }
+
         #endregion
 
         //============================================================================================================//
@@ -1538,7 +1621,7 @@ namespace StarSalvager
             if (armors.IsNullOrEmpty())
                 return false;
             
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
+            var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
 
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
@@ -1919,8 +2002,7 @@ namespace StarSalvager
                 return _flashes[part];
 
             
-            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = burnType.GetColor();
+            var bitColor = part.Type.GetCategory().GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 
@@ -2110,22 +2192,11 @@ namespace StarSalvager
 
         #endregion //Effects
 
-
+        //Fireline
+        //====================================================================================================================//
+        
         private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
-            //--------------------------------------------------------------------------------------------------------//
-            
-            Vector3 GetAsPoint(in float degrees, in float range = 1f)
-            {
-                var radians = degrees * Mathf.Deg2Rad;
-
-                var x = Mathf.Cos(radians);
-                var y = Mathf.Sin(radians);
-                return new Vector3(x, y, 0) * range; //Vector2 is fine, if you're in 2D
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-
             var firePosition = Globals.UseCenterFiring ? Vector3.zero : part.transform.localPosition;
             
             var loop = false;
@@ -2134,7 +2205,9 @@ namespace StarSalvager
             
             switch (part.Type)
             {
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
+                    fireLineRenderer.gameObject.SetActive(false);
                     return;
                 case PART_TYPE.GUN:
                 {
@@ -2147,7 +2220,7 @@ namespace StarSalvager
 
                     for (var i = 0; i < slices; i++)
                     {
-                        var point = firePosition + GetAsPoint(i * degree, range);
+                        var point = firePosition + (Vector3)Mathfx.GetAsPointOnCircle(i * degree, range);
                         pointList.Add(point);
                     }
 
@@ -2168,9 +2241,9 @@ namespace StarSalvager
 
                     points = new[]
                     {
-                        GetAsPoint(leftDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(leftDeg, range),
                         firePosition,
-                        GetAsPoint(rightDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(rightDeg, range),
                     };
                     break;
                 }
@@ -2185,6 +2258,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException();
             }
             
+            fireLineRenderer.gameObject.SetActive(true);
             fireLineRenderer.loop = loop;
             fireLineRenderer.useWorldSpace = worldSpace;
             fireLineRenderer.positionCount = points.Length;
@@ -2195,14 +2269,14 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
+                case PART_TYPE.BLASTER:
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
                     return;
                 case PART_TYPE.GUN:
                 case PART_TYPE.RAILGUN:
                     fireLineRenderer.transform.rotation = Quaternion.identity;
                     break;
-                case PART_TYPE.BLASTER:
-                    throw new NotImplementedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }

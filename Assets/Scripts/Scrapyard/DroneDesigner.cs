@@ -611,8 +611,7 @@ namespace StarSalvager
                 return;
             }
 
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
-                .GetDataValue<float>(PartProperties.KEYS.Health);
+            var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
             
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
             
@@ -1004,8 +1003,7 @@ namespace StarSalvager
 
         public void RepairDrone()
         {
-            var startingHealth = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.CORE)
-                .GetDataValue<float>(PartProperties.KEYS.Health);
+            var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
             var currentHealth = PlayerDataManager.GetBotHealth();
             
             
@@ -1040,8 +1038,7 @@ namespace StarSalvager
                 throw new ArgumentOutOfRangeException(nameof(SelectedBrick), SelectedBrick,
                     $"Expected {nameof(PartData)}");
 
-            var partType = (PART_TYPE) partData.Type;
-            var bitCategory = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category;
+            var bitCategory = ((PART_TYPE) partData.Type).GetCategory();
             
             var categoryCoordinate = PlayerDataManager.GetCoordinateForCategory(bitCategory);
 

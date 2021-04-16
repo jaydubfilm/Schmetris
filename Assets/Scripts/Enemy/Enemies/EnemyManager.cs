@@ -58,8 +58,15 @@ namespace StarSalvager
             if (isPaused)
                 return;
 
-            if (!GameManager.IsState(GameState.LEVEL) || GameManager.IsState(GameState.LevelBotDead))
+            if (!GameManager.IsState(GameState.LEVEL))
             {
+                return;
+            }
+            
+            //I still want the enemies to move, but now they should be doing their flee action
+            if (GameManager.IsState(GameState.LevelBotDead))
+            {
+                HandleEnemyUpdate();
                 return;
             }
 
@@ -422,6 +429,58 @@ namespace StarSalvager
                 var dist = Vector2.Distance(position, enemy.transform.position);
 
                 if (dist > range)
+                    continue;
+
+                outList.Add(enemy);
+            }
+
+            return outList;
+        }
+        
+        public List<Enemy> GetEnemiesInCone(Vector2 position, float range, Vector2 direction, float dotThreshold)
+        {
+            var outList = new List<Enemy>();
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                var enemyPos = (Vector2)enemy.transform.position;
+
+                if (!CameraController.IsPointInCameraRect(enemyPos))
+                    continue;
+
+                var dist = Vector2.Distance(position, enemyPos);
+
+                if (dist > range)
+                    continue;
+
+                var dir = (enemyPos - position).normalized;
+                
+                if (Vector2.Dot(dir, direction) < dotThreshold)
+                    continue;
+                
+
+                outList.Add(enemy);
+            }
+
+            return outList;
+        }
+        
+        public List<Enemy> GetEnemiesInBounds(in Bounds worldSpaceBounds)
+        {
+            var outList = new List<Enemy>();
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                var enemyPos = (Vector2)enemy.transform.position;
+
+                if (!CameraController.IsPointInCameraRect(enemyPos))
+                    continue;
+
+                if (!enemy.collider.bounds.Intersects(worldSpaceBounds))
                     continue;
 
                 outList.Add(enemy);

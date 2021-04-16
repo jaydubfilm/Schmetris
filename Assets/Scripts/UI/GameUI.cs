@@ -585,12 +585,14 @@ namespace StarSalvager.UI
         [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Extras/Neon Border")]
         public void FlashNeonBorder()
         {
+            FlashNeonBorder(Random.Range(flashTimeRange.x, flashTimeRange.y));
+        }
+        public void FlashNeonBorder(in float time)
+        {
             if (_flashingBorder)
                 return;
 
             _flashingBorder = true;
-
-            var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
 
             StartCoroutine(NeonBorderFlashingCoroutine(time));
         }
@@ -672,10 +674,10 @@ namespace StarSalvager.UI
                 return;
             }
 
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            var partRemoteData = partType.GetRemoteData();
 
             var isTrigger = partRemoteData.isManual;
-            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+            var sprite = partType.GetSprite();
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);

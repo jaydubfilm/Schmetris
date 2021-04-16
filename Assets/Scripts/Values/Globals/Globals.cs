@@ -68,6 +68,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
+
         public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
 
 
@@ -95,6 +97,7 @@ namespace StarSalvager.Values
         //public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
         public static float DASTime => m_gameSettings.DASTime;
+        public static float DARTime => m_gameSettings.DARTime;
         public static float GridHeightRelativeToScreen => m_gameSettings.gridHeightRelativeToScreen;
         public static float ObstacleMass => m_gameSettings.obstacleMass;
         public static float ObstacleDensityReductionModifier => m_gameSettings.obstacleDensityReductionModifier;

@@ -101,8 +101,6 @@ namespace StarSalvager
             SceneManager.MoveGameObjectToScene(m_worldElementsRoot.gameObject, gameObject.scene);
 
             SetupStage(0);
-
-            //RegisterMoveOnInput();
         }
 
 
@@ -111,7 +109,7 @@ namespace StarSalvager
         {
             if (isPaused)
                 return;
-            
+
             //Simulate the speed of downward movement for obstacles and move the prefabs on screen downward
             Globals.AsteroidFallTimer += Time.deltaTime;
             if (Globals.AsteroidFallTimer >= Globals.TimeForAsteroidToFallOneSquare)
@@ -157,13 +155,14 @@ namespace StarSalvager
             SetupStage(0);
 
             WorldElementsRoot.transform.position = Vector3.zero;
-            
+
             LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
-            
+            LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnRows(m_currentStageData, false, this);
             /*if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
-            }*/
+                LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnRows(m_currentStageData, false, this);
+            }
         }
 
         public void Reset()
@@ -346,7 +345,7 @@ namespace StarSalvager
 
             return bit;
         }
-        
+
         public List<Bit> TryGetBitsOnScreen()
         {
             var bits = m_obstacles
@@ -359,9 +358,9 @@ namespace StarSalvager
 
             return bits;
         }
-        
+
         //====================================================================================================================//
-        
+
 
         private void HandleObstacleMovement()
         {
@@ -378,7 +377,7 @@ namespace StarSalvager
                     m_offGridMovingObstacles.RemoveAt(i);
                     continue;
                 }
-                
+
                 m_offGridMovingObstacles[i].LerpTimer += Time.deltaTime / m_offGridMovingObstacles[i].LerpSpeed *
                                                          m_offGridMovingObstacles[i].SpeedUpModifier;
 
@@ -659,23 +658,23 @@ namespace StarSalvager
             }
         }
 
-        
+
 
         //====================================================================================================================//
 
 
         private void TrySpawnBonusShape()
         {
-            if (m_bonusShapesSpawned >= LevelManager.Instance.CurrentWaveData.BonusShapes.Count) 
+            if (m_bonusShapesSpawned >= LevelManager.Instance.CurrentWaveData.BonusShapes.Count)
                 return;
-            
+
             m_bonusShapeTimer += Time.deltaTime;
-            
-            if (!(m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency)) 
+
+            if (!(m_bonusShapeTimer >= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency))
                 return;
-            
+
             m_bonusShapeTimer -= LevelManager.Instance.CurrentWaveData.BonusShapeFrequency;
-            
+
             var bonusObstacleShapeData = LevelManager.Instance.CurrentWaveData.BonusShapes[m_bonusShapesSpawned];
 
             if (!Globals.UsingTutorial && (LevelManager.Instance.CurrentWaveData.GetWaveDuration() <= LevelManager.Instance.WaveTimer + m_currentStageData.StageBlendPeriod))
@@ -686,12 +685,12 @@ namespace StarSalvager
                 bonusObstacleShapeData.ShapeName,
                 bonusObstacleShapeData.Category,
                 bonusObstacleShapeData.Rotation);
-            
+
             m_bonusShapesSpawned++;
         }
 
         //====================================================================================================================//
-        
+
 
         public void MoveToNewWave()
         {
@@ -742,33 +741,6 @@ namespace StarSalvager
             }
         }
 
-        //IMoveOnInput functions
-        //================================================================================================================//
-
-        /*public void RegisterMoveOnInput()
-        {
-            InputManager.RegisterMoveOnInput(this);
-        }
-
-        public void Move(float direction)
-        {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-            {
-                m_currentInput = 0f;
-                return;
-            }
-
-            if (direction != 0 && LevelManager.Instance.BotDead)
-            {
-                m_currentInput = 0f;
-                return;
-            }
-
-            m_currentInput = direction;
-
-            m_distanceHorizontal += direction * Constants.gridCellSize;
-        }*/
-
         //================================================================================================================//
 
         public void AddTransformToRoot(Transform toReParent)
@@ -803,8 +775,12 @@ namespace StarSalvager
                         false, this);
                     break;
                 case STAGE_TYPE.FULLSCREEN:
-                    SpawnObstacleData(m_currentStageData.StageObstacleData, new Vector2(0, 1), false, true,
-                        m_currentStageData.SpawningObstacleMultiplier, false);
+                    SpawnObstacleData(m_currentStageData.StageObstacleData,
+                        new Vector2(0, 1),
+                        false,
+                        true,
+                        m_currentStageData.SpawningObstacleMultiplier,
+                        false);
                     break;
                 case STAGE_TYPE.CUSTOM:
                     foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData
@@ -922,15 +898,13 @@ namespace StarSalvager
             }*/
         }
 
-        public void SpawnObstacleData(List<StageObstacleData> obstacleData, 
-            Vector2 columnFieldRange, 
-            bool allowOverlap,
-            bool forceSpawn, 
-            float spawningMultiplier,
-            bool isPrevious, 
-            bool inRandomYLevel = false)
+        public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, bool allowOverlap,
+            bool forceSpawn, float spawningMultiplier, bool isPrevious, int yLevel = -1)
         {
-            foreach (var stageObstacleData in obstacleData)
+            //If we're not explicitely setting the y Pos, fallback to the default
+            if (yLevel < 0) yLevel = Globals.GridSizeY - 1;
+
+            foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 //This spawnVariable defines "how much of this thing should be spawned"
                 float spawnVariable = stageObstacleData.Density() * spawningMultiplier * ((columnFieldRange.y - columnFieldRange.x) * Globals.GridSizeX);
@@ -953,18 +927,18 @@ namespace StarSalvager
 
                 while (spawnVariable >= 1)
                 {
-                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, yLevel);
                     spawnVariable -= 1;
                 }
 
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                float random = Random.value;
 
                 if (random <= spawnVariable)
                 {
-                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                    SpawnObstacle(stageObstacleData, columnFieldRange, allowOverlap, forceSpawn, yLevel);
                 }
             }
         }
@@ -1049,11 +1023,11 @@ namespace StarSalvager
 
         }
 
-        private void SpawnObstacle(in StageObstacleData stageObstacleData, 
-            in Vector2 gridRegion, 
-            in bool allowOverlap, 
+        private void SpawnObstacle(in StageObstacleData stageObstacleData,
+            in Vector2 gridRegion,
+            in bool allowOverlap,
             in bool forceSpawn,
-            in bool inRandomYLevel)
+            in int yLevel)
         {
             IObstacle AddObstacle(in IObstacle newObstacle)
             {
@@ -1061,12 +1035,12 @@ namespace StarSalvager
                     LevelManager.Instance.ObstacleManager.AddObstacleToList(newObstacle);*/
 
                 AddObstacleToList(newObstacle);
-                    
+
                 return newObstacle;
             }
 
             //====================================================================================================================//
-            
+
             IObstacle obstacle;
             var radiusAround = 0;
 
@@ -1078,10 +1052,10 @@ namespace StarSalvager
                     var bitType = stageObstacleData.SelectionType == SELECTION_TYPE.BUMPER
                         ? BIT_TYPE.WHITE
                         : stageObstacleData.BitType;
-                    
+
                     IObstacle newObstacle = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
                         .CreateObject<IObstacle>(bitType);
-                    
+
                     obstacle = AddObstacle(newObstacle);
                     break;
                 }
@@ -1105,7 +1079,7 @@ namespace StarSalvager
                 {
                     Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                         .CreateAsteroid<Asteroid>(stageObstacleData.AsteroidSize);
-                    
+
                     switch (stageObstacleData.AsteroidSize)
                     {
                         case ASTEROID_SIZE.Bit:
@@ -1127,10 +1101,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(stageObstacleData.SelectionType), stageObstacleData.SelectionType, null);
             }
 
-            //====================================================================================================================//
-            
-
-            PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
+            PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, yLevel, radiusAround);
         }
 
         public void AddObstacleToListAndParentToWorldRoot(IObstacle obstacle)
@@ -1178,12 +1149,12 @@ namespace StarSalvager
 
         //This finds the proper position for the new obstacle
         private void PlaceMovableOnGrid(IObstacle obstacle, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
-            bool inRandomYLevel, int radius = 0)
+            int yLevel, int radius = 0)
         {
             var minScanRadius = obstacle is Bit ? 0 : 1;
 
             Vector2? positionNullable = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(
-                Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, inRandomYLevel);
+                Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, yLevel);
             if (!positionNullable.HasValue)
             {
                 switch (obstacle)
@@ -1272,7 +1243,7 @@ namespace StarSalvager
             bool arc)
         {
             bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
-            
+
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);
             float bounceTravelDistance = m_bounceTravelDistance * randomFactor;

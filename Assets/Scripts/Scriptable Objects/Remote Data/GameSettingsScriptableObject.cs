@@ -17,6 +17,9 @@ namespace StarSalvager.ScriptableObjects
         public bool shuffleCanDisconnect = true;
         [BoxGroup("Prototyping"), Range(0.01f, 1f)]
         public float shuffleTimeThreshold = 0.3f;
+
+        [BoxGroup("Prototyping"), PropertyRange(0, 50)]
+        public int preSpawnedRows;
         
         
         [BoxGroup("Prototyping")]
@@ -116,6 +119,8 @@ namespace StarSalvager.ScriptableObjects
 
         [FoldoutGroup("Bot/Movement")]
         public float DASTime = 0.15f;
+        [FoldoutGroup("Bot/Movement")]
+        public float DARTime = 0.11f;
         [FoldoutGroup("Bot/Movement")]
         public float botHorizontalSpeed = 30.0f;
         [FoldoutGroup("Bot/Movement")]
