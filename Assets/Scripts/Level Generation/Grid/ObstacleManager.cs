@@ -162,7 +162,7 @@ namespace StarSalvager
             {
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnRows(m_currentStageData, false, this);
-            }
+            }*/
         }
 
         public void Reset()

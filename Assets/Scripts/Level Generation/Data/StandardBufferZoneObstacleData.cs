@@ -47,17 +47,15 @@ namespace StarSalvager.AI
 
         private void CheckCenterChannelDimensions(in StageRemoteData stageRemoteData)
         {
-            if (stageRemoteData.CenterChannelWidth == m_centerColumnWidth)
+            if (CenterWidth == m_centerColumnWidth) 
                 return;
-
-            m_centerColumnWidth = stageRemoteData.CenterChannelWidth;
+            
+            m_centerColumnWidth = CenterWidth;
             m_centerColumnFieldRange = new Vector2(0.5f - m_centerColumnWidth / 2, 0.5f + m_centerColumnWidth / 2);
             float sidesWidth = (1 - m_centerColumnWidth) / 2;
-            float sidesBlend = sidesWidth *
-                               LevelManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
+            float sidesBlend = sidesWidth * LevelManager.Instance.StandardBufferZoneObstacleData.PortionOfEdgesUsedForBlend;
             m_bufferFieldLeft = new Vector2(sidesBlend / 2, sidesWidth - (sidesBlend / 2));
-            m_bufferFieldRight = new Vector2(sidesWidth + m_centerColumnWidth + (sidesBlend / 2),
-                1 - (sidesBlend / 2));
+            m_bufferFieldRight = new Vector2(sidesWidth + m_centerColumnWidth + (sidesBlend / 2), 1 - (sidesBlend / 2));
             m_blendFieldLeft = new Vector2(m_bufferFieldLeft.y, m_centerColumnFieldRange.x);
             m_blendFieldRight = new Vector2(m_centerColumnFieldRange.y, m_bufferFieldRight.x);
             m_wallBlendFieldLeft = new Vector2(m_wallFieldLeft.y, m_bufferFieldLeft.x);
@@ -73,30 +71,19 @@ namespace StarSalvager.AI
             CheckCenterChannelDimensions(stageRemoteData);
 
 
-            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_centerColumnFieldRange, false, true,
-                stageRemoteData.SpawningObstacleMultiplier, isPrevious, yLevel);
-
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_bufferFieldLeft, true, false,
-                stageRemoteData.SpawningObstacleMultiplier, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_bufferFieldRight, true, false,
-                stageRemoteData.SpawningObstacleMultiplier, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_centerColumnFieldRange, false, true, Multiplier, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_bufferFieldLeft, true, false, Multiplier, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_bufferFieldRight, true, false, Multiplier, isPrevious, yLevel);
             obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldLeft, true, false, 1, isPrevious, yLevel);
             obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallFieldRight, true, false, 1, isPrevious, yLevel);
-
             obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallBlendFieldLeft, true, false, 0.5f, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_wallBlendFieldLeft, true, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_wallBlendFieldLeft, true, false, Multiplier / 2, isPrevious, yLevel);
             obstacleManager.SpawnObstacleData(m_wallObstacleData, m_wallBlendFieldRight, true, false, 0.5f, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_wallBlendFieldRight, true, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_blendFieldLeft, false, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldLeft, false, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_blendFieldRight, false, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
-            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldRight, false, false,
-                stageRemoteData.SpawningObstacleMultiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_wallBlendFieldRight, true, false, Multiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_blendFieldLeft, false, false, Multiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldLeft, false, false, Multiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(m_bufferObstacleData, m_blendFieldRight, false, false, Multiplier / 2, isPrevious, yLevel);
+            obstacleManager.SpawnObstacleData(stageRemoteData.StageObstacleData, m_blendFieldRight, false, false, Multiplier / 2, isPrevious, yLevel);
         }
 
         public void PrespawnWalls(StageRemoteData stageRemoteData, bool isPrevious, ObstacleManager obstacleManager)
