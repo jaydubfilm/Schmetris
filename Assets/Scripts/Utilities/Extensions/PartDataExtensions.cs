@@ -34,7 +34,7 @@ namespace StarSalvager.Utilities.Extensions
         
         public static string GetPartDetails(this PartData partData)
         {
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
+            var partRemoteData = ((PART_TYPE) partData.Type).GetRemoteData();
             return partData.GetPartDetails(partRemoteData);
         }
         
@@ -46,7 +46,7 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
 
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
+            var partRemote = partRemoteData.partType.GetRemoteData();
 
             var partProperties = new []
             {
@@ -162,7 +162,7 @@ namespace StarSalvager.Utilities.Extensions
 
         public static string GetPartDetailsPatchPreview(this PartData partData, in PatchData patchToPreview)
         {
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
+            var partRemoteData = ((PART_TYPE) partData.Type).GetRemoteData();
             return partData.GetPartDetailsPatchPreview(partRemoteData, patchToPreview);
         }
         
@@ -207,7 +207,7 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
 
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
+            var partRemote = partRemoteData.partType.GetRemoteData();
 
             var partProperties = new []
             {

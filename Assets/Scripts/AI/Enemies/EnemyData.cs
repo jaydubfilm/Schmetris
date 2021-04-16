@@ -63,7 +63,7 @@ namespace StarSalvager
 
         public EnemyData(EnemyRemoteData enemyRemoteData, EnemyProfileData enemyProfileData)
         {
-            ProjectileProfileData projectileProfileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(enemyProfileData.ProjectileType);
+            var projectileProfileData = ProjectileFactory.GetProfile(enemyProfileData.ProjectileType);
 
             if (projectileProfileData != null)
             {
