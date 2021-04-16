@@ -305,7 +305,7 @@ namespace StarSalvager
             }
 
 
-            WorldGrid.SetupGrid();
+            WorldGrid.SetupGrid(CurrentWaveData.waveMaxWidth);
             ProjectileManager.Activate();
 
             m_levelManagerUI.ToggleDeathUIActive(false, string.Empty);
@@ -930,16 +930,16 @@ namespace StarSalvager
 
 #if UNITY_EDITOR
 
-        [SerializeField] private bool drawGrid = true;
-
-        private void OnDrawGizmos()
-        {
-            if (!drawGrid)
-                return;
-
-            Gizmos.color = Color.red;
-            WorldGrid?.OnDrawGizmos();
-        }*/
+        // [SerializeField] private bool drawGrid = true;
+        //
+        // private void OnDrawGizmos()
+        // {
+        //     if (!drawGrid)
+        //         return;
+        //
+        //     Gizmos.color = Color.red;
+        //     WorldGrid?.OnDrawGizmos();
+        // }
 
 #endif
 
