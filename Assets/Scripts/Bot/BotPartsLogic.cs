@@ -1095,9 +1095,9 @@ namespace StarSalvager
                     targetVelocity = Vector3.zero;
                     break;
             }
-            var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileProfile = ProjectileFactory.GetProfile(projectileId);
 
-            Vector3 totarget = target.Position - partPosition;
+            var totarget = target.Position - partPosition;
 
             var a = Vector3.Dot(targetVelocity, targetVelocity) - (projectileProfile.ProjectileSpeed * projectileProfile.ProjectileSpeed);
             var b = 2 * Vector3.Dot(targetVelocity, totarget);
@@ -1135,7 +1135,7 @@ namespace StarSalvager
 
         private float GetProjectileRange(in Part part, in string projectileID)
         {
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
+            var projectileData = ProjectileFactory.GetProfile(projectileID);
 
             var range = projectileData.ProjectileRange;
 
@@ -1155,7 +1155,7 @@ namespace StarSalvager
             if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
                 return false;
 
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileData = ProjectileFactory.GetProfile(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
         }
@@ -1423,14 +1423,44 @@ namespace StarSalvager
 
         private void TriggerRailgun(in Part part)
         {
+            const float WIDTH = 5f;
+            const float LENGTH = 50f;
+            const float TIME = 0.4f;
+
             if (bot.Rotating)
                 return;
 
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             //--------------------------------------------------------------------------------------------------------//
+            var startPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
 
-            CreateProjectile(part, partRemoteData, null);
+            var direction = Vector3.up;
+
+            var lineShrink = FactoryManager.Instance
+                .GetFactory<EffectFactory>()
+                .CreateObject<LineShrink>();
+
+            lineShrink.Init(startPosition, startPosition + direction * LENGTH, WIDTH, TIME);
+
+            AudioController.PlaySound(SOUND.BIT_EXPLODE);
+
+            bot.cinemachineImpulseSource.GenerateImpulse(Random.Range(1f, 2f));
+            GameUI.FlashNeonBorder(Random.Range(TIME,  TIME * 2f));
+
+            var currentPos = startPosition + direction * (LENGTH / 2f);
+            var size = new Vector2(WIDTH, LENGTH);
+            var enemies = EnemyManager.GetEnemiesInBounds(new Bounds(currentPos, size));
+
+            if (enemies.Count <= 0)
+                return;
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
 
         }
 
@@ -1733,7 +1763,7 @@ namespace StarSalvager
             if (armors.IsNullOrEmpty())
                 return false;
 
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
+            var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
 
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
@@ -2105,8 +2135,7 @@ namespace StarSalvager
                 return _flashes[part];
 
 
-            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = burnType.GetColor();
+            var bitColor = part.Type.GetCategory().GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 

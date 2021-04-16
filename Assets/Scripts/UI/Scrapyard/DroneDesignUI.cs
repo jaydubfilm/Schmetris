@@ -483,9 +483,8 @@ namespace StarSalvager.UI.Scrapyard
 
             var partType = (PART_TYPE) partData.Type;
 
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-
-            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            var partRemote = partType.GetRemoteData();
+            var partProfile = partType.GetProfileData();
 
 
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
@@ -546,8 +545,8 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             var partType = (PART_TYPE) partData.Type;
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            var partRemote = partType.GetRemoteData();
+            var partProfile = partType.GetProfileData();
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
 
             //====================================================================================================================//

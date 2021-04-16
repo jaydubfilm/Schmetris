@@ -462,6 +462,28 @@ namespace StarSalvager
 
             return outList;
         }
+        
+        public List<Enemy> GetEnemiesInBounds(in Bounds worldSpaceBounds)
+        {
+            var outList = new List<Enemy>();
+            foreach (var enemy in m_enemies)
+            {
+                if (enemy.IsRecycled)
+                    continue;
+
+                var enemyPos = (Vector2)enemy.transform.position;
+
+                if (!CameraController.IsPointInCameraRect(enemyPos))
+                    continue;
+
+                if (!enemy.collider.bounds.Intersects(worldSpaceBounds))
+                    continue;
+
+                outList.Add(enemy);
+            }
+
+            return outList;
+        }
 
         public void SetEnemiesInert(bool inert)
         {

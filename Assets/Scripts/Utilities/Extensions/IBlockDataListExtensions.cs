@@ -557,11 +557,11 @@ namespace StarSalvager.Utilities.Extensions
                 switch (blockData)
                 {
                     case PartData _:
-                        imageObject.sprite = partFactory.GetProfileData((PART_TYPE) blockData.Type).GetSprite();
+                        imageObject.sprite = ((PART_TYPE) blockData.Type).GetSprite();
                         break;
                     case BitData bitData:
-                        imageObject.sprite = bitFactory.GetBitProfile((BIT_TYPE)blockData.Type).GetSprite(bitData.Level);
-                        var startingHealth = bitFactory.GetBitRemoteData((BIT_TYPE)blockData.Type).levels[bitData.Level].health;
+                        imageObject.sprite = ((BIT_TYPE)blockData.Type).GetSprite(bitData.Level);
+                        var startingHealth = ((BIT_TYPE)blockData.Type).GetRemoteData().levels[bitData.Level].health;
 
                         float healthPercentage = bitData.Health / startingHealth;
 
@@ -605,7 +605,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
+            imageObject.sprite = PART_TYPE.EMPTY.GetSprite();
         }
 
         public static List<IAttachable> ImportBlockDatas(this List<IBlockData> blockDatas, bool inScrapyardForm)

@@ -143,8 +143,6 @@ namespace StarSalvager.Utilities.Extensions
             Transform botDisplayRectTransform = containerRect.transform;
 
             var damageProfile = FactoryManager.Instance.DamageProfile;
-            var partFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-
 
             foreach (var coordinate in coordinates)
             {
@@ -158,7 +156,7 @@ namespace StarSalvager.Utilities.Extensions
 
                 BotDisplaySetPosition(rect, coordinate.x, coordinate.y);
 
-                imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
+                imageObject.sprite = PART_TYPE.EMPTY.GetSprite();
                 /*if (coordinate == Vector2Int.zero)
                 {
                     imageObject.sprite = partFactory.GetProfileData(PART_TYPE.CORE).GetSprite();
@@ -182,7 +180,7 @@ namespace StarSalvager.Utilities.Extensions
 
             BotDisplaySetPosition(rect, 0, 0);
 
-            imageObject.sprite = partFactory.GetProfileData(PART_TYPE.EMPTY).GetSprite();
+            imageObject.sprite = PART_TYPE.EMPTY.GetSprite();
         }
     }
 }

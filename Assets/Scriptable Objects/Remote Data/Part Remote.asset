@@ -284,14 +284,14 @@ MonoBehaviour:
     description: A long range, trigger-fired projectile weapon.  Has a quick cooldown.
     dataTest:
     - key: Damage
-      value: 10
+      value: 20
     - key: Projectile
       value: f4741159-a277-4dc0-97ca-849327e73192
     - key: Cooldown
-      value: 0.8
+      value: 3
     isManual: 1
     category: 3
-    ammoUseCost: 2
+    ammoUseCost: 10
     PatchSockets: 2
   - isImplemented: 1
     partType: 38
