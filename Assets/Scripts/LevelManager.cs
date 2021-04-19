@@ -496,12 +496,7 @@ namespace StarSalvager
             WaveEndSummaryData.CompletedWave = Globals.CurrentWave;
             WaveEndSummaryData.WaveEndTitle = $"Wave {Globals.CurrentWave + 1} Complete";
 
-            //int progressionSector = Globals.CurrentSector;
-            string endWaveMessage;
-
-            endWaveMessage = "Wave Complete!";
-
-            Toast.AddToast(endWaveMessage);
+            //Toast.AddToast("Wave Complete!");
 
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
@@ -543,7 +538,9 @@ namespace StarSalvager
             if (BotInLevel.CanUseResources)
             {
                 GameUi.SetCurrentWaveText("Complete");
-
+                
+                Toast.AddToast("Wave Complete!");
+                
                 BotInLevel.CanUseResources = false;
             }
 

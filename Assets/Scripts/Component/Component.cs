@@ -49,7 +49,7 @@ namespace StarSalvager
 
         private Vector3 GetTowardsPlayer()
         {
-            if (IsRecycled)
+            if (IsRecycled || GameManager.IsState(GameState.LevelBotDead))
                 return Vector3.zero;
             
             var playerLocation = LevelManager.Instance.BotInLevel.transform.position;
