@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Values;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -244,7 +245,7 @@ namespace StarSalvager.AI
                     Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare),
                     shootDirection,
                     1f,
-                    "Player",
+                    new[] {TagsHelper.PLAYER},
                     null,
                     0f,
                     false,

@@ -62,7 +62,7 @@ namespace StarSalvager.AI
 
         public virtual void Init(ProjectileProfileData profileData, 
             CollidableBase target, 
-            string collisionTag,
+            string[] collisionTags,
             float damage,
             float rangeBoost,
             Vector2 direction, 
@@ -74,7 +74,7 @@ namespace StarSalvager.AI
 
             _target = target;
 
-            CollisionTag = collisionTag;
+            CollisionTags = collisionTags;
             _damageAmount = damage;
 
             TravelDirectionNormalized = direction;

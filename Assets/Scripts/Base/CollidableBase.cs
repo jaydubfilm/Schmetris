@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace StarSalvager
     {
         private bool _useCollision = true;
 
-        protected virtual string CollisionTag { get; set; } = "Player";
+        protected virtual string[] CollisionTags { get; set; } = {TagsHelper.PLAYER};
 
         protected virtual bool useCollisionStay => true;
 
@@ -49,7 +50,7 @@ namespace StarSalvager
             if (!_useCollision)
                 return;
             
-            if (!other.gameObject.CompareTag(CollisionTag))
+            if (!other.gameObject.CompareTags(CollisionTags))
                 return;
 
             var contacts = new ContactPoint2D[5];
@@ -70,7 +71,7 @@ namespace StarSalvager
             if (!_useCollision || !useCollisionStay)
                 return;
             
-            if (!other.gameObject.CompareTag(CollisionTag))
+            if (!other.gameObject.CompareTags(CollisionTags))
                 return;
 
             var contacts = new ContactPoint2D[5];

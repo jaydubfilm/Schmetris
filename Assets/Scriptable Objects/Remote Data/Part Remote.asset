@@ -81,6 +81,10 @@ MonoBehaviour:
     PartType: 15
     partType: Blaster
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 1
+    PartType: 43
+    partType: Blitz
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   partRemoteData:
   - isImplemented: 1
     partType: 1
@@ -412,4 +416,20 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 5
+    PatchSockets: 2
+  - isImplemented: 1
+    partType: 43
+    name: Blitz
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 1
+    - key: Damage
+      value: 10
+    - key: Projectile
+      value: 7a337343-8456-42a8-88e6-426706cb63cb
+    isManual: 1
+    category: 4
+    ammoUseCost: 10
     PatchSockets: 2

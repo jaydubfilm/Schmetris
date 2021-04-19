@@ -1,4 +1,4 @@
-﻿namespace StarSalvager.Utilities
+﻿namespace StarSalvager.Utilities.Helpers
 {
     public static class LayerHelper
     {
