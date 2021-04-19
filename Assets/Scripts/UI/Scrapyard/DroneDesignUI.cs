@@ -445,7 +445,7 @@ namespace StarSalvager.UI.Scrapyard
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
-            repairButtonText.text = $"Repair {finalCost}";
+            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteMap.GEAR_ICON}";
             repairButton.interactable = !(finalCost > components);
         }
 

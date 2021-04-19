@@ -593,6 +593,7 @@ namespace StarSalvager.Utilities.Inputs
 
         private void SpeedChange(InputAction.CallbackContext ctx)
         {
+#if UNITY_EDITOR
             if (Console.Open)
                 return;
 
@@ -609,6 +610,7 @@ namespace StarSalvager.Utilities.Inputs
             {
                 Globals.IncreaseFallSpeed();
             }
+#endif
         }
 
         private void Dash(InputAction.CallbackContext ctx)
