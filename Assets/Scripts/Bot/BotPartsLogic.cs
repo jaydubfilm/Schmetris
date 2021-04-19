@@ -1730,6 +1730,7 @@ namespace StarSalvager
             var rot = part.transform.eulerAngles.z + 90;
 
             var blasterProjectile = CreateBlasterEffect();
+            blasterProjectile.transform.position = fromPosition;
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
