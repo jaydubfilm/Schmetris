@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   testingFeatures: 0
-  asteroidDamage: 10
+  asteroidDamage: 11
   gameUIResourceThreshold: 0.33
   missionReminderFrequency: 1
   numCurrentTrackedMissionMax: 3
