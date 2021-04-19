@@ -15,6 +15,7 @@ using System.Linq;
 using StarSalvager.Parts.Data;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Projectiles;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -924,7 +925,7 @@ namespace StarSalvager
 
             //TODO: Make us able to pass multiple tags so a shot can hit multiple types of targets
             CollidableBase fireTarget = EnemyManager.GetClosestEnemy(part.transform.position, range);
-            var tag = "Enemy";
+            var tag = TagsHelper.ENEMY;
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (fireTarget == null)
             {
@@ -933,9 +934,10 @@ namespace StarSalvager
                 {
                     return;
                 }
-                else if (fireTarget is SpaceJunk)
+
+                if (fireTarget is SpaceJunk)
                 {
-                    tag = "Space Junk";
+                    tag = TagsHelper.SPACE_JUNK;
                 }
             }
 
@@ -1030,7 +1032,7 @@ namespace StarSalvager
             }
         }
 
-        private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, params string[] collisionTags)
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
@@ -1038,16 +1040,8 @@ namespace StarSalvager
 
 
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
-            //var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
-            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
-                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
-
-            /*if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
-                HasPartGrade(part, partRemoteData, out var multiplier))
-            {
-                damage *= multiplier;
-            }*/
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
 
             var position = bot.transform.position;
@@ -1077,7 +1071,7 @@ namespace StarSalvager
                     shootDirection,
                     damage,
                     rangeBoost,
-                    collisionTag,
+                    collisionTags,
                     vampireCaster,
                     vampirism,
                     true);
@@ -1270,6 +1264,9 @@ namespace StarSalvager
                     break;
                 case PART_TYPE.BLASTER:
                     TriggerBlaster(part);
+                    break;
+                case PART_TYPE.BLITZ:
+                    TriggerBlitz(part);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
@@ -1739,6 +1736,22 @@ namespace StarSalvager
             {
                 enemy.TryHitAt(enemy.Position, damage);
             }
+
+        }
+
+        private void TriggerBlitz(in Part part)
+        {
+
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var fromPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
+
+            var projectile = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+
+            CreateProjectile(part, partRemoteData, null, TagsHelper.ENEMY, TagsHelper.ASTEROID);
+
 
         }
 

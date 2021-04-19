@@ -17,6 +17,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Prototype;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
