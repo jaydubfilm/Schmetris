@@ -196,7 +196,7 @@ namespace StarSalvager.UI.Scrapyard
                             ScreenFade.Fade(() =>
                             {
                                 
-                                settingsWindowObject.SetActive(false);
+                                _windows[(int)Window.Settings].SetActive(false);
                                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
 
