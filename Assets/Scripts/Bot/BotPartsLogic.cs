@@ -835,12 +835,12 @@ namespace StarSalvager
         /*private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
-            /*if (!_partCooldownTimers.ContainsKey(part))
+            if (!_partCooldownTimers.ContainsKey(part))
             {
                 var cooldown = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Cooldown);
 
                 _partCooldownTimers.Add(part, new CooldownData(cooldown));
-            }*/
+            }
 
             //Cooldown
             //--------------------------------------------------------------------------------------------//
