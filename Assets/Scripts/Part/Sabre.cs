@@ -10,11 +10,16 @@ public class Sabre : CollidableBase
     public float minSize { get; private set; }
     public float maxSize { get; private set; }
 
-    protected override string[] CollisionTags { get; set; } = {TagsHelper.ENEMY};
-
     protected override bool useCollisionStay => false;
 
     private BoxCollider2D BoxCollider2D => collider as BoxCollider2D;
+
+    //Unity Functions
+    //====================================================================================================================//
+    private void Start()
+    {
+        CollisionTags = new[] {TagsHelper.ENEMY};
+    }
 
     //====================================================================================================================//
 
