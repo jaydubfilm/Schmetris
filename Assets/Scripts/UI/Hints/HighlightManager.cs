@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using Spine.Unity;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Debugging;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Interfaces;
 using UnityEngine;
 
@@ -169,7 +170,8 @@ namespace StarSalvager.UI.Hints
             maskParentRect.sizeDelta = highlightRect.size * sizeMultiplier;
 
 
-            TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            //TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            maskParentRect.TryFitInScreenBounds(CanvasRectTransform, edgeSpacing);
             
             TrySetCharacterPosition(RectToCanvasSpace(target), corner);
 
@@ -200,7 +202,8 @@ namespace StarSalvager.UI.Hints
             maskParentRect.localPosition = highlightRect.center;
             maskParentRect.sizeDelta = highlightRect.size * sizeMultiplier;
 
-            TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            //TryFitInScreenBounds(CanvasRectTransform.sizeDelta, edgeSpacing, ref maskParentRect);
+            maskParentRect.TryFitInScreenBounds(CanvasRectTransform, edgeSpacing);
 
             TrySetCharacterPosition(new Rect
             {
@@ -560,7 +563,7 @@ namespace StarSalvager.UI.Hints
             return ((RectTransform) canvas.transform).InverseTransformPoint(worldPosition);
         }
 
-        private static void TryFitInScreenBounds(in Vector2 canvasSize, in Vector2 spacing,
+        /*private static void TryFitInScreenBounds(in Vector2 canvasSize, in Vector2 spacing,
             ref RectTransform rectTransform)
         {
             var pos = rectTransform.localPosition;
@@ -592,7 +595,7 @@ namespace StarSalvager.UI.Hints
             }
 
             rectTransform.localPosition = pos + delta;
-        }
+        }*/
 
         private static Bounds WorldToCanvasSpaceBounds(in RectTransform canvasTransform, in Bounds worldSpaceBounds)
         {

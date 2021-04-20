@@ -526,13 +526,19 @@ namespace StarSalvager
         {
         }*/
 
+        private ScrapyardPart _hoveredPart;
         private void CheckForMousePartHover()
         {
             if (DroneDesignUi.HoveringStoragePartUIElement)
                 return;
             
             var show = TryHoverPart(out var partData);
+            
+            //Don't want to spam the showing of the UI
+            if(_hoveredPart == partData)
+                return;
 
+            _hoveredPart = partData;
             DroneDesignUi.ShowPartDetails(show, partData);
         }
 

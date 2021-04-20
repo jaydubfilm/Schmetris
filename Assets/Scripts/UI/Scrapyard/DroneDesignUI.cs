@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -460,87 +461,66 @@ namespace StarSalvager.UI.Scrapyard
         }
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
-            partDetailsContainerRectTransform.gameObject.SetActive(show);
-
-            if (!show)
-                return;
-
-            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
-            //TODO Get the world position of the object, convert to canvas space
-            var screenPoint =
-                CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
-                out var localPoint);
-
-            partDetailsContainerRectTransform.anchoredPosition = localPoint;
-
-            //====================================================================================================================//
-
-
-            var partData = scrapyardPart.ToBlockData();
-
-            //====================================================================================================================//
-
-            var partType = (PART_TYPE) partData.Type;
-
-            var partRemote = partType.GetRemoteData();
-            var partProfile = partType.GetProfileData();
-
-
-            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-
-            //====================================================================================================================//
-
-            partNameText.text = partRemote.name;
-            partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
-            partDescriptionText.text = partRemote.description;
+            var screenPoint = show
+                ? CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right)
+                : Vector3.zero;
             
-            partImage.sprite = partProfile.Sprite;
-            partImage.color = partRemote.category.GetColor();
+            var partData = show ? scrapyardPart.ToBlockData() : new PartData();
 
-            var altDetails = partData.GetPartDetails(partRemote);
-            //partDetailsText.text = $"{partRemote.description}\n{altDetails}";
-            partDetailsText.text = $"{altDetails}";
-
-            for (var i = 0; i < partData.Patches.Length; i++)
-            {
-                if(i >= patchUis.Length)
-                    continue;
-                
-                
-                var patchData = partData.Patches[i];
-                var type = (PATCH_TYPE) patchData.Type;
-
-                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
-
-                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
-                    ? string.Empty
-                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
-
-            }
-
-            //====================================================================================================================//
+            ShowPartDetails(show, partData, screenPoint);
         }
         
         public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
         {
-            partDetailsContainerRectTransform.gameObject.SetActive(show);
-
             HoveringStoragePartUIElement = show;
+            
+            var screenPoint = show ? RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x)
+                    : Vector2.zero;
+
+            ShowPartDetails(show, partData, screenPoint);
+        }
+
+        private void ShowPartDetails(in bool show, in PartData partData, in Vector2 screenPoint)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            void SetRectSize(in TMP_Text tmpText, in float multiplier = 1.388f)
+            {
+                var lineCount = tmpText.GetTextInfo(tmpText.text).lineCount;
+                var lineSize = tmpText.fontSize * multiplier;
+                var rectTrans = (RectTransform)tmpText.transform;
+                var sizeDelta = rectTrans.sizeDelta;
+
+                if (tmpText.GetComponent<LayoutElement>() is LayoutElement layoutElement)
+                {
+                    sizeDelta.y = Mathf.Max(layoutElement.minHeight, lineSize * lineCount);
+                    layoutElement.preferredHeight = sizeDelta.y;
+                }
+                else
+                {
+                    sizeDelta.y = lineSize * lineCount;
+                }
+                
+                
+                rectTrans.sizeDelta = sizeDelta;       
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
 
             if (!show)
                 return;
-
+            
             var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
 
-            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
-                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
-            
-            
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
                 out var localPoint);
 
             partDetailsContainerRectTransform.anchoredPosition = localPoint;
+            partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
 
             //====================================================================================================================//
 
@@ -558,7 +538,13 @@ namespace StarSalvager.UI.Scrapyard
             partImage.sprite = partProfile.Sprite;
             partImage.color = partRemote.category.GetColor();
 
-            partDetailsText.text = partData.GetPartDetails( partRemote);
+            partDetailsText.text = partData.GetPartDetails(partRemote);
+
+            //Resize the details text to accomodate the text
+            //--------------------------------------------------------------------------------------------------------//
+            SetRectSize(partDetailsText);
+            SetRectSize(partDescriptionText);
+            //--------------------------------------------------------------------------------------------------------//
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
@@ -572,11 +558,13 @@ namespace StarSalvager.UI.Scrapyard
                     : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
 
             }
+            
+            partDetailsContainerRectTransform.gameObject.SetActive(true);
 
             //====================================================================================================================//
         }
 
         //====================================================================================================================//
-        
+
     }
 }

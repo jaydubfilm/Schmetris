@@ -116,46 +116,6 @@ namespace StarSalvager.Utilities.Extensions
                 outList.Add(partDetail);
             }
 
-            /*var modifiers = new[]
-            {
-                partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage),
-                partRemote.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown),
-                partRemote.TryGetValue(PartProperties.KEYS.Radius, out int range),
-                partRemote.TryGetValue(PartProperties.KEYS.Projectile, out string projectileID),
-                partRemote.TryGetValue(PartProperties.KEYS.Speed, out float speed),
-                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal),
-                partRemote.TryGetValue(PartProperties.KEYS.Health, out float Health),
-            };
-
-            //var outList = new List<PartDetail>();
-
-            if (modifiers[0])
-                outList.Add(new PartDetail("Damage", damage * multipliers[PATCH_TYPE.POWER]));
-
-            if (partRemote.ammoUseCost > 0)
-                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
-
-            if (modifiers[1])
-                outList.Add(new PartDetail("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
-
-            if (modifiers[2])
-            {
-                outList.Add(new PartDetail("Range", range * multipliers[PATCH_TYPE.RANGE]));
-            }
-            else if (modifiers[3])
-            {
-                var projectileRange = FactoryManager.Instance.ProjectileProfile
-                    .GetProjectileProfileData(projectileID).ProjectileRange;
-
-                outList.Add(new PartDetail("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]));
-            }
-
-            if (modifiers[4])
-                outList.Add(new PartDetail("Speed", speed));
-
-            if (modifiers[5])
-                outList.Add(new PartDetail("Heal", heal));*/
-
             return string.Join("\n", outList.Select(x => x.ToString()));
         }
 
