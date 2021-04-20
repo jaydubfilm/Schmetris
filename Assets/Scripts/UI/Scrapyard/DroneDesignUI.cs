@@ -488,6 +488,8 @@ namespace StarSalvager.UI.Scrapyard
 
             void SetRectSize(in TMP_Text tmpText, in float multiplier = 1.388f)
             {
+                tmpText.ForceMeshUpdate();
+
                 var lineCount = tmpText.GetTextInfo(tmpText.text).lineCount;
                 var lineSize = tmpText.fontSize * multiplier;
                 var rectTrans = (RectTransform)tmpText.transform;
@@ -507,6 +509,21 @@ namespace StarSalvager.UI.Scrapyard
                 rectTrans.sizeDelta = sizeDelta;       
             }
             
+            IEnumerator ResizeDelayedCoroutine(params TMP_Text[] args)
+            {
+                foreach (var tmpText in args)
+                {
+                    tmpText.ForceMeshUpdate();
+                }
+                
+                yield return new WaitForEndOfFrame();
+
+                foreach (var tmpText in args)
+                {
+                    SetRectSize(tmpText);
+                }
+            }
+            
             //--------------------------------------------------------------------------------------------------------//
             
             partDetailsContainerRectTransform.gameObject.SetActive(show);
@@ -520,7 +537,6 @@ namespace StarSalvager.UI.Scrapyard
                 out var localPoint);
 
             partDetailsContainerRectTransform.anchoredPosition = localPoint;
-            partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
 
             //====================================================================================================================//
 
@@ -540,14 +556,11 @@ namespace StarSalvager.UI.Scrapyard
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 
-            //Resize the details text to accomodate the text
-            //--------------------------------------------------------------------------------------------------------//
-            SetRectSize(partDetailsText);
-            SetRectSize(partDescriptionText);
-            //--------------------------------------------------------------------------------------------------------//
-
             for (var i = 0; i < partData.Patches.Length; i++)
             {
+                if (i >= patchUis.Length)
+                    break;
+                
                 var patchData = partData.Patches[i];
                 var type = (PATCH_TYPE) patchData.Type;
 
@@ -558,12 +571,15 @@ namespace StarSalvager.UI.Scrapyard
                     : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
 
             }
-            
-            partDetailsContainerRectTransform.gameObject.SetActive(true);
 
             //====================================================================================================================//
-        }
 
+            //Resize the details text to accomodate the text
+            StartCoroutine(ResizeDelayedCoroutine(partDetailsText, partDescriptionText));
+            
+            partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
+            
+        }
         //====================================================================================================================//
 
     }
