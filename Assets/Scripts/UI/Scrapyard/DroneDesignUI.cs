@@ -520,6 +520,7 @@ namespace StarSalvager.UI.Scrapyard
                 out var localPoint);
 
             partDetailsContainerRectTransform.anchoredPosition = localPoint;
+            partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
 
             //====================================================================================================================//
 
@@ -537,14 +538,13 @@ namespace StarSalvager.UI.Scrapyard
             partImage.sprite = partProfile.Sprite;
             partImage.color = partRemote.category.GetColor();
 
-            partDetailsText.text = partData.GetPartDetails( partRemote, out var lines);
+            partDetailsText.text = partData.GetPartDetails(partRemote);
 
             //Resize the details text to accomodate the text
             //--------------------------------------------------------------------------------------------------------//
             SetRectSize(partDetailsText);
             SetRectSize(partDescriptionText);
             //--------------------------------------------------------------------------------------------------------//
-            
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
@@ -560,7 +560,6 @@ namespace StarSalvager.UI.Scrapyard
             }
             
             partDetailsContainerRectTransform.gameObject.SetActive(true);
-
 
             //====================================================================================================================//
         }

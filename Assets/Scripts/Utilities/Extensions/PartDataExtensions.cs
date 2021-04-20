@@ -32,16 +32,14 @@ namespace StarSalvager.Utilities.Extensions
             }
         }
         
-        public static string GetPartDetails(this PartData partData, out int count)
+        public static string GetPartDetails(this PartData partData)
         {
             var partRemoteData = ((PART_TYPE) partData.Type).GetRemoteData();
-            return partData.GetPartDetails(partRemoteData, out count);
+            return partData.GetPartDetails(partRemoteData);
         }
         
-        public static string GetPartDetails(this PartData partData, in PartRemoteData partRemoteData, out int count)
+        public static string GetPartDetails(this PartData partData, in PartRemoteData partRemoteData)
         {
-            count = 0;
-            
             var multipliers = partData.Patches.GetPatchMultipliers(
                 PATCH_TYPE.POWER,
                 PATCH_TYPE.RANGE,
@@ -117,8 +115,6 @@ namespace StarSalvager.Utilities.Extensions
                 var partDetail = new PartDetail(propertyName, total);
                 outList.Add(partDetail);
             }
-
-            count = outList.Count;
 
             return string.Join("\n", outList.Select(x => x.ToString()));
         }
