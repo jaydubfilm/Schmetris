@@ -19,6 +19,25 @@ namespace StarSalvager.Utilities
             
             return new Vector2(x, y) * radius; //Vector2 is fine, if you're in 2D
         }
+
+        public static Vector2 Abs(in Vector2 vector2)
+        {
+            return new Vector2
+            {
+                x = Mathf.Abs(vector2.x),
+                y = Mathf.Abs(vector2.y)
+            };
+        }
+        
+        public static Vector3 Abs(in Vector3 vector3)
+        {
+            return new Vector3
+            {
+                x = Mathf.Abs(vector3.x),
+                y = Mathf.Abs(vector3.y),
+                z = Mathf.Abs(vector3.z),
+            };
+        }
         
         //Custom Additions
         //====================================================================================================================//

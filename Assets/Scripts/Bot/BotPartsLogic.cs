@@ -12,9 +12,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Cameras;
 using StarSalvager.Parts.Data;
 using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -39,6 +41,8 @@ namespace StarSalvager
         }
 
         private static PART_TYPE[] _triggerPartTypes;
+
+        private readonly bool[] _triggerPartStates = new bool[5];
         
         #region Properties
 
@@ -112,7 +116,6 @@ namespace StarSalvager
 
         private Dictionary<Part, float> _repairTimers;
         private Dictionary<Part, float> _shieldTimers;
-        //private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -128,6 +131,23 @@ namespace StarSalvager
         private bool _sabreActive;
         private Sabre _sabreObject;
         private Dictionary<Part, float> _sabreTimers;
+
+        //Grenade Properties
+        //====================================================================================================================//
+        
+        [SerializeField]
+        private float chargeSpeed;
+        [SerializeField]
+        private GameObject reticlePrefab;
+        [SerializeField]
+        private GrenadeProjectile grenadeProjectilePrefab;
+
+        private float _reticleDist;
+        private Transform _reticle;
+        
+        private bool _grenadeCharging;
+        private bool _grenadeTriggered;
+        private float _yScreenTop;
 
 
         //Heal Cooldown Timer
@@ -146,7 +166,11 @@ namespace StarSalvager
         //==============================================================================================================//
 
         #region Unity Functions
-
+        private void OnEnable()
+        {
+            InputManager.TriggerWeaponStateChange += TriggerWeaponStateChange;
+        }
+        
         private void Start()
         {
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -165,8 +189,13 @@ namespace StarSalvager
             }
             
         }
+        private void OnDisable()
+        {
+            InputManager.TriggerWeaponStateChange -= TriggerWeaponStateChange;
+        }
 
         #endregion //Unity Functions
+
 
         //Init Parts
         //====================================================================================================================//
@@ -435,6 +464,14 @@ namespace StarSalvager
                         break;
                     //--------------------------------------------------------------------------------------------------------//
                 }
+            }
+
+            for (var i = 0; i < _triggerPartStates.Length; i++)
+            {
+                if(_triggerPartStates[i] == false)
+                    continue;
+                
+                TryTriggerPart(i);
             }
 
             foreach (var triggerPart in _triggerParts)
@@ -845,13 +882,15 @@ namespace StarSalvager
             if (timer <= 0f)
                 return;
 
-            //Wait for the shield to be inactive before the cooldown can begin
-            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
-                return;
-            
-            if (part.Type == PART_TYPE.SABRE && _sabreActive)
-                return;
-            
+            switch (part.Type)
+            {
+                //Wait for the shield to be inactive before the cooldown can begin
+                case PART_TYPE.SHIELD when _shieldActive:
+                case PART_TYPE.SABRE when _sabreActive:
+                case PART_TYPE.GRENADE when _grenadeCharging:
+                    return;
+            }
+
             //Find the index of the ui element to show cooldown
             var tempPart = part;
             //FIXME Ew...
@@ -1048,11 +1087,20 @@ namespace StarSalvager
 
         #region Trigger Parts
 
+        private void TriggerWeaponStateChange(int index, bool state)
+        {
+            //Checks to see if the button went from Pressed to Depressed :(
+            if (state == false && _triggerPartStates[index])
+                TriggerPartDepressed(index);
+            
+            _triggerPartStates[index] = state;
+        }
+
         /// <summary>
         /// This should use values similar to an array (ie. starts at [0])
         /// </summary>
         /// <param name="index"></param>
-        public void TryTriggerPart(in int index)
+        private void TryTriggerPart(in int index)
         {
             Part GetPart(in BIT_TYPE type)
             {
@@ -1066,31 +1114,14 @@ namespace StarSalvager
             var bitType = Constants.BIT_ORDER[index];
             var part = GetPart(bitType);
 
-            /*switch (index)
-            {
-                case 0: //Blue, West
-                    part = GetPart(BIT_TYPE.RED);
-                    break;
-                case 1: //Red, South
-                    part =  GetPart(BIT_TYPE.YELLOW);
-                    break;
-                case 2: //Grey, North
-                    part =  GetPart(BIT_TYPE.GREY);
-                    break;
-                case 3: //Yellow, East
-                    part =  GetPart(BIT_TYPE.BLUE);
-                    break;
-            }*/
-
             if (part is null)
                 return;
             
-            //var part = _triggerParts[index];
-
             switch (part.Type)
             {
-                case PART_TYPE.BOMB:
-                    TriggerBomb(part);
+                
+                case PART_TYPE.GRENADE:
+                    TriggerGrenade(part, true);
                     break;
                 case PART_TYPE.FREEZE:
                     TriggerFreeze(part);
@@ -1129,6 +1160,46 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
         }
+        
+        private void TriggerPartDepressed(in int index)
+        {
+            Part GetPart(in BIT_TYPE type)
+            {
+                var temp = type;
+                return _triggerParts.FirstOrDefault(x => x.category == temp);
+            }
+            
+            if (_triggerParts == null || _triggerParts.Count == 0)
+                return;
+
+            var bitType = Constants.BIT_ORDER[index];
+            var part = GetPart(bitType);
+
+            if (part is null)
+                return;
+            
+            switch (part.Type)
+            {
+                case PART_TYPE.GRENADE:
+                    //TriggerBomb(part);
+                    TriggerGrenade(part, false);
+                    break;
+                case PART_TYPE.FREEZE:
+                case PART_TYPE.SHIELD:
+                case PART_TYPE.RAILGUN:
+                case PART_TYPE.TRACTOR:
+                case PART_TYPE.HEAL:
+                case PART_TYPE.DECOY:
+                case PART_TYPE.BITSPLOSION:
+                case PART_TYPE.HOOVER:
+                case PART_TYPE.SABRE:
+                case PART_TYPE.BLASTER:
+                case PART_TYPE.BLITZ:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
+            }
+        }
 
         //====================================================================================================================//
 
@@ -1146,9 +1217,7 @@ namespace StarSalvager
                 return false;
             }
 
-            partRemoteData = FactoryManager.Instance
-                .GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
+            partRemoteData = part.Type.GetRemoteData();
             
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
             {
@@ -1174,29 +1243,80 @@ namespace StarSalvager
             return true;
         }
         
-        private void TriggerBomb(in Part part)
+        private void TriggerGrenade(in Part part, in bool pressedState)
         {
-            if (!CanUseTriggerPart(part, out var partRemoteData))
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            void TriggerGrenadeLaunch()
+            {
+                var partRemoteData = PART_TYPE.GRENADE.GetRemoteData();
+
+                var botPosition = bot.transform.position;
+                var diameter = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius) * 2;
+                var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+                var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
+                
+                var grenade = Instantiate(grenadeProjectilePrefab, botPosition, Quaternion.identity);
+                grenade.Init(botPosition,
+                    botPosition + (Vector3.up * _reticleDist),speed, damage, diameter);
+
+                _grenadeTriggered = true;
+                Destroy(_reticle.gameObject);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            //If the player continues to hold the button, even though this has already been triggered
+            if (pressedState && _grenadeTriggered)
+                return;
+            
+            //If the player just pressed the button, subtract the cost of trigger
+            //This should only trigger on the first initial press of the button.
+            if(pressedState && !_grenadeCharging && !_grenadeTriggered)
+            {
+                if (!CanUseTriggerPart(part, out _))
+                    return;
+                
+                _reticle = Instantiate(reticlePrefab, bot.transform.position, Quaternion.identity).transform;
+                _grenadeCharging = true;
+
+                _yScreenTop = CameraController.VisibleCameraRect.yMax;
+                
+                //Wanted to set a min Dist
+                _reticleDist = 2;
+            }
+
+            //This is a cooldown safeguard, where _bombCharging can only be enabled when CanUseTriggerPart() is true
+            if (_grenadeCharging == false)
                 return;
 
-            //Damage all the enemies
-            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
-                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
-            
-            if(!partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius))
-                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
-
-            var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
-            foreach (var enemy in enemies)
+            //Execute on the frames where the button has been pressed
+            if (pressedState)
             {
-                enemy.TryHitAt(enemy.transform.position, damage);
+                _reticleDist += chargeSpeed * Time.deltaTime;
+                //Position should always be relative to the bot
+                var newPosition = bot.transform.position + (Vector3.up * _reticleDist);
+
+                //See if the Grenade waited too long, Force launch
+                if (newPosition.y >= _yScreenTop)
+                {
+                    Debug.Log("Forced Launch Grenade");
+                    TriggerGrenadeLaunch();
+                    return;
+                }
+                
+                _reticle.position = newPosition;
             }
-            
-            //EnemyManager.DamageAllEnemies(damage);
-
-            CreateBombEffect(part, radius * 2);
-
-            AudioController.PlaySound(SOUND.BOMB_BLAST);
+            else
+            {
+                if(!_grenadeTriggered)
+                    TriggerGrenadeLaunch();
+                
+                _grenadeCharging = false;
+                _grenadeTriggered = false;
+                _reticleDist = 0;
+            }
         }
 
         private void TriggerFreeze(in Part part)
