@@ -127,7 +127,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             titleText.text = partName;
             patchText.text = partData.GetPatchNames();
-            descriptionText.text = partData.GetPartDetails();
+            descriptionText.text = partData.GetPartDetails(out _);
         }
         
         private void ShowPreviewChanges(in PartData partData, in PatchData patchData)
