@@ -73,16 +73,6 @@ MonoBehaviour:
     RFRCD: 0
     part: Freeze
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
-  - PartType: 7
-    POWER: 1
-    AOE: 0
-    RATE: 1
-    EFF: 1
-    RANGE: 0
-    BURN: 0
-    RFRCD: 0
-    part: Bomb
-    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   - PartType: 14
     POWER: 1
     AOE: 0
@@ -126,9 +116,9 @@ MonoBehaviour:
   - PartType: 36
     POWER: 1
     AOE: 0
-    RATE: 0
+    RATE: 1
     EFF: 1
-    RANGE: 1
+    RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Railgun
@@ -143,16 +133,6 @@ MonoBehaviour:
     RFRCD: 0
     part: Tractor Beam
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
-  - PartType: 39
-    POWER: 1
-    AOE: 0
-    RATE: 0
-    EFF: 0
-    RANGE: 0
-    BURN: 0
-    RFRCD: 0
-    part: Heal
-    color: {r: 0, g: 0.9620137, b: 1, a: 1}
   - PartType: 41
     POWER: 0
     AOE: 0
@@ -173,6 +153,36 @@ MonoBehaviour:
     RFRCD: 0
     part: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - PartType: 15
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Blaster
+    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - PartType: 19
+    POWER: 1
+    AOE: 0
+    RATE: 1
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Grenade
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - PartType: 43
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Blitz
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   patchRemoteData:
   - isImplemented: 1
     name: POWER

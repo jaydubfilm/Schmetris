@@ -22,6 +22,7 @@ namespace StarSalvager.Utilities.Inputs
     }
     public class InputManager : Singleton<InputManager>, IInput, IPausable
     {
+        public static Action<int, bool> TriggerWeaponStateChange;
         public static Action<string> InputDeviceChanged;
 
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
@@ -171,7 +172,7 @@ namespace StarSalvager.Utilities.Inputs
             DasChecksRotate();
 
             UpdateShuffleCountdown();
-            TryUpdateTriggers();
+            //TryUpdateTriggers();
         }
 
         private void OnEnable()
@@ -256,7 +257,7 @@ namespace StarSalvager.Utilities.Inputs
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            
+
             switch (actionMap)
             {
                 case ACTION_MAP.DEFAULT:
@@ -516,37 +517,46 @@ namespace StarSalvager.Utilities.Inputs
 
             if (direction == DIRECTION.NULL)
             {
-                TriggerSmartWeapon(0, 0);
-                TriggerSmartWeapon(1, 0);
-                TriggerSmartWeapon(3, 0);
-                TriggerSmartWeapon(4, 0);
+                for (var i = 0; i < 5; i++)
+                {
+                    TriggerWeaponStateChange?.Invoke(i, false);
+                }
                 return;
             }
 
-            var input = new Vector2(Mathf.Abs(rawDirection.x), Mathf.Abs(rawDirection.y));
-
+            var input = Mathfx.Abs(rawDirection);//new Vector2(Mathf.Abs(rawDirection.x), Mathf.Abs(rawDirection.y));
+            int index;
+            bool state;
             switch (direction)
             {
                 case DIRECTION.UP:
-                    TriggerSmartWeapon(0, input.y);
+                    index = 0;
+                    state = input.y == 1f;
                     break;
                 case DIRECTION.DOWN:
-                    TriggerSmartWeapon(1, input.y);
+                    index = 1;
+                    state = input.y == 1f;
                     break;
                 case DIRECTION.LEFT:
-                    TriggerSmartWeapon(3, input.x);
+                    index = 3;
+                    state = input.x == 1f;
                     break;
                 case DIRECTION.RIGHT:
-                    TriggerSmartWeapon(4, input.x);
+                    index = 4;
+                    state = input.x == 1f;
                     break;
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            TriggerWeaponStateChange?.Invoke(index, state);
         }
 
-        private void TriggerSmartWeapon(in int index, in float input)
+        /*private void TriggerSmartWeapon(in int index, in float input)
         {
+            var isPressed = input == 1f;
+
             _triggersPressed[index] = input == 1f;
         }
 
@@ -571,7 +581,7 @@ namespace StarSalvager.Utilities.Inputs
 
             //FIXME Need to ensure that I map appropriate inputs to associated bots
             _bots[0].BotPartsLogic.TryTriggerPart(index);
-        }
+        }*/
 
         //====================================================================================================================//
 
