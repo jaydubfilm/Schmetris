@@ -72,7 +72,10 @@ MonoBehaviour:
   slices: 40
   useMagnet: 1
   currentMagnet: 0
-  blasterProjectilePrefab: {fileID: 3945869062185874666, guid: 892a2d134b4757348aaa34a9f035bf0a,
+  chargeSpeed: 10
+  reticlePrefab: {fileID: 5157154050622779596, guid: 5b7a31dd9e1e15043b7424c74f59e5e5,
+    type: 3}
+  grenadeProjectilePrefab: {fileID: -5160676037206861993, guid: 95ed35c614ec72445aa6d65c4d0e40d9,
     type: 3}
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
