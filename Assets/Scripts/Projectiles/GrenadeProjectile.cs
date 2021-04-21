@@ -11,17 +11,17 @@ namespace StarSalvager.Projectiles
         private Vector3 _startPos, _endPos;
         private float _speed;
         private float _damage;
-        private float _range;
+        private float _radius;
 
         //====================================================================================================================//
         
-        public void Init(in Vector3 startPos, in Vector3 endPos, in float speed, in float damage, in float range)
+        public void Init(in Vector3 startPos, in Vector3 endPos, in float speed, in float damage, in float radius)
         {
             _startPos = startPos;
             _endPos = endPos;
             _speed = speed;
             _damage = damage;
-            _range = range;
+            _radius = radius;
 
             transform.position = _startPos;
         }
@@ -32,10 +32,10 @@ namespace StarSalvager.Projectiles
 
             if (distance <= 0.1f)
             {
-                CreateBombEffect(Position, _range);
+                CreateBombEffect(Position, _radius * 2f);
                 AudioController.PlaySound(SOUND.BOMB_BLAST);
                 
-                var enemies = LevelManager.Instance.EnemyManager.GetEnemiesInRange(Position, _range);
+                var enemies = LevelManager.Instance.EnemyManager.GetEnemiesInRange(Position, _radius);
 
                 foreach (var enemy in enemies)
                 {

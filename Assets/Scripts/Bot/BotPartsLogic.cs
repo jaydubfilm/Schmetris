@@ -1399,7 +1399,7 @@ namespace StarSalvager
                 var partRemoteData = PART_TYPE.GRENADE.GetRemoteData();
 
                 var botPosition = bot.transform.position;
-                var diameter = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius) * 2;
+                var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
                 var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
                 var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
 
@@ -1408,7 +1408,7 @@ namespace StarSalvager
                     .CreateGrenadeProjectile(botPosition, Quaternion.identity);
 
                 grenade.Init(botPosition,
-                    botPosition + (Vector3.up * _reticleDist),speed, damage, diameter);
+                    botPosition + (Vector3.up * _reticleDist),speed, damage, radius);
 
                 _grenadeTriggered = true;
                 Destroy(_reticle.gameObject);
