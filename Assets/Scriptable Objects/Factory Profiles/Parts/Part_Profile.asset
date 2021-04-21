@@ -43,7 +43,7 @@ MonoBehaviour:
     _sprite: {fileID: 7072333365704310619, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
     _animation: {fileID: 0}
-  - partType: 7
+  - partType: 19
     _sprite: {fileID: 6689235125664535697, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
     _animation: {fileID: 0}
