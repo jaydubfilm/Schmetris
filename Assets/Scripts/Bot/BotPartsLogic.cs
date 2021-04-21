@@ -20,6 +20,7 @@ using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 using Random = UnityEngine.Random;
@@ -171,12 +172,11 @@ namespace StarSalvager
         //Grenade Properties
         //====================================================================================================================//
 
+
         [SerializeField]
-        private float chargeSpeed;
-        [SerializeField]
-        private GameObject reticlePrefab;
-        [SerializeField]
-        private GrenadeProjectile grenadeProjectilePrefab;
+        private Sprite reticleSprite;
+
+        private float _chargeSpeed;
 
         private float _reticleDist;
         private Transform _reticle;
@@ -1403,7 +1403,10 @@ namespace StarSalvager
                 var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
                 var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
 
-                var grenade = Instantiate(grenadeProjectilePrefab, botPosition, Quaternion.identity);
+                var grenade = FactoryManager.Instance.
+                    GetFactory<ProjectileFactory>()
+                    .CreateGrenadeProjectile(botPosition, Quaternion.identity);
+
                 grenade.Init(botPosition,
                     botPosition + (Vector3.up * _reticleDist),speed, damage, diameter);
 
@@ -1424,7 +1427,12 @@ namespace StarSalvager
                 if (!CanUseTriggerPart(part, out _))
                     return;
 
-                _reticle = Instantiate(reticlePrefab, bot.transform.position, Quaternion.identity).transform;
+                var reticleSpriteRenderer =
+                    FactoryManager.Instance.GetFactory<EffectFactory>().CreateSimpleSpriteRenderer();
+                reticleSpriteRenderer.sprite = reticleSprite;
+
+                _chargeSpeed = PART_TYPE.GRENADE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Charge);
+                _reticle = reticleSpriteRenderer.transform;
                 _grenadeCharging = true;
 
                 _yScreenTop = CameraController.VisibleCameraRect.yMax;
@@ -1440,7 +1448,7 @@ namespace StarSalvager
             //Execute on the frames where the button has been pressed
             if (pressedState)
             {
-                _reticleDist += chargeSpeed * Time.deltaTime;
+                _reticleDist += _chargeSpeed * Time.deltaTime;
                 //Position should always be relative to the bot
                 var newPosition = bot.transform.position + (Vector3.up * _reticleDist);
 

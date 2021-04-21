@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbea9ecde00f6be479496e8d220f2a07, type: 3}
   m_Name: Effect_Profile
   m_EditorClassIdentifier: 
+  simpleSpritePrefab: {fileID: 5157154050622779596, guid: 5b7a31dd9e1e15043b7424c74f59e5e5,
+    type: 3}
   alertIconPrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
     type: 3}
   damageEffectPrefab: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,

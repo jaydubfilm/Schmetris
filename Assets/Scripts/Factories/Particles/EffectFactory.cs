@@ -85,9 +85,6 @@ namespace StarSalvager.Factories
                 case bool _ when type == typeof(Damage):
                     gameObject = CreateObject<T>(_effectProfileScriptableObject.damageEffectPrefab);
                     break;
-                /*case bool _ when type == typeof(Shield):
-                    gameObject = CreateObject<T>(_effectProfileScriptableObject.shieldPrototypePrefab);
-                    break;*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -214,97 +211,10 @@ namespace StarSalvager.Factories
             return gameObject;
         }
 
-        //Create Specific Prefabs
-        //============================================================================================================//
-
-        /*private GameObject CreateDamage()
+        public SpriteRenderer CreateSimpleSpriteRenderer()
         {
-            if (!Recycler.TryGrab<Damage>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.damageEffectPrefab);
-            }
-
-            return gameObject;
+            return Object.Instantiate(_effectProfileScriptableObject.simpleSpritePrefab).GetComponent<SpriteRenderer>();
         }
-        
-        private GameObject CreateShield()
-        {
-            if (!Recycler.TryGrab<Shield>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.shieldPrototypePrefab);
-            }
-
-            return gameObject;
-        }
-
-        private GameObject CreateExplosion()
-        {
-            throw new NotImplementedException();
-            /*if (!Recycler.TryGrab<Explosion>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.explosionPrefab);
-            }
-
-            return gameObject;#1#
-        }
-        
-        private GameObject CreateAlert()
-        {
-            if (!Recycler.TryGrab<FlashSprite>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.alertIconPrefab);
-            }
-
-            return gameObject;
-        }
-        
-        private GameObject CreateLabel()
-        {
-            if (!Recycler.TryGrab<TextMeshPro>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.labelPrefab);
-            }
-
-            return gameObject;
-        }
-
-        private GameObject CreateFloatingText()
-        {
-            if (!Recycler.TryGrab<FloatingText>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.floatingTextPrefab);
-            }
-
-            return gameObject;
-        }
-        private GameObject CreateConnectedSprite()
-        {
-            if (!Recycler.TryGrab<ConnectedSpriteObject>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.magnetIconSpritePrefab);
-            }
-
-            return gameObject;
-        }
-        private GameObject CreateFadeSprite()
-        {
-            if (!Recycler.TryGrab<FadeSprite>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.fadeSpritePrefab);
-            }
-
-            return gameObject;
-        }
-        
-        private GameObject CreateLineShrink()
-        {
-            if (!Recycler.TryGrab<LineShrink>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_effectProfileScriptableObject.lineShrinkPrefab);
-            }
-
-            return gameObject;
-        }*/
 
         //====================================================================================================================//
 
