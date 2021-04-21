@@ -1391,6 +1391,14 @@ namespace StarSalvager
                     //If something hit a part, we actually want to damage the bot as a whole
                     ChangeHealth(applyDamage);
                     return;
+                case EnemyAttachable enemyAttachable:
+                    //If the enemy is knocked, but not killed we want them to act as if they were bumped
+                    enemyAttachable.OnBumped();
+                    closestHealth.ChangeHealth(applyDamage);
+                    break;
+                default:
+                    closestHealth.ChangeHealth(applyDamage);
+                    break;
             }
 
             if(withSound && !attachableDestroyed)
@@ -1410,30 +1418,10 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case Bit bit:
                     CreateBitDeathEffect(bit.Type, bit.transform.position);
-                    RemoveAttachable(closestAttachable);
-                    break;
-                //----------------------------------------------------------------------------------------------------//
-                /*case Part deadPart when deadPart.Type == PART_TYPE.CORE:
-                    CreateCoreDeathEffect();
-
-                    cinemachineImpulseSource.GenerateImpulse(5);
-                    GameUi.FlashBorder();
-
-                    Destroy("Core Destroyed");
-                    break;*/
-                /*case Part _:
-                    CreateExplosionEffect(closestAttachable.transform.position);
-
-                    cinemachineImpulseSource.GenerateImpulse(5);
-                    GameUi.FlashBorder();
-
-                    BotPartsLogic.PopulatePartsList();
-                    break;*/
-                //----------------------------------------------------------------------------------------------------//
-                default:
-                    RemoveAttachable(closestAttachable);
                     break;
             }
+            
+            RemoveAttachable(closestAttachable);
 
             if(closestAttachable.CountTowardsMagnetism)
                 ForceCheckMagnets();
