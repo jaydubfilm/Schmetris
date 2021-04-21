@@ -1290,22 +1290,13 @@ namespace StarSalvager
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
 
-            /*switch (closestAttachable)
+            switch (closestAttachable)
             {
-                //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
-                case Bit _:
-                case EnemyAttachable _:
-                case JunkBit _:
-                    TryHitAt(closestAttachable);
-                    return false;
-                /*case Component _:
-                    break;#1#
-                case Part _:
-                    /*if (part.Destroyed) return false;#1#
+                case EnemyAttachable enemyAttachable:
+                    //If the enemy is knocked, but not killed we want them to act as if they were bumped
+                    enemyAttachable.OnBumped();
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
-            }*/
+            }
 
             TryHitAt(closestAttachable, damage);
 
@@ -1392,8 +1383,7 @@ namespace StarSalvager
                     ChangeHealth(applyDamage);
                     return;
                 case EnemyAttachable enemyAttachable:
-                    //If the enemy is knocked, but not killed we want them to act as if they were bumped
-                    enemyAttachable.OnBumped();
+
                     closestHealth.ChangeHealth(applyDamage);
                     break;
                 default:
