@@ -6,9 +6,14 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Effect_Profile", menuName = "Star Salvager/Scriptable Objects/Effect Profile")]
     public class EffectProfileScriptableObject : ScriptableObject
     {
-        //Bot Effect Prefabs
+        //Simple Sprite Prefab
         //====================================================================================================================//
         
+        [SerializeField, Required, BoxGroup("Basic")]
+        public GameObject simpleSpritePrefab;
+        
+        //Bot Effect Prefabs
+        //====================================================================================================================//
 
         [SerializeField, Required, BoxGroup("Bot")]
         public GameObject alertIconPrefab;

@@ -187,6 +187,8 @@ MonoBehaviour:
       value: 10
     - key: Speed
       value: 20
+    - key: Charge
+      value: 10
     isManual: 1
     category: 4
     ammoUseCost: 10
