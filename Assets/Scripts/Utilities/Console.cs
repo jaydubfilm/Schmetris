@@ -59,11 +59,13 @@ namespace StarSalvager.Utilities
             string.Concat("hide ", "ui ", "[bool]").ToUpper(),
             "\n",
             string.Concat("print ", "bits").ToUpper(),
-            string.Concat("print ", "components").ToUpper(),
-            string.Concat("print ", "currency").ToUpper(),
+            /*string.Concat("print ", "components").ToUpper(),
+            string.Concat("print ", "currency").ToUpper(),*/
             string.Concat("print ", "enemies").ToUpper(),
-            string.Concat("print ", "liquid").ToUpper(),
+            /*string.Concat("print ", "liquid").ToUpper(),*/
             string.Concat("print ", "parts").ToUpper(),
+            string.Concat("print ", "patches").ToUpper(),
+            string.Concat("print ", "upgrades").ToUpper(),
 
             "\n",
             //string.Concat("set ", "bitprofile ", "[index:uint]").ToUpper(),
@@ -83,6 +85,8 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "testing ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
             string.Concat("set ", "timeleft ", "[float]").ToUpper(),
+            string.Concat("set ", "upgrade ", "[UPGRADE_TYPE] ", "[BIT_TYPE] ", "[int]").ToUpper(),
+            string.Concat("set ", "upgrade ", "[UPGRADE_TYPE] ", "[int]").ToUpper(),
             string.Concat("set ", "volume ", "[0.0 - 1.0]").ToUpper(),//wavecomplete
             string.Concat("set ", "wavecomplete").ToUpper(),
             "\n",
@@ -98,8 +102,8 @@ namespace StarSalvager.Utilities
             "T1",
             "P",
             "\n",
-            string.Concat("FALLSPEED ", "INCREASE"),
-            string.Concat("FALLSPEED ", "DECREASE")
+            string.Concat("FALLSPEED ", "INCREASE").ToUpper(),
+            string.Concat("FALLSPEED ", "DECREASE").ToUpper()
         };
 
         //============================================================================================================//
@@ -518,21 +522,20 @@ namespace StarSalvager.Utilities
         {
             switch (split[1].ToLower())
             {
-                //TODO: Alex B: These need a "Get List as string" function since we aren't using dictionaries anymore.
-                case "liquid":
-                    //_consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetLiquidResources(false))}";
-                    break;
-                case "currency":
-                    //_consoleDisplay += $"\n{GetDictionaryAsString(PlayerDataManager.GetResources())}";
-                    break;
                 case "bits":
                     _consoleDisplay += $"\n{GetEnumsAsString<BIT_TYPE>()}";
+                    break;
+                case "patches":
+                    _consoleDisplay += $"\n{GetEnumsAsString<PATCH_TYPE>()}";
                     break;
                 case "parts":
                     _consoleDisplay += $"\n{GetEnumsAsString<PART_TYPE>()}";
                     break;
                 case "enemies":
                     _consoleDisplay += $"\n{GetEnemyNameList()}";
+                    break;
+                case "upgrades":
+                    _consoleDisplay += $"\n{GetEnumsAsString<UPGRADE_TYPE>()}";
                     break;
                 default:
                     _consoleDisplay += UnrecognizeCommand(split[1]);
@@ -732,6 +735,47 @@ namespace StarSalvager.Utilities
                     }
 
                     Time.timeScale = scale;
+                    break;
+                }
+                case "upgrade":
+                {
+                    if (!Enum.TryParse(split[2], true, out UPGRADE_TYPE upgrade))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
+                    if (split.Length == 5)
+                    {
+                        //UPGRADE_TYPE then BIT_TYPE
+                        if (!Enum.TryParse(split[3], true, out BIT_TYPE bit))
+                        {
+                            _consoleDisplay += UnrecognizeCommand(split[3]);
+                            break;
+                        }
+                        if (!int.TryParse(split[4], out var level))
+                        {
+                            _consoleDisplay += UnrecognizeCommand(split[4]);
+                            break;
+                        }
+                        
+                        PlayerDataManager.SetUpgradeLevel(upgrade, level, bit);
+                    }
+                    else if (split.Length == 4)
+                    {
+                        if (!int.TryParse(split[3], out var level))
+                        {
+                            _consoleDisplay += UnrecognizeCommand(split[4]);
+                            break;
+                        }
+                        
+                        PlayerDataManager.SetUpgradeLevel(upgrade, level);
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+
                     break;
                 }
                 case "volume":
