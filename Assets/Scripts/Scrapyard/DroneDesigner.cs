@@ -1014,7 +1014,7 @@ namespace StarSalvager
             
             
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             if (components == 0)
                 throw new Exception();
