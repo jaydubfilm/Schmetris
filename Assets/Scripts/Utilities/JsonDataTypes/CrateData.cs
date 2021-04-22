@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 

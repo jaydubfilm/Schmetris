@@ -223,7 +223,7 @@ namespace StarSalvager.UI.Scrapyard
         //FIXME This does not need to be in Update
         private void Update()
         {
-            componentsNumber.text = $"{TMP_SpriteMap.GEAR_ICON} {PlayerDataManager.GetComponents()}";
+            componentsNumber.text = $"{TMP_SpriteMap.GEAR_ICON} {PlayerDataManager.GetGears()}";
         }
 
         private void OnEnable()

@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a769fffdfbc4934bacddda73c772224, type: 3}
+  m_Name: Persistent Upgrade Remote
+  m_EditorClassIdentifier: 
+  upgrades:
+  - sprite: {fileID: 0}
+    upgradeType: 2
+    bitType: 0
+    name: Ammo Capacity
+    description: increase ammo storage
+    Levels:
+    - cost: 0
+      value: 100
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 110
+      Level: 1
+      level: 1
+    - cost: 2
+      value: 120
+      Level: 2
+      level: 2
+    - cost: 3
+      value: 130
+      Level: 3
+      level: 3
+  - sprite: {fileID: 0}
+    upgradeType: 1
+    bitType: 0
+    name: Patch Cost
+    description: Decrease price of patches
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+    - cost: 2
+      value: 0.8
+      Level: 2
+      level: 2
+    - cost: 3
+      value: 0.7
+      Level: 3
+      level: 3
+  - sprite: {fileID: 0}
+    upgradeType: 3
+    bitType: 0
+    name: Gear Drop Rate
+    description: Increase gear bonus for killing enemies
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 1.1
+      Level: 1
+      level: 1
+    - cost: 2
+      value: 1.2
+      Level: 2
+      level: 2
+    - cost: 3
+      value: 1.3
+      Level: 3
+      level: 3
+  - sprite: {fileID: 0}
+    upgradeType: 4
+    bitType: 0
+    name: Starting Gears
+    description: starting gears
+    Levels:
+    - cost: 0
+      value: 0
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 100
+      Level: 1
+      level: 1
+    - cost: 2
+      value: 200
+      Level: 2
+      level: 2
+    - cost: 3
+      value: 300
+      Level: 3
+      level: 3
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 1
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 2
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 3
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 4
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 5
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1

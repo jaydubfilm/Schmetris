@@ -8,7 +8,9 @@ using StarSalvager;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
-public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2Int>>
+namespace StarSalvager.Utilities.JSON.Converters
+{
+    public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2Int>>
     {
         public override void WriteJson(JsonWriter writer, IEnumerable<Vector2Int> value, JsonSerializer serializer)
         {
@@ -22,7 +24,7 @@ public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2
                     y = values[i].y
                 };
             }
-            
+
             JToken t = JToken.FromObject(container);
             JArray o = (JArray) t;
             o.WriteTo(writer);
@@ -44,12 +46,12 @@ public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2
                 {
                     return new Vector2Int[0];
                 }
-            
+
                 if (objectType == typeof(List<Vector2Int>) || objectType == typeof(IEnumerable<Vector2Int>))
                 {
                     return new List<Vector2Int>();
                 }
-                
+
                 throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
             }
 
@@ -57,7 +59,7 @@ public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2
             foreach (var jObject in jArray)
             {
                 var coord = jObject.ToObject<jsonV2Int>();
-                
+
                 outData.Add(new Vector2Int
                 {
                     x = coord.x,
@@ -69,15 +71,16 @@ public class IEnumberableVector2IntConverter : JsonConverter<IEnumerable<Vector2
             {
                 return outData.ToArray();
             }
-            
+
             if (objectType == typeof(List<Vector2Int>))
             {
                 return outData.ToList();
             }
-            
-            if(objectType == typeof(IEnumerable<Vector2Int>))
+
+            if (objectType == typeof(IEnumerable<Vector2Int>))
                 return outData;
 
             throw new ArgumentOutOfRangeException(nameof(objectType), objectType, null);
         }
     }
+}

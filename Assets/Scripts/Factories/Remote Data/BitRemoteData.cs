@@ -28,9 +28,9 @@ namespace StarSalvager.Factories.Data
         public override bool Equals(RemoteDataBase other)
         {
             if (other is BitRemoteData bitRemote)
-                return other != null && bitType == bitRemote.bitType;
-            else
-                return false;
+                return bitType == bitRemote.bitType;
+            
+            return false;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace StarSalvager.Factories.Data
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((PartRemoteData)obj);
+            return obj.GetType() == GetType() && Equals((BitRemoteData)obj);
         }
 
         public override int GetHashCode()
