@@ -240,6 +240,12 @@ namespace StarSalvager.Values
 
             if (index < 0) throw new ArgumentException($"No upgrade found fitting {upgradeType} & {bitType}");
 
+            var remoteData = FactoryManager.Instance.PersistentUpgrades.GetRemoteData(upgradeType, bitType);
+
+            if (newLevel >= remoteData.Levels.Count)
+                throw new ArgumentOutOfRangeException(
+                    $"Cannot set {upgradeType}{(bitType == BIT_TYPE.NONE ? string.Empty : $" - {bitType}")} to level[{newLevel}]. Max is {remoteData.Levels.Count - 1}");
+
             var upgradeData = _upgrades[index];
             upgradeData.Level = newLevel;
 
