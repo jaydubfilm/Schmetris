@@ -520,9 +520,9 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
-                    var startingHealth = FactoryManager.Instance.PartsRemoteData
-                        .GetRemoteData(PART_TYPE.CORE)
-                        .GetDataValue<float>(PartProperties.KEYS.Health);
+                    var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
+                    
+                    PlayerDataManager.SetGears((int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY));
                     
                     PlayerDataManager.SetRunStarted();
                     PlayerDataManager.SetBotHealth(startingHealth);

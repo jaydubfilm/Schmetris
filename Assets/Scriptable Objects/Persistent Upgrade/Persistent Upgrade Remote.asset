@@ -80,20 +80,6 @@ MonoBehaviour:
       Level: 3
       level: 3
   - sprite: {fileID: 0}
-    upgradeType: 5
-    bitType: 1
-    name: Part Efficiency
-    description: Increase single colour part efficiency
-    Levels:
-    - cost: 0
-      value: 1
-      Level: Default
-      level: 0
-    - cost: 1
-      value: 0.9
-      Level: 1
-      level: 1
-  - sprite: {fileID: 0}
     upgradeType: 4
     bitType: 0
     name: Starting Gears
@@ -115,3 +101,73 @@ MonoBehaviour:
       value: 300
       Level: 3
       level: 3
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 1
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 2
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 3
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 4
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1
+  - sprite: {fileID: 0}
+    upgradeType: 5
+    bitType: 5
+    name: Part Efficiency
+    description: Increase single colour part efficiency
+    Levels:
+    - cost: 0
+      value: 1
+      Level: Default
+      level: 0
+    - cost: 1
+      value: 0.9
+      Level: 1
+      level: 1

@@ -302,7 +302,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
                         var magnetAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Magnet);
-                        var capacityAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Capacity);
+                        var capacityAmount = (int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
 
                         MagnetCount = magnetAmount;
 

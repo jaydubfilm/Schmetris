@@ -39,7 +39,7 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$title"), PreviewField]
         public Sprite sprite;
         
-        [FoldoutGroup("$title")]
+        [FoldoutGroup("$title"), OnValueChanged("ShouldResetBitType")]
         public UPGRADE_TYPE upgradeType;
 
         [FoldoutGroup("$title"), ShowIf("UsesBitType")]
@@ -110,6 +110,14 @@ namespace StarSalvager.Factories.Data
                 default:
                     return false;
             }
+        }
+
+        private void ShouldResetBitType()
+        {
+            if (UsesBitType())
+                return;
+
+            bitType = BIT_TYPE.NONE;
         }
         
 #endif

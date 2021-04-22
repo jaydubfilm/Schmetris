@@ -32,9 +32,9 @@ namespace StarSalvager.Utilities.Saving
         public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Components => _components;
+        public int Gears => _gears;
 
-        [JsonProperty] private int _components;
+        [JsonProperty] private int _gears;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
@@ -75,25 +75,6 @@ namespace StarSalvager.Utilities.Saving
 
         //============================================================================================================//
 
-        /*public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
-        {
-            if (levelRingConnectionsJson != null)
-            {
-                LevelRingConnectionsJson.Clear();
-                LevelRingConnectionsJson.AddRange(levelRingConnectionsJson);
-            }
-
-            if (wreckNodes != null)
-            {
-                WreckNodes.Clear();
-                WreckNodes.AddRange(wreckNodes);
-            }
-
-            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
-        }*/
-
-        //============================================================================================================//
-
         public List<PlayerResource> GetResources()
         {
             return _playerResources;
@@ -109,19 +90,19 @@ namespace StarSalvager.Utilities.Saving
 
         public void SetGears(int value)
         {
-            _components = value;
+            _gears = value;
         }
 
         //============================================================================================================//
 
         public void AddGears(int amount)
         {
-            _components += Mathf.Abs(amount);
+            _gears += Mathf.Abs(amount);
         }
 
         public void SubtractGears(int amount)
         {
-            _components -= Mathf.Abs(amount);
+            _gears -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//
@@ -129,21 +110,8 @@ namespace StarSalvager.Utilities.Saving
         public bool CheckIfCompleted(in int waveIndex)
         {
             Debug.LogError("Checks not yet setup");
-            /*for (var i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
-            {
-                (int, int) curSectorWaveTuple = LevelRingNodeTree.ConvertNodeIndexIntoSectorWave(PlayerPreviouslyCompletedNodes[i]);
-
-                if (curSectorWaveTuple.Item1 == sector && curSectorWaveTuple.Item2 == waveAt)
-                {
-                    return true;
-                }
-            }
-
-            return false;*/
             return false;
         }
-
-        //============================================================================================================//
 
         //DontShowAgain Tracking Functions
         //====================================================================================================================//
@@ -195,39 +163,6 @@ namespace StarSalvager.Utilities.Saving
                 partsInStorageBlockData.RemoveAt(index);
             }
         }
-
-        //Patches
-        //====================================================================================================================//
-        /*public List<PatchData> GetCurrentPatchesInStorage()
-        {
-            return patchesInStorage;
-        }
-
-        public void AddPatchToStorage(PatchData patchData)
-        {
-            patchesInStorage.Add(patchData);
-            PlayerDataManager.OnValuesChanged?.Invoke();
-        }
-
-        public void RemovePatchFromStorage(PatchData patchData)
-        {
-            var index = patchesInStorage.FindIndex(b => b.Type == patchData.Type);
-
-            if (index < 0)
-                throw new ArgumentException();
-
-            patchesInStorage.RemoveAt(index);
-        }
-
-        public void RemovePatchFromStorageAtIndex(int index)
-        {
-            if (index >= patchesInStorage.Count)
-                return;
-
-            patchesInStorage.RemoveAt(index);
-        }
-
-        //====================================================================================================================//*/
 
         public void SetPatches(in IEnumerable<PatchData> patches)
         {

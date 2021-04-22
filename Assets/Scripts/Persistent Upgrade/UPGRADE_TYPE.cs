@@ -7,6 +7,8 @@
         AMMO_CAPACITY,
         GEAR_DROP,
         STARTING_CURRENCY,
-        CATEGORY_EFFICIENCY
+        
+        CATEGORY_EFFICIENCY,
+        
     }
 }

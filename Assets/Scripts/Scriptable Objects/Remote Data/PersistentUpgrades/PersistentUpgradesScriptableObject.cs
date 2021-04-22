@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories.Data;
 using UnityEngine;
@@ -15,16 +13,9 @@ namespace StarSalvager.ScriptableObjects
         //Functions
         //====================================================================================================================//
         
-        public UpgradeRemoteData GetRemoteData(in UPGRADE_TYPE upgradeType)
+        public float GetUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType, in int level)
         {
-            var temp = upgradeType;
-
-            return upgrades.FirstOrDefault(x => x.upgradeType == temp);
-        }
-        
-        public float GetUpgradeValue(in UPGRADE_TYPE upgradeType, in int level)
-        {
-            return GetRemoteData(upgradeType).Levels[level].value;
+            return GetRemoteData(upgradeType, bitType).Levels[level].value;
         }
         
         public UpgradeRemoteData GetRemoteData(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
@@ -33,11 +24,6 @@ namespace StarSalvager.ScriptableObjects
             var tempBit = bitType;
 
             return upgrades.FirstOrDefault(x => x.upgradeType == temp && x.bitType == tempBit);
-        }
-        
-        public float GetUpgradeValue(in UPGRADE_TYPE upgradeType, in int level, in BIT_TYPE bitType)
-        {
-            return GetRemoteData(upgradeType, bitType).Levels[level].value;
         }
 
         //====================================================================================================================//
