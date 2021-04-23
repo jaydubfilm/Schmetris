@@ -27,6 +27,7 @@ namespace StarSalvager.Values
 
         public bool HasStarted = false;
 
+        [JsonProperty]
         public int Stars { get; private set; }
         public int XP;
 
