@@ -1717,7 +1717,7 @@ namespace StarSalvager
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
-            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, part.transform.up.normalized, dotThreshold);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.right.normalized, dotThreshold);
             foreach (var enemy in enemies)
             {
                 enemy.TryHitAt(enemy.Position, damage);

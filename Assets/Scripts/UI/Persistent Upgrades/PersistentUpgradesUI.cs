@@ -115,7 +115,7 @@ namespace StarSalvager.UI.PersistentUpgrades
             }
 
             //--------------------------------------------------------------------------------------------------------//
-
+            OnValueChanged();
         }
 
         //Callback Functions

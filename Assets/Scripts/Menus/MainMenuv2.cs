@@ -339,6 +339,7 @@ namespace StarSalvager.UI
 
         private void SetupStarsWindow()
         {
+            
             persistentUpgradesUI.SetupUpgrades();
         }
 
