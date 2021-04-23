@@ -2,13 +2,18 @@
 using System.Linq;
 using StarSalvager.Factories.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Persistent Upgrade Remote", menuName = "Star Salvager/Scriptable Objects/Persistent Upgrade Remote Data")]
     public class PersistentUpgradesScriptableObject : ScriptableObject
     {
-        public List<UpgradeRemoteData> upgrades;
+        public IReadOnlyList<UpgradeRemoteData> Upgrades => _upgrades;
+        
+        [FormerlySerializedAs("upgrades")] 
+        [SerializeField]
+        private List<UpgradeRemoteData> _upgrades;
 
         //Functions
         //====================================================================================================================//
@@ -23,7 +28,7 @@ namespace StarSalvager.ScriptableObjects
             var temp = upgradeType;
             var tempBit = bitType;
 
-            return upgrades.FirstOrDefault(x => x.upgradeType == temp && x.bitType == tempBit);
+            return Upgrades.FirstOrDefault(x => x.upgradeType == temp && x.bitType == tempBit);
         }
 
         //====================================================================================================================//

@@ -14,6 +14,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
@@ -661,8 +662,8 @@ namespace StarSalvager.Utilities.Saving
             in BIT_TYPE bitType = BIT_TYPE.NONE) =>
             PlayerAccountData.SetUpgradeLevel(upgradeType, bitType, newLevel);
 
-        public static float GetUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.GetUpgradeLevel(upgradeType, bitType);
+        public static int GetCurrentUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.GetCurrentUpgradeLevel(upgradeType, bitType);
 
 
         //====================================================================================================================//
@@ -723,7 +724,7 @@ namespace StarSalvager.Utilities.Saving
 
                 foreach (var keyValuePair in GetBitConnections())
                 {
-                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteHelper.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -737,7 +738,7 @@ namespace StarSalvager.Utilities.Saving
                 {
                     var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteHelper.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 
