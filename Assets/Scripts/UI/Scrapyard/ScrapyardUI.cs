@@ -7,6 +7,7 @@ using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -223,7 +224,7 @@ namespace StarSalvager.UI.Scrapyard
         //FIXME This does not need to be in Update
         private void Update()
         {
-            componentsNumber.text = $"{TMP_SpriteMap.GEAR_ICON} {PlayerDataManager.GetGears()}";
+            componentsNumber.text = $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
         }
 
         private void OnEnable()

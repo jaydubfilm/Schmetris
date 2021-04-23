@@ -16,7 +16,7 @@ namespace StarSalvager.Values
     {
         //Properties
         //====================================================================================================================//
-        
+
         #region Properties
 
         public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
@@ -32,52 +32,55 @@ namespace StarSalvager.Values
 
         public int CoreDeaths;
         public float RepairsDone;
+
         public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
         {
-            { BIT_TYPE.RED, 0},
-            { BIT_TYPE.BLUE, 0},
-            { BIT_TYPE.YELLOW, 0},
-            { BIT_TYPE.GREEN, 0},
-            { BIT_TYPE.GREY, 0},
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
         };
+
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
         public int XPAtRunBeginning;
         public int CoreDeathsAtRunBeginning;
         public float RepairsDoneAtRunBeginning;
         public int TotalRuns;
+
         public Dictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>
         {
-            { BIT_TYPE.RED, 0},
-            { BIT_TYPE.BLUE, 0},
-            { BIT_TYPE.YELLOW, 0},
-            { BIT_TYPE.GREEN, 0},
-            { BIT_TYPE.GREY, 0},
+            {BIT_TYPE.RED, 0},
+            {BIT_TYPE.BLUE, 0},
+            {BIT_TYPE.YELLOW, 0},
+            {BIT_TYPE.GREEN, 0},
+            {BIT_TYPE.GREY, 0},
         };
+
         public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
-        [JsonIgnore]
-        public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
-        [JsonProperty]
-        private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
+        [JsonIgnore] public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
+
+        [JsonProperty] private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
         {
             [HINT.GUN] = false,
             //[HINT.FUEL] = false,
             //[HINT.HOME] = false,
             [HINT.BONUS] = false,
             [HINT.MAGNET] = false,
-            
+
             //[HINT.GEARS] = false,
             //[HINT.PATCH_POINT] = false,
             //[HINT.CRAFT_PART] = false,
-            
+
             [HINT.PARASITE] = false,
             [HINT.DAMAGE] = false,
-            
+
         };
 
-        [JsonIgnore]
-        public UpgradeData[] Upgrades => _upgrades;
+        [JsonIgnore] public UpgradeData[] Upgrades => _upgrades;
+
         [JsonProperty, JsonConverter(typeof(IEnumberableUpgradeDataConverter))]
         private UpgradeData[] _upgrades = new[]
         {
@@ -85,23 +88,23 @@ namespace StarSalvager.Values
             new UpgradeData(UPGRADE_TYPE.PATCH_COST, 0),
             new UpgradeData(UPGRADE_TYPE.AMMO_CAPACITY, 0),
             new UpgradeData(UPGRADE_TYPE.STARTING_CURRENCY, 0),
-            
+
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.RED, 0),
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.BLUE, 0),
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREY, 0),
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREEN, 0),
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
         };
-        
-        [JsonIgnore]
-        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout = new Dictionary<Vector2Int, BIT_TYPE>()
-        {
-            [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
-            [new Vector2Int(1, 0)] = BIT_TYPE.RED,
-            [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
-            [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
-            [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
-        };
+
+        [JsonIgnore] public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
+            new Dictionary<Vector2Int, BIT_TYPE>()
+            {
+                [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
+                [new Vector2Int(1, 0)] = BIT_TYPE.RED,
+                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
+                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
+                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
+            };
 
         #endregion //Properties
 
@@ -118,7 +121,7 @@ namespace StarSalvager.Values
         public Vector2Int GetCoordinateForCategory(in BIT_TYPE bitType)
         {
             var temp = bitType;
-            
+
             return BotLayout
                 .FirstOrDefault(x => x.Value == temp)
                 .Key;
@@ -126,7 +129,7 @@ namespace StarSalvager.Values
 
         //Player XP
         //====================================================================================================================//
-        
+
         public void ChangeXP(int amount)
         {
             int totalLevels = GetTotalLevels();
@@ -139,9 +142,9 @@ namespace StarSalvager.Values
 
             int newTotalLevels = GetTotalLevels();
 
-            if (newTotalLevels <= totalLevels) 
+            if (newTotalLevels <= totalLevels)
                 return;
-            
+
             var difference = newTotalLevels - totalLevels;
 
             //Do something to signify gaining a level
@@ -184,15 +187,27 @@ namespace StarSalvager.Values
         //Stars
         //====================================================================================================================//
 
-        public void SetStars(in int value) => Stars = value;
-        public void AddStars(in int amount) => Stars += amount;
+        public void SetStars(in int value)
+        {
+            Stars = value;
+            PlayerDataManager.OnValuesChanged?.Invoke();
+        }
+
+        public void AddStars(in int amount)
+        {
+            Stars += amount;
+            PlayerDataManager.OnValuesChanged?.Invoke();
+        }
+
         public bool TrySubtractStars(in int amount)
         {
             if (Stars <= 0)
                 return false;
 
             Stars -= amount;
-            
+
+            PlayerDataManager.OnValuesChanged?.Invoke();
+
             return true;
         }
 
@@ -203,15 +218,15 @@ namespace StarSalvager.Values
             var upg = upgradeType;
             var bit = bitType;
             var data = _upgrades.First(x => x.Type == upg && x.BitType == bit);
-            
+
             return FactoryManager.Instance.PersistentUpgrades.GetUpgradeValue(upgradeType, bitType, data.Level);
         }
-        
-        public int GetUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
+
+        public int GetCurrentUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
         {
             var upg = upgradeType;
             var bit = bitType;
-            
+
             return _upgrades.First(x => x.Type == upg && x.BitType == bit).Level;
         }
         /*public void IncreaseUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
@@ -229,13 +244,13 @@ namespace StarSalvager.Values
 
             _upgrades[index] = upgradeData;
         }*/
-        
-        
+
+
         public void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType, in int newLevel)
         {
             var upg = upgradeType;
             var bit = bitType;
-            
+
             var index = _upgrades.ToList().FindIndex(x => x.Type == upg && x.BitType == bit);
 
             if (index < 0) throw new ArgumentException($"No upgrade found fitting {upgradeType} & {bitType}");
@@ -261,7 +276,7 @@ namespace StarSalvager.Values
         }
         //Recording Data
         //====================================================================================================================//
-        
+
         public void RecordBitConnection(BIT_TYPE bit)
         {
             if (BitConnections.ContainsKey(bit))
@@ -283,7 +298,7 @@ namespace StarSalvager.Values
 
             EnemiesKilled[enemyId]++;
         }
-        
+
         //Player Run Data
         //====================================================================================================================//
         public void ResetPlayerRunData()
@@ -303,24 +318,26 @@ namespace StarSalvager.Values
             {
                 BitConnectionsAtRunBeginning.Add(keyValue.Key, keyValue.Value);
             }
+
             EnemiesKilledAtRunBeginning.Clear();
             foreach (var keyValue in EnemiesKilled)
             {
                 EnemiesKilledAtRunBeginning.Add(keyValue.Key, keyValue.Value);
             }
+
             TotalRuns++;
 
             PlayerRunData = data;
             PlayerDataManager.SetCanChoosePart(true);
             PlayerDataManager.SavePlayerAccountData();
         }
-        
+
         public void SaveData()
         {
             PlayerRunData.SaveData();
         }
 
         //====================================================================================================================//
-        
+
     }
 }

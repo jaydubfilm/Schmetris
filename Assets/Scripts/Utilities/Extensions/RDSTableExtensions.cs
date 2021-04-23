@@ -55,14 +55,10 @@ namespace StarSalvager.Utilities.Extensions
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Gears)
                 {
-                    if (rdsData.rng)
-                    {
-                        rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, new Vector2Int(rdsData.min, rdsData.max), false, false, true));
-                    }
-                    else
-                    {
-                        rdsTable.AddEntry(new RDSValue<int>(rdsData.value, probability, rdsData.count, false, false, true));
-                    }
+                    rdsTable.AddEntry(rdsData.rng
+                        ? new RDSValue<int>(rdsData.value, probability, new Vector2Int(rdsData.min, rdsData.max), false,
+                            false, true)
+                        : new RDSValue<int>(rdsData.value, probability, rdsData.count, false, false, true));
                 }
                 else if (rdsData.lootType == RDSLootData.DROP_TYPE.Null)
                 {

@@ -11,6 +11,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -447,7 +448,7 @@ namespace StarSalvager.UI.Scrapyard
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
-            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteMap.GEAR_ICON}";
+            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteHelper.GEAR_ICON}";
             repairButton.interactable = !(finalCost > components);
         }
 

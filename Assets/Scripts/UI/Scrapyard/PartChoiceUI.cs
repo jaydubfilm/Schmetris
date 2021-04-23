@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -164,7 +165,7 @@ namespace StarSalvager.UI.Scrapyard
                 });
             }
 
-            _noPartButtonText.text = $"No Part +{10}{TMP_SpriteMap.GEAR_ICON}";
+            _noPartButtonText.text = $"No Part +{10}{TMP_SpriteHelper.GEAR_ICON}";
             noPartSelectedOptionButton.onClick.AddListener(() =>
             {
                 CloseWindow();

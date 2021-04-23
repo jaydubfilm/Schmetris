@@ -21,6 +21,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.Helpers;
 
 namespace StarSalvager
 {
@@ -863,8 +864,8 @@ namespace StarSalvager
 
                     int resourceAmount = numAtLevel * remoteData.levels[i].resources;
 
-                    var spriteIcon = TMP_SpriteMap.GetBitSprite(bitType, i);
-                    var materialIcon = TMP_SpriteMap.MaterialIcons[bitType];
+                    var spriteIcon = TMP_SpriteHelper.GetBitSprite(bitType, i);
+                    var materialIcon = TMP_SpriteHelper.MaterialIcons[bitType];
 
                     resourcesGained += $"{numAtLevel} x {spriteIcon} = {resourceAmount} {materialIcon} ";
                     numTotal -= numAtLevel;
@@ -879,7 +880,7 @@ namespace StarSalvager
                 if(resource.Value <= 0)
                     continue;
 
-                var materialIcon = TMP_SpriteMap.MaterialIcons[resource.Key];
+                var materialIcon = TMP_SpriteHelper.MaterialIcons[resource.Key];
 
                 resourcesWasted += $"{resource.Value} {materialIcon} jettisoned due to lack of storage\n";
             }

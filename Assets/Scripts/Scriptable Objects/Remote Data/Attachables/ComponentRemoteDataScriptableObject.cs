@@ -11,10 +11,10 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Component Remote", menuName = "Star Salvager/Scriptable Objects/Component Remote Data")]
     public class ComponentRemoteDataScriptableObject : ScriptableObject
     {
-        public int NumComponentsGained => _numComponentsGained;
+        /*public int NumComponentsGained => _numComponentsGained;
 
         [SerializeField]
-        private int _numComponentsGained;
+        private int _numComponentsGained;*/
     }
 }
 

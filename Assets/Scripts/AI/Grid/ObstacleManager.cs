@@ -994,20 +994,20 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    int count = rdsValueGearsAmount.GetCount();
-                    for (int k = 0; k < count; k++)
+                    var multiplier = PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.GEAR_DROP);
+                    var count = rdsValueGearsAmount.GetCount();
+                    for (var k = 0; k < count; k++)
                     {
-                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
-                            .CreateObject<Component>(rdsValueGearsAmount.rdsValue);
-                        //AddObstacleToList(newComponent);
-                        /*PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
-                        bitExplosionPositions.RemoveAt(0);*/
+                        var gears = Mathf.RoundToInt(rdsValueGearsAmount.rdsValue * multiplier);
+                        var newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
+                            .CreateObject<Component>(gears);
+
                         _obstacles.Add(newComponent);
                     }
                 }
                 else
                 {
-                    Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
+                    Debug.LogError($"{rdsObjects[i]} in SpawnBitExplosion and not handled");
                 }
             }
 

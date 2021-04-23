@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
+using StarSalvager.UI.PersistentUpgrades;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
@@ -31,7 +32,7 @@ namespace StarSalvager.UI
             ACCOUNT_MENU,
             RUN,
             SETTINGS,
-            LAYOUT_CHOICE
+            STARS
         }
 
         private enum GAME_TYPE
@@ -107,6 +108,17 @@ namespace StarSalvager.UI
         private Button abandonRunButton;
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
         private Button tutorialButton;
+        [SerializeField, Required, FoldoutGroup("Account Menu Window")]
+        private Button starsButton;
+
+        //Stars Window
+        //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private GameObject starsMenuWindow;
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private Button starsBackButton;
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private PersistentUpgradesUI persistentUpgradesUI;
 
         //Pick Run Window Properties
         //====================================================================================================================//
@@ -213,9 +225,9 @@ namespace StarSalvager.UI
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
                     break;
-                /*case WINDOW.RUN:
-                    SetupRunMenuWindow();
-                    break;*/
+                case WINDOW.STARS:
+                    SetupStarsWindow();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
             }
@@ -238,6 +250,9 @@ namespace StarSalvager.UI
                 case WINDOW.ACCOUNT_MENU:
                     bool hasRun = PlayerDataManager.GetHasRunStarted();
                     EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
+                    break;
+                case WINDOW.STARS:
+                    EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
@@ -318,6 +333,14 @@ namespace StarSalvager.UI
             EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
             
         }
+        
+        //Setup Stars Window
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupStarsWindow()
+        {
+            persistentUpgradesUI.SetupUpgrades();
+        }
 
         //Setup Run Window
         //------------------------------------------------------------------------------------------------------------//
@@ -364,6 +387,7 @@ namespace StarSalvager.UI
             SetupAccountButtons();
             SetupAccountMenuButtons();
             SetupRunMenuButtons();
+            SetupStarsButtons();
             SetupSettingsButtons();
         }
 
@@ -483,6 +507,11 @@ namespace StarSalvager.UI
                 
                 LeaveMenu(SceneLoader.LEVEL);
             });*/
+            
+            starsButton.onClick.AddListener(() =>
+            {
+                OpenWindow(WINDOW.STARS);
+            });
         }
 
         //Setup Run Buttons
@@ -538,13 +567,19 @@ namespace StarSalvager.UI
             }
         }
 
+        
+        //Setup Stars Buttons
+        //------------------------------------------------------------------------------------------------------------//
+        
+        private void SetupStarsButtons()
+        {
+            starsBackButton.onClick.AddListener(CloseOpenWindow);
+        }
         //Setup Settings Buttons
         //------------------------------------------------------------------------------------------------------------//
         
         private void SetupSettingsButtons()
         {
-
-            
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
@@ -577,7 +612,9 @@ namespace StarSalvager.UI
                 }, //ACCOUNT_MENU
                 new WindowData { Type = WINDOW.RUN, WindowObject = pickRunWindowObject, CloseOtherWindows = false }, //RUN
                 new WindowData
-                    {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, //SETTINGS
+                    {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, 
+                new WindowData
+                    {Type = WINDOW.STARS, WindowObject = starsMenuWindow, CloseOtherWindows = false},//SETTINGS
             };
 
             OpenWindow(WINDOW.MAIN_MENU);
