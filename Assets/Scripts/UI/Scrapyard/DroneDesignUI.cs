@@ -11,6 +11,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -252,12 +253,13 @@ namespace StarSalvager.UI.Scrapyard
                 var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
                 var remoteData = patchRemoteData.GetRemoteData(patchType);
-                var cost = remoteData.Levels[patchData.Level].cost;
+                var cost = remoteData.Levels[patchData.Level].cost *
+                           PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST);
 
                 purchasePatchData.Add(new Purchase_PatchData
                 {
                     index = i,
-                    cost = cost,
+                    cost = Mathf.RoundToInt(cost),
                     PatchData = patchData
                 });
             }
@@ -364,7 +366,7 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
             
             var patchData = partUpgrd.PurchasePatchData;
-            var currentComponents = PlayerDataManager.GetComponents();
+            var currentComponents = PlayerDataManager.GetGears();
             if (currentComponents < patchData.cost)
                 return;
 
@@ -442,11 +444,11 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
-            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteMap.GEAR_ICON}";
+            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteHelper.GEAR_ICON}";
             repairButton.interactable = !(finalCost > components);
         }
 

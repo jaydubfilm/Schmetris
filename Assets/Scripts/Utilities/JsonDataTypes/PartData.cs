@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.JSON.Converters;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.JsonDataTypes

@@ -19,6 +19,7 @@ using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 using Random = UnityEngine.Random;
@@ -135,12 +136,11 @@ namespace StarSalvager
         //Grenade Properties
         //====================================================================================================================//
         
-        [SerializeField]
-        private float chargeSpeed;
-        [SerializeField]
-        private GameObject reticlePrefab;
-        [SerializeField]
-        private GrenadeProjectile grenadeProjectilePrefab;
+
+        [SerializeField] 
+        private Sprite reticleSprite;
+        
+        private float _chargeSpeed;
 
         private float _reticleDist;
         private Transform _reticle;
@@ -302,7 +302,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
                         var magnetAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Magnet);
-                        var capacityAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Capacity);
+                        var capacityAmount = (int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
 
                         MagnetCount = magnetAmount;
 
@@ -1253,13 +1253,16 @@ namespace StarSalvager
                 var partRemoteData = PART_TYPE.GRENADE.GetRemoteData();
 
                 var botPosition = bot.transform.position;
-                var diameter = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius) * 2;
+                var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
                 var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
                 var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
+
+                var grenade = FactoryManager.Instance.
+                    GetFactory<ProjectileFactory>()
+                    .CreateGrenadeProjectile(botPosition, Quaternion.identity);
                 
-                var grenade = Instantiate(grenadeProjectilePrefab, botPosition, Quaternion.identity);
                 grenade.Init(botPosition,
-                    botPosition + (Vector3.up * _reticleDist),speed, damage, diameter);
+                    botPosition + (Vector3.up * _reticleDist),speed, damage, radius);
 
                 _grenadeTriggered = true;
                 Destroy(_reticle.gameObject);
@@ -1277,8 +1280,13 @@ namespace StarSalvager
             {
                 if (!CanUseTriggerPart(part, out _))
                     return;
+
+                var reticleSpriteRenderer =
+                    FactoryManager.Instance.GetFactory<EffectFactory>().CreateSimpleSpriteRenderer();
+                reticleSpriteRenderer.sprite = reticleSprite;
                 
-                _reticle = Instantiate(reticlePrefab, bot.transform.position, Quaternion.identity).transform;
+                _chargeSpeed = PART_TYPE.GRENADE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Charge);
+                _reticle = reticleSpriteRenderer.transform;
                 _grenadeCharging = true;
 
                 _yScreenTop = CameraController.VisibleCameraRect.yMax;
@@ -1294,7 +1302,7 @@ namespace StarSalvager
             //Execute on the frames where the button has been pressed
             if (pressedState)
             {
-                _reticleDist += chargeSpeed * Time.deltaTime;
+                _reticleDist += _chargeSpeed * Time.deltaTime;
                 //Position should always be relative to the bot
                 var newPosition = bot.transform.position + (Vector3.up * _reticleDist);
 
@@ -1702,14 +1710,14 @@ namespace StarSalvager
             var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
             
-            var rot = part.transform.eulerAngles.z + 90;
+            var rot = part.transform.eulerAngles.z + 180;
             
             var blasterProjectile = CreateBlasterEffect();
             blasterProjectile.transform.position = fromPosition;
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
-            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, part.transform.up.normalized, dotThreshold);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.right.normalized, dotThreshold);
             foreach (var enemy in enemies)
             {
                 enemy.TryHitAt(enemy.Position, damage);
@@ -1971,7 +1979,10 @@ namespace StarSalvager
 
         private bool CanAffordAmmo(in Part part, in PartRemoteData partRemoteData, out float ammoCost, float additional = 1f)
         {
-            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY);
+            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY) *
+                                 PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY,
+                                     part.category);
+            
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
             var currentAmmo = ammoResource.Ammo;
             ammoCost = partRemoteData.ammoUseCost * ammoMultiplier * additional;
@@ -2365,7 +2376,7 @@ namespace StarSalvager
                 case PART_TYPE.BLASTER:
                 {
                     //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
-                    var rot = part.transform.eulerAngles.z + 90;
+                    var rot = part.transform.eulerAngles.z + 180;
                     
                     var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
                     var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);

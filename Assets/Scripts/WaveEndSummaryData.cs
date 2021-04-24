@@ -2,6 +2,7 @@
 using System.Linq;
 using StarSalvager;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using UnityEngine;
 
@@ -84,7 +85,7 @@ public class WaveEndSummaryData
             var joinList = new List<string>();
             foreach (var keyValuePair in _resourcesConsumed)
             {
-                var image = TMP_SpriteMap.MaterialIcons[keyValuePair.Key];
+                var image = TMP_SpriteHelper.MaterialIcons[keyValuePair.Key];
                 
                 joinList.Add($"\t{image}: {keyValuePair.Value:N0}");
             }

@@ -26,7 +26,8 @@ namespace StarSalvager.Parts.Data
             Multiplier,
             Speed,
             Health,
-            Degrees
+            Degrees,
+            Charge
             
         }
 
@@ -48,7 +49,8 @@ namespace StarSalvager.Parts.Data
             "Multiplier",
             "Speed",
             "Health",
-            "Degrees"
+            "Degrees",
+            "Charge"
         };
 
         [ValueDropdown(nameof(Names)), HorizontalGroup("row1", Width = 120), HideLabel]
@@ -87,6 +89,7 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Speed:
                 case KEYS.Health:
                 case KEYS.Degrees:
+                case KEYS.Charge:
                     return float.Parse(value);
 
                 case KEYS.Projectile:
@@ -159,6 +162,8 @@ namespace StarSalvager.Parts.Data
                 case KEYS.Probability:
                 case KEYS.Multiplier:
                 case KEYS.Health:
+                case KEYS.Degrees:
+                case KEYS.Charge:
                     return $"{@out} should be of type float";
 
                 case KEYS.Projectile:

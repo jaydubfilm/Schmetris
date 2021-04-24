@@ -414,7 +414,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
 
             UpdateAmmoSliders();
         }
@@ -525,7 +525,7 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
             //SetPlayerXP(PlayerDataManager.get);
 

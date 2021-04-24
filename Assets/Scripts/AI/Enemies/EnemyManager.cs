@@ -145,6 +145,9 @@ namespace StarSalvager
             for (int i = 0; i < m_enemies.Count; i++)
             {
                 Enemy enemy = m_enemies[i];
+                
+                if(enemy.IsRecycled)
+                    continue;
 
                 //Check to see if the enemy can Move
                 if (!enemy.CanMove())

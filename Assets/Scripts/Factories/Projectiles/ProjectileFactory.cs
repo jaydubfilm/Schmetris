@@ -16,6 +16,7 @@ namespace StarSalvager.Factories
     {
         private readonly GameObject m_prefab;
         private readonly GameObject m_towPrefab;
+        
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
 
         //============================================================================================================//
@@ -239,6 +240,11 @@ namespace StarSalvager.Factories
             }
 
             return projectiles.ToArray();
+        }
+
+        public GrenadeProjectile CreateGrenadeProjectile(in Vector3 position, in Quaternion rotation)
+        {
+            return Object.Instantiate(m_projectileProfile.grenadeProjectilePrefab, position, rotation);
         }
 
 

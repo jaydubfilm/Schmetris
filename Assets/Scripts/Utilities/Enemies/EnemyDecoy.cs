@@ -35,14 +35,14 @@ namespace StarSalvager.Utilities.Enemies
         
         private void Update()
         {
-            if (!_ready)
-                return;
-
             if (_enemy.IsRecycled)
             {
                 Recycler.Recycle<EnemyDecoy>(this);
                 return;
             }
+            
+            if (!_ready)
+                return;
             
             transform.position = _enemy.transform.position;
         }

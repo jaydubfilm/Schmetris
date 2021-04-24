@@ -16,6 +16,8 @@ MonoBehaviour:
     type: 3}
   m_towPrefab: {fileID: 7094775417863100966, guid: cd3cc508b01465048bf256fbf64e99a3,
     type: 3}
+  grenadeProjectilePrefab: {fileID: -5160676037206861993, guid: 95ed35c614ec72445aa6d65c4d0e40d9,
+    type: 3}
   m_projectileProfileData:
   - m_projectileTypeID: 083be790-7a08-4f27-b506-e8e09a116bc8
     m_sprite: {fileID: 1247627281784427692, guid: 248ffb7e6cfc47b4b9de68210aa3ab58,
