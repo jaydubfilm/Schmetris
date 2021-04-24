@@ -302,7 +302,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
                         var magnetAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Magnet);
-                        var capacityAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Capacity);
+                        var capacityAmount = (int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
 
                         MagnetCount = magnetAmount;
 
@@ -1710,14 +1710,14 @@ namespace StarSalvager
             var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
             
-            var rot = part.transform.eulerAngles.z + 90;
+            var rot = part.transform.eulerAngles.z + 180;
             
             var blasterProjectile = CreateBlasterEffect();
             blasterProjectile.transform.position = fromPosition;
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
-            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, part.transform.up.normalized, dotThreshold);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.right.normalized, dotThreshold);
             foreach (var enemy in enemies)
             {
                 enemy.TryHitAt(enemy.Position, damage);
@@ -1979,7 +1979,10 @@ namespace StarSalvager
 
         private bool CanAffordAmmo(in Part part, in PartRemoteData partRemoteData, out float ammoCost, float additional = 1f)
         {
-            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY);
+            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY) *
+                                 PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY,
+                                     part.category);
+            
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
             var currentAmmo = ammoResource.Ammo;
             ammoCost = partRemoteData.ammoUseCost * ammoMultiplier * additional;
@@ -2373,7 +2376,7 @@ namespace StarSalvager
                 case PART_TYPE.BLASTER:
                 {
                     //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
-                    var rot = part.transform.eulerAngles.z + 90;
+                    var rot = part.transform.eulerAngles.z + 180;
                     
                     var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
                     var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);

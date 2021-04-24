@@ -68,6 +68,7 @@ MonoBehaviour:
   enemyRemoteData: {fileID: 11400000, guid: 35f38950b72d35945ab897049c2a18b5, type: 2}
   projectileProfile: {fileID: 11400000, guid: f9b0bb725a6579841b2c3e06b6d54333, type: 2}
   patchRemoteData: {fileID: 11400000, guid: 4a3f6208c900daf45b365721b1cd73ce, type: 2}
+  persistentUpgrades: {fileID: 11400000, guid: 6023278a10a171549899a676812e0530, type: 2}
   botPrefab: {fileID: 2681746267895581272, guid: d09cf0a6976caab4ea7cd798304820a8,
     type: 3}
   scrapyardBotPrefab: {fileID: 394989056214196771, guid: 635c72e78b83d2344a6460ef7d8059d5,

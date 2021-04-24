@@ -5,6 +5,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Utilities.Extensions
 {
@@ -46,8 +47,6 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
 
-            var partRemote = partRemoteData.partType.GetRemoteData();
-
             var partProperties = new []
             {
                 PartProperties.KEYS.Damage,
@@ -64,12 +63,13 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
-                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
+            if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
+                outList.Add(new PartDetail("Ammo", 
+                    partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category)));
             
             foreach (var property in partProperties)
             {
-                if (!partRemote.TryGetValue(property, out var value))
+                if (!partRemoteData.TryGetValue(property, out var value))
                     continue;
 
                 var propertyName = PartProperties.GetPropertyName(property);
@@ -167,7 +167,7 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
 
-            var partRemote = partRemoteData.partType.GetRemoteData();
+            //var partRemote = partRemoteData.partType.GetRemoteData();
 
             var partProperties = new []
             {
@@ -185,11 +185,12 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
+            if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
             {
-                var preview = GetPartDetailInfo(partRemote.ammoUseCost, PATCH_TYPE.EFFICIENCY, previewType, previewMultipliers);
+                var preview = (float)GetPartDetailInfo(partRemoteData.ammoUseCost, PATCH_TYPE.EFFICIENCY, previewType, previewMultipliers);
+                preview *= PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
 
-                var total = partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY];
+                var total = partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
                 var partDetail = new PartDetail("Ammo", total, preview);
                 outList.Add(partDetail);
                 
@@ -197,7 +198,7 @@ namespace StarSalvager.Utilities.Extensions
             
             foreach (var property in partProperties)
             {
-                if (!partRemote.TryGetValue(property, out var value))
+                if (!partRemoteData.TryGetValue(property, out var value))
                     continue;
 
                 var propertyName = PartProperties.GetPropertyName(property);

@@ -389,8 +389,6 @@ MonoBehaviour:
     dataTest:
     - key: Magnet
       value: 24
-    - key: Capacity
-      value: 100
     - key: Health
       value: 100
     - key: Heal

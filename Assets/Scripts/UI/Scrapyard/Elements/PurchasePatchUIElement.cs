@@ -2,6 +2,7 @@
 using StarSalvager;
 using StarSalvager.Factories;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.UI;
 using TMPro;
@@ -35,7 +36,7 @@ namespace StarSalvager.UI.Scrapyard
             var patchName = FactoryManager.Instance.PatchRemoteData.GetRemoteData(data.PatchData.Type).name;
             titleText.text = $"{patchName} {data.PatchData.Level + 1}";
 
-            buyButtonText.text = $"{data.cost}{TMP_SpriteMap.GEAR_ICON}";
+            buyButtonText.text = $"{data.cost}{TMP_SpriteHelper.GEAR_ICON}";
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
@@ -48,7 +49,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CheckCanAfford()
         {
-            button.interactable = PlayerDataManager.GetComponents() >= data.cost;
+            button.interactable = PlayerDataManager.GetGears() >= data.cost;
         }
         
         /*private void OnPurchasePressed()

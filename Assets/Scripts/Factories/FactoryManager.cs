@@ -94,6 +94,12 @@ namespace StarSalvager.Factories
         [SerializeField, Required, BoxGroup("Patches")]
         private PatchRemoteDataScriptableObject patchRemoteData;
         public PatchRemoteDataScriptableObject PatchRemoteData => patchRemoteData;
+
+        //====================================================================================================================//
+        
+        [SerializeField, Required, BoxGroup("Persistent Upgrades")]
+        private PersistentUpgradesScriptableObject persistentUpgrades;
+        public PersistentUpgradesScriptableObject PersistentUpgrades => persistentUpgrades;
         
         //============================================================================================================//
         

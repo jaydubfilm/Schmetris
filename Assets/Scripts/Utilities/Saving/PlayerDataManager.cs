@@ -11,8 +11,10 @@ using UnityEngine;
 using StarSalvager.Factories;
 using UnityEditor;
 using StarSalvager.Factories.Data;
+using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using Random = UnityEngine.Random;
 
@@ -84,7 +86,7 @@ namespace StarSalvager.Utilities.Saving
 
         public static List<Vector2Int> GetBotLayout()
         {
-            return PlayerAccountData._botLayout;
+            return PlayerSaveAccountData.BotLayout.Keys.ToList();
         }
 
         public static BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
@@ -120,9 +122,9 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetComponents()
+        public static int GetGears()
         {
-            return PlayerRunData.Components;
+            return PlayerRunData.Gears;
         }
 
         public static List<IBlockData> GetBlockDatas()
@@ -499,34 +501,6 @@ namespace StarSalvager.Utilities.Saving
             PlayerAccountData.RepairsDone += amount;
         }
 
-        //============================================================================================================//
-
-        //See PlayerNewAlertData,  these functions are likely all defunct
-        public static bool CheckHasBlueprintAlert(Blueprint blueprint)
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasBlueprintAlert(blueprint);
-        }
-
-        public static bool CheckHasAnyBlueprintAlerts()
-        {
-            return PlayerAccountData.PlayerNewAlertData.CheckHasAnyBlueprintAlerts();
-        }
-
-        public static void AddNewBlueprintAlert(Blueprint blueprint)
-        {
-            PlayerAccountData.PlayerNewAlertData.AddNewBlueprintAlert(blueprint);
-        }
-
-        public static void ClearNewBlueprintAlert(Blueprint blueprint)
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearNewBlueprintAlert(blueprint);
-        }
-
-        public static void ClearAllBlueprintAlerts()
-        {
-            PlayerAccountData.PlayerNewAlertData.ClearAllBlueprintAlerts();
-        }
-
         //====================================================================================================================//
 
         public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
@@ -666,20 +640,32 @@ namespace StarSalvager.Utilities.Saving
         //Patches
         //====================================================================================================================//
         public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
+        public static void SetPatches(in IEnumerable<PatchData> patches) => PlayerRunData.SetPatches(patches);
+        public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
+        public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
+
+        //Stars
+        //====================================================================================================================//
         
-        public static void SetPatches(in IEnumerable<PatchData> patches)
-        {
-            PlayerRunData.SetPatches(patches);
-        }
-        public static void ClearAllPatches()
-        {
-            PlayerRunData.ClearAllPatches();
-        }
-        public static void RemovePatchAtIndex(in int index)
-        {
-            PlayerRunData.RemovePatchAtIndex(index);
-        }
-        
+        public static int GetStars() => PlayerAccountData.Stars;
+        public static void SetStars(in int value) => PlayerAccountData.SetStars(value);
+        public static void AddStars(in int amount = 1) => PlayerAccountData.AddStars(amount);
+        public static bool TrySubtractStars(in int amount = 1) => PlayerAccountData.TrySubtractStars(amount);
+
+        //Upgrades
+        //====================================================================================================================//
+
+        public static float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.GetCurrentUpgradeValue(upgradeType, bitType);
+
+        public static void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in int newLevel,
+            in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.SetUpgradeLevel(upgradeType, bitType, newLevel);
+
+        public static int GetCurrentUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.GetCurrentUpgradeLevel(upgradeType, bitType);
+
+
         //====================================================================================================================//
 
         public static void CustomOnApplicationQuit()
@@ -738,7 +724,7 @@ namespace StarSalvager.Utilities.Saving
 
                 foreach (var keyValuePair in GetBitConnections())
                 {
-                    summaryText += $"\t{TMP_SpriteMap.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteHelper.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
                 }
             }
 
@@ -752,7 +738,7 @@ namespace StarSalvager.Utilities.Saving
                 {
                     var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
                 
-                    summaryText += $"\t{TMP_SpriteMap.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{TMP_SpriteHelper.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
                 }
             }
 

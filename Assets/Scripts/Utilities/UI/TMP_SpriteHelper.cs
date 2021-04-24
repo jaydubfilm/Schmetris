@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StarSalvager.Utilities.UI
+namespace StarSalvager.Utilities.Helpers
 {
-    public static class TMP_SpriteMap
+    public static class TMP_SpriteHelper
     {
+        //Star Icon
+        //====================================================================================================================//
+
+        public  const string STAR_ICON = "<sprite=\"star\" name=\"star\">";
+        
         //Gear Icon
         //====================================================================================================================//
 

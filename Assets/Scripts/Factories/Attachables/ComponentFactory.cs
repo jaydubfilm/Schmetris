@@ -1,9 +1,5 @@
-﻿using System;
-using Recycling;
-using StarSalvager.Factories.Data;
+﻿using Recycling;
 using StarSalvager.ScriptableObjects;
-using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -23,10 +19,10 @@ namespace StarSalvager.Factories
             _remoteData = remoteData;
         }
 
-        public int GetNumComponentsGained()
+        /*public int GetNumComponentsGained()
         {
             return _remoteData.NumComponentsGained;
-        }
+        }*/
         
         //============================================================================================================//
 
@@ -36,20 +32,17 @@ namespace StarSalvager.Factories
             {
                 gameObject = Object.Instantiate(_prefab);
             }
-            gameObject.GetComponent<Component>().GearNum = _remoteData.NumComponentsGained;
 
             return gameObject;
         }
 
         public GameObject CreateGameObject(int gearNum)
         {
-            if (!Recycler.TryGrab<Component>(out GameObject gameObject))
-            {
-                gameObject = Object.Instantiate(_prefab);
-            }
-            gameObject.GetComponent<Component>().GearNum = gearNum;
+            var component = CreateObject<Component>();
+            
+            component.GearNum = gearNum;
 
-            return gameObject;
+            return component.gameObject;
         }
 
         public override T CreateObject<T>()
