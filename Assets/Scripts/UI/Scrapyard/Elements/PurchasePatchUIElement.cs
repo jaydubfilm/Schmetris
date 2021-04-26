@@ -36,7 +36,8 @@ namespace StarSalvager.UI.Scrapyard
             var patchName = FactoryManager.Instance.PatchRemoteData.GetRemoteData(data.PatchData.Type).name;
             titleText.text = $"{patchName} {data.PatchData.Level + 1}";
 
-            buyButtonText.text = $"{data.cost}{TMP_SpriteHelper.GEAR_ICON}";
+            buyButtonText.text = $"{data.gears}{TMP_SpriteHelper.GEAR_ICON}";
+            if (data.silver > 0) buyButtonText.text += $"\n{data.silver}{TMP_SpriteHelper.SILVER_ICON}";
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() =>
@@ -49,7 +50,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CheckCanAfford()
         {
-            button.interactable = PlayerDataManager.GetGears() >= data.cost;
+            button.interactable = PlayerDataManager.GetGears() >= data.gears &&
+                                  PlayerDataManager.GetSilver() >= data.silver;
         }
         
         /*private void OnPurchasePressed()
@@ -69,13 +71,15 @@ namespace StarSalvager.UI.Scrapyard
     public struct Purchase_PatchData : IEquatable<Purchase_PatchData>
     {
         public int index;
-        public int cost;
+        public int gears;
+        public int silver;
         public PatchData PatchData;
 
         #region IEquatable
+
         public bool Equals(Purchase_PatchData other)
         {
-            return index == other.index && cost == other.cost && PatchData.Equals(other.PatchData);
+            return index == other.index && gears == other.gears && silver == other.silver && PatchData.Equals(other.PatchData);
         }
 
         public override bool Equals(object obj)
@@ -88,13 +92,13 @@ namespace StarSalvager.UI.Scrapyard
             unchecked
             {
                 var hashCode = index;
-                hashCode = (hashCode * 397) ^ cost;
+                hashCode = (hashCode * 397) ^ gears;
+                hashCode = (hashCode * 397) ^ silver;
                 hashCode = (hashCode * 397) ^ PatchData.GetHashCode();
                 return hashCode;
             }
         }
         #endregion //IEquatable
-
 
     }
 

@@ -38,7 +38,7 @@ namespace StarSalvager.UI.Scrapyard
             public PartChoiceButtonHover PartChoiceButtonHover;
             public TMP_Text partTitle;
         }
-        
+
         [SerializeField, Required, FoldoutGroup("Prototype")]
         private GameObject partDisposeWindow;
         [SerializeField, Required, FoldoutGroup("Prototype")]
@@ -91,10 +91,10 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
 
             var bitProfile = FactoryManager.Instance.BitProfileData;
-            
+
             var partRemote = FactoryManager.Instance.PartsRemoteData;
             var partProfile = FactoryManager.Instance.PartsProfileData;
-            
+
             var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
             currentParts.AddRange(PlayerDataManager.GetBlockDatas().OfType<PartData>());
 
@@ -102,34 +102,34 @@ namespace StarSalvager.UI.Scrapyard
             {
                 if(bitType == BIT_TYPE.WHITE || bitType == BIT_TYPE.NONE)
                     continue;
-                
+
                 var parts = currentParts
                     .Where(x => partRemote.GetRemoteData((PART_TYPE) x.Type).category == bitType)
                     .ToList();
-                
+
                 if(parts.Count <= Globals.MaxPartTypeCount)
                     continue;
-                
+
                 partDisposeWindow.SetActive(true);
                 titleText.text = "Discard 1 Part";
-                
+
                 var partOptions = parts
                     .Where(x => PartChoiceUI.LastPicked != (PART_TYPE)x.Type)
                     .Select(x => (PART_TYPE) x.Type)
                     .Take(2)
                     .ToArray();
-                
+
                 for (int i = 0; i < partOptions.Length; i++)
                 {
                     var partType = partOptions[i];
                     var partRemoteData = partRemote.GetRemoteData(partType);
-                    
+
                     selectionUis[i].partTitle.text = partRemoteData.name;
                     selectionUis[i].partButton.image.sprite = partProfile.GetProfile(partType).Sprite;
                     selectionUis[i].partButton.image.color = partRemoteData.category.GetColor();
-                    
+
                     selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
-                    
+
                     selectionUis[i].partButton.onClick.RemoveAllListeners();
                     selectionUis[i].partButton.onClick.AddListener(() =>
                     {
@@ -138,7 +138,7 @@ namespace StarSalvager.UI.Scrapyard
                         partDisposeWindow.SetActive(false);
                     });
                 }
-                
+
                 break;
             }
         }
@@ -178,8 +178,11 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
-        [SerializeField, Required, FoldoutGroup("Components Indicator")]
-        private TMP_Text componentsNumber;
+        [FormerlySerializedAs("componentsNumber")] [SerializeField, Required, FoldoutGroup("Gears Indicator")]
+        private TMP_Text gearsAmountText;
+        [SerializeField, Required, FoldoutGroup("Silver Indicator")]
+        private TMP_Text silverAmountText;
+
 
         //====================================================================================================================//
 
@@ -199,6 +202,49 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
+        private void OnEnable()
+        {
+            PlayerDataManager.OnValuesChanged += OnValuesChanged;
+            OnValuesChanged();
+
+            musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
+
+            CameraController.CameraOffset(Vector3.zero, true);
+            CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
+
+            backButton.onClick?.Invoke();
+
+            partChoiceWindow.SetActive(PlayerDataManager.GetCanChoosePart());
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (PlayerDataManager.GetCanChoosePart())
+            {
+                if (_partChoice == null)
+                {
+                    _partChoice = FindObjectOfType<PartChoiceUI>();
+                }
+                bool notYetStarted = PlayerDataManager.GetStarted();
+
+                if (!notYetStarted)
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
+                    PlayerDataManager.ClearAllPatches();
+                }
+                else
+                {
+                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+
+                    PlayerDataManager.SetPatches(Globals.CurrentRing.GenerateRingPatches());
+                    _droneDesigner.DroneDesignUi.InitPurchasePatches();
+                }
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+        }
+
         // Start is called before the first frame update
         private void Start()
         {
@@ -216,55 +262,13 @@ namespace StarSalvager.UI.Scrapyard
             InitSettings();
 
             SetWindowActive(Window.Workbench);
-
-
-            partDisposeWindow.SetActive(false);
         }
 
-        //FIXME This does not need to be in Update
-        private void Update()
+
+
+        private void OnDisable()
         {
-            componentsNumber.text = $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
-        }
-
-        private void OnEnable()
-        {
-            musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
-            sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
-            
-            CameraController.CameraOffset(Vector3.zero, true);
-            CameraController.SetOrthographicSize(31f, Vector3.down * 5f);
-
-            backButton.onClick?.Invoke();
-
-            partChoiceWindow.SetActive(PlayerDataManager.GetCanChoosePart());
-            
-            //--------------------------------------------------------------------------------------------------------//
-            
-            if (PlayerDataManager.GetCanChoosePart())
-            {
-                if (_partChoice == null)
-                {
-                    _partChoice = FindObjectOfType<PartChoiceUI>();
-                }
-                bool notYetStarted = PlayerDataManager.GetStarted();
-
-                if (!notYetStarted)
-                {
-                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
-                    PlayerDataManager.ClearAllPatches();
-                }
-                else
-                {
-                    _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
-                    
-                    PlayerDataManager.SetPatches(Globals.CurrentRing.GenerateRingPatches());
-                    _droneDesigner.DroneDesignUi.InitPurchasePatches();
-                }
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-            
+            PlayerDataManager.OnValuesChanged -= OnValuesChanged;
         }
 
         //============================================================================================================//
@@ -314,7 +318,7 @@ namespace StarSalvager.UI.Scrapyard
                         {
                             ScreenFade.Fade(() =>
                             {
-                                
+
                                 _windows[(int)Window.Settings].SetActive(false);
                                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
                             });
@@ -334,7 +338,7 @@ namespace StarSalvager.UI.Scrapyard
         private void InitSettings()
         {
 
-            
+
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
 
@@ -401,6 +405,15 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //============================================================================================================//
+
+        private void OnValuesChanged()
+        {
+            gearsAmountText.text = $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
+            silverAmountText.text = $"{TMP_SpriteHelper.SILVER_ICON} {PlayerDataManager.GetSilver()}";
+        }
+
+        //====================================================================================================================//
+
 
         /*private Window _currentWindow;*/
 

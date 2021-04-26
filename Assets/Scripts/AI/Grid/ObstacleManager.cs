@@ -334,7 +334,7 @@ namespace StarSalvager
             var bit = m_obstacles
                 .OfType<Bit>()
                 .Where(x => x.IsRecycled == false)
-                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Type != BIT_TYPE.BUMPER)
                 .Where(x => x.Attached == false)
                 .Where(x => Mathf.Abs(xPos - x.transform.position.x) < 0.5f)
                 .Where(x => x.transform.position.y > yPos)
@@ -349,7 +349,7 @@ namespace StarSalvager
             var bits = m_obstacles
                 .OfType<Bit>()
                 .Where(x => x.IsRecycled == false)
-                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Type != BIT_TYPE.BUMPER)
                 .Where(x => x.Attached == false)
                 .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
                 .ToList();
@@ -1088,7 +1088,7 @@ namespace StarSalvager
                 }
                 case SELECTION_TYPE.BUMPER:
                     Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                        .CreateObject<Bit>(BIT_TYPE.WHITE, 0);
+                        .CreateObject<Bit>(BIT_TYPE.BUMPER, 0);
                     AddObstacleToList(newBit);
 
                     obstacle = newBit;
@@ -1238,7 +1238,7 @@ namespace StarSalvager
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
-            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
+            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.BUMPER;
             
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);

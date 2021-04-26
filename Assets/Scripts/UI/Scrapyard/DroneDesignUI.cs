@@ -253,13 +253,15 @@ namespace StarSalvager.UI.Scrapyard
                 var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
                 var remoteData = patchRemoteData.GetRemoteData(patchType);
-                var cost = remoteData.Levels[patchData.Level].cost *
+                var silver = remoteData.Levels[patchData.Level].silver;
+                var gears = remoteData.Levels[patchData.Level].gears *
                            PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST);
 
                 purchasePatchData.Add(new Purchase_PatchData
                 {
                     index = i,
-                    cost = Mathf.RoundToInt(cost),
+                    silver = silver,
+                    gears = Mathf.RoundToInt(gears),
                     PatchData = patchData
                 });
             }
@@ -366,14 +368,14 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
             
             var patchData = partUpgrd.PurchasePatchData;
-            var currentComponents = PlayerDataManager.GetGears();
-            if (currentComponents < patchData.cost)
+            var currentGears = PlayerDataManager.GetGears();
+            var currentSilver = PlayerDataManager.GetSilver();
+            if (currentGears < patchData.gears || currentSilver < patchData.silver)
                 return;
 
-            currentComponents -= patchData.cost;
-
-            PlayerDataManager.SetGears(currentComponents);
-
+            PlayerDataManager.SubtractGears(patchData.gears);
+            PlayerDataManager.SubtractSilver(patchData.silver);
+            
             //Add Patch to Selected Part
             //--------------------------------------------------------------------------------------------------------//
 

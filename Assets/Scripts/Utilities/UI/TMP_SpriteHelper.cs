@@ -5,10 +5,14 @@ namespace StarSalvager.Utilities.Helpers
 {
     public static class TMP_SpriteHelper
     {
+        //Silver Icon
+        //====================================================================================================================//
+
+        public  const string SILVER_ICON = "<sprite=\"Silver\" name=\"bit_DIAMOND_0_v2\">";
         //Star Icon
         //====================================================================================================================//
 
-        public  const string STAR_ICON = "<sprite=\"star\" name=\"star\">";
+        public  const string STAR_ICON = "<sprite=\"Star\" name=\"star\">";
         
         //Gear Icon
         //====================================================================================================================//
