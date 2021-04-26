@@ -146,7 +146,7 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
             
-            var previewType = (PATCH_TYPE)patchToPreview.Type;
+            var typeToPreview = (PATCH_TYPE)patchToPreview.Type;
             var previewPatches = new List<PatchData>(partData.Patches)
             {
                 patchToPreview
@@ -187,8 +187,13 @@ namespace StarSalvager.Utilities.Extensions
             //If the part uses ammo we'll check that first
             if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
             {
-                var preview = (float)GetPartDetailInfo(partRemoteData.ammoUseCost, PATCH_TYPE.EFFICIENCY, previewType, previewMultipliers);
-                preview *= PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
+                var preview = GetPartDetailInfo(partRemoteData.ammoUseCost,
+                    PATCH_TYPE.EFFICIENCY,
+                    typeToPreview,
+                    previewMultipliers);
+                
+                if (preview is float value)
+                    preview = value * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
 
                 var total = partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
                 var partDetail = new PartDetail("Ammo", total, preview);
@@ -209,22 +214,22 @@ namespace StarSalvager.Utilities.Extensions
                 {
                     case PartProperties.KEYS.Damage when value is float f:
                         total = f * multipliers[PATCH_TYPE.POWER];
-                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Cooldown when value is float f:
                         total = f * multipliers[PATCH_TYPE.FIRE_RATE];
-                        preview = GetPartDetailInfo(f, PATCH_TYPE.FIRE_RATE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.FIRE_RATE, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Radius when value is int r:
                         total = r * multipliers[PATCH_TYPE.RANGE];
-                        preview = GetPartDetailInfo(r, PATCH_TYPE.RANGE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(r, PATCH_TYPE.RANGE, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Projectile when value is string s:
                         propertyName = "Range";
                         var projectileRange = FactoryManager.Instance.ProjectileProfile
                             .GetProjectileProfileData(s).ProjectileRange;
                         total = projectileRange * multipliers[PATCH_TYPE.RANGE];
-                        preview = GetPartDetailInfo(projectileRange, PATCH_TYPE.RANGE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(projectileRange, PATCH_TYPE.RANGE, typeToPreview, previewMultipliers);
                         break;
                     
                     case PartProperties.KEYS.Health when partData.Type == (int)PART_TYPE.CORE:

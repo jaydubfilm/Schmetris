@@ -61,8 +61,11 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, Required, FoldoutGroup("Navigation Buttons")]
         private Button backButton;
 
-        [SerializeField, Required, FoldoutGroup("Components Indicator")]
-        private TMP_Text componentsNumber;
+        [FormerlySerializedAs("componentsNumber")] [SerializeField, Required, FoldoutGroup("Gears Indicator")]
+        private TMP_Text gearsAmountText;
+        [SerializeField, Required, FoldoutGroup("Silver Indicator")]
+        private TMP_Text silverAmountText;
+
 
         //====================================================================================================================//
 
@@ -81,36 +84,12 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //============================================================================================================//
-
-
-
-        // Start is called before the first frame update
-        private void Start()
-        {
-            _droneDesigner = FindObjectOfType<DroneDesigner>();
-            _partChoice = FindObjectOfType<PartChoiceUI>();
-
-            _windows = new[]
-            {
-                workbenchWindow,
-                settingsWindow
-            };
-
-            InitButtons();
-            InitMenuButtons();
-            InitSettings();
-
-            SetWindowActive(Window.Workbench);
-        }
-
-        //FIXME This does not need to be in Update
-        private void Update()
-        {
-            componentsNumber.text = $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
-        }
-
+       
         private void OnEnable()
         {
+            PlayerDataManager.OnValuesChanged += OnValuesChanged;
+            OnValuesChanged();
+            
             musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
             sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
             
@@ -147,6 +126,32 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
             
+        }
+
+        // Start is called before the first frame update
+        private void Start()
+        {
+            _droneDesigner = FindObjectOfType<DroneDesigner>();
+            _partChoice = FindObjectOfType<PartChoiceUI>();
+
+            _windows = new[]
+            {
+                workbenchWindow,
+                settingsWindow
+            };
+
+            InitButtons();
+            InitMenuButtons();
+            InitSettings();
+
+            SetWindowActive(Window.Workbench);
+        }
+
+        
+
+        private void OnDisable()
+        {
+            PlayerDataManager.OnValuesChanged -= OnValuesChanged;
         }
 
         //============================================================================================================//
@@ -301,6 +306,15 @@ namespace StarSalvager.UI.Scrapyard
         }*/
 
         //============================================================================================================//
+
+        private void OnValuesChanged()
+        {
+            gearsAmountText.text = $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
+            silverAmountText.text = $"{TMP_SpriteHelper.SILVER_ICON} {PlayerDataManager.GetSilver()}";
+        }
+        
+        //====================================================================================================================//
+        
 
         /*private Window _currentWindow;*/
 

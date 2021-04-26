@@ -229,9 +229,7 @@ namespace StarSalvager
             level = Mathf.Clamp(level + amount, 0, 4);
             renderer.sortingOrder = level;
 
-            //Sets the gameObject info (Sprite)
-            var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
+            UpdateBitData();
         }
 
         public void DecreaseLevel(int amount = 1)
@@ -239,10 +237,21 @@ namespace StarSalvager
             level = Mathf.Clamp(level - amount, 0, 4);
             renderer.sortingOrder = level;
 
-            //Sets the gameObject info (Sprite)
+            UpdateBitData();
+        }
+
+        private void UpdateBitData()
+        {
+            UpdateBitData(Type, level);
+        }
+        public void UpdateBitData(in BIT_TYPE newType, in int newLevel)
+        {
+            Type = newType;
+            level = newLevel;
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
+        
 
         //ICanFreeze Functions
         //====================================================================================================================//

@@ -17,6 +17,7 @@ MonoBehaviour:
     type: 3}
   JunkPrefab: {fileID: 4611369530616709383, guid: 2fa72a9aeb1c5ef458a3299b79a536e8,
     type: 3}
+  JunkSprite: {fileID: 0}
   ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
     type: 3}
   profiles:

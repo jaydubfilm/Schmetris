@@ -122,10 +122,7 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.GetResource(bitType);
         }
 
-        public static int GetGears()
-        {
-            return PlayerRunData.Gears;
-        }
+
 
         public static List<IBlockData> GetBlockDatas()
         {
@@ -137,12 +134,6 @@ namespace StarSalvager.Utilities.Saving
             return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static void SetGears(int value)
-        {
-            PlayerRunData.SetGears(value);
-
-            OnValuesChanged?.Invoke();
-        }
 
         public static void SetBlockData(List<IBlockData> blockData)
         {
@@ -241,8 +232,17 @@ namespace StarSalvager.Utilities.Saving
             SetBlockData(droneBlockData);
         }
 
+        //Gears
         //============================================================================================================//
 
+        public static int GetGears() => PlayerRunData.Gears;
+        public static void SetGears(int value)
+        {
+            PlayerRunData.SetGears(value);
+
+            OnValuesChanged?.Invoke();
+        }
+        
         public static void AddGears(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddGears(amount);
@@ -257,6 +257,33 @@ namespace StarSalvager.Utilities.Saving
 
             OnValuesChanged?.Invoke();
         }
+
+        //Silver
+        //====================================================================================================================//
+        
+        public static int GetSilver() => PlayerRunData.Silver;
+        public static void SetSilver(int value)
+        {
+            PlayerRunData.SetSilver(value);
+
+            OnValuesChanged?.Invoke();
+        }
+        
+        public static void AddSilver(int amount, bool updateValuesChanged = true)
+        {
+            PlayerRunData.AddSilver(amount);
+
+            if (updateValuesChanged)
+                OnValuesChanged?.Invoke();
+        }
+
+        public static void SubtractSilver(int amount)
+        {
+            PlayerRunData.SubtractSilver(amount);
+            OnValuesChanged?.Invoke();
+        }
+
+        //====================================================================================================================//
 
         //FIXME This should be stored via Account, not Run
         public static void AddDontShowAgainKey(string key)

@@ -838,6 +838,7 @@ namespace StarSalvager
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
+                        case BIT_TYPE.WHITE:
                             //TODO This needs to bounce off instead of being destroyed
                             if (closestAttachable is EnemyAttachable /*||
                                 closestAttachable is Part part && part.Destroyed*/)
@@ -881,7 +882,7 @@ namespace StarSalvager
                             PlayerDataManager.RecordBitConnection(bit.Type);
 
                             break;
-                        case BIT_TYPE.WHITE:
+                        case BIT_TYPE.BUMPER:
                             //bounce white bit off of bot
                             var bounce = true;
                             if (bounce)
@@ -1000,7 +1001,7 @@ namespace StarSalvager
                 }
             }
 
-            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
+            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.BUMPER))
             {
                 _weldDatas.Add(new WeldData
                 {
@@ -3189,15 +3190,31 @@ _isShifting = true;
 
                     var bit = closestToCore as Bit;
 
-                    if (bit != null)
+                    if (bit != null && bit.Type == BIT_TYPE.WHITE && bit.level == 1)
                     {
+                        DestroyAttachable(bit);
+                        
+                        PlayerDataManager.AddSilver(1, false);
+                        
+                        var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                            .FirstOrDefault(x => x.level == bit.level)
+                            .ammoEarned;
+                        foreach (var bitType in Constants.BIT_ORDER)
+                        {
+                            GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
+                        }
+                    }
+                    else if (bit != null)
+                    {
+                        var bitType = bit.Type;
                         switch (bit.level)
                         {
                             case 1:
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 break;
                             case 2:
-                                DestroyAttachable(bit);
+
+                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
                                 break;
                         }
 
@@ -3205,10 +3222,8 @@ _isShifting = true;
                             .FirstOrDefault(x => x.level == bit.level)
                             .ammoEarned;
                         
-                        GameUi.CreateAmmoEffect(bit.Type, ammoEarned, position);
-                        /* if(amount == 0)
-                            return;
-                        PlayerDataManager.GetResource(bitType).AddAmmo(amount);*/
+                        GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
+
                     }
 
 

@@ -38,12 +38,13 @@ namespace StarSalvager.Utilities
         private readonly string[] COMMANDS =
         {
             //string.Concat("add ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
-            string.Concat("add ", "components ", "[uint]").ToUpper(),
+            string.Concat("add ", "gears ", "[uint]").ToUpper(),
             string.Concat("add ", "xp ", "[uint]").ToUpper(),
             //string.Concat("add ", "liquid ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             //string.Concat("add ", "patchpoints ", "[uint]").ToUpper(),
             string.Concat("add ", "stars ", "[uint]").ToUpper(),
             string.Concat("add ", "storage ", "parts ", "[PART_TYPE] ", "[Amount:int]").ToUpper(),
+            string.Concat("add ", "silver ", "[uint]").ToUpper(),
             /*string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),*/
             "\n",
             string.Concat("clear ", "console").ToUpper(),
@@ -74,6 +75,7 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "ammo ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
+            string.Concat("set ", "gears ", "[uint]").ToUpper(),
             //string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             //string.Concat("set ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
@@ -82,6 +84,7 @@ namespace StarSalvager.Utilities
             //string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
             string.Concat("set ", "stars ", "[uint]").ToUpper(),
+            string.Concat("set ", "silver ", "[uint]").ToUpper(),
             string.Concat("set ", "testing ", "[bool]").ToUpper(),
             string.Concat("set ", "timescale ", "[0.0 - 2.0]").ToUpper(),
             string.Concat("set ", "timeleft ", "[float]").ToUpper(),
@@ -275,7 +278,7 @@ namespace StarSalvager.Utilities
         {
             switch (split[1].ToLower())
             {
-                case "components":
+                case "gears":
                 {
                     if (!int.TryParse(split[2], out var compAmount))
                     {
@@ -347,6 +350,20 @@ namespace StarSalvager.Utilities
                     }
 
                     PlayerDataManager.AddStars(stars);
+
+                    PlayerDataManager.OnValuesChanged?.Invoke();
+
+                    break;
+                }
+                case "silver":
+                {
+                    if (!int.TryParse(split[2], out var silver))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
+                    PlayerDataManager.AddSilver(silver);
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
 
@@ -562,7 +579,7 @@ namespace StarSalvager.Utilities
                     {
                         foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
                         {
-                            if (_bitType == BIT_TYPE.WHITE || _bitType == BIT_TYPE.NONE)
+                            if (_bitType == BIT_TYPE.BUMPER || _bitType == BIT_TYPE.NONE)
                                 continue;
 
                             PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
@@ -644,7 +661,20 @@ namespace StarSalvager.Utilities
 
                     break;
             }
+                case "gears":
+                {
+                    if (!int.TryParse(split[2], out var gears))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
 
+                    PlayerDataManager.SetGears(gears);
+
+                    PlayerDataManager.OnValuesChanged?.Invoke();
+
+                    break;
+                }
                 case "godmode":
                 {
                     if (!TryParseBool(split[2], out state))
@@ -699,6 +729,20 @@ namespace StarSalvager.Utilities
                     }
 
                     PlayerDataManager.SetStars(stars);
+
+                    PlayerDataManager.OnValuesChanged?.Invoke();
+
+                    break;
+                }
+                case "silver":
+                {
+                    if (!int.TryParse(split[2], out var silver))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
+                    PlayerDataManager.SetSilver(silver);
 
                     PlayerDataManager.OnValuesChanged?.Invoke();
 

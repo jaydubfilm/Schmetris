@@ -35,6 +35,11 @@ namespace StarSalvager.Utilities.Saving
         public int Gears => _gears;
 
         [JsonProperty] private int _gears;
+        
+        [JsonIgnore]
+        public int Silver => _silver;
+
+        [JsonProperty] private int _silver;
 
         public float currentBotHealth;
         public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
@@ -86,14 +91,13 @@ namespace StarSalvager.Utilities.Saving
             return _playerResources[type];
         }
 
+        //Gears
         //============================================================================================================//
 
         public void SetGears(int value)
         {
             _gears = value;
         }
-
-        //============================================================================================================//
 
         public void AddGears(int amount)
         {
@@ -103,6 +107,24 @@ namespace StarSalvager.Utilities.Saving
         public void SubtractGears(int amount)
         {
             _gears -= Mathf.Abs(amount);
+        }
+
+        //Silver
+        //====================================================================================================================//
+        
+        public void SetSilver(int value)
+        {
+            _silver = value;
+        }
+
+        public void AddSilver(int amount)
+        {
+            _silver += Mathf.Abs(amount);
+        }
+
+        public void SubtractSilver(int amount)
+        {
+            _silver -= Mathf.Abs(amount);
         }
 
         //============================================================================================================//
