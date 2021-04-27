@@ -547,7 +547,7 @@ namespace StarSalvager
         {
             scrapyardPart = null;
 
-            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.GetCanChoosePart())
+            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.CanChoosePart)
                 return false;
 
             if (DroneDesignUi.UpgradeWindowOpen)
@@ -638,7 +638,7 @@ namespace StarSalvager
                 _scrapyardBot.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
 
-            bool notYetStarted = PlayerDataManager.GetStarted();
+            bool notYetStarted = PlayerDataManager.HasRunStarted();
             if (!notYetStarted)
             {
                 var partRemoteData = FactoryManager.Instance.PartsRemoteData;

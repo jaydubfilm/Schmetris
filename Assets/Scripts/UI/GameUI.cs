@@ -343,6 +343,9 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+
             Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 

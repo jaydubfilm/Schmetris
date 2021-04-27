@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories;
+using StarSalvager.Parts.Data;
 using StarSalvager.PersistentUpgrades.Data;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
 using UnityEngine;
 
@@ -19,21 +21,24 @@ namespace StarSalvager.Values
 
         #region Properties
 
-        public PlayerSaveRunData PlayerRunData = new PlayerSaveRunData();
-
-        //public PlayerNewAlertData PlayerNewAlertData = new PlayerNewAlertData();
+        public PlayerSaveRunData PlayerRunData;
 
         public Version Version = Constants.VERSION;
 
-        public bool HasStarted = false;
+        //public bool HasStarted = false;
+        [JsonProperty]
+        public int TotalRuns { get; private set; }
+
 
         [JsonProperty]
         public int Stars { get; private set; }
-        public int XP;
 
-        public int CoreDeaths;
+        [JsonProperty]
+        public int XP { get; private set; }
+
         public float RepairsDone;
 
+        [JsonProperty]
         public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
         {
             {BIT_TYPE.RED, 0},
@@ -43,23 +48,11 @@ namespace StarSalvager.Values
             {BIT_TYPE.GREY, 0},
         };
 
+        [JsonProperty]
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
 
-        public int XPAtRunBeginning;
-        public int CoreDeathsAtRunBeginning;
-        public float RepairsDoneAtRunBeginning;
-        public int TotalRuns;
 
-        public Dictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
 
-        public Dictionary<string, int> EnemiesKilledAtRunBeginning = new Dictionary<string, int>();
 
         [JsonIgnore] public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
 
@@ -97,7 +90,8 @@ namespace StarSalvager.Values
             new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
         };
 
-        [JsonIgnore] public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
+        [JsonIgnore] 
+        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
             new Dictionary<Vector2Int, BIT_TYPE>()
             {
                 [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
@@ -130,59 +124,60 @@ namespace StarSalvager.Values
 
         //Player XP
         //====================================================================================================================//
-
-        public void ChangeXP(int amount)
+        public int GetXPThisRun()
         {
-            int totalLevels = GetTotalLevels();
-            XP += amount;
+            if (PlayerRunData == null) return 0;
+            
+           return XP - PlayerRunData.XPAtRunBeginning;
+        }
+        public void SetXP(in int value)
+        {
+            XP = value;
+        }
+        public void AddXP(in int amount)
+        {
+            //var startXP = XP;
+           // var changedXP = startXP + amount;
 
+            //var startLevel = GetCurrentLevel(startXP);
+            //var newLevel = GetCurrentLevel(changedXP);
+            
+            XP += amount;
+            
+            //FIXME Think that this can move to some sort of callback
             if (GameManager.IsState(GameState.LEVEL))
             {
                 LevelManager.Instance.WaveEndSummaryData.AddXPGained(amount);
             }
 
-            int newTotalLevels = GetTotalLevels();
+            //if (startLevel == newLevel)
+            //    return;
 
-            if (newTotalLevels <= totalLevels)
-                return;
-
-            var difference = newTotalLevels - totalLevels;
+            //var difference = newTotalLevels - totalLevels;
 
             //Do something to signify gaining a level
         }
 
-        /*public (int, int) GetLevelProgress()
+        //XP Info Considerations: https://www.youtube.com/watch?v=MCPruAKSG0g
+        //Alt option: https://gamedev.stackexchange.com/a/20946
+        //Based on: https://gamedev.stackexchange.com/a/13639
+        public static int GetCurrentLevel(in int xp)
         {
-            int levelBaseExperience = Globals.LevelBaseExperience;
-            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
+            //level = constant * sqrt(XP)
+            //level = (sqrt(100(2experience+25))+50)/100
+            var baseXP = Globals.LevelBaseExperience;
 
-            int totalLevels = 0;
-            int experienceAmount = XP;
+            return (int)(Mathf.Sqrt(baseXP * (2 * xp + 25)) + 50) / baseXP;
+        }
 
-            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
-            {
-                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
-                totalLevels++;
-            }
-
-            return (experienceAmount, levelBaseExperience + (levelExperienceIncrement * totalLevels));
-        }*/
-
-        public int GetTotalLevels()
+        public static int GetExperienceReqForLevel(in int level)
         {
-            int levelBaseExperience = Globals.LevelBaseExperience;
-            int levelExperienceIncrement = Globals.LevelExperienceIncrement;
+            //XP = (level / constant)^2
+            //experience =(level^2+level)/2*100-(level*100)
+            
+            var baseXP = Globals.LevelBaseExperience;
 
-            int totalLevels = 0;
-            int experienceAmount = XP;
-
-            while (levelBaseExperience + (levelExperienceIncrement * totalLevels) <= experienceAmount)
-            {
-                experienceAmount -= levelBaseExperience + (levelExperienceIncrement * totalLevels);
-                totalLevels++;
-            }
-
-            return totalLevels;
+            return Mathf.RoundToInt((Mathf.Pow(level, 2) + level) / 2 * baseXP - (level * baseXP));
         }
 
         //Stars
@@ -302,9 +297,11 @@ namespace StarSalvager.Values
 
         //Player Run Data
         //====================================================================================================================//
+        [Obsolete()]
         public void ResetPlayerRunData()
         {
-            PlayerSaveRunData data = new PlayerSaveRunData()
+            throw new NotImplementedException();
+            /*PlayerSaveRunData data = new PlayerSaveRunData()
             {
                 PlaythroughID = Guid.NewGuid().ToString(),
                 runStarted = false,
@@ -328,17 +325,82 @@ namespace StarSalvager.Values
 
             TotalRuns++;
 
-            PlayerRunData = data;
             PlayerDataManager.SetCanChoosePart(true);
+            PlayerDataManager.SavePlayerAccountData();*/
+        }
+
+        public void CompleteCurrentRun()
+        {
+            PlayerRunData.hasCompleted = true;
+            PlayerDataManager.SavePlayerAccountData();
+        }
+
+        public void StartNewRun()
+        {
+            var startingGears = (int)PlayerDataManager
+                .GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY);
+            var startingHealth =PART_TYPE.CORE
+                .GetRemoteData()
+                .GetDataValue<float>(PartProperties.KEYS.Health);
+
+            var newPlayerRunData = new PlayerSaveRunData(
+                startingGears,
+                startingHealth,
+                XP,
+                RepairsDone,
+                BitConnections,
+                EnemiesKilled);
+
+            TotalRuns++;
+
+            PlayerRunData = newPlayerRunData;
             PlayerDataManager.SavePlayerAccountData();
         }
 
         public void SaveData()
         {
-            PlayerRunData.SaveData();
+            //PlayerRunData.SaveData();
         }
 
         //====================================================================================================================//
 
+        public string GetSummaryString()
+        {
+            string GetAsTitle(in string value)
+            {
+                return $"<b><color=white>{value}</color></b>";
+            }
+            
+            var summaryText = string.Empty;
+            summaryText += $"Total Gears: {XP}, this run: {PlayerDataManager.GetXPThisRun()}\n";
+            summaryText += $"Total Repairs Done: {RepairsDone}, this run: {PlayerDataManager.GetRepairsDoneThisRun()}\n";
+
+
+            var bitConnections = BitConnections;
+            if (bitConnections.Count > 0)
+            {
+                summaryText += "<b>Bits Connected:</b>\n";
+
+                foreach (var keyValuePair in bitConnections)
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {PlayerDataManager.GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            if (EnemiesKilled.Count > 0)
+            {
+                summaryText += ("<b>Enemies Killed:</b>\n");
+
+                foreach (var keyValuePair in EnemiesKilled)
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {PlayerDataManager.GetEnemiesKilledThisRun(keyValuePair.Key)}\n";
+                }
+            }
+
+            return summaryText;
+        }
+
+        //====================================================================================================================//
+        
     }
 }

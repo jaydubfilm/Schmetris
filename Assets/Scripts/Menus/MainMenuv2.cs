@@ -232,6 +232,7 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
             }
         }
+
         private void SetSelectedElement(WINDOW window)
         {
             switch (window)
@@ -248,8 +249,10 @@ namespace StarSalvager.UI
                     EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
                     break;
                 case WINDOW.ACCOUNT_MENU:
-                    bool hasRun = PlayerDataManager.GetHasRunStarted();
-                    EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
+                    bool hasActiveRun = PlayerDataManager.HasActiveRun();
+                    EventSystem.current.SetSelectedGameObject(hasActiveRun
+                        ? continueRunButton.gameObject
+                        : newRunButton.gameObject);
                     break;
                 case WINDOW.STARS:
                     EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
@@ -308,7 +311,7 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
+                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.DroneBlockData : null;
                 blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes
@@ -323,17 +326,19 @@ namespace StarSalvager.UI
         private void SetupAccountMenuWindow()
         {
             //TODO Get bool for current run
-            bool hasRun = PlayerDataManager.GetHasRunStarted();
-            
-            newRunButton.gameObject.SetActive(!hasRun);
-            continueRunButton.gameObject.SetActive(hasRun);
-            abandonRunButton.gameObject.SetActive(hasRun);
-            
+            bool hasActiveRun = PlayerDataManager.HasActiveRun();
+
+            newRunButton.gameObject.SetActive(!hasActiveRun);
+            continueRunButton.gameObject.SetActive(hasActiveRun);
+            abandonRunButton.gameObject.SetActive(hasActiveRun);
+
             //FIXME This should wait until a EventSystem exists to be able to use
-            EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
-            
+            EventSystem.current?.SetSelectedGameObject(hasActiveRun
+                ? continueRunButton.gameObject
+                : newRunButton.gameObject);
+
         }
-        
+
         //Setup Stars Window
         //------------------------------------------------------------------------------------------------------------//
 
@@ -480,7 +485,7 @@ namespace StarSalvager.UI
             {
                 AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
-                PlayerDataManager.SetRunStarted();
+                PlayerDataManager.SetRunStarted(true);
                 LeaveMenu(SceneLoader.UNIVERSE_MAP);
             });
             abandonRunButton.onClick.AddListener(() =>
@@ -494,7 +499,7 @@ namespace StarSalvager.UI
                         if (!response)
                             return;
                         
-                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
                         SetupAccountMenuWindow();
                     });
@@ -550,13 +555,15 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
-                    var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
+                    PlayerDataManager.StartNewPlayerRun();
+                    /*var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
                     
                     PlayerDataManager.SetGears((int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY));
                     
-                    PlayerDataManager.SetRunStarted();
-                    PlayerDataManager.SetBotHealth(startingHealth);
+                    PlayerDataManager.SetRunStarted(true);
+                    PlayerDataManager.SetBotHealth(startingHealth);*/
                     
+                    //Set the ACCOUNT_MENU to open, so that when we return its ready to view
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                     IntroScene.gameObject.SetActive(true);
                     gameObject.SetActive(false);

@@ -87,6 +87,8 @@ namespace StarSalvager.UI.Scrapyard
        
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData) return;
+            
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
             OnValuesChanged();
             
@@ -98,17 +100,17 @@ namespace StarSalvager.UI.Scrapyard
 
             backButton.onClick?.Invoke();
 
-            partChoiceWindow.SetActive(PlayerDataManager.GetCanChoosePart());
+            partChoiceWindow.SetActive(PlayerDataManager.CanChoosePart);
             
             //--------------------------------------------------------------------------------------------------------//
             
-            if (PlayerDataManager.GetCanChoosePart())
+            if (PlayerDataManager.CanChoosePart)
             {
                 if (_partChoice == null)
                 {
                     _partChoice = FindObjectOfType<PartChoiceUI>();
                 }
-                bool notYetStarted = PlayerDataManager.GetStarted();
+                bool notYetStarted = PlayerDataManager.HasRunStarted();
 
                 if (!notYetStarted)
                 {
