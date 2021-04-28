@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using UnityEngine;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Puzzle.Data;
+using StarSalvager.Utilities.Puzzle.Structs;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -406,6 +408,29 @@ namespace StarSalvager.Utilities.Saving
 
         #region Player Run Data Tracking
 
+        
+
+        public static void RecordCombo(in ComboRecordData comboRecordData) => PlayerAccountData.RecordCombo(comboRecordData);
+        public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMade() => PlayerAccountData.CombosMade;
+
+        public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMadeThisRun()
+        {
+            var outDict = new Dictionary<ComboRecordData, int>(PlayerAccountData.CombosMade);
+            foreach (var kvp in PlayerAccountData.CombosMade)
+            {
+                if (!PlayerRunData.CombosMadeAtBeginning.TryGetValue(kvp.Key, out var startValue))
+                {
+                    outDict[kvp.Key] = kvp.Value;
+                    continue;
+                }
+                
+                outDict[kvp.Key] = kvp.Value - startValue;
+            }
+
+            return outDict;
+        
+        }
+
         public static void RecordBitConnection(in BIT_TYPE bit) => PlayerAccountData.RecordBitConnection(bit);
 
         public static IReadOnlyDictionary<BIT_TYPE, int> GetBitConnections() => PlayerAccountData.BitConnections;
@@ -420,7 +445,13 @@ namespace StarSalvager.Utilities.Saving
             var outDict = new Dictionary<BIT_TYPE, int>(PlayerAccountData.BitConnections);
             foreach (var kvp in PlayerAccountData.BitConnections)
             {
-                outDict[kvp.Key] = kvp.Value - PlayerRunData.BitConnectionsAtRunBeginning[kvp.Key];
+                if (!PlayerRunData.BitConnectionsAtRunBeginning.TryGetValue(kvp.Key, out var startValue))
+                {
+                    outDict[kvp.Key] = kvp.Value;
+                    continue;
+                }
+                
+                outDict[kvp.Key] = kvp.Value - startValue;
             }
 
             return outDict;

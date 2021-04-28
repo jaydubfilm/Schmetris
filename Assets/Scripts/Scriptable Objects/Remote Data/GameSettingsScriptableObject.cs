@@ -38,10 +38,12 @@ namespace StarSalvager.ScriptableObjects
         //Experience Properties
         //====================================================================================================================//
 
-        [BoxGroup("Experience")]
+        [BoxGroup("Experience"), Range(0f,1f)]
+        public float levelXPConstant = 0.085f;
+        /*[BoxGroup("Experience")]
         public int levelBaseExperience = 500;
         [BoxGroup("Experience")]
-        public int levelExperienceIncrement = 50;
+        public int levelExperienceIncrement = 50;*/
 
         //Wave Properties
         //====================================================================================================================//

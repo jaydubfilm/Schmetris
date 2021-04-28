@@ -27,6 +27,7 @@ using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
+using StarSalvager.Utilities.Puzzle.Structs;
 using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
@@ -3146,6 +3147,13 @@ _isShifting = true;
             //--------------------------------------------------------------------------------------------------------//
 
 
+            var closestToCoreBit = (Bit)closestToCore;
+            PlayerDataManager.RecordCombo(new ComboRecordData
+            {
+                BitType = closestToCoreBit.Type,
+                ComboType = comboData.type,
+                FromLevel = closestToCoreBit.level
+            });
             closestToCore.IncreaseLevel(comboData.addLevels);
 
 

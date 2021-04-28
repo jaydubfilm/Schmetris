@@ -10,6 +10,7 @@ using StarSalvager.Parts.Data;
 using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
+using StarSalvager.Utilities.Puzzle.Structs;
 using UnityEngine;
 
 namespace StarSalvager.Values
@@ -51,9 +52,9 @@ namespace StarSalvager.Values
 
         [JsonProperty]
         public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
-
-
-
+        
+        [JsonProperty,JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMade = new Dictionary<ComboRecordData, int>();
 
         [JsonIgnore] public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
 
@@ -166,9 +167,9 @@ namespace StarSalvager.Values
         {
             //level = constant * sqrt(XP)
             //level = (sqrt(100(2experience+25))+50)/100
-            var baseXP = Globals.LevelBaseExperience;
+            var constant = Globals.LevelXPConstant;
 
-            return (int)(Mathf.Sqrt(baseXP * (2 * xp + 25)) + 50) / baseXP;
+            return Mathf.RoundToInt(constant * Mathf.Sqrt(xp));
         }
 
         public static int GetExperienceReqForLevel(in int level)
@@ -176,9 +177,9 @@ namespace StarSalvager.Values
             //XP = (level / constant)^2
             //experience =(level^2+level)/2*100-(level*100)
             
-            var baseXP = Globals.LevelBaseExperience;
+            var constant = Globals.LevelXPConstant;
 
-            return Mathf.RoundToInt((Mathf.Pow(level, 2) + level) / 2 * baseXP - (level * baseXP));
+            return Mathf.RoundToInt(Mathf.Pow(level / constant, 2));
         }
 
         //Stars
@@ -274,6 +275,17 @@ namespace StarSalvager.Values
         //Recording Data
         //====================================================================================================================//
 
+        public void RecordCombo(in ComboRecordData comboRecordData)
+        {
+            if (CombosMade.ContainsKey(comboRecordData))
+            {
+                CombosMade[comboRecordData]++;
+                return;
+            }
+            
+            CombosMade.Add(comboRecordData, 1);
+        }
+        
         public void RecordBitConnection(BIT_TYPE bit)
         {
             if (BitConnections.ContainsKey(bit))
@@ -298,37 +310,6 @@ namespace StarSalvager.Values
 
         //Player Run Data
         //====================================================================================================================//
-        [Obsolete()]
-        public void ResetPlayerRunData()
-        {
-            throw new NotImplementedException();
-            /*PlayerSaveRunData data = new PlayerSaveRunData()
-            {
-                PlaythroughID = Guid.NewGuid().ToString(),
-                runStarted = false,
-            };
-
-            //data.SetupMap(LevelRingConnectionsJson, WreckNodes);
-
-            XPAtRunBeginning = XP;
-            CoreDeathsAtRunBeginning = CoreDeaths;
-            BitConnectionsAtRunBeginning.Clear();
-            foreach (var keyValue in BitConnections)
-            {
-                BitConnectionsAtRunBeginning.Add(keyValue.Key, keyValue.Value);
-            }
-
-            EnemiesKilledAtRunBeginning.Clear();
-            foreach (var keyValue in EnemiesKilled)
-            {
-                EnemiesKilledAtRunBeginning.Add(keyValue.Key, keyValue.Value);
-            }
-
-            TotalRuns++;
-
-            PlayerDataManager.SetCanChoosePart(true);
-            PlayerDataManager.SavePlayerAccountData();*/
-        }
 
         public void CompleteCurrentRun()
         {
@@ -350,6 +331,7 @@ namespace StarSalvager.Values
                 XP,
                 RepairsDone,
                 BitConnections,
+                CombosMade,
                 EnemiesKilled);
 
             TotalRuns++;

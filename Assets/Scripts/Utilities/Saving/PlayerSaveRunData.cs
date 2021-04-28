@@ -3,7 +3,9 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
+using StarSalvager.Utilities.Puzzle.Structs;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -35,6 +37,8 @@ namespace StarSalvager.Utilities.Saving
 
         public readonly IReadOnlyDictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning;
         public readonly IReadOnlyDictionary<string, int> EnemiesKilledAtRunBeginning;
+        [JsonConverter(typeof(ComboRecordDataConverter))]
+        public readonly IReadOnlyDictionary<ComboRecordData, int> CombosMadeAtBeginning;
 
         #endregion //Starting Values
 
@@ -92,6 +96,7 @@ namespace StarSalvager.Utilities.Saving
             in int xpAtRunBeginning, 
             in float repairsDoneAtRunBeginning,
             in Dictionary<BIT_TYPE, int> bitConnectionsAtRunBeginning,
+            in Dictionary<ComboRecordData, int> combosMadeAtBeginning,
             in Dictionary<string, int> enemiesKilledAtRunBeginning)
         {
             PlaythroughID = Guid.NewGuid().ToString();
@@ -104,8 +109,18 @@ namespace StarSalvager.Utilities.Saving
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
             
             //Have to create copies of the data to not let original change this ref
-            BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning);
-            EnemiesKilledAtRunBeginning = new Dictionary<string, int>(enemiesKilledAtRunBeginning);
+            //Need to include the null check for files that might be old versions
+            BitConnectionsAtRunBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning)
+                : new Dictionary<BIT_TYPE, int>();
+            
+            CombosMadeAtBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<ComboRecordData, int>(combosMadeAtBeginning)
+                : new Dictionary<ComboRecordData, int>();
+            
+            EnemiesKilledAtRunBeginning = !enemiesKilledAtRunBeginning.IsNullOrEmpty()
+                ? new Dictionary<string, int>(enemiesKilledAtRunBeginning)
+                : new Dictionary<string, int>();
             
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();

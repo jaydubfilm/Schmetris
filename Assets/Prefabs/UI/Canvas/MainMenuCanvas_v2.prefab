@@ -16715,10 +16715,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157f95abccc704c47bb90e918f33a070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 2
-  xp: 500
-  level: 1
-  XP: 637
   xpElementScrollview:
     contentTransform: {fileID: 0}
     contentPrefab: {fileID: 0}
