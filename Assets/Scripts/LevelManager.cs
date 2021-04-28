@@ -715,7 +715,6 @@ namespace StarSalvager
 
             SavePlayerData();
             GameManager.SetCurrentGameState(GameState.LevelBotDead);
-            PlayerDataManager.SetRunStarted(false);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
             foreach (var bitType in Constants.BIT_ORDER)

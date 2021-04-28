@@ -19,8 +19,8 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonProperty]
         public string PlaythroughID { get; private set; }
-
-
+        
+        
         public bool hasCompleted;
         public bool hasStarted;
         
