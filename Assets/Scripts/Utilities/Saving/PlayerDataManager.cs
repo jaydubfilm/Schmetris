@@ -441,7 +441,7 @@ namespace StarSalvager.Utilities.Saving
         public static IReadOnlyDictionary<string, int> GetEnemiesKilledThisRun()
         {
             var outDict = new Dictionary<string, int>(PlayerAccountData.EnemiesKilled);
-            foreach (var kvp in outDict)
+            foreach (var kvp in PlayerAccountData.EnemiesKilled)
             {
                 if (!PlayerRunData.EnemiesKilledAtRunBeginning.TryGetValue(kvp.Key, out var startValue))
                 {

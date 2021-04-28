@@ -3,6 +3,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace StarSalvager.Utilities.Saving
         #region Starting Values
 
         public readonly int XPAtRunBeginning;
+        [JsonConverter(typeof(DecimalConverter))]
         public readonly float RepairsDoneAtRunBeginning;
 
         public readonly IReadOnlyDictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning;
@@ -56,6 +58,7 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonProperty] private int _silver;
 
+        [JsonConverter(typeof(DecimalConverter))]
         public float currentBotHealth;
         public List<IBlockData> DroneBlockData;
         public List<IBlockData> PartsInStorageBlockData;

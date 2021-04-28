@@ -36,6 +36,7 @@ namespace StarSalvager.Values
         [JsonProperty]
         public int XP { get; private set; }
 
+        [JsonConverter(typeof(DecimalConverter))]
         public float RepairsDone;
 
         [JsonProperty]
@@ -372,28 +373,28 @@ namespace StarSalvager.Values
             }
             
             var summaryText = string.Empty;
-            summaryText += $"Total Gears: {XP}, this run: {PlayerDataManager.GetXPThisRun()}\n";
-            summaryText += $"Total Repairs Done: {RepairsDone}, this run: {PlayerDataManager.GetRepairsDoneThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total XP:")} {XP}\n";
+            summaryText += $"{GetAsTitle("Total Repairs Done:")} {RepairsDone}\n";
 
 
             var bitConnections = BitConnections;
             if (bitConnections.Count > 0)
             {
-                summaryText += "<b>Bits Connected:</b>\n";
+                summaryText += $"{GetAsTitle("Bits Connected:")}\n";
 
                 foreach (var keyValuePair in bitConnections)
                 {
-                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {PlayerDataManager.GetBitConnectionsThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}\n";
                 }
             }
 
             if (EnemiesKilled.Count > 0)
             {
-                summaryText += ("<b>Enemies Killed:</b>\n");
+                summaryText += ($"{GetAsTitle("Enemies Killed:")}\n");
 
                 foreach (var keyValuePair in EnemiesKilled)
                 {
-                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {PlayerDataManager.GetEnemiesKilledThisRun(keyValuePair.Key)}\n";
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}\n";
                 }
             }
 
