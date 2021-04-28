@@ -191,11 +191,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.25
+      multiplier: 0.5
       level: 1
     - gears: 250
       silver: 1
-      multiplier: 0.5
+      multiplier: 1
       level: 2
   - isImplemented: 0
     name: AREA OF EFFECT
@@ -209,11 +209,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.25
+      multiplier: 0.5
       level: 1
     - gears: 250
       silver: 0
-      multiplier: 0.5
+      multiplier: 1
       level: 2
   - isImplemented: 1
     name: EFFECIENCY
@@ -222,11 +222,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.25
+      multiplier: 0.5
       level: 1
     - gears: 250
       silver: 0
-      multiplier: 0.5
+      multiplier: 1
       level: 2
   - isImplemented: 1
     name: RANGE
@@ -235,11 +235,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.25
+      multiplier: 0.5
       level: 1
     - gears: 250
       silver: 0
-      multiplier: 0.5
+      multiplier: 1
       level: 2
   - isImplemented: 0
     name: BURN
