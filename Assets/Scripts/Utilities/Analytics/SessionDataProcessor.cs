@@ -278,12 +278,10 @@ namespace StarSalvager.Utilities.Analytics
             _currentWave = wave;*/
         }
 
-        public void EnemyKilled(string enemyId)
+        public void EnemyKilled(in string enemyId)
         {
             if (!_currentWave.HasValue)
                 return;
-
-            PlayerDataManager.RecordEnemyKilled(enemyId);
 
             var wave = _currentWave.Value;
             
@@ -298,7 +296,8 @@ namespace StarSalvager.Utilities.Analytics
                 wave.enemiesKilledData = new List<EnemySummaryData>();
 
             //FIXME I hate the long string comparisons happening here
-            var summaryIndex = wave.enemiesKilledData.FindIndex(x => x.id == enemyId);
+            var id = enemyId;
+            var summaryIndex = wave.enemiesKilledData.FindIndex(x => x.id == id);
             
             if(summaryIndex < 0)
                 wave.enemiesKilledData.Add(new EnemySummaryData

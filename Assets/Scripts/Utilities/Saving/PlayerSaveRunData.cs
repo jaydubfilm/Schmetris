@@ -42,15 +42,7 @@ namespace StarSalvager.Utilities.Saving
         
         public int currentNode;
 
-        [JsonProperty]
-        private List<PlayerResource> _playerResources = new List<PlayerResource>
-        {
-            new PlayerResource(BIT_TYPE.BLUE, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.GREEN, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.GREY, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.RED, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.YELLOW, Globals.StartingAmmo, 100)
-        };
+        [JsonProperty] private List<PlayerResource> _playerResources;
 
         //public int RationCapacity = 500;
 
@@ -107,8 +99,10 @@ namespace StarSalvager.Utilities.Saving
             
             XPAtRunBeginning = xpAtRunBeginning;
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
-            BitConnectionsAtRunBeginning = bitConnectionsAtRunBeginning;
-            EnemiesKilledAtRunBeginning = enemiesKilledAtRunBeginning;
+            
+            //Have to create copies of the data to not let original change this ref
+            BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning);
+            EnemiesKilledAtRunBeginning = new Dictionary<string, int>(enemiesKilledAtRunBeginning);
             
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
@@ -121,6 +115,13 @@ namespace StarSalvager.Utilities.Saving
             {
                 0
             };
+
+            var capacity = (int) PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
+            _playerResources = new List<PlayerResource>();
+            foreach (var bitType in Constants.BIT_ORDER)
+            {
+                _playerResources.Add(new PlayerResource(bitType, Globals.StartingAmmo, capacity));
+            }
         }
 
         //Bot data
