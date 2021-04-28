@@ -2765,6 +2765,7 @@ _isShifting = true;
         {
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.BIT_DEATH, bitType);
+            if (explosion is null) return;
             LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
             explosion.transform.position = worldPosition;
 
