@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using StarSalvager;
-using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using StarSalvager.Utilities.JSON.Converters;
 using UnityEngine;
 
 
@@ -17,11 +14,11 @@ namespace StarSalvager.Utilities.Saving
         private BIT_TYPE bitType;
 
         [JsonIgnore]
-        public float Ammo => _botAmmo;
+        public float Ammo => _ammo;
 
 
-        [JsonProperty]
-        private float _botAmmo;
+        [JsonProperty, JsonConverter(typeof(DecimalConverter))]
+        private float _ammo;
 
         [JsonIgnore]
         public int AmmoCapacity => _botAmmoCapacity;
@@ -29,17 +26,17 @@ namespace StarSalvager.Utilities.Saving
         [JsonProperty]
         private int _botAmmoCapacity;
 
-        public PlayerResource(BIT_TYPE type, int botAmmo, int botAmmoCapacity)
+        public PlayerResource(BIT_TYPE type, int ammo, int botAmmoCapacity)
         {
             bitType = type;
 
-            _botAmmo = botAmmo;
+            _ammo = ammo;
             _botAmmoCapacity = botAmmoCapacity;
         }
 
         public void SetAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botAmmo = Mathf.Clamp(amount, 0f, _botAmmoCapacity);
+            _ammo = Mathf.Clamp(amount, 0f, _botAmmoCapacity);
 
             if (updateValuesChanged)
             {
@@ -50,7 +47,7 @@ namespace StarSalvager.Utilities.Saving
         public void SetAmmoCapacity(int amount, bool updateCapacitiesChanged = true)
         {
             _botAmmoCapacity = amount;
-            _botAmmo = Mathf.Clamp(_botAmmo, 0f, _botAmmoCapacity);
+            _ammo = Mathf.Clamp(_ammo, 0f, _botAmmoCapacity);
 
             if (updateCapacitiesChanged)
             {
@@ -60,7 +57,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void AddAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botAmmo = Mathf.Min(_botAmmo + amount, _botAmmoCapacity);
+            _ammo = Mathf.Min(_ammo + amount, _botAmmoCapacity);
 
             if (updateValuesChanged)
             {
@@ -70,7 +67,7 @@ namespace StarSalvager.Utilities.Saving
 
         public void SubtractAmmo(float amount, bool updateValuesChanged = true)
         {
-            _botAmmo = Mathf.Max(_botAmmo - amount, 0);
+            _ammo = Mathf.Max(_ammo - amount, 0);
 
             if (updateValuesChanged)
             {
