@@ -171,6 +171,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+            
             Camera.onPostRender += _droneDesigner.DrawGL;
             PlayerDataManager.OnValuesChanged += CheckCanRepair;
 

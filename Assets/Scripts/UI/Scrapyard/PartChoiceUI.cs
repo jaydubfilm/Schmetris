@@ -175,7 +175,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CloseWindow()
         {
-            PlayerDataManager.SetStarted(true);
+            PlayerDataManager.SetRunStarted(true);
             PlayerDataManager.SetCanChoosePart(false);
             partChoiceWindow.SetActive(false);
 

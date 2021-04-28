@@ -578,12 +578,9 @@ namespace StarSalvager.Utilities
 
                     if (split[2].ToLower().Equals("all"))
                     {
-                        foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+                        foreach (var bitType in Constants.BIT_ORDER)
                         {
-                            if (_bitType == BIT_TYPE.BUMPER || _bitType == BIT_TYPE.NONE)
-                                continue;
-
-                            PlayerDataManager.GetResource(_bitType).SetAmmo(floatAmount, false);
+                            PlayerDataManager.GetResource(bitType).SetAmmo(floatAmount, false);
                         }
 
                         PlayerDataManager.OnValuesChanged?.Invoke();

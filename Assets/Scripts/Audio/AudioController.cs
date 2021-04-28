@@ -90,6 +90,7 @@ namespace StarSalvager.Audio
             SOUND sound;
             switch (bitType)
             {
+                case BIT_TYPE.WHITE:
                 case BIT_TYPE.BLUE:
                     sound = SOUND.BIT_SNAP_BLUE;
                     break;

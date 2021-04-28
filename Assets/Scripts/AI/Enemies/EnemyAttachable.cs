@@ -395,15 +395,7 @@ namespace StarSalvager.AI
             }
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
-            DropLoot();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-            
-            SetState(STATE.DEATH);
+            KillEnemy();
         }
 
         //ICustomRotate functions

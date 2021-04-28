@@ -205,7 +205,7 @@ namespace StarSalvager.UI
                             LevelManager.Instance.BotInLevel.IsInvulnerable = false;
                         }
 
-                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
 
 

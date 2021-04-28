@@ -3,86 +3,110 @@ using StarSalvager.Utilities.FileIO;
 using StarSalvager.Values;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
-using StarSalvager.UI.Scrapyard;
-using StarSalvager.Utilities.Math;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
-using StarSalvager.Factories;
-using UnityEditor;
-using StarSalvager.Factories.Data;
-using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Helpers;
-using StarSalvager.Utilities.UI;
-using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
 {
     public static class PlayerDataManager
     {
-        public static int CurrentSaveSlotIndex = 0;
-
         public static Action OnValuesChanged;
         public static Action OnCapacitiesChanged;
+
+        //Properties
+        //====================================================================================================================//
+
+        #region Properties
+
+        public static Version Version => PlayerAccountData.Version;
+
+        public static int CurrentSaveSlotIndex;
 
         private static PlayerSaveAccountData PlayerAccountData = new PlayerSaveAccountData();
         private static PlayerSaveRunData PlayerRunData => PlayerAccountData.PlayerRunData;
 
         private static GameMetadata GameMetaData = Files.ImportGameMetaData();
 
+        #endregion //Properties
+
+        //Summary Strings
+        //====================================================================================================================//
+        public static string GetAccountSummaryString() => PlayerAccountData.GetSummaryString();
+
+        public static string GetRunSummaryString() => PlayerRunData.GetSummaryString();
+        
+        //Upgrades
         //====================================================================================================================//
 
-        public static Version GetVersion()
-        {
-            return PlayerAccountData.Version;
-        }
+        #region Upgrades
 
-        public static bool GetStarted()
-        {
-            return PlayerAccountData.HasStarted;
-        }
+        public static float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.GetCurrentUpgradeValue(upgradeType, bitType);
 
-        public static void SetStarted(bool started)
-        {
-            PlayerAccountData.HasStarted = started;
-        }
+        public static void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in int newLevel,
+            in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.SetUpgradeLevel(upgradeType, bitType, newLevel);
 
-        public static bool GetCanChoosePart()
-        {
-            return PlayerRunData.CanChoosePart;
-        }
+        public static int GetCurrentUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
+            PlayerAccountData.GetCurrentUpgradeLevel(upgradeType, bitType);
 
-        public static void SetCanChoosePart(bool canChoosePart)
-        {
-            PlayerRunData.CanChoosePart = canChoosePart;
-        }
+        #endregion //Upgrades
+        
+        //XP Functions
+        //====================================================================================================================//
 
-        public static bool GetHasRunStarted()
-        {
-            return HasPlayerRunData() && PlayerRunData.runStarted;
-        }
+        #region XP
 
-        public static void SetRunStarted()
-        {
-            PlayerRunData.runStarted = true;
-        }
+        public static int GetXP() => PlayerAccountData.XP;
 
-        public static bool HasPlayerAccountData()
-        {
-            return PlayerAccountData != null;
-        }
+        public static int GetXPThisRun() => PlayerAccountData.GetXPThisRun();
 
-        public static bool HasPlayerRunData()
-        {
-            return PlayerAccountData != null && PlayerRunData != null;
-        }
+        public static void ChangeXP(in int amount) => PlayerAccountData.AddXP(amount);
 
-        public static void ExportPlayerAccountData(int saveSlotIndex)
+        #endregion //XP
+
+        //Stars
+        //====================================================================================================================//
+
+        #region Stars
+
+        public static int GetStars() => PlayerAccountData.Stars;
+        public static void SetStars(in int value) => PlayerAccountData.SetStars(value);
+        public static void AddStars(in int amount = 1) => PlayerAccountData.AddStars(amount);
+        public static bool TrySubtractStars(in int amount = 1) => PlayerAccountData.TrySubtractStars(amount);
+
+        #endregion //Stars
+        
+        //Run Status
+        //====================================================================================================================//
+
+        #region Run Status
+
+        public static bool HasRunStarted()
         {
-            Files.ExportPlayerSaveAccountData(PlayerAccountData, saveSlotIndex);
+            return PlayerAccountData.PlayerRunData.hasStarted;
         }
+        public static void SetRunStarted(bool started)
+        {
+            PlayerRunData.hasStarted = started;
+        }
+        
+        public static bool HasActiveRun()
+        {
+            return HasRunData && PlayerRunData.hasStarted && !PlayerRunData.hasCompleted;
+        }
+        
+        public static bool HasRunData => !(PlayerAccountData == null || PlayerRunData == null);
+
+        #endregion //Run Status
+
+        //Bot Data
+        //====================================================================================================================//
+
+        #region Bot Data
 
         public static List<Vector2Int> GetBotLayout()
         {
@@ -98,64 +122,17 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerAccountData.GetCoordinateForCategory(bitType);
         }
-
-        //Run Data Functions
-        //====================================================================================================================//
-
-        public static int GetCurrentNode()
-        {
-            return PlayerRunData.CurrentNode;
-        }
-
-        public static void SetCurrentNode(int node)
-        {
-            PlayerRunData.CurrentNode = node;
-        }
-
-        public static List<PlayerResource> GetResources()
-        {
-            return PlayerRunData.GetResources();
-        }
-
-        public static PlayerResource GetResource(BIT_TYPE bitType)
-        {
-            return PlayerRunData.GetResource(bitType);
-        }
-
-
-
+        
         public static List<IBlockData> GetBlockDatas()
         {
-            return PlayerRunData.mainDroneBlockData;
+            return PlayerRunData.DroneBlockData;
         }
 
-        public static IReadOnlyList<string> GetDontShowAgainKeys()
+        public static void SetBlockData(IEnumerable<IBlockData> blockData)
         {
-            return PlayerRunData.DontShowAgainKeys;
+            PlayerRunData.SetDroneBlockData(blockData);
         }
-
-
-        public static void SetBlockData(List<IBlockData> blockData)
-        {
-            PlayerRunData.SetShipBlockData(blockData);
-        }
-
-        public static void RemoveAllNonParts()
-        {
-            var droneBlockData = new List<IBlockData>(GetBlockDatas());
-
-            for (var i = droneBlockData.Count - 1; i >= 0 ; i--)
-            {
-                if(droneBlockData[i] is PartData)
-                    continue;
-                
-                droneBlockData.RemoveAt(i);
-            }
-
-            SetBlockData(droneBlockData);
-        }
-
-
+        
         public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
             //--------------------------------------------------------------------------------------------------------//
@@ -232,118 +209,33 @@ namespace StarSalvager.Utilities.Saving
             SetBlockData(droneBlockData);
         }
 
-        //Gears
-        //============================================================================================================//
-
-        public static int GetGears() => PlayerRunData.Gears;
-        public static void SetGears(int value)
-        {
-            PlayerRunData.SetGears(value);
-
-            OnValuesChanged?.Invoke();
-        }
+        #endregion //Bot Data
         
-        public static void AddGears(int amount, bool updateValuesChanged = true)
-        {
-            PlayerRunData.AddGears(amount);
-
-            if (updateValuesChanged)
-                OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractGears(int amount)
-        {
-            PlayerRunData.SubtractGears(amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        //Silver
-        //====================================================================================================================//
-        
-        public static int GetSilver() => PlayerRunData.Silver;
-        public static void SetSilver(int value)
-        {
-            PlayerRunData.SetSilver(value);
-
-            OnValuesChanged?.Invoke();
-        }
-        
-        public static void AddSilver(int amount, bool updateValuesChanged = true)
-        {
-            PlayerRunData.AddSilver(amount);
-
-            if (updateValuesChanged)
-                OnValuesChanged?.Invoke();
-        }
-
-        public static void SubtractSilver(int amount)
-        {
-            PlayerRunData.SubtractSilver(amount);
-            OnValuesChanged?.Invoke();
-        }
-
-        //====================================================================================================================//
-
-        //FIXME This should be stored via Account, not Run
-        public static void AddDontShowAgainKey(string key)
-        {
-            PlayerRunData.AddDontShowAgainKey(key);
-        }
-
-        //====================================================================================================================//
-
-        public static void IncreaseRationCapacity(int amount)
-        {
-            PlayerAccountData.PlayerRunData.RationCapacity += amount;
-
-            OnValuesChanged?.Invoke();
-        }
-
-        //====================================================================================================================//
-
-        /*public static LevelNodeTree GetLevelRingNodeTree()
-        {
-            return PlayerRunData.LevelRingNodeTree;
-        }*/
-
-        public static void AddCompletedNode(int node)
-        {
-            PlayerRunData.PlayerPreviouslyCompletedNodes.Add(node);
-        }
-
-        public static IReadOnlyList<int> GetPlayerPreviouslyCompletedNodes()
-        {
-            return PlayerRunData.PlayerPreviouslyCompletedNodes;
-        }
-
-        public static IReadOnlyList<int> GetWreckNodes()
-        {
-            return PlayerRunData.WreckNodes;
-        }
-
         //Bot Health
         //====================================================================================================================//
 
-        public static float GetBotHealth()
-        {
-            return PlayerRunData.currentBotHealth;
-        }
+        #region Bot Health
+
+        public static float GetBotHealth() => HasRunData ? PlayerRunData.currentBotHealth : 0;
 
         public static void SetBotHealth(in float health)
         {
             PlayerRunData.currentBotHealth = health;
         }
+
+        #endregion //Bot Health
         
-        //Parts
+        //Storage Parts
         //====================================================================================================================//
+
+        #region Storage Parts
 
         public static IReadOnlyList<IBlockData> GetCurrentPartsInStorage()
         {
             return PlayerRunData.GetCurrentPartsInStorage();
         }
 
-        public static void SetCurrentPartsInStorage(List<IBlockData> blockData)
+        public static void SetCurrentPartsInStorage(IEnumerable<IBlockData> blockData)
         {
             PlayerRunData.SetCurrentPartsInStorage(blockData);
         }
@@ -369,208 +261,304 @@ namespace StarSalvager.Utilities.Saving
             OnValuesChanged?.Invoke();
         }
 
+        #endregion //Storage Parts
+        
+        //Part Selection
+        //====================================================================================================================//
+
+        #region Part Selection
+
+        public static bool CanChoosePart => HasRunData ? PlayerRunData.canChoosePart : false;
+
+        public static void SetCanChoosePart(bool canChoosePart)
+        {
+            PlayerRunData.canChoosePart = canChoosePart;
+        }
+
+        #endregion //Part Selection
+        
         //Patches
         //====================================================================================================================//
 
-        /*
-        public static IReadOnlyList<PatchData> GetCurrentPatchesInStorage()
-        {
-            return PlayerRunData.GetCurrentPatchesInStorage();
-        }
-        
-        public static void AddPatchToStorage(PatchData patchData)
-        {
-            PlayerRunData.AddPatchToStorage(patchData);
+        #region Patches
 
-            OnValuesChanged?.Invoke();
-        }
+        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
+        public static void SetPatches(in IEnumerable<PatchData> patches) => PlayerRunData.SetPatches(patches);
+        public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
+        public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
 
-        public static void RemovePatchFromStorage(PatchData patchData)
-        {
-            PlayerRunData.RemovePatchFromStorage(patchData);
+        #endregion //Patches
 
-            OnValuesChanged?.Invoke();
-        }
-
-        public static void RemovePatchFromStorageAtIndex(int index)
-        {
-            PlayerRunData.RemovePatchFromStorageAtIndex(index);
-
-            OnValuesChanged?.Invoke();
-        }*/
-
+        //Player Resources
         //====================================================================================================================//
-        
 
+        #region Player Resources
+
+        public static List<PlayerResource> GetResources()
+        {
+            return PlayerRunData.GetResources();
+        }
+
+        public static PlayerResource GetResource(BIT_TYPE bitType)
+        {
+            return PlayerRunData.GetResource(bitType);
+        }
+
+        #endregion //Player Resources
+        
+        //Gears
+        //============================================================================================================//
+
+        #region Gears
+
+        public static int GetGears() =>HasRunData ? PlayerRunData.Gears : 0;
+        public static void SetGears(int value)
+        {
+            PlayerRunData.SetGears(value);
+
+            OnValuesChanged?.Invoke();
+        }
+        
+        public static void AddGears(int amount, bool updateValuesChanged = true)
+        {
+            PlayerRunData.AddGears(amount);
+
+            if (updateValuesChanged)
+                OnValuesChanged?.Invoke();
+        }
+
+        public static void SubtractGears(int amount)
+        {
+            PlayerRunData.SubtractGears(amount);
+
+            OnValuesChanged?.Invoke();
+        }
+
+        #endregion //Gears
+
+        //Silver
+        //====================================================================================================================//
+
+        #region Silver
+
+        public static int GetSilver() => PlayerRunData.Silver;
+        public static void SetSilver(int value)
+        {
+            PlayerRunData.SetSilver(value);
+
+            OnValuesChanged?.Invoke();
+        }
+        
+        public static void AddSilver(int amount, bool updateValuesChanged = true)
+        {
+            PlayerRunData.AddSilver(amount);
+
+            if (updateValuesChanged)
+                OnValuesChanged?.Invoke();
+        }
+
+        public static void SubtractSilver(int amount)
+        {
+            PlayerRunData.SubtractSilver(amount);
+            OnValuesChanged?.Invoke();
+        }
+
+        #endregion //Silver
+
+        //Map Nodes
+        //====================================================================================================================//
+
+        #region Map Nodes
+        
         public static bool CheckIfCompleted(in int waveAt)
         {
             return PlayerRunData.CheckIfCompleted(waveAt);
         }
 
+        public static int GetCurrentNode()
+        {
+            return PlayerRunData.currentNode;
+        }
+
+        public static void SetCurrentNode(int node)
+        {
+            PlayerRunData.currentNode = node;
+        }
+        public static void AddCompletedNode(int node)
+        {
+            PlayerRunData.playerPreviouslyCompletedNodes.Add(node);
+        }
+
+        public static IReadOnlyList<int> GetPlayerPreviouslyCompletedNodes()
+        {
+            return PlayerRunData.playerPreviouslyCompletedNodes;
+        }
+
+        public static IReadOnlyList<int> GetWreckNodes()
+        {
+            return PlayerRunData.wreckNodes;
+        }
+
+        #endregion //Map Nodes
+
+        //Player Run Data Recording
         //====================================================================================================================//
 
+        #region Player Run Data Tracking
 
-        //Account Data Functions
-        //====================================================================================================================//
+        public static void RecordBitConnection(in BIT_TYPE bit) => PlayerAccountData.RecordBitConnection(bit);
 
-        public static int GetXP()
+        public static IReadOnlyDictionary<BIT_TYPE, int> GetBitConnections() => PlayerAccountData.BitConnections;
+
+        public static int GetBitConnections(in BIT_TYPE bit) => PlayerAccountData.BitConnections[bit];
+
+        public static int GetBitConnectionsThisRun(in BIT_TYPE bit) => 
+            PlayerAccountData.BitConnections[bit] - PlayerRunData.BitConnectionsAtRunBeginning[bit];
+
+        public static IReadOnlyDictionary<BIT_TYPE, int> GetBitConnectionsThisRun()
         {
-            return PlayerAccountData.XP;
-        }
-
-        public static int GetXPThisRun()
-        {
-            return PlayerAccountData.XP - PlayerAccountData.XPAtRunBeginning;
-        }
-
-        public static void ChangeXP(int amount)
-        {
-            PlayerAccountData.ChangeXP(amount);
-
-            OnValuesChanged?.Invoke();
-        }
-
-        public static int GetCoreDeaths()
-        {
-            return PlayerAccountData.CoreDeaths;
-        }
-
-        public static int GetCoreDeathsThisRun()
-        {
-            return PlayerAccountData.CoreDeaths - PlayerAccountData.CoreDeathsAtRunBeginning;
-        }
-
-        public static void AddCoreDeath()
-        {
-            PlayerAccountData.CoreDeaths++;
-        }
-
-        public static void RecordBitConnection(BIT_TYPE bit)
-        {
-            PlayerAccountData.RecordBitConnection(bit);
-        }
-
-        public static Dictionary<BIT_TYPE, int> GetBitConnections()
-        {
-            return PlayerAccountData.BitConnections;
-        }
-
-        public static int GetBitConnections(BIT_TYPE bit)
-        {
-            if (!PlayerAccountData.BitConnections.ContainsKey(bit))
+            var outDict = new Dictionary<BIT_TYPE, int>(PlayerAccountData.BitConnections);
+            foreach (var kvp in PlayerAccountData.BitConnections)
             {
-                Debug.LogError("Can't find key in Bitconnections");
+                outDict[kvp.Key] = kvp.Value - PlayerRunData.BitConnectionsAtRunBeginning[kvp.Key];
             }
+
+            return outDict;
+        }
+
+        public static void RecordEnemyKilled(in string enemyId) => PlayerAccountData.RecordEnemyKilled(enemyId);
+
+        public static IReadOnlyDictionary<string, int> GetEnemiesKilled() => PlayerAccountData.EnemiesKilled;
+
+        public static int GetEnemiesKilled(in string enemyId)
+        {
+            var id = enemyId;
+            return GetEnemiesKilled()
+                .FirstOrDefault(x => x.Key.Equals(id))
+                .Value;
+        }
+
+        public static IReadOnlyDictionary<string, int> GetEnemiesKilledThisRun()
+        {
+            var outDict = new Dictionary<string, int>(PlayerAccountData.EnemiesKilled);
+            foreach (var kvp in PlayerAccountData.EnemiesKilled)
+            {
+                if (!PlayerRunData.EnemiesKilledAtRunBeginning.TryGetValue(kvp.Key, out var startValue))
+                {
+                    outDict[kvp.Key] = kvp.Value;
+                    continue;
+                }
+                
+                outDict[kvp.Key] = kvp.Value - startValue;
+            }
+
+            return outDict;
+        }
+        public static int GetEnemiesKilledThisRun(in string enemyId)
+        {
+            var id = enemyId;
+            var atBeginning = PlayerRunData.EnemiesKilledAtRunBeginning
+                .FirstOrDefault(x => x.Key.Equals(id))
+                .Value;
             
-            return PlayerAccountData.BitConnections[bit];
+            return GetEnemiesKilled()
+                .FirstOrDefault(x => x.Key.Equals(id))
+                .Value - atBeginning;
         }
 
-        public static int GetBitConnectionsThisRun(BIT_TYPE bit)
-        {
-            if (!PlayerAccountData.BitConnections.ContainsKey(bit) || !PlayerAccountData.BitConnectionsAtRunBeginning.ContainsKey(bit))
-            {
-                Debug.LogError("Can't find key in Bitconnections or Bitconnectionsatrunbeginning");
-            }
+        public static float GetRepairsDone() => PlayerAccountData.RepairsDone;
 
-            return PlayerAccountData.BitConnections[bit] - PlayerAccountData.BitConnectionsAtRunBeginning[bit];
-        }
+        public static float GetRepairsDoneThisRun() =>
+            PlayerAccountData.RepairsDone - PlayerRunData.RepairsDoneAtRunBeginning;
 
-        public static void RecordEnemyKilled(string enemyId)
-        {
-            PlayerAccountData.RecordEnemyKilled(enemyId);
-        }
+        public static void AddRepairsDone(in float amount) => PlayerAccountData.RepairsDone += amount;
 
-        public static Dictionary<string, int> GetEnemiesKilled()
-        {
-            return PlayerAccountData.EnemiesKilled;
-        }
+        #endregion //Player Run Data Tracking
 
-        public static int GetEnemiesKilled(string enemyId)
-        {
-            if (!PlayerAccountData.EnemiesKilled.ContainsKey(enemyId))
-            {
-                return 0;
-            }
-
-            return PlayerAccountData.EnemiesKilled[enemyId];
-        }
-
-        public static int GetEnemiesKilledhisRun(string enemyId)
-        {
-            int enemiesKilledTotal = GetEnemiesKilled(enemyId);
-            int enemiesKilledAtRunBeginning;
-
-            if (!PlayerAccountData.EnemiesKilledAtRunBeginning.ContainsKey(enemyId))
-            {
-                enemiesKilledAtRunBeginning = 0;
-            }
-            else
-            {
-                enemiesKilledAtRunBeginning = PlayerAccountData.EnemiesKilledAtRunBeginning[enemyId];
-            }
-
-
-            return enemiesKilledTotal - enemiesKilledAtRunBeginning;
-        }
-
-        public static float GetRepairsDone()
-        {
-            return PlayerAccountData.RepairsDone;
-        }
-
-        public static float GetRepairsDoneThisRun()
-        {
-            return PlayerAccountData.RepairsDone - PlayerAccountData.RepairsDoneAtRunBeginning;
-        }
-
-        public static void AddRepairsDone(float amount)
-        {
-            PlayerAccountData.RepairsDone += amount;
-        }
-
+        //Hints
         //====================================================================================================================//
 
-        public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
+        #region Hints
+
+        public static void SetHint(HINT hint, bool value)
         {
-            CurrentSaveSlotIndex = saveSlotIndex;
-            PlayerSaveAccountData tryImportPlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
-            if (tryImportPlayerAccountData == null)
+            PlayerAccountData.SetHintDisplay(hint, value);
+        }
+
+        public static bool GetHint(HINT hint)
+        {
+            return PlayerAccountData.HintDisplay[hint];
+        }
+
+        public static IReadOnlyDictionary<HINT, bool> GetHints()
+        {
+            return PlayerAccountData.HintDisplay;
+        }
+
+        #endregion //Hints
+
+        //Misc Functions
+        //====================================================================================================================//
+
+        #region Misc
+
+        public static void AddDontShowAgainKey(string key)
+        {
+            PlayerRunData.AddDontShowAgainKey(key);
+        }
+        public static void CustomOnApplicationQuit()
+        {
+            if (!GameManager.IsState(GameState.MainMenu))
             {
-                ResetPlayerAccountData();
+                SavePlayerAccountData();
             }
-            else
-            {
-                PlayerAccountData = tryImportPlayerAccountData;
-            }
-            SavePlayerAccountData();
         }
-
-        public static void ResetPlayerAccountData()
+        
+        public static IReadOnlyList<string> GetDontShowAgainKeys()
         {
-            PlayerSaveAccountData playerAccountData = new PlayerSaveAccountData();
-            PlayerAccountData = playerAccountData;
-            playerAccountData.ResetPlayerRunData();
-            PlayerRunData.PlaythroughID = Guid.NewGuid().ToString();
-
-            SavePlayerAccountData();
+            return PlayerRunData.DontShowAgainKeys;
         }
 
-        public static void ResetGameMetaData()
+        #endregion //Misc
+
+        //Run Data I/O
+        //====================================================================================================================//
+
+        #region Run Data I/O
+
+        public static void CompleteCurrentRun() =>PlayerAccountData.CompleteCurrentRun();
+
+        public static void StartNewPlayerRun() => PlayerAccountData.StartNewRun();
+
+        #endregion //Run Data I/O
+
+        //Account Data I/O
+        //====================================================================================================================//
+
+        #region Account Data I/O
+        
+        public static bool HasPlayerAccountData()
         {
-            GameMetaData = new GameMetadata();
+            return PlayerAccountData != null;
         }
+
+        
 
         public static void ClearPlayerAccountData()
         {
             PlayerAccountData = new PlayerSaveAccountData();
+            
         }
-
-        public static void ResetPlayerRunData()
+        public static void DestroyAccountData()
         {
-            SetStarted(false);
-            PlayerAccountData.ResetPlayerRunData();
+            PlayerAccountData = null;
         }
+        public static void ResetPlayerAccountData()
+        {
+            PlayerAccountData = new PlayerSaveAccountData();
 
+            SavePlayerAccountData();
+        }
         public static void SavePlayerAccountData()
         {
             if (PlayerAccountData == null)
@@ -578,7 +566,7 @@ namespace StarSalvager.Utilities.Saving
                 return;
             }
 
-            if (PlayerAccountData.PlayerRunData.PlaythroughID == "")
+            if (PlayerAccountData.PlayerRunData?.PlaythroughID == "")
             {
                 Debug.LogError("Saving empty player run data");
                 Debug.Break();
@@ -599,31 +587,40 @@ namespace StarSalvager.Utilities.Saving
             Files.ExportGameMetaData(GameMetaData);
         }
 
+        #endregion //Account Data I/O
+        
+        //Save Data I/O
         //====================================================================================================================//
 
-
-        //Hints
-        //====================================================================================================================//
-
-        public static void SetHint(HINT hint, bool value)
+        #region Save Data I/O
+        
+        public static void ExportPlayerAccountData(int saveSlotIndex)
         {
-            PlayerAccountData.SetHintDisplay(hint, value);
+            Files.ExportPlayerSaveAccountData(PlayerAccountData, saveSlotIndex);
         }
 
-        public static bool GetHint(HINT hint)
+        public static void SetCurrentSaveSlotIndex(int saveSlotIndex)
         {
-            return PlayerAccountData.HintDisplay[hint];
+            CurrentSaveSlotIndex = saveSlotIndex;
+            PlayerSaveAccountData tryImportPlayerAccountData = Files.TryImportPlayerSaveAccountData(saveSlotIndex);
+            if (tryImportPlayerAccountData == null)
+            {
+                ResetPlayerAccountData();
+            }
+            else
+            {
+                PlayerAccountData = tryImportPlayerAccountData;
+            }
+            SavePlayerAccountData();
         }
 
-        public static IReadOnlyDictionary<HINT, bool> GetHints()
+        
+        public static void ResetGameMetaData()
         {
-            return PlayerAccountData.HintDisplay;
+            GameMetaData = new GameMetadata();
         }
         
-
-        //Meta Data Functions
-        //====================================================================================================================//
-
+        
         public static int GetIndexMostRecentSaveFile()
         {
             return GameMetaData.GetIndexMostRecentSaveFile();
@@ -663,123 +660,12 @@ namespace StarSalvager.Utilities.Saving
         {
             return GameMetaData.SaveFiles;
         }
+        
+        
 
-        //Patches
-        //====================================================================================================================//
-        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
-        public static void SetPatches(in IEnumerable<PatchData> patches) => PlayerRunData.SetPatches(patches);
-        public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
-        public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
+        #endregion //Save Data I/O
 
-        //Stars
         //====================================================================================================================//
         
-        public static int GetStars() => PlayerAccountData.Stars;
-        public static void SetStars(in int value) => PlayerAccountData.SetStars(value);
-        public static void AddStars(in int amount = 1) => PlayerAccountData.AddStars(amount);
-        public static bool TrySubtractStars(in int amount = 1) => PlayerAccountData.TrySubtractStars(amount);
-
-        //Upgrades
-        //====================================================================================================================//
-
-        public static float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.GetCurrentUpgradeValue(upgradeType, bitType);
-
-        public static void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in int newLevel,
-            in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.SetUpgradeLevel(upgradeType, bitType, newLevel);
-
-        public static int GetCurrentUpgradeLevel(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.GetCurrentUpgradeLevel(upgradeType, bitType);
-
-
-        //====================================================================================================================//
-
-        public static void CustomOnApplicationQuit()
-        {
-            if (!GameManager.IsState(GameState.MainMenu))
-            {
-                SavePlayerAccountData();
-            }
-        }
-
-        //====================================================================================================================//
-
-
-        public static string GetAccountSummaryString()
-        {
-            string summaryText = string.Empty;
-            summaryText += $"Total Gears: {GetXP()}, this run: {GetXPThisRun()}\n";
-            summaryText += $"Total Core Deaths: {GetCoreDeaths()}, this run: {GetCoreDeathsThisRun()}\n";
-            summaryText += $"Total Repairs Done: {GetRepairsDone()}, this run: {GetRepairsDoneThisRun()}\n";
-
-
-            if (GetBitConnections().Count > 0)
-            {
-                summaryText += ("<b>Bits Connected:</b>\n");
-
-                foreach (var keyValuePair in GetBitConnections())
-                {
-                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
-                }
-            }
-
-            if (GetEnemiesKilled().Count > 0)
-            {
-                summaryText += ("<b>Enemies Killed:</b>\n");
-
-                foreach (var keyValuePair in GetEnemiesKilled())
-                {
-                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}, this run: {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
-                }
-            }
-
-            return summaryText;
-        }
-        
-        public static string GetRunSummaryString()
-        {
-            string summaryText = string.Empty;
-            summaryText += $"{GetAsTitle("Total Gears:")} {GetXPThisRun()}\n";
-            summaryText += $"{GetAsTitle("Total Core Deaths:")}  {GetCoreDeathsThisRun()}\n";
-            summaryText += $"{GetAsTitle("Total Repairs Done:")}  {GetRepairsDoneThisRun()}\n";
-
-
-            if (GetBitConnections().Count > 0)
-            {
-                summaryText += ($"{GetAsTitle("Bits Connected")}\n");
-
-                foreach (var keyValuePair in GetBitConnections())
-                {
-                    summaryText += $"\t{TMP_SpriteHelper.GetBitSprite(keyValuePair.Key, 0)} = {GetBitConnectionsThisRun(keyValuePair.Key)}\n";
-                }
-            }
-
-            if (GetEnemiesKilled().Count > 0)
-            {
-                var enemyProfileData = FactoryManager.Instance.EnemyProfile;
-                
-                summaryText += ($"{GetAsTitle("Enemies Killed")}\n");
-
-                foreach (var keyValuePair in GetEnemiesKilled())
-                {
-                    var spriteName = enemyProfileData.GetEnemyProfileData(keyValuePair.Key).Sprite?.name;
-                
-                    summaryText += $"\t{TMP_SpriteHelper.GetEnemySprite(spriteName)} = {GetEnemiesKilledhisRun(keyValuePair.Key)}\n";
-                }
-            }
-
-            return summaryText;
-        }
-
-        public static void DestroyAccountData()
-        {
-            PlayerAccountData = null;
-        }
-
-        private static string GetAsTitle(in string value)
-        {
-            return $"<b><color=white>{value}</color></b>";
-        }
     }
 }

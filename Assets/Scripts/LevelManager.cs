@@ -10,16 +10,13 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Values;
 using System.Collections.Generic;
-using System.Linq;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Tutorial;
 using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Particles;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
@@ -77,7 +74,7 @@ namespace StarSalvager
         public WorldGrid WorldGrid => m_worldGrid ?? (m_worldGrid = new WorldGrid());
         private WorldGrid m_worldGrid;
 
-        private bool m_runLostState = false;
+        //private bool m_runLostState = false;
 
         public AIObstacleAvoidance AIObstacleAvoidance
         {
@@ -152,8 +149,6 @@ namespace StarSalvager
 
         private GameUI _gameUi;
 
-        public Dictionary<BIT_TYPE, float> LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
-        public int WaterAtBeginningOfWave;
         public int NumWavesInRow;
 
         public bool m_botEnterScreen { get; private set; } = false;
@@ -704,31 +699,27 @@ namespace StarSalvager
 
         private void OnBotDied(Bot _, string deathMethod)
         {
-            LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
-            PlayerDataManager.AddCoreDeath();
+            //LiquidResourcesCachedOnDeath = new Dictionary<BIT_TYPE, float>();
+            //PlayerDataManager.AddCoreDeath();
 
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            /*foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
                 if (_bitType == BIT_TYPE.BUMPER || _bitType == BIT_TYPE.NONE)
                     continue;
 
                 LiquidResourcesCachedOnDeath.Add(_bitType, PlayerDataManager.GetResource(_bitType).Ammo);
-            }
+            }*/
 
             InputManager.Instance.CancelMove();
             InputManager.Instance.LockRotation = true;
 
             SavePlayerData();
             GameManager.SetCurrentGameState(GameState.LevelBotDead);
-            PlayerDataManager.SetStarted(false);
 
             Dictionary<int, float> tempDictionary = new Dictionary<int, float>();
-            foreach (BIT_TYPE _bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            foreach (var bitType in Constants.BIT_ORDER)
             {
-                if (_bitType == BIT_TYPE.BUMPER || _bitType == BIT_TYPE.NONE)
-                    continue;
-
-                tempDictionary.Add((int) _bitType, PlayerDataManager.GetResource(_bitType).Ammo);
+                tempDictionary.Add((int) bitType, PlayerDataManager.GetResource(bitType).Ammo);
             }
 
             Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
@@ -746,10 +737,10 @@ namespace StarSalvager
             //Alert.ShowDancers(true);
             AudioController.CrossFadeTrack(MUSIC.NONE);
 
-            m_runLostState = true;
-            //GameTimer.SetPaused(false);
-
-            //Globals.CurrentSector = 0;
+            //m_runLostState = true;
+            PlayerDataManager.CompleteCurrentRun();
+            PlayerDataManager.SavePlayerAccountData();
+            
             Globals.CurrentWave = 0;
 
             OutroScene.gameObject.SetActive(true);
@@ -795,7 +786,6 @@ namespace StarSalvager
 
             CurrentWaveData.TrySetCurrentStage(m_waveTimer, out m_currentStage);
             ProjectileManager.Reset();
-            m_runLostState = false;
             m_endLevelOverride = false;
 
 
@@ -944,15 +934,6 @@ namespace StarSalvager
         #endregion //Unity Editor
 
         //====================================================================================================================//
-
-        public void OnApplicationQuit()
-        {
-            if (!m_runLostState)
-                return;
-
-            PlayerDataManager.ResetPlayerRunData();
-            PlayerDataManager.SavePlayerAccountData();
-        }
 
     }
 }

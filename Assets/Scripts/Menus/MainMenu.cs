@@ -139,11 +139,13 @@ namespace StarSalvager.UI
         // Start is called before the first frame update
         private void Start()
         {
+            throw new NotImplementedException();
             StartCoroutine(Init());
         }
 
         private void OnEnable()
         {
+            throw new NotImplementedException();
             if (menuState == MENUSTATE.MAINMENU)
             {
                 continueButtonText.text = "Continue";
@@ -158,6 +160,7 @@ namespace StarSalvager.UI
 
         private IEnumerator Init()
         {
+            throw new NotImplementedException();
             newGameButton.interactable = false;
             continueButton.interactable = false;
             loadGameButton.interactable = false;
@@ -187,6 +190,7 @@ namespace StarSalvager.UI
 
         private void Update()
         {
+            throw new NotImplementedException();
             if (!SceneLoader.IsReady)
                 return;
 
@@ -202,6 +206,7 @@ namespace StarSalvager.UI
 
         private void InitButtons()
         {
+            throw new NotImplementedException();
             m_toggleOrientationButton.onClick.AddListener(() =>
             {
                 Globals.Orientation = Globals.Orientation == ORIENTATION.HORIZONTAL
@@ -246,7 +251,7 @@ namespace StarSalvager.UI
 
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     FactoryManager.Instance.currentModularDataIndex = 0;
-                    PlayerDataManager.SetRunStarted();
+                    //PlayerDataManager.SetRunStarted();
 
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
                 }
@@ -284,7 +289,7 @@ namespace StarSalvager.UI
                 {
                     PlayerDataManager.SetCurrentSaveSlotIndex(saveSlotIndex);
                     PlayerDataManager.ResetPlayerAccountData();
-                    PlayerDataManager.SetRunStarted();
+                    //PlayerDataManager.SetRunStarted();
 
                     introSceneCanvas.SetActive(true);
                     mainMenuWindow.SetActive(false);
@@ -365,6 +370,7 @@ namespace StarSalvager.UI
 
         private void OpenMenu(MENU menu)
         {
+            throw new NotImplementedException();
             mainMenuWindow.SetActive(false);
             newGameWindow.SetActive(false);
             optionsWindow.SetActive(false);
@@ -412,15 +418,17 @@ namespace StarSalvager.UI
 
 #if UNITY_EDITOR
 
-        [Button("Clear Remote Data"), DisableInPlayMode]
+        //[Button("Clear Remote Data"), DisableInPlayMode]
         private void ClearRemoteData()
         {
+            throw new NotImplementedException();
             Files.ClearRemoteData();
         }
 
-        [Button("Show Current Account Stats"), DisableInEditorMode]
+        //[Button("Show Current Account Stats"), DisableInEditorMode]
         private void ShowAccountStats()
         {
+            throw new NotImplementedException();
             if (!Application.isPlaying) 
                 return;
             
