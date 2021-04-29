@@ -25,12 +25,14 @@ namespace StarSalvager.Utilities.Saving
         
         public bool hasCompleted;
         public bool hasStarted;
+        public bool hasShownSummary;
         
         //Starting values
         //====================================================================================================================//
 
         #region Starting Values
 
+        public readonly int StarsAtRunBeginning;
         public readonly int XPAtRunBeginning;
         [JsonConverter(typeof(DecimalConverter))]
         public readonly float RepairsDoneAtRunBeginning;
@@ -92,6 +94,7 @@ namespace StarSalvager.Utilities.Saving
         public PlayerSaveRunData(
             in int startingGears,
             in float botStartHealth,
+            in int starsAtRunBeginning,
             in int xpAtRunBeginning, 
             in float repairsDoneAtRunBeginning,
             in Dictionary<BIT_TYPE, int> bitConnectionsAtRunBeginning,
@@ -103,7 +106,8 @@ namespace StarSalvager.Utilities.Saving
 
             _gears = startingGears;
             currentBotHealth = botStartHealth;
-            
+
+            StarsAtRunBeginning = starsAtRunBeginning;
             XPAtRunBeginning = xpAtRunBeginning;
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
             

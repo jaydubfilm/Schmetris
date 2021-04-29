@@ -186,7 +186,12 @@ namespace StarSalvager.Values
 
         //Stars
         //====================================================================================================================//
-
+        public int GetStarsThisRun()
+        {
+            if (PlayerRunData == null) return 0;
+            
+            return Stars - PlayerRunData.StarsAtRunBeginning;
+        }
         public void SetStars(in int value)
         {
             Stars = value;
@@ -330,6 +335,7 @@ namespace StarSalvager.Values
             var newPlayerRunData = new PlayerSaveRunData(
                 startingGears,
                 startingHealth,
+                Stars,
                 XP,
                 RepairsDone,
                 BitConnections,

@@ -75,6 +75,7 @@ namespace StarSalvager.Utilities.Saving
 
         #region Stars
 
+        public static int GetStarsThisRun() => PlayerAccountData.GetStarsThisRun();
         public static int GetStars() => PlayerAccountData.Stars;
         public static void SetStars(in int value) => PlayerAccountData.SetStars(value);
         public static void AddStars(in int amount = 1) => PlayerAccountData.AddStars(amount);
@@ -86,6 +87,20 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Run Status
+
+        public static bool ShouldShownSummary()
+        {
+            if (!HasRunData)
+                return false;
+            
+            if (!HasRunStarted())
+                return false;
+            if (!PlayerRunData.hasCompleted)
+                return false;
+            if (!PlayerRunData.hasShownSummary)
+                return false;
+            return true;
+        }
 
         public static bool HasRunStarted()
         {

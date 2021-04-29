@@ -2984,7 +2984,7 @@ _isShifting = true;
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                var multiplier = comboFactory.GetGearMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
+                var multiplier = comboFactory.GetXPMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
                 SimpleComboSolver(pendingCombo, multiplier);
             }
 
@@ -3066,7 +3066,7 @@ _isShifting = true;
             if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
                 return;
 
-            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, moveData.ToMove.Count);
+            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetXPMultiplier(1, moveData.ToMove.Count);
             SimpleComboSolver(moveData.ComboData, moveData.ToMove, multiplier);
         }
 
@@ -3078,9 +3078,9 @@ _isShifting = true;
 
 
 
-        private void SimpleComboSolver(PendingCombov2 pendingCombo, float gearMultiplier)
+        private void SimpleComboSolver(PendingCombov2 pendingCombo, float xpMultiplier)
         {
-            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, xpMultiplier);
         }
 
         /// <summary>
@@ -3088,9 +3088,9 @@ _isShifting = true;
         /// </summary>
         /// <param name="comboData"></param>
         /// <param name="canCombos"></param>
-        /// <param name="gearMultiplier"></param>
+        /// <param name="xpMultiplier"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float xpMultiplier)
         {
             ICanCombo closestToCore = null;
             var shortest = 999f;
@@ -3147,7 +3147,6 @@ _isShifting = true;
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
 
-
             var closestToCoreBit = (Bit)closestToCore;
             PlayerDataManager.RecordCombo(new ComboRecordData
             {
@@ -3188,11 +3187,11 @@ _isShifting = true;
                 () =>
                 {
                     var position = closestToCore.transform.position;
-                    var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
+                    var xpToAdd = Mathf.RoundToInt(comboData.points * xpMultiplier);
                     //Waits till after combo finishes combining to add the points
-                    PlayerDataManager.ChangeXP(gearsToAdd);
+                    PlayerDataManager.ChangeXP(xpToAdd);
 
-                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{xpToAdd}", position, Color.white);
                     
                     CreateBonusShapeParticleEffect(position);
 
