@@ -3,6 +3,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Values;
 using UnityEngine;
@@ -104,8 +105,12 @@ namespace StarSalvager.Utilities.Saving
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
             
             //Have to create copies of the data to not let original change this ref
-            BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning);
-            EnemiesKilledAtRunBeginning = new Dictionary<string, int>(enemiesKilledAtRunBeginning);
+            BitConnectionsAtRunBeginning = bitConnectionsAtRunBeginning.IsNullOrEmpty()
+                ? new Dictionary<BIT_TYPE, int>()
+                : new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning);
+            EnemiesKilledAtRunBeginning = enemiesKilledAtRunBeginning.IsNullOrEmpty()
+                ? new Dictionary<string, int>()
+                : new Dictionary<string, int>(enemiesKilledAtRunBeginning);
             
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
