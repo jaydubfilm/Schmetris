@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89035c1c4f5c70b48b9949fdf1bc1165, type: 3}
-  m_Name: Bit_Profile_v6-HalfBack
+  m_Name: Bit_Profile_v7-Flat Color 1
   m_EditorClassIdentifier: 
   Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
   AnimatedPrefab: {fileID: 2761212292129707405, guid: 624e44e3df70359479ea266891b61f0b,
@@ -27,40 +27,40 @@ MonoBehaviour:
     refinedSprite: {fileID: 0}
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: 6891861eca6379346ba84526e250dcce, type: 3}
-    - {fileID: 21300000, guid: 729d09c5d36d12a4d9e345e3e472f1f6, type: 3}
+    - {fileID: 21300000, guid: 4d99e8f9af46e454ba53f4874a9871e2, type: 3}
+    - {fileID: 21300000, guid: 00e56d9f282f16346b4125cef7b92665, type: 3}
   - _name: Greenium
     bitType: 2
     _animation: {fileID: 0}
     refinedSprite: {fileID: 0}
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: db0fd4dc3b457954fbe16b5d95acdb46, type: 3}
-    - {fileID: 21300000, guid: 1b88ee25ce8554e439e3a651074779ff, type: 3}
+    - {fileID: 21300000, guid: 510d719441dbb30409aa5fca5d10c2f9, type: 3}
+    - {fileID: 21300000, guid: f87bc4257be417f41bbb16208dd97616, type: 3}
   - _name: Greyscale
     bitType: 3
     _animation: {fileID: 0}
     refinedSprite: {fileID: 0}
     color: {r: 0.59607846, g: 0.49411765, b: 1, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: aed9a5a1332906445954448dbfb70321, type: 3}
-    - {fileID: 21300000, guid: 2c3dc2ee560fe6842a1c75a06fd44add, type: 3}
+    - {fileID: 21300000, guid: 6d2bf324c63815d479ab2affa1d7cf8f, type: 3}
+    - {fileID: 21300000, guid: 118c9941e3d5ef9428e3a83c4a7b985d, type: 3}
   - _name: Reddite
     bitType: 4
     _animation: {fileID: 0}
     refinedSprite: {fileID: 0}
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: 63008d72eafe6b446955377bf646de02, type: 3}
-    - {fileID: 21300000, guid: 81b2fa81459f75a42bcd97b570b81b87, type: 3}
+    - {fileID: 21300000, guid: 3481dcdb439b09f4cab13008d053add6, type: 3}
+    - {fileID: 21300000, guid: 44e6af50a88d1e548b550bc242f1f435, type: 3}
   - _name: Yelletron
     bitType: 5
     _animation: {fileID: 0}
     refinedSprite: {fileID: 0}
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: 798932034fbd76d4a93e7db2b9b4a937, type: 3}
-    - {fileID: 21300000, guid: 02edb524767d7784c9ada9afa920aa3a, type: 3}
+    - {fileID: 21300000, guid: 49af39c6290de8242b26e1f67772a4fe, type: 3}
+    - {fileID: 21300000, guid: 620070073ad027046bba93937567b280, type: 3}
   - _name: Energy
     bitType: 6
     _animation: {fileID: 11400000, guid: fafe4dfee868e4949adf56733d997636, type: 2}

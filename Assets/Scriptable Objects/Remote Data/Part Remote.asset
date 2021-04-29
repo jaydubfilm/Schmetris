@@ -294,7 +294,7 @@ MonoBehaviour:
     - key: Damage
       value: 20
     - key: Cooldown
-      value: 3
+      value: 1
     isManual: 1
     category: 3
     ammoUseCost: 10

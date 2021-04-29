@@ -22,6 +22,8 @@ namespace StarSalvager.Values
 
         #region Properties
 
+        public bool HasRun => PlayerRunData != null && !PlayerRunData.hasCompleted;
+
         public PlayerSaveRunData PlayerRunData;
 
         public Version Version = Constants.VERSION;
