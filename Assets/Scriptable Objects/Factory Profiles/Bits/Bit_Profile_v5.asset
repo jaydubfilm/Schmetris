@@ -50,7 +50,7 @@ MonoBehaviour:
     _animation: {fileID: 0}
     refinedSprite: {fileID: 7233997685665345691, guid: ffa335490a9178749986f7b4906ca268,
       type: 3}
-    color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+    color: {r: 0.59607846, g: 0.49411765, b: 1, a: 1}
     _sprites:
     - {fileID: 21300000, guid: feec083b284be6c409baa70c4b0f5a27, type: 3}
     - {fileID: 21300000, guid: 671df82411da48c42b674eb0332b0489, type: 3}
