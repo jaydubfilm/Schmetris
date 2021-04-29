@@ -1050,7 +1050,8 @@ namespace StarSalvager.UI
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
-                trans.localPosition = startPosition + Random.insideUnitCircle * radius;
+                //Changed: https://trello.com/c/65Xj4DlA/1469-ammo-graphic-shouldnt-obscur-upgrade
+                trans.localPosition = startPosition + Random.insideUnitCircle.normalized * radius;
                 transforms[i] = trans;
 
                 rotateDirection[i] = Random.value > 0.5f;

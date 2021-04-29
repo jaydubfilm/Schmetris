@@ -311,7 +311,7 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.DroneBlockData : null;
+                List<IBlockData> blockDatas = hasAccount && accountData.HasRun ? accountData.PlayerRunData.DroneBlockData : null;
                 blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes
@@ -447,11 +447,12 @@ namespace StarSalvager.UI
                             
                             if (_selectedAccountIndex == index)
                             {
+                                PlayerDataManager.DestroyAccountData();
+
                                 OpenWindow(WINDOW.MAIN_MENU);
                                 _selectedAccountIndex = -1;
                             }
 
-                            PlayerDataManager.DestroyAccountData();
                             PlayerDataManager.RemoveSaveFileData(index);
                             Files.DestroyPlayerSaveFile(index);
                             SetupAccountWindow();
