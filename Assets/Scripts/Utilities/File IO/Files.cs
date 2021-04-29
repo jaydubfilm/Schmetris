@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.Converters;
+using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
@@ -208,7 +209,8 @@ namespace StarSalvager.Utilities.FileIO
 
             var loaded = ImportJsonData<PlayerSaveAccountData>(
                 PlayerAccountSavePaths[saveSlotIndex],
-                new IBlockDataArrayConverter());
+                new IBlockDataArrayConverter(),
+                new ComboRecordDataConverter());
 
             /*if (loaded.PlayerRunData.PlaythroughID != "")
             {
