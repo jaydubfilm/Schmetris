@@ -43,12 +43,13 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 93c8087663718784c984c9fb3415ef4f, type: 3}
-    totalSpriteSurfaceArea: 3580319
+    totalSpriteSurfaceArea: 3581343
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 15144320bb1e8c841909757fe4dcda32, type: 3}
   - {fileID: 21300000, guid: d7313290ef5193a40aea0cae6134a68d, type: 3}
+  - {fileID: 21300000, guid: aa2d73b0ff82c3b409563217783d167f, type: 3}
   - {fileID: -5207891248487718059, guid: d2a4d6f0defc4984e9dca3e03fd7ed1e, type: 3}
   - {fileID: 21300000, guid: 3b3259715e32b27448f86364c71be6a6, type: 3}
   - {fileID: 21300000, guid: 849b44f12bbd8944ab1e28f32973a4a9, type: 3}
@@ -88,6 +89,7 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - effect_BITBREAKBLUE_0_v1
   - effect_WELDPards_2_v1
+  - effect_BITBREAKWHITE_0_v1
   - effect_THRUSTERBACK_1_v1_0
   - juicypart_REFINERWHITE_1_v1
   - Circle

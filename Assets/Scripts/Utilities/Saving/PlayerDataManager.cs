@@ -97,7 +97,7 @@ namespace StarSalvager.Utilities.Saving
                 return false;
             if (!PlayerRunData.hasCompleted)
                 return false;
-            if (!PlayerRunData.hasShownSummary)
+            if (PlayerRunData.hasShownSummary)
                 return false;
             return true;
         }

@@ -39,7 +39,8 @@ namespace StarSalvager.Utilities.Saving
 
         public readonly IReadOnlyDictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning;
         public readonly IReadOnlyDictionary<string, int> EnemiesKilledAtRunBeginning;
-        public readonly IReadOnlyDictionary<ComboRecordData, int> CombosMadeAtBeginning;
+        [JsonProperty,JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMadeAtBeginning;
 
         #endregion //Starting Values
 

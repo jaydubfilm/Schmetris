@@ -41,9 +41,29 @@ namespace StarSalvager.Utilities.JSON.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            var isType = objectType == typeof(Dictionary<ComboRecordData, int>) ||
-                         objectType == typeof(IReadOnlyDictionary<ComboRecordData, int>);
-            return isType;
+            var fullName = objectType.ToString().Replace("&", "");
+            
+            return fullName.Equals(typeof(Dictionary<ComboRecordData, int>).ToString());
+            /*var types = new []
+            {
+                typeof(Dictionary<ComboRecordData, int>),
+                typeof(IReadOnlyDictionary<ComboRecordData, int>),
+                typeof(IDictionary<ComboRecordData, int>),
+            };
+
+            if (typeof(IDictionary<ComboRecordData, int>).IsAssignableFrom(objectType))
+                return true;
+
+            foreach (Type type in types)
+            {
+                if (objectType == type)
+                    return true;
+            }
+
+            if (objectType.ToString().Equals(typeof(Dictionary<ComboRecordData, int>).ToString()))
+                return true;
+
+            return false;*/
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

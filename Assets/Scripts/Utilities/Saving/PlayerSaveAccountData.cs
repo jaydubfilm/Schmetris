@@ -22,6 +22,7 @@ namespace StarSalvager.Values
 
         #region Properties
 
+        [JsonIgnore]
         public bool HasRun => PlayerRunData != null && !PlayerRunData.hasCompleted;
 
         public PlayerSaveRunData PlayerRunData;

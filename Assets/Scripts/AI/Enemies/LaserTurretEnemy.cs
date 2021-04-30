@@ -166,7 +166,7 @@ namespace StarSalvager.AI
                     return DISTANCE;
                 }
 
-                if (!(raycastHit2D.transform.GetComponent<BotBase>() is BotBase botBase))
+                if (!(raycastHit2D.transform.GetComponent<ICanBeHit>() is ICanBeHit botBase))
                     throw new Exception();
                 
                 Debug.DrawRay(rayStartPosition, direction * DISTANCE, Color.green);
@@ -187,6 +187,9 @@ namespace StarSalvager.AI
                 
                 switch (botBase)
                 {
+                    case ForceField forceField:
+                        forceField.TryHitAt(damageToApply);
+                        break;
                     case Bot bot:
                         var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
                         bot.TryHitAt(closestAttachable, damageToApply, playSound);
