@@ -16,17 +16,17 @@ namespace StarSalvager.Utilities.Saving
     {
         //Properties
         //====================================================================================================================//
-        
+
         #region Properties
 
         [JsonProperty]
         public string PlaythroughID { get; private set; }
-        
-        
+
+
         public bool hasCompleted;
         public bool hasStarted;
         public bool hasShownSummary;
-        
+
         //Starting values
         //====================================================================================================================//
 
@@ -44,9 +44,9 @@ namespace StarSalvager.Utilities.Saving
         #endregion //Starting Values
 
         //====================================================================================================================//
-                
+
         public bool canChoosePart;
-        
+
         public int currentNode;
 
         [JsonProperty] private List<PlayerResource> _playerResources;
@@ -57,7 +57,7 @@ namespace StarSalvager.Utilities.Saving
         public int Gears => _gears;
 
         [JsonProperty] private int _gears;
-        
+
         [JsonIgnore]
         public int Silver => _silver;
 
@@ -95,7 +95,7 @@ namespace StarSalvager.Utilities.Saving
             in int startingGears,
             in float botStartHealth,
             in int starsAtRunBeginning,
-            in int xpAtRunBeginning, 
+            in int xpAtRunBeginning,
             in float repairsDoneAtRunBeginning,
             in Dictionary<BIT_TYPE, int> bitConnectionsAtRunBeginning,
             in Dictionary<ComboRecordData, int> combosMadeAtBeginning,
@@ -110,25 +110,25 @@ namespace StarSalvager.Utilities.Saving
             StarsAtRunBeginning = starsAtRunBeginning;
             XPAtRunBeginning = xpAtRunBeginning;
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
-            
+
             //Have to create copies of the data to not let original change this ref
             //Need to include the null check for files that might be old versions
             BitConnectionsAtRunBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
                 ? new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning)
                 : new Dictionary<BIT_TYPE, int>();
-            
+
             CombosMadeAtBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
                 ? new Dictionary<ComboRecordData, int>(combosMadeAtBeginning)
                 : new Dictionary<ComboRecordData, int>();
-            
+
             EnemiesKilledAtRunBeginning = !enemiesKilledAtRunBeginning.IsNullOrEmpty()
                 ? new Dictionary<string, int>(enemiesKilledAtRunBeginning)
                 : new Dictionary<string, int>();
-            
+
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
             _patchDatas = new List<PatchData>();
-            
+
             _dontShowAgainKeys = new List<string>();
 
             wreckNodes = new List<int>();
@@ -162,7 +162,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Block Data
-        
+
         //Player Resources
         //============================================================================================================//
 
@@ -186,11 +186,11 @@ namespace StarSalvager.Utilities.Saving
                 Debug.LogError($"Failed trying to find PlayerResource[{type}] ({bitType} : {(int)bitType}) ");
                 throw;
             }
-            
+
         }
 
         #endregion //Player Resources
-        
+
         //Part Storage
         //====================================================================================================================//
 
@@ -249,7 +249,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Patches
-        
+
         //Gears
         //============================================================================================================//
 
@@ -301,7 +301,7 @@ namespace StarSalvager.Utilities.Saving
         {
             _dontShowAgainKeys.Add(key);
         }
-        
+
         public bool CheckIfCompleted(in int waveIndex)
         {
             throw new NotImplementedException();
@@ -360,6 +360,6 @@ namespace StarSalvager.Utilities.Saving
         #endregion //Summary String
 
         //====================================================================================================================//
-        
+
     }
 }

@@ -44,6 +44,8 @@ MonoBehaviour:
     type: 3}
   bitRedParticlePrefab: {fileID: 4871106170005503903, guid: aa128da51b950474895b36bfa0c81733,
     type: 3}
+  bitWhiteParticlePrefab: {fileID: 8949320281845640268, guid: 382b9748425d1df42b51f8082e5ff9c7,
+    type: 3}
   bitYellowParticlePrefab: {fileID: 2791936726044460743, guid: 25a4600b44275634c9bc5a58f83e6567,
     type: 3}
   tripleTurretSprite: {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
