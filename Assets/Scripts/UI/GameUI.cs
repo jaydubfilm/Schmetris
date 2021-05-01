@@ -343,6 +343,9 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+
             Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
@@ -414,7 +417,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
 
             UpdateAmmoSliders();
         }
@@ -525,7 +528,7 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
             //SetPlayerXP(PlayerDataManager.get);
 
@@ -1047,7 +1050,8 @@ namespace StarSalvager.UI
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
-                trans.localPosition = startPosition + Random.insideUnitCircle * radius;
+                //Changed: https://trello.com/c/65Xj4DlA/1469-ammo-graphic-shouldnt-obscur-upgrade
+                trans.localPosition = startPosition + Random.insideUnitCircle.normalized * radius;
                 transforms[i] = trans;
 
                 rotateDirection[i] = Random.value > 0.5f;

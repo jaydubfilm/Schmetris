@@ -83,3 +83,11 @@ MonoBehaviour:
       resources: 270
     - health: 80
       resources: 810
+  - name: White
+    refinedName: Silver
+    bitType: 7
+    levels:
+    - health: 65
+      resources: 30
+    - health: 80
+      resources: 30

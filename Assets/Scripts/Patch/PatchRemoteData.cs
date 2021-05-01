@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Parts.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.Factories.Data
 {
@@ -17,8 +18,10 @@ namespace StarSalvager.Factories.Data
         public struct Data
         {
 
+            [FormerlySerializedAs("cost")] [TableColumnWidth(75, false)]
+            public int gears;
             [TableColumnWidth(75, false)]
-            public int cost;
+            public int silver;
             [TableColumnWidth(300, true), Range(0f, 1f)]
             public float multiplier;
 

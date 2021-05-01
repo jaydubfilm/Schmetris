@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
+using StarSalvager.UI.PersistentUpgrades;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
@@ -31,7 +32,7 @@ namespace StarSalvager.UI
             ACCOUNT_MENU,
             RUN,
             SETTINGS,
-            LAYOUT_CHOICE
+            STARS
         }
 
         private enum GAME_TYPE
@@ -107,6 +108,17 @@ namespace StarSalvager.UI
         private Button abandonRunButton;
         [SerializeField, Required, FoldoutGroup("Account Menu Window")]
         private Button tutorialButton;
+        [SerializeField, Required, FoldoutGroup("Account Menu Window")]
+        private Button starsButton;
+
+        //Stars Window
+        //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private GameObject starsMenuWindow;
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private Button starsBackButton;
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private PersistentUpgradesUI persistentUpgradesUI;
 
         //Pick Run Window Properties
         //====================================================================================================================//
@@ -213,13 +225,14 @@ namespace StarSalvager.UI
                 case WINDOW.ACCOUNT_MENU:
                     SetupAccountMenuWindow();
                     break;
-                /*case WINDOW.RUN:
-                    SetupRunMenuWindow();
-                    break;*/
+                case WINDOW.STARS:
+                    SetupStarsWindow();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
             }
         }
+
         private void SetSelectedElement(WINDOW window)
         {
             switch (window)
@@ -236,8 +249,13 @@ namespace StarSalvager.UI
                     EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
                     break;
                 case WINDOW.ACCOUNT_MENU:
-                    bool hasRun = PlayerDataManager.GetHasRunStarted();
-                    EventSystem.current.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
+                    bool hasActiveRun = PlayerDataManager.HasActiveRun();
+                    EventSystem.current.SetSelectedGameObject(hasActiveRun
+                        ? continueRunButton.gameObject
+                        : newRunButton.gameObject);
+                    break;
+                case WINDOW.STARS:
+                    EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
@@ -293,7 +311,7 @@ namespace StarSalvager.UI
                     : $"{(interactable ? "" : "Current\n")}Load Account {i + 1}\nTotal Runs: {accountData.TotalRuns}";
 
                 //If there's no account, pass null so the function knows to clean it
-                List<IBlockData> blockDatas = hasAccount ? accountData.PlayerRunData.mainDroneBlockData : null;
+                List<IBlockData> blockDatas = hasAccount && accountData.HasRun ? accountData.PlayerRunData.DroneBlockData : null;
                 blockDatas.CreateBotPreview(accountBotPreviewContainers[i]);
 
                 //Check to see if the currently opened account is this button, disable if yes
@@ -308,15 +326,26 @@ namespace StarSalvager.UI
         private void SetupAccountMenuWindow()
         {
             //TODO Get bool for current run
-            bool hasRun = PlayerDataManager.GetHasRunStarted();
-            
-            newRunButton.gameObject.SetActive(!hasRun);
-            continueRunButton.gameObject.SetActive(hasRun);
-            abandonRunButton.gameObject.SetActive(hasRun);
-            
+            bool hasActiveRun = PlayerDataManager.HasActiveRun();
+
+            newRunButton.gameObject.SetActive(!hasActiveRun);
+            continueRunButton.gameObject.SetActive(hasActiveRun);
+            abandonRunButton.gameObject.SetActive(hasActiveRun);
+
             //FIXME This should wait until a EventSystem exists to be able to use
-            EventSystem.current?.SetSelectedGameObject(hasRun ? continueRunButton.gameObject : newRunButton.gameObject);
+            EventSystem.current?.SetSelectedGameObject(hasActiveRun
+                ? continueRunButton.gameObject
+                : newRunButton.gameObject);
+
+        }
+
+        //Setup Stars Window
+        //------------------------------------------------------------------------------------------------------------//
+
+        private void SetupStarsWindow()
+        {
             
+            persistentUpgradesUI.SetupUpgrades();
         }
 
         //Setup Run Window
@@ -364,6 +393,7 @@ namespace StarSalvager.UI
             SetupAccountButtons();
             SetupAccountMenuButtons();
             SetupRunMenuButtons();
+            SetupStarsButtons();
             SetupSettingsButtons();
         }
 
@@ -417,11 +447,12 @@ namespace StarSalvager.UI
                             
                             if (_selectedAccountIndex == index)
                             {
+                                PlayerDataManager.DestroyAccountData();
+
                                 OpenWindow(WINDOW.MAIN_MENU);
                                 _selectedAccountIndex = -1;
                             }
 
-                            PlayerDataManager.DestroyAccountData();
                             PlayerDataManager.RemoveSaveFileData(index);
                             Files.DestroyPlayerSaveFile(index);
                             SetupAccountWindow();
@@ -455,7 +486,7 @@ namespace StarSalvager.UI
             {
                 AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
-                PlayerDataManager.SetRunStarted();
+                PlayerDataManager.SetRunStarted(true);
                 LeaveMenu(SceneLoader.UNIVERSE_MAP);
             });
             abandonRunButton.onClick.AddListener(() =>
@@ -469,7 +500,7 @@ namespace StarSalvager.UI
                         if (!response)
                             return;
                         
-                        PlayerDataManager.ResetPlayerRunData();
+                        PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
                         SetupAccountMenuWindow();
                     });
@@ -483,6 +514,11 @@ namespace StarSalvager.UI
                 
                 LeaveMenu(SceneLoader.LEVEL);
             });*/
+            
+            starsButton.onClick.AddListener(() =>
+            {
+                OpenWindow(WINDOW.STARS);
+            });
         }
 
         //Setup Run Buttons
@@ -520,13 +556,15 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
-                    var startingHealth = FactoryManager.Instance.PartsRemoteData
-                        .GetRemoteData(PART_TYPE.CORE)
-                        .GetDataValue<float>(PartProperties.KEYS.Health);
+                    PlayerDataManager.StartNewPlayerRun();
+                    /*var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
                     
-                    PlayerDataManager.SetRunStarted();
-                    PlayerDataManager.SetBotHealth(startingHealth);
+                    PlayerDataManager.SetGears((int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY));
                     
+                    PlayerDataManager.SetRunStarted(true);
+                    PlayerDataManager.SetBotHealth(startingHealth);*/
+                    
+                    //Set the ACCOUNT_MENU to open, so that when we return its ready to view
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                     IntroScene.gameObject.SetActive(true);
                     gameObject.SetActive(false);
@@ -538,13 +576,19 @@ namespace StarSalvager.UI
             }
         }
 
+        
+        //Setup Stars Buttons
+        //------------------------------------------------------------------------------------------------------------//
+        
+        private void SetupStarsButtons()
+        {
+            starsBackButton.onClick.AddListener(CloseOpenWindow);
+        }
         //Setup Settings Buttons
         //------------------------------------------------------------------------------------------------------------//
         
         private void SetupSettingsButtons()
         {
-
-            
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
             testingFeaturesToggle.onValueChanged.AddListener(toggle =>
@@ -577,7 +621,9 @@ namespace StarSalvager.UI
                 }, //ACCOUNT_MENU
                 new WindowData { Type = WINDOW.RUN, WindowObject = pickRunWindowObject, CloseOtherWindows = false }, //RUN
                 new WindowData
-                    {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, //SETTINGS
+                    {Type = WINDOW.SETTINGS, WindowObject = settingsWindowObject, CloseOtherWindows = false}, 
+                new WindowData
+                    {Type = WINDOW.STARS, WindowObject = starsMenuWindow, CloseOtherWindows = false},//SETTINGS
             };
 
             OpenWindow(WINDOW.MAIN_MENU);

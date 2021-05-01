@@ -38,7 +38,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
-
+            if (!PlayerDataManager.HasRunData)
+                return;
+            
             UpdateStorage();
 
             PlayerDataManager.OnValuesChanged += UpdateStorage;

@@ -108,7 +108,7 @@ namespace StarSalvager.Factories
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
                             break;
                         case ProjectileProfileData.TowType.Bumper:
-                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
+                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.BUMPER);
                             break;
                         case ProjectileProfileData.TowType.Mine:
                             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");

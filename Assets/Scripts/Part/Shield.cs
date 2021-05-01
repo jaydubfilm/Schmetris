@@ -1,37 +1,9 @@
-﻿using Recycling;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StarSalvager
 {
-    [RequireComponent(typeof(SpriteRenderer))]
-    public class Shield : MonoBehaviour, IRecycled
+    public class Shield : Actor2DBase
     {
-        public bool IsRecycled { get; set; }
-        
-        public new SpriteRenderer renderer
-        {
-            get
-            {
-                if (!_renderer)
-                    _renderer = GetComponent<SpriteRenderer>();
-
-                return _renderer;
-            }
-        }
-        private SpriteRenderer _renderer;
-        
-        public new Transform transform
-        {
-            get
-            {
-                if (!_transform)
-                    _transform = gameObject.transform;
-
-                return _transform;
-            }
-        }
-        private Transform _transform;
-
         //============================================================================================================//
 
         public void SetAlpha(float value)

@@ -116,6 +116,9 @@ namespace StarSalvager.Factories
                         case BIT_TYPE.YELLOW:
                             gameObject = Object.Instantiate(_effectProfileScriptableObject.bitYellowParticlePrefab);
                             break;
+                        case BIT_TYPE.WHITE:
+                            gameObject = Object.Instantiate(_effectProfileScriptableObject.bitWhiteParticlePrefab);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(bitType), bitType, null);
                     }

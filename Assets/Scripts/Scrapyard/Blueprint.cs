@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace StarSalvager 
 {
+    [Obsolete]
     public class Blueprint : IEquatable<Blueprint>
     {
         public string name;

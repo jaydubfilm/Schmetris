@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89035c1c4f5c70b48b9949fdf1bc1165, type: 3}
+  m_Name: Bit_Profile_v6-NoBack
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
+  AnimatedPrefab: {fileID: 2761212292129707405, guid: 624e44e3df70359479ea266891b61f0b,
+    type: 3}
+  JunkPrefab: {fileID: 4611369530616709383, guid: 2fa72a9aeb1c5ef458a3299b79a536e8,
+    type: 3}
+  JunkSprite: {fileID: 0}
+  ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
+    type: 3}
+  profiles:
+  - _name: Bluesalt
+    bitType: 1
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: aeee11320ebeac143bf9ecb81de78c35, type: 3}
+    - {fileID: 21300000, guid: 6eb50d88a3774b1428f0c34328a32551, type: 3}
+  - _name: Greenium
+    bitType: 2
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: 31f980a41d2a0dd4480fdbef3963c6d3, type: 3}
+    - {fileID: 21300000, guid: 35a3cd3e04b57fb41b59ab66fa22cdd9, type: 3}
+  - _name: Greyscale
+    bitType: 3
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 0.59607846, g: 0.49411765, b: 1, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: a19a821c0c24e424d949ee2a1cad03a8, type: 3}
+    - {fileID: 21300000, guid: b0ca0e2738b7eba43b0664b83f29e1e5, type: 3}
+  - _name: Reddite
+    bitType: 4
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: fcfa7039a012e084cac99a21ac02e73b, type: 3}
+    - {fileID: 21300000, guid: c6de8f9a0d0d93d4c9ee36297d004fab, type: 3}
+  - _name: Yelletron
+    bitType: 5
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: 3e8974c80a4ec5944a6fdfe3192860ca, type: 3}
+    - {fileID: 21300000, guid: 608112e96c5ddcb42a571f7045235adf, type: 3}
+  - _name: Energy
+    bitType: 6
+    _animation: {fileID: 11400000, guid: c2ef51523ee7dbe48a70f7ab362e636d, type: 2}
+    refinedSprite: {fileID: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    _sprites:
+    - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - _name: White
+    bitType: 7
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: c013c2f9b417872428b7527f1925a3b3, type: 3}
+    - {fileID: 21300000, guid: c013c2f9b417872428b7527f1925a3b3, type: 3}

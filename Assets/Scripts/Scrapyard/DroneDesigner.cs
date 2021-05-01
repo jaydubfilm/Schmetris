@@ -21,6 +21,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
+using StarSalvager.Utilities.Helpers;
 
 namespace StarSalvager
 {
@@ -546,7 +547,7 @@ namespace StarSalvager
         {
             scrapyardPart = null;
 
-            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.GetCanChoosePart())
+            if(/*_draggingPatch /*|| _isDragging #1#||*/ PlayerDataManager.CanChoosePart)
                 return false;
 
             if (DroneDesignUi.UpgradeWindowOpen)
@@ -637,7 +638,7 @@ namespace StarSalvager
                 _scrapyardBot.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
 
-            bool notYetStarted = PlayerDataManager.GetStarted();
+            bool notYetStarted = PlayerDataManager.HasRunStarted();
             if (!notYetStarted)
             {
                 var partRemoteData = FactoryManager.Instance.PartsRemoteData;
@@ -863,8 +864,8 @@ namespace StarSalvager
 
                     int resourceAmount = numAtLevel * remoteData.levels[i].resources;
 
-                    var spriteIcon = TMP_SpriteMap.GetBitSprite(bitType, i);
-                    var materialIcon = TMP_SpriteMap.MaterialIcons[bitType];
+                    var spriteIcon = TMP_SpriteHelper.GetBitSprite(bitType, i);
+                    var materialIcon = TMP_SpriteHelper.MaterialIcons[bitType];
 
                     resourcesGained += $"{numAtLevel} x {spriteIcon} = {resourceAmount} {materialIcon} ";
                     numTotal -= numAtLevel;
@@ -879,7 +880,7 @@ namespace StarSalvager
                 if(resource.Value <= 0)
                     continue;
 
-                var materialIcon = TMP_SpriteMap.MaterialIcons[resource.Key];
+                var materialIcon = TMP_SpriteHelper.MaterialIcons[resource.Key];
 
                 resourcesWasted += $"{resource.Value} {materialIcon} jettisoned due to lack of storage\n";
             }
@@ -1014,7 +1015,7 @@ namespace StarSalvager
             
             
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             if (components == 0)
                 throw new Exception();

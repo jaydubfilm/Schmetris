@@ -128,7 +128,7 @@ namespace StarSalvager.Prototype
                     Globals.CurrentWave = 0;
                     GameTimer.SetPaused(false);
                     
-                    PlayerDataManager.ResetPlayerRunData();
+                    PlayerDataManager.CompleteCurrentRun();
                     PlayerDataManager.SavePlayerAccountData();
                     
                     ScreenFade.Fade(() =>

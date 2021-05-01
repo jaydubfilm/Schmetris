@@ -11,6 +11,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -170,6 +171,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+            
             Camera.onPostRender += _droneDesigner.DrawGL;
             PlayerDataManager.OnValuesChanged += CheckCanRepair;
 
@@ -252,12 +256,15 @@ namespace StarSalvager.UI.Scrapyard
                 var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
                 var remoteData = patchRemoteData.GetRemoteData(patchType);
-                var cost = remoteData.Levels[patchData.Level].cost;
+                var silver = remoteData.Levels[patchData.Level].silver;
+                var gears = remoteData.Levels[patchData.Level].gears *
+                           PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST);
 
                 purchasePatchData.Add(new Purchase_PatchData
                 {
                     index = i,
-                    cost = cost,
+                    silver = silver,
+                    gears = Mathf.RoundToInt(gears),
                     PatchData = patchData
                 });
             }
@@ -364,14 +371,14 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
             
             var patchData = partUpgrd.PurchasePatchData;
-            var currentComponents = PlayerDataManager.GetComponents();
-            if (currentComponents < patchData.cost)
+            var currentGears = PlayerDataManager.GetGears();
+            var currentSilver = PlayerDataManager.GetSilver();
+            if (currentGears < patchData.gears || currentSilver < patchData.silver)
                 return;
 
-            currentComponents -= patchData.cost;
-
-            PlayerDataManager.SetGears(currentComponents);
-
+            PlayerDataManager.SubtractGears(patchData.gears);
+            PlayerDataManager.SubtractSilver(patchData.silver);
+            
             //Add Patch to Selected Part
             //--------------------------------------------------------------------------------------------------------//
 
@@ -442,11 +449,11 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
-            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteMap.GEAR_ICON}";
+            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteHelper.GEAR_ICON}";
             repairButton.interactable = !(finalCost > components);
         }
 

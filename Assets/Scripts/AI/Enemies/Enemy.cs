@@ -15,6 +15,7 @@ using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.AI
 {
@@ -353,16 +354,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            DropLoot();
-            
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            SetState(STATE.DEATH);
+            KillEnemy();
         }
 
         protected void DropLoot()
@@ -377,6 +369,21 @@ namespace StarSalvager.AI
 
                 LevelManager.Instance.DropLoot(m_enemyData.RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
             }
+        }
+
+        protected void KillEnemy(in STATE targetState = STATE.DEATH)
+        {
+            DropLoot();
+
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            PlayerDataManager.RecordEnemyKilled(m_enemyData.EnemyType);
+
+            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+            
+            SetState(targetState);
         }
 
         //ICanBeSeen Functions

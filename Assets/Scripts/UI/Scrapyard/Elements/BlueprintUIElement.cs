@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.UI.Scrapyard
 {
+    [Obsolete]
     public class BlueprintUIElement : UIElement<Blueprint>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
@@ -34,7 +35,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public void Update()
+        /*public void Update()
         {
             if (_isHovered)
             {
@@ -56,7 +57,7 @@ namespace StarSalvager.UI.Scrapyard
                     }
                 }
             }
-        }
+        }*/
 
         private void OnEnable()
         {
@@ -81,7 +82,7 @@ namespace StarSalvager.UI.Scrapyard
             //craftButtonImage = craftButton.GetComponent<Image>();
 
             craftButton.interactable = true;
-            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
+            //stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
 
             /*if (PlayerPersistentData.PlayerData.CanAffordPart(data.partType, data.level, false))
                 craftButtonImage.color = craftButton.colors.normalColor;
@@ -119,7 +120,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnCheckBlueprintNewAlertUpdate()
         {
-            stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
+            //stickerImage.gameObject.SetActive(_canShowSticker && PlayerDataManager.CheckHasBlueprintAlert(data));
         }
 
         //============================================================================================================//
@@ -151,14 +152,14 @@ namespace StarSalvager.UI.Scrapyard
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (data != null)
+            /*if (data != null)
             {
                 if (PlayerDataManager.CheckHasBlueprintAlert(data))
                 {
                     PlayerDataManager.ClearNewBlueprintAlert(data);
                     DroneDesignUI.CheckBlueprintNewAlertUpdate?.Invoke();
                 }
-            }
+            }*/
         }
 
         //============================================================================================================//

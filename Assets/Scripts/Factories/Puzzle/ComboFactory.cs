@@ -64,7 +64,7 @@ namespace StarSalvager.Factories
             //return _comboDatas.FirstOrDefault(x => x.type == comboType);
         }
         
-        public float GetGearMultiplier(int combos, int bits)
+        public float GetXPMultiplier(int combos, int bits)
         {
             return comboData.GetGearMultiplier(combos, bits);
             //return _comboDatas.FirstOrDefault(x => x.type == comboType);

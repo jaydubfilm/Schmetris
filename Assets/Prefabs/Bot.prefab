@@ -72,8 +72,9 @@ MonoBehaviour:
   slices: 40
   useMagnet: 1
   currentMagnet: 0
-  chargeSpeed: 10
   reticleSprite: {fileID: 21300000, guid: 6791c139804ffa74d973e8c49070fc28, type: 3}
+  forceFieldPrefab: {fileID: 6200647129705148929, guid: b550e7197363fa24ba07d46ca4146539,
+    type: 3}
 --- !u!66 &2681746267895581254
 CompositeCollider2D:
   m_ObjectHideFlags: 0

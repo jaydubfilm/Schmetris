@@ -174,15 +174,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            DropLoot();
-            
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            SetState(STATE.ATTACK);
+            KillEnemy(STATE.ATTACK);
         }
 
         #endregion //IHealth Override

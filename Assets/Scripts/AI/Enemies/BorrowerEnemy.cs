@@ -26,12 +26,18 @@ namespace StarSalvager.AI
         private Bit _carryingBit;
         private Bit _attachTarget;
 
+        private int _stolenBits;
+
         private float _carrySpeed;
 
         public override void LateInit()
         {
             base.LateInit();
+
+            _stolenBits = 0;
+            
             SetState(STATE.PURSUE);
+            
         }
 
         //====================================================================================================================//
@@ -126,7 +132,7 @@ namespace StarSalvager.AI
                 case STATE.NONE:
                     break;
                 case STATE.IDLE:
-                    EnemyManager.SetBorrowerTarget(this, null);
+                    ClearTarget();
                     break;
                 case STATE.PURSUE:
                     //Try to Find a Bit on the bot
@@ -152,13 +158,7 @@ namespace StarSalvager.AI
                     break;
                 case STATE.DEATH:
                     //Drop the attached bit
-                    if (_carryingBit)
-                    {
-                        _carryingBit.SetAttached(false);
-                        _carryingBit.collider.enabled = true;
-                        _carryingBit.transform.parent = null;
-                        _carryingBit = null;
-                    }
+                    DropCarryingBit();
                     
                     EnemyManager.RemoveBorrowerTarget(this);
                     
@@ -300,8 +300,17 @@ namespace StarSalvager.AI
             //If off screen, destroy bit, then set to pursue state
             if (IsOffScreen(_carryingBit.transform.position))
             {
+                _stolenBits++;
                 Recycler.Recycle<Bit>(_carryingBit);
-                _carryingBit = null;
+                
+                ClearTarget();
+
+                //If the Borrower has stolen the last bit off of the bot, then to not harass the player, despawn
+                if (_stolenBits > 0 && !LevelManager.Instance.BotInLevel.AttachedBlocks.OfType<Bit>().Any())
+                {
+                    SetState(STATE.DEATH);
+                    return;
+                }
                 
                 SetState(STATE.PURSUE);
                 return;
@@ -332,10 +341,29 @@ namespace StarSalvager.AI
             base.ApplyFleeMotion();
         }
 
-        
-        private bool IsOffScreen(in Vector2 pos)
+        private void DropCarryingBit()
         {
-            var dif = 3 * Constants.gridCellSize;
+            if (!_carryingBit) 
+                return;
+            
+            _carryingBit.SetAttached(false);
+            _carryingBit.collider.enabled = true;
+            _carryingBit.transform.parent = null;
+            _carryingBit = null;
+        }
+
+        private void ClearTarget()
+        {
+            EnemyManager.SetBorrowerTarget(this, null);
+            _attachTarget = null;
+            Target = null;
+            _carryingBit = null;
+        }
+        
+        private static bool IsOffScreen(in Vector2 pos)
+        {
+            const float dif = 3 * Constants.gridCellSize;
+            
             var screenRect = CameraController.VisibleCameraRect;
 
             if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)

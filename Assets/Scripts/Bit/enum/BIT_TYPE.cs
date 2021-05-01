@@ -11,6 +11,8 @@ namespace StarSalvager
         GREY = 3,
         RED = 4,
         YELLOW = 5,
-        WHITE = 6
+        BUMPER = 6,
+        
+        WHITE = 7
     }
 }

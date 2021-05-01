@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.Converters;
+using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
@@ -208,7 +209,8 @@ namespace StarSalvager.Utilities.FileIO
 
             var loaded = ImportJsonData<PlayerSaveAccountData>(
                 PlayerAccountSavePaths[saveSlotIndex],
-                new IBlockDataArrayConverter());
+                new IBlockDataArrayConverter(),
+                new ComboRecordDataConverter());
 
             /*if (loaded.PlayerRunData.PlaythroughID != "")
             {
@@ -218,12 +220,17 @@ namespace StarSalvager.Utilities.FileIO
             return loaded;
         }
 
-        public static string ExportPlayerSaveAccountData(PlayerSaveAccountData playerMetaData, int saveSlotIndex)
+        public static string ExportPlayerSaveAccountData(PlayerSaveAccountData playerSaveAccountData, int saveSlotIndex)
         {
-            playerMetaData.SaveData();
+            playerSaveAccountData.SaveData();
 
-            var export = JsonConvert.SerializeObject(playerMetaData, Formatting.None);
-            File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);
+            /*var export = JsonConvert.SerializeObject(playerSaveAccountData, Formatting.None);
+            File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);*/
+
+            var export = ExportJsonData(playerSaveAccountData, 
+                PlayerAccountSavePaths[saveSlotIndex],
+                new IBlockDataArrayConverter(),
+                new ComboRecordDataConverter());
 
             return export;
         }
@@ -404,6 +411,23 @@ namespace StarSalvager.Utilities.FileIO
             };
             
             return JsonConvert.DeserializeObject<T>(jsonData, settings);
+        }
+        
+        private static string ExportJsonData(in object data, in string path, params JsonConverter[] converters)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                Converters = converters
+            };
+            
+            var export = JsonConvert.SerializeObject(data, settings);
+
+            File.WriteAllText(path, export);
+
+            //return JsonConvert.DeserializeObject<T>(jsonData, settings);
+
+            return export;
         }
     }
 

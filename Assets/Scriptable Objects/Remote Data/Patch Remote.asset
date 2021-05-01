@@ -189,11 +189,13 @@ MonoBehaviour:
     type: 1
     description: 
     Levels:
-    - cost: 100
-      multiplier: 0.25
-      level: 1
-    - cost: 250
+    - gears: 100
+      silver: 0
       multiplier: 0.5
+      level: 1
+    - gears: 250
+      silver: 1
+      multiplier: 1
       level: 2
   - isImplemented: 0
     name: AREA OF EFFECT
@@ -205,33 +207,39 @@ MonoBehaviour:
     type: 3
     description: 
     Levels:
-    - cost: 100
-      multiplier: 0.25
-      level: 1
-    - cost: 250
+    - gears: 100
+      silver: 0
       multiplier: 0.5
+      level: 1
+    - gears: 250
+      silver: 0
+      multiplier: 1
       level: 2
   - isImplemented: 1
     name: EFFECIENCY
     type: 4
     description: 
     Levels:
-    - cost: 100
-      multiplier: 0.25
-      level: 1
-    - cost: 250
+    - gears: 100
+      silver: 0
       multiplier: 0.5
+      level: 1
+    - gears: 250
+      silver: 0
+      multiplier: 1
       level: 2
   - isImplemented: 1
     name: RANGE
     type: 2
     description: 
     Levels:
-    - cost: 100
-      multiplier: 0.25
-      level: 1
-    - cost: 250
+    - gears: 100
+      silver: 0
       multiplier: 0.5
+      level: 1
+    - gears: 250
+      silver: 0
+      multiplier: 1
       level: 2
   - isImplemented: 0
     name: BURN
@@ -243,9 +251,11 @@ MonoBehaviour:
     type: 9
     description: 
     Levels:
-    - cost: 10
+    - gears: 10
+      silver: 0
       multiplier: 0
       level: 1
-    - cost: 20
+    - gears: 20
+      silver: 0
       multiplier: 0
       level: 2

@@ -3,6 +3,9 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JSON.Converters;
+using StarSalvager.Utilities.Puzzle.Structs;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -11,88 +14,160 @@ namespace StarSalvager.Utilities.Saving
     [Serializable]
     public class PlayerSaveRunData
     {
-        //============================================================================================================//
+        //Properties
+        //====================================================================================================================//
 
-        public bool runStarted;
-        public int CurrentNode = 0;
-
-        //TEMP
-        public bool hasSetupConverter;
+        #region Properties
 
         [JsonProperty]
-        private List<PlayerResource> _playerResources = new List<PlayerResource>
-        {
-            new PlayerResource(BIT_TYPE.BLUE, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.GREEN, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.GREY, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.RED, Globals.StartingAmmo, 100),
-            new PlayerResource(BIT_TYPE.YELLOW, Globals.StartingAmmo, 100)
-        };
+        public string PlaythroughID { get; private set; }
 
-        public int RationCapacity = 500;
+
+        public bool hasCompleted;
+        public bool hasStarted;
+        public bool hasShownSummary;
+
+        //Starting values
+        //====================================================================================================================//
+
+        #region Starting Values
+
+        public readonly int StarsAtRunBeginning;
+        public readonly int XPAtRunBeginning;
+        [JsonConverter(typeof(DecimalConverter))]
+        public readonly float RepairsDoneAtRunBeginning;
+
+        public readonly IReadOnlyDictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning;
+        public readonly IReadOnlyDictionary<string, int> EnemiesKilledAtRunBeginning;
+        [JsonProperty,JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMadeAtBeginning;
+
+        #endregion //Starting Values
+
+        //====================================================================================================================//
+
+        public bool canChoosePart;
+
+        public int currentNode;
+
+        [JsonProperty] private List<PlayerResource> _playerResources;
+
+        //public int RationCapacity = 500;
 
         [JsonIgnore]
-        public int Components => _components;
+        public int Gears => _gears;
 
-        [JsonProperty] private int _components;
+        [JsonProperty] private int _gears;
 
+        [JsonIgnore]
+        public int Silver => _silver;
+
+        [JsonProperty] private int _silver;
+
+        [JsonConverter(typeof(DecimalConverter))]
         public float currentBotHealth;
-        public List<IBlockData> mainDroneBlockData = new List<IBlockData>();
-        public List<IBlockData> partsInStorageBlockData = new List<IBlockData>();
+        public List<IBlockData> DroneBlockData;
+        public List<IBlockData> PartsInStorageBlockData;
 
-        //public List<PatchData> patchesInStorage = new List<PatchData>();
 
-        public int currentModularSectorIndex = 0;
-
-        public bool firstFlight = true;
-
-        public string PlaythroughID = string.Empty;
-
-        public bool CanChoosePart = false;
 
         [JsonIgnore]
         public IReadOnlyList<string> DontShowAgainKeys => _dontShowAgainKeys;
         [JsonProperty]
-        private List<string> _dontShowAgainKeys = new List<string>();
+        private List<string> _dontShowAgainKeys;
 
-        /*[JsonIgnore]
-        public LevelNodeTree LevelRingNodeTree = new LevelNodeTree();
-        [JsonProperty, JsonConverter(typeof(IEnumberableVector2IntConverter))]
-        private List<Vector2Int> LevelRingConnectionsJson = new List<Vector2Int>();*/
-
-        public List<int> WreckNodes = new List<int>();
-
-        public List<int> PlayerPreviouslyCompletedNodes = new List<int>()
-        {
-            0
-        };
+        public List<int> wreckNodes;
+        public List<int> playerPreviouslyCompletedNodes;
 
         [JsonIgnore]
         public IReadOnlyList<PatchData> PatchDatas => _patchDatas;
         [JsonProperty]
 
-        private List<PatchData> _patchDatas = new List<PatchData>();
+        private List<PatchData> _patchDatas;
 
-        //============================================================================================================//
+        #endregion //Properties
 
-        /*public void SetupMap(List<Vector2Int> levelRingConnectionsJson = null, List<int> wreckNodes = null)
+
+
+        //Constructor
+        //====================================================================================================================//
+
+        public PlayerSaveRunData(
+            in int startingGears,
+            in float botStartHealth,
+            in int starsAtRunBeginning,
+            in int xpAtRunBeginning,
+            in float repairsDoneAtRunBeginning,
+            in Dictionary<BIT_TYPE, int> bitConnectionsAtRunBeginning,
+            in Dictionary<ComboRecordData, int> combosMadeAtBeginning,
+            in Dictionary<string, int> enemiesKilledAtRunBeginning)
         {
-            if (levelRingConnectionsJson != null)
+            PlaythroughID = Guid.NewGuid().ToString();
+            canChoosePart = true;
+
+            _gears = startingGears;
+            currentBotHealth = botStartHealth;
+
+            StarsAtRunBeginning = starsAtRunBeginning;
+            XPAtRunBeginning = xpAtRunBeginning;
+            RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
+
+            //Have to create copies of the data to not let original change this ref
+            //Need to include the null check for files that might be old versions
+            BitConnectionsAtRunBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning)
+                : new Dictionary<BIT_TYPE, int>();
+
+            CombosMadeAtBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<ComboRecordData, int>(combosMadeAtBeginning)
+                : new Dictionary<ComboRecordData, int>();
+
+            EnemiesKilledAtRunBeginning = !enemiesKilledAtRunBeginning.IsNullOrEmpty()
+                ? new Dictionary<string, int>(enemiesKilledAtRunBeginning)
+                : new Dictionary<string, int>();
+
+            DroneBlockData = new List<IBlockData>();
+            PartsInStorageBlockData = new List<IBlockData>();
+            _patchDatas = new List<PatchData>();
+
+            _dontShowAgainKeys = new List<string>();
+
+            wreckNodes = new List<int>();
+            playerPreviouslyCompletedNodes = new List<int>
             {
-                LevelRingConnectionsJson.Clear();
-                LevelRingConnectionsJson.AddRange(levelRingConnectionsJson);
-            }
+                0
+            };
 
-            if (wreckNodes != null)
+            var capacity = (int) PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
+            _playerResources = new List<PlayerResource>();
+            foreach (var bitType in Constants.BIT_ORDER)
             {
-                WreckNodes.Clear();
-                WreckNodes.AddRange(wreckNodes);
+                _playerResources.Add(new PlayerResource(bitType, Globals.StartingAmmo, capacity));
             }
+        }
 
-            LevelRingNodeTree.ReadInNodeConnectionData(LevelRingConnectionsJson, WreckNodes);
-        }*/
+        //Bot data
+        //====================================================================================================================//
 
+        #region Block Data
+
+        public List<IBlockData> GetCurrentBlockData()
+        {
+            return DroneBlockData;
+        }
+
+        public void SetDroneBlockData(IEnumerable<IBlockData> blockData)
+        {
+            DroneBlockData.Clear();
+            DroneBlockData.AddRange(blockData);
+        }
+
+        #endregion //Block Data
+
+        //Player Resources
         //============================================================================================================//
+
+        #region Player Resources
 
         public List<PlayerResource> GetResources()
         {
@@ -101,133 +176,63 @@ namespace StarSalvager.Utilities.Saving
 
         public PlayerResource GetResource(in BIT_TYPE bitType)
         {
-            var type = (int) bitType - 1;
-            return _playerResources[type];
-        }
-
-        //============================================================================================================//
-
-        public void SetGears(int value)
-        {
-            _components = value;
-        }
-
-        //============================================================================================================//
-
-        public void AddGears(int amount)
-        {
-            _components += Mathf.Abs(amount);
-        }
-
-        public void SubtractGears(int amount)
-        {
-            _components -= Mathf.Abs(amount);
-        }
-
-        //============================================================================================================//
-
-        public bool CheckIfCompleted(in int waveIndex)
-        {
-            Debug.LogError("Checks not yet setup");
-            /*for (var i = 0; i < PlayerPreviouslyCompletedNodes.Count; i++)
+            try
             {
-                (int, int) curSectorWaveTuple = LevelRingNodeTree.ConvertNodeIndexIntoSectorWave(PlayerPreviouslyCompletedNodes[i]);
-
-                if (curSectorWaveTuple.Item1 == sector && curSectorWaveTuple.Item2 == waveAt)
-                {
-                    return true;
-                }
+                var type = (int) bitType - 1;
+                return _playerResources[type];
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                var type = (int) bitType - 1;
+                Debug.LogError($"Failed trying to find PlayerResource[{type}] ({bitType} : {(int)bitType}) ");
+                throw;
             }
 
-            return false;*/
-            return false;
         }
 
-        //============================================================================================================//
+        #endregion //Player Resources
 
-        //DontShowAgain Tracking Functions
+        //Part Storage
         //====================================================================================================================//
 
-        public void AddDontShowAgainKey(string key)
-        {
-            _dontShowAgainKeys.Add(key);
-        }
-
-        //====================================================================================================================//
-
-        public List<IBlockData> GetCurrentBlockData()
-        {
-            return mainDroneBlockData;
-        }
-
-        public void SetShipBlockData(List<IBlockData> blockData)
-        {
-            mainDroneBlockData.Clear();
-            mainDroneBlockData.AddRange(blockData);
-        }
+        #region Part Storage
 
         public List<IBlockData> GetCurrentPartsInStorage()
         {
-            return partsInStorageBlockData;
+            return PartsInStorageBlockData;
         }
 
-        public void SetCurrentPartsInStorage(List<IBlockData> blockData)
+        public void SetCurrentPartsInStorage(IEnumerable<IBlockData> blockData)
         {
-            partsInStorageBlockData.Clear();
-            partsInStorageBlockData.AddRange(blockData);
+            PartsInStorageBlockData = new List<IBlockData>(blockData);
         }
 
         public void AddPartToStorage(IBlockData blockData)
         {
-            partsInStorageBlockData.Add(blockData);
+            PartsInStorageBlockData.Add(blockData);
             PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
         public void RemovePartFromStorage(IBlockData blockData)
         {
-            partsInStorageBlockData.Remove(partsInStorageBlockData.FirstOrDefault(b => b.Type == blockData.Type));
+            PartsInStorageBlockData.Remove(PartsInStorageBlockData
+                .FirstOrDefault(b => b.Type == blockData.Type));
         }
 
         public void RemovePartFromStorageAtIndex(int index)
         {
-            if (partsInStorageBlockData.Count > index)
+            if (PartsInStorageBlockData.Count > index)
             {
-                partsInStorageBlockData.RemoveAt(index);
+                PartsInStorageBlockData.RemoveAt(index);
             }
         }
 
+        #endregion //Part Storage
+
         //Patches
         //====================================================================================================================//
-        /*public List<PatchData> GetCurrentPatchesInStorage()
-        {
-            return patchesInStorage;
-        }
 
-        public void AddPatchToStorage(PatchData patchData)
-        {
-            patchesInStorage.Add(patchData);
-            PlayerDataManager.OnValuesChanged?.Invoke();
-        }
-
-        public void RemovePatchFromStorage(PatchData patchData)
-        {
-            var index = patchesInStorage.FindIndex(b => b.Type == patchData.Type);
-
-            if (index < 0)
-                throw new ArgumentException();
-
-            patchesInStorage.RemoveAt(index);
-        }
-
-        public void RemovePatchFromStorageAtIndex(int index)
-        {
-            if (index >= patchesInStorage.Count)
-                return;
-
-            patchesInStorage.RemoveAt(index);
-        }
-
-        //====================================================================================================================//*/
+        #region Patches
 
         public void SetPatches(in IEnumerable<PatchData> patches)
         {
@@ -244,13 +249,118 @@ namespace StarSalvager.Utilities.Saving
             _patchDatas.RemoveAt(index);
         }
 
-        //====================================================================================================================//
-        
+        #endregion //Patches
 
+        //Gears
+        //============================================================================================================//
+
+        #region Gears
+
+        public void SetGears(int value)
+        {
+            _gears = value;
+        }
+
+        public void AddGears(int amount)
+        {
+            _gears += Mathf.Abs(amount);
+        }
+
+        public void SubtractGears(int amount)
+        {
+            _gears -= Mathf.Abs(amount);
+        }
+
+        #endregion //Gears
+
+        //Silver
+        //====================================================================================================================//
+
+        #region Silver
+
+        public void SetSilver(int value)
+        {
+            _silver = value;
+        }
+
+        public void AddSilver(int amount)
+        {
+            _silver += Mathf.Abs(amount);
+        }
+
+        public void SubtractSilver(int amount)
+        {
+            _silver -= Mathf.Abs(amount);
+        }
+
+        #endregion //Silver
+
+        //Misc Functions
+        //====================================================================================================================//
+
+        public void AddDontShowAgainKey(string key)
+        {
+            _dontShowAgainKeys.Add(key);
+        }
+
+        public bool CheckIfCompleted(in int waveIndex)
+        {
+            throw new NotImplementedException();
+            /*Debug.LogError("Checks not yet setup");
+            return false;*/
+        }
 
         public void SaveData()
         {
+            throw new NotImplementedException();
             //LevelRingConnectionsJson = LevelRingNodeTree.ConvertNodeTreeIntoConnections();
         }
+
+        //Summary String
+        //====================================================================================================================//
+
+        #region Summary String
+
+        public string GetSummaryString()
+        {
+            string GetAsTitle(in string value)
+            {
+                return $"<b><color=white>{value}</color></b>";
+            }
+
+            var summaryText = string.Empty;
+            summaryText += $"{GetAsTitle("Total XP:")} {PlayerDataManager.GetXPThisRun()}\n";
+            summaryText += $"{GetAsTitle("Total Repairs:")} {PlayerDataManager.GetRepairsDoneThisRun()}\n";
+
+
+            var bitConnections = PlayerDataManager.GetBitConnectionsThisRun();
+            if (bitConnections.Count > 0)
+            {
+                summaryText += $"{GetAsTitle("Bits Connected:")}\n";
+
+                foreach (var keyValuePair in bitConnections)
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}\n";
+                }
+            }
+
+            var enemiesKilled = PlayerDataManager.GetEnemiesKilledThisRun();
+            if (enemiesKilled.Count > 0)
+            {
+                summaryText += $"{GetAsTitle("Enemies Killed:")}\n";
+
+                foreach (var keyValuePair in enemiesKilled)
+                {
+                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}\n";
+                }
+            }
+
+            return summaryText;
+        }
+
+        #endregion //Summary String
+
+        //====================================================================================================================//
+
     }
 }
