@@ -180,15 +180,15 @@ MonoBehaviour:
       all enemies in a wide radius. '
     dataTest:
     - key: Cooldown
-      value: 5
+      value: 1
     - key: Damage
       value: 15
     - key: Radius
-      value: 10
+      value: 8
     - key: Speed
-      value: 20
+      value: 50
     - key: Charge
-      value: 10
+      value: 32
     isManual: 1
     category: 4
     ammoUseCost: 10
