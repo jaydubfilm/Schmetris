@@ -1017,20 +1017,19 @@ namespace StarSalvager
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
             var components = PlayerDataManager.GetGears();
 
-            if (components == 0)
-                throw new Exception();
+            if (components == 0) throw new Exception();
 
             var finalCost = Mathf.Min(cost, components);
             
             
             PlayerDataManager.SubtractGears(finalCost);
-            
-            //var startingHealth = currentHealth + (int)finalCost;
+            PlayerDataManager.AddRepairsDone(finalCost);
+
+
             var newHealth = Mathf.Clamp(currentHealth + finalCost, 0, startingHealth);
             
             _scrapyardBot.SetupHealthValues(startingHealth, newHealth);
             PlayerDataManager.SetBotHealth(newHealth);
-            //_scrapyardBot
         }
         
 

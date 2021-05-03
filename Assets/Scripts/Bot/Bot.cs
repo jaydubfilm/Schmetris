@@ -3204,7 +3204,9 @@ _isShifting = true;
                         
                         PlayerDataManager.AddSilver(1, false);
                         
-                        var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                        var ammoEarned = FactoryManager.Instance
+                            .ComboRemoteData
+                            .ComboAmmos
                             .FirstOrDefault(x => x.level == bit.level)
                             .ammoEarned;
                         foreach (var bitType in Constants.BIT_ORDER)
@@ -3215,6 +3217,7 @@ _isShifting = true;
                     else if (bit != null)
                     {
                         var bitType = bit.Type;
+                        var bitLevel = bit.level;
                         switch (bit.level)
                         {
                             case 1:
@@ -3223,11 +3226,14 @@ _isShifting = true;
                             case 2:
 
                                 bit.UpdateBitData(BIT_TYPE.WHITE, 0);
+                                //We have to override the level value here to ensure that the ammo given is
+                                // reflective of the upgrade level 0 -> 1 -> white
+                                bitLevel = 2;
                                 break;
                         }
 
                         var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                            .FirstOrDefault(x => x.level == bit.level)
+                            .FirstOrDefault(x => x.level == bitLevel)
                             .ammoEarned;
                         
                         GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
