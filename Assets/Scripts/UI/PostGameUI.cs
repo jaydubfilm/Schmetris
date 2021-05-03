@@ -114,6 +114,9 @@ namespace StarSalvager.UI
             var combos = PlayerDataManager.GetCombosMadeThisRun();
             foreach (var i in combos)
             {
+                if (i.Value == 0)
+                    continue;
+                
                 var xp = FactoryManager.Instance.ComboRemoteData.GetRemoteData(i.Key.ComboType).points;
                 //TODO Spawn Text XP Element
                 var data = new XPData
@@ -139,6 +142,30 @@ namespace StarSalvager.UI
                 //outString += $"{i.Key.BitType}[{i.Key.FromLevel}] x{i.Value}\t+{xp * i.Value}xp\n";
             }
 
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //Based on the remaining XP assume (FOR NOW) that its from completing waves
+            var waveXp = PlayerDataManager.GetXP() - currentXP;
+            
+            if(waveXp <= 0) yield break;
+            
+            var waveXPData = new XPData
+            {
+                Sprite = null,
+                Count = 1,
+                XpPerCount = waveXp
+            };
+
+            var waveXPElement = xpElementScrollview.AddElement(waveXPData);
+            waveXPElement.transform.SetSiblingIndex(0);
+            waveXPElement.Init(waveXPData);
+            waveXPElement.SetCountTextUnformatted("Completed Waves");
+            waveXPElement.SetXP(waveXp);
+
+            UpdateXP(waveXp);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
         }
 
         //====================================================================================================================//

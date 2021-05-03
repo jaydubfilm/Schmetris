@@ -50,7 +50,7 @@ public class WaveEndSummaryData
     {
         var outStringList = new List<string>
         {
-            $"{GetAsTitle("Gears Gained")} {XPGained}",
+            $"{GetAsTitle("XP Gained")} {XPGained}",
         };
 
         if (NumTotalBonusShapesSpawned > 0)

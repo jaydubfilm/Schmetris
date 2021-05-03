@@ -21,8 +21,7 @@ MonoBehaviour:
   testingFeatures: 0
   asteroidDamage: 20
   gameUIResourceThreshold: 0.33
-  levelBaseExperience: 500
-  levelExperienceIncrement: 50
+  levelXPConstant: 0.085
   gridWidth: 70
   gridHeightRelativeToScreen: 1.25
   timeForAsteroidToFallOneSquare: 0.28

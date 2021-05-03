@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_1_1
   m_EditorClassIdentifier: 
   WaveSeed: 0
+  WaveXP: 50
   BonusShapes: []
   StageRemoteData:
   - m_stageDuration: 20
