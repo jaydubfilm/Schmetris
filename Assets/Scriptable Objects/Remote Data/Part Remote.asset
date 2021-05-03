@@ -435,3 +435,23 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
+  - isImplemented: 1
+    partType: 44
+    name: Force Field
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Health
+      value: 20
+    - key: Degrees
+      value: 45
+    - key: Cooldown
+      value: 1.5
+    - key: Radius
+      value: 3
+    - key: Heal
+      value: 5
+    isManual: 0
+    category: 1
+    ammoUseCost: 5
+    PatchSockets: 2
