@@ -564,6 +564,8 @@ namespace StarSalvager
                 bot.ResetRotationToIdentity();
             }
 
+            PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
+            
             SavePlayerData();
             GameTimer.SetPaused(true);
 

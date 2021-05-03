@@ -40,6 +40,23 @@ namespace StarSalvager.ScriptableObjects
 
         [BoxGroup("Experience"), Range(0f,1f)]
         public float levelXPConstant = 0.085f;
+#if UNITY_EDITOR
+        [BoxGroup("Experience"), HideLabel, DisplayAsString, ShowInInspector]
+        public string lvl1 => $"Level 1\t\t{PlayerSaveAccountData.GetExperienceReqForLevel(1)}xp";
+
+        [BoxGroup("Experience"), HideLabel, DisplayAsString, ShowInInspector]
+        public string lvl2 => $"Level 2\t\t{PlayerSaveAccountData.GetExperienceReqForLevel(2)}xp";
+
+        [BoxGroup("Experience"), HideLabel, DisplayAsString, ShowInInspector]
+        public string lvl3 => $"Level 3\t\t{PlayerSaveAccountData.GetExperienceReqForLevel(3)}xp";
+
+        [BoxGroup("Experience"), HideLabel, DisplayAsString, ShowInInspector]
+        public string lvl5 => $"Level 5\t\t{PlayerSaveAccountData.GetExperienceReqForLevel(5)}xp";
+
+        [BoxGroup("Experience"), HideLabel, DisplayAsString, ShowInInspector]
+        public string lvl10 => $"Level 10\t\t{PlayerSaveAccountData.GetExperienceReqForLevel(10)}xp";
+
+#endif
         /*[BoxGroup("Experience")]
         public int levelBaseExperience = 500;
         [BoxGroup("Experience")]
