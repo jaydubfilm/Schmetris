@@ -52,11 +52,11 @@ namespace StarSalvager
         [SerializeField, Required] private StandardBufferZoneObstacleData m_standardBufferZoneObstacleData;
         public StandardBufferZoneObstacleData StandardBufferZoneObstacleData => m_standardBufferZoneObstacleData;
 
-        [SerializeField, Required]
+        /*[SerializeField, Required]
         private PlayerLevelRemoteDataScriptableObject m_playerlevelRemoteDataScriptableObject;
 
         public PlayerLevelRemoteDataScriptableObject PlayerlevelRemoteDataScriptableObject =>
-            m_playerlevelRemoteDataScriptableObject;
+            m_playerlevelRemoteDataScriptableObject;*/
 
         private float m_waveTimer;
         public float WaveTimer => m_waveTimer;

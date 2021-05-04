@@ -201,17 +201,17 @@ namespace StarSalvager.ScriptableObjects
             AssetDatabase.Refresh();
         }
         
-        private static IEnumerable GetPartTypes()
+        public static IEnumerable GetImplementedPatches()
         {
-            var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
+            var partRemote = FindObjectOfType<FactoryManager>().PatchRemoteData;
 
-            var partTypes = new ValueDropdownList<PART_TYPE>();
+            var patchTypes = new ValueDropdownList<PATCH_TYPE>();
             
-            foreach (var data in partRemote.partRemoteData.Where(x => x.isImplemented))
+            foreach (var data in partRemote.patchRemoteData.Where(x => x.isImplemented))
             {
-                partTypes.Add(data.partType == PART_TYPE.EMPTY ? "NONE" : $"{data.name}", data.partType);
+                patchTypes.Add(data.type == PATCH_TYPE.EMPTY ? "NONE" : $"{data.name}", data.type);
             }
-            return partTypes;
+            return patchTypes;
         }
         
 #endif
