@@ -1,0 +1,13 @@
+﻿DialogueNode #title {
+    background-color: rgba(29, 115, 57, 0.91);
+}
+
+PatchNode {
+    max-width: 250px;
+}
+PatchNode #input {
+    flex-direction: row;
+}
+PatchNode #input Port{
+    flex-grow: 1;
+}

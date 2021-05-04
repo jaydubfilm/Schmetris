@@ -1,0 +1,23 @@
+﻿.flex-horizontal SliderInt{
+    flex-grow: 1;
+    align-items: center;
+}
+
+.flex-horizontal SliderInt Label{
+    min-width: 45px;
+}
+.flex-horizontal IntegerField {
+    flex-grow: 0.1;
+}
+
+.flex-horizontal Slider{
+    flex-grow: 1;
+    align-items: center;
+}
+
+.flex-horizontal Slider Label{
+    min-width: 45px;
+}
+.flex-horizontal FloatField {
+    flex-grow: 0.1;
+}

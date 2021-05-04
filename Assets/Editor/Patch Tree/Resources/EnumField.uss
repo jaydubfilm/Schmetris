@@ -1,0 +1,7 @@
+﻿EnumField .unity-enum-field__input{
+    min-width: 100px;
+}
+
+EnumField Label{
+    min-width: 100px;
+}

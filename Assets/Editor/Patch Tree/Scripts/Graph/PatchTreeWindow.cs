@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
         private void OnEnable()
         {
             ConstructGraphView();
+            GenerateToolbar();
         }
         private void OnDisable()
         {
@@ -42,6 +44,24 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             };
             _graphView.StretchToParentSize();
             rootVisualElement.Add(_graphView);
+        }
+        
+        private void GenerateToolbar()
+        {
+            var toolbar = new Toolbar();
+
+            var fileNameTextField = new TextField("File Name:");
+            fileNameTextField.SetValueWithoutNotify(_fileName);
+            fileNameTextField.MarkDirtyRepaint();
+            fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
+            toolbar.Add(fileNameTextField);
+
+            toolbar.Add(new Button(() => _graphView.CreateNewPatchNode("Dialogue Node")) {text = "New Node",});
+            toolbar.Add(new Button/*(() => RequestDataOperation(true))*/ {text = "Save Data"});
+
+            toolbar.Add(new Button/*(() => RequestDataOperation(false))*/ {text = "Load Data"});
+            // toolbar.Add(new Button(() => _graphView.CreateNewDialogueNode("Dialogue Node")) {text = "New Node",});
+            rootVisualElement.Add(toolbar);
         }
 
         //====================================================================================================================//
