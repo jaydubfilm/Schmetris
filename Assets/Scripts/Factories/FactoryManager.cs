@@ -102,6 +102,13 @@ namespace StarSalvager.Factories
         public PersistentUpgradesScriptableObject PersistentUpgrades => persistentUpgrades;
         
         //============================================================================================================//
+
+        [SerializeField, Required, BoxGroup("Player Level Data")]
+        private PlayerLevelsRemoteDataScriptableObject playerLevelsRemoteData;
+        public PlayerLevelsRemoteDataScriptableObject PlayerLevelsRemoteData => playerLevelsRemoteData;
+        
+        //====================================================================================================================//
+        
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;

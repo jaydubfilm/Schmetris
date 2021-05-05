@@ -17,6 +17,20 @@ namespace StarSalvager.Values
 {
     public class PlayerSaveAccountData
     {
+        //Static Bot Layout
+        //====================================================================================================================//
+        
+        [JsonIgnore] 
+        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
+            new Dictionary<Vector2Int, BIT_TYPE>()
+            {
+                [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
+                [new Vector2Int(1, 0)] = BIT_TYPE.RED,
+                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
+                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
+                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
+            };
+        
         //Properties
         //====================================================================================================================//
 
@@ -43,70 +57,105 @@ namespace StarSalvager.Values
         [JsonConverter(typeof(DecimalConverter))]
         public float RepairsDone;
 
-        [JsonProperty]
-        public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
+        [JsonProperty] public Dictionary<BIT_TYPE, int> BitConnections;
 
-        [JsonProperty]
-        public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
-        
-        [JsonProperty,JsonConverter(typeof(ComboRecordDataConverter))]
-        public Dictionary<ComboRecordData, int> CombosMade = new Dictionary<ComboRecordData, int>();
+        [JsonProperty] public Dictionary<string, int> EnemiesKilled;
+
+        [JsonProperty, JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMade;
 
         [JsonIgnore] public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
-
-        [JsonProperty] private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
-        {
-            [HINT.GUN] = false,
-            //[HINT.FUEL] = false,
-            //[HINT.HOME] = false,
-            [HINT.BONUS] = false,
-            [HINT.MAGNET] = false,
-
-            //[HINT.GEARS] = false,
-            //[HINT.PATCH_POINT] = false,
-            //[HINT.CRAFT_PART] = false,
-
-            [HINT.PARASITE] = false,
-            [HINT.DAMAGE] = false,
-
-        };
+        [JsonProperty] private Dictionary<HINT, bool> _hintDisplay;
 
         [JsonIgnore] public UpgradeData[] Upgrades => _upgrades;
 
         [JsonProperty, JsonConverter(typeof(IEnumberableUpgradeDataConverter))]
-        private UpgradeData[] _upgrades = new[]
-        {
-            new UpgradeData(UPGRADE_TYPE.GEAR_DROP, 0),
-            new UpgradeData(UPGRADE_TYPE.PATCH_COST, 0),
-            new UpgradeData(UPGRADE_TYPE.AMMO_CAPACITY, 0),
-            new UpgradeData(UPGRADE_TYPE.STARTING_CURRENCY, 0),
+        private UpgradeData[] _upgrades;
 
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.RED, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.BLUE, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREY, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREEN, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
-        };
-
-        [JsonIgnore] 
-        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
-            new Dictionary<Vector2Int, BIT_TYPE>()
-            {
-                [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
-                [new Vector2Int(1, 0)] = BIT_TYPE.RED,
-                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
-                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
-                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
-            };
+        [JsonProperty, JsonConverter(typeof(EnumBoolDictionaryConverter<PART_TYPE>))]
+        private Dictionary<PART_TYPE, bool> _partsUnlocks;
+        [JsonProperty, JsonConverter(typeof(PatchDictionaryConverter))]
+        private Dictionary<PatchData, bool> _patchUnlocks;
 
         #endregion //Properties
+
+        //Constructor
+        //====================================================================================================================//
+
+        #region Constructor
+
+        public PlayerSaveAccountData()
+        {
+            CombosMade = new Dictionary<ComboRecordData, int>();
+            EnemiesKilled = new Dictionary<string, int>();
+            BitConnections = new Dictionary<BIT_TYPE, int>
+            {
+                {BIT_TYPE.RED, 0},
+                {BIT_TYPE.BLUE, 0},
+                {BIT_TYPE.YELLOW, 0},
+                {BIT_TYPE.GREEN, 0},
+                {BIT_TYPE.GREY, 0},
+            };
+            _hintDisplay = new Dictionary<HINT, bool>
+            {
+                [HINT.GUN] = false,
+                //[HINT.FUEL] = false,
+                //[HINT.HOME] = false,
+                [HINT.BONUS] = false,
+                [HINT.MAGNET] = false,
+
+                //[HINT.GEARS] = false,
+                //[HINT.PATCH_POINT] = false,
+                //[HINT.CRAFT_PART] = false,
+
+                [HINT.PARASITE] = false,
+                [HINT.DAMAGE] = false,
+
+            };
+            _upgrades = new[]
+            {
+                new UpgradeData(UPGRADE_TYPE.GEAR_DROP, 0),
+                new UpgradeData(UPGRADE_TYPE.PATCH_COST, 0),
+                new UpgradeData(UPGRADE_TYPE.AMMO_CAPACITY, 0),
+                new UpgradeData(UPGRADE_TYPE.STARTING_CURRENCY, 0),
+
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.RED, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.BLUE, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREY, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREEN, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
+            };
+
+            //Setup parts for New Account
+            //--------------------------------------------------------------------------------------------------------//
+            
+            _partsUnlocks = new Dictionary<PART_TYPE, bool>();
+            var unlockedAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PartsUnlockedAtStart;
+            var implementedParts = FactoryManager.Instance.PartsRemoteData.partRemoteData
+                .Where(x => x.isImplemented)
+                .Select(x => x.partType);
+            
+            foreach (var partType in implementedParts)
+            {
+                if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                {
+                    _partsUnlocks.Add(partType, true);
+                    continue;
+                }
+                
+                _partsUnlocks.Add(partType, unlockedAtStart.Contains(partType));
+            }
+
+            //Setup Patches for new Account
+            //--------------------------------------------------------------------------------------------------------//
+
+            _patchUnlocks = new Dictionary<PatchData, bool>();
+
+            //--------------------------------------------------------------------------------------------------------//
+
+        }
+
+        #endregion //Constructor
 
         //Layout Coordinates
         //====================================================================================================================//

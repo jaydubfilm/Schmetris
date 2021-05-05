@@ -5,7 +5,7 @@ using StarSalvager.Utilities.Puzzle.Data;
 
 namespace StarSalvager.Utilities.Puzzle.Structs
 {
-    
+    [Serializable]
     public struct ComboRecordData : IEquatable<ComboRecordData>
     {
         public int FromLevel;

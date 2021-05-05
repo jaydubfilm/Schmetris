@@ -21,6 +21,9 @@ namespace StarSalvager.Factories.Data
         [Serializable]
         public struct UnlockData
         {
+            [HideInTables]
+            public int levelIndex;
+            
             public UNLOCK_TYPE Unlock;
             [VerticalGroup("Type"), ShowIf("$Unlock", UNLOCK_TYPE.PART), HideLabel, ValueDropdown("GetImplementedParts")]
             public PART_TYPE PartType;
@@ -30,7 +33,10 @@ namespace StarSalvager.Factories.Data
             public int Level;
 #if UNITY_EDITOR
 
-            private IEnumerable GetImplementedParts() => RemotePartProfileScriptableObject.GetImplementedParts();
+            private IEnumerable GetImplementedParts()
+            {
+                return Object.FindObjectOfType<FactoryManager>().PlayerLevelsRemoteData.GetRemainingPartOptions(levelIndex);
+            }
             private IEnumerable GetImplementedPatches() => PatchRemoteDataScriptableObject.GetImplementedPatches();
             
 #endif
@@ -50,16 +56,27 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$title"), ReadOnly]
         public bool givesStarPoint = true;
 
-        [FoldoutGroup("$title"), TableList]
+        [FoldoutGroup("$title"), TableList, OnValueChanged("UpdateUnlockData")]
         public List<UnlockData> unlockData;
 
 #if UNITY_EDITOR
-        
         
         private string title => $"Level {level} | {(overrideXPRequired ? "[Override] " : "")}" +
                                 $"{xpRequired}xp" +
                                 $"{(givesStarPoint ? " | +1 Star" : "")}" +
                                 $"{(unlockData.IsNullOrEmpty() ? "" : $" | +{unlockData.Count} Item(s)")}";
+
+        [OnInspectorInit]
+        //This is used to ensure that level value is set so when a list is presented to the designer it only shows remaining options
+        private void UpdateUnlockData()
+        {
+            for (int i = 0; i < unlockData.Count; i++)
+            {
+                var data = unlockData[i];
+                data.levelIndex = level;
+                unlockData[i] = data;
+            }
+        }
         
         
 #endif

@@ -128,7 +128,7 @@ namespace StarSalvager.ScriptableObjects
             return partTypes;
         }
         
-        public static IEnumerable GetImplementedParts()
+        public static IEnumerable GetImplementedParts(in bool includeNone = true)
         {
             var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
 
@@ -136,6 +136,9 @@ namespace StarSalvager.ScriptableObjects
             
             foreach (var data in partRemote.partRemoteData.Where(x => x.isImplemented))
             {
+                if (includeNone == false && data.partType == PART_TYPE.EMPTY)
+                    continue;
+                
                 partTypes.Add(data.partType == PART_TYPE.EMPTY ? "NONE" : $"{data.name}", data.partType);
             }
             return partTypes;

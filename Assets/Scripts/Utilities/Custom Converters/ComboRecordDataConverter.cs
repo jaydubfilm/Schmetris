@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using StarSalvager.Utilities.Puzzle.Data;
 using StarSalvager.Utilities.Puzzle.Structs;
+using UnityEngine;
 
 namespace StarSalvager.Utilities.JSON.Converters
 {
     public class ComboRecordDataConverter : JsonConverter
     {
-        
         private struct JsonComboRecord
         {
             public int bit;
@@ -41,9 +42,13 @@ namespace StarSalvager.Utilities.JSON.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            var fullName = objectType.ToString().Replace("&", "");
+            var type = typeof(Dictionary<ComboRecordData, int>);
             
-            return fullName.Equals(typeof(Dictionary<ComboRecordData, int>).ToString());
+            var fullName = objectType.ToString().Replace("&", "");
+
+            var isMatch = fullName.Equals(type.ToString());
+            
+            return isMatch;
             /*var types = new []
             {
                 typeof(Dictionary<ComboRecordData, int>),
