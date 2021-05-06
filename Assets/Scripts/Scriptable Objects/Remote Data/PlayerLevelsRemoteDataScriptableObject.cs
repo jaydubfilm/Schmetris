@@ -40,9 +40,22 @@ namespace StarSalvager.ScriptableObjects
 
         public IEnumerable<PlayerLevelRemoteData.UnlockData> GetUnlocksForLevel(in int level)
         {
-            return level >= playerLevelRemoteDatas.Count
+            var unlockData =  new List<PlayerLevelRemoteData.UnlockData>(level >= playerLevelRemoteDatas.Count
                 ? playerLevelRemoteDatas[playerLevelRemoteDatas.Count - 1].unlockData
-                : playerLevelRemoteDatas[level].unlockData;
+                : playerLevelRemoteDatas[level].unlockData);
+
+            //Ensure that we lower the level to follow indexing rules
+            for (var i = 0; i < unlockData.Count; i++)
+            {
+                var data = unlockData[i];
+                if (data.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PART)
+                    continue;
+
+                data.Level--;
+                unlockData[i] = data;
+            }
+
+            return unlockData;
         }
 
         //Level XP Calculations

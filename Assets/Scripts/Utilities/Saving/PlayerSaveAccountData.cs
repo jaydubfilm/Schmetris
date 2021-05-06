@@ -159,7 +159,7 @@ namespace StarSalvager.Values
                     .Select(y => new PatchData
                     {
                         Type = (int)x.type,
-                        Level = y.level
+                        Level = y.level - 1 
                     }))
                 .ToList();
 
