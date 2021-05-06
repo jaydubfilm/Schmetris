@@ -132,7 +132,7 @@ namespace StarSalvager.Values
             //--------------------------------------------------------------------------------------------------------//
             
             _partsUnlocks = new Dictionary<PART_TYPE, bool>();
-            var unlockedAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PartsUnlockedAtStart;
+            var partsAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PartsUnlockedAtStart;
             var implementedParts = FactoryManager.Instance.PartsRemoteData.partRemoteData
                 .Where(x => x.isImplemented)
                 .Select(x => x.partType);
@@ -145,13 +145,35 @@ namespace StarSalvager.Values
                     continue;
                 }
                 
-                _partsUnlocks.Add(partType, unlockedAtStart.Contains(partType));
+                _partsUnlocks.Add(partType, partsAtStart.Contains(partType));
             }
 
             //Setup Patches for new Account
             //--------------------------------------------------------------------------------------------------------//
 
             _patchUnlocks = new Dictionary<PatchData, bool>();
+            var patchesAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PatchesUnlockedAtStart;
+            var implementedPatches = FactoryManager.Instance.PatchRemoteData.patchRemoteData
+                .Where(x => x.isImplemented)
+                .SelectMany(x => x.Levels
+                    .Select(y => new PatchData
+                    {
+                        Type = (int)x.type,
+                        Level = y.level
+                    }))
+                .ToList();
+
+            foreach (var patchData in implementedPatches)
+            {
+                var patchType = (PATCH_TYPE) patchData.Type;
+                if (patchType == PATCH_TYPE.EMPTY)
+                {
+                    _patchUnlocks.Add(patchData, true);
+                    continue;
+                }
+                
+                _patchUnlocks.Add(patchData, patchesAtStart.Contains(patchData));
+            }
 
             //--------------------------------------------------------------------------------------------------------//
 

@@ -52,7 +52,7 @@ MonoBehaviour:
   currentModularDataIndex: 0
   PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}
-  bitProfile: {fileID: 11400000, guid: 0e0827f22062f754eb6422e0cccdd699, type: 2}
+  bitProfile: {fileID: 11400000, guid: 513850fd94d0c094fa60700409924873, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
   componentPrefab: {fileID: 2338614340111776972, guid: 5a3c5e73739d8214988059505400adfa,
     type: 3}
