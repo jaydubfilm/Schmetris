@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Cinemachine;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
@@ -27,9 +29,9 @@ namespace StarSalvager.Factories.Data
             public UNLOCK_TYPE Unlock;
             [VerticalGroup("Type"), ShowIf("$Unlock", UNLOCK_TYPE.PART), HideLabel, ValueDropdown("GetImplementedParts")]
             public PART_TYPE PartType;
-            [VerticalGroup("Type"), ShowIf("$Unlock", UNLOCK_TYPE.PATCH), HideLabel, ValueDropdown("GetImplementedPatches")]
+            [VerticalGroup("Type"), ShowIf("$Unlock", UNLOCK_TYPE.PATCH), HideLabel, ValueDropdown("GetImplementedPatches"), OnValueChanged("UpdateLevelRange")]
             public PATCH_TYPE PatchType;
-            [ShowIf("$Unlock", UNLOCK_TYPE.PATCH)]
+            [ShowIf("$Unlock", UNLOCK_TYPE.PATCH), PropertyRange("$_minLevel","$_maxLevel"), DisableIf("PatchType",PATCH_TYPE.EMPTY)]
             public int Level;
 #if UNITY_EDITOR
 
@@ -37,7 +39,26 @@ namespace StarSalvager.Factories.Data
             {
                 return Object.FindObjectOfType<FactoryManager>().PlayerLevelsRemoteData.GetRemainingPartOptions(levelIndex);
             }
-            private IEnumerable GetImplementedPatches() => PatchRemoteDataScriptableObject.GetImplementedPatches();
+            private IEnumerable GetImplementedPatches() => PatchRemoteDataScriptableObject.GetImplementedPatches(false);
+            
+            private int _minLevel;
+            private int _maxLevel;
+
+            [OnInspectorInit]
+            private void UpdateLevelRange()
+            {
+                if (PatchType == PATCH_TYPE.EMPTY)
+                {
+                    Level = _minLevel = _maxLevel = 0;
+                    return;
+                }
+            
+                var remoteData = Object.FindObjectOfType<FactoryManager>().PatchRemoteData.GetRemoteData(PatchType);
+                _minLevel = remoteData.Levels.Min(x => x.level);
+                _maxLevel = remoteData.Levels.Max(x => x.level);
+
+                Level = Mathf.Clamp(Level, _minLevel, _maxLevel);
+            }
             
 #endif
         }
@@ -77,8 +98,7 @@ namespace StarSalvager.Factories.Data
                 unlockData[i] = data;
             }
         }
-        
-        
+
 #endif
     }
 }

@@ -3225,6 +3225,7 @@ _isShifting = true;
                                 break;
                             case 2:
 
+                                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 bit.UpdateBitData(BIT_TYPE.WHITE, 0);
                                 //We have to override the level value here to ensure that the ammo given is
                                 // reflective of the upgrade level 0 -> 1 -> white
@@ -3241,7 +3242,7 @@ _isShifting = true;
                     }
 
 
-                    CheckForBonusShapeMatches();
+                    //CheckForBonusShapeMatches();
 
                     OnCombo?.Invoke();
                     AttachedChanged();

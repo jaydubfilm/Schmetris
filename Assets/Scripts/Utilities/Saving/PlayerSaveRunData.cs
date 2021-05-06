@@ -80,10 +80,9 @@ namespace StarSalvager.Utilities.Saving
         public List<int> playerPreviouslyCompletedNodes;
 
         [JsonIgnore]
-        public IReadOnlyList<PatchData> PatchDatas => _patchDatas;
+        public IReadOnlyList<PatchData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
-
-        private List<PatchData> _patchDatas;
+        private List<PatchData> _currentPatchOptions;
 
         #endregion //Properties
 
@@ -128,7 +127,7 @@ namespace StarSalvager.Utilities.Saving
 
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
-            _patchDatas = new List<PatchData>();
+            _currentPatchOptions = new List<PatchData>();
 
             _dontShowAgainKeys = new List<string>();
 
@@ -234,19 +233,19 @@ namespace StarSalvager.Utilities.Saving
 
         #region Patches
 
-        public void SetPatches(in IEnumerable<PatchData> patches)
+        public void SetCurrentPatchOptions(in IEnumerable<PatchData> patches)
         {
-            _patchDatas = new List<PatchData>(patches);
+            _currentPatchOptions = new List<PatchData>(patches);
         }
 
         public void ClearAllPatches()
         {
-            _patchDatas.Clear();
+            _currentPatchOptions.Clear();
         }
 
         public void RemovePatchAtIndex(in int index)
         {
-            _patchDatas.RemoveAt(index);
+            _currentPatchOptions.RemoveAt(index);
         }
 
         #endregion //Patches

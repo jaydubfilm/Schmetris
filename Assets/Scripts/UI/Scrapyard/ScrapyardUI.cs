@@ -121,7 +121,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
                     
-                    PlayerDataManager.SetPatches(Globals.CurrentRing.GenerateRingPatches());
+                    PlayerDataManager.SetCurrentPatchOptions(Globals.CurrentRing.GenerateRingPatches());
                     _droneDesigner.DroneDesignUi.InitPurchasePatches();
                 }
             }

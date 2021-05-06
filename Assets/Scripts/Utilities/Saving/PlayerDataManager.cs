@@ -5,6 +5,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using StarSalvager.Factories.Data;
 using UnityEngine;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
@@ -15,6 +16,7 @@ namespace StarSalvager.Utilities.Saving
 {
     public static class PlayerDataManager
     {
+        public static Action<PlayerLevelRemoteData.UnlockData> OnItemUnlocked;
         public static Action OnValuesChanged;
         public static Action OnCapacitiesChanged;
 
@@ -82,6 +84,19 @@ namespace StarSalvager.Utilities.Saving
         public static bool TrySubtractStars(in int amount = 1) => PlayerAccountData.TrySubtractStars(amount);
 
         #endregion //Stars
+
+        //Unlocks
+        //====================================================================================================================//
+
+        #region Unlocks
+
+        public static bool IsPartUnlocked(in PART_TYPE partType) => PlayerAccountData.IsPartUnlocked(partType);
+        public static void UnlockPart(in PART_TYPE partType) => PlayerAccountData.UnlockPart(partType);
+        
+        public static bool IsPatchUnlocked(in PatchData patchData) => PlayerAccountData.IsPatchUnlocked(patchData);
+        public static void UnlockPatch(in PatchData patchData) => PlayerAccountData.UnlockPatch(patchData);
+
+        #endregion //Unlocks
         
         //Run Status
         //====================================================================================================================//
@@ -299,8 +314,8 @@ namespace StarSalvager.Utilities.Saving
 
         #region Patches
 
-        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
-        public static void SetPatches(in IEnumerable<PatchData> patches) => PlayerRunData.SetPatches(patches);
+        public static IReadOnlyList<PatchData> CurrentPatchOptions => PlayerRunData.CurrentPatchOptions;
+        public static void SetCurrentPatchOptions(in IEnumerable<PatchData> patches) => PlayerRunData.SetCurrentPatchOptions(patches);
         public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
         public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
 

@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
@@ -26,8 +30,8 @@ namespace StarSalvager.AI
         public Vector2Int patchSpawnCount = new Vector2Int(2, 4);
         [BoxGroup("Wrecks/Patches"), MinMaxSlider(1, 2, true)]
         public Vector2Int patchLevelRange = new Vector2Int(1, 2);
-        [BoxGroup("Wrecks/Patches")]
-        public List<PATCH_TYPE> patches;
+        [FormerlySerializedAs("patches")] [BoxGroup("Wrecks/Patches")]
+        public List<PATCH_TYPE> patchOptions;
 
         //====================================================================================================================//
         
@@ -98,22 +102,33 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public PatchData[] GenerateRingPatches()
+        public IEnumerable<PatchData> GenerateRingPatches()
         {
-            if (patches.IsNullOrEmpty())
+            if (patchOptions.IsNullOrEmpty())
                 return new PatchData[0];
-            
+
+            var timeoutCounter = 0;
+            var assignIndex = 0;
             var count = Random.Range(patchSpawnCount.x, patchSpawnCount.y + 1);
 
             var outData = new PatchData[count];
-            
-            for (int i = 0; i < count; i++)
+
+            while (assignIndex < count)
             {
-                outData[i] = new PatchData
+                if (timeoutCounter++ >= 1000)
+                    throw new TimeoutException("Unable to find enough Patches to present");
+                
+                var patchData  = new PatchData
                 {
-                    Type = (int)patches[Random.Range(0, patches.Count)],
+                    Type = (int)patchOptions[Random.Range(0, patchOptions.Count)],
                     Level = Random.Range(patchLevelRange.x - 1, patchLevelRange.y)
                 };
+
+                
+                if (!PlayerDataManager.IsPatchUnlocked(patchData))
+                    continue;
+
+                outData[assignIndex++] = patchData;
             }
 
             return outData;

@@ -12,7 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d87a7fdc9910274eb454adfb3a28f23, type: 3}
   m_Name: Player Levels Remote
   m_EditorClassIdentifier: 
-  partsUnlockedAtStart: 040000002400000000000000
+  partsUnlockedAtStart: 040000002400000000000000030000002c00000002000000
+  patchesUnlockedAtStart:
+  - Type: 1
+    Level: 1
+    _minLevel: 1
+    _maxLevel: 2
+  - Type: 3
+    Level: 1
+    _minLevel: 1
+    _maxLevel: 2
+  - Type: 4
+    Level: 1
+    _minLevel: 1
+    _maxLevel: 2
+  - Type: 2
+    Level: 1
+    _minLevel: 1
+    _maxLevel: 2
   levelXPConstant: 0.915
   playerLevelRemoteDatas:
   - level: 1
@@ -36,15 +53,15 @@ MonoBehaviour:
     givesStarPoint: 1
     unlockData:
     - levelIndex: 2
-      Unlock: 1
-      PartType: 0
-      PatchType: 1
-      Level: 0
-    - levelIndex: 2
       Unlock: 0
       PartType: 35
       PatchType: 0
       Level: 0
+    - levelIndex: 2
+      Unlock: 1
+      PartType: 0
+      PatchType: 1
+      Level: 2
   - level: 3
     overrideXPRequired: 0
     xpRequired: 1246
@@ -187,11 +204,11 @@ MonoBehaviour:
     unlockData: []
   test:
   - level: 1
-    parts: 'Parts: REPAIR,ARMOR'
+    parts: 'Parts: REPAIR, ARMOR'
     patches: 'Patches: '
   - level: 2
     parts: 'Parts: WILDCARD'
-    patches: 'Patches: '
+    patches: 'Patches: POWER II'
   levelCurve:
     serializedVersion: 2
     m_Curve:

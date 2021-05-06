@@ -245,7 +245,7 @@ namespace StarSalvager.UI.Scrapyard
             purchasePatchUIElementScrollView.ClearElements();
             
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-            var patches = PlayerDataManager.Patches;
+            var patches = PlayerDataManager.CurrentPatchOptions;
 
             if (patches.IsNullOrEmpty())
                 return;

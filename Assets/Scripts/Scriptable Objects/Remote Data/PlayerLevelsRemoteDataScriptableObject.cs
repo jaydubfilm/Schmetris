@@ -5,8 +5,6 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Saving;
-using StarSalvager.Values;
 using UnityEngine;
 
 using PlayerLevelRemoteData = StarSalvager.Factories.Data.PlayerLevelRemoteData;
@@ -20,15 +18,32 @@ namespace StarSalvager.ScriptableObjects
         //====================================================================================================================//
 
         public List<PART_TYPE> PartsUnlockedAtStart => partsUnlockedAtStart;
-        [SerializeField, ValueDropdown("GetImplementedParts", IsUniqueList = true), Space(10f)]
+        [FoldoutGroup("Starting Unlocks"), TitleGroup("Starting Unlocks/Parts"), SerializeField, ValueDropdown("GetImplementedParts", IsUniqueList = true)]
         private List<PART_TYPE> partsUnlockedAtStart;
+
+        public List<PatchData> PatchesUnlockedAtStart => patchesUnlockedAtStart;
+        [FoldoutGroup("Starting Unlocks"), TitleGroup("Starting Unlocks/Patches"), SerializeField, TableList]
+        private List<PatchData> patchesUnlockedAtStart;
+
+        //====================================================================================================================//
         
         [SerializeField, BoxGroup("Experience Points"), Range(0f,1f)]
         private float levelXPConstant = 0.915f;
         private float _levelXPConstant => 1f - levelXPConstant;
         
+        [InfoBox("Due to the complexity of Patch Data Setting, these will not auto remove from available options like Parts", InfoMessageType.Warning)]
         [SerializeField, ListDrawerSettings(ShowPaging = false), OnValueChanged("FillLevelSummary", true)]
         private List<PlayerLevelRemoteData> playerLevelRemoteDatas;
+
+        //Other Functions
+        //====================================================================================================================//
+
+        public IEnumerable<PlayerLevelRemoteData.UnlockData> GetUnlocksForLevel(in int level)
+        {
+            return level >= playerLevelRemoteDatas.Count
+                ? playerLevelRemoteDatas[playerLevelRemoteDatas.Count - 1].unlockData
+                : playerLevelRemoteDatas[level].unlockData;
+        }
 
         //Level XP Calculations
         //====================================================================================================================//
@@ -54,6 +69,30 @@ namespace StarSalvager.ScriptableObjects
             return Mathf.RoundToInt(Mathf.Pow(level / constant, 2));
         }
 
+        public static int GetCurrentLevel(in int xp)
+        {
+            var playerLevelRemoteDatas = FactoryManager.Instance.PlayerLevelsRemoteData.playerLevelRemoteDatas;
+            
+            for (int i = 0; i < playerLevelRemoteDatas.Count; i++)
+            {
+                if (xp > playerLevelRemoteDatas[i].xpRequired)
+                    continue;
+
+                return i;
+            }
+
+            return 0;
+        }
+        
+        public static int GetXPForLevel(in int level)
+        {
+            var playerLevelRemoteDatas = FactoryManager.Instance.PlayerLevelsRemoteData.playerLevelRemoteDatas;
+            
+            return level >= playerLevelRemoteDatas.Count
+                ? playerLevelRemoteDatas[playerLevelRemoteDatas.Count - 1].xpRequired
+                : playerLevelRemoteDatas[level].xpRequired;
+        }
+
         #endregion //Level XP Calculations
 
         //Unity Editor
@@ -76,6 +115,7 @@ namespace StarSalvager.ScriptableObjects
         
         
         [SerializeField, TableList(HideToolbar = true, AlwaysExpanded = true), FoldoutGroup("Levels Summary"), HideLabel]
+       
         private List<LevelSummaryData> test;
 
         [SerializeField, PropertyOrder(-900), FoldoutGroup("Levels Summary")]
@@ -127,6 +167,8 @@ namespace StarSalvager.ScriptableObjects
             return sum;
         }
 
+        //====================================================================================================================//
+        
         public IEnumerable GetRemainingPartOptions(in int levelIndex)
         {
             var index = levelIndex;
@@ -146,6 +188,9 @@ namespace StarSalvager.ScriptableObjects
         
         private IEnumerable GetImplementedParts() => RemotePartProfileScriptableObject.GetImplementedParts(false);
 
+        //====================================================================================================================//
+        
+
         [OnInspectorInit]
         private void FillLevelSummary()
         {
@@ -156,7 +201,14 @@ namespace StarSalvager.ScriptableObjects
                     Parts = x.unlockData
                         .Where(y => y.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PART)
                         .Select(y => y.PartType),
-                    Patches = new List<PATCH_TYPE>()
+                    Patches = x.unlockData
+                        .Where(y => y.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PATCH)
+                        .Where(y => y.PatchType != PATCH_TYPE.EMPTY)
+                        .Select(y => new PatchData
+                        {
+                            Type = (int)y.PatchType,
+                            Level = y.Level
+                        })
                 }).ToList();
 
             var outList = new List<LevelSummaryData>();
@@ -168,14 +220,22 @@ namespace StarSalvager.ScriptableObjects
                 outList.Add(new LevelSummaryData
                 {
                     level = unlockData.Level,
-                    parts = $"Parts: {string.Join(",", unlockData.Parts)}",
-                    patches = $"Patches: {string.Join(",", unlockData.Patches)}",
+                    parts = $"Parts: {string.Join(", ", unlockData.Parts)}",
+                    patches = $"Patches: {string.Join(", ", unlockData.Patches)}",
                 });
                 
             }
 
             test = outList;
         }
+
+        /*private bool AlreadyHasPatch()
+        {
+            for (int i = playerLevelRemoteDatas.Count - 1; i >= 0; i++)
+            {
+                playerLevelRemoteDatas
+            }
+        }*/
 #endif
 
         #endregion //Unity Editor

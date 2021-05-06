@@ -5,6 +5,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
@@ -351,6 +352,7 @@ namespace StarSalvager.UI
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += ValuesUpdated;
+            PlayerDataManager.OnItemUnlocked += UnlockItem;
         }
 
         private void OnDisable()
@@ -359,6 +361,7 @@ namespace StarSalvager.UI
 
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
+            PlayerDataManager.OnItemUnlocked -= UnlockItem;
         }
 
         #endregion //Unity Functions
@@ -525,6 +528,22 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         #region Update UI
+
+        private void UnlockItem(PlayerLevelRemoteData.UnlockData unlockData)
+        {
+            switch (unlockData.Unlock)
+            {
+                case PlayerLevelRemoteData.UNLOCK_TYPE.PART:
+                    Debug.Log($"Unlocked {unlockData.PartType}");
+                    break;
+                case PlayerLevelRemoteData.UNLOCK_TYPE.PATCH:
+                    Debug.Log($"Unlocked {unlockData.PatchType} {Mathfx.ToRoman(unlockData.Level)}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+        }
 
         private void ValuesUpdated()
         {

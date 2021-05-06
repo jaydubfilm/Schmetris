@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
 using StarSalvager.PersistentUpgrades.Data;
+using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.Puzzle.Structs;
@@ -159,6 +161,9 @@ namespace StarSalvager.Values
 
         //Layout Coordinates
         //====================================================================================================================//
+
+        #region Layout Coordinates
+
         public BIT_TYPE GetCategoryAtCoordinate(in Vector2Int coordinate)
         {
             if (!BotLayout.TryGetValue(coordinate, out var bitType))
@@ -176,25 +181,27 @@ namespace StarSalvager.Values
                 .Key;
         }
 
+        #endregion //Layout Coordinates
+
         //Player XP
         //====================================================================================================================//
+
+        #region Player XP
+
         public int GetXPThisRun()
         {
             if (PlayerRunData == null) return 0;
             
-           return XP - PlayerRunData.XPAtRunBeginning;
+            return XP - PlayerRunData.XPAtRunBeginning;
         }
-        public void SetXP(in int value)
-        {
-            XP = value;
-        }
+
         public void AddXP(in int amount)
         {
-            //var startXP = XP;
-           // var changedXP = startXP + amount;
+            var startXP = XP;
+             var changedXP = startXP + amount;
 
-            //var startLevel = GetCurrentLevel(startXP);
-            //var newLevel = GetCurrentLevel(changedXP);
+            var startLevel = GetCurrentLevel(startXP);
+            var newLevel = GetCurrentLevel(changedXP);
             
             XP += amount;
             
@@ -204,8 +211,34 @@ namespace StarSalvager.Values
                 LevelManager.Instance.WaveEndSummaryData.AddXPGained(amount);
             }
 
-            //if (startLevel == newLevel)
-            //    return;
+            if (startLevel == newLevel)
+                return;
+
+            var startCount = startLevel + 1; 
+            for (var i = startCount; i <= newLevel; i++)
+            {
+                var unlocks = FactoryManager.Instance.PlayerLevelsRemoteData.GetUnlocksForLevel(i);
+                foreach (var unlockData in unlocks)
+                {
+                    switch (unlockData.Unlock)
+                    {
+                        case PlayerLevelRemoteData.UNLOCK_TYPE.PART:
+                            UnlockPart(unlockData.PartType);
+                            break;
+                        case PlayerLevelRemoteData.UNLOCK_TYPE.PATCH:
+                            UnlockPatch(new PatchData
+                            {
+                                Type = (int)unlockData.PatchType,
+                                Level = unlockData.Level
+                            });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    
+                    PlayerDataManager.OnItemUnlocked?.Invoke(unlockData);
+                }
+            }
 
             //var difference = newTotalLevels - totalLevels;
 
@@ -215,27 +248,17 @@ namespace StarSalvager.Values
         //XP Info Considerations: https://www.youtube.com/watch?v=MCPruAKSG0g
         //Alt option: https://gamedev.stackexchange.com/a/20946
         //Based on: https://gamedev.stackexchange.com/a/13639
-        public static int GetCurrentLevel(in int xp)
-        {
-            //level = constant * sqrt(XP)
-            //level = (sqrt(100(2experience+25))+50)/100
-            var constant = Globals.LevelXPConstant;
+        public static int GetCurrentLevel(in int xp) => PlayerLevelsRemoteDataScriptableObject.GetCurrentLevel(xp);
 
-            return Mathf.RoundToInt(constant * Mathf.Sqrt(xp));
-        }
+        public static int GetExperienceReqForLevel(in int level) => PlayerLevelsRemoteDataScriptableObject.GetXPForLevel(level);
 
-        public static int GetExperienceReqForLevel(in int level)
-        {
-            //XP = (level / constant)^2
-            //experience =(level^2+level)/2*100-(level*100)
-            
-            var constant = Globals.LevelXPConstant;
-
-            return Mathf.RoundToInt(Mathf.Pow(level / constant, 2));
-        }
+        #endregion //Player XP
 
         //Stars
         //====================================================================================================================//
+
+        #region Stars
+
         public int GetStarsThisRun()
         {
             if (PlayerRunData == null) return 0;
@@ -266,8 +289,51 @@ namespace StarSalvager.Values
             return true;
         }
 
+        #endregion //Stars
+
+        //Part Unlocks
+        //====================================================================================================================//
+
+        public bool IsPartUnlocked(in PART_TYPE partType)
+        {
+            if (!_partsUnlocks.TryGetValue(partType, out var unlocked))
+                throw new ArgumentOutOfRangeException($"{partType} not unlock option");
+
+            return unlocked;
+        }
+
+        public void UnlockPart(in PART_TYPE partType)
+        {
+            if (!_partsUnlocks.ContainsKey(partType))
+                throw new ArgumentOutOfRangeException($"{partType} not unlock option");
+
+            _partsUnlocks[partType] = true;
+        }
+        
+        //Patch Unlocks
+        //====================================================================================================================//
+
+        public bool IsPatchUnlocked(in PatchData patchData)
+        {
+            if (!_patchUnlocks.TryGetValue(patchData, out var unlocked))
+                throw new ArgumentOutOfRangeException($"{patchData} not unlock option");
+
+            return unlocked;
+        }
+
+        public void UnlockPatch(in PatchData patchData)
+        {
+            if (!_patchUnlocks.ContainsKey(patchData))
+                throw new ArgumentOutOfRangeException($"{patchData} not unlock option");
+
+            _patchUnlocks[patchData] = true;
+        }
+        
         //Upgrades
         //====================================================================================================================//
+
+        #region Upgrades
+
         public float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
         {
             var upg = upgradeType;
@@ -322,15 +388,24 @@ namespace StarSalvager.Values
             _upgrades[index] = upgradeData;
         }
 
+        #endregion //Upgrades
+
         //Hints
         //====================================================================================================================//
+
+        #region Hints
 
         public void SetHintDisplay(HINT hint, bool state)
         {
             _hintDisplay[hint] = state;
         }
+
+        #endregion //Hints
+        
         //Recording Data
         //====================================================================================================================//
+
+        #region Recording Data
 
         public void RecordCombo(in ComboRecordData comboRecordData)
         {
@@ -365,8 +440,12 @@ namespace StarSalvager.Values
             EnemiesKilled[enemyId]++;
         }
 
+        #endregion //Recording Data
+
         //Player Run Data
         //====================================================================================================================//
+
+        #region Player Run Data
 
         public void CompleteCurrentRun()
         {
@@ -403,7 +482,12 @@ namespace StarSalvager.Values
             //PlayerRunData.SaveData();
         }
 
+        #endregion //Player Run Data
+
+        //Account Summary String
         //====================================================================================================================//
+
+        #region Account Summary String
 
         public string GetSummaryString()
         {
@@ -440,6 +524,8 @@ namespace StarSalvager.Values
 
             return summaryText;
         }
+
+        #endregion //Account Summary String
 
         //====================================================================================================================//
         
