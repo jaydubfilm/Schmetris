@@ -196,6 +196,17 @@ namespace StarSalvager
             _healWaitTimer = Globals.BotHealWaitTime;
         }
 
+        //Force Field Properties
+        //====================================================================================================================//
+
+        private float _forceFieldHealWaitTimer;
+
+        public void ResetForceFieldHealCooldown()
+        {
+            var cooldown = PART_TYPE.FORCE_FIELD.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Cooldown);
+            _forceFieldHealWaitTimer = cooldown;
+        }
+
         #endregion //Properties
 
         //Unity Functions
@@ -528,6 +539,14 @@ namespace StarSalvager
 
                         _sabreTimers.Add(part, 0f);
                         break;
+                    case PART_TYPE.FORCE_FIELD:
+                        //TODO Try Create the force field object
+                        if (_forceField == null)
+                        {
+                            SetupForceField(part, partRemoteData);
+                        }
+
+                        break;
                 }
             }
 
@@ -620,6 +639,9 @@ namespace StarSalvager
                     //--------------------------------------------------------------------------------------------------------//
                     case PART_TYPE.RAILGUN:
                         UpdateFireLine(part, partRemoteData);
+                        break;
+                    case PART_TYPE.FORCE_FIELD:
+                        ForceFieldUpdate(part, partRemoteData, deltaTime);
                         break;
                     //--------------------------------------------------------------------------------------------------------//
                 }
@@ -777,11 +799,6 @@ namespace StarSalvager
 
         private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            /*if (_healActiveTimer <= 0)
-            {
-                return;
-            }
-            _healActiveTimer -= Time.deltaTime;*/
 
             if (_healWaitTimer > 0f)
             {
@@ -869,6 +886,46 @@ namespace StarSalvager
             var pos = part.Position + (dir * (size / 2)) + (dir * (Constants.gridCellSize / 2f));
 
             _sabreObject.SetTransform(pos, dir);
+        }
+
+        private void ForceFieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            _forceField.transform.rotation = bot.transform.rotation;
+            _forceField.transform.position = bot.transform.position;
+
+            if (_forceFieldHealWaitTimer > 0f)
+            {
+                _forceFieldHealWaitTimer -= deltaTime;
+                return;
+            }
+
+
+            var repairTarget = _forceField;
+
+            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
+            {
+                return;
+            }
+
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
+                throw new ArgumentOutOfRangeException();
+
+            var cost = ammoCost * Time.deltaTime;
+
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+
+            if (ammoResource.Ammo < cost)
+                return;
+
+            ammoResource.SubtractAmmo(cost);
+
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
         }
 
         /*private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
@@ -1922,6 +1979,25 @@ namespace StarSalvager
         }
 
         #endregion
+
+        #region Force Field
+
+        [SerializeField, Required]
+        private ForceField forceFieldPrefab;
+        private ForceField _forceField;
+
+        private void SetupForceField(in Part part, in PartRemoteData partRemoteData)
+        {
+            var angle = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+            var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+            var health = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Health);
+
+            _forceField = Instantiate(forceFieldPrefab, bot.transform.position, Quaternion.identity);
+            _forceField.Init(this, 90,angle, radius);
+            _forceField.SetupHealthValues(health, health);
+        }
+
+        #endregion //Force Field
 
         //Find Bits/Values to burn
         //============================================================================================================//

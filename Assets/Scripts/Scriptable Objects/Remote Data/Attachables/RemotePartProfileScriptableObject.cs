@@ -42,7 +42,7 @@ namespace StarSalvager.ScriptableObjects
             [HideInTables]
             public Color color;
             
-            private static IEnumerable GetPartTypes() => RemotePartProfileScriptableObject.GetPartTypes();
+            private static IEnumerable GetPartTypes() => RemotePartProfileScriptableObject.GetImplementedParts();
 
             [OnInspectorInit]
             private void UpdateName()
@@ -132,7 +132,7 @@ namespace StarSalvager.ScriptableObjects
             return partTypes;
         }
         
-        private static IEnumerable GetPartTypes()
+        public static IEnumerable GetImplementedParts(in bool includeNone = true)
         {
             var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
 
@@ -140,6 +140,9 @@ namespace StarSalvager.ScriptableObjects
             
             foreach (var data in partRemote.partRemoteData.Where(x => x.isImplemented))
             {
+                if (includeNone == false && data.partType == PART_TYPE.EMPTY)
+                    continue;
+                
                 partTypes.Add(data.partType == PART_TYPE.EMPTY ? "NONE" : $"{data.name}", data.partType);
             }
             return partTypes;

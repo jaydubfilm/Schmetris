@@ -102,7 +102,7 @@ namespace StarSalvager
             FreezeTime -= Time.deltaTime;
             
             //If the change sets this no longer frozen, change the color back
-            if(FreezeTime <= 0) SetColor(Color.white);
+            if(FreezeTime <= 0) SetSprite(Type.GetSprite(level));
         }
 
         //IAttachable Functions
@@ -263,7 +263,7 @@ namespace StarSalvager
             
             FreezeTime = time;
             
-            if(Frozen) SetColor(Color.cyan);
+            if(Frozen) SetSprite(FactoryManager.Instance.BitProfileData.FrozenSprite);
         }
 
         //ISaveable Functions

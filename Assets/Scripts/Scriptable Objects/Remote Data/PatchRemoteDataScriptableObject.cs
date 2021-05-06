@@ -201,17 +201,35 @@ namespace StarSalvager.ScriptableObjects
             AssetDatabase.Refresh();
         }
         
-        private static IEnumerable GetPartTypes()
+        public static ValueDropdownList<PATCH_TYPE> GetImplementedPatches(in bool includeNone = true)
         {
-            var partRemote = FindObjectOfType<FactoryManager>().PartsRemoteData;
+            var partRemote = FindObjectOfType<FactoryManager>().PatchRemoteData;
 
-            var partTypes = new ValueDropdownList<PART_TYPE>();
+            var patchTypes = new ValueDropdownList<PATCH_TYPE>();
             
-            foreach (var data in partRemote.partRemoteData.Where(x => x.isImplemented))
+            foreach (var data in partRemote.patchRemoteData.Where(x => x.isImplemented))
             {
-                partTypes.Add(data.partType == PART_TYPE.EMPTY ? "NONE" : $"{data.name}", data.partType);
+                if (includeNone == false && data.type == PATCH_TYPE.EMPTY)
+                    continue;
+                
+                patchTypes.Add(data.type == PATCH_TYPE.EMPTY ? "NONE" : $"{data.name}", data.type);
             }
-            return partTypes;
+            return patchTypes;
+        }
+        public static ValueDropdownList<int> GetImplementedPatchesInt(in bool includeNone = true)
+        {
+            var partRemote = FindObjectOfType<FactoryManager>().PatchRemoteData;
+
+            var patchTypes = new ValueDropdownList<int>();
+            
+            foreach (var data in partRemote.patchRemoteData.Where(x => x.isImplemented))
+            {
+                if (includeNone == false && data.type == PATCH_TYPE.EMPTY)
+                    continue;
+                
+                patchTypes.Add(data.type == PATCH_TYPE.EMPTY ? "NONE" : $"{data.name}", (int)data.type);
+            }
+            return patchTypes;
         }
         
 #endif

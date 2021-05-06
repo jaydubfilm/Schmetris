@@ -63,6 +63,8 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required, BoxGroup("Effects/Bits")]
         public GameObject bitRedParticlePrefab;
         [SerializeField, Required, BoxGroup("Effects/Bits")]
+        public GameObject bitWhiteParticlePrefab;
+        [SerializeField, Required, BoxGroup("Effects/Bits")]
         public GameObject bitYellowParticlePrefab;
 
         //Part Effects

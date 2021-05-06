@@ -54,8 +54,32 @@ namespace StarSalvager.UI.Elements
             this.data = data;
 
             image.sprite = data.Sprite;
-            countText.text = $"x{data.Count}";
-            xpText.text = $"+{data.XpPerCount}xp";
+            countText.text = string.Empty;
+            xpText.text = string.Empty;
+            /*countText.text = $"x{data.Count}";
+            xpText.text = $"+{data.XpPerCount}xp";*/
+
+            SetSpriteActive(data.Sprite != null);
+        }
+        
+        public void SetCountTextUnformatted(in string text)
+        {
+            countText.text = text;
+        }
+
+        public void SetCount(in int count)
+        {
+            countText.text = $"x{count}";
+        }
+
+        public void SetXP(in int xp)
+        {
+            xpText.text = $"+{xp}xp";
+        }
+
+        private void SetSpriteActive(in bool state)
+        {
+            image.gameObject.SetActive(state);
         }
 
         //====================================================================================================================//

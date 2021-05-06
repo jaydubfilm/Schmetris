@@ -114,8 +114,10 @@ namespace StarSalvager.Values
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
-        public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
-        public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;
+        
+        public static float LevelXPConstant => m_gameSettings.levelXPConstant;
+        /*public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
+        public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;*/
 
         public static float GameUIResourceThreshold => m_gameSettings.gameUIResourceThreshold;
 

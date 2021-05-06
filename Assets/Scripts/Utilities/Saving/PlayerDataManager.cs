@@ -5,14 +5,18 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using StarSalvager.Factories.Data;
 using UnityEngine;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Puzzle.Data;
+using StarSalvager.Utilities.Puzzle.Structs;
 
 namespace StarSalvager.Utilities.Saving
 {
     public static class PlayerDataManager
     {
+        public static Action<PlayerLevelRemoteData.UnlockData> OnItemUnlocked;
         public static Action OnValuesChanged;
         public static Action OnCapacitiesChanged;
 
@@ -73,17 +77,45 @@ namespace StarSalvager.Utilities.Saving
 
         #region Stars
 
+        public static int GetStarsThisRun() => PlayerAccountData.GetStarsThisRun();
         public static int GetStars() => PlayerAccountData.Stars;
         public static void SetStars(in int value) => PlayerAccountData.SetStars(value);
         public static void AddStars(in int amount = 1) => PlayerAccountData.AddStars(amount);
         public static bool TrySubtractStars(in int amount = 1) => PlayerAccountData.TrySubtractStars(amount);
 
         #endregion //Stars
+
+        //Unlocks
+        //====================================================================================================================//
+
+        #region Unlocks
+
+        public static bool IsPartUnlocked(in PART_TYPE partType) => PlayerAccountData.IsPartUnlocked(partType);
+        public static void UnlockPart(in PART_TYPE partType) => PlayerAccountData.UnlockPart(partType);
+        
+        public static bool IsPatchUnlocked(in PatchData patchData) => PlayerAccountData.IsPatchUnlocked(patchData);
+        public static void UnlockPatch(in PatchData patchData) => PlayerAccountData.UnlockPatch(patchData);
+
+        #endregion //Unlocks
         
         //Run Status
         //====================================================================================================================//
 
         #region Run Status
+
+        public static bool ShouldShownSummary()
+        {
+            if (!HasRunData)
+                return false;
+            
+            if (!HasRunStarted())
+                return false;
+            if (!PlayerRunData.hasCompleted)
+                return false;
+            if (PlayerRunData.hasShownSummary)
+                return false;
+            return true;
+        }
 
         public static bool HasRunStarted()
         {
@@ -282,8 +314,8 @@ namespace StarSalvager.Utilities.Saving
 
         #region Patches
 
-        public static IReadOnlyList<PatchData> Patches => PlayerRunData.PatchDatas;
-        public static void SetPatches(in IEnumerable<PatchData> patches) => PlayerRunData.SetPatches(patches);
+        public static IReadOnlyList<PatchData> CurrentPatchOptions => PlayerRunData.CurrentPatchOptions;
+        public static void SetCurrentPatchOptions(in IEnumerable<PatchData> patches) => PlayerRunData.SetCurrentPatchOptions(patches);
         public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
         public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
 
@@ -406,6 +438,29 @@ namespace StarSalvager.Utilities.Saving
 
         #region Player Run Data Tracking
 
+        
+
+        public static void RecordCombo(in ComboRecordData comboRecordData) => PlayerAccountData.RecordCombo(comboRecordData);
+        public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMade() => PlayerAccountData.CombosMade;
+
+        public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMadeThisRun()
+        {
+            var outDict = new Dictionary<ComboRecordData, int>(PlayerAccountData.CombosMade);
+            foreach (var kvp in PlayerAccountData.CombosMade)
+            {
+                if (!PlayerRunData.CombosMadeAtBeginning.TryGetValue(kvp.Key, out var startValue))
+                {
+                    outDict[kvp.Key] = kvp.Value;
+                    continue;
+                }
+                
+                outDict[kvp.Key] = kvp.Value - startValue;
+            }
+
+            return outDict;
+        
+        }
+
         public static void RecordBitConnection(in BIT_TYPE bit) => PlayerAccountData.RecordBitConnection(bit);
 
         public static IReadOnlyDictionary<BIT_TYPE, int> GetBitConnections() => PlayerAccountData.BitConnections;
@@ -420,7 +475,13 @@ namespace StarSalvager.Utilities.Saving
             var outDict = new Dictionary<BIT_TYPE, int>(PlayerAccountData.BitConnections);
             foreach (var kvp in PlayerAccountData.BitConnections)
             {
-                outDict[kvp.Key] = kvp.Value - PlayerRunData.BitConnectionsAtRunBeginning[kvp.Key];
+                if (!PlayerRunData.BitConnectionsAtRunBeginning.TryGetValue(kvp.Key, out var startValue))
+                {
+                    outDict[kvp.Key] = kvp.Value;
+                    continue;
+                }
+                
+                outDict[kvp.Key] = kvp.Value - startValue;
             }
 
             return outDict;

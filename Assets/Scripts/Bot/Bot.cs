@@ -27,6 +27,7 @@ using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
+using StarSalvager.Utilities.Puzzle.Structs;
 using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
@@ -2765,6 +2766,7 @@ _isShifting = true;
         {
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.BIT_DEATH, bitType);
+            if (explosion is null) return;
             LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
             explosion.transform.position = worldPosition;
 
@@ -2982,7 +2984,7 @@ _isShifting = true;
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                var multiplier = comboFactory.GetGearMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
+                var multiplier = comboFactory.GetXPMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
                 SimpleComboSolver(pendingCombo, multiplier);
             }
 
@@ -3064,7 +3066,7 @@ _isShifting = true;
             if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
                 return;
 
-            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, moveData.ToMove.Count);
+            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetXPMultiplier(1, moveData.ToMove.Count);
             SimpleComboSolver(moveData.ComboData, moveData.ToMove, multiplier);
         }
 
@@ -3076,9 +3078,9 @@ _isShifting = true;
 
 
 
-        private void SimpleComboSolver(PendingCombov2 pendingCombo, float gearMultiplier)
+        private void SimpleComboSolver(PendingCombov2 pendingCombo, float xpMultiplier)
         {
-            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, xpMultiplier);
         }
 
         /// <summary>
@@ -3086,9 +3088,9 @@ _isShifting = true;
         /// </summary>
         /// <param name="comboData"></param>
         /// <param name="canCombos"></param>
-        /// <param name="gearMultiplier"></param>
+        /// <param name="xpMultiplier"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float xpMultiplier)
         {
             ICanCombo closestToCore = null;
             var shortest = 999f;
@@ -3145,7 +3147,13 @@ _isShifting = true;
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
 
-
+            var closestToCoreBit = (Bit)closestToCore;
+            PlayerDataManager.RecordCombo(new ComboRecordData
+            {
+                BitType = closestToCoreBit.Type,
+                ComboType = comboData.type,
+                FromLevel = closestToCoreBit.level
+            });
             closestToCore.IncreaseLevel(comboData.addLevels);
 
 
@@ -3179,11 +3187,11 @@ _isShifting = true;
                 () =>
                 {
                     var position = closestToCore.transform.position;
-                    var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
+                    var xpToAdd = Mathf.RoundToInt(comboData.points * xpMultiplier);
                     //Waits till after combo finishes combining to add the points
-                    PlayerDataManager.ChangeXP(gearsToAdd);
+                    PlayerDataManager.ChangeXP(xpToAdd);
 
-                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{xpToAdd}", position, Color.white);
                     
                     CreateBonusShapeParticleEffect(position);
 
@@ -3196,7 +3204,9 @@ _isShifting = true;
                         
                         PlayerDataManager.AddSilver(1, false);
                         
-                        var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                        var ammoEarned = FactoryManager.Instance
+                            .ComboRemoteData
+                            .ComboAmmos
                             .FirstOrDefault(x => x.level == bit.level)
                             .ammoEarned;
                         foreach (var bitType in Constants.BIT_ORDER)
@@ -3207,6 +3217,7 @@ _isShifting = true;
                     else if (bit != null)
                     {
                         var bitType = bit.Type;
+                        var bitLevel = bit.level;
                         switch (bit.level)
                         {
                             case 1:
@@ -3214,12 +3225,16 @@ _isShifting = true;
                                 break;
                             case 2:
 
+                                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 bit.UpdateBitData(BIT_TYPE.WHITE, 0);
+                                //We have to override the level value here to ensure that the ammo given is
+                                // reflective of the upgrade level 0 -> 1 -> white
+                                bitLevel = 2;
                                 break;
                         }
 
                         var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                            .FirstOrDefault(x => x.level == bit.level)
+                            .FirstOrDefault(x => x.level == bitLevel)
                             .ammoEarned;
                         
                         GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
@@ -3227,7 +3242,7 @@ _isShifting = true;
                     }
 
 
-                    CheckForBonusShapeMatches();
+                    //CheckForBonusShapeMatches();
 
                     OnCombo?.Invoke();
                     AttachedChanged();

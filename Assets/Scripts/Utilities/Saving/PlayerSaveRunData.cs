@@ -3,7 +3,9 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
+using StarSalvager.Utilities.Puzzle.Structs;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -14,34 +16,38 @@ namespace StarSalvager.Utilities.Saving
     {
         //Properties
         //====================================================================================================================//
-        
+
         #region Properties
 
         [JsonProperty]
         public string PlaythroughID { get; private set; }
-        
-        
+
+
         public bool hasCompleted;
         public bool hasStarted;
-        
+        public bool hasShownSummary;
+
         //Starting values
         //====================================================================================================================//
 
         #region Starting Values
 
+        public readonly int StarsAtRunBeginning;
         public readonly int XPAtRunBeginning;
         [JsonConverter(typeof(DecimalConverter))]
         public readonly float RepairsDoneAtRunBeginning;
 
         public readonly IReadOnlyDictionary<BIT_TYPE, int> BitConnectionsAtRunBeginning;
         public readonly IReadOnlyDictionary<string, int> EnemiesKilledAtRunBeginning;
+        [JsonProperty, JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMadeAtBeginning;
 
         #endregion //Starting Values
 
         //====================================================================================================================//
-                
+
         public bool canChoosePart;
-        
+
         public int currentNode;
 
         [JsonProperty] private List<PlayerResource> _playerResources;
@@ -52,7 +58,7 @@ namespace StarSalvager.Utilities.Saving
         public int Gears => _gears;
 
         [JsonProperty] private int _gears;
-        
+
         [JsonIgnore]
         public int Silver => _silver;
 
@@ -74,10 +80,9 @@ namespace StarSalvager.Utilities.Saving
         public List<int> playerPreviouslyCompletedNodes;
 
         [JsonIgnore]
-        public IReadOnlyList<PatchData> PatchDatas => _patchDatas;
+        public IReadOnlyList<PatchData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
-
-        private List<PatchData> _patchDatas;
+        private List<PatchData> _currentPatchOptions;
 
         #endregion //Properties
 
@@ -89,9 +94,11 @@ namespace StarSalvager.Utilities.Saving
         public PlayerSaveRunData(
             in int startingGears,
             in float botStartHealth,
-            in int xpAtRunBeginning, 
+            in int starsAtRunBeginning,
+            in int xpAtRunBeginning,
             in float repairsDoneAtRunBeginning,
             in Dictionary<BIT_TYPE, int> bitConnectionsAtRunBeginning,
+            in Dictionary<ComboRecordData, int> combosMadeAtBeginning,
             in Dictionary<string, int> enemiesKilledAtRunBeginning)
         {
             PlaythroughID = Guid.NewGuid().ToString();
@@ -99,18 +106,29 @@ namespace StarSalvager.Utilities.Saving
 
             _gears = startingGears;
             currentBotHealth = botStartHealth;
-            
+
+            StarsAtRunBeginning = starsAtRunBeginning;
             XPAtRunBeginning = xpAtRunBeginning;
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
-            
+
             //Have to create copies of the data to not let original change this ref
-            BitConnectionsAtRunBeginning = new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning);
-            EnemiesKilledAtRunBeginning = new Dictionary<string, int>(enemiesKilledAtRunBeginning);
-            
+            //Need to include the null check for files that might be old versions
+            BitConnectionsAtRunBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<BIT_TYPE, int>(bitConnectionsAtRunBeginning)
+                : new Dictionary<BIT_TYPE, int>();
+
+            CombosMadeAtBeginning = !combosMadeAtBeginning.IsNullOrEmpty()
+                ? new Dictionary<ComboRecordData, int>(combosMadeAtBeginning)
+                : new Dictionary<ComboRecordData, int>();
+
+            EnemiesKilledAtRunBeginning = !enemiesKilledAtRunBeginning.IsNullOrEmpty()
+                ? new Dictionary<string, int>(enemiesKilledAtRunBeginning)
+                : new Dictionary<string, int>();
+
             DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
-            _patchDatas = new List<PatchData>();
-            
+            _currentPatchOptions = new List<PatchData>();
+
             _dontShowAgainKeys = new List<string>();
 
             wreckNodes = new List<int>();
@@ -144,7 +162,7 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Block Data
-        
+
         //Player Resources
         //============================================================================================================//
 
@@ -168,11 +186,11 @@ namespace StarSalvager.Utilities.Saving
                 Debug.LogError($"Failed trying to find PlayerResource[{type}] ({bitType} : {(int)bitType}) ");
                 throw;
             }
-            
+
         }
 
         #endregion //Player Resources
-        
+
         //Part Storage
         //====================================================================================================================//
 
@@ -215,23 +233,23 @@ namespace StarSalvager.Utilities.Saving
 
         #region Patches
 
-        public void SetPatches(in IEnumerable<PatchData> patches)
+        public void SetCurrentPatchOptions(in IEnumerable<PatchData> patches)
         {
-            _patchDatas = new List<PatchData>(patches);
+            _currentPatchOptions = new List<PatchData>(patches);
         }
 
         public void ClearAllPatches()
         {
-            _patchDatas.Clear();
+            _currentPatchOptions.Clear();
         }
 
         public void RemovePatchAtIndex(in int index)
         {
-            _patchDatas.RemoveAt(index);
+            _currentPatchOptions.RemoveAt(index);
         }
 
         #endregion //Patches
-        
+
         //Gears
         //============================================================================================================//
 
@@ -283,7 +301,7 @@ namespace StarSalvager.Utilities.Saving
         {
             _dontShowAgainKeys.Add(key);
         }
-        
+
         public bool CheckIfCompleted(in int waveIndex)
         {
             throw new NotImplementedException();
@@ -342,6 +360,6 @@ namespace StarSalvager.Utilities.Saving
         #endregion //Summary String
 
         //====================================================================================================================//
-        
+
     }
 }

@@ -6,20 +6,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
 using StarSalvager.PersistentUpgrades.Data;
+using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
+using StarSalvager.Utilities.Puzzle.Structs;
 using UnityEngine;
 
 namespace StarSalvager.Values
 {
     public class PlayerSaveAccountData
     {
+        //Static Bot Layout
+        //====================================================================================================================//
+        
+        [JsonIgnore] 
+        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
+            new Dictionary<Vector2Int, BIT_TYPE>()
+            {
+                [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
+                [new Vector2Int(1, 0)] = BIT_TYPE.RED,
+                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
+                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
+                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
+            };
+        
         //Properties
         //====================================================================================================================//
 
         #region Properties
+
+        [JsonIgnore]
+        public bool HasRun => PlayerRunData != null && !PlayerRunData.hasCompleted;
 
         public PlayerSaveRunData PlayerRunData;
 
@@ -39,73 +59,133 @@ namespace StarSalvager.Values
         [JsonConverter(typeof(DecimalConverter))]
         public float RepairsDone;
 
-        [JsonProperty]
-        public Dictionary<BIT_TYPE, int> BitConnections = new Dictionary<BIT_TYPE, int>
-        {
-            {BIT_TYPE.RED, 0},
-            {BIT_TYPE.BLUE, 0},
-            {BIT_TYPE.YELLOW, 0},
-            {BIT_TYPE.GREEN, 0},
-            {BIT_TYPE.GREY, 0},
-        };
+        [JsonProperty] public Dictionary<BIT_TYPE, int> BitConnections;
 
-        [JsonProperty]
-        public Dictionary<string, int> EnemiesKilled = new Dictionary<string, int>();
+        [JsonProperty] public Dictionary<string, int> EnemiesKilled;
 
-
-
+        [JsonProperty, JsonConverter(typeof(ComboRecordDataConverter))]
+        public Dictionary<ComboRecordData, int> CombosMade;
 
         [JsonIgnore] public IReadOnlyDictionary<HINT, bool> HintDisplay => _hintDisplay;
-
-        [JsonProperty] private Dictionary<HINT, bool> _hintDisplay = new Dictionary<HINT, bool>
-        {
-            [HINT.GUN] = false,
-            //[HINT.FUEL] = false,
-            //[HINT.HOME] = false,
-            [HINT.BONUS] = false,
-            [HINT.MAGNET] = false,
-
-            //[HINT.GEARS] = false,
-            //[HINT.PATCH_POINT] = false,
-            //[HINT.CRAFT_PART] = false,
-
-            [HINT.PARASITE] = false,
-            [HINT.DAMAGE] = false,
-
-        };
+        [JsonProperty] private Dictionary<HINT, bool> _hintDisplay;
 
         [JsonIgnore] public UpgradeData[] Upgrades => _upgrades;
 
         [JsonProperty, JsonConverter(typeof(IEnumberableUpgradeDataConverter))]
-        private UpgradeData[] _upgrades = new[]
-        {
-            new UpgradeData(UPGRADE_TYPE.GEAR_DROP, 0),
-            new UpgradeData(UPGRADE_TYPE.PATCH_COST, 0),
-            new UpgradeData(UPGRADE_TYPE.AMMO_CAPACITY, 0),
-            new UpgradeData(UPGRADE_TYPE.STARTING_CURRENCY, 0),
+        private UpgradeData[] _upgrades;
 
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.RED, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.BLUE, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREY, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREEN, 0),
-            new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
-        };
-
-        [JsonIgnore] 
-        public static readonly Dictionary<Vector2Int, BIT_TYPE> BotLayout =
-            new Dictionary<Vector2Int, BIT_TYPE>()
-            {
-                [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
-                [new Vector2Int(1, 0)] = BIT_TYPE.RED,
-                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
-                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
-                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
-            };
+        [JsonProperty, JsonConverter(typeof(EnumBoolDictionaryConverter<PART_TYPE>))]
+        private Dictionary<PART_TYPE, bool> _partsUnlocks;
+        [JsonProperty, JsonConverter(typeof(PatchDictionaryConverter))]
+        private Dictionary<PatchData, bool> _patchUnlocks;
 
         #endregion //Properties
 
+        //Constructor
+        //====================================================================================================================//
+
+        #region Constructor
+
+        public PlayerSaveAccountData()
+        {
+            CombosMade = new Dictionary<ComboRecordData, int>();
+            EnemiesKilled = new Dictionary<string, int>();
+            BitConnections = new Dictionary<BIT_TYPE, int>
+            {
+                {BIT_TYPE.RED, 0},
+                {BIT_TYPE.BLUE, 0},
+                {BIT_TYPE.YELLOW, 0},
+                {BIT_TYPE.GREEN, 0},
+                {BIT_TYPE.GREY, 0},
+            };
+            _hintDisplay = new Dictionary<HINT, bool>
+            {
+                [HINT.GUN] = false,
+                //[HINT.FUEL] = false,
+                //[HINT.HOME] = false,
+                [HINT.BONUS] = false,
+                [HINT.MAGNET] = false,
+
+                //[HINT.GEARS] = false,
+                //[HINT.PATCH_POINT] = false,
+                //[HINT.CRAFT_PART] = false,
+
+                [HINT.PARASITE] = false,
+                [HINT.DAMAGE] = false,
+
+            };
+            _upgrades = new[]
+            {
+                new UpgradeData(UPGRADE_TYPE.GEAR_DROP, 0),
+                new UpgradeData(UPGRADE_TYPE.PATCH_COST, 0),
+                new UpgradeData(UPGRADE_TYPE.AMMO_CAPACITY, 0),
+                new UpgradeData(UPGRADE_TYPE.STARTING_CURRENCY, 0),
+
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.RED, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.BLUE, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREY, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.GREEN, 0),
+                new UpgradeData(UPGRADE_TYPE.CATEGORY_EFFICIENCY, BIT_TYPE.YELLOW, 0)
+            };
+
+            //Setup parts for New Account
+            //--------------------------------------------------------------------------------------------------------//
+            
+            _partsUnlocks = new Dictionary<PART_TYPE, bool>();
+            var partsAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PartsUnlockedAtStart;
+            var implementedParts = FactoryManager.Instance.PartsRemoteData.partRemoteData
+                .Where(x => x.isImplemented)
+                .Select(x => x.partType);
+            
+            foreach (var partType in implementedParts)
+            {
+                if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                {
+                    _partsUnlocks.Add(partType, true);
+                    continue;
+                }
+                
+                _partsUnlocks.Add(partType, partsAtStart.Contains(partType));
+            }
+
+            //Setup Patches for new Account
+            //--------------------------------------------------------------------------------------------------------//
+
+            _patchUnlocks = new Dictionary<PatchData, bool>();
+            var patchesAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PatchesUnlockedAtStart;
+            var implementedPatches = FactoryManager.Instance.PatchRemoteData.patchRemoteData
+                .Where(x => x.isImplemented)
+                .SelectMany(x => x.Levels
+                    .Select(y => new PatchData
+                    {
+                        Type = (int)x.type,
+                        Level = y.level
+                    }))
+                .ToList();
+
+            foreach (var patchData in implementedPatches)
+            {
+                var patchType = (PATCH_TYPE) patchData.Type;
+                if (patchType == PATCH_TYPE.EMPTY)
+                {
+                    _patchUnlocks.Add(patchData, true);
+                    continue;
+                }
+                
+                _patchUnlocks.Add(patchData, patchesAtStart.Contains(patchData));
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+        }
+
+        #endregion //Constructor
+
         //Layout Coordinates
         //====================================================================================================================//
+
+        #region Layout Coordinates
+
         public BIT_TYPE GetCategoryAtCoordinate(in Vector2Int coordinate)
         {
             if (!BotLayout.TryGetValue(coordinate, out var bitType))
@@ -123,25 +203,27 @@ namespace StarSalvager.Values
                 .Key;
         }
 
+        #endregion //Layout Coordinates
+
         //Player XP
         //====================================================================================================================//
+
+        #region Player XP
+
         public int GetXPThisRun()
         {
             if (PlayerRunData == null) return 0;
             
-           return XP - PlayerRunData.XPAtRunBeginning;
+            return XP - PlayerRunData.XPAtRunBeginning;
         }
-        public void SetXP(in int value)
-        {
-            XP = value;
-        }
+
         public void AddXP(in int amount)
         {
-            //var startXP = XP;
-           // var changedXP = startXP + amount;
+            var startXP = XP;
+             var changedXP = startXP + amount;
 
-            //var startLevel = GetCurrentLevel(startXP);
-            //var newLevel = GetCurrentLevel(changedXP);
+            var startLevel = GetCurrentLevel(startXP);
+            var newLevel = GetCurrentLevel(changedXP);
             
             XP += amount;
             
@@ -151,8 +233,34 @@ namespace StarSalvager.Values
                 LevelManager.Instance.WaveEndSummaryData.AddXPGained(amount);
             }
 
-            //if (startLevel == newLevel)
-            //    return;
+            if (startLevel == newLevel)
+                return;
+
+            var startCount = startLevel + 1; 
+            for (var i = startCount; i <= newLevel; i++)
+            {
+                var unlocks = FactoryManager.Instance.PlayerLevelsRemoteData.GetUnlocksForLevel(i);
+                foreach (var unlockData in unlocks)
+                {
+                    switch (unlockData.Unlock)
+                    {
+                        case PlayerLevelRemoteData.UNLOCK_TYPE.PART:
+                            UnlockPart(unlockData.PartType);
+                            break;
+                        case PlayerLevelRemoteData.UNLOCK_TYPE.PATCH:
+                            UnlockPatch(new PatchData
+                            {
+                                Type = (int)unlockData.PatchType,
+                                Level = unlockData.Level
+                            });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    
+                    PlayerDataManager.OnItemUnlocked?.Invoke(unlockData);
+                }
+            }
 
             //var difference = newTotalLevels - totalLevels;
 
@@ -162,28 +270,23 @@ namespace StarSalvager.Values
         //XP Info Considerations: https://www.youtube.com/watch?v=MCPruAKSG0g
         //Alt option: https://gamedev.stackexchange.com/a/20946
         //Based on: https://gamedev.stackexchange.com/a/13639
-        public static int GetCurrentLevel(in int xp)
-        {
-            //level = constant * sqrt(XP)
-            //level = (sqrt(100(2experience+25))+50)/100
-            var baseXP = Globals.LevelBaseExperience;
+        public static int GetCurrentLevel(in int xp) => PlayerLevelsRemoteDataScriptableObject.GetCurrentLevel(xp);
 
-            return (int)(Mathf.Sqrt(baseXP * (2 * xp + 25)) + 50) / baseXP;
-        }
+        public static int GetExperienceReqForLevel(in int level) => PlayerLevelsRemoteDataScriptableObject.GetXPForLevel(level);
 
-        public static int GetExperienceReqForLevel(in int level)
-        {
-            //XP = (level / constant)^2
-            //experience =(level^2+level)/2*100-(level*100)
-            
-            var baseXP = Globals.LevelBaseExperience;
-
-            return Mathf.RoundToInt((Mathf.Pow(level, 2) + level) / 2 * baseXP - (level * baseXP));
-        }
+        #endregion //Player XP
 
         //Stars
         //====================================================================================================================//
 
+        #region Stars
+
+        public int GetStarsThisRun()
+        {
+            if (PlayerRunData == null) return 0;
+            
+            return Stars - PlayerRunData.StarsAtRunBeginning;
+        }
         public void SetStars(in int value)
         {
             Stars = value;
@@ -208,8 +311,51 @@ namespace StarSalvager.Values
             return true;
         }
 
+        #endregion //Stars
+
+        //Part Unlocks
+        //====================================================================================================================//
+
+        public bool IsPartUnlocked(in PART_TYPE partType)
+        {
+            if (!_partsUnlocks.TryGetValue(partType, out var unlocked))
+                throw new ArgumentOutOfRangeException($"{partType} not unlock option");
+
+            return unlocked;
+        }
+
+        public void UnlockPart(in PART_TYPE partType)
+        {
+            if (!_partsUnlocks.ContainsKey(partType))
+                throw new ArgumentOutOfRangeException($"{partType} not unlock option");
+
+            _partsUnlocks[partType] = true;
+        }
+        
+        //Patch Unlocks
+        //====================================================================================================================//
+
+        public bool IsPatchUnlocked(in PatchData patchData)
+        {
+            if (!_patchUnlocks.TryGetValue(patchData, out var unlocked))
+                throw new ArgumentOutOfRangeException($"{patchData} not unlock option");
+
+            return unlocked;
+        }
+
+        public void UnlockPatch(in PatchData patchData)
+        {
+            if (!_patchUnlocks.ContainsKey(patchData))
+                throw new ArgumentOutOfRangeException($"{patchData} not unlock option");
+
+            _patchUnlocks[patchData] = true;
+        }
+        
         //Upgrades
         //====================================================================================================================//
+
+        #region Upgrades
+
         public float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType)
         {
             var upg = upgradeType;
@@ -264,16 +410,36 @@ namespace StarSalvager.Values
             _upgrades[index] = upgradeData;
         }
 
+        #endregion //Upgrades
+
         //Hints
         //====================================================================================================================//
+
+        #region Hints
 
         public void SetHintDisplay(HINT hint, bool state)
         {
             _hintDisplay[hint] = state;
         }
+
+        #endregion //Hints
+        
         //Recording Data
         //====================================================================================================================//
 
+        #region Recording Data
+
+        public void RecordCombo(in ComboRecordData comboRecordData)
+        {
+            if (CombosMade.ContainsKey(comboRecordData))
+            {
+                CombosMade[comboRecordData]++;
+                return;
+            }
+            
+            CombosMade.Add(comboRecordData, 1);
+        }
+        
         public void RecordBitConnection(BIT_TYPE bit)
         {
             if (BitConnections.ContainsKey(bit))
@@ -296,39 +462,12 @@ namespace StarSalvager.Values
             EnemiesKilled[enemyId]++;
         }
 
+        #endregion //Recording Data
+
         //Player Run Data
         //====================================================================================================================//
-        [Obsolete()]
-        public void ResetPlayerRunData()
-        {
-            throw new NotImplementedException();
-            /*PlayerSaveRunData data = new PlayerSaveRunData()
-            {
-                PlaythroughID = Guid.NewGuid().ToString(),
-                runStarted = false,
-            };
 
-            //data.SetupMap(LevelRingConnectionsJson, WreckNodes);
-
-            XPAtRunBeginning = XP;
-            CoreDeathsAtRunBeginning = CoreDeaths;
-            BitConnectionsAtRunBeginning.Clear();
-            foreach (var keyValue in BitConnections)
-            {
-                BitConnectionsAtRunBeginning.Add(keyValue.Key, keyValue.Value);
-            }
-
-            EnemiesKilledAtRunBeginning.Clear();
-            foreach (var keyValue in EnemiesKilled)
-            {
-                EnemiesKilledAtRunBeginning.Add(keyValue.Key, keyValue.Value);
-            }
-
-            TotalRuns++;
-
-            PlayerDataManager.SetCanChoosePart(true);
-            PlayerDataManager.SavePlayerAccountData();*/
-        }
+        #region Player Run Data
 
         public void CompleteCurrentRun()
         {
@@ -347,9 +486,11 @@ namespace StarSalvager.Values
             var newPlayerRunData = new PlayerSaveRunData(
                 startingGears,
                 startingHealth,
+                Stars,
                 XP,
                 RepairsDone,
                 BitConnections,
+                CombosMade,
                 EnemiesKilled);
 
             TotalRuns++;
@@ -363,7 +504,12 @@ namespace StarSalvager.Values
             //PlayerRunData.SaveData();
         }
 
+        #endregion //Player Run Data
+
+        //Account Summary String
         //====================================================================================================================//
+
+        #region Account Summary String
 
         public string GetSummaryString()
         {
@@ -400,6 +546,8 @@ namespace StarSalvager.Values
 
             return summaryText;
         }
+
+        #endregion //Account Summary String
 
         //====================================================================================================================//
         
