@@ -85,6 +85,13 @@ namespace StarSalvager.Utilities.FileIO
 
         public const string SCRAPYARD_LAYOUT_FILE = "ScrapyardLayoutData.txt";
 
+        private static readonly JsonConverter[] CONVERTERS = {
+            new IBlockDataArrayConverter(),
+            new ComboRecordDataConverter(),
+            new EnumBoolDictionaryConverter<PART_TYPE>(),
+            new PatchDictionaryConverter()
+        };
+
 
         //Bot Shape Editor Remote Data
         //====================================================================================================================//
@@ -209,8 +216,7 @@ namespace StarSalvager.Utilities.FileIO
 
             var loaded = ImportJsonData<PlayerSaveAccountData>(
                 PlayerAccountSavePaths[saveSlotIndex],
-                new IBlockDataArrayConverter(),
-                new ComboRecordDataConverter());
+                CONVERTERS);
 
             /*if (loaded.PlayerRunData.PlaythroughID != "")
             {
@@ -229,8 +235,7 @@ namespace StarSalvager.Utilities.FileIO
 
             var export = ExportJsonData(playerSaveAccountData, 
                 PlayerAccountSavePaths[saveSlotIndex],
-                new IBlockDataArrayConverter(),
-                new ComboRecordDataConverter());
+                CONVERTERS);
 
             return export;
         }

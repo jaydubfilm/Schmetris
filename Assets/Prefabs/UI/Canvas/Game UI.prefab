@@ -9915,13 +9915,13 @@ MonoBehaviour:
     NAME: RIGHT [YELLOW]
   inputIcons:
   - NAME: Up[0]
-    keyboardSprite: {fileID: 21300000, guid: 18c3d1b669096984a9f4c2fbb88af95a, type: 3}
+    keyboardSprite: {fileID: 21300000, guid: 57b994860e8a98c45ac30c8ec298ee15, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 6b46abe21f945c54f8c62c4f4f2978cb,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: c92a3f64b637ef64db482ddac1b5e5ca,
       type: 3}
   - NAME: Down[1]
-    keyboardSprite: {fileID: 21300000, guid: 57b994860e8a98c45ac30c8ec298ee15, type: 3}
+    keyboardSprite: {fileID: 21300000, guid: 18c3d1b669096984a9f4c2fbb88af95a, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 6bbc26aec2ef7394e9c32ccecfc4926e,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: c4c4a6a848bec8947b83de6866ee65bd,

@@ -5,6 +5,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -68,6 +69,7 @@ namespace StarSalvager.Factories
         public void SelectPartOptions(ref PART_TYPE[] options, in PART_OPTION_TYPE partOptionType, in PART_TYPE[] currentParts)
         {
             var partTypes = new List<PART_TYPE>();
+            var currentPartsList = currentParts.ToList();
 
             switch (partOptionType)
             {
@@ -78,14 +80,17 @@ namespace StarSalvager.Factories
                 //    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
                 //    break;
                 case PART_OPTION_TYPE.Any:
-                    partTypes = new List<PART_TYPE>(remotePartData.AnyParts);
+                    partTypes = new List<PART_TYPE>(remotePartData.AnyParts)
+                        .Where(x => PlayerDataManager.IsPartUnlocked(x))
+                        .Where(x => !currentPartsList.Contains(x))
+                        .ToList();
                     break;
             }
 
-            foreach (var partType in currentParts)
+            /*foreach (var partType in currentParts)
             {
                 partTypes.Remove(partType);
-            }
+            }*/
 
             if (partTypes.IsNullOrEmpty())
                 throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
