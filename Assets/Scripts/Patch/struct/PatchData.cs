@@ -20,7 +20,7 @@ namespace StarSalvager
 
         public override string ToString()
         {
-            return $"{(PATCH_TYPE)Type} {Mathfx.ToRoman(Level)}";
+            return $"{(PATCH_TYPE)Type} {Mathfx.ToRoman(Level + 1)}";
         }
 
         #region IEquatable
