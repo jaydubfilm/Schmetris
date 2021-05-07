@@ -235,6 +235,11 @@ namespace StarSalvager
                 _sabreActive = false;
             }
 
+            if (_forceField)
+            {
+                _forceField.gameObject.SetActive(false);
+            }
+
         }
         //==============================================================================================================//
 
@@ -2514,6 +2519,11 @@ namespace StarSalvager
             {
                 Recycler.Recycle<Sabre>(_sabreObject);
                 _sabreObject = null;
+            }
+
+            if (_forceField != null)
+            {
+                Destroy(_forceField.gameObject);
             }
 
             /*if (!_boostEffects.IsNullOrEmpty())
