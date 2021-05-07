@@ -198,6 +198,11 @@ namespace StarSalvager
                 _sabreObject.SetActive(false);
                 _sabreActive = false;
             }
+
+            if (_forceField)
+            {
+                _forceField.gameObject.SetActive(false);
+            }
             
         }
         private void OnDisable()
@@ -2377,6 +2382,11 @@ namespace StarSalvager
             {
                 Recycler.Recycle<Sabre>(_sabreObject);
                 _sabreObject = null;
+            }
+
+            if (_forceField != null)
+            {
+                Destroy(_forceField.gameObject);
             }
             
             /*if (!_boostEffects.IsNullOrEmpty())
