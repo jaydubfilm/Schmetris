@@ -29,7 +29,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
         //Graph Functions
         //====================================================================================================================//
         
-        [MenuItem("Graph/Narrative Graph")]
+        [MenuItem("Graph/Patch Tree Graph")]
         public static void CreatePatchTreeWindow()
         {
             var window = GetWindow<PatchTreeWindow>();
@@ -57,11 +57,27 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             toolbar.Add(fileNameTextField);
 
             toolbar.Add(new Button(() => _graphView.CreateNewPatchNode("Dialogue Node")) {text = "New Node",});
-            toolbar.Add(new Button/*(() => RequestDataOperation(true))*/ {text = "Save Data"});
+            toolbar.Add(new Button(() => RequestDataOperation(true)) {text = "Save Data"});
 
-            toolbar.Add(new Button/*(() => RequestDataOperation(false))*/ {text = "Load Data"});
+            toolbar.Add(new Button(() => RequestDataOperation(false)) {text = "Load Data"});
             // toolbar.Add(new Button(() => _graphView.CreateNewDialogueNode("Dialogue Node")) {text = "New Node",});
             rootVisualElement.Add(toolbar);
+        }
+        
+        private void RequestDataOperation(bool save)
+        {
+            if (!string.IsNullOrEmpty(_fileName))
+            {
+                var saveUtility = PatchTreeSaveUtility.GetInstance(_graphView);
+                if (save)
+                    saveUtility.SaveGraph(_fileName);
+                else
+                    saveUtility.LoadNarrative(_fileName);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Invalid File name", "Please Enter a valid filename", "OK");
+            }
         }
 
         //====================================================================================================================//

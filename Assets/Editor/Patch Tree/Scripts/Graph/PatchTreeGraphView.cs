@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Editor.PatchTrees.Nodes;
+using StarSalvager.PatchTrees;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -50,44 +51,66 @@ namespace StarSalvager.Editor.PatchTrees.Graph
 
         public void CreateNewPatchNode(string nodeName)
         {
-            AddElement(CreatePatchNode(nodeName, new Vector2(100, 200)));
+            AddElement(CreateNode(nodeName, new Vector2(100, 200), 
+                new PatchNodeData
+                {
+                    GUID = Guid.NewGuid().ToString(),
+                    Type = (int)PATCH_TYPE.EMPTY,
+                    Tier = 1
+                }));
         }
         public void CreateNewPatchNode(string nodeName, Vector2 position)
         {
-            AddElement(CreatePatchNode(nodeName, position));
+            AddElement(CreateNode(nodeName, position, 
+                new PatchNodeData
+                {
+                    GUID = Guid.NewGuid().ToString(),
+                    Type = (int)PATCH_TYPE.EMPTY,
+                    Tier = 1
+                })
+            );
         }
 
-        public PatchNode CreatePatchNode(string nodeName, Vector2 position)
+        public Node CreateNode(string nodeName, Vector2 position, BaseNodeData nodeData)
         {
-            var tempDialogueNode = new PatchNode
+            BaseNode tempNode;
+
+            switch (nodeData)
             {
-                title = PATCH_TYPE.EMPTY.ToString(),
-                GUID = Guid.NewGuid().ToString(),
-                PatchType = PATCH_TYPE.EMPTY
-            };
+                case PartNodeData partNodeData:
+                    tempNode = new PartNode();
+                    tempNode.LoadFromNodeData(partNodeData);
+                    break;
+                case PatchNodeData patchNodeData:
+                    tempNode = new PatchNode();
+                    tempNode.LoadFromNodeData(patchNodeData);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             //--------------------------------------------------------------------------------------------------------//
             
-            tempDialogueNode.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
+            tempNode.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
             
-            var inputPort = GetPortInstance(tempDialogueNode, Direction.Input, Port.Capacity.Multi);
+            var inputPort = GetPortInstance(tempNode, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Pre Req";
-            var outputPort = GetPortInstance(tempDialogueNode, Direction.Output, Port.Capacity.Multi);
+            var outputPort = GetPortInstance(tempNode, Direction.Output, Port.Capacity.Multi);
             outputPort.portName = "Unlocks";
-            tempDialogueNode.inputContainer.Add(inputPort);
-            tempDialogueNode.inputContainer.Add(outputPort);
+            tempNode.inputContainer.Add(inputPort);
+            tempNode.inputContainer.Add(outputPort);
             
-            tempDialogueNode.RefreshExpandedState();
-            tempDialogueNode.RefreshPorts();
-            tempDialogueNode.SetPosition(new Rect(position, DefaultNodeSize)); //To-Do: implement screen center instantiation positioning
+            tempNode.RefreshExpandedState();
+            tempNode.RefreshPorts();
+            tempNode.SetPosition(new Rect(position, DefaultNodeSize)); //To-Do: implement screen center instantiation positioning
 
             //--------------------------------------------------------------------------------------------------------//
             var enumField = new EnumField("Patch Type", PATCH_TYPE.EMPTY);
             enumField.styleSheets.Add(Resources.Load<StyleSheet>("EnumField"));
-            tempDialogueNode.mainContainer.Add(enumField);
+            tempNode.mainContainer.Add(enumField);
             
-            tempDialogueNode.mainContainer.Add(CreateSliderField("Tier", 1 , 4));
-            tempDialogueNode.mainContainer.Add(CreateSliderField("Level", 1 , 4));
+            tempNode.mainContainer.Add(CreateSliderField("Tier", 1 , 4));
+            tempNode.mainContainer.Add(CreateSliderField("Level", 1 , 4));
             
             //--------------------------------------------------------------------------------------------------------//
             
@@ -110,7 +133,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
 
             //--------------------------------------------------------------------------------------------------------//
             
-            return tempDialogueNode;
+            return tempNode;
         }
         public void AddChoicePort(Node nodeCache, string overriddenPortName = "")
         {
