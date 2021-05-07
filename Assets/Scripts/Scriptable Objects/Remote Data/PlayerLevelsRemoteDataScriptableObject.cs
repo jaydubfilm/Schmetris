@@ -21,7 +21,12 @@ namespace StarSalvager.ScriptableObjects
         [FoldoutGroup("Starting Unlocks"), TitleGroup("Starting Unlocks/Parts"), SerializeField, ValueDropdown("GetImplementedParts", IsUniqueList = true)]
         private List<PART_TYPE> partsUnlockedAtStart;
 
-        public List<PatchData> PatchesUnlockedAtStart => patchesUnlockedAtStart;
+        public List<PatchData> PatchesUnlockedAtStart => patchesUnlockedAtStart
+            .Select(x => new PatchData
+        {
+            Type = x.Type,
+            Level = x.Level - 1
+        }).ToList();
         [FoldoutGroup("Starting Unlocks"), TitleGroup("Starting Unlocks/Patches"), SerializeField, TableList]
         private List<PatchData> patchesUnlockedAtStart;
 
@@ -56,6 +61,31 @@ namespace StarSalvager.ScriptableObjects
             }
 
             return unlockData;
+        }
+        
+        public IEnumerable<PlayerLevelRemoteData.UnlockData> GetUnlocksUpToLevel(in int level)
+        {
+            var outList = new List<PlayerLevelRemoteData.UnlockData>();
+
+            for (var i = 0; i <= level; i++)
+            {
+                if (i >= playerLevelRemoteDatas.Count)
+                    break;
+                outList.AddRange(playerLevelRemoteDatas[level].unlockData);
+            }
+
+            //Ensure that we lower the level to follow indexing rules
+            for (var i = 0; i < outList.Count; i++)
+            {
+                var data = outList[i];
+                if (data.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PART)
+                    continue;
+
+                data.Level--;
+                outList[i] = data;
+            }
+
+            return outList;
         }
 
         //Level XP Calculations

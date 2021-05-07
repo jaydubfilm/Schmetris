@@ -153,15 +153,7 @@ namespace StarSalvager.Values
 
             _patchUnlocks = new Dictionary<PatchData, bool>();
             var patchesAtStart = FactoryManager.Instance.PlayerLevelsRemoteData.PatchesUnlockedAtStart;
-            var implementedPatches = FactoryManager.Instance.PatchRemoteData.patchRemoteData
-                .Where(x => x.isImplemented)
-                .SelectMany(x => x.Levels
-                    .Select(y => new PatchData
-                    {
-                        Type = (int)x.type,
-                        Level = y.level - 1 
-                    }))
-                .ToList();
+            var implementedPatches = FactoryManager.Instance.PatchRemoteData.GetImplementedPatchData();
 
             foreach (var patchData in implementedPatches)
             {
@@ -499,12 +491,115 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
+        [Obsolete]
         public void SaveData()
         {
             //PlayerRunData.SaveData();
         }
 
         #endregion //Player Run Data
+
+        //Data Validation
+        //====================================================================================================================//
+
+        #region Data Validation
+
+        public void ValidateData()
+        {
+            ValidateUnlocks();
+            //TODO Validate equipped & stored parts
+            
+            //Ensure that if anything changed, we save it
+            PlayerDataManager.SavePlayerAccountData();
+        }
+
+        private void ValidateUnlocks()
+        {
+            var currentLevel = PlayerLevelsRemoteDataScriptableObject.GetCurrentLevel(XP);
+            var unlocksUpTo = FactoryManager.Instance.PlayerLevelsRemoteData.GetUnlocksUpToLevel(currentLevel).ToList();
+            
+            //Parts
+            //--------------------------------------------------------------------------------------------------------//
+
+            #region Parts
+
+            var implementedParts = FactoryManager.Instance.PartsRemoteData.partRemoteData
+                .Where(x => x.isImplemented)
+                .Select(x => x.partType)
+                .ToList();
+            //Create a list of all parts that should be unlocked by default, and up to this level
+            var partsUnlocked = new List<PART_TYPE>(FactoryManager.Instance.PlayerLevelsRemoteData.PartsUnlockedAtStart);
+            partsUnlocked.AddRange(unlocksUpTo
+                .Where(x => x.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PART)
+                .Select(x => x.PartType));
+
+            foreach (PART_TYPE partType in Enum.GetValues(typeof(PART_TYPE)))
+            {
+                //If the partType is neither implemented or added, we can move on
+                if (!implementedParts.Contains(partType) && !_partsUnlocks.ContainsKey(partType))
+                    continue;
+                
+                //If the part no longer is implemented, but is tracked, we must remove it from the list
+                if (!implementedParts.Contains(partType) && _partsUnlocks.ContainsKey(partType))
+                {
+                    _partsUnlocks.Remove(partType);
+                    continue;
+                }
+                
+                //If the part is implemented, but not yet tracked, ensure that its added and set to the correct value
+                if (implementedParts.Contains(partType) && !_partsUnlocks.ContainsKey(partType))
+                {
+                    _partsUnlocks.Add(partType, partsUnlocked.Contains(partType));
+                    continue;
+                }
+
+                //Ensure that if the part is implemented, and is already tracked, that the value is set correctly
+                if (implementedParts.Contains(partType) && _partsUnlocks.ContainsKey(partType))
+                    _partsUnlocks[partType] = partsUnlocked.Contains(partType);
+            }
+
+            #endregion //Parts
+
+            //Patches
+            //--------------------------------------------------------------------------------------------------------//
+
+            #region Patches
+
+            var implementedPatches = FactoryManager.Instance.PatchRemoteData.GetImplementedPatchData();
+
+            var patchesUnlocked =
+                new List<PatchData>(FactoryManager.Instance.PlayerLevelsRemoteData.PatchesUnlockedAtStart);
+            patchesUnlocked.AddRange(unlocksUpTo
+                .Where(x => x.Unlock == PlayerLevelRemoteData.UNLOCK_TYPE.PATCH)
+                .Select(x => new PatchData
+                {
+                    Type = (int)x.PatchType,
+                    Level = x.Level - 1
+                }));
+
+            foreach (var patchData in implementedPatches)
+            {
+                //FIXME There is no way of knowing which items to remove from the list without destroying the list
+                
+                //If the part is implemented, but not yet tracked, ensure that its added and set to the correct value
+                if (!_patchUnlocks.ContainsKey(patchData))
+                {
+                    _patchUnlocks.Add(patchData, patchesUnlocked.Contains(patchData));
+                    continue;
+                }
+
+                //Ensure that if the patch is implemented, and is already tracked, that the value is set correctly
+                if (_patchUnlocks.ContainsKey(patchData))
+                    _patchUnlocks[patchData] = patchesUnlocked.Contains(patchData);
+            }
+
+            #endregion //Patches
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+        }
+
+        #endregion //Data Validation
 
         //Account Summary String
         //====================================================================================================================//

@@ -90,6 +90,8 @@ namespace StarSalvager.ScriptableObjects
                 .FirstOrDefault(p => p.type == Type);
         }
 
+        //====================================================================================================================//
+        
         public PART_TYPE[] GetAllowedParts(in PATCH_TYPE patchType)
         {
             var patch = patchType;
@@ -158,6 +160,21 @@ namespace StarSalvager.ScriptableObjects
             }
 
             return allowed.Any(x => x.PartType == part);
+        }
+
+        //====================================================================================================================//
+
+        public IEnumerable<PatchData> GetImplementedPatchData()
+        {
+            return patchRemoteData
+                .Where(x => x.isImplemented)
+                .SelectMany(x => x.Levels
+                    .Select(y => new PatchData
+                    {
+                        Type = (int)x.type,
+                        Level = y.level - 1 
+                    }))
+                .ToList();
         }
 
         //Unity Editor

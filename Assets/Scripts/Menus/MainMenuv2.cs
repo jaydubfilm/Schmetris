@@ -296,6 +296,7 @@ namespace StarSalvager.UI
                 {
                     _selectedAccountIndex = index;
                     PlayerDataManager.SetCurrentSaveSlotIndex(index);
+                    PlayerDataManager.ValidateData();
                     SetupAccountMenuWindow();
                     OpenWindow(WINDOW.ACCOUNT_MENU);
                     GameManager.SetCurrentGameState(GameState.AccountMenu);

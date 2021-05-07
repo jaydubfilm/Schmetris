@@ -558,6 +558,15 @@ namespace StarSalvager.Utilities.Saving
 
         #endregion //Hints
 
+        //Data Validation
+        //====================================================================================================================//
+        
+        #region Data Validation
+
+        public static void ValidateData() => PlayerAccountData.ValidateData();
+        
+        #endregion //Data Validation
+
         //Misc Functions
         //====================================================================================================================//
 
