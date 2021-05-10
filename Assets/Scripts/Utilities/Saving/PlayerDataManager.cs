@@ -196,7 +196,7 @@ namespace StarSalvager.Utilities.Saving
 
             var bitsToRemove = droneBlockData
                 .OfType<BitData>()
-                .Where(x => x.Level < removeBelowLevel)
+                .Where(x => x.Level < removeBelowLevel && x.Type != (int)BIT_TYPE.WHITE)
                 .OrderBy(x => x.Coordinate.magnitude)
                 .ToList();
 

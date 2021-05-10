@@ -28,9 +28,9 @@ namespace StarSalvager.Values
             {
                 [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
                 [new Vector2Int(1, 0)] = BIT_TYPE.RED,
-                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
-                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
-                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
+                [new Vector2Int(0, 1)] = BIT_TYPE.YELLOW,
+                [new Vector2Int(-1, 0)] = BIT_TYPE.BLUE,
+                [new Vector2Int(0, -1)] = BIT_TYPE.GREY
             };
         
         //Properties
