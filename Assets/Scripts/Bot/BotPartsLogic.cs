@@ -12,9 +12,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Cameras;
 using StarSalvager.Parts.Data;
+using StarSalvager.Projectiles;
+using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
 using Random = UnityEngine.Random;
@@ -37,6 +42,8 @@ namespace StarSalvager
         }
 
         private static PART_TYPE[] _triggerPartTypes;
+
+        private readonly bool[] _triggerPartStates = new bool[5];
         
         #region Properties
 
@@ -110,7 +117,6 @@ namespace StarSalvager
 
         private Dictionary<Part, float> _repairTimers;
         private Dictionary<Part, float> _shieldTimers;
-        //private Dictionary<Part, float> _vampireTimers;
 
         private Dictionary<Part, Asteroid> _asteroidTargets;
         private Dictionary<Part, SpaceJunk> _spaceJunkTargets;
@@ -127,6 +133,22 @@ namespace StarSalvager
         private Sabre _sabreObject;
         private Dictionary<Part, float> _sabreTimers;
 
+        //Grenade Properties
+        //====================================================================================================================//
+        
+
+        [SerializeField] 
+        private Sprite reticleSprite;
+        
+        private float _chargeSpeed;
+
+        private float _reticleDist;
+        private Transform _reticle;
+        
+        private bool _grenadeCharging;
+        private bool _grenadeTriggered;
+        private float _yScreenTop;
+
 
         //Heal Cooldown Timer
         //====================================================================================================================//
@@ -138,13 +160,28 @@ namespace StarSalvager
             _healWaitTimer = Globals.BotHealWaitTime;
         }
 
+        //Force Field Properties
+        //====================================================================================================================//
+        
+        private float _forceFieldHealWaitTimer;
+
+        public void ResetForceFieldHealCooldown()
+        {
+            var cooldown = PART_TYPE.FORCE_FIELD.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Cooldown);
+            _forceFieldHealWaitTimer = cooldown;
+        }
+
         #endregion //Properties
 
         //Unity Functions
         //==============================================================================================================//
 
         #region Unity Functions
-
+        private void OnEnable()
+        {
+            InputManager.TriggerWeaponStateChange += TriggerWeaponStateChange;
+        }
+        
         private void Start()
         {
             _partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
@@ -161,10 +198,20 @@ namespace StarSalvager
                 _sabreObject.SetActive(false);
                 _sabreActive = false;
             }
+
+            if (_forceField)
+            {
+                _forceField.gameObject.SetActive(false);
+            }
             
+        }
+        private void OnDisable()
+        {
+            InputManager.TriggerWeaponStateChange -= TriggerWeaponStateChange;
         }
 
         #endregion //Unity Functions
+
 
         //Init Parts
         //====================================================================================================================//
@@ -271,7 +318,7 @@ namespace StarSalvager
                 {
                     case PART_TYPE.CORE:
                         var magnetAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Magnet);
-                        var capacityAmount = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Capacity);
+                        var capacityAmount = (int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.AMMO_CAPACITY);
 
                         MagnetCount = magnetAmount;
 
@@ -342,6 +389,14 @@ namespace StarSalvager
                         
                         _sabreTimers.Add(part, 0f);                        
                         break;
+                    case PART_TYPE.FORCE_FIELD:
+                        //TODO Try Create the force field object
+                        if (_forceField == null)
+                        {
+                            SetupForceField(part, partRemoteData);
+                        }
+                        
+                        break;
                 }
             }
 
@@ -399,7 +454,8 @@ namespace StarSalvager
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
-                        BlasterUpdate(part, partRemoteData, deltaTime);
+                        //BlasterUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SNIPER:
@@ -426,7 +482,23 @@ namespace StarSalvager
                     case PART_TYPE.SABRE:
                         SabreUpdate(part, partRemoteData, deltaTime);
                         break;
+                    //--------------------------------------------------------------------------------------------------------//
+                    case PART_TYPE.RAILGUN:
+                        UpdateFireLine(part, partRemoteData);
+                        break;
+                    case PART_TYPE.FORCE_FIELD:
+                        ForceFieldUpdate(part, partRemoteData, deltaTime);
+                        break;
+                    //--------------------------------------------------------------------------------------------------------//
                 }
+            }
+
+            for (var i = 0; i < _triggerPartStates.Length; i++)
+            {
+                if(_triggerPartStates[i] == false)
+                    continue;
+                
+                TryTriggerPart(i);
             }
 
             foreach (var triggerPart in _triggerParts)
@@ -560,11 +632,6 @@ namespace StarSalvager
 
         private void HealUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            /*if (_healActiveTimer <= 0)
-            {
-                return;
-            }
-            _healActiveTimer -= Time.deltaTime;*/
 
             if (_healWaitTimer > 0f)
             {
@@ -654,7 +721,47 @@ namespace StarSalvager
             _sabreObject.SetTransform(pos, dir);
         }
 
-        private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        private void ForceFieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        {
+            _forceField.transform.rotation = bot.transform.rotation;
+            _forceField.transform.position = bot.transform.position;
+            
+            if (_forceFieldHealWaitTimer > 0f)
+            {
+                _forceFieldHealWaitTimer -= deltaTime;
+                return;
+            }
+            
+            
+            var repairTarget = _forceField;
+
+            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
+            {
+                return;
+            }
+            
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var ammoCost = partRemoteData.ammoUseCost;
+
+            if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
+                throw new ArgumentOutOfRangeException();
+
+            var cost = ammoCost * Time.deltaTime;
+            
+            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
+            
+            if (ammoResource.Ammo < cost)
+                return;
+            
+            ammoResource.SubtractAmmo(cost);
+            
+            var heal = healAmount * deltaTime;
+            repairTarget.ChangeHealth(heal);
+        }
+
+        /*private void BlasterUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //--------------------------------------------------------------------------------------------//
             if (_projectileTimers == null)
@@ -698,7 +805,7 @@ namespace StarSalvager
             //TODO Create projectile shooting at new target
 
             CreateProjectile(part, partRemoteData, asteroid, "Asteroid");
-        }
+        }*/
 
         private void GunUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
@@ -754,7 +861,7 @@ namespace StarSalvager
             
             //TODO: Make us able to pass multiple tags so a shot can hit multiple types of targets
             CollidableBase fireTarget = EnemyManager.GetClosestEnemy(part.transform.position, range);
-            var tag = "Enemy";
+            var tag = TagsHelper.ENEMY;
             //TODO Determine if this fires at all times or just when there are active enemies in range
             if (fireTarget == null)
             {
@@ -763,9 +870,10 @@ namespace StarSalvager
                 {
                     return;
                 }
-                else if (fireTarget is SpaceJunk)
+
+                if (fireTarget is SpaceJunk)
                 {
-                    tag = "Space Junk";
+                    tag = TagsHelper.SPACE_JUNK;
                 }
             }
 
@@ -836,13 +944,15 @@ namespace StarSalvager
             if (timer <= 0f)
                 return;
 
-            //Wait for the shield to be inactive before the cooldown can begin
-            if (part.Type == PART_TYPE.SHIELD && _shieldActive)
-                return;
-            
-            if (part.Type == PART_TYPE.SABRE && _sabreActive)
-                return;
-            
+            switch (part.Type)
+            {
+                //Wait for the shield to be inactive before the cooldown can begin
+                case PART_TYPE.SHIELD when _shieldActive:
+                case PART_TYPE.SABRE when _sabreActive:
+                case PART_TYPE.GRENADE when _grenadeCharging:
+                    return;
+            }
+
             //Find the index of the ui element to show cooldown
             var tempPart = part;
             //FIXME Ew...
@@ -910,7 +1020,7 @@ namespace StarSalvager
             }
         }
 
-        private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, string collisionTag = "Enemy")
+        private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, params string[] collisionTags)
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
@@ -918,16 +1028,8 @@ namespace StarSalvager
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
-            //var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
             
-            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
-                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
-
-            /*if ((part.Type == PART_TYPE.GUN || part.Type == PART_TYPE.SNIPER) &&
-                HasPartGrade(part, partRemoteData, out var multiplier))
-            {
-                damage *= multiplier;
-            }*/
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
 
 
             var position = bot.transform.position;
@@ -957,7 +1059,7 @@ namespace StarSalvager
                     shootDirection,
                     damage,
                     rangeBoost,
-                    collisionTag,
+                    collisionTags,
                     vampireCaster,
                     vampirism,
                     true);
@@ -975,7 +1077,7 @@ namespace StarSalvager
                     targetVelocity = Vector3.zero;
                     break;
             }
-            var projectileProfile = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileProfile = ProjectileFactory.GetProfile(projectileId);
             
             var totarget = target.Position - partPosition;
 
@@ -1004,17 +1106,19 @@ namespace StarSalvager
 
             var aimSpot = target.Position + targetVelocity * t;
             var bulletPath = aimSpot - partPosition;
-            
+
+#if UNITY_EDITOR
             Debug.DrawRay(partPosition, totarget.normalized * 10, Color.yellow, 1f);
             Debug.DrawRay(partPosition, bulletPath.normalized * 10, Color.green, 1f);
-            //Debug.Break();
+#endif
+
 
             return bulletPath;
         }
 
         private float GetProjectileRange(in Part part, in string projectileID)
         {
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileID);
+            var projectileData = ProjectileFactory.GetProfile(projectileID);
 
             var range = projectileData.ProjectileRange;
 
@@ -1034,7 +1138,7 @@ namespace StarSalvager
             if (!partRemoteData.TryGetValue<string>(PartProperties.KEYS.Projectile, out var projectileId))
                 return false;
             
-            var projectileData = FactoryManager.Instance.GetFactory<ProjectileFactory>().GetProfileData(projectileId);
+            var projectileData = ProjectileFactory.GetProfile(projectileId);
 
             return !(projectileData is null) && projectileData.FireAtTarget;
         }
@@ -1045,11 +1149,20 @@ namespace StarSalvager
 
         #region Trigger Parts
 
+        private void TriggerWeaponStateChange(int index, bool state)
+        {
+            //Checks to see if the button went from Pressed to Depressed :(
+            if (state == false && _triggerPartStates[index])
+                TriggerPartDepressed(index);
+            
+            _triggerPartStates[index] = state;
+        }
+
         /// <summary>
         /// This should use values similar to an array (ie. starts at [0])
         /// </summary>
         /// <param name="index"></param>
-        public void TryTriggerPart(in int index)
+        private void TryTriggerPart(in int index)
         {
             Part GetPart(in BIT_TYPE type)
             {
@@ -1063,31 +1176,14 @@ namespace StarSalvager
             var bitType = Constants.BIT_ORDER[index];
             var part = GetPart(bitType);
 
-            /*switch (index)
-            {
-                case 0: //Blue, West
-                    part = GetPart(BIT_TYPE.RED);
-                    break;
-                case 1: //Red, South
-                    part =  GetPart(BIT_TYPE.YELLOW);
-                    break;
-                case 2: //Grey, North
-                    part =  GetPart(BIT_TYPE.GREY);
-                    break;
-                case 3: //Yellow, East
-                    part =  GetPart(BIT_TYPE.BLUE);
-                    break;
-            }*/
-
             if (part is null)
                 return;
             
-            //var part = _triggerParts[index];
-
             switch (part.Type)
             {
-                case PART_TYPE.BOMB:
-                    TriggerBomb(part);
+                
+                case PART_TYPE.GRENADE:
+                    TriggerGrenade(part, true);
                     break;
                 case PART_TYPE.FREEZE:
                     TriggerFreeze(part);
@@ -1116,6 +1212,52 @@ namespace StarSalvager
                 case PART_TYPE.SABRE:
                     TriggerSabre(part);
                     break;
+                case PART_TYPE.BLASTER:
+                    TriggerBlaster(part);
+                    break;
+                case PART_TYPE.BLITZ:
+                    TriggerBlitz(part);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
+            }
+        }
+        
+        private void TriggerPartDepressed(in int index)
+        {
+            Part GetPart(in BIT_TYPE type)
+            {
+                var temp = type;
+                return _triggerParts.FirstOrDefault(x => x.category == temp);
+            }
+            
+            if (_triggerParts == null || _triggerParts.Count == 0)
+                return;
+
+            var bitType = Constants.BIT_ORDER[index];
+            var part = GetPart(bitType);
+
+            if (part is null)
+                return;
+            
+            switch (part.Type)
+            {
+                case PART_TYPE.GRENADE:
+                    //TriggerBomb(part);
+                    TriggerGrenade(part, false);
+                    break;
+                case PART_TYPE.FREEZE:
+                case PART_TYPE.SHIELD:
+                case PART_TYPE.RAILGUN:
+                case PART_TYPE.TRACTOR:
+                case PART_TYPE.HEAL:
+                case PART_TYPE.DECOY:
+                case PART_TYPE.BITSPLOSION:
+                case PART_TYPE.HOOVER:
+                case PART_TYPE.SABRE:
+                case PART_TYPE.BLASTER:
+                case PART_TYPE.BLITZ:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Part.Type), _triggerParts[index].Type, null);
             }
@@ -1137,9 +1279,7 @@ namespace StarSalvager
                 return false;
             }
 
-            partRemoteData = FactoryManager.Instance
-                .GetFactory<PartAttachableFactory>()
-                .GetRemoteData(part.Type);
+            partRemoteData = part.Type.GetRemoteData();
             
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
             {
@@ -1165,29 +1305,88 @@ namespace StarSalvager
             return true;
         }
         
-        private void TriggerBomb(in Part part)
+        private void TriggerGrenade(in Part part, in bool pressedState)
         {
-            if (!CanUseTriggerPart(part, out var partRemoteData))
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            void TriggerGrenadeLaunch()
+            {
+                var partRemoteData = PART_TYPE.GRENADE.GetRemoteData();
+
+                var botPosition = bot.transform.position;
+                var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+                var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+                var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
+
+                var grenade = FactoryManager.Instance.
+                    GetFactory<ProjectileFactory>()
+                    .CreateGrenadeProjectile(botPosition, Quaternion.identity);
+                
+                grenade.Init(botPosition,
+                    botPosition + (Vector3.up * _reticleDist),speed, damage, radius);
+
+                _grenadeTriggered = true;
+                Destroy(_reticle.gameObject);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            //If the player continues to hold the button, even though this has already been triggered
+            if (pressedState && _grenadeTriggered)
+                return;
+            
+            //If the player just pressed the button, subtract the cost of trigger
+            //This should only trigger on the first initial press of the button.
+            if(pressedState && !_grenadeCharging && !_grenadeTriggered)
+            {
+                if (!CanUseTriggerPart(part, out _))
+                    return;
+
+                var reticleSpriteRenderer =
+                    FactoryManager.Instance.GetFactory<EffectFactory>().CreateSimpleSpriteRenderer();
+                reticleSpriteRenderer.sprite = reticleSprite;
+                
+                _chargeSpeed = PART_TYPE.GRENADE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Charge);
+                _reticle = reticleSpriteRenderer.transform;
+                _grenadeCharging = true;
+
+                _yScreenTop = CameraController.VisibleCameraRect.yMax;
+                
+                //Wanted to set a min Dist
+                _reticleDist = 2;
+            }
+
+            //This is a cooldown safeguard, where _bombCharging can only be enabled when CanUseTriggerPart() is true
+            if (_grenadeCharging == false)
                 return;
 
-            //Damage all the enemies
-            if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
-                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
-            
-            if(!partRemoteData.TryGetValue(PartProperties.KEYS.Radius, out int radius))
-                throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
-
-            var enemies = EnemyManager.GetEnemiesInRange(part.transform.position, radius);
-            foreach (var enemy in enemies)
+            //Execute on the frames where the button has been pressed
+            if (pressedState)
             {
-                enemy.TryHitAt(enemy.transform.position, damage);
+                _reticleDist += _chargeSpeed * Time.deltaTime;
+                //Position should always be relative to the bot
+                var newPosition = bot.transform.position + (Vector3.up * _reticleDist);
+
+                //See if the Grenade waited too long, Force launch
+                if (newPosition.y >= _yScreenTop)
+                {
+                    Debug.Log("Forced Launch Grenade");
+                    TriggerGrenadeLaunch();
+                    return;
+                }
+                
+                _reticle.position = newPosition;
             }
-            
-            //EnemyManager.DamageAllEnemies(damage);
-
-            CreateBombEffect(part, radius * 2);
-
-            AudioController.PlaySound(SOUND.BOMB_BLAST);
+            else
+            {
+                if(!_grenadeTriggered)
+                    TriggerGrenadeLaunch();
+                
+                _grenadeCharging = false;
+                _grenadeTriggered = false;
+                _reticleDist = 0;
+            }
         }
 
         private void TriggerFreeze(in Part part)
@@ -1265,14 +1464,44 @@ namespace StarSalvager
 
         private void TriggerRailgun(in Part part)
         {
+            const float WIDTH = 5f;
+            const float LENGTH = 50f;
+            const float TIME = 0.4f;
+
             if (bot.Rotating)
                 return;
-            
+
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
             //--------------------------------------------------------------------------------------------------------//
+            var startPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
 
-            CreateProjectile(part, partRemoteData, null);
+            var direction = Vector3.up;
+
+            var lineShrink = FactoryManager.Instance
+                .GetFactory<EffectFactory>()
+                .CreateObject<LineShrink>();
+
+            lineShrink.Init(startPosition, startPosition + direction * LENGTH, WIDTH, TIME);
+
+            AudioController.PlaySound(SOUND.BIT_EXPLODE);
+
+            bot.cinemachineImpulseSource.GenerateImpulse(Random.Range(1f, 2f));
+            GameUI.FlashNeonBorder(Random.Range(TIME,  TIME * 2f));
+
+            var currentPos = startPosition + direction * (LENGTH / 2f);
+            var size = new Vector2(WIDTH, LENGTH);
+            var enemies = EnemyManager.GetEnemiesInBounds(new Bounds(currentPos, size));
+
+            if (enemies.Count <= 0)
+                return;
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
 
         }
 
@@ -1516,6 +1745,64 @@ namespace StarSalvager
 
         }
 
+        //[SerializeField]
+        //private BlasterProjectile blasterProjectilePrefab;
+        private void TriggerBlaster(in Part part)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            BlasterProjectile CreateBlasterEffect()
+            {
+                return FactoryManager.Instance
+                    .GetFactory<EffectFactory>()
+                    .CreateEffect(EffectFactory.EFFECT.CURVE_LINE)
+                    .GetComponent<BlasterProjectile>();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var fromPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
+
+            var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+            var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+            var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            
+            var rot = part.transform.eulerAngles.z + 180;
+            
+            var blasterProjectile = CreateBlasterEffect();
+            blasterProjectile.transform.position = fromPosition;
+            blasterProjectile.Init(rot, degrees, range, fireTime);
+
+            var dotThreshold = 1f / (180 / degrees);
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.right.normalized, dotThreshold);
+            foreach (var enemy in enemies)
+            {
+                enemy.TryHitAt(enemy.Position, damage);
+            }
+            
+        }
+        
+        private void TriggerBlitz(in Part part)
+        {
+
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var fromPosition = Globals.UseCenterFiring ? bot.transform.position : part.Position;
+
+            var projectile = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
+            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            
+            CreateProjectile(part, partRemoteData, null, TagsHelper.ENEMY, TagsHelper.ASTEROID);
+
+            
+        }
+
         #endregion
 
         //============================================================================================================//
@@ -1538,7 +1825,7 @@ namespace StarSalvager
             if (armors.IsNullOrEmpty())
                 return false;
             
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(PART_TYPE.ARMOR);
+            var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
 
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
@@ -1550,7 +1837,26 @@ namespace StarSalvager
             return true;
         }
 
-        #endregion 
+        #endregion
+
+        #region Force Field
+
+        [SerializeField, Required]
+        private ForceField forceFieldPrefab;
+        private ForceField _forceField;
+
+        private void SetupForceField(in Part part, in PartRemoteData partRemoteData)
+        {
+            var angle = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
+            var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
+            var health = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Health);
+                            
+            _forceField = Instantiate(forceFieldPrefab, bot.transform.position, Quaternion.identity);
+            _forceField.Init(this, 90,angle, radius);
+            _forceField.SetupHealthValues(health, health);
+        }
+        
+        #endregion //Force Field
 
         //Find Bits/Values to burn
         //============================================================================================================//
@@ -1754,7 +2060,10 @@ namespace StarSalvager
 
         private bool CanAffordAmmo(in Part part, in PartRemoteData partRemoteData, out float ammoCost, float additional = 1f)
         {
-            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY);
+            var ammoMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.EFFICIENCY) *
+                                 PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY,
+                                     part.category);
+            
             var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
             var currentAmmo = ammoResource.Ammo;
             ammoCost = partRemoteData.ammoUseCost * ammoMultiplier * additional;
@@ -1919,8 +2228,7 @@ namespace StarSalvager
                 return _flashes[part];
 
             
-            var burnType = FactoryManager.Instance.PartsRemoteData.GetRemoteData(part.Type).category;
-            var bitColor = burnType.GetColor();
+            var bitColor = part.Type.GetCategory().GetColor();
 
             var flash = FlashSprite.Create(part.transform, Vector3.zero, bitColor);
 
@@ -2075,6 +2383,11 @@ namespace StarSalvager
                 Recycler.Recycle<Sabre>(_sabreObject);
                 _sabreObject = null;
             }
+
+            if (_forceField != null)
+            {
+                Destroy(_forceField.gameObject);
+            }
             
             /*if (!_boostEffects.IsNullOrEmpty())
             {
@@ -2110,22 +2423,11 @@ namespace StarSalvager
 
         #endregion //Effects
 
-
+        //Fireline
+        //====================================================================================================================//
+        
         private void InitFireLine(in Part part, in PartRemoteData partRemoteData)
         {
-            //--------------------------------------------------------------------------------------------------------//
-            
-            Vector3 GetAsPoint(in float degrees, in float range = 1f)
-            {
-                var radians = degrees * Mathf.Deg2Rad;
-
-                var x = Mathf.Cos(radians);
-                var y = Mathf.Sin(radians);
-                return new Vector3(x, y, 0) * range; //Vector2 is fine, if you're in 2D
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-
             var firePosition = Globals.UseCenterFiring ? Vector3.zero : part.transform.localPosition;
             
             var loop = false;
@@ -2134,7 +2436,9 @@ namespace StarSalvager
             
             switch (part.Type)
             {
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
+                    fireLineRenderer.gameObject.SetActive(false);
                     return;
                 case PART_TYPE.GUN:
                 {
@@ -2147,7 +2451,7 @@ namespace StarSalvager
 
                     for (var i = 0; i < slices; i++)
                     {
-                        var point = firePosition + GetAsPoint(i * degree, range);
+                        var point = firePosition + (Vector3)Mathfx.GetAsPointOnCircle(i * degree, range);
                         pointList.Add(point);
                     }
 
@@ -2158,7 +2462,7 @@ namespace StarSalvager
                 case PART_TYPE.BLASTER:
                 {
                     //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
-                    var rot = part.transform.eulerAngles.z + 90;
+                    var rot = part.transform.eulerAngles.z + 180;
                     
                     var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
                     var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
@@ -2168,9 +2472,9 @@ namespace StarSalvager
 
                     points = new[]
                     {
-                        GetAsPoint(leftDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(leftDeg, range),
                         firePosition,
-                        GetAsPoint(rightDeg, range),
+                        (Vector3)Mathfx.GetAsPointOnCircle(rightDeg, range),
                     };
                     break;
                 }
@@ -2185,6 +2489,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException();
             }
             
+            fireLineRenderer.gameObject.SetActive(true);
             fireLineRenderer.loop = loop;
             fireLineRenderer.useWorldSpace = worldSpace;
             fireLineRenderer.positionCount = points.Length;
@@ -2195,14 +2500,14 @@ namespace StarSalvager
         {
             switch (part.Type)
             {
+                case PART_TYPE.BLASTER:
+                case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
                     return;
                 case PART_TYPE.GUN:
                 case PART_TYPE.RAILGUN:
                     fireLineRenderer.transform.rotation = Quaternion.identity;
                     break;
-                case PART_TYPE.BLASTER:
-                    throw new NotImplementedException();
                 default:
                     throw new ArgumentOutOfRangeException();
             }

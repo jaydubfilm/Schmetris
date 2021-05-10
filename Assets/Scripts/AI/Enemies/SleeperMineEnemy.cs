@@ -5,6 +5,7 @@ using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
@@ -149,7 +150,7 @@ namespace StarSalvager.AI
 
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
         {
-            if (!gameObject.CompareTag("Player"))
+            if (!gameObject.CompareTag(TagsHelper.PLAYER))
                 return;
 
             collider.enabled = false;
@@ -173,15 +174,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            DropLoot();
-            
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            SetState(STATE.ATTACK);
+            KillEnemy(STATE.ATTACK);
         }
 
         #endregion //IHealth Override

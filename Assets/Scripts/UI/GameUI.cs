@@ -5,6 +5,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
@@ -343,11 +344,15 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+
             Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += ValuesUpdated;
+            PlayerDataManager.OnItemUnlocked += UnlockItem;
         }
 
         private void OnDisable()
@@ -356,6 +361,7 @@ namespace StarSalvager.UI
 
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
+            PlayerDataManager.OnItemUnlocked -= UnlockItem;
         }
 
         #endregion //Unity Functions
@@ -414,7 +420,7 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
 
             UpdateAmmoSliders();
         }
@@ -523,9 +529,25 @@ namespace StarSalvager.UI
 
         #region Update UI
 
+        private void UnlockItem(PlayerLevelRemoteData.UnlockData unlockData)
+        {
+            switch (unlockData.Unlock)
+            {
+                case PlayerLevelRemoteData.UNLOCK_TYPE.PART:
+                    Debug.Log($"Unlocked {unlockData.PartType}");
+                    break;
+                case PlayerLevelRemoteData.UNLOCK_TYPE.PATCH:
+                    Debug.Log($"Unlocked {unlockData.PatchType} {Mathfx.ToRoman(unlockData.Level)}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+        }
+
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetComponents());
+            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
             //SetPlayerXP(PlayerDataManager.get);
 
@@ -585,12 +607,14 @@ namespace StarSalvager.UI
         [Button, DisableIf("_flashingBorder"), DisableInEditorMode, FoldoutGroup("Extras/Neon Border")]
         public void FlashNeonBorder()
         {
+            FlashNeonBorder(Random.Range(flashTimeRange.x, flashTimeRange.y));
+        }
+        public void FlashNeonBorder(in float time)
+        {
             if (_flashingBorder)
                 return;
 
             _flashingBorder = true;
-
-            var time = Random.Range(flashTimeRange.x, flashTimeRange.y);
 
             StartCoroutine(NeonBorderFlashingCoroutine(time));
         }
@@ -672,10 +696,10 @@ namespace StarSalvager.UI
                 return;
             }
 
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
+            var partRemoteData = partType.GetRemoteData();
 
             var isTrigger = partRemoteData.isManual;
-            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+            var sprite = partType.GetSprite();
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);
@@ -1045,7 +1069,8 @@ namespace StarSalvager.UI
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
-                trans.localPosition = startPosition + Random.insideUnitCircle * radius;
+                //Changed: https://trello.com/c/65Xj4DlA/1469-ammo-graphic-shouldnt-obscur-upgrade
+                trans.localPosition = startPosition + Random.insideUnitCircle.normalized * radius;
                 transforms[i] = trans;
 
                 rotateDirection[i] = Random.value > 0.5f;

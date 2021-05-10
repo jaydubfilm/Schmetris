@@ -5,6 +5,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.Utilities.Extensions
 {
@@ -34,7 +35,7 @@ namespace StarSalvager.Utilities.Extensions
         
         public static string GetPartDetails(this PartData partData)
         {
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
+            var partRemoteData = ((PART_TYPE) partData.Type).GetRemoteData();
             return partData.GetPartDetails(partRemoteData);
         }
         
@@ -45,8 +46,6 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.RANGE,
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
-
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
 
             var partProperties = new []
             {
@@ -64,12 +63,13 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
-                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
+            if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
+                outList.Add(new PartDetail("Ammo", 
+                    partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category)));
             
             foreach (var property in partProperties)
             {
-                if (!partRemote.TryGetValue(property, out var value))
+                if (!partRemoteData.TryGetValue(property, out var value))
                     continue;
 
                 var propertyName = PartProperties.GetPropertyName(property);
@@ -116,53 +116,13 @@ namespace StarSalvager.Utilities.Extensions
                 outList.Add(partDetail);
             }
 
-            /*var modifiers = new[]
-            {
-                partRemote.TryGetValue(PartProperties.KEYS.Damage, out float damage),
-                partRemote.TryGetValue(PartProperties.KEYS.Cooldown, out float cooldown),
-                partRemote.TryGetValue(PartProperties.KEYS.Radius, out int range),
-                partRemote.TryGetValue(PartProperties.KEYS.Projectile, out string projectileID),
-                partRemote.TryGetValue(PartProperties.KEYS.Speed, out float speed),
-                partRemote.TryGetValue(PartProperties.KEYS.Heal, out float heal),
-                partRemote.TryGetValue(PartProperties.KEYS.Health, out float Health),
-            };
-
-            //var outList = new List<PartDetail>();
-
-            if (modifiers[0])
-                outList.Add(new PartDetail("Damage", damage * multipliers[PATCH_TYPE.POWER]));
-
-            if (partRemote.ammoUseCost > 0)
-                outList.Add(new PartDetail("Ammo", partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY]));
-
-            if (modifiers[1])
-                outList.Add(new PartDetail("Cooldown", cooldown * multipliers[PATCH_TYPE.FIRE_RATE]));
-
-            if (modifiers[2])
-            {
-                outList.Add(new PartDetail("Range", range * multipliers[PATCH_TYPE.RANGE]));
-            }
-            else if (modifiers[3])
-            {
-                var projectileRange = FactoryManager.Instance.ProjectileProfile
-                    .GetProjectileProfileData(projectileID).ProjectileRange;
-
-                outList.Add(new PartDetail("Range", projectileRange * multipliers[PATCH_TYPE.RANGE]));
-            }
-
-            if (modifiers[4])
-                outList.Add(new PartDetail("Speed", speed));
-
-            if (modifiers[5])
-                outList.Add(new PartDetail("Heal", heal));*/
-
             return string.Join("\n", outList.Select(x => x.ToString()));
         }
 
 
         public static string GetPartDetailsPatchPreview(this PartData partData, in PatchData patchToPreview)
         {
-            var partRemoteData = FactoryManager.Instance.PartsRemoteData.GetRemoteData((PART_TYPE) partData.Type);
+            var partRemoteData = ((PART_TYPE) partData.Type).GetRemoteData();
             return partData.GetPartDetailsPatchPreview(partRemoteData, patchToPreview);
         }
         
@@ -186,7 +146,7 @@ namespace StarSalvager.Utilities.Extensions
 
             //--------------------------------------------------------------------------------------------------------//
             
-            var previewType = (PATCH_TYPE)patchToPreview.Type;
+            var typeToPreview = (PATCH_TYPE)patchToPreview.Type;
             var previewPatches = new List<PatchData>(partData.Patches)
             {
                 patchToPreview
@@ -207,7 +167,7 @@ namespace StarSalvager.Utilities.Extensions
                 PATCH_TYPE.FIRE_RATE,
                 PATCH_TYPE.EFFICIENCY);
 
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partRemoteData.partType);
+            //var partRemote = partRemoteData.partType.GetRemoteData();
 
             var partProperties = new []
             {
@@ -225,11 +185,17 @@ namespace StarSalvager.Utilities.Extensions
             var outList = new List<PartDetail>();
 
             //If the part uses ammo we'll check that first
-            if (partRemote.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
+            if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int) PART_TYPE.CORE*/)
             {
-                var preview = GetPartDetailInfo(partRemote.ammoUseCost, PATCH_TYPE.EFFICIENCY, previewType, previewMultipliers);
+                var preview = GetPartDetailInfo(partRemoteData.ammoUseCost,
+                    PATCH_TYPE.EFFICIENCY,
+                    typeToPreview,
+                    previewMultipliers);
+                
+                if (preview is float value)
+                    preview = value * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
 
-                var total = partRemote.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY];
+                var total = partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category);
                 var partDetail = new PartDetail("Ammo", total, preview);
                 outList.Add(partDetail);
                 
@@ -237,7 +203,7 @@ namespace StarSalvager.Utilities.Extensions
             
             foreach (var property in partProperties)
             {
-                if (!partRemote.TryGetValue(property, out var value))
+                if (!partRemoteData.TryGetValue(property, out var value))
                     continue;
 
                 var propertyName = PartProperties.GetPropertyName(property);
@@ -248,22 +214,22 @@ namespace StarSalvager.Utilities.Extensions
                 {
                     case PartProperties.KEYS.Damage when value is float f:
                         total = f * multipliers[PATCH_TYPE.POWER];
-                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Cooldown when value is float f:
                         total = f * multipliers[PATCH_TYPE.FIRE_RATE];
-                        preview = GetPartDetailInfo(f, PATCH_TYPE.FIRE_RATE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.FIRE_RATE, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Radius when value is int r:
                         total = r * multipliers[PATCH_TYPE.RANGE];
-                        preview = GetPartDetailInfo(r, PATCH_TYPE.RANGE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(r, PATCH_TYPE.RANGE, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Projectile when value is string s:
                         propertyName = "Range";
                         var projectileRange = FactoryManager.Instance.ProjectileProfile
                             .GetProjectileProfileData(s).ProjectileRange;
                         total = projectileRange * multipliers[PATCH_TYPE.RANGE];
-                        preview = GetPartDetailInfo(projectileRange, PATCH_TYPE.RANGE, previewType, previewMultipliers);
+                        preview = GetPartDetailInfo(projectileRange, PATCH_TYPE.RANGE, typeToPreview, previewMultipliers);
                         break;
                     
                     case PartProperties.KEYS.Health when partData.Type == (int)PART_TYPE.CORE:

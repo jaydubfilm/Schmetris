@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -115,7 +116,8 @@ namespace StarSalvager.UI.Scrapyard
             
             void CreatePart(PART_TYPE partType)
             {
-                var patchCount = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).PatchSockets;
+                var partRemoteData = partType.GetRemoteData();
+                var patchCount = partRemoteData.PatchSockets;
                 
                 var partData = new PartData
                 {
@@ -123,7 +125,7 @@ namespace StarSalvager.UI.Scrapyard
                     Patches = new PatchData[patchCount]
                 };
 
-                var category = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType).category;
+                var category = partRemoteData.category;
                 var botCoordinate = PlayerDataManager.GetCoordinateForCategory(category);
 
                 //If the player has an empty part at the location, auto equip it
@@ -155,7 +157,7 @@ namespace StarSalvager.UI.Scrapyard
                 });
             }
 
-            _noPartButtonText.text = $"No Part +{10}{TMP_SpriteMap.GEAR_ICON}";
+            _noPartButtonText.text = $"No Part +{10}{TMP_SpriteHelper.GEAR_ICON}";
             noPartSelectedOptionButton.onClick.AddListener(() =>
             {
                 CloseWindow();
@@ -165,7 +167,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void CloseWindow()
         {
-            PlayerDataManager.SetStarted(true);
+            PlayerDataManager.SetRunStarted(true);
             PlayerDataManager.SetCanChoosePart(false);
             partChoiceWindow.SetActive(false);
                 

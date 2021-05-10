@@ -15,6 +15,8 @@ namespace StarSalvager.ScriptableObjects
     {
         public int WaveSeed;
         
+        public int WaveXP;
+        
         public List<StageObstacleShapeData> BonusShapes = new List<StageObstacleShapeData>();
         
         public List<StageRemoteData> StageRemoteData = new List<StageRemoteData>();

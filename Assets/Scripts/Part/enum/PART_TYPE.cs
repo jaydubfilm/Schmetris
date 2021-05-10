@@ -54,8 +54,9 @@
         HEAL = 39,
         REGEN = 40,
         BITSPLOSION = 41,
-        SABRE = 42
-
+        SABRE = 42,
+        BLITZ = 43,
+        FORCE_FIELD = 44
     } 
 }
 

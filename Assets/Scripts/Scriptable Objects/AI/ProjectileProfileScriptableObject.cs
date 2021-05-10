@@ -3,6 +3,7 @@ using StarSalvager.Factories.Data;
 using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Projectiles;
 
 namespace StarSalvager.ScriptableObjects
 {
@@ -14,7 +15,12 @@ namespace StarSalvager.ScriptableObjects
 
         [SerializeField, Required]
         public GameObject m_towPrefab;
+        
+        [SerializeField, Required]
+        public GrenadeProjectile grenadeProjectilePrefab;
 
+        //====================================================================================================================//
+        
         [ListDrawerSettings(ShowPaging = false)]
         public List<ProjectileProfileData> m_projectileProfileData = new List<ProjectileProfileData>();
 

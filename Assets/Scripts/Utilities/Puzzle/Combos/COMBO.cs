@@ -1,5 +1,8 @@
-﻿namespace StarSalvager.Utilities.Puzzle.Data
+﻿using System;
+
+namespace StarSalvager.Utilities.Puzzle.Data
 {
+    [Serializable]
     public enum COMBO
     {
         NONE = -1,

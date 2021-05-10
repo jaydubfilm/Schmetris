@@ -1,9 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
 {
     public static class GameObjectExtensions
     {
+        public static bool CompareTags(this GameObject gameObject, IEnumerable<string> tags)
+        {
+            return tags.Any(gameObject.CompareTag);
+        }
         public static T FindObjectOfTypeInScene<T>(this GameObject gameObject, bool recursive = false) where T: MonoBehaviour
         {
             var toSearch = gameObject.scene.GetRootGameObjects();

@@ -213,13 +213,16 @@ namespace StarSalvager.AI
 
             if (raycastHit2D.collider != null)
             {
-                if (!(raycastHit2D.transform.GetComponent<BotBase>() is BotBase botBase))
+                if (!(raycastHit2D.transform.GetComponent<ICanBeHit>() is ICanBeHit botBase))
                     throw new Exception();
 
                 var damageToApply = damage * Time.deltaTime;
 
                 switch (botBase)
                 {
+                    case ForceField forceField:
+                        forceField.TryHitAt(damageToApply);
+                        break;
                     case Bot bot:
                         var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
                         bot.TryHitAt(closestAttachable, damageToApply);

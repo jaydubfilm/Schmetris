@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 
 namespace StarSalvager.AI
@@ -170,7 +171,7 @@ namespace StarSalvager.AI
                     targetLocation,
                     shootDirection,
                     1f,
-                    "Player",
+                    new[] {TagsHelper.PLAYER},
                     null,
                     0f,
                     false,

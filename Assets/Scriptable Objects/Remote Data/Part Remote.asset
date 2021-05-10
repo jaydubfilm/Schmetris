@@ -42,10 +42,6 @@ MonoBehaviour:
     partType: Freeze
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   - canDrop: 1
-    PartType: 7
-    partType: Bomb
-    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
-  - canDrop: 1
     PartType: 14
     partType: Sniper
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
@@ -77,10 +73,18 @@ MonoBehaviour:
     PartType: 42
     partType: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
-  - canDrop: 0
+  - canDrop: 1
     PartType: 15
     partType: Blaster
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  - canDrop: 1
+    PartType: 43
+    partType: Blitz
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - canDrop: 1
+    PartType: 19
+    partType: Grenade
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   partRemoteData:
   - isImplemented: 1
     partType: 1
@@ -169,18 +173,22 @@ MonoBehaviour:
     ammoUseCost: 10
     PatchSockets: 2
   - isImplemented: 1
-    partType: 7
-    name: Bomb
+    partType: 19
+    name: Grenade
     lockRotation: 0
     description: 'This powerful pilot-triggered weapon deals explosive damage to
       all enemies in a wide radius. '
     dataTest:
     - key: Cooldown
-      value: 5
+      value: 1
     - key: Damage
       value: 15
     - key: Radius
-      value: 10
+      value: 8
+    - key: Speed
+      value: 50
+    - key: Charge
+      value: 32
     isManual: 1
     category: 4
     ammoUseCost: 10
@@ -217,7 +225,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 3
     PatchSockets: 2
-  - isImplemented: 0
+  - isImplemented: 1
     partType: 15
     name: Blaster
     lockRotation: 1
@@ -225,16 +233,18 @@ MonoBehaviour:
       drone.
     dataTest:
     - key: Damage
-      value: 10
+      value: 50
     - key: Cooldown
       value: 1
     - key: Radius
       value: 10
     - key: Degrees
       value: 90
+    - key: Time
+      value: 0.35
     isManual: 1
     category: 3
-    ammoUseCost: 0
+    ammoUseCost: 10
     PatchSockets: 2
   - isImplemented: 1
     partType: 6
@@ -282,14 +292,12 @@ MonoBehaviour:
     description: A long range, trigger-fired projectile weapon.  Has a quick cooldown.
     dataTest:
     - key: Damage
-      value: 10
-    - key: Projectile
-      value: f4741159-a277-4dc0-97ca-849327e73192
+      value: 20
     - key: Cooldown
-      value: 0.8
+      value: 3
     isManual: 1
     category: 3
-    ammoUseCost: 2
+    ammoUseCost: 10
     PatchSockets: 2
   - isImplemented: 1
     partType: 38
@@ -409,5 +417,41 @@ MonoBehaviour:
       value: 10
     isManual: 1
     category: 3
+    ammoUseCost: 5
+    PatchSockets: 2
+  - isImplemented: 1
+    partType: 43
+    name: Blitz
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Cooldown
+      value: 1
+    - key: Damage
+      value: 10
+    - key: Projectile
+      value: 7a337343-8456-42a8-88e6-426706cb63cb
+    isManual: 1
+    category: 4
+    ammoUseCost: 10
+    PatchSockets: 2
+  - isImplemented: 1
+    partType: 44
+    name: Force Field
+    lockRotation: 0
+    description: 
+    dataTest:
+    - key: Health
+      value: 40
+    - key: Degrees
+      value: 45
+    - key: Cooldown
+      value: 1.5
+    - key: Radius
+      value: 5
+    - key: Heal
+      value: 5
+    isManual: 0
+    category: 1
     ammoUseCost: 5
     PatchSockets: 2

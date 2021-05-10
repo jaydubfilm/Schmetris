@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
@@ -10,6 +11,7 @@ using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -169,6 +171,9 @@ namespace StarSalvager.UI.Scrapyard
 
         private void OnEnable()
         {
+            if (!PlayerDataManager.HasRunData)
+                return;
+            
             Camera.onPostRender += _droneDesigner.DrawGL;
             PlayerDataManager.OnValuesChanged += CheckCanRepair;
 
@@ -240,7 +245,7 @@ namespace StarSalvager.UI.Scrapyard
             purchasePatchUIElementScrollView.ClearElements();
             
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-            var patches = PlayerDataManager.Patches;
+            var patches = PlayerDataManager.CurrentPatchOptions;
 
             if (patches.IsNullOrEmpty())
                 return;
@@ -251,12 +256,15 @@ namespace StarSalvager.UI.Scrapyard
                 var patchData = patches[i];
                 var patchType = (PATCH_TYPE) patchData.Type;
                 var remoteData = patchRemoteData.GetRemoteData(patchType);
-                var cost = remoteData.Levels[patchData.Level].cost;
+                var silver = remoteData.Levels[patchData.Level].silver;
+                var gears = remoteData.Levels[patchData.Level].gears *
+                           PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST);
 
                 purchasePatchData.Add(new Purchase_PatchData
                 {
                     index = i,
-                    cost = cost,
+                    silver = silver,
+                    gears = Mathf.RoundToInt(gears),
                     PatchData = patchData
                 });
             }
@@ -363,14 +371,14 @@ namespace StarSalvager.UI.Scrapyard
             //--------------------------------------------------------------------------------------------------------//
             
             var patchData = partUpgrd.PurchasePatchData;
-            var currentComponents = PlayerDataManager.GetComponents();
-            if (currentComponents < patchData.cost)
+            var currentGears = PlayerDataManager.GetGears();
+            var currentSilver = PlayerDataManager.GetSilver();
+            if (currentGears < patchData.gears || currentSilver < patchData.silver)
                 return;
 
-            currentComponents -= patchData.cost;
-
-            PlayerDataManager.SetGears(currentComponents);
-
+            PlayerDataManager.SubtractGears(patchData.gears);
+            PlayerDataManager.SubtractSilver(patchData.silver);
+            
             //Add Patch to Selected Part
             //--------------------------------------------------------------------------------------------------------//
 
@@ -441,11 +449,11 @@ namespace StarSalvager.UI.Scrapyard
                 return;
 
             var cost = Mathf.CeilToInt(startingHealth - currentHealth);
-            var components = PlayerDataManager.GetComponents();
+            var components = PlayerDataManager.GetGears();
 
             var finalCost = components > 0 ? Mathf.Min(cost, components) : cost;
 
-            repairButtonText.text = $"Repair {finalCost}";
+            repairButtonText.text = $"Repair {finalCost}{TMP_SpriteHelper.GEAR_ICON}";
             repairButton.interactable = !(finalCost > components);
         }
 
@@ -460,84 +468,78 @@ namespace StarSalvager.UI.Scrapyard
         }
         public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
         {
-            partDetailsContainerRectTransform.gameObject.SetActive(show);
-
-            if (!show)
-                return;
-
-            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
-            //TODO Get the world position of the object, convert to canvas space
-            var screenPoint =
-                CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
-                out var localPoint);
-
-            partDetailsContainerRectTransform.anchoredPosition = localPoint;
-
-            //====================================================================================================================//
-
-
-            var partData = scrapyardPart.ToBlockData();
-
-            //====================================================================================================================//
-
-            var partType = (PART_TYPE) partData.Type;
-
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-
-            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
-
-
-            var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
-
-            //====================================================================================================================//
-
-            partNameText.text = partRemote.name;
-            partUseTypeText.text = partRemote.isManual ? "Manually Triggered" : "Automatic";
-            partDescriptionText.text = partRemote.description;
+            var screenPoint = show
+                ? CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right)
+                : Vector3.zero;
             
-            partImage.sprite = partProfile.Sprite;
-            partImage.color = partRemote.category.GetColor();
+            var partData = show ? scrapyardPart.ToBlockData() : new PartData();
 
-            var altDetails = partData.GetPartDetails(partRemote);
-            //partDetailsText.text = $"{partRemote.description}\n{altDetails}";
-            partDetailsText.text = $"{altDetails}";
-
-            for (var i = 0; i < partData.Patches.Length; i++)
-            {
-                if(i >= patchUis.Length)
-                    continue;
-                
-                
-                var patchData = partData.Patches[i];
-                var type = (PATCH_TYPE) patchData.Type;
-
-                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
-
-                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
-                    ? string.Empty
-                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
-
-            }
-
-            //====================================================================================================================//
+            ShowPartDetails(show, partData, screenPoint);
         }
         
         public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
         {
-            partDetailsContainerRectTransform.gameObject.SetActive(show);
-
             HoveringStoragePartUIElement = show;
+            
+            var screenPoint = show ? RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x)
+                    : Vector2.zero;
+
+            ShowPartDetails(show, partData, screenPoint);
+        }
+
+        private void ShowPartDetails(in bool show, in PartData partData, in Vector2 screenPoint)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            void SetRectSize(in TMP_Text tmpText, in float multiplier = 1.388f)
+            {
+                tmpText.ForceMeshUpdate();
+
+                var lineCount = tmpText.GetTextInfo(tmpText.text).lineCount;
+                var lineSize = tmpText.fontSize * multiplier;
+                var rectTrans = (RectTransform)tmpText.transform;
+                var sizeDelta = rectTrans.sizeDelta;
+
+                if (tmpText.GetComponent<LayoutElement>() is LayoutElement layoutElement)
+                {
+                    sizeDelta.y = Mathf.Max(layoutElement.minHeight, lineSize * lineCount);
+                    layoutElement.preferredHeight = sizeDelta.y;
+                }
+                else
+                {
+                    sizeDelta.y = lineSize * lineCount;
+                }
+                
+                
+                rectTrans.sizeDelta = sizeDelta;       
+            }
+            
+            IEnumerator ResizeDelayedCoroutine(params TMP_Text[] args)
+            {
+                foreach (var tmpText in args)
+                {
+                    tmpText.ForceMeshUpdate();
+                }
+                
+                yield return new WaitForEndOfFrame();
+
+                foreach (var tmpText in args)
+                {
+                    SetRectSize(tmpText);
+                }
+            }
+            
+            //--------------------------------------------------------------------------------------------------------//
+            
+            partDetailsContainerRectTransform.gameObject.SetActive(show);
 
             if (!show)
                 return;
-
+            
             var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
 
-            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
-                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
-            
-            
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
                 out var localPoint);
 
@@ -546,8 +548,8 @@ namespace StarSalvager.UI.Scrapyard
             //====================================================================================================================//
 
             var partType = (PART_TYPE) partData.Type;
-            var partRemote = FactoryManager.Instance.PartsRemoteData.GetRemoteData(partType);
-            var partProfile = FactoryManager.Instance.PartsProfileData.GetProfile(partType);
+            var partRemote = partType.GetRemoteData();
+            var partProfile = partType.GetProfileData();
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
 
             //====================================================================================================================//
@@ -559,10 +561,13 @@ namespace StarSalvager.UI.Scrapyard
             partImage.sprite = partProfile.Sprite;
             partImage.color = partRemote.category.GetColor();
 
-            partDetailsText.text = partData.GetPartDetails( partRemote);
+            partDetailsText.text = partData.GetPartDetails(partRemote);
 
             for (var i = 0; i < partData.Patches.Length; i++)
             {
+                if (i >= patchUis.Length)
+                    break;
+                
                 var patchData = partData.Patches[i];
                 var type = (PATCH_TYPE) patchData.Type;
 
@@ -575,9 +580,14 @@ namespace StarSalvager.UI.Scrapyard
             }
 
             //====================================================================================================================//
-        }
 
+            //Resize the details text to accomodate the text
+            StartCoroutine(ResizeDelayedCoroutine(partDetailsText, partDescriptionText));
+            
+            partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
+            
+        }
         //====================================================================================================================//
-        
+
     }
 }

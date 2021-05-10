@@ -6,6 +6,7 @@ using StarSalvager.Audio;
 using StarSalvager.Tutorial.Data;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -139,10 +140,10 @@ namespace StarSalvager.Tutorial
         //FIXME This is gross...
         private static void CheckForSpriteReplacements(ref string text)
         {
-            text = text.Replace("#LEFT", TMP_SpriteMap.GetInputSprite("left"));
-            text = text.Replace("#RIGHT", TMP_SpriteMap.GetInputSprite("right"));
-            text = text.Replace("#UP", TMP_SpriteMap.GetInputSprite("up"));
-            text = text.Replace("#DOWN", TMP_SpriteMap.GetInputSprite("down"));
+            text = text.Replace("#LEFT", TMP_SpriteHelper.GetInputSprite("left"));
+            text = text.Replace("#RIGHT", TMP_SpriteHelper.GetInputSprite("right"));
+            text = text.Replace("#UP", TMP_SpriteHelper.GetInputSprite("up"));
+            text = text.Replace("#DOWN", TMP_SpriteHelper.GetInputSprite("down"));
         }
 
         //Tutorial Steps

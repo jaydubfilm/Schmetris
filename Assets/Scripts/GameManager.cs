@@ -39,6 +39,7 @@ namespace StarSalvager
 
 
 #if UNITY_EDITOR
+        public GameSettingsScriptableObject GameSettings => m_gameSettings;
         public void OnValidate()
         {
             m_gameSettings.SetupGameSettings();

@@ -15,6 +15,7 @@ using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
+using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.AI
 {
@@ -235,32 +236,34 @@ namespace StarSalvager.AI
         //============================================================================================================//
 
         #region Movement
-        
+
         public bool CanMove()
         {
-            if(GameTimer.IsPaused )
+            if (GameTimer.IsPaused)
                 return false;
-            
+
             if (Disabled)
             {
                 ApplyFallMotion();
                 return false;
             }
 
-            if (!GameManager.IsState(GameState.LevelActive) || GameManager.IsState(GameState.LevelActiveEndSequence))
+            if (!GameManager.IsState(GameState.LevelActive) || 
+                GameManager.IsState(GameState.LevelActiveEndSequence) ||
+                GameManager.IsState(GameState.LevelBotDead))
             {
                 //FIXME Might be better to broadcast to every enemy that the level has concluded
-                if(this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
+                if (this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
                     enemyAttachable.SetAttached(false);
-                
+
                 ApplyFleeMotion();
-                
+
                 return false;
             }
 
-            if (!Frozen) 
+            if (!Frozen)
                 return true;
-            
+
             FreezeTime -= Time.deltaTime;
             return false;
 
@@ -351,16 +354,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            DropLoot();
-            
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
-
-            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
-
-            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
-
-            SetState(STATE.DEATH);
+            KillEnemy();
         }
 
         protected void DropLoot()
@@ -375,6 +369,21 @@ namespace StarSalvager.AI
 
                 LevelManager.Instance.DropLoot(m_enemyData.RDSTables[i].rdsResult.ToList(), transform.localPosition, true);
             }
+        }
+
+        protected void KillEnemy(in STATE targetState = STATE.DEATH)
+        {
+            DropLoot();
+
+            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+
+            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            PlayerDataManager.RecordEnemyKilled(m_enemyData.EnemyType);
+
+            LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+            
+            SetState(targetState);
         }
 
         //ICanBeSeen Functions

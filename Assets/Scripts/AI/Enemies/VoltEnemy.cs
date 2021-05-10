@@ -6,6 +6,7 @@ using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
@@ -253,18 +254,19 @@ namespace StarSalvager.AI
 
             if (iCanBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point) is Bit bit)
             {
-                Debug.Log($"Hit {bit.gameObject.name}", bit);
-                Debug.DrawLine(currentPosition, raycastHit.point, Color.yellow, 1f);
+                //Debug.Log($"Hit {bit.gameObject.name}", bit);
+                //Debug.DrawLine(currentPosition, raycastHit.point, Color.yellow, 1f);
                 return;
             }
 
             var lineShrink = FactoryManager.Instance
                 .GetFactory<EffectFactory>()
                 .CreateObject<LineShrink>();
+            lineShrink.Init(transform.position, targetLocation);
 
+            
             _jumpCount = Random.Range(6, 9);
 
-            lineShrink.Init(transform.position, targetLocation);
 
             iCanBeHit.TryHitAt(targetLocation, LaserDamage);
             

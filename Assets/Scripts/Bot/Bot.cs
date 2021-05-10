@@ -27,6 +27,7 @@ using AudioController = StarSalvager.Audio.AudioController;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
+using StarSalvager.Utilities.Puzzle.Structs;
 using Input = UnityEngine.Input;
 using Random = UnityEngine.Random;
 
@@ -838,6 +839,7 @@ namespace StarSalvager
                         case BIT_TYPE.GREY:
                         case BIT_TYPE.RED:
                         case BIT_TYPE.YELLOW:
+                        case BIT_TYPE.WHITE:
                             //TODO This needs to bounce off instead of being destroyed
                             if (closestAttachable is EnemyAttachable /*||
                                 closestAttachable is Part part && part.Destroyed*/)
@@ -881,7 +883,7 @@ namespace StarSalvager
                             PlayerDataManager.RecordBitConnection(bit.Type);
 
                             break;
-                        case BIT_TYPE.WHITE:
+                        case BIT_TYPE.BUMPER:
                             //bounce white bit off of bot
                             var bounce = true;
                             if (bounce)
@@ -1000,7 +1002,7 @@ namespace StarSalvager
                 }
             }
 
-            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.WHITE))
+            if (!(attachable is EnemyAttachable) && (attachable is Bit bitCheck && bitCheck.Type != BIT_TYPE.BUMPER))
             {
                 _weldDatas.Add(new WeldData
                 {
@@ -1290,22 +1292,13 @@ namespace StarSalvager
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
 
-            /*switch (closestAttachable)
+            switch (closestAttachable)
             {
-                //Don't want any bounce on Bit collisions: https://trello.com/c/jgOMp2eX/1071-asteroid-bit-collisions
-                case Bit _:
-                case EnemyAttachable _:
-                case JunkBit _:
-                    TryHitAt(closestAttachable);
-                    return false;
-                /*case Component _:
-                    break;#1#
-                case Part _:
-                    /*if (part.Destroyed) return false;#1#
+                case EnemyAttachable enemyAttachable:
+                    //If the enemy is knocked, but not killed we want them to act as if they were bumped
+                    enemyAttachable.OnBumped();
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(closestAttachable), closestAttachable, null);
-            }*/
+            }
 
             TryHitAt(closestAttachable, damage);
 
@@ -1391,6 +1384,13 @@ namespace StarSalvager
                     //If something hit a part, we actually want to damage the bot as a whole
                     ChangeHealth(applyDamage);
                     return;
+                case EnemyAttachable enemyAttachable:
+
+                    closestHealth.ChangeHealth(applyDamage);
+                    break;
+                default:
+                    closestHealth.ChangeHealth(applyDamage);
+                    break;
             }
 
             if(withSound && !attachableDestroyed)
@@ -1410,30 +1410,10 @@ namespace StarSalvager
                 //----------------------------------------------------------------------------------------------------//
                 case Bit bit:
                     CreateBitDeathEffect(bit.Type, bit.transform.position);
-                    RemoveAttachable(closestAttachable);
-                    break;
-                //----------------------------------------------------------------------------------------------------//
-                /*case Part deadPart when deadPart.Type == PART_TYPE.CORE:
-                    CreateCoreDeathEffect();
-
-                    cinemachineImpulseSource.GenerateImpulse(5);
-                    GameUi.FlashBorder();
-
-                    Destroy("Core Destroyed");
-                    break;*/
-                /*case Part _:
-                    CreateExplosionEffect(closestAttachable.transform.position);
-
-                    cinemachineImpulseSource.GenerateImpulse(5);
-                    GameUi.FlashBorder();
-
-                    BotPartsLogic.PopulatePartsList();
-                    break;*/
-                //----------------------------------------------------------------------------------------------------//
-                default:
-                    RemoveAttachable(closestAttachable);
                     break;
             }
+            
+            RemoveAttachable(closestAttachable);
 
             if(closestAttachable.CountTowardsMagnetism)
                 ForceCheckMagnets();
@@ -2786,6 +2766,7 @@ _isShifting = true;
         {
             var explosion = FactoryManager.Instance.GetFactory<EffectFactory>()
                 .CreateEffect(EffectFactory.EFFECT.BIT_DEATH, bitType);
+            if (explosion is null) return;
             LevelManager.Instance.ObstacleManager.AddToRoot(explosion);
             explosion.transform.position = worldPosition;
 
@@ -3003,7 +2984,7 @@ _isShifting = true;
             //TODO Need to figure out the multi-combo scores
             foreach (var pendingCombo in pendingCombos)
             {
-                var multiplier = comboFactory.GetGearMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
+                var multiplier = comboFactory.GetXPMultiplier(pendingCombos.Count, pendingCombo.ToMove.Count);
                 SimpleComboSolver(pendingCombo, multiplier);
             }
 
@@ -3085,7 +3066,7 @@ _isShifting = true;
             if (!PuzzleChecker.TryGetComboData(bit, checkData, out var moveData))
                 return;
 
-            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetGearMultiplier(1, moveData.ToMove.Count);
+            var multiplier = FactoryManager.Instance.GetFactory<ComboFactory>().GetXPMultiplier(1, moveData.ToMove.Count);
             SimpleComboSolver(moveData.ComboData, moveData.ToMove, multiplier);
         }
 
@@ -3097,9 +3078,9 @@ _isShifting = true;
 
 
 
-        private void SimpleComboSolver(PendingCombov2 pendingCombo, float gearMultiplier)
+        private void SimpleComboSolver(PendingCombov2 pendingCombo, float xpMultiplier)
         {
-            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, gearMultiplier);
+            SimpleComboSolver(pendingCombo.ComboData, pendingCombo.ToMove, xpMultiplier);
         }
 
         /// <summary>
@@ -3107,9 +3088,9 @@ _isShifting = true;
         /// </summary>
         /// <param name="comboData"></param>
         /// <param name="canCombos"></param>
-        /// <param name="gearMultiplier"></param>
+        /// <param name="xpMultiplier"></param>
         /// <exception cref="Exception"></exception>
-        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float gearMultiplier)
+        private void SimpleComboSolver(ComboRemoteData comboData, IReadOnlyCollection<ICanCombo> canCombos, float xpMultiplier)
         {
             ICanCombo closestToCore = null;
             var shortest = 999f;
@@ -3166,7 +3147,13 @@ _isShifting = true;
             //Move everyone who we've determined need to move
             //--------------------------------------------------------------------------------------------------------//
 
-
+            var closestToCoreBit = (Bit)closestToCore;
+            PlayerDataManager.RecordCombo(new ComboRecordData
+            {
+                BitType = closestToCoreBit.Type,
+                ComboType = comboData.type,
+                FromLevel = closestToCoreBit.level
+            });
             closestToCore.IncreaseLevel(comboData.addLevels);
 
 
@@ -3200,41 +3187,62 @@ _isShifting = true;
                 () =>
                 {
                     var position = closestToCore.transform.position;
-                    var gearsToAdd = Mathf.RoundToInt(comboData.points * gearMultiplier);
+                    var xpToAdd = Mathf.RoundToInt(comboData.points * xpMultiplier);
                     //Waits till after combo finishes combining to add the points
-                    PlayerDataManager.ChangeXP(gearsToAdd);
+                    PlayerDataManager.ChangeXP(xpToAdd);
 
-                    _lastGearText = FloatingText.Create($"+{gearsToAdd}", position, Color.white);
+                    _lastGearText = FloatingText.Create($"+{xpToAdd}", position, Color.white);
                     
                     CreateBonusShapeParticleEffect(position);
 
 
                     var bit = closestToCore as Bit;
 
-                    if (bit != null)
+                    if (bit != null && bit.Type == BIT_TYPE.WHITE && bit.level == 1)
                     {
+                        DestroyAttachable(bit);
+                        
+                        PlayerDataManager.AddSilver(1, false);
+                        
+                        var ammoEarned = FactoryManager.Instance
+                            .ComboRemoteData
+                            .ComboAmmos
+                            .FirstOrDefault(x => x.level == bit.level)
+                            .ammoEarned;
+                        foreach (var bitType in Constants.BIT_ORDER)
+                        {
+                            GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
+                        }
+                    }
+                    else if (bit != null)
+                    {
+                        var bitType = bit.Type;
+                        var bitLevel = bit.level;
                         switch (bit.level)
                         {
                             case 1:
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 break;
                             case 2:
-                                DestroyAttachable(bit);
+
+                                CheckForCombosAround(AttachedBlocks.OfType<Bit>());
+                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
+                                //We have to override the level value here to ensure that the ammo given is
+                                // reflective of the upgrade level 0 -> 1 -> white
+                                bitLevel = 2;
                                 break;
                         }
 
                         var ammoEarned = FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                            .FirstOrDefault(x => x.level == bit.level)
+                            .FirstOrDefault(x => x.level == bitLevel)
                             .ammoEarned;
                         
-                        GameUi.CreateAmmoEffect(bit.Type, ammoEarned, position);
-                        /* if(amount == 0)
-                            return;
-                        PlayerDataManager.GetResource(bitType).AddAmmo(amount);*/
+                        GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
+
                     }
 
 
-                    CheckForBonusShapeMatches();
+                    //CheckForBonusShapeMatches();
 
                     OnCombo?.Invoke();
                     AttachedChanged();

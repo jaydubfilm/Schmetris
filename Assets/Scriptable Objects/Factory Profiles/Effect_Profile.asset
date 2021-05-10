@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbea9ecde00f6be479496e8d220f2a07, type: 3}
   m_Name: Effect_Profile
   m_EditorClassIdentifier: 
+  simpleSpritePrefab: {fileID: 5157154050622779596, guid: 5b7a31dd9e1e15043b7424c74f59e5e5,
+    type: 3}
   alertIconPrefab: {fileID: 7673582226122981316, guid: 54284c1381bfa804e89521c45d07d319,
     type: 3}
   damageEffectPrefab: {fileID: 7563446395452513033, guid: a3c8a083717316a47973770fe6593e47,
@@ -42,6 +44,8 @@ MonoBehaviour:
     type: 3}
   bitRedParticlePrefab: {fileID: 4871106170005503903, guid: aa128da51b950474895b36bfa0c81733,
     type: 3}
+  bitWhiteParticlePrefab: {fileID: 8949320281845640268, guid: 382b9748425d1df42b51f8082e5ff9c7,
+    type: 3}
   bitYellowParticlePrefab: {fileID: 2791936726044460743, guid: 25a4600b44275634c9bc5a58f83e6567,
     type: 3}
   tripleTurretSprite: {fileID: 21300000, guid: 4e41c8224e17a924388cfd96022b148e, type: 3}
@@ -58,6 +62,8 @@ MonoBehaviour:
   bombShockwaveEffectPrefab: {fileID: 8983489692315965813, guid: fe1611459a1a8074392e3ac9454ea520,
     type: 3}
   shieldEffectPrefab: {fileID: 3990854963412026446, guid: 45a308316be118c4f9df8b089090ec93,
+    type: 3}
+  blasterLineEffectPrefab: {fileID: 3945869062185874668, guid: 892a2d134b4757348aaa34a9f035bf0a,
     type: 3}
   labelPrefab: {fileID: 9099319384489682599, guid: 8a229f5344f29bc42a484ccc31bdec75,
     type: 3}

@@ -1,13 +1,11 @@
-﻿using System;
-using Recycling;
-using StarSalvager.Factories;
+﻿using Recycling;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IObstacle, IAdditiveMove, ICustomRecycle
+    public class Component : CollidableBase, IObstacle, IAdditiveMove
     {
 
         public int GearNum { get; set; }
@@ -38,8 +36,8 @@ namespace StarSalvager
                 return;
             }
 
-            PlayerDataManager.AddGears(FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained());
-            FloatingText.Create($"+{FactoryManager.Instance.GetFactory<ComponentFactory>().GetNumComponentsGained()}", transform.position, color);
+            PlayerDataManager.AddGears(GearNum);
+            FloatingText.Create($"+{GearNum}", transform.position, color);
 
             Recycler.Recycle<Component>(this);
 
@@ -49,11 +47,11 @@ namespace StarSalvager
 
         private Vector3 GetTowardsPlayer()
         {
-            if (IsRecycled)
+            if (IsRecycled || GameManager.IsState(GameState.LevelBotDead))
                 return Vector3.zero;
             
             var playerLocation = LevelManager.Instance.BotInLevel.transform.position;
-            var direction = (Vector2)(playerLocation - transform.position).normalized;
+            var direction = (Vector2)(playerLocation - Position).normalized;
 
             _speed += 0.2f;
 
@@ -62,8 +60,10 @@ namespace StarSalvager
 
         //====================================================================================================================//
         
-        public void CustomRecycle(params object[] args)
+        public override void CustomRecycle(params object[] args)
         {
+            base.CustomRecycle(args);
+            
             _speed = 0f;
         }
     }

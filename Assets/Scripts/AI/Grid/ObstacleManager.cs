@@ -17,6 +17,7 @@ using UnityEngine.SceneManagement;
 using StarSalvager.Cameras;
 using StarSalvager.Prototype;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
@@ -101,8 +102,6 @@ namespace StarSalvager
             SceneManager.MoveGameObjectToScene(m_worldElementsRoot.gameObject, gameObject.scene);
 
             SetupStage(0);
-
-            //RegisterMoveOnInput();
         }
 
 
@@ -160,6 +159,7 @@ namespace StarSalvager
             if (m_currentStageData.StageType == STAGE_TYPE.STANDARD)
             {
                 LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnWalls(m_currentStageData, false, this);
+                LevelManager.Instance.StandardBufferZoneObstacleData.PrespawnRows(m_currentStageData, false, this);
             }
         }
 
@@ -334,7 +334,7 @@ namespace StarSalvager
             var bit = m_obstacles
                 .OfType<Bit>()
                 .Where(x => x.IsRecycled == false)
-                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Type != BIT_TYPE.BUMPER)
                 .Where(x => x.Attached == false)
                 .Where(x => Mathf.Abs(xPos - x.transform.position.x) < 0.5f)
                 .Where(x => x.transform.position.y > yPos)
@@ -349,7 +349,7 @@ namespace StarSalvager
             var bits = m_obstacles
                 .OfType<Bit>()
                 .Where(x => x.IsRecycled == false)
-                .Where(x => x.Type != BIT_TYPE.WHITE)
+                .Where(x => x.Type != BIT_TYPE.BUMPER)
                 .Where(x => x.Attached == false)
                 .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
                 .ToList();
@@ -739,33 +739,6 @@ namespace StarSalvager
             }
         }
 
-        //IMoveOnInput functions
-        //================================================================================================================//
-
-        /*public void RegisterMoveOnInput()
-        {
-            InputManager.RegisterMoveOnInput(this);
-        }
-
-        public void Move(float direction)
-        {
-            if (UnityEngine.Input.GetKey(KeyCode.LeftAlt))
-            {
-                m_currentInput = 0f;
-                return;
-            }
-
-            if (direction != 0 && LevelManager.Instance.BotDead)
-            {
-                m_currentInput = 0f;
-                return;
-            }
-
-            m_currentInput = direction;
-
-            m_distanceHorizontal += direction * Constants.gridCellSize;
-        }*/
-
         //================================================================================================================//
 
         public void AddTransformToRoot(Transform toReParent)
@@ -799,8 +772,12 @@ namespace StarSalvager
                         false, this);
                     break;
                 case STAGE_TYPE.FULLSCREEN:
-                    SpawnObstacleData(m_currentStageData.StageObstacleData, new Vector2(0, 1), false, true,
-                        m_currentStageData.SpawningObstacleMultiplier, false);
+                    SpawnObstacleData(m_currentStageData.StageObstacleData, 
+                        new Vector2(0, 1), 
+                        false, 
+                        true,
+                        m_currentStageData.SpawningObstacleMultiplier, 
+                        false);
                     break;
                 case STAGE_TYPE.CUSTOM:
                     foreach (StageColumnGroupObstacleData stageColumnGroupObstacleData in m_currentStageData
@@ -917,8 +894,11 @@ namespace StarSalvager
         }
 
         public void SpawnObstacleData(List<StageObstacleData> obstacleData, Vector2 columnFieldRange, bool allowOverlap,
-            bool forceSpawn, float spawningMultiplier, bool isPrevious, bool inRandomYLevel = false)
+            bool forceSpawn, float spawningMultiplier, bool isPrevious, int yLevel = -1)
         {
+            //If we're not explicitely setting the y Pos, fallback to the default
+            if (yLevel < 0) yLevel = Globals.GridSizeY - 1;
+            
             foreach (StageObstacleData stageObstacleData in obstacleData)
             {
                 //This spawnVariable defines "how much of this thing should be spawned"
@@ -944,20 +924,20 @@ namespace StarSalvager
                 {
                     SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName,
                         stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation,
-                        columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                        columnFieldRange, allowOverlap, forceSpawn, yLevel);
                     spawnVariable -= 1;
                 }
 
                 if (spawnVariable == 0)
                     continue;
 
-                float random = Random.Range(0.0f, 1.0f);
+                float random = Random.value;
 
                 if (random <= spawnVariable)
                 {
                     SpawnObstacle(stageObstacleData.SelectionType, stageObstacleData.ShapeName,
                         stageObstacleData.Category, stageObstacleData.AsteroidSize, stageObstacleData.Rotation,
-                        columnFieldRange, allowOverlap, forceSpawn, inRandomYLevel);
+                        columnFieldRange, allowOverlap, forceSpawn, yLevel);
                 }
             }
         }
@@ -1014,20 +994,20 @@ namespace StarSalvager
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
                 {
-                    int count = rdsValueGearsAmount.GetCount();
-                    for (int k = 0; k < count; k++)
+                    var multiplier = PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.GEAR_DROP);
+                    var count = rdsValueGearsAmount.GetCount();
+                    for (var k = 0; k < count; k++)
                     {
-                        Component newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
-                            .CreateObject<Component>(rdsValueGearsAmount.rdsValue);
-                        //AddObstacleToList(newComponent);
-                        /*PlaceMovableOffGrid(newComponent, startingLocation, bitExplosionPositions[0], 0.5f);
-                        bitExplosionPositions.RemoveAt(0);*/
+                        var gears = Mathf.RoundToInt(rdsValueGearsAmount.rdsValue * multiplier);
+                        var newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
+                            .CreateObject<Component>(gears);
+
                         _obstacles.Add(newComponent);
                     }
                 }
                 else
                 {
-                    Debug.LogError(rdsObjects[i].ToString() + " in SpawnBitExplosion and not handled");
+                    Debug.LogError($"{rdsObjects[i]} in SpawnBitExplosion and not handled");
                 }
             }
 
@@ -1042,13 +1022,18 @@ namespace StarSalvager
 
         }
 
-        private void SpawnObstacle(SELECTION_TYPE selectionType, string shapeName, string category,
-            ASTEROID_SIZE asteroidSize, int numRotations, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
-            bool inRandomYLevel)
+        private void SpawnObstacle(SELECTION_TYPE selectionType, 
+            string shapeName, 
+            string category,
+            ASTEROID_SIZE asteroidSize, 
+            int numRotations, 
+            Vector2 gridRegion, 
+            bool allowOverlap, 
+            bool forceSpawn,
+            int yLevel)
         {
             IObstacle obstacle;
             int radiusAround = 0;
-
 
             switch (selectionType)
             {
@@ -1103,7 +1088,7 @@ namespace StarSalvager
                 }
                 case SELECTION_TYPE.BUMPER:
                     Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                        .CreateObject<Bit>(BIT_TYPE.WHITE, 0);
+                        .CreateObject<Bit>(BIT_TYPE.BUMPER, 0);
                     AddObstacleToList(newBit);
 
                     obstacle = newBit;
@@ -1112,7 +1097,7 @@ namespace StarSalvager
                     throw new ArgumentOutOfRangeException(nameof(selectionType), selectionType, null);
             }
 
-            PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, inRandomYLevel, radiusAround);
+            PlaceMovableOnGrid(obstacle, gridRegion, allowOverlap, forceSpawn, yLevel, radiusAround);
         }
 
         public void AddObstacleToListAndParentToWorldRoot(IObstacle obstacle)
@@ -1160,12 +1145,12 @@ namespace StarSalvager
 
         //This finds the proper position for the new obstacle
         private void PlaceMovableOnGrid(IObstacle obstacle, Vector2 gridRegion, bool allowOverlap, bool forceSpawn,
-            bool inRandomYLevel, int radius = 0)
+            int yLevel, int radius = 0)
         {
             var minScanRadius = obstacle is Bit ? 0 : 1;
 
             Vector2? positionNullable = LevelManager.Instance.WorldGrid.GetLocalPositionOfRandomGridSquareInGridRegion(
-                Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, inRandomYLevel);
+                Constants.gridPositionSpacing, minScanRadius, gridRegion, allowOverlap, forceSpawn, yLevel);
             if (!positionNullable.HasValue)
             {
                 switch (obstacle)
@@ -1253,7 +1238,7 @@ namespace StarSalvager
         public void BounceObstacle(IObstacle obstacle, Vector2 direction, float spinSpeed, bool despawnOnEnd, bool spinning,
             bool arc)
         {
-            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.WHITE;
+            bool isBumper = obstacle is Bit bit && bit.Type == BIT_TYPE.BUMPER;
             
             //RemoveObstacleFromList(obstacle);
             float randomFactor = Random.Range(0.75f, 1.25f);

@@ -16,6 +16,7 @@ namespace StarSalvager.Factories
     {
         private readonly GameObject m_prefab;
         private readonly GameObject m_towPrefab;
+        
         private readonly ProjectileProfileScriptableObject m_projectileProfile;
 
         //============================================================================================================//
@@ -60,14 +61,14 @@ namespace StarSalvager.Factories
             Vector2 targetPosition,
             Vector2 shootDirection,
             float rangeBoost,
-            string collisionTag,
+            string[] collisionTags,
             IHealth vampirismCaster,
             float vampirismValue,
             bool shouldFlipSprite = false,
             bool shouldAlignToGridY = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, targetPosition, Vector2.zero, shootDirection,
-                rangeBoost, collisionTag, vampirismCaster, vampirismValue, shouldFlipSprite, shouldAlignToGridY);
+                rangeBoost, collisionTags, vampirismCaster, vampirismValue, shouldFlipSprite, shouldAlignToGridY);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -76,7 +77,7 @@ namespace StarSalvager.Factories
             Vector2 currentVelocity, 
             Vector2 shootDirection,
             float rangeBoost, 
-            string collisionTag, 
+            string[] collisionTags, 
             IHealth vampirismCaster,
             float vampirismValue,
             bool shouldFlipSprite = false,
@@ -107,7 +108,7 @@ namespace StarSalvager.Factories
                             towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkGameObject();
                             break;
                         case ProjectileProfileData.TowType.Bumper:
-                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.WHITE);
+                            towObject = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateGameObject(BIT_TYPE.BUMPER);
                             break;
                         case ProjectileProfileData.TowType.Mine:
                             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("Sleeper Mine");
@@ -145,7 +146,7 @@ namespace StarSalvager.Factories
 
                 projectile.Init(projectileProfile,
                     null,
-                    collisionTag,
+                    collisionTags,
                     projectileProfile.ProjectileDamage,
                     rangeBoost,
                     travelDirection.normalized,
@@ -173,13 +174,13 @@ namespace StarSalvager.Factories
             Vector2 shootDirection,
             float damage, 
             float rangeBoost, 
-            string collisionTag,
+            string[] collisionTags,
             IHealth vampirismCaster,
             float vampirismValue,
             bool shouldFlipSprite = false)
         {
             return CreateObjects<T>(projectileType, fromPosition, target, shootDirection, Vector2.zero, damage,
-                rangeBoost, collisionTag,vampirismCaster, vampirismValue, shouldFlipSprite);
+                rangeBoost, collisionTags,vampirismCaster, vampirismValue, shouldFlipSprite);
         }
         
         public T[] CreateObjects<T>(string projectileType, 
@@ -189,7 +190,7 @@ namespace StarSalvager.Factories
             Vector2 currentVelocity, 
             float damage,
             float rangeBoost, 
-            string collisionTag,
+            string[] collisionTags,
             IHealth vampirismCaster,
             float vampirismValue,
             bool shouldFlipSprite = false)
@@ -223,7 +224,7 @@ namespace StarSalvager.Factories
 
                 projectile.Init(projectileProfile,
                     target,
-                    collisionTag,
+                    collisionTags,
                     damage,
                     rangeBoost,
                     travelDirection.normalized,
@@ -241,9 +242,27 @@ namespace StarSalvager.Factories
             return projectiles.ToArray();
         }
 
+        public GrenadeProjectile CreateGrenadeProjectile(in Vector3 position, in Quaternion rotation)
+        {
+            return Object.Instantiate(m_projectileProfile.grenadeProjectilePrefab, position, rotation);
+        }
 
+
+        //Static Functions
         //====================================================================================================================//
 
+        public static ProjectileProfileData GetProfile(in string projectileId)
+        {
+#if UNITY_EDITOR
+            return (FactoryManager.Instance == null
+                ? Object.FindObjectOfType<FactoryManager>()
+                : FactoryManager.Instance).ProjectileProfile.GetProjectileProfileData(projectileId);
+#else
+            return FactoryManager.Instance.ProjectileProfile.GetProjectileProfileData(projectileId);
+
+#endif
+        }
+        
         private static IEnumerable<Vector2> GetFireDirections(ProjectileProfileData profileData, 
             Vector2 fromPosition,
             /*Vector2 targetPosition,*/
@@ -323,16 +342,7 @@ namespace StarSalvager.Factories
 
             return fireDirections;
         }
-
-        //Get the location that enemy is firing at, then create the firing projectile from the factory
-        /*private static Vector2 GetSpiralAttackDirection(Vector2 fromPosition, ref Vector2 spiralAttackDirection)
-        {
-            spiralAttackDirection =
-                GetDestinationForRotatePositionAroundPivot(spiralAttackDirection + fromPosition,
-                    fromPosition, Vector3.forward * 30) - (Vector3)fromPosition;
-
-            return spiralAttackDirection;
-        }*/
+        
         
         //Rotate point around pivot by angles amount
         private static Vector3 GetDestinationForRotatePositionAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
@@ -341,17 +351,8 @@ namespace StarSalvager.Factories
             direction = Quaternion.Euler(angles) * direction;
             return direction + pivot;
         }
-        
-        /*private static Vector3 GetDestinationForRotatePositionAroundPivotAtDistance(Vector3 point, Vector3 pivot,
-            Vector3 angles, float distance)
-        {
-            Vector3 direction = point - pivot;
-            direction.Normalize();
-            direction *= distance;
-            direction = Quaternion.Euler(angles) * direction;
-            return direction + pivot;
-        }*/
-        
+
+        //====================================================================================================================//
         
     }
 }

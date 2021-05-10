@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Debugging;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -101,7 +102,7 @@ namespace StarSalvager
             FreezeTime -= Time.deltaTime;
             
             //If the change sets this no longer frozen, change the color back
-            if(FreezeTime <= 0) SetColor(Color.white);
+            if(FreezeTime <= 0) SetSprite(Type.GetSprite(level));
         }
 
         //IAttachable Functions
@@ -228,9 +229,7 @@ namespace StarSalvager
             level = Mathf.Clamp(level + amount, 0, 4);
             renderer.sortingOrder = level;
 
-            //Sets the gameObject info (Sprite)
-            var bit = this;
-            FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
+            UpdateBitData();
         }
 
         public void DecreaseLevel(int amount = 1)
@@ -238,10 +237,21 @@ namespace StarSalvager
             level = Mathf.Clamp(level - amount, 0, 4);
             renderer.sortingOrder = level;
 
-            //Sets the gameObject info (Sprite)
+            UpdateBitData();
+        }
+
+        private void UpdateBitData()
+        {
+            UpdateBitData(Type, level);
+        }
+        public void UpdateBitData(in BIT_TYPE newType, in int newLevel)
+        {
+            Type = newType;
+            level = newLevel;
             var bit = this;
             FactoryManager.Instance.GetFactory<BitAttachableFactory>().UpdateBitData(Type, level, ref bit);
         }
+        
 
         //ICanFreeze Functions
         //====================================================================================================================//
@@ -253,7 +263,7 @@ namespace StarSalvager
             
             FreezeTime = time;
             
-            if(Frozen) SetColor(Color.cyan);
+            if(Frozen) SetSprite(FactoryManager.Instance.BitProfileData.FrozenSprite);
         }
 
         //ISaveable Functions

@@ -6,9 +6,14 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Effect_Profile", menuName = "Star Salvager/Scriptable Objects/Effect Profile")]
     public class EffectProfileScriptableObject : ScriptableObject
     {
-        //Bot Effect Prefabs
+        //Simple Sprite Prefab
         //====================================================================================================================//
         
+        [SerializeField, Required, BoxGroup("Basic")]
+        public GameObject simpleSpritePrefab;
+        
+        //Bot Effect Prefabs
+        //====================================================================================================================//
 
         [SerializeField, Required, BoxGroup("Bot")]
         public GameObject alertIconPrefab;
@@ -58,6 +63,8 @@ namespace StarSalvager.ScriptableObjects
         [SerializeField, Required, BoxGroup("Effects/Bits")]
         public GameObject bitRedParticlePrefab;
         [SerializeField, Required, BoxGroup("Effects/Bits")]
+        public GameObject bitWhiteParticlePrefab;
+        [SerializeField, Required, BoxGroup("Effects/Bits")]
         public GameObject bitYellowParticlePrefab;
 
         //Part Effects
@@ -79,6 +86,9 @@ namespace StarSalvager.ScriptableObjects
         
         [SerializeField, Required, BoxGroup("Part Effects")]
         public GameObject shieldEffectPrefab;
+        
+        [SerializeField, Required, BoxGroup("Part Effects")]
+        public GameObject blasterLineEffectPrefab;
 
         //Particle Effect Prefabs
         //====================================================================================================================//

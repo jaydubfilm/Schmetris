@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -316,7 +317,7 @@ namespace StarSalvager.AI
         protected override void FireAttack()
         {
             var currentPosition = transform.position;
-            
+
             if (!CameraController.IsPointInCameraRect(currentPosition, Constants.VISIBLE_GAME_AREA))
                 return;
 
@@ -327,7 +328,7 @@ namespace StarSalvager.AI
             Vector2 targetLocation = m_enemyData.FireAtTarget ? playerLocation : Vector2.down;
 
             Vector2 shootDirection = m_enemyData.FireAtTarget
-                ? (targetLocation - (Vector2)transform.position).normalized
+                ? (targetLocation - (Vector2) transform.position).normalized
                 : Vector2.down;
 
 
@@ -338,7 +339,7 @@ namespace StarSalvager.AI
                     targetLocation,
                     shootDirection,
                     1f,
-                    "Player",
+                    new[] {TagsHelper.PLAYER},
                     null,
                     0f,
                     false,
