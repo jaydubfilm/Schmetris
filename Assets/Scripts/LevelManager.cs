@@ -166,7 +166,7 @@ namespace StarSalvager
         private GameObject _thrusterEffectObject;
 
 
-        private const int WARNING_COUNT = 4;
+        private const int WARNING_COUNT = 1;
         private int _audioCountDown = WARNING_COUNT;
         private float _afterWaveTimer;
 
@@ -477,7 +477,7 @@ namespace StarSalvager
                 return;
             }
 
-            AudioController.PlaySound(SOUND.END_WAVE);
+            //AudioController.PlaySound(SOUND.END_WAVE);
 
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
             //EnemyManager.SetEnemiesFallEndLevel();
@@ -838,7 +838,8 @@ namespace StarSalvager
 
             var timeLeft = _afterWaveTimer;
 
-            if (_audioCountDown < 1 || timeLeft >= _audioCountDown)
+            if (_audioCountDown < 1 || timeLeft >= 5f)
+            //if (_audioCountDown < 1 || timeLeft >= _audioCountDown)
                 return;
 
             _audioCountDown--;
