@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard
 {
+    [System.Obsolete]
     public class SaveGameUI : MonoBehaviour
     {
         public static readonly string DATETIME_FORMAT = "ddd, dd MMMM yyyy, hh:mm tt";
@@ -42,11 +43,11 @@ namespace StarSalvager.UI.Scrapyard
         // Start is called before the first frame update
         private void Start()
         {
-            if (IsLoadMode)
+            /*if (IsLoadMode)
                 SaveButton.onClick.AddListener(LoadPressed);
             else
                 SaveButton.onClick.AddListener(SavePressed);
-            CancelButton.onClick.AddListener(CloseMenu);
+            CancelButton.onClick.AddListener(CloseMenu);*/
         }
 
         private void OnEnable()
@@ -127,7 +128,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void LoadPressed()
         {
-            if (_selectedSaveFileData.HasValue)
+            /*if (_selectedSaveFileData.HasValue)
             {
                 PlayerDataManager.SetCurrentSaveSlotIndex(_selectedSaveFileData.Value.SaveSlotIndex);
 
@@ -135,7 +136,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 FactoryManager.Instance.currentModularDataIndex = 0;
                 SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
-            }
+            }*/
         }
 
         private void SavePressed()

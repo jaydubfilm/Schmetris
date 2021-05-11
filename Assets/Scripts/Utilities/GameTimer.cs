@@ -16,7 +16,9 @@ namespace StarSalvager.Utilities
 
         private static List<IPausable> m_IPausables = new List<IPausable>();
 
-        private static DateTime startingTime = System.DateTime.Now;
+
+        public static TimeSpan GetTimePlayed => DateTime.Now - startingTime;
+        private static DateTime startingTime = DateTime.Now;
 
         public static void SetPaused(bool value)
         {
@@ -43,20 +45,6 @@ namespace StarSalvager.Utilities
         public static void RemovePausable(IPausable pausable)
         {
             m_IPausables.Remove(pausable);
-        }
-
-        public static void CustomOnApplicationQuit()
-        {
-            DateTime currentTime = System.DateTime.Now;
-            TimeSpan timePlayed = currentTime - startingTime;
-
-            Dictionary<string, object> applicationQuitAnalyticsDictionary = new Dictionary<string, object>();
-            //applicationQuitAnalyticsDictionary.Add("User ID", Globals.UserID);
-            //applicationQuitAnalyticsDictionary.Add("Session ID", Globals.SessionID);
-            //applicationQuitAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
-            applicationQuitAnalyticsDictionary.Add(AnalyticsManager.TotalPlaytime, timePlayed.TotalSeconds);
-            //applicationQuitAnalyticsDictionary.Add("End Time", DateTime.Now.ToString());
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationQuit, eventDataDictionary: applicationQuitAnalyticsDictionary);
         }
     }
 }

@@ -28,9 +28,9 @@ namespace StarSalvager.Values
             {
                 [new Vector2Int(0, 0)] = BIT_TYPE.GREEN,
                 [new Vector2Int(1, 0)] = BIT_TYPE.RED,
-                [new Vector2Int(0, 1)] = BIT_TYPE.BLUE,
-                [new Vector2Int(-1, 0)] = BIT_TYPE.GREY,
-                [new Vector2Int(0, -1)] = BIT_TYPE.YELLOW
+                [new Vector2Int(0, 1)] = BIT_TYPE.YELLOW,
+                [new Vector2Int(-1, 0)] = BIT_TYPE.BLUE,
+                [new Vector2Int(0, -1)] = BIT_TYPE.GREY
             };
         
         //Properties
@@ -423,6 +423,12 @@ namespace StarSalvager.Values
 
         public void RecordCombo(in ComboRecordData comboRecordData)
         {
+            //FIXME I want this to be cleaner
+            if (GameManager.IsState(GameState.LEVEL))
+            {
+                LevelManager.Instance.WaveEndSummaryData.AddCombo();
+            }
+            
             if (CombosMade.ContainsKey(comboRecordData))
             {
                 CombosMade[comboRecordData]++;

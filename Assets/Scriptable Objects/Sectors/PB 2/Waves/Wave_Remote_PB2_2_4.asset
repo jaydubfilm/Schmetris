@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wave_Remote_PB2_2_4
   m_EditorClassIdentifier: 
   WaveSeed: 0
+  WaveXP: 420
   BonusShapes:
   - m_selectionType: 1
     m_shapeName: 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StarSalvager;
 using StarSalvager.Utilities;
@@ -8,36 +9,41 @@ using UnityEngine;
 
 public class WaveEndSummaryData
 {
-    public string WaveEndTitle;
+    public string WaveEndTitle => $"Wave {Wave + 1} Complete";
+    
     public int NumBonusShapesMatched;
     public int NumTotalBonusShapesSpawned;
+
+    public int CombosMade { get; private set; }
     
-    public int XPGained;
-    public int NumLevelsGained;
-    
-    
-    private int _numEnemiesKilled;
-    private int _numTotalEnemiesSpawned;
+    public int XPGained { get; private set; }
+    public int NumLevelsGained { get; private set; }
+
+
+    public int NumEnemiesKilled { get; private set; }
+    public int NumTotalEnemiesSpawned { get; private set; }
     private readonly Dictionary<string, int> _dictEnemiesKilled;
     private readonly Dictionary<string, int> _dictTotalEnemiesSpawned;
 
     private readonly List<string> _blueprintsUnlockedStrings;
 
     private readonly Dictionary<BIT_TYPE, float> _resourcesConsumed;
-    
-    public int CompletedSector;
-    public int CompletedWave;
+
+    public readonly int Sector;
+    public readonly int Wave;
 
 
     //====================================================================================================================//
     
-    public WaveEndSummaryData()
+    public WaveEndSummaryData(in int sector, in int wave)
     {
-        WaveEndTitle = string.Empty;
+        Sector = sector;
+        Wave = wave;
+        
         NumBonusShapesMatched = 0;
         NumTotalBonusShapesSpawned = 0;
-        _numEnemiesKilled = 0;
-        _numTotalEnemiesSpawned = 0;
+        NumEnemiesKilled = 0;
+        NumTotalEnemiesSpawned = 0;
         _dictEnemiesKilled = new Dictionary<string, int>();
         _dictTotalEnemiesSpawned = new Dictionary<string, int>();
         XPGained = 0;
@@ -56,7 +62,7 @@ public class WaveEndSummaryData
         if (NumTotalBonusShapesSpawned > 0)
             outStringList.Add($"{GetAsTitle("Bonus Shapes Matched")} {NumBonusShapesMatched}/{NumTotalBonusShapesSpawned}");
 
-        if (_numTotalEnemiesSpawned > 0)
+        if (NumTotalEnemiesSpawned > 0)
         {
             outStringList.Add($"{GetAsTitle("Enemies Killed")}");
             foreach (var keyValuePair in _dictTotalEnemiesSpawned)
@@ -105,6 +111,11 @@ public class WaveEndSummaryData
     {
         XPGained += xpAmount;
     }
+    
+    public void AddCombo()
+    {
+        CombosMade++;
+    }
 
     public void AddEnemyKilled(string enemyName)
     {
@@ -114,7 +125,7 @@ public class WaveEndSummaryData
         }
         
         _dictEnemiesKilled[enemyName]++;
-        LevelManager.Instance.WaveEndSummaryData._numEnemiesKilled++;
+        LevelManager.Instance.WaveEndSummaryData.NumEnemiesKilled++;
 
 
     }
@@ -125,9 +136,9 @@ public class WaveEndSummaryData
         }
         
         _dictTotalEnemiesSpawned[enemyName]++;
-        LevelManager.Instance.WaveEndSummaryData._numTotalEnemiesSpawned++;}
+        LevelManager.Instance.WaveEndSummaryData.NumTotalEnemiesSpawned++;}
 
-    public void AddUnlockedBlueprint(string bluePrintName)
+    /*public void AddUnlockedBlueprint(string bluePrintName)
     {
         _blueprintsUnlockedStrings.Add(bluePrintName);
     }
@@ -141,16 +152,17 @@ public class WaveEndSummaryData
             _resourcesConsumed.Add(type, 0f);
 
         _resourcesConsumed[type] += amount;
-    }
+    }*/
 
     //====================================================================================================================//
 
     public Dictionary<string, object> GetWaveEndSummaryAnalytics()
     {
-        var enemiesKilledPercentage = 0.0f;
-        if (_numTotalEnemiesSpawned > 0)
+        throw new NotImplementedException();
+        /*var enemiesKilledPercentage = 0.0f;
+        if (NumTotalEnemiesSpawned > 0)
         {
-            enemiesKilledPercentage = _numEnemiesKilled / (float)_numTotalEnemiesSpawned;
+            enemiesKilledPercentage = NumEnemiesKilled / (float)NumTotalEnemiesSpawned;
         }
         
         var bonusShapesPercentage = 0.0f;
@@ -163,12 +175,12 @@ public class WaveEndSummaryData
         {
             {AnalyticsManager.GearsGained, XPGained },
             {AnalyticsManager.LevelsGained, NumLevelsGained },
-            {AnalyticsManager.EnemiesKilled, _numEnemiesKilled },
+            {AnalyticsManager.EnemiesKilled, NumEnemiesKilled },
             {AnalyticsManager.EnemiesKilledPercentage, enemiesKilledPercentage },
             {AnalyticsManager.BonusShapesMatched, NumBonusShapesMatched },
             {AnalyticsManager.BonusShapesMatchedPercentage, bonusShapesPercentage },
             {AnalyticsManager.BlueprintsUnlocked, _blueprintsUnlockedStrings.Count }
-        };
+        };*/
     }
     
 }
