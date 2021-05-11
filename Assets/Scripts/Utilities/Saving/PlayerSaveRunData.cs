@@ -255,7 +255,9 @@ namespace StarSalvager.Utilities.Saving
 
         public List<PatchData> GetPurchasedPatches()
         {
-            return new List<PatchData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
+            return _wreckPatchOptions.IsNullOrEmpty()
+                ? null
+                : new List<PatchData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
         }
 
         #endregion //Patches

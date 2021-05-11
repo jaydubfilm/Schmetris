@@ -65,6 +65,7 @@ namespace StarSalvager.Utilities
         private const string WAVE_END_EVENT = "wave_end";
         
         private const string PICKED_PART_EVENT = "picked_part";
+        private const string PURCHASE_PATCH_EVENT = "purchased_patch";
 
         private const string WRECK_START_EVENT = "wreck_start";
         private const string WRECK_END_EVENT = "wreck_end";
@@ -141,7 +142,7 @@ namespace StarSalvager.Utilities
         {
             var eventData = new Dictionary<string, object>
             {
-                {TIME_PLAYED, GameTimer.GetTimePlayed.TotalSeconds}
+                {TIME_PLAYED, Mathf.RoundToInt((float)GameTimer.GetTimePlayed.TotalSeconds)}
             };
             
             TryTriggerEvent(APPLICATION_END_EVENT, eventData);
@@ -198,7 +199,7 @@ namespace StarSalvager.Utilities
             
             var eventData = new Dictionary<string, object>
             {
-                {EVENT_REASON, reason},
+                {EVENT_REASON, reason.ToString()},
 
                 {CURRENT_SECTOR, waveEndSummaryData.Sector},
                 {CURRENT_WAVE, waveEndSummaryData.Wave},
@@ -231,6 +232,19 @@ namespace StarSalvager.Utilities
 
             TryTriggerEvent(PICKED_PART_EVENT, eventData);
         }
+
+        public static void PurchasedPatchEvent(in PART_TYPE partType, in PatchData patchData)
+        {
+            var eventData = new Dictionary<string, object>
+            {
+                {nameof(PART_TYPE), partType.ToString()},
+                {nameof(PATCH_TYPE), ((PATCH_TYPE)patchData.Type).ToString()},
+                {"patch_level", patchData.Level}
+            };
+            
+            TryTriggerEvent(PURCHASE_PATCH_EVENT, eventData);
+        }
+        
         public static void WreckStartEvent()
         {
             var eventData = new Dictionary<string, object>
@@ -242,7 +256,7 @@ namespace StarSalvager.Utilities
                 {CURRENT_SILVER, PlayerDataManager.GetSilver()},
             };
             
-            TryTriggerEvent(PICKED_PART_EVENT, eventData);
+            TryTriggerEvent(WRECK_START_EVENT, eventData);
         }
         public static void WreckEndEvent(in REASON reason)
         {
@@ -253,25 +267,31 @@ namespace StarSalvager.Utilities
                 case REASON.QUIT:
                     eventData = new Dictionary<string, object>
                     {
-                        {EVENT_REASON, reason}
+                        {EVENT_REASON, reason.ToString()}
                     };
                     break;
                 case REASON.LEAVE:
                     var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
                     var spentSilver = 0;
                     var spentGears = 0;
-                    PlayerDataManager.PurchasedPatches.ForEach(x =>
+
+                    var purchasedPatches = PlayerDataManager.PurchasedPatches;
+
+                    if (!purchasedPatches.IsNullOrEmpty())
                     {
-                        var remoteData = patchRemoteData.GetRemoteData(x.Type);
+                        foreach (var patchData in purchasedPatches)
+                        {
+                            var remoteData = patchRemoteData.GetRemoteData(patchData.Type);
                         
-                        spentSilver += remoteData.Levels[x.Level].silver;
-                        spentGears += Mathf.RoundToInt(remoteData.Levels[x.Level].gears *
-                                 PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST));
-                    });
+                            spentSilver += remoteData.Levels[patchData.Level].silver;
+                            spentGears += Mathf.RoundToInt(remoteData.Levels[patchData.Level].gears *
+                                                           PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST));
+                        }
+                    }
 
                     eventData = new Dictionary<string, object>
                     {
-                        {EVENT_REASON, reason},
+                        {EVENT_REASON, reason.ToString()},
                         {SPENT_GEARS, spentGears},
                         {SPENT_SILVER, spentSilver},
                     };
