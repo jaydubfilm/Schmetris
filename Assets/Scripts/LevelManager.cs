@@ -166,7 +166,7 @@ namespace StarSalvager
         private GameObject _thrusterEffectObject;
 
 
-        private const int WARNING_COUNT = 4;
+        private const int WARNING_COUNT = 1;
         private int _audioCountDown = WARNING_COUNT;
         private float _afterWaveTimer;
 
@@ -249,7 +249,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             m_worldGrid = null;
-            m_waveEndSummaryData = new WaveEndSummaryData();
+            m_waveEndSummaryData = new WaveEndSummaryData(Globals.CurrentRingIndex, Globals.CurrentWave);
 
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
@@ -313,7 +313,7 @@ namespace StarSalvager
                 return;
             }
 
-            SetupLevelAnalytics();
+            AnalyticsManager.WaveStartEvent(m_waveEndSummaryData.Sector, m_waveEndSummaryData.Wave);
 
             Random.InitState(CurrentWaveData.WaveSeed);
             Debug.Log("SET SEED " + CurrentWaveData.WaveSeed);
@@ -323,17 +323,6 @@ namespace StarSalvager
             SetBotEnterScreen(true);
 
             //CheckPlayerWater();
-        }
-
-        private void SetupLevelAnalytics()
-        {
-            Dictionary<string, object> levelStartAnalyticsDictionary = new Dictionary<string, object>
-            {
-
-            };
-            string levelStartString = $"{Globals.CurrentWave}";
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelStart,
-                eventDataDictionary: levelStartAnalyticsDictionary, eventDataParameter: levelStartString);
         }
 
         #endregion //Level Init Functions
@@ -477,7 +466,7 @@ namespace StarSalvager
                 return;
             }
 
-            AudioController.PlaySound(SOUND.END_WAVE);
+            //AudioController.PlaySound(SOUND.END_WAVE);
 
             GameManager.SetCurrentGameState(GameState.LevelEndWave);
             //EnemyManager.SetEnemiesFallEndLevel();
@@ -486,12 +475,6 @@ namespace StarSalvager
 
             //ObstacleManager.IncreaseSpeedAllOffGridMoving(3.0f);
             NumWavesInRow++;
-
-            WaveEndSummaryData.CompletedSector = 0;
-            WaveEndSummaryData.CompletedWave = Globals.CurrentWave;
-            WaveEndSummaryData.WaveEndTitle = $"Wave {Globals.CurrentWave + 1} Complete";
-
-            //Toast.AddToast("Wave Complete!");
 
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
@@ -579,20 +562,22 @@ namespace StarSalvager
                 {
 
                     GameManager.SetCurrentGameState(GameState.UniverseMap);
-                    ProcessScrapyardUsageBeginAnalytics();
+                    //ProcessScrapyardUsageBeginAnalytics();
                     PlayerDataManager.SetCanChoosePart(true);
 
                     ScreenFade.Fade(() => { SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.LEVEL); });
                 },
                 "Continue");
 
-            Dictionary<string, object> levelCompleteAnalyticsDictionary =
-                WaveEndSummaryData.GetWaveEndSummaryAnalytics();
-            string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
-                eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);
+            //Dictionary<string, object> levelCompleteAnalyticsDictionary = WaveEndSummaryData.GetWaveEndSummaryAnalytics();
+            
+            //string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
+            
+            AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.WIN);
+            PlayerDataManager.SetSectorWave(WaveEndSummaryData.Sector, WaveEndSummaryData.Wave);
+            /*AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
+                eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);*/
 
-            m_waveEndSummaryData = new WaveEndSummaryData();
             ObstacleManager.MoveToNewWave();
             EnemyManager.MoveToNewWave();
             EnemyManager.SetEnemiesInert(false);
@@ -724,14 +709,17 @@ namespace StarSalvager
                 tempDictionary.Add((int) bitType, PlayerDataManager.GetResource(bitType).Ammo);
             }
 
-            Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
+            /*Dictionary<string, object> levelLostAnalyticsDictionary = new Dictionary<string, object>
             {
                 {AnalyticsManager.DeathCause, deathMethod},
                 {AnalyticsManager.LevelTime, m_levelTimer + m_waveTimer},
             };
             string levelLostString = $"Wave {Globals.CurrentWave + 1}";
             AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelLost,
-                eventDataDictionary: levelLostAnalyticsDictionary, eventDataParameter: levelLostString);
+                levelLostAnalyticsDictionary,
+                levelLostString);*/
+
+            AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.DEATH);
 
             SessionDataProcessor.Instance.PlayerKilled();
             SessionDataProcessor.Instance.EndActiveWave();
@@ -808,6 +796,8 @@ namespace StarSalvager
         //Effects Functions
         //====================================================================================================================//
 
+        #region Effects
+
         private void CreateThrustEffect(in Bot bot)
         {
             if (_thrusterEffectObject != null)
@@ -838,12 +828,15 @@ namespace StarSalvager
 
             var timeLeft = _afterWaveTimer;
 
-            if (_audioCountDown < 1 || timeLeft >= _audioCountDown)
+            if (_audioCountDown < 1 || timeLeft >= 5f)
+                //if (_audioCountDown < 1 || timeLeft >= _audioCountDown)
                 return;
 
             _audioCountDown--;
             AudioController.PlaySound(SOUND.END_WAVE_COUNT);
         }
+
+        #endregion //Effects
 
         //IReset Functions
         //====================================================================================================================//
@@ -887,31 +880,6 @@ namespace StarSalvager
         }
 
         #endregion //IPausable
-
-        //Analytics Functions
-        //============================================================================================================//
-
-        #region Analytics Functions
-
-        public void ProcessScrapyardUsageBeginAnalytics()
-        {
-            /*Dictionary<string, object> scrapyardUsageBeginAnalyticsDictionary = new Dictionary<string, object>
-            {
-                {"Sector Number", Globals.CurrentSector}
-            };*/
-            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ScrapyardUsageBegin, scrapyardUsageBeginAnalyticsDictionary);
-        }
-
-        private void ProcessLevelCompleteAnalytics()
-        {
-            Dictionary<string, object> levelCompleteAnalyticsDictionary = new Dictionary<string, object>
-            {
-                {"Level Time", m_levelTimer + m_waveTimer}
-            };
-            //AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete, levelCompleteAnalyticsDictionary, Values.Globals.CurrentSector);
-        }
-
-        #endregion //Analytics Functions
 
         //Unity Editor
         //====================================================================================================================//

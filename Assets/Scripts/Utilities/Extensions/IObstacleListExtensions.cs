@@ -150,4 +150,15 @@ namespace StarSalvager.Utilities.Extensions
             return iEnumerable == null || !iEnumerable.Any();
         }
     }
+
+    public static class DictionaryExtensions
+    {
+        public static void AddRange<T1, T2>(this Dictionary<T1, T2> dictionary, IDictionary<T1, T2> collection)
+        {
+            foreach (var kvp in collection)
+            {
+                dictionary.Add(kvp.Key, kvp.Value);
+            }
+        }
+    }
 }

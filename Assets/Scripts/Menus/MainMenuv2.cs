@@ -503,6 +503,7 @@ namespace StarSalvager.UI
                         
                         PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
+                        AnalyticsManager.AbandonRunEvent();
                         SetupAccountMenuWindow();
                     });
             });
@@ -557,6 +558,8 @@ namespace StarSalvager.UI
             switch (gameType)
             {
                 case GAME_TYPE.CLASSIC:
+                    
+                    AnalyticsManager.StartNewRunEvent();
                     PlayerDataManager.StartNewPlayerRun();
                     /*var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
                     

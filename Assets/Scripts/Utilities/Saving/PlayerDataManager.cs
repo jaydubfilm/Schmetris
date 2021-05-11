@@ -103,6 +103,8 @@ namespace StarSalvager.Utilities.Saving
 
         #region Run Status
 
+        public static int GetRunCount() => PlayerAccountData.TotalRuns; 
+
         public static bool ShouldShownSummary()
         {
             if (!HasRunData)
@@ -196,7 +198,7 @@ namespace StarSalvager.Utilities.Saving
 
             var bitsToRemove = droneBlockData
                 .OfType<BitData>()
-                .Where(x => x.Level < removeBelowLevel)
+                .Where(x => x.Level < removeBelowLevel && x.Type != (int)BIT_TYPE.WHITE)
                 .OrderBy(x => x.Coordinate.magnitude)
                 .ToList();
 
@@ -313,7 +315,7 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Patches
-
+        public static IReadOnlyList<PatchData> PurchasedPatches => PlayerRunData.GetPurchasedPatches();
         public static IReadOnlyList<PatchData> CurrentPatchOptions => PlayerRunData.CurrentPatchOptions;
         public static void SetCurrentPatchOptions(in IEnumerable<PatchData> patches) => PlayerRunData.SetCurrentPatchOptions(patches);
         public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
@@ -416,6 +418,9 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.currentNode = node;
         }
+
+        
+        
         public static void AddCompletedNode(int node)
         {
             PlayerRunData.playerPreviouslyCompletedNodes.Add(node);
@@ -432,6 +437,16 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Map Nodes
+
+        //Progress Data
+        //====================================================================================================================//
+        public static int GetSector() => PlayerRunData.currentSector;
+        public static int GetWave() => PlayerRunData.currentWave;
+        
+        public static void SetSectorWave(in int sector, in int wave)
+        {
+            PlayerRunData.SetSectorWave(sector, wave);
+        }
 
         //Player Run Data Recording
         //====================================================================================================================//

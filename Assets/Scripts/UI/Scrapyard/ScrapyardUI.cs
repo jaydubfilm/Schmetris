@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -14,6 +15,7 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -206,6 +208,7 @@ namespace StarSalvager.UI.Scrapyard
                                 
                                 _windows[(int)Window.Settings].SetActive(false);
                                 SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
+                                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
                             });
 
                             return;
@@ -286,6 +289,7 @@ namespace StarSalvager.UI.Scrapyard
             ScreenFade.Fade(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
             });
         }
 

@@ -442,13 +442,13 @@ MonoBehaviour:
     description: 
     dataTest:
     - key: Health
-      value: 20
+      value: 40
     - key: Degrees
       value: 45
     - key: Cooldown
       value: 1.5
     - key: Radius
-      value: 3
+      value: 5
     - key: Heal
       value: 5
     isManual: 0

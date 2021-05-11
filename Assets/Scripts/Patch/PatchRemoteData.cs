@@ -24,11 +24,9 @@ namespace StarSalvager.Factories.Data
             public int silver;
             [TableColumnWidth(300, true), Range(0f, 1f)]
             public float multiplier;
-
-#if UNITY_EDITOR
+            
             [DisplayAsString, PropertyOrder(-100), TableColumnWidth(50, false)]
             public int level;
-#endif
         }
 
         //Properties
