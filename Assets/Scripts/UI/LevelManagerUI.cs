@@ -156,7 +156,7 @@ namespace StarSalvager.UI
             betweenWavesContinueButton.onClick.AddListener(() =>
             {
                 GameManager.SetCurrentGameState(GameState.UniverseMap);
-                m_levelManager.ProcessScrapyardUsageBeginAnalytics();
+                //m_levelManager.ProcessScrapyardUsageBeginAnalytics();
                 ToggleBetweenWavesUIActive(false);
                 
                 ScreenFade.Fade(() =>
@@ -165,7 +165,7 @@ namespace StarSalvager.UI
                 });
             });
 
-            betweenWavesScrapyardButton.onClick.AddListener(() =>
+            /*betweenWavesScrapyardButton.onClick.AddListener(() =>
             {
                 GameManager.SetCurrentGameState(GameState.Scrapyard);
                 m_levelManager.ProcessScrapyardUsageBeginAnalytics();
@@ -176,19 +176,19 @@ namespace StarSalvager.UI
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
                 
-            });
+            });*/
 
-            pauseWindowScrapyardButton.onClick.AddListener(() =>
+            /*pauseWindowScrapyardButton.onClick.AddListener(() =>
             {
                 GameManager.SetCurrentGameState(GameState.Scrapyard);
                 ToggleBetweenWavesUIActive(false);
-                m_levelManager.ProcessScrapyardUsageBeginAnalytics();
+                //m_levelManager.ProcessScrapyardUsageBeginAnalytics();
 
                 ScreenFade.Fade(() =>
                 {
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
-            });
+            });*/
 
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
@@ -217,7 +217,7 @@ namespace StarSalvager.UI
                     });
             });
 
-            deathWindowRetryButton.onClick.AddListener(() =>
+            /*deathWindowRetryButton.onClick.AddListener(() =>
             {
                 m_levelManager.RestartLevel();
             });
@@ -230,7 +230,7 @@ namespace StarSalvager.UI
                 {
                     SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
                 });
-            });
+            });*/
             
             resumeButton.onClick.AddListener(() =>
             {

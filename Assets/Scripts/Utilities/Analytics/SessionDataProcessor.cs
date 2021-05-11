@@ -52,12 +52,12 @@ namespace StarSalvager.Utilities.Analytics
             };
         }
 
-        private void OnApplicationQuit()
-        {
-            Files.ExportSessionData(playerID, _currentSession);
-        }
-
         //====================================================================================================================//
+
+        public static void ExportSessionData()
+        {
+            Files.ExportSessionData(Instance.playerID,Instance. _currentSession);
+        }
         
         public void StartNewWave(int sector, int wave, IEnumerable<IBlockData> initialBot)
         {

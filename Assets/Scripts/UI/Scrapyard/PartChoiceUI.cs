@@ -7,11 +7,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -109,6 +111,16 @@ namespace StarSalvager.UI.Scrapyard
 
         private void InitButtons()
         {
+            void RecordSelectedParts(in int index)
+            {
+                var outDict = new Dictionary<PART_TYPE, bool>();
+                for (int i = 0; i < selectionUis.Length; i++)
+                {
+                    outDict.Add(GetPartType(i), i == index);
+                }
+                
+                AnalyticsManager.PickedPartEvent(outDict);
+            }
             PART_TYPE GetPartType(in int index)
             {
                 return _partOptions[index];
@@ -148,12 +160,15 @@ namespace StarSalvager.UI.Scrapyard
                 CloseWindow();
             }
 
+            //--------------------------------------------------------------------------------------------------------//
+            
             for (int i = 0; i < selectionUis.Length; i++)
             {
                 var index = i;
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
                     CreatePart(GetPartType(index));
+                    RecordSelectedParts(index);
                 });
             }
 
@@ -162,6 +177,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 CloseWindow();
                 PlayerDataManager.AddGears(10);
+                RecordSelectedParts(-1);
             });
         }
 

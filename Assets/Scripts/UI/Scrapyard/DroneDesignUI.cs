@@ -213,6 +213,7 @@ namespace StarSalvager.UI.Scrapyard
             launchButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
             });
             
             closePartUpgradeWindowButton.onClick.AddListener(() =>

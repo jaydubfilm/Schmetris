@@ -423,6 +423,12 @@ namespace StarSalvager.Values
 
         public void RecordCombo(in ComboRecordData comboRecordData)
         {
+            //FIXME I want this to be cleaner
+            if (GameManager.IsState(GameState.LEVEL))
+            {
+                LevelManager.Instance.WaveEndSummaryData.AddCombo();
+            }
+            
             if (CombosMade.ContainsKey(comboRecordData))
             {
                 CombosMade[comboRecordData]++;
