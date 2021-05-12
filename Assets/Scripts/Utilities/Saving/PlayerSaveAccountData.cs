@@ -103,7 +103,7 @@ namespace StarSalvager.Values
                 [HINT.GUN] = false,
                 //[HINT.FUEL] = false,
                 //[HINT.HOME] = false,
-                [HINT.BONUS] = false,
+                //[HINT.BONUS] = false,
                 [HINT.MAGNET] = false,
 
                 //[HINT.GEARS] = false,
@@ -112,7 +112,8 @@ namespace StarSalvager.Values
 
                 [HINT.PARASITE] = false,
                 [HINT.DAMAGE] = false,
-
+                [HINT.WHITE] = false,
+                [HINT.SILVER] = false,
             };
             _upgrades = new[]
             {

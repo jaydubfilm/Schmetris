@@ -3213,6 +3213,8 @@ _isShifting = true;
                         {
                             GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
                         }
+
+                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position);
                     }
                     else if (bit != null)
                     {
@@ -3230,6 +3232,8 @@ _isShifting = true;
                                 //We have to override the level value here to ensure that the ammo given is
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
+                                
+                                HintManager.TryShowHint(HINT.WHITE, 0.5f, bit);
                                 break;
                         }
 
