@@ -69,7 +69,6 @@ namespace StarSalvager.AI
         }
 
         //====================================================================================================================//
-        
 
         #region Movement
 
@@ -218,6 +217,18 @@ namespace StarSalvager.AI
 
                 var damageToApply = damage * Time.deltaTime;
 
+                var playSound = false;
+                if (_attackEffectTimer <= 0f)
+                {
+                    _attackEffectTimer = 0.5f;
+                    CreateExplosionEffect(raycastHit2D.point);
+                    playSound = true;
+                }
+                else
+                {
+                    _attackEffectTimer -= Time.deltaTime;
+                }
+
                 switch (botBase)
                 {
                     case ForceField forceField:
@@ -225,7 +236,7 @@ namespace StarSalvager.AI
                         break;
                     case Bot bot:
                         var closestAttachable = bot.GetClosestAttachable(raycastHit2D.point);
-                        bot.TryHitAt(closestAttachable, damageToApply);
+                        bot.TryHitAt(closestAttachable, damageToApply, playSound);
                         break;
                     case DecoyDrone decoyDrone:
                         decoyDrone.TryHitAt(damageToApply);
@@ -236,22 +247,6 @@ namespace StarSalvager.AI
               
 
                 SetBeamLengthPosition(Position, Vector2.down, raycastHit2D.distance);
-
-                if (_attackEffectTimer <= 0f)
-                {
-                    _attackEffectTimer = 0.5f;
-                    CreateExplosionEffect(raycastHit2D.point);
-                }
-                else
-                {
-                    _attackEffectTimer -= Time.deltaTime;
-                }
-
-                /*var toHit = bot.GetAttachablesInColumn(raycastHit.point);
-                foreach (var attachable in toHit)
-                {
-                    bot.TryHitAt(attachable, damageToApply, false);
-                }*/
             }
             else
             {

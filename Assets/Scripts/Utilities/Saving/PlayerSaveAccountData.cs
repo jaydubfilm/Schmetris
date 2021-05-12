@@ -97,6 +97,7 @@ namespace StarSalvager.Values
                 {BIT_TYPE.YELLOW, 0},
                 {BIT_TYPE.GREEN, 0},
                 {BIT_TYPE.GREY, 0},
+                {BIT_TYPE.WHITE, 0},
             };
             _hintDisplay = new Dictionary<HINT, bool>
             {

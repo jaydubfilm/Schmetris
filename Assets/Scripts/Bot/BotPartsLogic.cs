@@ -1137,12 +1137,11 @@ namespace StarSalvager
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
-            //var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.POWER);
 
 
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
 
-            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
 
 
             var position = bot.transform.position;
