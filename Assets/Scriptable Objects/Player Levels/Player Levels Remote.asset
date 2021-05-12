@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d87a7fdc9910274eb454adfb3a28f23, type: 3}
   m_Name: Player Levels Remote
   m_EditorClassIdentifier: 
-  partsUnlockedAtStart: 040000002400000000000000030000002c00000002000000
+  partsUnlockedAtStart: 040000002400000000000000030000002c0000000200000005000000130000000e0000000f0000000600000023000000260000001d000000290000001f0000002a0000002b000000
   patchesUnlockedAtStart:
   - Type: 1
     Level: 1
@@ -208,7 +208,7 @@ MonoBehaviour:
     patches: 'Patches: '
   - level: 2
     parts: 'Parts: WILDCARD'
-    patches: 'Patches: POWER II'
+    patches: 'Patches: POWER III'
   levelCurve:
     serializedVersion: 2
     m_Curve:
