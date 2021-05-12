@@ -8,7 +8,7 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Star Salvager/Scriptable Objects/Game Settings")]
     public class GameSettingsScriptableObject : ScriptableObject
     {
-        
+
         [BoxGroup("Prototyping")]
         public bool useCenterFiring = true;
         [BoxGroup("Prototyping")]
@@ -22,8 +22,8 @@ namespace StarSalvager.ScriptableObjects
 
         [BoxGroup("Prototyping"), PropertyRange(0, 50)]
         public int preSpawnedRows;
-        
-        
+
+
         [BoxGroup("Prototyping")]
         public int startingAmmo = 20;
 
@@ -37,12 +37,6 @@ namespace StarSalvager.ScriptableObjects
         //FIXME The naming for this sucks
         public float gameUIResourceThreshold = 0.33f;
 
-        //Experience Properties
-        //====================================================================================================================//
-
-        [BoxGroup("Experience"), Range(0f,1f)]
-        public float levelXPConstant = 0.085f;
-
         //Wave Properties
         //====================================================================================================================//
 
@@ -55,8 +49,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Waves")]
         public float timeForAsteroidToFallOneSquare = 0.25f;
 
-        [Range(0,1f)][BoxGroup("Waves")]
-        public float levelResourceDropReductionAmount = 0.5f;
 
         [BoxGroup("Waves")]
         public float obstacleMass = 2.0f;
@@ -80,35 +72,24 @@ namespace StarSalvager.ScriptableObjects
         //Bot Properties
         //====================================================================================================================//
 
-        [BoxGroup("Bot"), SuffixLabel("s", true)] 
+        [BoxGroup("Bot"), SuffixLabel("s", true)]
         public float partSwapTime = 1f;
-        
-        //[BoxGroup("Bot")]
-        //public float botHealth = 100f;
-        /*[BoxGroup("Bot")]
-        public float greenHealAmount = 10f;*/
-        
+
+
         [BoxGroup("Bot"), Range(0f,10f)]
         public float botHealWaitTime = 2f;
-        
+
         [BoxGroup("Bot")]
         public float decoyDroneHealth = 20f;
-        
+
         [BoxGroup("Bot"), Range(0f,1f)]
         public float bitDropCollectionMultiplier = 1f;
-        
-        //[BoxGroup("Bot")]
-        //public int magnetAmount = 10;
 
         [BoxGroup("Bot")]
         public float botEnterScreenMaxSize = 1.5f;
         [BoxGroup("Bot")]
         public float botExitScreenMaxSize = 2.0f;
-        [BoxGroup("Bot")]
-        public bool unmergeLargeBitsOnRefine = true;
-        [BoxGroup("Bot")]
-        public bool sendExcessResourceToBase = false;
-        
+
         [BoxGroup("Bot")]
         public int bounceDistance = 3;
 
@@ -136,7 +117,7 @@ namespace StarSalvager.ScriptableObjects
         public float dashSpeed = 60f;
         [FoldoutGroup("Bot/Movement")]
         public float dashCooldown = 1f;
-        
+
         //Camera Properties
         //====================================================================================================================//
 

@@ -113,9 +113,9 @@ namespace StarSalvager.Values
         public static int GridSizeX => m_gameSettings.gridWidth;
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
-        public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
+        //public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
         
-        public static float LevelXPConstant => m_gameSettings.levelXPConstant;
+        //public static float LevelXPConstant => m_gameSettings.levelXPConstant;
         /*public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
         public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;*/
 
@@ -129,8 +129,8 @@ namespace StarSalvager.Values
 
         public static float BitShiftTime => m_gameSettings.bitShiftTime;
         public static float ComboMergeTime => m_gameSettings.comboMergeTime;
-        public static bool UnmergeLargeBitsOnRefine => m_gameSettings.unmergeLargeBitsOnRefine;
-        public static bool SendExcessResourceToBase => m_gameSettings.sendExcessResourceToBase;
+        //public static bool UnmergeLargeBitsOnRefine => m_gameSettings.unmergeLargeBitsOnRefine;
+        //public static bool SendExcessResourceToBase => m_gameSettings.sendExcessResourceToBase;
 
         #endregion //Game Settings Properties
 
