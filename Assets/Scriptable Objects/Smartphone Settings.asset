@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
+  m_Name: Smartphone Settings
+  m_EditorClassIdentifier: 
+  useCenterFiring: 1
+  useShuffleDance: 1
+  shuffleCanDisconnect: 0
+  shuffleTimeThreshold: 0.19
+  preSpawnedRows: 15
+  startingAmmo: 0
+  testingFeatures: 0
+  asteroidDamage: 20
+  gameUIResourceThreshold: 0.33
+  levelXPConstant: 0.085
+  gridWidth: 50
+  gridHeightRelativeToScreen: 1.25
+  timeForAsteroidToFallOneSquare: 0.35
+  levelResourceDropReductionAmount: 0.854
+  obstacleMass: 2
+  obstacleDensityReductionModifier: 3
+  waveMessageReminderFrequency: 10
+  bonusShapeSpeed: 22
+  bonusShapeGearsRewards:
+  - numCells: 2
+    numColours: 1
+    gearsValue: 50
+  - numCells: 2
+    numColours: 2
+    gearsValue: 100
+  - numCells: 2
+    numColours: 3
+    gearsValue: 150
+  - numCells: 2
+    numColours: 4
+    gearsValue: 200
+  - numCells: 2
+    numColours: 5
+    gearsValue: 250
+  - numCells: 3
+    numColours: 1
+    gearsValue: 100
+  - numCells: 3
+    numColours: 2
+    gearsValue: 200
+  - numCells: 3
+    numColours: 3
+    gearsValue: 300
+  - numCells: 3
+    numColours: 4
+    gearsValue: 400
+  - numCells: 3
+    numColours: 5
+    gearsValue: 500
+  - numCells: 4
+    numColours: 1
+    gearsValue: 150
+  - numCells: 4
+    numColours: 2
+    gearsValue: 300
+  - numCells: 4
+    numColours: 3
+    gearsValue: 450
+  - numCells: 4
+    numColours: 4
+    gearsValue: 600
+  - numCells: 4
+    numColours: 5
+    gearsValue: 750
+  - numCells: 5
+    numColours: 1
+    gearsValue: 200
+  - numCells: 5
+    numColours: 2
+    gearsValue: 400
+  - numCells: 5
+    numColours: 3
+    gearsValue: 600
+  - numCells: 5
+    numColours: 4
+    gearsValue: 800
+  - numCells: 5
+    numColours: 5
+    gearsValue: 1000
+  asteroidSpawnDisableTimeBeforeWaveEnd: 1
+  timeAfterWaveEndFlyOut: 8
+  botHealWaitTime: 1.5
+  decoyDroneHealth: 20
+  bitDropCollectionMultiplier: 0.5
+  botEnterScreenMaxSize: 1.5
+  botExitScreenMaxSize: 2
+  unmergeLargeBitsOnRefine: 1
+  sendExcessResourceToBase: 0
+  bounceDistance: 3
+  bitsPushThroughParts: 1
+  bitShiftTime: 0.17
+  comboMergeTime: 0.17
+  DASTime: 0.11
+  DARTime: 0.2
+  botHorizontalSpeed: 30
+  botRotationSpeed: 650
+  botContinuousRotationSpeed: 900
+  dashDistance: 8
+  dashSpeed: 60
+  dashCooldown: 0
+  cameraUseInputMotion: 1
+  columnsOnScreen: 45
+  cameraSmoothing: 1
+  cameraOffsetBounds: 0.2
