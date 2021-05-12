@@ -176,7 +176,7 @@ namespace StarSalvager.UI.Scrapyard
 
                     LastPicked = partType;
                     CreatePart(partType);
-                    RecordSelectedParts(partType);
+                    RecordSelectedParts(index);
                 });
             }
 
