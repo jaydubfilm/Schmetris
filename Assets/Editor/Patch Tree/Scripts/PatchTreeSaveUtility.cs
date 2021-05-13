@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Editor.PatchTrees.Graph;
@@ -8,6 +9,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace StarSalvager.Editor.PatchTrees
 {
@@ -19,7 +21,7 @@ namespace StarSalvager.Editor.PatchTrees
         /*private List<Group> CommentBlocks =>
             _graphView.graphElements.ToList().Where(x => x is Group).Cast<Group>().ToList();*/
 
-        private PatchTreeContainer _dialogueContainer;
+        private PatchTreeContainer _patchTreeContainer;
         private PatchTreeGraphView _graphView;
 
         public static PatchTreeSaveUtility GetInstance(PatchTreeGraphView graphView)
@@ -33,7 +35,7 @@ namespace StarSalvager.Editor.PatchTrees
         public void SaveGraph(string fileName)
         {
             var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
-            if (!SaveNodes(fileName, dialogueContainerObject)) return;
+            if (!SaveNodes(fileName, ref dialogueContainerObject)) return;
             //SaveExposedProperties(dialogueContainerObject);
             //SaveCommentBlocks(dialogueContainerObject);
 
@@ -51,7 +53,7 @@ namespace StarSalvager.Editor.PatchTrees
                 PatchTreeContainer container = loadedAsset as PatchTreeContainer;
                 container.NodeLinks = dialogueContainerObject.NodeLinks;
                 container.PartNodeData = dialogueContainerObject.PartNodeData;
-                container.PatchNodeDatas = dialogueContainerObject.PatchNodeDatas;
+                container.PatchNodeDatas = new List<PatchNodeData>(dialogueContainerObject.PatchNodeDatas);
                 //container.ExposedProperties = dialogueContainerObject.ExposedProperties;
                 //container.CommentBlockData = dialogueContainerObject.CommentBlockData;
                 EditorUtility.SetDirty(container);
@@ -60,11 +62,12 @@ namespace StarSalvager.Editor.PatchTrees
             AssetDatabase.SaveAssets();
         }
 
-        private bool SaveNodes(string fileName, PatchTreeContainer dialogueContainerObject)
+        private bool SaveNodes(string fileName, ref PatchTreeContainer dialogueContainerObject)
         {
             if (!Edges.Any()) return false;
+            
             var connectedSockets = Edges.Where(x => x.input.node != null).ToArray();
-            for (var i = 0; i < connectedSockets.Count(); i++)
+            for (var i = 0; i < connectedSockets.Length; i++)
             {
                 var outputNode = (connectedSockets[i].output.node as BaseNode);
                 var inputNode = (connectedSockets[i].input.node as BaseNode);
@@ -79,13 +82,16 @@ namespace StarSalvager.Editor.PatchTrees
 
             foreach (var node in Nodes)
             {
-                if (node is PartNode partNode)
+                switch (node)
                 {
-                    dialogueContainerObject.PartNodeData = (PartNodeData)partNode.GetNodeData();
-                    continue;
+                    case PartNode partNode:
+                        dialogueContainerObject.PartNodeData = partNode.GetNodeData();
+                        continue;
+                    case PatchNode patchNode:
+                        var nodeData = patchNode.GetNodeData();
+                        dialogueContainerObject.PatchNodeDatas.Add(nodeData);
+                        break;
                 }
-                
-                dialogueContainerObject.PatchNodeDatas.Add((PatchNodeData)node.GetNodeData());
             }
 
             return true;
@@ -113,18 +119,18 @@ namespace StarSalvager.Editor.PatchTrees
             }
         }*/
 
-        public void LoadNarrative(string fileName)
+        public void LoadPatchTree(string fileName)
         {
-            _dialogueContainer = Resources.Load<PatchTreeContainer>(fileName);
-            if (_dialogueContainer == null)
+            _patchTreeContainer = Resources.Load<PatchTreeContainer>(fileName);
+            if (_patchTreeContainer == null)
             {
                 EditorUtility.DisplayDialog("File Not Found", "Target Narrative Data does not exist!", "OK");
                 return;
             }
 
             ClearGraph();
-            GenerateDialogueNodes();
-            ConnectDialogueNodes();
+            GeneratePatchTreeNodes();
+            ConnectPatchTreeNodes();
             //AddExposedProperties();
             //GenerateCommentBlocks();
         }
@@ -134,7 +140,7 @@ namespace StarSalvager.Editor.PatchTrees
         /// </summary>
         private void ClearGraph()
         {
-            Nodes.Find(x => x is PartNode).GUID = _dialogueContainer.NodeLinks[0].BaseNodeGUID;
+            Nodes.Find(x => x is PartNode).GUID = _patchTreeContainer.NodeLinks[0].BaseNodeGUID;
             foreach (var perNode in Nodes)
             {
                 if (perNode is PartNode) 
@@ -149,43 +155,51 @@ namespace StarSalvager.Editor.PatchTrees
         /// <summary>
         /// Create All serialized nodes and assign their guid and dialogue text to them
         /// </summary>
-        private void GenerateDialogueNodes()
+        private void GeneratePatchTreeNodes()
         {
-            foreach (var perNode in _dialogueContainer.PatchNodeDatas)
+            //FIXME Find the existing Part Node
+            var partNode = _patchTreeContainer.PartNodeData;
+            _graphView.CreateNode(string.Empty, new Vector2(partNode.Position.x, partNode.Position.y), _patchTreeContainer.PartNodeData);
+            
+            foreach (var patchNodeData in _patchTreeContainer.PatchNodeDatas)
             {
-                var tempNode = _graphView.CreateNode(string.Empty, Vector2.zero, perNode);
+                var tempNode = (PatchNode)_graphView.CreateNode(string.Empty, patchNodeData.Position, patchNodeData);
+                
                 _graphView.AddElement(tempNode);
-
-                var nodePorts = _dialogueContainer.NodeLinks.Where(x => x.BaseNodeGUID == perNode.GUID).ToList();
-                nodePorts.ForEach(x => _graphView.AddChoicePort(tempNode, x.PortName));
             }
         }
 
-        private void ConnectDialogueNodes()
+        private void ConnectPatchTreeNodes()
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void LinkNodesTogether(Port outputSocket, Port inputSocket)
+            {
+                var tempEdge = new Edge
+                {
+                    output = outputSocket,
+                    input = inputSocket
+                };
+                tempEdge.input.Connect(tempEdge);
+                tempEdge.output.Connect(tempEdge);
+                _graphView.Add(tempEdge);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             for (var i = 0; i < Nodes.Count; i++)
             {
                 var k = i; //Prevent access to modified closure
-                var connections = _dialogueContainer.NodeLinks.Where(x => x.BaseNodeGUID == Nodes[k].GUID).ToList();
-                for (var j = 0; j < connections.Count(); j++)
+                var connections = _patchTreeContainer.NodeLinks
+                    .Where(x => x.BaseNodeGUID == Nodes[k].GUID)
+                    .ToList();
+                var node = Nodes[i];
+                foreach (var targetNode in connections.Select(connection => Nodes.First(x => x.GUID == connection.TargetNodeGUID)))
                 {
-                    var targetNodeGUID = connections[j].TargetNodeGUID;
-                    var targetNode = Nodes.First(x => x.GUID == targetNodeGUID);
-                    LinkNodesTogether(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer[0]);
+                    LinkNodesTogether((Port) node.outputContainer[0], (Port) targetNode.inputContainer[0]);
                 }
             }
-        }
-
-        private void LinkNodesTogether(Port outputSocket, Port inputSocket)
-        {
-            var tempEdge = new Edge
-            {
-                output = outputSocket,
-                input = inputSocket
-            };
-            tempEdge?.input.Connect(tempEdge);
-            tempEdge?.output.Connect(tempEdge);
-            _graphView.Add(tempEdge);
         }
 
         /*private void AddExposedProperties()

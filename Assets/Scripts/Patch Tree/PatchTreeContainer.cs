@@ -19,6 +19,7 @@ namespace StarSalvager.PatchTrees
     {
         public override string ClassType => nameof(PATCH_TYPE);
         public int Tier;
+        public int Level;
     }
     [Serializable]
     public class PartNodeData : BaseNodeData

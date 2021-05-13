@@ -11,12 +11,12 @@ namespace StarSalvager.Editor.PatchTrees.Nodes
 {
     
        
-    public class PartNode : BaseNode
+    public class PartNode : BaseNode<PartNodeData>
     {
         [OnValueChanged("Updated")]
         public PART_TYPE PartType;
         
-        public override BaseNodeData GetNodeData()
+        public override PartNodeData GetNodeData()
         {
             return new PartNodeData
             {
@@ -26,7 +26,7 @@ namespace StarSalvager.Editor.PatchTrees.Nodes
             };
         }
 
-        public override void LoadFromNodeData(in BaseNodeData nodeData)
+        public override void LoadFromNodeData(in PartNodeData nodeData)
         {
             if (!(nodeData is PartNodeData partNodeData))
                 throw new Exception();

@@ -72,7 +72,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
                 if (save)
                     saveUtility.SaveGraph(_fileName);
                 else
-                    saveUtility.LoadNarrative(_fileName);
+                    saveUtility.LoadPatchTree(_fileName);
             }
             else
             {

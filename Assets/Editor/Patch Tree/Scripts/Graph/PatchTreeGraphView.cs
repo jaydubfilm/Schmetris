@@ -73,23 +73,30 @@ namespace StarSalvager.Editor.PatchTrees.Graph
 
         public Node CreateNode(string nodeName, Vector2 position, BaseNodeData nodeData)
         {
+            return CreateNode(nodeName, new Rect(position, DefaultNodeSize), nodeData);
+        }
+        public Node CreateNode(string nodeName, Rect nodeRect, BaseNodeData nodeData)
+        {
             BaseNode tempNode;
 
             switch (nodeData)
             {
                 case PartNodeData partNodeData:
                     tempNode = new PartNode();
-                    tempNode.LoadFromNodeData(partNodeData);
+                    ((PartNode)tempNode).LoadFromNodeData(partNodeData);
                     break;
                 case PatchNodeData patchNodeData:
                     tempNode = new PatchNode();
-                    tempNode.LoadFromNodeData(patchNodeData);
+                    ((PatchNode)tempNode).LoadFromNodeData(patchNodeData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             //--------------------------------------------------------------------------------------------------------//
+
+            if (!(tempNode is PatchNode patchNode))
+                return tempNode;
             
             tempNode.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
             
@@ -98,19 +105,28 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             var outputPort = GetPortInstance(tempNode, Direction.Output, Port.Capacity.Multi);
             outputPort.portName = "Unlocks";
             tempNode.inputContainer.Add(inputPort);
-            tempNode.inputContainer.Add(outputPort);
+            tempNode.outputContainer.Add(outputPort);
             
             tempNode.RefreshExpandedState();
             tempNode.RefreshPorts();
-            tempNode.SetPosition(new Rect(position, DefaultNodeSize)); //To-Do: implement screen center instantiation positioning
+            tempNode.SetPosition(nodeRect); //To-Do: implement screen center instantiation positioning
 
             //--------------------------------------------------------------------------------------------------------//
-            var enumField = new EnumField("Patch Type", PATCH_TYPE.EMPTY);
-            enumField.styleSheets.Add(Resources.Load<StyleSheet>("EnumField"));
+            var enumField = CreateEnumField("Patch Type", patchNode.PatchType, PATCH_TYPE.EMPTY, type =>
+            {
+                patchNode.PatchType = type;
+            });
             tempNode.mainContainer.Add(enumField);
+
             
-            tempNode.mainContainer.Add(CreateSliderField("Tier", 1 , 4));
-            tempNode.mainContainer.Add(CreateSliderField("Level", 1 , 4));
+            tempNode.mainContainer.Add(CreateSliderField("Tier",patchNode.Tier, 1 , 4, tier =>
+            {
+                patchNode.Tier = tier;
+            }));
+            tempNode.mainContainer.Add(CreateSliderField("Level",patchNode.Level, 1 , 4, level =>
+            {
+                patchNode.Level = level;
+            }));
             
             //--------------------------------------------------------------------------------------------------------//
             
@@ -135,7 +151,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             
             return tempNode;
         }
-        public void AddChoicePort(Node nodeCache, string overriddenPortName = "")
+        /*public void AddChoicePort(Node nodeCache, string overriddenPortName = "")
         {
             var generatedPort = GetPortInstance(nodeCache, Direction.Output);
             var portLabel = generatedPort.contentContainer.Q<Label>("type");
@@ -164,9 +180,9 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             nodeCache.outputContainer.Add(generatedPort);
             nodeCache.RefreshPorts();
             nodeCache.RefreshExpandedState();
-        }
+        }*/
 
-        private void RemovePort(Node node, Port socket)
+        /*private void RemovePort(Node node, Port socket)
         {
             var targetEdge = edges.ToList()
                 .Where(x => x.output.portName == socket.portName && x.output.node == socket.node)
@@ -182,12 +198,14 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             node.outputContainer.Remove(socket);
             node.RefreshPorts();
             node.RefreshExpandedState();
-        }
+        }*/
 
         private Port GetPortInstance(Node node, Direction nodeDirection, Port.Capacity capacity = Port.Capacity.Single)
         {
             return node.InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, typeof(float));
         }
+        
+        //TODO Need to finish integrating this
         private PartNode GetEntryPointNodeInstance()
         {
             var nodeCache = new PartNode
@@ -213,7 +231,20 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             return nodeCache;
         }
 
-        private static VisualElement CreateSliderField(in string title, in int min, in int max)
+        private static VisualElement CreateEnumField<T>(in string title, in T value, in T @default, Action<T> onValueChanged) where T : Enum
+        {
+            var enumField = new EnumField(title, default);
+            enumField.styleSheets.Add(Resources.Load<StyleSheet>("EnumField"));
+            enumField.RegisterValueChangedCallback(evt =>
+            {
+                onValueChanged?.Invoke((T)evt.newValue);
+            });
+            enumField.SetValueWithoutNotify(value);
+
+            return enumField;
+        }
+        
+        private static VisualElement CreateSliderField(in string title, in int value, in int min, in int max, Action<int> onValueChangedCallback)
         {
             var layoutTest = new Box();
             layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("HorizontalLayout"));
@@ -221,29 +252,34 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             layoutTest.AddToClassList("flex-horizontal");
 
             
-            var tierSlider = new SliderInt(title, min, max);
+            var intSlider = new SliderInt(title, min, max);
             
-            var tierField = new IntegerField("");
-            layoutTest.contentContainer.Add(tierSlider);
-            layoutTest.contentContainer.Add(tierField);
+            var intField = new IntegerField("");
+            layoutTest.contentContainer.Add(intSlider);
+            layoutTest.contentContainer.Add(intField);
             
-            tierSlider.RegisterValueChangedCallback(evt =>
+            intSlider.RegisterValueChangedCallback(evt =>
             {
-                tierField.SetValueWithoutNotify(evt.newValue);
+                intField.SetValueWithoutNotify(evt.newValue);
+                onValueChangedCallback?.Invoke(evt.newValue);
             });
             
             var tempMin = min;
             var tempMax = max;
-            tierField.RegisterValueChangedCallback(evt =>
+            intField.RegisterValueChangedCallback(evt =>
             {
-                tierSlider.SetValueWithoutNotify(Mathf.Clamp(evt.newValue, tempMin, tempMax));
+                var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
+                
+                intSlider.SetValueWithoutNotify(newValue);
+                onValueChangedCallback?.Invoke(newValue);   
             });
             
-            tierField.SetValueWithoutNotify(min);
+            intSlider.SetValueWithoutNotify(value);
+            intField.SetValueWithoutNotify(value);
 
             return layoutTest;
         }
-        private static VisualElement CreateSliderField(in string title, in float min, in float max)
+        private static VisualElement CreateSliderField(in string title, in float value, in float min, in float max, Action<float> onValueChangedCallback)
         {
             var layoutTest = new Box();
             layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("HorizontalLayout"));
@@ -251,25 +287,31 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             layoutTest.AddToClassList("flex-horizontal");
 
             
-            var tierSlider = new Slider(title, min, max);
+            var floatSlider = new Slider(title, min, max);
             
-            var tierField = new FloatField("");
-            layoutTest.contentContainer.Add(tierSlider);
-            layoutTest.contentContainer.Add(tierField);
+            var floatField = new FloatField("");
+            layoutTest.contentContainer.Add(floatSlider);
+            layoutTest.contentContainer.Add(floatField);
             
-            tierSlider.RegisterValueChangedCallback(evt =>
+            floatSlider.RegisterValueChangedCallback(evt =>
             {
-                tierField.SetValueWithoutNotify(evt.newValue);
+                floatField.SetValueWithoutNotify(evt.newValue);
+                onValueChangedCallback?.Invoke(evt.newValue);
+                
             });
             
             var tempMin = min;
             var tempMax = max;
-            tierField.RegisterValueChangedCallback(evt =>
+            floatField.RegisterValueChangedCallback(evt =>
             {
-                tierSlider.SetValueWithoutNotify(Mathf.Clamp(evt.newValue, tempMin, tempMax));
+                var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
+                floatSlider.SetValueWithoutNotify(newValue);
+                
+                onValueChangedCallback?.Invoke(newValue);
             });
             
-            tierField.SetValueWithoutNotify(min);
+            floatSlider.SetValueWithoutNotify(value);
+            floatField.SetValueWithoutNotify(value);
 
             return layoutTest;
             //tempDialogueNode.mainContainer.Add(tierSli
