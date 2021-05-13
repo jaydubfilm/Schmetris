@@ -94,6 +94,6 @@ MonoBehaviour:
     refinedSprite: {fileID: 0}
     color: {r: 1, g: 1, b: 1, a: 1}
     _sprites:
-    - {fileID: -3111059232487226078, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
-    - {fileID: -5369655550167194192, guid: 76b90a416c9272d47b0d5e479eeef366, type: 3}
+    - {fileID: 21300000, guid: c4f264e563c034af2ad187bc57acadd9, type: 3}
+    - {fileID: 21300000, guid: 187ad0868b7274fbeb42725f60975d9d, type: 3}
   FrozenSprite: {fileID: 21300000, guid: fe40d2932140c2c45bc890bf547fdf1c, type: 3}
