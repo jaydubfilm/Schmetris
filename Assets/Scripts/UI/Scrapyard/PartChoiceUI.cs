@@ -78,7 +78,7 @@ namespace StarSalvager.UI.Scrapyard
                 
                 selectionUis[index].PartChoiceButtonHover.SetPartType(partType);
                 selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
-                selectionUis[index].optionImage.color = category.GetColor();
+                selectionUis[index].optionImage.color = Globals.UsePartColors ? category.GetColor() : Color.white;
                 selectionUis[index].optionText.text = $"{partType}";
             }
             

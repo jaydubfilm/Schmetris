@@ -10,6 +10,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Values;
 
 namespace StarSalvager.Factories
 {
@@ -51,7 +52,9 @@ namespace StarSalvager.Factories
             }
 
             part.SetSprite(sprite);
-            part.SetColor(color);
+            
+            if(Globals.UsePartColors)
+                part.SetColor(color);
         }
 
         //============================================================================================================//
@@ -196,7 +199,8 @@ namespace StarSalvager.Factories
                 : remoteData.category.GetColor();
 
             temp.SetSprite(sprite);
-            temp.SetColor(color);
+            if(Globals.UsePartColors)
+                temp.SetColor(color);
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
             temp.partColor = color;
@@ -243,9 +247,9 @@ namespace StarSalvager.Factories
             var sprite = profile.GetSprite(0);
 
 
-            if (!Recycler.TryGrab(out ScrapyardPart temp))
+            if (!Recycler.TryGrab(out ScrapyardPart scrapyardPart))
             {
-                temp = CreateScrapyardObject<ScrapyardPart>();
+                scrapyardPart = CreateScrapyardObject<ScrapyardPart>();
             }
             
             var remoteData = remotePartData.GetRemoteData(type);
@@ -253,12 +257,14 @@ namespace StarSalvager.Factories
                 ? Color.white
                 :remoteData.category.GetColor();
 
-            temp.LoadBlockData(partData);
-            temp.SetSprite(sprite);
-            temp.SetColor(color);
+            scrapyardPart.LoadBlockData(partData);
+            scrapyardPart.SetSprite(sprite);
+            
+            if(Globals.UsePartColors)
+                scrapyardPart.SetColor(color);
 
-            var gameObject = temp.gameObject;
-            gameObject.name = $"{temp.Type}";
+            var gameObject = scrapyardPart.gameObject;
+            gameObject.name = $"{scrapyardPart.Type}";
 
             return gameObject;
         }

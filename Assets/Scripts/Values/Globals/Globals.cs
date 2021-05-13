@@ -68,6 +68,8 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static bool UsePartColors => m_gameSettings.usePartColors;
+
         public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
 
         public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
