@@ -13,19 +13,17 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   useCenterFiring: 1
-  useShuffleDance: 1
+  useShuffleDance: 0
   shuffleCanDisconnect: 0
-  shuffleTimeThreshold: 0.19
+  shuffleTimeThreshold: 0.133
   preSpawnedRows: 15
   startingAmmo: 0
   testingFeatures: 0
   asteroidDamage: 20
   gameUIResourceThreshold: 0.33
-  levelXPConstant: 0.085
   gridWidth: 70
   gridHeightRelativeToScreen: 1.25
   timeForAsteroidToFallOneSquare: 0.28
-  levelResourceDropReductionAmount: 0.854
   obstacleMass: 2
   obstacleDensityReductionModifier: 5
   waveMessageReminderFrequency: 10
@@ -98,8 +96,6 @@ MonoBehaviour:
   bitDropCollectionMultiplier: 0.5
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
-  unmergeLargeBitsOnRefine: 1
-  sendExcessResourceToBase: 0
   bounceDistance: 3
   bitsPushThroughParts: 1
   bitShiftTime: 0.17
