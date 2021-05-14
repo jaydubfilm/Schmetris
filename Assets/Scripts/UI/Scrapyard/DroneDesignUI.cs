@@ -562,7 +562,7 @@ namespace StarSalvager.UI.Scrapyard
             partDescriptionText.text = partRemote.description;
             
             partImage.sprite = partProfile.Sprite;
-            partImage.color = partRemote.category.GetColor();
+            partImage.color = Globals.UsePartColors ? partRemote.category.GetColor() : Color.white;
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

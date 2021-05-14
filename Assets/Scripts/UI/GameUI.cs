@@ -73,7 +73,7 @@ namespace StarSalvager.UI
 
             public void SetColor(in Color color)
             {
-                foregroundImage.color = color;
+                    foregroundImage.color = color;
             }
             
             public void SetBackgroundColor(in Color color)
@@ -703,7 +703,8 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);
-            SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
+            
+            SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
 
         public void SetFill(int index, float fillValue)
