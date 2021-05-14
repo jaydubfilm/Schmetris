@@ -1708,12 +1708,12 @@ PrefabInstance:
         type: 3}
       propertyPath: soundClips.Array.data[1]._clip
       value: 
-      objectReference: {fileID: 8300000, guid: 54f652cbea7ec3a48b674f4ef1752355, type: 3}
+      objectReference: {fileID: 8300000, guid: 25bd7ba1a7a4f46b98f029e242e8ab0b, type: 3}
     - target: {fileID: 6446213062609164517, guid: 0c3f70f15c34a467fa95e6eacc4eaa2d,
         type: 3}
       propertyPath: soundClips.Array.data[2]._clip
       value: 
-      objectReference: {fileID: 8300000, guid: ca1f5d301cf5e1d44b655b8c58502551, type: 3}
+      objectReference: {fileID: 8300000, guid: 25bd7ba1a7a4f46b98f029e242e8ab0b, type: 3}
     - target: {fileID: 6446213062609164517, guid: 0c3f70f15c34a467fa95e6eacc4eaa2d,
         type: 3}
       propertyPath: soundClips.Array.data[3]._clip
@@ -1733,7 +1733,7 @@ PrefabInstance:
         type: 3}
       propertyPath: soundClips.Array.data[15]._clip
       value: 
-      objectReference: {fileID: 8300000, guid: cb4e5cf55f6a3674da728808022645d7, type: 3}
+      objectReference: {fileID: 8300000, guid: 0c6cdb3458a7e4203b298eb99e91e036, type: 3}
     - target: {fileID: 6446213062609164522, guid: 0c3f70f15c34a467fa95e6eacc4eaa2d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2188,7 +2188,7 @@ PrefabInstance:
         type: 3}
       propertyPath: bitProfile
       value: 
-      objectReference: {fileID: 11400000, guid: 9dc0c94009fc9472dbf59706362add77,
+      objectReference: {fileID: 11400000, guid: 997da8d9e3eac494688407c096089beb,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e1a50fa4983e4898877b8f3ac6e72, type: 3}
