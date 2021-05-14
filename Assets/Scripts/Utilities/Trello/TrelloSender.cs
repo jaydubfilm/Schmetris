@@ -8,6 +8,7 @@ using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Jira;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.SceneManagement;
 using TMPro;
@@ -172,7 +173,7 @@ namespace StarSalvager.Utilities.Trello
             
             
             TrelloCard card = trello.NewCard(title, description, CATEGORY, LABELS);
-            StartCoroutine(SendReportCoroutine(card, _screenshot, 
+            StartCoroutine(JiraSender.SendReportCoroutine(card, _screenshot, 
                 () =>
                 {
                     processingSendObject.SetActive(true);
@@ -187,6 +188,21 @@ namespace StarSalvager.Utilities.Trello
 
                     ResetInput();
                 }));
+            /*StartCoroutine(SendReportCoroutine(card, _screenshot, 
+                () =>
+                {
+                    processingSendObject.SetActive(true);
+                },
+                () =>
+                {
+                    GameTimer.SetPaused(false);
+                    processingSendObject.SetActive(false);
+                    bugWindowObject.SetActive(false);
+                    
+                    Toast.AddToast("Bug Submitted");
+
+                    ResetInput();
+                }));*/
         }
 
         private void ResetInput()
