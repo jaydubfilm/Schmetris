@@ -2188,7 +2188,7 @@ PrefabInstance:
         type: 3}
       propertyPath: bitProfile
       value: 
-      objectReference: {fileID: 11400000, guid: 9dc0c94009fc9472dbf59706362add77,
+      objectReference: {fileID: 11400000, guid: 27cd03972ff8b4ba2be71f0d3f1f5707,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e1a50fa4983e4898877b8f3ac6e72, type: 3}
