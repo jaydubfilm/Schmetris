@@ -3226,6 +3226,7 @@ _isShifting = true;
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 break;
                             case 2:
+                                //This change must occur before checking for combos
                                 bit.UpdateBitData(BIT_TYPE.WHITE, 0);
 
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
