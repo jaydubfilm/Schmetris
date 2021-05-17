@@ -1004,6 +1004,14 @@ namespace StarSalvager
 
                         _obstacles.Add(newComponent);
                     }
+
+                    if (count > 0 && HintManager.CanShowHint(HINT.GEARS))
+                    {
+                        var rect = _obstacles
+                            .FirstOrDefault(x => x is Component);
+                        
+                        HintManager.TryShowHint(HINT.GEARS, 0.75f, rect);
+                    }
                 }
                 else
                 {

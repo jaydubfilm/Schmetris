@@ -381,6 +381,11 @@ namespace StarSalvager.UI
                     {
                         magnetFlash.transform as RectTransform
                     };*/
+                case HINT.HEALTH:
+                return new object[]
+                {
+                    botHealthBarImage.transform as RectTransform,
+                };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }

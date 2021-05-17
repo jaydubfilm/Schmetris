@@ -16,6 +16,7 @@ using StarSalvager.Utilities.Saving;
 using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Interfaces;
 using UnityEngine.Serialization;
 
 namespace StarSalvager
@@ -31,6 +32,8 @@ namespace StarSalvager
     public class UniverseMapButton : MonoBehaviour
     {
         private static UniverseMap _universeMap;
+
+        public bool IsButtonInteractable => Button.interactable;
         
         public NodeType NodeType => nodeType;
         public int NodeIndex => nodeIndex;

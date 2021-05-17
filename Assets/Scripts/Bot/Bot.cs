@@ -197,6 +197,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            var addsHealth = amount > 0;
+            
             CurrentHealth += amount;
 
             //TODO Need to update UI
@@ -205,8 +207,19 @@ namespace StarSalvager
             //Here we check to make sure to not display tiny values of damage
             var check = Mathf.Abs(amount);
             if(!(check > 0 && check < 1f))
-                FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+                FloatingText.Create($"{amount}", transform.position, addsHealth ? Color.green : Color.red);
 
+            //Display hint if damaged & has resources to heal
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
+            {
+                if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (CurrentHealth > 0)
                 return;
 
