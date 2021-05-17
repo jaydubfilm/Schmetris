@@ -8,6 +8,7 @@ namespace StarSalvager.Projectiles
     [RequireComponent(typeof(LineRenderer))]
     public class BlasterProjectile : Actor2DBase
     {
+        public const float ANGLE = 270;
         //Properties
         //====================================================================================================================//
 
