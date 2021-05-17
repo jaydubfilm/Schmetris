@@ -2460,6 +2460,7 @@ namespace StarSalvager
                 }
                 case PART_TYPE.BLASTER:
                 {
+                    
                     //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
                     var rot = part.transform.eulerAngles.z + BlasterProjectile.ANGLE;
                     
