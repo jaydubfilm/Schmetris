@@ -97,6 +97,7 @@ namespace StarSalvager.Values
                 {BIT_TYPE.YELLOW, 0},
                 {BIT_TYPE.GREEN, 0},
                 {BIT_TYPE.GREY, 0},
+                {BIT_TYPE.WHITE, 0},
             };
             _hintDisplay = new Dictionary<HINT, bool>
             {
@@ -106,7 +107,7 @@ namespace StarSalvager.Values
                 //[HINT.BONUS] = false,
                 [HINT.MAGNET] = false,
 
-                //[HINT.GEARS] = false,
+                [HINT.GEARS] = false,
                 //[HINT.PATCH_POINT] = false,
                 //[HINT.CRAFT_PART] = false,
 
@@ -114,6 +115,9 @@ namespace StarSalvager.Values
                 [HINT.DAMAGE] = false,
                 [HINT.WHITE] = false,
                 [HINT.SILVER] = false,
+                
+                [HINT.HEALTH] = false,
+                [HINT.WRECK] = false,
             };
             _upgrades = new[]
             {

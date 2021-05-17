@@ -34,7 +34,9 @@ namespace StarSalvager.UI.Hints
         PARASITE,
         DAMAGE,
         WHITE,
-        SILVER
+        SILVER,
+        HEALTH,
+        WRECK
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -227,6 +229,9 @@ namespace StarSalvager.UI.Hints
                     StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));
                     return;
                 //----------------------------------------------------------------------------------------------------//
+                case HINT.HEALTH:
+                    objectsToHighlight = FindObjectOfType<GameUI>().GetHintElements(hint);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Sirenix.Utilities;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;

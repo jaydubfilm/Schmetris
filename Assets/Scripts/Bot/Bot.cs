@@ -197,6 +197,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            var addsHealth = amount > 0;
+            
             CurrentHealth += amount;
 
             //TODO Need to update UI
@@ -205,8 +207,19 @@ namespace StarSalvager
             //Here we check to make sure to not display tiny values of damage
             var check = Mathf.Abs(amount);
             if(!(check > 0 && check < 1f))
-                FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+                FloatingText.Create($"{amount}", transform.position, addsHealth ? Color.green : Color.red);
 
+            //Display hint if damaged & has resources to heal
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
+            {
+                if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (CurrentHealth > 0)
                 return;
 
@@ -3226,9 +3239,10 @@ _isShifting = true;
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 break;
                             case 2:
+                                //This change must occur before checking for combos
+                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
 
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
-                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
                                 //We have to override the level value here to ensure that the ammo given is
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;

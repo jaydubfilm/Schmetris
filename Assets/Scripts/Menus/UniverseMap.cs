@@ -236,7 +236,6 @@ namespace StarSalvager.UI
                 if (i == playerNodeLocation && isWreck)
                 {
                     currentMapButton.SetButtonInteractable(true);
-
                     continue;
                 }
 
@@ -246,6 +245,19 @@ namespace StarSalvager.UI
             
             if (playerNodeLocation + 1 < _universeMapButtons.Length)
                 _universeMapButtons[playerNodeLocation + 1].SetButtonInteractable(true);
+
+            //Check to see if the wreck is ahead of the player and can be interacted with
+            //--------------------------------------------------------------------------------------------------------//
+                        
+            var unlockedWreck = _universeMapButtons
+                .FirstOrDefault(x => playerNodeLocation != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+            if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
+            {
+                HintManager.TryShowHint(HINT.WRECK, ScreenFade.DEFAULT_TIME, unlockedWreck.transform);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
         }
 
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine)
