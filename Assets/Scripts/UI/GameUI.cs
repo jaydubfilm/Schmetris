@@ -56,6 +56,8 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
+                if (backgroundImage is null || triggerInputImage is null) return;
+                
                 backgroundImage.gameObject.SetActive(isTrigger);
                 triggerInputImage.gameObject.SetActive(isTrigger);
 
@@ -67,22 +69,30 @@ namespace StarSalvager.UI
 
             public void SetSprite(in Sprite partSprite)
             {
+                if (backgroundImage is null || foregroundImage is null)
+                    return;
+                
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
             }
 
             public void SetColor(in Color color)
             {
-                    foregroundImage.color = color;
+                if (foregroundImage is null) return;
+                foregroundImage.color = color;
             }
             
             public void SetBackgroundColor(in Color color)
             {
+                if (backgroundImage is null) return;
+                
                 backgroundImage.color = color;
             }
 
             public void SetFill(float val)
             {
+                if (foregroundImage is null) return;
+                
                 foregroundImage.fillAmount = val;
             }
         }
@@ -208,8 +218,9 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        [FormerlySerializedAs("heatFillImage")]
-        private Image botHealthBarImage;
+        private Slider botHealthBarSlider;
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image botHealthBarSliderImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
@@ -384,7 +395,7 @@ namespace StarSalvager.UI
                 case HINT.HEALTH:
                 return new object[]
                 {
-                    botHealthBarImage.transform as RectTransform,
+                    botHealthBarSlider.transform as RectTransform,
                 };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -412,7 +423,6 @@ namespace StarSalvager.UI
 
             SetPlayerComponents(0);
             SetPlayerXP(0);
-            ShowAbortWindow(false);
 
             OutlineMagnet(false);
 
@@ -422,7 +432,6 @@ namespace StarSalvager.UI
         
         private void SetupPlayerValues()
         {
-            ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
             SetPlayerComponents(PlayerDataManager.GetGears());
@@ -484,51 +493,6 @@ namespace StarSalvager.UI
 
         #endregion //Magnets
 
-        //Abort Window
-        //============================================================================================================//
-
-        #region Abort Window
-
-        private bool _abortWindowShown = true;
-        public void ShowAbortWindow(bool shown)
-        {
-            //Prevent repeated calls
-            if (_abortWindowShown == shown)
-                return;
-
-            _abortWindowShown = shown;
-
-            if (!shown)
-            {
-                abortButton.onClick.RemoveAllListeners();
-                abortWindow.SetActive(false);
-                return;
-            }
-
-            abortWindow.SetActive(true);
-
-            if (Globals.UsingTutorial)
-            {
-                abortButton.gameObject.SetActive(false);
-                return;
-            }
-
-            abortButton.gameObject.SetActive(true);
-
-            abortButton.onClick.AddListener(AbortPressed);
-        }
-        
-        public void AbortPressed()
-        {
-            LevelManager.Instance.BotInLevel.TrySelfDestruct();
-
-            //If the bot was able to be killed, hide this window
-            if(LevelManager.Instance.BotInLevel.Destroyed)
-                ShowAbortWindow(false);
-        }
-
-        #endregion //Abort Window
-
         //Update UI
         //============================================================================================================//
 
@@ -571,8 +535,8 @@ namespace StarSalvager.UI
             }
 
 
-            botHealthBarImage.color = Color.Lerp(Color.red, Color.green, value);
-            botHealthBarImage.fillAmount = value;
+            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            botHealthBarSlider.value = value;
 
         }
 

@@ -137,6 +137,7 @@ namespace StarSalvager
             if (bot != null)
             {
                 CreateImpactEffect(worldHitPoint);
+                //FIXME Should not be using this here
                 AudioController.PlaySound(SOUND.ASTEROID_BASH);
                 bot.TryHitAt(worldHitPoint, 5);
                 Recycler.Recycle<SpaceJunk>(this);

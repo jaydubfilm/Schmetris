@@ -479,7 +479,6 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            GameUi.ShowAbortWindow(false);
 
             BotInLevel.SetSortingLayer(LayerHelper.OVERLAY, 10000);
 

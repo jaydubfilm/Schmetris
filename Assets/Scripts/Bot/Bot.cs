@@ -3809,7 +3809,6 @@ _isShifting = true;
 
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
-            GameUi.ShowAbortWindow(false);
 
              StartCoroutine(DestroyCoroutine(deathMethod));
         }
