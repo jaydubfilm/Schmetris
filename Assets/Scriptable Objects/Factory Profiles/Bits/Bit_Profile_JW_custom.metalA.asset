@@ -40,8 +40,8 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: c9e82673c982a4da98bc1960a03be445, type: 3}
-    - {fileID: 21300000, guid: 98f13c07afdb4454dabefb2c3ac379f1, type: 3}
+    - {fileID: 21300000, guid: 6a2d64addd4e946e5b599b43cb448809, type: 3}
+    - {fileID: 21300000, guid: ab635366aba7e47d9b9c6d36908086bf, type: 3}
     - {fileID: 21300000, guid: c75dfdd7f3ebd2a43b62b2c969809ff5, type: 3}
     - {fileID: 21300000, guid: e86184dc7092d284da9668b245923463, type: 3}
     - {fileID: 21300000, guid: 718cadaecb122134d869670cf02801d8, type: 3}
