@@ -190,9 +190,9 @@ MonoBehaviour:
       m_maxOut: 0
       spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
-  - m_stageDuration: 10
+  - m_stageDuration: 20
     m_stageBlendPeriod: 0
-    m_waitUntilAllEnemiesDefeatedToBegin: 0
+    m_waitUntilAllEnemiesDefeatedToBegin: 1
     m_stageEnemyData:
     - m_enemyType: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
       m_enemyCount: 5

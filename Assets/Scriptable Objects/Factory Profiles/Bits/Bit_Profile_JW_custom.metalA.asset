@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89035c1c4f5c70b48b9949fdf1bc1165, type: 3}
-  m_Name: Bit_Profile_JW_custom
+  m_Name: Bit_Profile_JW_custom.metalA
   m_EditorClassIdentifier: 
   Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
   AnimatedPrefab: {fileID: 2761212292129707405, guid: 624e44e3df70359479ea266891b61f0b,
@@ -40,8 +40,8 @@ MonoBehaviour:
       type: 3}
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
     _sprites:
-    - {fileID: 21300000, guid: c9e82673c982a4da98bc1960a03be445, type: 3}
-    - {fileID: 21300000, guid: 98f13c07afdb4454dabefb2c3ac379f1, type: 3}
+    - {fileID: 21300000, guid: 6a2d64addd4e946e5b599b43cb448809, type: 3}
+    - {fileID: 21300000, guid: ab635366aba7e47d9b9c6d36908086bf, type: 3}
     - {fileID: 21300000, guid: c75dfdd7f3ebd2a43b62b2c969809ff5, type: 3}
     - {fileID: 21300000, guid: e86184dc7092d284da9668b245923463, type: 3}
     - {fileID: 21300000, guid: 718cadaecb122134d869670cf02801d8, type: 3}
