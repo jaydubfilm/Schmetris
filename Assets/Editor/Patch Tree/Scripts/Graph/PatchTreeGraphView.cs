@@ -233,7 +233,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
 
         private static VisualElement CreateEnumField<T>(in string title, in T value, in T @default, Action<T> onValueChanged) where T : Enum
         {
-            var enumField = new EnumField(title, default);
+            var enumField = new EnumField(title, @default);
             enumField.styleSheets.Add(Resources.Load<StyleSheet>("EnumField"));
             enumField.RegisterValueChangedCallback(evt =>
             {

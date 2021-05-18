@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using StarSalvager.Editor.PatchTrees.Graph;
 using StarSalvager.Editor.PatchTrees.Nodes;
@@ -34,29 +35,36 @@ namespace StarSalvager.Editor.PatchTrees
 
         public void SaveGraph(string fileName)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+
+            string GetAssetPath(in string filename) => $"Assets{DIRECTORY}{filename}.asset";
+            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var assetPath = GetAssetPath(fileName);
+            var filePath = GetFilePath(fileName);
+            
             var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
-            if (!SaveNodes(fileName, ref dialogueContainerObject)) return;
-            //SaveExposedProperties(dialogueContainerObject);
-            //SaveCommentBlocks(dialogueContainerObject);
+            if (!SaveNodes(fileName, ref dialogueContainerObject)) 
+                return;
 
-            if (!AssetDatabase.IsValidFolder("Assets/Resources"))
-                AssetDatabase.CreateFolder("Assets", "Resources");
+            if (File.Exists(filePath))
+            {
+                var loadedFile = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
+                
+                loadedFile.NodeLinks = dialogueContainerObject.NodeLinks;
+                loadedFile.PartNodeData = dialogueContainerObject.PartNodeData;
+                loadedFile.PatchNodeDatas = new List<PatchNodeData>(dialogueContainerObject.PatchNodeDatas);
 
-            Object loadedAsset = AssetDatabase.LoadAssetAtPath($"Assets/Resources/{fileName}.asset", typeof(PatchTreeContainer));
-
-            if (loadedAsset == null || !AssetDatabase.Contains(loadedAsset)) 
-			{
-                AssetDatabase.CreateAsset(dialogueContainerObject, $"Assets/Resources/{fileName}.asset");
+                EditorUtility.SetDirty(loadedFile);
             }
-            else 
-			{
-                PatchTreeContainer container = loadedAsset as PatchTreeContainer;
-                container.NodeLinks = dialogueContainerObject.NodeLinks;
-                container.PartNodeData = dialogueContainerObject.PartNodeData;
-                container.PatchNodeDatas = new List<PatchNodeData>(dialogueContainerObject.PatchNodeDatas);
-                //container.ExposedProperties = dialogueContainerObject.ExposedProperties;
-                //container.CommentBlockData = dialogueContainerObject.CommentBlockData;
-                EditorUtility.SetDirty(container);
+            else
+            {
+                AssetDatabase.CreateAsset(dialogueContainerObject, assetPath);
             }
 
             AssetDatabase.SaveAssets();
@@ -121,13 +129,26 @@ namespace StarSalvager.Editor.PatchTrees
 
         public void LoadPatchTree(string fileName)
         {
-            _patchTreeContainer = Resources.Load<PatchTreeContainer>(fileName);
-            if (_patchTreeContainer == null)
+            //--------------------------------------------------------------------------------------------------------//
+            
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+
+            string GetAssetPath(in string filename) => $"Assets{DIRECTORY}{filename}.asset";
+            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var assetPath = GetAssetPath(fileName);
+            var filePath = GetFilePath(fileName);
+            
+            if (!File.Exists(filePath))
             {
                 EditorUtility.DisplayDialog("File Not Found", "Target Narrative Data does not exist!", "OK");
                 return;
             }
-
+            
+            _patchTreeContainer = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
+            
             ClearGraph();
             GeneratePatchTreeNodes();
             ConnectPatchTreeNodes();
