@@ -445,7 +445,7 @@ GameObject:
   - component: {fileID: 7800935485680763587}
   - component: {fileID: 99700352731938398}
   m_Layer: 5
-  m_Name: Left_Slider
+  m_Name: Grey_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4929,7 +4929,7 @@ GameObject:
   - component: {fileID: 3037938968264119359}
   - component: {fileID: 3757709100253414771}
   m_Layer: 5
-  m_Name: Left_Slider
+  m_Name: Red_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6104,7 +6104,7 @@ GameObject:
   - component: {fileID: 833754054301520828}
   - component: {fileID: 1847234627506919358}
   m_Layer: 5
-  m_Name: Left_Slider
+  m_Name: Yellow_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7402,11 +7402,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: aae1de7a5269f6f469d080f5cb98e5d5, type: 3}
   - {fileID: 21300000, guid: cb192d36b49dede43a715f1ce24f990e, type: 3}
   sliderTargets:
-  - {fileID: 4542966241952954883}
-  - {fileID: 1441884543969579972}
-  - {fileID: 506044404748442483}
-  - {fileID: 9129160456622053184}
-  - {fileID: 2083253194999572721}
+  - {fileID: 2578836084324098354}
+  - {fileID: 7998449318514540044}
+  - {fileID: 7800935485680763587}
+  - {fileID: 3037938968264119359}
+  - {fileID: 833754054301520828}
   magnetFlash: {fileID: 1067242931904072947}
   flashTimeRange: {x: 0.4, y: 0.7}
   borderGlow: {fileID: 7443690187230298321}
@@ -9185,7 +9185,7 @@ GameObject:
   - component: {fileID: 2578836084324098354}
   - component: {fileID: 5647413199682952836}
   m_Layer: 5
-  m_Name: Left_Slider
+  m_Name: Blue_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10513,7 +10513,7 @@ GameObject:
   - component: {fileID: 585409773369977827}
   - component: {fileID: 2205662924150438984}
   m_Layer: 5
-  m_Name: Up_Slider (1)
+  m_Name: Health_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12498,7 +12498,7 @@ GameObject:
   - component: {fileID: 7998449318514540044}
   - component: {fileID: 3630173962964315094}
   m_Layer: 5
-  m_Name: Up_Slider
+  m_Name: Gree_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
