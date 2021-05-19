@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Parts.Data;
+using StarSalvager.PatchTrees;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
-
+using System.IO;
+using StarSalvager.Utilities;
 using UnityEditor;
 
 #endif
@@ -184,6 +186,47 @@ namespace StarSalvager.Factories.Data
 
             return !(partProfile is null);
         }
+
+
+        //Patch Trees
+        //====================================================================================================================//
+        
+        //TODO I really should centralize the file naming schemes
+        [Button, FoldoutGroup("$title"), HideIf("HasPatchTree"), PropertyOrder(-1000)]
+        private void CreatePatchTree()
+        {
+            var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
+            dialogueContainerObject.PartType = partType;
+            
+            AssetDatabase.CreateAsset(dialogueContainerObject, GetAssetPath());
+            AssetDatabase.SaveAssets();
+
+            EditPatchTree();
+        }
+        [Button, FoldoutGroup("$title"), ShowIf("HasPatchTree"), PropertyOrder(-1000)]
+        private void EditPatchTree()
+        {
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(GetAssetPath());
+        }
+
+        private bool HasPatchTree() => File.Exists(GetFilePath());
+
+        private string GetFilePath()
+        {
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
+
+            return  GetFilePath($"{partType.ToString()}_PatchTree");
+        }
+
+        private string GetAssetPath()
+        {
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+            return $"Assets{DIRECTORY}{partType.ToString()}_PatchTree.asset";
+        }
+
+        //====================================================================================================================//
+        
 
 #endif
     }

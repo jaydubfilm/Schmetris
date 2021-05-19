@@ -31,6 +31,8 @@ namespace StarSalvager.PatchTrees
     [Serializable]
     public class PatchTreeContainer : ScriptableObject
     {
+        public PART_TYPE PartType;
+        
         public List<NodeLinkData> NodeLinks = new List<NodeLinkData>();
         public PartNodeData PartNodeData;
         public List<PatchNodeData> PatchNodeDatas = new List<PatchNodeData>();

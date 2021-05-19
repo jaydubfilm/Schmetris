@@ -16,8 +16,10 @@ namespace StarSalvager.Editor.PatchTrees.Graph
     {
         public readonly Vector2 DefaultNodeSize = new Vector2(200, 150);
         public readonly Vector2 DefaultCommentBlockSize = new Vector2(300, 200);
+
+        public readonly PART_TYPE PartType;
         
-        public PatchTreeGraphView(PatchTreeWindow editorWindow)
+        public PatchTreeGraphView(PatchTreeWindow editorWindow, in PART_TYPE partType)
         {
             styleSheets.Add(Resources.Load<StyleSheet>("PatchTreeGraph"));
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
@@ -30,8 +32,11 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             var grid = new GridBackground();
             Insert(0, grid);
             grid.StretchToParentSize();
+
+            var partNode = GetEntryPointNodeInstance(partType);
+            PartType = partType;
             
-            AddElement(GetEntryPointNodeInstance());
+            AddElement(partNode);
         }
         
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -206,13 +211,13 @@ namespace StarSalvager.Editor.PatchTrees.Graph
         }
         
         //TODO Need to finish integrating this
-        private PartNode GetEntryPointNodeInstance()
+        private PartNode GetEntryPointNodeInstance(in PART_TYPE partType)
         {
             var nodeCache = new PartNode
             {
                 //title = "START",
                 GUID = Guid.NewGuid().ToString(),
-                PartType = PART_TYPE.CORE
+                PartType = partType
                 //DialogueText = "ENTRYPOINT",
                 //EntyPoint = true
             };

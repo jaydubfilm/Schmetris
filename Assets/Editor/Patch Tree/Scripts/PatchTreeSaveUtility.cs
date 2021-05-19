@@ -6,6 +6,7 @@ using System.Linq;
 using StarSalvager.Editor.PatchTrees.Graph;
 using StarSalvager.Editor.PatchTrees.Nodes;
 using StarSalvager.PatchTrees;
+using StarSalvager.Utilities.Extensions;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -14,30 +15,19 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Editor.PatchTrees
 {
-    public class PatchTreeSaveUtility
+    public static class PatchTreeSaveUtility
     {
-        private List<Edge> Edges => _graphView.edges.ToList();
-        private List<BaseNode> Nodes => _graphView.nodes.ToList().Cast<BaseNode>().ToList();
+        const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
 
-        /*private List<Group> CommentBlocks =>
-            _graphView.graphElements.ToList().Where(x => x is Group).Cast<Group>().ToList();*/
-
-        private PatchTreeContainer _patchTreeContainer;
-        private PatchTreeGraphView _graphView;
-
-        public static PatchTreeSaveUtility GetInstance(PatchTreeGraphView graphView)
+        //Saving Graph
+        //====================================================================================================================//
+        
+        public static void SaveGraph(in PART_TYPE partType, in PatchTreeGraphView graphView)
         {
-            return new PatchTreeSaveUtility
-            {
-                _graphView = graphView
-            };
-        }
-
-        public void SaveGraph(string fileName)
-        {
-
-            //--------------------------------------------------------------------------------------------------------//
+            var fileName = GetFileName(partType);
             
+            //--------------------------------------------------------------------------------------------------------//
+
             const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
 
             string GetAssetPath(in string filename) => $"Assets{DIRECTORY}{filename}.asset";
@@ -47,15 +37,15 @@ namespace StarSalvager.Editor.PatchTrees
 
             var assetPath = GetAssetPath(fileName);
             var filePath = GetFilePath(fileName);
-            
+
             var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
-            if (!SaveNodes(fileName, ref dialogueContainerObject)) 
+            if (!SaveNodes(graphView, ref dialogueContainerObject))
                 return;
 
             if (File.Exists(filePath))
             {
                 var loadedFile = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
-                
+
                 loadedFile.NodeLinks = dialogueContainerObject.NodeLinks;
                 loadedFile.PartNodeData = dialogueContainerObject.PartNodeData;
                 loadedFile.PatchNodeDatas = new List<PatchNodeData>(dialogueContainerObject.PatchNodeDatas);
@@ -70,17 +60,21 @@ namespace StarSalvager.Editor.PatchTrees
             AssetDatabase.SaveAssets();
         }
 
-        private bool SaveNodes(string fileName, ref PatchTreeContainer dialogueContainerObject)
+        private static bool SaveNodes(PatchTreeGraphView graphView,
+            ref PatchTreeContainer patchTreeContainer)
         {
-            if (!Edges.Any()) return false;
-            
-            var connectedSockets = Edges.Where(x => x.input.node != null).ToArray();
+            var edges = graphView.edges.ToList();
+            var nodes = graphView.nodes.ToList().Cast<BaseNode>().ToList();
+
+            if (!edges.Any()) return false;
+
+            var connectedSockets = edges.Where(x => x.input.node != null).ToArray();
             for (var i = 0; i < connectedSockets.Length; i++)
             {
                 var outputNode = (connectedSockets[i].output.node as BaseNode);
                 var inputNode = (connectedSockets[i].input.node as BaseNode);
-                
-                dialogueContainerObject.NodeLinks.Add(new NodeLinkData
+
+                patchTreeContainer.NodeLinks.Add(new NodeLinkData
                 {
                     BaseNodeGUID = outputNode.GUID,
                     PortName = connectedSockets[i].output.portName,
@@ -88,16 +82,16 @@ namespace StarSalvager.Editor.PatchTrees
                 });
             }
 
-            foreach (var node in Nodes)
+            foreach (var node in nodes)
             {
                 switch (node)
                 {
                     case PartNode partNode:
-                        dialogueContainerObject.PartNodeData = partNode.GetNodeData();
+                        patchTreeContainer.PartNodeData = partNode.GetNodeData();
                         continue;
                     case PatchNode patchNode:
                         var nodeData = patchNode.GetNodeData();
-                        dialogueContainerObject.PatchNodeDatas.Add(nodeData);
+                        patchTreeContainer.PatchNodeDatas.Add(nodeData);
                         break;
                 }
             }
@@ -105,94 +99,82 @@ namespace StarSalvager.Editor.PatchTrees
             return true;
         }
 
-        /*private void SaveExposedProperties(PatchTreeContainer dialogueContainer)
-        {
-            dialogueContainer.ExposedProperties.Clear();
-            dialogueContainer.ExposedProperties.AddRange(_graphView.ExposedProperties);
-        }*/
+        //Loading Graph
+        //====================================================================================================================//
 
-        /*private void SaveCommentBlocks(DialogueContainer dialogueContainer)
+        public static void LoadPatchTree(in PART_TYPE partType, in PatchTreeGraphView graphView)
         {
-            foreach (var block in CommentBlocks)
-            {
-                var nodes = block.containedElements.Where(x => x is DialogueNode).Cast<DialogueNode>().Select(x => x.GUID)
-                    .ToList();
-
-                dialogueContainer.CommentBlockData.Add(new CommentBlockData
-                {
-                    ChildNodes = nodes,
-                    Title = block.title,
-                    Position = block.GetPosition().position
-                });
-            }
-        }*/
-
-        public void LoadPatchTree(string fileName)
-        {
-            //--------------------------------------------------------------------------------------------------------//
+            var fileName = GetFileName(partType);
             
-            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+            //--------------------------------------------------------------------------------------------------------//
 
             string GetAssetPath(in string filename) => $"Assets{DIRECTORY}{filename}.asset";
-            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
 
             //--------------------------------------------------------------------------------------------------------//
             
             var assetPath = GetAssetPath(fileName);
-            var filePath = GetFilePath(fileName);
             
-            if (!File.Exists(filePath))
+            if (!DoesPatchTreeExist(fileName))
             {
                 EditorUtility.DisplayDialog("File Not Found", "Target Narrative Data does not exist!", "OK");
                 return;
             }
             
-            _patchTreeContainer = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
+            var patchTreeContainer = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
             
-            ClearGraph();
-            GeneratePatchTreeNodes();
-            ConnectPatchTreeNodes();
+            ClearGraph(graphView, ref patchTreeContainer);
+            GeneratePatchTreeNodes(graphView, ref patchTreeContainer);
+            ConnectPatchTreeNodes(graphView, ref patchTreeContainer);
             //AddExposedProperties();
             //GenerateCommentBlocks();
         }
 
+        //====================================================================================================================//
+        
         /// <summary>
         /// Set Entry point GUID then Get All Nodes, remove all and their edges. Leave only the entrypoint node. (Remove its edge too)
         /// </summary>
-        private void ClearGraph()
+        private static void ClearGraph(PatchTreeGraphView graphView, ref PatchTreeContainer patchTreeContainer)
         {
-            Nodes.Find(x => x is PartNode).GUID = _patchTreeContainer.NodeLinks[0].BaseNodeGUID;
-            foreach (var perNode in Nodes)
+            var edges = graphView.edges.ToList();
+            var nodes = graphView.nodes.ToList().Cast<BaseNode>().ToList();
+
+            if (nodes.IsNullOrEmpty() || patchTreeContainer.NodeLinks.IsNullOrEmpty())
+                return;
+            
+            nodes.Find(x => x is PartNode).GUID = patchTreeContainer.NodeLinks[0].BaseNodeGUID;
+            foreach (var perNode in nodes)
             {
                 if (perNode is PartNode) 
                     continue;
                 
-                Edges.Where(x => x.input.node == perNode).ToList()
-                    .ForEach(edge => _graphView.RemoveElement(edge));
-                _graphView.RemoveElement(perNode);
+                edges.Where(x => x.input.node == perNode).ToList().ForEach(graphView.RemoveElement);
+                
+                graphView.RemoveElement(perNode);
             }
         }
 
         /// <summary>
         /// Create All serialized nodes and assign their guid and dialogue text to them
         /// </summary>
-        private void GeneratePatchTreeNodes()
+        private static void GeneratePatchTreeNodes(in PatchTreeGraphView graphView, ref PatchTreeContainer patchTreeContainer)
         {
             //FIXME Find the existing Part Node
-            var partNode = _patchTreeContainer.PartNodeData;
-            _graphView.CreateNode(string.Empty, new Vector2(partNode.Position.x, partNode.Position.y), _patchTreeContainer.PartNodeData);
+            var partNode = patchTreeContainer.PartNodeData;
+            graphView.CreateNode(string.Empty, new Vector2(partNode.Position.x, partNode.Position.y), patchTreeContainer.PartNodeData);
             
-            foreach (var patchNodeData in _patchTreeContainer.PatchNodeDatas)
+            foreach (var patchNodeData in patchTreeContainer.PatchNodeDatas)
             {
-                var tempNode = (PatchNode)_graphView.CreateNode(string.Empty, patchNodeData.Position, patchNodeData);
+                var tempNode = (PatchNode)graphView.CreateNode(string.Empty, patchNodeData.Position, patchNodeData);
                 
-                _graphView.AddElement(tempNode);
+                graphView.AddElement(tempNode);
             }
         }
 
-        private void ConnectPatchTreeNodes()
+        private static void ConnectPatchTreeNodes(PatchTreeGraphView graphView, ref PatchTreeContainer patchTreeContainer)
         {
-
+            var nodes = graphView.nodes.ToList().Cast<BaseNode>().ToList();
+            
             //--------------------------------------------------------------------------------------------------------//
             
             void LinkNodesTogether(Port outputSocket, Port inputSocket)
@@ -204,47 +186,40 @@ namespace StarSalvager.Editor.PatchTrees
                 };
                 tempEdge.input.Connect(tempEdge);
                 tempEdge.output.Connect(tempEdge);
-                _graphView.Add(tempEdge);
+                graphView.Add(tempEdge);
             }
 
             //--------------------------------------------------------------------------------------------------------//
             
-            for (var i = 0; i < Nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
                 var k = i; //Prevent access to modified closure
-                var connections = _patchTreeContainer.NodeLinks
-                    .Where(x => x.BaseNodeGUID == Nodes[k].GUID)
+                var connections = patchTreeContainer.NodeLinks
+                    .Where(x => x.BaseNodeGUID == nodes[k].GUID)
                     .ToList();
-                var node = Nodes[i];
-                foreach (var targetNode in connections.Select(connection => Nodes.First(x => x.GUID == connection.TargetNodeGUID)))
+                var node = nodes[i];
+                foreach (var targetNode in connections.Select(connection => nodes.First(x => x.GUID == connection.TargetNodeGUID)))
                 {
                     LinkNodesTogether((Port) node.outputContainer[0], (Port) targetNode.inputContainer[0]);
                 }
             }
         }
 
-        /*private void AddExposedProperties()
+        //DoesPatchTreeExist
+        //====================================================================================================================//
+        
+        public static bool DoesPatchTreeExist(in string fileName)
         {
-            _graphView.ClearBlackBoardAndExposedProperties();
-            foreach (var exposedProperty in _dialogueContainer.ExposedProperties)
-            {
-                _graphView.AddPropertyToBlackBoard(exposedProperty);
-            }
-        }*/
+            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
+            var filePath = GetFilePath(fileName);
 
-        /*private void GenerateCommentBlocks()
-        {
-            foreach (var commentBlock in CommentBlocks)
-            {
-                _graphView.RemoveElement(commentBlock);
-            }
+            return File.Exists(filePath);
+        }
 
-            foreach (var commentBlockData in _dialogueContainer.CommentBlockData)
-            {
-               var block = _graphView.CreateCommentBlock(new Rect(commentBlockData.Position, _graphView.DefaultCommentBlockSize),
-                    commentBlockData);
-               block.AddElements(Nodes.Where(x=>commentBlockData.ChildNodes.Contains(x.GUID)));
-            }
-        }*/
+
+        private static string GetFileName(in PART_TYPE partType) => $"{partType.ToString()}_PatchTree";
+
+        //====================================================================================================================//
+
     }
 }
