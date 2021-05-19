@@ -250,6 +250,9 @@ namespace StarSalvager
 
             m_worldGrid = null;
             m_waveEndSummaryData = new WaveEndSummaryData(Globals.CurrentRingIndex, Globals.CurrentWave);
+            
+            GameManager.SetCurrentGameState(GameState.LevelActive);
+
 
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
@@ -845,7 +848,6 @@ namespace StarSalvager
 
         public void Activate()
         {
-            GameManager.SetCurrentGameState(GameState.LevelActive);
 
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
 
