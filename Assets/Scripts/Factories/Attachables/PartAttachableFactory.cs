@@ -199,11 +199,13 @@ namespace StarSalvager.Factories
                 : remoteData.category.GetColor();
 
             temp.SetSprite(sprite);
-            if(Globals.UsePartColors)
+            if (Globals.UsePartColors)
+            {
                 temp.SetColor(color);
+                temp.partColor = color;
+            }
             temp.LoadBlockData(partData);
             temp.LockRotation = remote.lockRotation;
-            temp.partColor = color;
             temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";
