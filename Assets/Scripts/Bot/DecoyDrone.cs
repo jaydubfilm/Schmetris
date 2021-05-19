@@ -100,17 +100,21 @@ namespace StarSalvager
 
         public override bool TryHitAt(Vector2 worldPosition, float damage)
         {
-            return TryHitAt(damage);
+            return TryHitAt(damage, true);
+        }
+        public override void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
+        {
+            TryHitAt(damage, withSound);
         }
         
-        public bool TryHitAt(in float damage)
+        public bool TryHitAt(in float damage, in bool withSound)
         {
             ChangeHealth(-damage);
             
             FloatingText.Create($"{-damage}", transform.position, Color.red);
 
             
-            if(CurrentHealth > 0)
+            if(withSound && CurrentHealth > 0) 
                 AudioController.PlaySound(SOUND.ENEMY_IMPACT);
 
             return true;
@@ -289,11 +293,7 @@ namespace StarSalvager
         {
             return AttachedBlocks[0];
         }
-
-        public override void TryHitAt(IAttachable closestAttachable, float damage, bool withSound = true)
-        {
-            TryHitAt(transform.position, damage);
-        }
+        
 
         //====================================================================================================================//
         

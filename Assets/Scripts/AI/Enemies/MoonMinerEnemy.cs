@@ -239,7 +239,7 @@ namespace StarSalvager.AI
                         bot.TryHitAt(closestAttachable, damageToApply, playSound);
                         break;
                     case DecoyDrone decoyDrone:
-                        decoyDrone.TryHitAt(damageToApply);
+                        decoyDrone.TryHitAt(damageToApply, playSound);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
