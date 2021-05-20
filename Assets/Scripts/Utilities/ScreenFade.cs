@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ScreenFade : Singleton<ScreenFade>
 {
+    public const float DEFAULT_TIME = 1f;
     [SerializeField]
     private Image image;
 
@@ -25,7 +26,7 @@ public class ScreenFade : Singleton<ScreenFade>
     //ScreenFade Functions
     //====================================================================================================================//
 
-    public static void Fade(Action onFadedCallback, float time = 1f)
+    public static void Fade(Action onFadedCallback, float time = DEFAULT_TIME)
     {
         if (Instance == null)
             return;

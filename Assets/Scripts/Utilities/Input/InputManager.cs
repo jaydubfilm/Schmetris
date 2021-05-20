@@ -179,12 +179,6 @@ namespace StarSalvager.Utilities.Inputs
             Globals.OrientationChange -= SetOrientation;
         }
 
-        private void OnApplicationQuit()
-        {
-            Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
-            GameTimer.CustomOnApplicationQuit();
-            PlayerDataManager.CustomOnApplicationQuit();
-        }
 
         #endregion //Unity Functions
 

@@ -19,6 +19,7 @@ namespace StarSalvager
     [RequireComponent(typeof(Collider2D))]
     public abstract class CollidableBase : Actor2DBase, ICustomRecycle
     {
+        
         private bool _useCollision = true;
 
         protected virtual string[] CollisionTags { get; set; } = {TagsHelper.PLAYER};
@@ -180,6 +181,7 @@ namespace StarSalvager
         
         protected bool TryFindClosestCollision(in DIRECTION direction, in LayerMask? layerMask, out Vector2 point)
         {
+            const float collisionDistThreshold = 0.55f;
             const float rayLength = Constants.gridCellSize * 3f;
             
             point = Vector2.zero;
@@ -228,6 +230,9 @@ namespace StarSalvager
 
                 Debug.DrawRay(hit.point, Vector2.up, Color.red);
                 Debug.DrawRay(rayStartPosition, vectorDirection * rayLength, Color.green);
+                
+                if(Vector2.Distance(Position, hit.point) > collisionDistThreshold)
+                    continue;
 
                 if (hit.distance >= shortestDis)
                     continue;

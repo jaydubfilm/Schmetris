@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89035c1c4f5c70b48b9949fdf1bc1165, type: 3}
+  m_Name: Bit_Profile_JW_custom.metal
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 4611369530616709383, guid: 81ca8fa4359ebc149be244e25fdbcb99, type: 3}
+  AnimatedPrefab: {fileID: 2761212292129707405, guid: 624e44e3df70359479ea266891b61f0b,
+    type: 3}
+  JunkPrefab: {fileID: 4611369530616709383, guid: 2fa72a9aeb1c5ef458a3299b79a536e8,
+    type: 3}
+  JunkSprite: {fileID: 0}
+  ScrapyardPrefab: {fileID: 5186159577342506206, guid: e0daf6f0bee0d1f4eb6ca1e7c31bd550,
+    type: 3}
+  profiles:
+  - _name: Bluesalt
+    bitType: 1
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: -8749571160802222385, guid: ffa335490a9178749986f7b4906ca268,
+      type: 3}
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
+    _sprites:
+    - {fileID: 6039155110419200008, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -1582512864064098049, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 21300000, guid: 50d1987925689994ab89bd811ba59660, type: 3}
+    - {fileID: 21300000, guid: d02f8eb5ba3f9f74080c34ac74574d88, type: 3}
+    - {fileID: 21300000, guid: 792651bc83bb6994f9b3d5a00f425616, type: 3}
+  - _name: Greenium
+    bitType: 2
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: -8376759812202522395, guid: ffa335490a9178749986f7b4906ca268,
+      type: 3}
+    color: {r: 0.45882353, g: 1, b: 0, a: 1}
+    _sprites:
+    - {fileID: 2578533267935622569, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 246965062356006632, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 21300000, guid: c75dfdd7f3ebd2a43b62b2c969809ff5, type: 3}
+    - {fileID: 21300000, guid: e86184dc7092d284da9668b245923463, type: 3}
+    - {fileID: 21300000, guid: 718cadaecb122134d869670cf02801d8, type: 3}
+  - _name: Greyscale
+    bitType: 3
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 7233997685665345691, guid: ffa335490a9178749986f7b4906ca268,
+      type: 3}
+    color: {r: 0.59607846, g: 0.49411765, b: 1, a: 1}
+    _sprites:
+    - {fileID: 2516858116652281422, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -3372421307423276766, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 21300000, guid: 05a902dcb8c484b4baa3843e7b810240, type: 3}
+    - {fileID: 21300000, guid: c1a49c7494851c4449fc0de0a0235972, type: 3}
+    - {fileID: 21300000, guid: 0b6e1bfb02738c140914b8073c87ea59, type: 3}
+  - _name: Reddite
+    bitType: 4
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: -4714574965654510377, guid: ffa335490a9178749986f7b4906ca268,
+      type: 3}
+    color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+    _sprites:
+    - {fileID: 6414958675908347751, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -7143617189628123940, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 21300000, guid: 2d513c5e1f885b3438778a9471fcd507, type: 3}
+    - {fileID: 21300000, guid: 602910b542c4fed49bfb3fdba506a020, type: 3}
+    - {fileID: 21300000, guid: 0f1648bb420cbf2419dc0007eb20feb4, type: 3}
+  - _name: Yelletron
+    bitType: 5
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: -5661681291046649710, guid: ffa335490a9178749986f7b4906ca268,
+      type: 3}
+    color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
+    _sprites:
+    - {fileID: 8947030836025851479, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: -4944162547608504398, guid: 9111e5306fb26834ea1e64ad5a2db41f, type: 3}
+    - {fileID: 21300000, guid: 7591ec1712f10074b9393f6d0f90552f, type: 3}
+    - {fileID: 21300000, guid: 58e7f7adaab899e4fa90e154586ed8cc, type: 3}
+    - {fileID: 21300000, guid: 4c70ba6bc8d9ff54daab4866cafdf215, type: 3}
+  - _name: Energy
+    bitType: 6
+    _animation: {fileID: 11400000, guid: c2ef51523ee7dbe48a70f7ab362e636d, type: 2}
+    refinedSprite: {fileID: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    _sprites:
+    - {fileID: 21300000, guid: 9f7498e23d5354d0ca77d1ca3e66d168, type: 3}
+  - _name: White
+    bitType: 7
+    _animation: {fileID: 0}
+    refinedSprite: {fileID: 0}
+    color: {r: 1, g: 1, b: 1, a: 1}
+    _sprites:
+    - {fileID: 21300000, guid: c4f264e563c034af2ad187bc57acadd9, type: 3}
+    - {fileID: 21300000, guid: 187ad0868b7274fbeb42725f60975d9d, type: 3}
+  FrozenSprite: {fileID: 21300000, guid: fe40d2932140c2c45bc890bf547fdf1c, type: 3}

@@ -54,9 +54,9 @@ MonoBehaviour:
   - type: 7
     hintTexts:
     - shortText: Gears
-      longDescription: Nice move!  That combo just won you some GEARS.  Gears are
-        rewards for making combos and other skilled flying moves. This is the real
-        secret to survival out here.
+      longDescription: Nice work! That droid dropped some useful mechanical parts
+        called GEARS. Gears are like money you can use to 'buy' repairs or upgrades
+        at wrecks. Collect as many as you can.
   - type: 8
     hintTexts:
     - shortText: Patch Points
@@ -77,3 +77,28 @@ MonoBehaviour:
       longDescription: Uh-oh.  Looks like we're not alone out here.  That parasite
         is hungry for drone parts.  It will eat its way to your core if you don't
         figure out a way to scrape it off.
+  - type: 12
+    hintTexts:
+    - shortText: White Bit
+      longDescription: 'You made a WHITE bit! These are made by upgrading level 2
+        bits of any colour. Match three or more white bits to form a SILVER bit. '
+  - type: 13
+    hintTexts:
+    - shortText: Silver
+      longDescription: You made a SILVER bit by matching three white ones!  This
+        gives you AMMO of every colour.  Silver bits are safely stored inside your
+        core and can be used to craft high level patches at wrecks.
+  - type: 14
+    hintTexts:
+    - shortText: Health
+      longDescription: 'Uh-oh: Your drone core has sustained a direct hit!  Fortunately,
+        you have enough greenium in storage to repair the damage. Repairs happen
+        automatically but they use up your greenium, so be sure to replenish it by
+        making more green combos!'
+  - type: 15
+    hintTexts:
+    - shortText: Wrecks
+      longDescription: Congratulations, you discovered your first wreck! These are
+        treasure troves of useful salvage! Each wreck type offers a different selection
+        of salvageable components. Use what you find here to upgrade or repair your
+        drone.

@@ -213,6 +213,7 @@ namespace StarSalvager.UI.Scrapyard
             launchButton.onClick.AddListener(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
             });
             
             closePartUpgradeWindowButton.onClick.AddListener(() =>
@@ -370,14 +371,16 @@ namespace StarSalvager.UI.Scrapyard
             //Remove Components
             //--------------------------------------------------------------------------------------------------------//
             
-            var patchData = partUpgrd.PurchasePatchData;
+            var purchasePatchData = partUpgrd.PurchasePatchData;
             var currentGears = PlayerDataManager.GetGears();
             var currentSilver = PlayerDataManager.GetSilver();
-            if (currentGears < patchData.gears || currentSilver < patchData.silver)
+            if (currentGears < purchasePatchData.gears || currentSilver < purchasePatchData.silver)
                 return;
 
-            PlayerDataManager.SubtractGears(patchData.gears);
-            PlayerDataManager.SubtractSilver(patchData.silver);
+            PlayerDataManager.SubtractGears(purchasePatchData.gears);
+            PlayerDataManager.SubtractSilver(purchasePatchData.silver);
+
+            AnalyticsManager.PurchasedPatchEvent((PART_TYPE) partUpgrd.PartData.Type, purchasePatchData.PatchData);
             
             //Add Patch to Selected Part
             //--------------------------------------------------------------------------------------------------------//
@@ -559,7 +562,7 @@ namespace StarSalvager.UI.Scrapyard
             partDescriptionText.text = partRemote.description;
             
             partImage.sprite = partProfile.Sprite;
-            partImage.color = partRemote.category.GetColor();
+            partImage.color = Globals.UsePartColors ? partRemote.category.GetColor() : Color.white;
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

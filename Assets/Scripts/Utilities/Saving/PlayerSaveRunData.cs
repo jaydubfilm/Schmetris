@@ -49,6 +49,8 @@ namespace StarSalvager.Utilities.Saving
         public bool canChoosePart;
 
         public int currentNode;
+        public int currentSector;
+        public int currentWave;
 
         [JsonProperty] private List<PlayerResource> _playerResources;
 
@@ -83,6 +85,8 @@ namespace StarSalvager.Utilities.Saving
         public IReadOnlyList<PatchData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
         private List<PatchData> _currentPatchOptions;
+        [JsonProperty]
+        private List<PatchData> _wreckPatchOptions;
 
         #endregion //Properties
 
@@ -236,6 +240,7 @@ namespace StarSalvager.Utilities.Saving
         public void SetCurrentPatchOptions(in IEnumerable<PatchData> patches)
         {
             _currentPatchOptions = new List<PatchData>(patches);
+            _wreckPatchOptions = new List<PatchData>(patches);
         }
 
         public void ClearAllPatches()
@@ -246,6 +251,13 @@ namespace StarSalvager.Utilities.Saving
         public void RemovePatchAtIndex(in int index)
         {
             _currentPatchOptions.RemoveAt(index);
+        }
+
+        public List<PatchData> GetPurchasedPatches()
+        {
+            return _wreckPatchOptions.IsNullOrEmpty()
+                ? null
+                : new List<PatchData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
         }
 
         #endregion //Patches
@@ -293,6 +305,19 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Silver
+
+        //Run Progress
+        //====================================================================================================================//
+
+        #region Run Progress
+
+        public void SetSectorWave(in int sector, in int wave)
+        {
+            currentSector = sector;
+            currentWave = wave;
+        }
+
+        #endregion //Run Progress
 
         //Misc Functions
         //====================================================================================================================//

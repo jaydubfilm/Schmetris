@@ -1024,12 +1024,11 @@ namespace StarSalvager
         {
             var patches = part.Patches;
             var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
-            //var damageBoost = patches.GetPatchMultiplier(PATCH_TYPE.POWER);
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
             
-            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
 
 
             var position = bot.transform.position;
@@ -1772,7 +1771,7 @@ namespace StarSalvager
             var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
             var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
             
-            var rot = part.transform.eulerAngles.z + 180;
+            var rot = part.transform.eulerAngles.z + BlasterProjectile.ANGLE;
             
             var blasterProjectile = CreateBlasterEffect();
             blasterProjectile.transform.position = fromPosition;
@@ -2461,8 +2460,9 @@ namespace StarSalvager
                 }
                 case PART_TYPE.BLASTER:
                 {
+                    
                     //Need to take into consideration the current rotation of the blaster in case the part is reinitialized after rotation
-                    var rot = part.transform.eulerAngles.z + 180;
+                    var rot = part.transform.eulerAngles.z + BlasterProjectile.ANGLE;
                     
                     var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
                     var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);

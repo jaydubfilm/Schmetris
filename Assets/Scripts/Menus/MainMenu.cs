@@ -175,8 +175,8 @@ namespace StarSalvager.UI
             //applicationOpenAnalyticsDictionary.Add("Session ID", Globals.SessionID);
             //applicationOpenAnalyticsDictionary.Add("Playthrough ID", PlayerPersistentData.PlayerData.PlaythroughID);
             //applicationOpenAnalyticsDictionary.Add("Start Time", DateTime.Now.ToString());
-            AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen,
-                eventDataDictionary: applicationOpenAnalyticsDictionary);
+            /*AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.ApplicationOpen,
+                eventDataDictionary: applicationOpenAnalyticsDictionary);*/
 
             InitButtons();
 

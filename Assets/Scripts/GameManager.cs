@@ -5,6 +5,9 @@ using StarSalvager.Values;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
 namespace StarSalvager
@@ -30,6 +33,9 @@ namespace StarSalvager
     //[DefaultExecutionOrder(-10000)]
     public class GameManager : Singleton<GameManager>
     {
+        //Properties
+        //====================================================================================================================//
+        
         public static GameState CurrentGameState => m_currentGameState;
         //FIXME The game state can likely be stored as static, since we don't gain anything by accessing it through the instance
         private static GameState m_currentGameState = GameState.MainMenu;
@@ -37,7 +43,9 @@ namespace StarSalvager
         [SerializeField, Required]
         private GameSettingsScriptableObject m_gameSettings;
 
-
+        //Unity Functions
+        //====================================================================================================================//
+        
 #if UNITY_EDITOR
         public GameSettingsScriptableObject GameSettings => m_gameSettings;
         public void OnValidate()
@@ -49,7 +57,37 @@ namespace StarSalvager
         public void Start()
         {
             m_gameSettings.SetupGameSettings();
+            AnalyticsManager.ApplicationStartEvent();
         }
+
+        private void OnApplicationQuit()
+        {
+            SessionDataProcessor.ExportSessionData();
+
+            Debug.Log($"{nameof(InputManager)} called {nameof(OnApplicationQuit)}");
+
+            var timePlayed = GameTimer.GetTimePlayed;
+            
+            if (!IsState(GameState.MainMenu))
+            {
+                PlayerDataManager.SavePlayerAccountData();
+            }
+
+            if (IsState(GameState.LEVEL))
+            {
+                AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.QUIT);
+            }
+            else if (IsState(GameState.Scrapyard))
+            {
+                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
+            }
+            
+            AnalyticsManager.ApplicationEndEvent();
+        }
+
+        //Game Manager Functions
+        //====================================================================================================================//
+        
 
         public static bool IsState(GameState gameState)
         {

@@ -33,6 +33,10 @@ namespace StarSalvager.UI.Hints
         COMPONENT,
         PARASITE,
         DAMAGE,
+        WHITE,
+        SILVER,
+        HEALTH,
+        WRECK
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -225,6 +229,9 @@ namespace StarSalvager.UI.Hints
                     StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));
                     return;
                 //----------------------------------------------------------------------------------------------------//
+                case HINT.HEALTH:
+                    objectsToHighlight = FindObjectOfType<GameUI>().GetHintElements(hint);
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -279,6 +286,12 @@ namespace StarSalvager.UI.Hints
                 
                 switch (objectToHighlight)
                 {
+                    case Vector3 vector3:
+                        highlightManager.Highlight(GetPositionAsBounds(vector3));
+                        break;
+                    case Vector2 vector2:
+                        highlightManager.Highlight(GetPositionAsBounds(vector2));
+                        break;
                     case IHasBounds iHasBounds:
                         highlightManager.Highlight(iHasBounds);
                         break;
@@ -378,6 +391,15 @@ namespace StarSalvager.UI.Hints
         {
             this.hintText.text = hintText.shortText;
             infoText.text = hintText.longDescription;
+        }
+
+        private Bounds GetPositionAsBounds(in Vector2 worldPosition)
+        {
+            return new Bounds
+            {
+                center = worldPosition,
+                size = Vector2.one * Constants.gridCellSize
+            };
         }
 
         //Editor Functions
