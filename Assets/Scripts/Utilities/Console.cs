@@ -203,7 +203,7 @@ namespace StarSalvager.Utilities
 
             var split = cmd.Split(' ');
 
-            if (!CheckForSplitLength(split, 2, out var print))
+            if (!CheckForSplitLength(split, 1, out var print))
             {
                 _consoleDisplay += print;
             }

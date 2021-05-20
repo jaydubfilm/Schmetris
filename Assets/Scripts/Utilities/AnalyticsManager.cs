@@ -194,7 +194,7 @@ namespace StarSalvager.Utilities
             var waveEndSummaryData = LevelManager.Instance.WaveEndSummaryData;
 
             if (waveEndSummaryData == null)
-                throw new ArgumentException();
+                throw new ArgumentException("Missing Summary Data");
             
             var eventData = new Dictionary<string, object>
             {
