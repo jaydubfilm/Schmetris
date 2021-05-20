@@ -404,24 +404,24 @@ namespace StarSalvager.Utilities.Saving
 
         #region Map Nodes
         
-        public static bool CheckIfCompleted(in int waveAt)
+        public static bool CheckIfCompleted(in int nodeIndex)
         {
-            return PlayerRunData.CheckIfCompleted(waveAt);
+            return PlayerRunData.CheckIfCompleted(nodeIndex);
         }
 
-        public static int GetCurrentNode()
+        public static int GetCurrentWave()
         {
             return PlayerRunData.currentNode;
         }
 
-        public static void SetCurrentNode(int node)
+        public static void SetCurrentWave(int node)
         {
             PlayerRunData.currentNode = node;
         }
 
         
         
-        public static void AddCompletedNode(int node)
+        /*public static void AddCompletedNode(int node)
         {
             PlayerRunData.playerPreviouslyCompletedNodes.Add(node);
         }
@@ -434,19 +434,24 @@ namespace StarSalvager.Utilities.Saving
         public static IReadOnlyList<int> GetWreckNodes()
         {
             return PlayerRunData.wreckNodes;
-        }
+        }*/
 
         #endregion //Map Nodes
 
         //Progress Data
         //====================================================================================================================//
-        public static int GetSector() => PlayerRunData.currentSector;
-        public static int GetWave() => PlayerRunData.currentWave;
-        
-        public static void SetSectorWave(in int sector, in int wave)
+        public static Vector2Int GetPlayerCoordinate() => PlayerRunData.currentMapCoordinate;
+        public static Vector2Int GetPlayerTargetCoordinate() => PlayerRunData.targetMapCoordinate;
+
+        public static void SetPlayerCoordinate(in Vector2Int coordinate)
         {
-            PlayerRunData.SetSectorWave(sector, wave);
+            PlayerRunData.currentMapCoordinate = coordinate;
+            PlayerRunData.TryAddTraversedCoordinate(coordinate);
         }
+        public static void SetPlayerTargetCoordinate(in Vector2Int coordinate) =>
+            PlayerRunData.targetMapCoordinate = coordinate;
+
+        public static IReadOnlyList<Vector2Int> GetTraversedCoordinates() => PlayerRunData.traversedMapCoordinates;
 
         //Player Run Data Recording
         //====================================================================================================================//

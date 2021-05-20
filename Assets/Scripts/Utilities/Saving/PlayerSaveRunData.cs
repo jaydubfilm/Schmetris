@@ -8,6 +8,7 @@ using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.Puzzle.Structs;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -49,8 +50,17 @@ namespace StarSalvager.Utilities.Saving
         public bool canChoosePart;
 
         public int currentNode;
-        public int currentSector;
-        public int currentWave;
+        
+        /*public int currentSector;
+        public int currentWave;*/
+
+        [JsonConverter(typeof(Vector2IntConverter))]
+        public Vector2Int currentMapCoordinate;
+        [JsonConverter(typeof(Vector2IntConverter))]
+        public Vector2Int targetMapCoordinate;
+
+        [JsonConverter(typeof(IEnumberableVector2IntConverter))]
+        public List<Vector2Int> traversedMapCoordinates;
 
         [JsonProperty] private List<PlayerResource> _playerResources;
 
@@ -114,6 +124,12 @@ namespace StarSalvager.Utilities.Saving
             StarsAtRunBeginning = starsAtRunBeginning;
             XPAtRunBeginning = xpAtRunBeginning;
             RepairsDoneAtRunBeginning = repairsDoneAtRunBeginning;
+
+            //Create traverse list with default position being the starting wreck/base
+            traversedMapCoordinates = new List<Vector2Int>
+            {
+                Vector2Int.zero
+            };
 
             //Have to create copies of the data to not let original change this ref
             //Need to include the null check for files that might be old versions
@@ -311,11 +327,22 @@ namespace StarSalvager.Utilities.Saving
 
         #region Run Progress
 
-        public void SetSectorWave(in int sector, in int wave)
+        public void TryAddTraversedCoordinate(in Vector2Int coordinate)
         {
-            currentSector = sector;
-            currentWave = wave;
+            if (traversedMapCoordinates.Contains(coordinate))
+                return;
+            
+            traversedMapCoordinates.Add(coordinate);
         }
+
+        /*public void SetTargetCoordinate(in Vector2Int coordinate)
+        {
+            targetCoordinate = coordinate;
+        }
+        public void SetCurrentCoordinate(in Vector2Int coordinate)
+        {
+            currentCoordinate = coordinate;
+        }*/
 
         #endregion //Run Progress
 

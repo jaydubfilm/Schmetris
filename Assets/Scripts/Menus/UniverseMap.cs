@@ -159,23 +159,27 @@ namespace StarSalvager.UI
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            void CreateButtonElement(in int index, in int ringIndex, in NodeData nodeData)
+            void CreateButtonElement(in int index, in int ringIndex, in Vector2Int coordinate, in NodeType nodeType)
             {
                 _universeMapButtons[index] = Instantiate(universeSectorButtonPrefab, m_scrollRectArea);
                 _universeMapButtons[index].Reset();
-                _universeMapButtons[index].Init(index, ringIndex, nodeData);
+                _universeMapButtons[index].Init(index, coordinate.x, nodeType, OnNodePressed);
 
                 _universeMapButtons[index].gameObject.name = $"{nameof(UniverseMapButton)}_[{index}]";
 
                 var sizeX = _universeMapButtons[index].transform.sizeDelta.x;
-                _universeMapButtons[index].transform.anchoredPosition += Vector2.right * (index * sizeX * 1.5f);
+
+                var anchoredPositionOffset = Vector2.right * (coordinate.x * sizeX * 2f);
+                anchoredPositionOffset += Vector2.up * (coordinate.y * sizeX * 2f);
+                
+                _universeMapButtons[index].transform.anchoredPosition += anchoredPositionOffset;
 
             }
 
             //Get the total count of buttons we'll need to make
             //--------------------------------------------------------------------------------------------------------//
 
-            var rings = FactoryManager.Instance.RingRemoteDatas;
+            /*var rings = FactoryManager.Instance.RingRemoteDatas;
             var buttonCount = rings.Sum(remoteData => remoteData.GetNodeCount());
 
             var nodes = new List<NodeData>();
@@ -189,16 +193,19 @@ namespace StarSalvager.UI
                 }
                 
                 nodes.AddRange(tempNodes);
-            }
+            }*/
 
             //Generate the buttons
             //--------------------------------------------------------------------------------------------------------//
 
-            _universeMapButtons = new UniverseMapButton[buttonCount];
-            for (var i = 0; i < buttonCount; i++)
+            var ring = Rings.Ring1;
+            var nodeCount = ring.Nodes.Length;
+
+            _universeMapButtons = new UniverseMapButton[nodeCount];
+            for (var i = 0; i < nodeCount; i++)
             {
-                var nodeData = nodes[i];
-                CreateButtonElement(i,nodeData.ringIndex, nodeData);
+                var nodeData = ring.Nodes[i];
+                CreateButtonElement(i, 0, nodeData.Coordinate, nodeData.NodeType);
             }
 
             //Populate the Button Data
@@ -207,33 +214,60 @@ namespace StarSalvager.UI
 
         }
 
+        private void OnNodePressed(int nodeIndex, NodeType nodeType)
+        {
+            
+            switch (nodeType)
+            {
+                case NodeType.Base:
+                    //PlayerDataManager.SetCurrentWave(PlayerDataManager.GetCurrentWave() + 1);
+                    PlayerDataManager.SetPlayerCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+
+                    ScreenFade.Fade(DrawMap);
+                    break;
+                case NodeType.Level:
+                    PlayerDataManager.SetPlayerTargetCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+
+                    Globals.CurrentRingIndex = 0;
+                    Globals.CurrentWave = PlayerDataManager.GetCurrentWave();
+
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                    });
+                    break;
+                case NodeType.Wreck:
+                    PlayerDataManager.SetPlayerCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
+                        AnalyticsManager.WreckStartEvent();
+                    });
+                    break;
+            }
+        }
+
         //============================================================================================================//
 
-        public void ForceDrawMap()
-        {
-            DrawMap();
-        }
-        
         private void DrawMap()
         {
-            var playerNodeLocation = PlayerDataManager.GetCurrentNode();
+            var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
+            var playerCoordinateIndex = Rings.Ring1.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            
+            CenterToItem(_universeMapButtons[playerCoordinateIndex].transform);
 
-            CenterToItem(_universeMapButtons[playerNodeLocation].transform);
-
+            //Setup Nodes
+            //--------------------------------------------------------------------------------------------------------//
+            
             for (var i = 0; i < _universeMapButtons.Length; i++)
             {
                 var currentMapButton = _universeMapButtons[i];
+                var isWreck = currentMapButton.NodeType == NodeType.Wreck;
 
-                currentMapButton.SetBotImageActive(i == playerNodeLocation);
+                currentMapButton.SetBotImageActive(i == playerCoordinateIndex);
 
-                
-                //FIXME Dotted line should be dependent on the completed state of a wave
-                if (i + 1 < _universeMapButtons.Length)
-                    DrawConnection(i, i + 1, i + 1 > playerNodeLocation);
-
-                var isWreck = currentMapButton.NodeType == NodeType.Wreck; //PlayerDataManager.GetWreckNodes().Contains(i);
-
-                if (i == playerNodeLocation && isWreck)
+                if (i == playerCoordinateIndex && isWreck)
                 {
                     currentMapButton.SetButtonInteractable(true);
                     continue;
@@ -242,15 +276,66 @@ namespace StarSalvager.UI
                 currentMapButton.SetButtonInteractable(false);
 
             }
+
+            //Try get list of path that should be marked as previously travelled
+            //--------------------------------------------------------------------------------------------------------//
             
-            if (playerNodeLocation + 1 < _universeMapButtons.Length)
-                _universeMapButtons[playerNodeLocation + 1].SetButtonInteractable(true);
+            List<Vector2Int> traversedConnections = new List<Vector2Int>();
+            var traversedCoordinates = new List<Vector2Int>(PlayerDataManager.GetTraversedCoordinates());
+            if (traversedCoordinates.Count > 1)
+            {
+                for (var i = 1; i < traversedCoordinates.Count; i++)
+                {
+                    var previousIndex = Rings.Ring1.GetIndexFromCoordinate(traversedCoordinates[i - 1]);
+                    var currentIndex = Rings.Ring1.GetIndexFromCoordinate(traversedCoordinates[i]);
+                    traversedConnections.Add(new Vector2Int(previousIndex, currentIndex));
+                }
+            }
+
+            //Draw connections
+            //--------------------------------------------------------------------------------------------------------//
+            
+            for (var i = 0; i < Rings.Ring1.Connections.Length; i++)
+            {
+                var connectionColor = Color.white;
+                var connection = Rings.Ring1.Connections[i];
+                
+                var canTravelToNext = playerCoordinateIndex == connection.x;
+                var drawDottedLine = !canTravelToNext;
+
+                var startConnectionCoordinate = Rings.Ring1.GetCoordinateFromIndex(connection.x);
+                var endConnectionCoordinate = Rings.Ring1.GetCoordinateFromIndex(connection.y);
+
+                //If the player has taken this path, we want to showcase the history of the traversal
+                if (traversedConnections.Contains(connection))
+                {
+                    connectionColor = Color.grey;
+                    drawDottedLine = false;
+                }
+                //Hide all the lines that weren't traversed behind the players coordinate
+                else if (endConnectionCoordinate.x <= playerCoordinate.x || 
+                         //Hide any lines emanating from nodes adjacent to the player that are impossible to traverse from
+                         (startConnectionCoordinate.x == playerCoordinate.x && startConnectionCoordinate.y != playerCoordinate.y))
+                {
+                    connectionColor = Color.clear;
+                }
+
+                DrawConnection(connection.x, connection.y, drawDottedLine, connectionColor);
+                
+                //If another iteration set this node to active, we don't want to cancel that out
+                if(_universeMapButtons[connection.y].IsButtonInteractable == false)
+                    _universeMapButtons[connection.y].SetButtonInteractable(canTravelToNext);
+            }
+            
+            /*if (playerNodeLocation + 1 < _universeMapButtons.Length)
+                _universeMapButtons[playerNodeLocation + 1].SetButtonInteractable(true);*/
 
             //Check to see if the wreck is ahead of the player and can be interacted with
             //--------------------------------------------------------------------------------------------------------//
                         
             var unlockedWreck = _universeMapButtons
-                .FirstOrDefault(x => playerNodeLocation != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+                .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+            
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {
                 HintManager.TryShowHint(HINT.WRECK, ScreenFade.DEFAULT_TIME, unlockedWreck.transform);
