@@ -112,6 +112,58 @@ namespace StarSalvager.Values
                 new Vector2Int(25,27),
                 new Vector2Int(26,27),
             });
+
+        public static Ring Ring2 = new Ring(
+            new[]
+            {
+                //[0]
+                new Ring.Node {Coordinate = new Vector2Int(0, 0), NodeType = NodeType.Base},
+                //[1]
+                new Ring.Node {Coordinate = new Vector2Int(1, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(1, 0), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(1, -1), NodeType = NodeType.Level},
+                //[2]
+                new Ring.Node {Coordinate = new Vector2Int(2, 1), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(2, -1), NodeType = NodeType.Wreck},
+                //[3]
+                new Ring.Node {Coordinate = new Vector2Int(3, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(3, -1), NodeType = NodeType.Level},
+                //[4]
+                new Ring.Node {Coordinate = new Vector2Int(4, 0), NodeType = NodeType.Level}, 
+                //[5]
+                new Ring.Node {Coordinate = new Vector2Int(5, 1), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(5, 0), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(5, -1), NodeType = NodeType.Wreck},
+                //[6]
+                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Wreck},
+                //[7]
+                new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level}, 
+                //[8]
+                new Ring.Node {Coordinate = new Vector2Int(8, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(8, 0), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(8, -1), NodeType = NodeType.Level},
+                //[9]
+                new Ring.Node {Coordinate = new Vector2Int(9, 1), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(9, -1), NodeType = NodeType.Wreck},
+                //[10]
+                new Ring.Node {Coordinate = new Vector2Int(10, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(10, 0), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(10, -1), NodeType = NodeType.Level},
+                //[11]
+                new Ring.Node {Coordinate = new Vector2Int(11, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(11, -1), NodeType = NodeType.Level},
+                //[12]
+                new Ring.Node {Coordinate = new Vector2Int(12, 0), NodeType = NodeType.Wreck}, 
+                //[13]
+                new Ring.Node {Coordinate = new Vector2Int(13, 0), NodeType = NodeType.Level}, 
+                
+            }, 
+            new[]
+            {
+                //[0]
+                new Vector2Int(0, 0),
+            });
     }
 
     public class Ring
