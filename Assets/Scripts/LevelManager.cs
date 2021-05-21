@@ -873,7 +873,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(Globals.CurrentRingIndex + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()

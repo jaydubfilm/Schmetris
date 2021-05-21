@@ -404,22 +404,20 @@ namespace StarSalvager.Utilities.Saving
 
         #region Map Nodes
         
+        [Obsolete]
         public static bool CheckIfCompleted(in int nodeIndex)
         {
-            return PlayerRunData.CheckIfCompleted(nodeIndex);
+            throw new NotImplementedException();
+            //return PlayerRunData.CheckIfCompleted(nodeIndex);
         }
 
-        public static int GetCurrentWave()
-        {
-            return PlayerRunData.currentNode;
-        }
+        public static int GetCurrentWave()=>PlayerRunData.currentWave;
 
-        public static void SetCurrentWave(int node)
-        {
-            PlayerRunData.currentNode = node;
-        }
+        public static void SetCurrentWave(int node)=>PlayerRunData.currentWave = node;
 
-        
+        public static int GetCurrentRing() => HasRunData ? PlayerRunData.currentRing : default;
+
+        public static void SetCurrentRing(in int ring) => PlayerRunData.currentRing = ring;
         
         /*public static void AddCompletedNode(int node)
         {
@@ -440,8 +438,8 @@ namespace StarSalvager.Utilities.Saving
 
         //Progress Data
         //====================================================================================================================//
-        public static Vector2Int GetPlayerCoordinate() => PlayerRunData.currentMapCoordinate;
-        public static Vector2Int GetPlayerTargetCoordinate() => PlayerRunData.targetMapCoordinate;
+        public static Vector2Int GetPlayerCoordinate() => HasRunData ? PlayerRunData.currentMapCoordinate : Vector2Int.zero;
+        public static Vector2Int GetPlayerTargetCoordinate() => HasRunData ? PlayerRunData.targetMapCoordinate : Vector2Int.zero;
 
         public static void SetPlayerCoordinate(in Vector2Int coordinate)
         {
@@ -452,6 +450,8 @@ namespace StarSalvager.Utilities.Saving
             PlayerRunData.targetMapCoordinate = coordinate;
 
         public static IReadOnlyList<Vector2Int> GetTraversedCoordinates() => PlayerRunData.traversedMapCoordinates;
+
+        public static void ResetTraversedCoordinates() => PlayerRunData.ResetTraversedCoordinates();
 
         //Player Run Data Recording
         //====================================================================================================================//

@@ -50,7 +50,8 @@ namespace StarSalvager.Utilities.Saving
 
         public bool canChoosePart;
 
-        public int currentNode;
+        public int currentRing;
+        public int currentWave;
         
         /*public int currentSector;
         public int currentWave;*/
@@ -334,6 +335,14 @@ namespace StarSalvager.Utilities.Saving
                 return;
             
             traversedMapCoordinates.Add(coordinate);
+        }
+
+        public void ResetTraversedCoordinates()
+        {
+            traversedMapCoordinates = new List<Vector2Int>
+            {
+                Vector2Int.zero
+            };
         }
 
         /*public void SetTargetCoordinate(in Vector2Int coordinate)

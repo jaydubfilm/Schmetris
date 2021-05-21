@@ -86,7 +86,7 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            InitButtons();
+            //InitButtons();
             _connectionLines = new List<Image>();
             waveDataWindow.SetActive(false);
         }
@@ -134,7 +134,7 @@ namespace StarSalvager.UI
                 }
                 
             }*/
-
+            InitButtons();
             DrawMap();
 
             PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
@@ -159,9 +159,20 @@ namespace StarSalvager.UI
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            void CreateButtonElement(in int index, in int ringIndex, in Vector2Int coordinate, in NodeType nodeType)
+            void CreateButtonElement(in int index, in Vector2Int coordinate, in NodeType nodeType)
             {
-                _universeMapButtons[index] = Instantiate(universeSectorButtonPrefab, m_scrollRectArea);
+                if (!Recycler.TryGrab(out UniverseMapButton button))
+                {
+                    button = Instantiate(universeSectorButtonPrefab, m_scrollRectArea);
+                }
+                else
+                {
+                    button.transform.SetParent(m_scrollRectArea, false);
+                }
+
+                _universeMapButtons[index] = button;
+                //_universeMapButtons[index].transform.anchoredPosition = Vector2.zero;
+                
                 _universeMapButtons[index].Reset();
                 _universeMapButtons[index].Init(index, coordinate.x, nodeType, OnNodePressed);
 
@@ -176,59 +187,77 @@ namespace StarSalvager.UI
 
             }
 
-            //Get the total count of buttons we'll need to make
+            void CleanButtons()
+            {
+                if (!_universeMapButtons.IsNullOrEmpty())
+                {
+                    for (var i = _universeMapButtons.Length - 1; i >= 0; i--)
+                    {
+                        //FIXME Need to determine how best to reset positions
+                        //Recycler.Recycle<UniverseMapButton>(_universeMapButtons[i]);
+                        Destroy(_universeMapButtons[i].gameObject);
+                    } 
+                }
+
+                _universeMapButtons = new UniverseMapButton[0];
+            }
+
             //--------------------------------------------------------------------------------------------------------//
 
-            /*var rings = FactoryManager.Instance.RingRemoteDatas;
-            var buttonCount = rings.Sum(remoteData => remoteData.GetNodeCount());
-
-            var nodes = new List<NodeData>();
-
-            for (var i = 0; i < rings.Length; i++)
-            {
-                var tempNodes = rings[i].GetAsNodes();
-                for (int ii = 0; ii < tempNodes.Count; ii++)
-                {
-                    tempNodes[ii].ringIndex = i;
-                }
-                
-                nodes.AddRange(tempNodes);
-            }*/
+            CleanButtons();
 
             //Generate the buttons
             //--------------------------------------------------------------------------------------------------------//
-
-            var ring = Rings.Ring1;
+            var ring = Rings.RingMaps[Globals.CurrentRingIndex];
             var nodeCount = ring.Nodes.Length;
+
+            var currentNodeIndex = ring.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            //If the player opens the map screen from the final node, we should then open the new map/ring
+            if (currentNodeIndex == nodeCount - 1)
+            {
+                var ringIndex = Globals.CurrentRingIndex + 1;
+                PlayerDataManager.SetCurrentRing(ringIndex);
+                
+                //Want to set the players map position back to the beginning
+                PlayerDataManager.SetPlayerCoordinate(Vector2Int.zero);
+                PlayerDataManager.SetPlayerTargetCoordinate(Vector2Int.zero);
+                
+                //Want to reset the players wave to first of this ring
+                PlayerDataManager.SetCurrentWave(0);
+                //Need to clear traversal history
+                PlayerDataManager.ResetTraversedCoordinates();
+
+                //Once all new values are set, re-attempt to do this function
+                InitButtons();
+                return;
+            }
+
 
             _universeMapButtons = new UniverseMapButton[nodeCount];
             for (var i = 0; i < nodeCount; i++)
             {
                 var nodeData = ring.Nodes[i];
-                CreateButtonElement(i, 0, nodeData.Coordinate, nodeData.NodeType);
+                CreateButtonElement(i, nodeData.Coordinate, nodeData.NodeType);
             }
-
-            //Populate the Button Data
-            //--------------------------------------------------------------------------------------------------------//
-
 
         }
 
         private void OnNodePressed(int nodeIndex, NodeType nodeType)
         {
+            var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
             
             switch (nodeType)
             {
                 case NodeType.Base:
                     //PlayerDataManager.SetCurrentWave(PlayerDataManager.GetCurrentWave() + 1);
-                    PlayerDataManager.SetPlayerCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+                    PlayerDataManager.SetPlayerCoordinate(currentRingMap.Nodes[nodeIndex].Coordinate);
 
                     ScreenFade.Fade(DrawMap);
                     break;
                 case NodeType.Level:
-                    PlayerDataManager.SetPlayerTargetCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+                    PlayerDataManager.SetPlayerTargetCoordinate(currentRingMap.Nodes[nodeIndex].Coordinate);
 
-                    Globals.CurrentRingIndex = 0;
+                    //Globals.CurrentRingIndex = 0;
                     Globals.CurrentWave = PlayerDataManager.GetCurrentWave();
 
                     ScreenFade.Fade(() =>
@@ -237,7 +266,7 @@ namespace StarSalvager.UI
                     });
                     break;
                 case NodeType.Wreck:
-                    PlayerDataManager.SetPlayerCoordinate(Rings.Ring1.Nodes[nodeIndex].Coordinate);
+                    PlayerDataManager.SetPlayerCoordinate(currentRingMap.Nodes[nodeIndex].Coordinate);
 
                     ScreenFade.Fade(() =>
                     {
@@ -252,8 +281,10 @@ namespace StarSalvager.UI
 
         private void DrawMap()
         {
+            var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
+            
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
-            var playerCoordinateIndex = Rings.Ring1.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            var playerCoordinateIndex = currentRingMap.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
             
             CenterToItem(_universeMapButtons[playerCoordinateIndex].transform);
 
@@ -286,8 +317,8 @@ namespace StarSalvager.UI
             {
                 for (var i = 1; i < traversedCoordinates.Count; i++)
                 {
-                    var previousIndex = Rings.Ring1.GetIndexFromCoordinate(traversedCoordinates[i - 1]);
-                    var currentIndex = Rings.Ring1.GetIndexFromCoordinate(traversedCoordinates[i]);
+                    var previousIndex = currentRingMap.GetIndexFromCoordinate(traversedCoordinates[i - 1]);
+                    var currentIndex = currentRingMap.GetIndexFromCoordinate(traversedCoordinates[i]);
                     traversedConnections.Add(new Vector2Int(previousIndex, currentIndex));
                 }
             }
@@ -295,16 +326,16 @@ namespace StarSalvager.UI
             //Draw connections
             //--------------------------------------------------------------------------------------------------------//
             
-            for (var i = 0; i < Rings.Ring1.Connections.Length; i++)
+            for (var i = 0; i < currentRingMap.Connections.Length; i++)
             {
                 var connectionColor = Color.white;
-                var connection = Rings.Ring1.Connections[i];
+                var connection = currentRingMap.Connections[i];
                 
                 var canTravelToNext = playerCoordinateIndex == connection.x;
                 var drawDottedLine = !canTravelToNext;
 
-                var startConnectionCoordinate = Rings.Ring1.GetCoordinateFromIndex(connection.x);
-                var endConnectionCoordinate = Rings.Ring1.GetCoordinateFromIndex(connection.y);
+                var startConnectionCoordinate = currentRingMap.GetCoordinateFromIndex(connection.x);
+                var endConnectionCoordinate = currentRingMap.GetCoordinateFromIndex(connection.y);
 
                 //If the player has taken this path, we want to showcase the history of the traversal
                 if (traversedConnections.Contains(connection))

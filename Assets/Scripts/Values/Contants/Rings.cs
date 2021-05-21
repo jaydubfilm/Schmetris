@@ -9,7 +9,7 @@ namespace StarSalvager.Values
     public static class Rings
     {
         //Based on: https://app.diagrams.net/#G1w0byq4RXFKsb0ay8gNeErVM2pPwEPMV6
-        public static Ring Ring1 = new Ring(
+        private static Ring Ring1 = new Ring(
             new[]
             {
                 //[0]
@@ -113,7 +113,7 @@ namespace StarSalvager.Values
                 new Vector2Int(26,27),
             });
 
-        public static Ring Ring2 = new Ring(
+        private static Ring Ring2 = new Ring(
             new[]
             {
                 //[0]
@@ -135,8 +135,8 @@ namespace StarSalvager.Values
                 new Ring.Node {Coordinate = new Vector2Int(5, 0), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(5, -1), NodeType = NodeType.Wreck},
                 //[6]
-                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Wreck},
-                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Wreck},
+                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Level},
                 //[7]
                 new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level}, 
                 //[8]
@@ -162,8 +162,62 @@ namespace StarSalvager.Values
             new[]
             {
                 //[0]
-                new Vector2Int(0, 0),
+                new Vector2Int(0, 1),
+                new Vector2Int(0, 2),
+                new Vector2Int(0, 3),
+                //[1]
+                new Vector2Int(1, 4),
+                new Vector2Int(2, 4),
+                new Vector2Int(2, 5),
+                new Vector2Int(3, 5),
+                //[2]
+                new Vector2Int(4, 6),
+                new Vector2Int(4, 7),
+                new Vector2Int(5, 6),
+                new Vector2Int(5, 7),
+                //[3]
+                new Vector2Int(6, 8),
+                new Vector2Int(7, 8),
+                //[4]
+                new Vector2Int(8, 9),
+                new Vector2Int(8, 10),
+                new Vector2Int(8, 11),
+                //[5]
+                new Vector2Int(9, 12),
+                new Vector2Int(10, 12),
+                new Vector2Int(11, 13),
+                //[6]
+                new Vector2Int(12, 14),
+                new Vector2Int(13, 14),
+                //[7]
+                new Vector2Int(14, 15),
+                new Vector2Int(14, 16),
+                new Vector2Int(14, 17),
+                //[8]
+                new Vector2Int(15, 18),
+                new Vector2Int(16, 19),
+                new Vector2Int(17, 19),
+                //[9]
+                new Vector2Int(18, 20),
+                new Vector2Int(18, 21),
+                new Vector2Int(19, 21),
+                new Vector2Int(19, 22),
+                //[10]
+                new Vector2Int(20, 23),
+                new Vector2Int(21, 23),
+                new Vector2Int(22, 24),
+                //[11]
+                new Vector2Int(23, 25),
+                new Vector2Int(24, 25),
+                //[12]
+                new Vector2Int(25, 26),
             });
+        
+        public static Ring[] RingMaps = new[]
+        {
+            Ring1,
+            Ring2
+        };
     }
 
     public class Ring
