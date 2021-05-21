@@ -6,6 +6,7 @@ using StarSalvager.AI;
 using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
+using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -44,6 +45,9 @@ namespace StarSalvager.Utilities
             //string.Concat("add ", "patchpoints ", "[uint]").ToUpper(),
             string.Concat("add ", "stars ", "[uint]").ToUpper(),
             string.Concat("add ", "storage ", "parts ", "[PART_TYPE] ", "[Amount:int]").ToUpper(),
+            string.Concat("add ", "storage ", "parts ", "all").ToUpper(),
+            string.Concat("add ", "storage ", "patches ", "[PATCH_TYPE] ", "[Level:int]").ToUpper(),
+            string.Concat("add ", "storage ", "patches ", "all ").ToUpper(),
             string.Concat("add ", "silver ", "[uint]").ToUpper(),
             /*string.Concat("add ", "storage ", "components ", "[COMPONENT_TYPE] ", "[Amount:int]").ToUpper(),*/
             "\n",
@@ -326,12 +330,14 @@ namespace StarSalvager.Utilities
 
                 case "storage":
                 {
-                    if (!CheckForSplitLength(split, 5, out var print))
+                    if (!CheckForSplitLength(split, 4, out var print))
                     {
                         _consoleDisplay += print;
                         break;
                     }
-                    if (!int.TryParse(split[4], out var addAmount))
+
+                    int addAmount = 0;
+                    if (split.Length > 4 && !int.TryParse(split[4], out addAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[4]);
                         break;
@@ -340,27 +346,113 @@ namespace StarSalvager.Utilities
                     switch (split[2].ToLower())
                     {
                         case "parts":
-                            if (Enum.TryParse(split[3], true, out PART_TYPE partType))
+                        {
+                            
+                            switch (split[3].ToLower())
                             {
-                                var patchSockets = partType.GetRemoteData().PatchSockets;
-
-                                var partBlockData = new PartData
+                                case "all":
                                 {
-                                    Type = (int) partType,
-                                    Patches = new PatchData[patchSockets]
+                                    var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
+                                        .Where(x => x.isImplemented)
+                                        .Select(x => x.partType);
 
-                                };
+                                    foreach (var partType in partTypes)
+                                    {
+                                        var patchSockets = partType.GetRemoteData().PatchSockets;
 
-                                for (var i = 0; i < addAmount; i++)
-                                {
-                                    PlayerDataManager.AddPartToStorage(partBlockData);
+                                        var partBlockData = new PartData
+                                        {
+                                            Type = (int) partType,
+                                            Patches = new PatchData[patchSockets]
+
+                                        };
+
+                                        PlayerDataManager.AddPartToStorage(partBlockData);
+                                    }
+
+                                    break;
                                 }
+                                default:
+                                {
+                                    if (addAmount <= 0)
+                                    {
+                                        _consoleDisplay += "\nTo Add a part, an amount greater than 0 is required";
+                                        return;
+                                    }
+                                    
+                                    if (Enum.TryParse(split[3], true, out PART_TYPE partType))
+                                    {
+                                        var patchSockets = partType.GetRemoteData().PatchSockets;
 
-                                break;
+                                        var partBlockData = new PartData
+                                        {
+                                            Type = (int) partType,
+                                            Patches = new PatchData[patchSockets]
+
+                                        };
+
+                                        for (var i = 0; i < addAmount; i++)
+                                        {
+                                            PlayerDataManager.AddPartToStorage(partBlockData);
+                                        }
+                                    }
+
+                                    break;
+                                }
                             }
-
-                            _consoleDisplay += UnrecognizeCommand(split[3]);
                             break;
+                        }
+                        case "patches":
+                        {
+                            switch (split[3].ToLower())
+                            {
+                                case "all":
+                                {
+                                    var currentPatches = new List<PatchData>(PlayerDataManager.CurrentPatchOptions);
+                                    var patches = FactoryManager.Instance.PatchRemoteData.patchRemoteData
+                                        .Where(x => x.isImplemented)
+                                        .Select(x => x);
+
+                                    foreach (var patch in patches)
+                                    {
+                                        for (int i = 0; i < patch.Levels.Count; i++)
+                                        {
+                                            var patchData = new PatchData
+                                            {
+                                                Type = (int) patch.type,
+                                                Level = i,
+                                            };
+
+                                            currentPatches.Add(patchData);
+                                        }
+                                    }
+
+                                    PlayerDataManager.SetCurrentPatchOptions(currentPatches);
+                                    FindObjectOfType<DroneDesignUI>().InitPurchasePatches();
+                                    break;
+                                }
+                                default:
+                                {
+                                    if (Enum.TryParse(split[3], true, out PATCH_TYPE patchType))
+                                    {
+                                        var currentPatches = new List<PatchData>(PlayerDataManager.CurrentPatchOptions);
+
+                                        var partBlockData = new PatchData
+                                        {
+                                            Type = (int) patchType,
+                                            Level = addAmount,
+                                        };
+
+                                        currentPatches.Add(partBlockData);
+                                        PlayerDataManager.SetCurrentPatchOptions(currentPatches);
+                                        FindObjectOfType<DroneDesignUI>().InitPurchasePatches();
+                                    }
+
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         default:
                             _consoleDisplay += UnrecognizeCommand(split[2]);
                             break;
@@ -414,6 +506,14 @@ namespace StarSalvager.Utilities
 
         private void ParseClearCommand(string[] split)
         {
+            //I should allow the users to just type in the word clear to clear the console.
+            if (split.Length == 1)
+            {
+                _consoleDisplay = string.Empty;
+                _cmds.Clear();
+                return;
+            }
+            
             switch (split[1].ToLower())
             {
                 case "console":
@@ -616,7 +716,11 @@ namespace StarSalvager.Utilities
                     _consoleDisplay += $"\n{GetEnumsAsString<PATCH_TYPE>()}";
                     break;
                 case "parts":
-                    _consoleDisplay += $"\n{GetEnumsAsString<PART_TYPE>()}";
+                    var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
+                        .Where(x => x.isImplemented)
+                        .Select(x => x.partType);
+                    
+                    _consoleDisplay += $"\n{string.Join(", ", partTypes)}";
                     break;
                 case "enemies":
                     _consoleDisplay += $"\n{GetEnemyNameList()}";
@@ -1131,7 +1235,17 @@ namespace StarSalvager.Utilities
                     if (type.Equals("all"))
                         manager.InsertAllEnemySpawns(count, delay);
                     else
-                        manager.InsertEnemySpawn(type, count, delay);
+                    {
+                        var enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(type);
+
+                        if (string.IsNullOrEmpty(enemyId))
+                        {
+                            _consoleDisplay += $"\n'{type}' does not exist. Use PRINT ENEMIES for list of options";
+                            break;
+                        }
+
+                        manager.InsertEnemySpawn(enemyId, count, delay);
+                    }
 
 
                     break;

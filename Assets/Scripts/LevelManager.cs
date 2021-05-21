@@ -848,7 +848,6 @@ namespace StarSalvager
 
         public void Activate()
         {
-
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
 
             InitLevel();

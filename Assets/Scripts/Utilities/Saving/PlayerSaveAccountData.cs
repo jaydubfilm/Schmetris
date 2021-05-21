@@ -646,7 +646,7 @@ namespace StarSalvager.Values
 
                 foreach (var keyValuePair in EnemiesKilled)
                 {
-                    var enemyName = FactoryManager.Instance.EnemyRemoteData.GetEnemyName(keyValuePair.Key);
+                    var enemyName = FactoryManager.Instance.EnemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
                     summaryText += $"\t{enemyName}: {keyValuePair.Value}\n";
                 }
             }
