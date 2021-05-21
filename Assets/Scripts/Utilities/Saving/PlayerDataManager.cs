@@ -156,11 +156,8 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerAccountData.GetCoordinateForCategory(bitType);
         }
-        
-        public static List<IBlockData> GetBlockDatas()
-        {
-            return PlayerRunData.DroneBlockData;
-        }
+
+        public static List<IBlockData> GetBlockDatas() => HasRunData ? PlayerRunData.DroneBlockData : default;
 
         public static void SetBlockData(IEnumerable<IBlockData> blockData)
         {
