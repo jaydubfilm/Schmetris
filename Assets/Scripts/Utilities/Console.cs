@@ -414,6 +414,14 @@ namespace StarSalvager.Utilities
 
         private void ParseClearCommand(string[] split)
         {
+            //I should allow the users to just type in the word clear to clear the console.
+            if (split.Length == 1)
+            {
+                _consoleDisplay = string.Empty;
+                _cmds.Clear();
+                return;
+            }
+            
             switch (split[1].ToLower())
             {
                 case "console":
