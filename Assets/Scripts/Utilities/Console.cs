@@ -1131,7 +1131,17 @@ namespace StarSalvager.Utilities
                     if (type.Equals("all"))
                         manager.InsertAllEnemySpawns(count, delay);
                     else
-                        manager.InsertEnemySpawn(type, count, delay);
+                    {
+                        var enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(type);
+
+                        if (string.IsNullOrEmpty(enemyId))
+                        {
+                            _consoleDisplay += $"\n'{type}' does not exist. Use PRINT ENEMIES for list of options";
+                            break;
+                        }
+
+                        manager.InsertEnemySpawn(enemyId, count, delay);
+                    }
 
 
                     break;
