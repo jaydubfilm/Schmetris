@@ -48,7 +48,7 @@ namespace StarSalvager.Utilities.Saving
         #region Upgrades
 
         public static float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.GetCurrentUpgradeValue(upgradeType, bitType);
+            PlayerAccountData?.GetCurrentUpgradeValue(upgradeType, bitType) ?? default;
 
         public static void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in int newLevel,
             in BIT_TYPE bitType = BIT_TYPE.NONE) =>
@@ -156,11 +156,8 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerAccountData.GetCoordinateForCategory(bitType);
         }
-        
-        public static List<IBlockData> GetBlockDatas()
-        {
-            return PlayerRunData.DroneBlockData;
-        }
+
+        public static List<IBlockData> GetBlockDatas() => HasRunData ? PlayerRunData.DroneBlockData : default;
 
         public static void SetBlockData(IEnumerable<IBlockData> blockData)
         {
