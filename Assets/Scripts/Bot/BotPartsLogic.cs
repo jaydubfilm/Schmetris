@@ -381,6 +381,7 @@ namespace StarSalvager
                         InitFireLine(part, partRemoteData);
                         break;
                     case PART_TYPE.SABRE:
+                        InitFireLine(part, partRemoteData);
                         if (_sabreTimers == null)
                             _sabreTimers = new Dictionary<Part, float>();
 
@@ -481,6 +482,7 @@ namespace StarSalvager
                     //--------------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SABRE:
                         SabreUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //--------------------------------------------------------------------------------------------------------//
                     case PART_TYPE.RAILGUN:
