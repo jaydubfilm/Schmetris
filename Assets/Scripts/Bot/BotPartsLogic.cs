@@ -1730,11 +1730,12 @@ namespace StarSalvager
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
             }
-            
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+            /*if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
-            }
+            }*/
             
             _sabreTimers[part] = seconds;
 
