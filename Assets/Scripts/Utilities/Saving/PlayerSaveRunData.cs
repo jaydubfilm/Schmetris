@@ -3,6 +3,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.Puzzle.Structs;
@@ -375,7 +376,9 @@ namespace StarSalvager.Utilities.Saving
 
                 foreach (var keyValuePair in enemiesKilled)
                 {
-                    summaryText += $"\t{keyValuePair.Key}: {keyValuePair.Value}\n";
+                    var enemyName = FactoryManager.Instance.EnemyRemoteData.GetEnemyRemoteData(keyValuePair.Key).Name;
+                    
+                    summaryText += $"\t{enemyName}: {keyValuePair.Value}\n";
                 }
             }
 

@@ -277,21 +277,22 @@ namespace StarSalvager
         
         #region Console Spawn
         
-        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
+        public void InsertEnemySpawn(in string enemyId, int count, float timeDelay)
         {
-            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyId, count, timeDelay));
         }
         public void InsertAllEnemySpawns(int count, float timeDelay)
         {
             var implementedEnemyNames = FactoryManager.Instance.EnemyRemoteData.m_enemyRemoteData
-                .Where(x => x.isImplemented).Select(x => x.Name);
+                .Where(x => x.isImplemented)
+                .Select(x => x.EnemyID);
             foreach (var enemyName in implementedEnemyNames)
             {
                 StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
             }
         }
 
-        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyId, int count, float timeDelay)
         {
             if (timeDelay > 0)
                 yield return new WaitForSeconds(timeDelay);
@@ -301,8 +302,6 @@ namespace StarSalvager
 
             if (!LevelManager.Instance.gameObject.activeSelf)
                 yield break;
-
-            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
 
             for (int i = 0; i < count; i++)
             {
