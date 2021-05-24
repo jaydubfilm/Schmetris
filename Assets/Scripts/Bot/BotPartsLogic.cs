@@ -381,6 +381,7 @@ namespace StarSalvager
                         InitFireLine(part, partRemoteData);
                         break;
                     case PART_TYPE.SABRE:
+                        InitFireLine(part, partRemoteData);
                         if (_sabreTimers == null)
                             _sabreTimers = new Dictionary<Part, float>();
 
@@ -481,6 +482,7 @@ namespace StarSalvager
                     //--------------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SABRE:
                         SabreUpdate(part, partRemoteData, deltaTime);
+                        UpdateFireLine(part, partRemoteData);
                         break;
                     //--------------------------------------------------------------------------------------------------------//
                     case PART_TYPE.RAILGUN:
@@ -1728,11 +1730,12 @@ namespace StarSalvager
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
             }
-            
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
+
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
+            /*if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Damage, out var damage))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Damage} missing from {part.Type} remote data");
-            }
+            }*/
             
             _sabreTimers[part] = seconds;
 
