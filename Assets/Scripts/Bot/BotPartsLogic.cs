@@ -1772,7 +1772,7 @@ namespace StarSalvager
             var range = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
             var degrees = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Degrees);
             var fireTime = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Time);
-            var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+            TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage);
             
             var rot = part.transform.eulerAngles.z + BlasterProjectile.ANGLE;
             
@@ -1781,7 +1781,8 @@ namespace StarSalvager
             blasterProjectile.Init(rot, degrees, range, fireTime);
 
             var dotThreshold = 1f / (180 / degrees);
-            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.right.normalized, dotThreshold);
+            //FIXME Might need to move the direction input to a calculation, as this will become tedious to change
+            var enemies = EnemyManager.GetEnemiesInCone(fromPosition, range, -part.transform.up.normalized, dotThreshold);
             foreach (var enemy in enemies)
             {
                 enemy.TryHitAt(enemy.Position, damage);
