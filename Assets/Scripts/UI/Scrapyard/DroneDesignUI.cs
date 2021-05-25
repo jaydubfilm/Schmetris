@@ -212,8 +212,19 @@ namespace StarSalvager.UI.Scrapyard
 
             launchButton.onClick.AddListener(() =>
             {
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
-                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                    AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
+                });
+
+                if (HintManager.CanShowHint(HINT.MAP))
+                {
+                    ScreenFade.WaitForFade(() =>
+                    {
+                        HintManager.TryShowHint(HINT.MAP);
+                    });
+                }
             });
             
             closePartUpgradeWindowButton.onClick.AddListener(() =>

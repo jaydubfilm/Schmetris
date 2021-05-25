@@ -139,7 +139,12 @@ namespace StarSalvager.UI.Hints
         public void Highlight(in Bounds worldSpaceBounds)
         {
             SetActive(true);
-            HighlightWorldBounds(worldSpaceBounds, TEST_multiplier);
+            
+            //This is important, if there is nothing to highlight, we want to show a darkened background with no cutout
+            HighlightWorldBounds(worldSpaceBounds,
+                worldSpaceBounds.size == Vector3.zero ?
+                    Vector2.zero : 
+                    TEST_multiplier);
         }
 
         public void Highlight(in Vector2 worldSpacePosition)
