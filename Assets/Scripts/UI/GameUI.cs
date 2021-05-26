@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -1005,18 +1006,20 @@ namespace StarSalvager.UI
 
         #region Ammo Effect
 
-        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, [CallerMemberName] string calledMemberName = "")
         {
             CreateAmmoEffect(bitType,
                 amount,
                 startPosition,
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                calledMemberName);
         }
-
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount,
-            in int maxCount, in Vector2 moveTimeRange)
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
         {
+            if (bitType == BIT_TYPE.WHITE)
+                throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
+
             const float RADIUS = 50;
 
             var sprite = bitEffectSprites[(int) bitType - 1];
@@ -1160,7 +1163,8 @@ namespace StarSalvager.UI
                 Random.Range(5, 50),
                 startPosition,
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                nameof(TestComboEffect));
         }
 #endif
 

@@ -165,31 +165,6 @@ namespace StarSalvager.UI
                 });
             });
 
-            /*betweenWavesScrapyardButton.onClick.AddListener(() =>
-            {
-                GameManager.SetCurrentGameState(GameState.Scrapyard);
-                m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-                ToggleBetweenWavesUIActive(false);
-                
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
-                });
-                
-            });*/
-
-            /*pauseWindowScrapyardButton.onClick.AddListener(() =>
-            {
-                GameManager.SetCurrentGameState(GameState.Scrapyard);
-                ToggleBetweenWavesUIActive(false);
-                //m_levelManager.ProcessScrapyardUsageBeginAnalytics();
-
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.LEVEL, MUSIC.SCRAPYARD);
-                });
-            });*/
-
             pauseWindowMainMenuButton.onClick.AddListener(() =>
             {
                 Alert.ShowAlert("Are you sure?",
@@ -207,10 +182,13 @@ namespace StarSalvager.UI
 
                         PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
+                        
+                        AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.LEAVE);
 
 
                         ScreenFade.Fade(() =>
                         {
+                            GameManager.SetCurrentGameState(GameState.AccountMenu);
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL,
                                 MUSIC.MAIN_MENU);
                         });
