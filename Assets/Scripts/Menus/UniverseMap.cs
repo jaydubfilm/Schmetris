@@ -46,6 +46,9 @@ namespace StarSalvager.UI
 
         [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
+        
+        [SerializeField, Required] private Button backButton;
+        [SerializeField, Required] private TMP_Text backButtonText;
 
         //====================================================================================================================//
 
@@ -89,6 +92,8 @@ namespace StarSalvager.UI
             InitButtons();
             _connectionLines = new List<Image>();
             waveDataWindow.SetActive(false);
+            
+            backButton.onClick.AddListener(Back);
         }
 
         //====================================================================================================================//
@@ -134,7 +139,7 @@ namespace StarSalvager.UI
                 }
                 
             }*/
-
+            InitBackButton();
             DrawMap();
 
             PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
@@ -287,6 +292,46 @@ namespace StarSalvager.UI
             newLineTransform.right = (startPosition - endPosition).normalized;
 
             _connectionLines.Add(newLineImage);
+        }
+
+        private void InitBackButton()
+        {
+            switch (SceneLoader.PreviousScene)
+            {
+                case SceneLoader.LEVEL:
+                    backButtonText.text = "Menu";
+                    break;
+                case SceneLoader.MAIN_MENU:
+                case SceneLoader.SCRAPYARD:
+                    backButtonText.text = "Back";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(SceneLoader.PreviousScene), SceneLoader.PreviousScene,
+                        null);
+            }
+        }
+        private void Back()
+        {
+            switch (SceneLoader.PreviousScene)
+            {
+                case SceneLoader.LEVEL:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.UNIVERSE_MAP, MUSIC.MAIN_MENU, true);
+                    });
+                    break;
+                
+                case SceneLoader.MAIN_MENU:
+                case SceneLoader.SCRAPYARD:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.LoadPreviousScene();
+                    });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(SceneLoader.PreviousScene), SceneLoader.PreviousScene,
+                        null);
+            }
         }
 
         //============================================================================================================//
