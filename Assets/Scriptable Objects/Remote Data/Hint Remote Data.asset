@@ -101,3 +101,14 @@ MonoBehaviour:
         troves of useful salvage! Each wreck type offers a different selection of
         salvageable components. Use what you find here to upgrade or repair your
         drone.
+  - type: 16
+    hintTexts:
+    - shortText: 
+      longDescription: "\u201CStars\u201D are earned by skillful salvaging. Spend
+        them here to permanently improve your drone\u2019s performance. "
+  - type: 17
+    hintTexts:
+    - shortText: 
+      longDescription: 'Those wrecks have the parts we need. But our scanners are
+        picking up  movement in the rocks. Could be insectoids. Choose your path
+        carefully.  '

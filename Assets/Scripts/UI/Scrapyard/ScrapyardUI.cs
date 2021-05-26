@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
@@ -284,13 +285,8 @@ namespace StarSalvager.UI.Scrapyard
 
         private void Launch()
         {
-            _droneDesigner.ProcessScrapyardUsageEndAnalytics();
-
-            ScreenFade.Fade(() =>
-            {
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
-                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
-            });
+            throw new NotImplementedException();
+            //_droneDesigner.ProcessScrapyardUsageEndAnalytics();
         }
 
         /*private void EscPressed()

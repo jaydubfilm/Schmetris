@@ -118,6 +118,8 @@ namespace StarSalvager.Values
                 
                 [HINT.HEALTH] = false,
                 [HINT.WRECK] = false,
+                [HINT.STAR] = false,
+                [HINT.MAP] = false,
             };
             _upgrades = new[]
             {
