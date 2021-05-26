@@ -34,17 +34,14 @@ namespace StarSalvager.UI
         [Serializable]
         public struct SliderPartUI
         {
-            [Required, FoldoutGroup("$NAME")]
-            public Image backgroundImage;
-            [Required, FoldoutGroup("$NAME")]
-            public Image foregroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
 
-            [Required, FoldoutGroup("$NAME")]
-            public Image triggerInputImage;
+            [Required, FoldoutGroup("$NAME")] public Image triggerInputImage;
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
-            
+
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
@@ -56,8 +53,9 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
-                if (backgroundImage is null || triggerInputImage is null) return;
-                
+                if (triggerInputImage is null || backgroundImage is null)
+                    return;
+
                 backgroundImage.gameObject.SetActive(isTrigger);
                 triggerInputImage.gameObject.SetActive(isTrigger);
 
@@ -69,30 +67,32 @@ namespace StarSalvager.UI
 
             public void SetSprite(in Sprite partSprite)
             {
-                if (backgroundImage is null || foregroundImage is null)
-                    return;
-                
+                if (foregroundImage is null || backgroundImage is null) return;
+
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
             }
 
             public void SetColor(in Color color)
             {
-                if (foregroundImage is null) return;
+                if (foregroundImage is null)
+                    return;
                 foregroundImage.color = color;
             }
-            
+
             public void SetBackgroundColor(in Color color)
             {
-                if (backgroundImage is null) return;
-                
+                if (backgroundImage is null)
+                    return;
+
                 backgroundImage.color = color;
             }
 
             public void SetFill(float val)
             {
-                if (foregroundImage is null) return;
-                
+                if (foregroundImage is null)
+                    return;
+
                 foregroundImage.fillAmount = val;
             }
         }
@@ -107,8 +107,10 @@ namespace StarSalvager.UI
 #endif
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite keyboardSprite;
+
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite xboxControllerSprite;
+
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite playstationControllerSprite;
 
@@ -137,14 +139,10 @@ namespace StarSalvager.UI
                 RED
             }
 
-            [FoldoutGroup("$type")]
-            public TYPE type;
-            [FoldoutGroup("$type")]
-            public Sprite backgroundImage;
-            [FoldoutGroup("$type")]
-            public Sprite crossbarImage;
-            [FoldoutGroup("$type")]
-            public Sprite verticalBarImage;
+            [FoldoutGroup("$type")] public TYPE type;
+            [FoldoutGroup("$type")] public Sprite backgroundImage;
+            [FoldoutGroup("$type")] public Sprite crossbarImage;
+            [FoldoutGroup("$type")] public Sprite verticalBarImage;
 
             [FoldoutGroup("$type")] public Color titleColor;
             [FoldoutGroup("$type")] public Color textColor;
@@ -158,8 +156,7 @@ namespace StarSalvager.UI
 
         #region Properties
 
-        [SerializeField]
-        private RectTransform viewableAreaTransform;
+        [SerializeField] private RectTransform viewableAreaTransform;
 
         //Top Left Window
         //============================================================================================================//
@@ -169,8 +166,8 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("TL Window")]
         private Slider gearsSlider;
-        [FormerlySerializedAs("patchPointsText")] 
-        [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
+
+        [FormerlySerializedAs("patchPointsText")] [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text componentsText;
 
         //Top Right Window
@@ -186,6 +183,7 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("B Window")]
         private GameObject abortWindow;
+
         [SerializeField, Required, FoldoutGroup("B Window")]
         private Button abortButton;
 
@@ -219,11 +217,13 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider botHealthBarSlider;
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image botHealthBarSliderImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image carryCapacityFillImage;
 
@@ -241,19 +241,25 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryText;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text confirmButtonText;
 
         [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image backgroundImage;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image crossbarImage;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image[] verticalBarImages;
 
@@ -264,6 +270,7 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
         private CanvasGroup cracksCanvasGroup;
+
         [SerializeField, Required, FoldoutGroup("Extras/Cracks")]
         private Image[] crackImages;
 
@@ -274,14 +281,19 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform effectArea;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform moveTargetTransform;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private Image imagePrefab;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private float imageSize = 50;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.1f, 20f)]
         private float effectRadius;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
         private int effectCount;
 
@@ -290,11 +302,13 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
         private float spawnTime;
+
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve spawnCurve;
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
         private float moveTime;
+
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve moveCurve;
 
@@ -305,12 +319,15 @@ namespace StarSalvager.UI
 
         #region Combo Effect Properties
 
-        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(1,10,true)]
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(1, 10, true)]
         private Vector2Int effectElementCount;
-        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(0,2,true)]
+
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(0, 2, true)]
         private Vector2 moveTimeRange;
+
         [SerializeField, BoxGroup("Combo Effect")]
         private Sprite[] bitEffectSprites;
+
         [SerializeField, BoxGroup("Combo Effect")]
         private RectTransform[] sliderTargets;
 
@@ -323,23 +340,27 @@ namespace StarSalvager.UI
 
         [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")]
         private Vector2 flashTimeRange;
+
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image borderGlow;
+
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image border;
+
         [SerializeField, FoldoutGroup("Extras/Neon Border")]
         private AnimationCurve flashCurve;
+
         private bool _flashingBorder;
-        
-        
+
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
-        
+
         private Canvas _canvas;
 
         #endregion //Properties
-        
+
         //Unity Functions
         //============================================================================================================//
 
@@ -388,15 +409,15 @@ namespace StarSalvager.UI
                     return null;
                 case HINT.MAGNET:
                     return null;
-                    /*return new object[]
-                    {
-                        magnetFlash.transform as RectTransform
-                    };*/
-                case HINT.HEALTH:
-                return new object[]
+                /*return new object[]
                 {
-                    botHealthBarSlider.transform as RectTransform,
-                };
+                    magnetFlash.transform as RectTransform
+                };*/
+                case HINT.HEALTH:
+                    return new object[]
+                    {
+                        botHealthBarSlider.transform as RectTransform,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -429,7 +450,7 @@ namespace StarSalvager.UI
             SetDancersActive(false);
             FadeBackground(false, true);
         }
-        
+
         private void SetupPlayerValues()
         {
 
@@ -440,7 +461,7 @@ namespace StarSalvager.UI
         }
 
         #endregion //Init UI
-        
+
         //Ammo Sliders
         //============================================================================================================//
 
@@ -511,7 +532,7 @@ namespace StarSalvager.UI
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
         }
 
         private void ValuesUpdated()
@@ -565,7 +586,7 @@ namespace StarSalvager.UI
         {
             sectorText.text = text;
         }
-        
+
         #endregion //Update UI
 
         //Neon Border Flashing
@@ -578,6 +599,7 @@ namespace StarSalvager.UI
         {
             FlashNeonBorder(Random.Range(flashTimeRange.x, flashTimeRange.y));
         }
+
         public void FlashNeonBorder(in float time)
         {
             if (_flashingBorder)
@@ -595,7 +617,7 @@ namespace StarSalvager.UI
             Color endGlowColor = Color.clear;
 
             Color startBorderColor = Color.white;
-            Color darkBorderColor = new Color(0.5f,0.5f,0.5f);
+            Color darkBorderColor = new Color(0.5f, 0.5f, 0.5f);
 
             var mult = Random.Range(1f, 5f);
 
@@ -629,7 +651,7 @@ namespace StarSalvager.UI
             {
                 0, 1, 3, 4
             };
-            
+
             for (var i = 0; i < indices.Length; i++)
             {
                 var index = indices[i];
@@ -647,14 +669,14 @@ namespace StarSalvager.UI
         public void SetIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             Sprite GetInputSprite(in int bitIndex)
             {
                 return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (index < 0) return;
 
             if (partType == PART_TYPE.EMPTY)
@@ -672,7 +694,7 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
             SliderPartUis[index].SetSprite(sprite);
-            
+
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
 
@@ -797,7 +819,7 @@ namespace StarSalvager.UI
 
         //Dancers
         //====================================================================================================================//
-        
+
         #region Dancers
 
         public void SetDancersActive(bool state)
@@ -832,6 +854,7 @@ namespace StarSalvager.UI
         }
 
         private bool _fading;
+
         private IEnumerator FadeBackground(float time, Color startColor, Color endColor)
         {
             _fading = true;
@@ -908,7 +931,7 @@ namespace StarSalvager.UI
                 var image = Instantiate(imagePrefab);
                 image.sprite = sprite;
 
-                var trans = (RectTransform)image.transform;
+                var trans = (RectTransform) image.transform;
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
@@ -916,7 +939,8 @@ namespace StarSalvager.UI
                 transforms[i] = trans;
 
                 spawnPositions[i] = startPosition +
-                                    new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * (effectRadius * 10f);
+                                    new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized *
+                                    (effectRadius * 10f);
                 rotateDirection[i] = Random.value > 0.5f;
             }
 
@@ -931,7 +955,8 @@ namespace StarSalvager.UI
                 {
                     transforms[i].localPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
                     transforms[i].localScale = Vector3.Lerp(Vector3.zero, Vector3.one, td);
-                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                    transforms[i].localEulerAngles +=
+                        Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }
 
                 t += deltaTime;
@@ -954,8 +979,10 @@ namespace StarSalvager.UI
                 for (var i = 0; i < count; i++)
                 {
                     transforms[i].localPosition = Vector2.Lerp(spawnPositions[i], targetPosition, td);
-                    transforms[i].localScale = Vector3.Lerp(Vector3.one, Vector3.zero, spawnCurve.Evaluate(t/moveTime));
-                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                    transforms[i].localScale =
+                        Vector3.Lerp(Vector3.one, Vector3.zero, spawnCurve.Evaluate(t / moveTime));
+                    transforms[i].localEulerAngles +=
+                        Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }
 
                 t += deltaTime;
@@ -975,26 +1002,29 @@ namespace StarSalvager.UI
         //====================================================================================================================//
 
         //FIXME Adding ammo in this method could cause a loss either from early destruction of the coroutine, or division
+
         #region Ammo Effect
 
         public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
         {
-            CreateAmmoEffect(bitType, 
+            CreateAmmoEffect(bitType,
                 amount,
-                startPosition, 
+                startPosition,
                 effectElementCount.x, effectElementCount.y,
                 moveTimeRange);
         }
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange)
+
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount,
+            in int maxCount, in Vector2 moveTimeRange)
         {
             const float RADIUS = 50;
-            
+
             var sprite = bitEffectSprites[(int) bitType - 1];
             var targetTransform = sliderTargets[(int) bitType - 1];
-            
+
             var count = Random.Range(minCount, maxCount);
             var dividedAmount = amount / count;
-            
+
             var screenPoint = CameraController.Camera.WorldToScreenPoint(startPosition);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -1008,25 +1038,25 @@ namespace StarSalvager.UI
                 bitType,
                 dividedAmount,
                 targetTransform,
-                newPosition, 
+                newPosition,
                 sprite,
                 RADIUS,
-                count, 
+                count,
                 moveTimeRange));
         }
 
         private IEnumerator AmmoEffectCoroutine(
             BIT_TYPE bitType,
             float dividedAmount,
-            Transform targetTransform, 
-            Vector2 startPosition, 
+            Transform targetTransform,
+            Vector2 startPosition,
             Sprite sprite,
-            float radius, 
-            int count, 
+            float radius,
+            int count,
             Vector2 delayRange)
         {
             Vector3 TARGET_SCALE = Vector3.one * 0.2f;
-            
+
             var transforms = new RectTransform[count];
             var rotateDirection = new bool[count];
 
@@ -1064,9 +1094,9 @@ namespace StarSalvager.UI
                 t += deltaTime;
                 yield return null;
             }
-            
+
             var targetPosition = effectArea.transform.InverseTransformPoint(targetTransform.position);
-            
+
             for (int i = 0; i < count; i++)
             {
                 StartCoroutine(AmmoElementMoveCoroutine(
@@ -1094,7 +1124,7 @@ namespace StarSalvager.UI
             var startPosition = movingTransform.localPosition;
 
             yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
-            
+
             while (t / moveTime <= 1f)
             {
                 var deltaTime = Time.deltaTime;
@@ -1112,11 +1142,11 @@ namespace StarSalvager.UI
 
             var resource = PlayerDataManager.GetResource(bitType);
             resource.AddAmmo(dividedAmount);
-            
-            
+
+
             Destroy(movingTransform.gameObject);
         }
-        
+
 #if UNITY_EDITOR
         [Button, BoxGroup("Combo Effect"), DisableInEditorMode]
         private void TestComboEffect()
@@ -1126,9 +1156,9 @@ namespace StarSalvager.UI
             var startPosition = LevelManager.Instance.BotInLevel.AttachedBlocks[Random.Range(0, count)].transform
                 .position;
 
-            CreateAmmoEffect(bitType, 
+            CreateAmmoEffect(bitType,
                 Random.Range(5, 50),
-                startPosition, 
+                startPosition,
                 effectElementCount.x, effectElementCount.y,
                 moveTimeRange);
         }
@@ -1137,13 +1167,13 @@ namespace StarSalvager.UI
         #endregion //Ammo Effect
 
         //====================================================================================================================//
-        
+
         public static void ClearEventSelected()
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
 
         //====================================================================================================================//
-        
+
     }
 }
