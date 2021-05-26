@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.PatchTrees;
+﻿using StarSalvager.ScriptableObjects.PatchTrees;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 
 namespace StarSalvager.Editor.PatchTrees.Nodes
 {
@@ -18,5 +14,6 @@ namespace StarSalvager.Editor.PatchTrees.Nodes
         public abstract T GetNodeData();
         public abstract void LoadFromNodeData(in T nodeData);
 
+        public abstract void UpdateTitle();
     }
 }

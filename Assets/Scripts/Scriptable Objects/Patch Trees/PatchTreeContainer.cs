@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarSalvager.PatchTrees
+namespace StarSalvager.ScriptableObjects.PatchTrees
 {    
     [Serializable]
     public abstract class BaseNodeData
@@ -36,8 +35,6 @@ namespace StarSalvager.PatchTrees
         public List<NodeLinkData> NodeLinks = new List<NodeLinkData>();
         public PartNodeData PartNodeData;
         public List<PatchNodeData> PatchNodeDatas = new List<PatchNodeData>();
-        //public List<ExposedProperty> ExposedProperties = new List<ExposedProperty>();
-        //public List<CommentBlockData> CommentBlockData = new List<CommentBlockData>();
     }
     
     [Serializable]
@@ -47,24 +44,4 @@ namespace StarSalvager.PatchTrees
         public string PortName;
         public string TargetNodeGUID;
     }
-    
-    /*[Serializable]
-    public class DialogueNodeData
-    {
-        public string NodeGUID;
-        public string DialogueText;
-        public Vector2 Position;
-    }*/
-    
-    /*[System.Serializable]
-    public class ExposedProperty
-    {
-        public static ExposedProperty CreateInstance()
-        {
-            return new ExposedProperty();
-        }
-
-        public string PropertyName = "New String";
-        public string PropertyValue = "New Value";
-    }*/
 }

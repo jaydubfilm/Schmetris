@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.Editor.PatchTrees.Graph;
-using StarSalvager.PatchTrees;
+﻿using StarSalvager.Editor.PatchTrees.Graph;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using UnityEditor;
 using UnityEngine;
 

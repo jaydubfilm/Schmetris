@@ -1,6 +1,6 @@
 ﻿using System;
 using StarSalvager.Factories;
-using StarSalvager.PatchTrees;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -35,7 +35,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
         //Graph Functions
         //====================================================================================================================//
         
-        [MenuItem("Graph/Patch Tree Graph")]
+        //[MenuItem("Graph/Patch Tree Graph")]
         public static void CreatePatchTreeWindow()
         {
             var window = GetWindow<PatchTreeWindow>();
@@ -85,6 +85,28 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             })
             {
                 text = "Save Data"
+            });
+            
+            toolbar.Add(new Button(
+                () =>
+                {
+                    var json = PatchTreeSaveUtility.ExportJson(_graphView);
+                    
+                    var partRemoteDataObject = FindObjectOfType<FactoryManager>().PartsRemoteData;
+                    var index = partRemoteDataObject.partRemoteData.FindIndex(x =>
+                        x.partType == patchTreeContainerToLoad.PartType);
+                    
+                    if(index < 0)
+                        return;
+
+                    partRemoteDataObject.partRemoteData[index].patchTreeData = json;
+                    
+                    EditorUtility.SetDirty(partRemoteDataObject);
+                    AssetDatabase.SaveAssets();
+
+                })
+            {
+                text = "Export Json"
             });
 
             //toolbar.Add(new Button(() => RequestDataOperation(false)) {text = "Load Data"});

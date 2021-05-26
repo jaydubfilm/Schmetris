@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using StarSalvager.Editor.PatchTrees.Nodes;
 using StarSalvager.PatchTrees;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -14,11 +13,18 @@ namespace StarSalvager.Editor.PatchTrees.Graph
     //Based on: https://github.com/merpheus-dev/NodeBasedDialogueSystem/blob/master/com.subtegral.dialoguesystem/Editor/Graph/StoryGraphView.cs
     public class PatchTreeGraphView : GraphView
     {
+        //Properties
+        //====================================================================================================================//
+        
         public readonly Vector2 DefaultNodeSize = new Vector2(200, 150);
-        public readonly Vector2 DefaultCommentBlockSize = new Vector2(300, 200);
 
         public readonly PART_TYPE PartType;
-        
+
+        //Constructor
+        //====================================================================================================================//
+
+        #region Constructor
+
         public PatchTreeGraphView(PatchTreeWindow editorWindow, in PART_TYPE partType)
         {
             styleSheets.Add(Resources.Load<StyleSheet>("PatchTreeGraph"));
@@ -38,22 +44,14 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             
             AddElement(partNode);
         }
+
+        #endregion //Constructor
         
-        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
-        {
-            var compatiblePorts = new List<Port>();
-            var startPortView = startPort;
+        //Creating Nodes
+        //====================================================================================================================//
 
-            ports.ForEach((port) =>
-            {
-                var portView = port;
-                if (startPortView != portView && startPortView.node != portView.node)
-                    compatiblePorts.Add(port);
-            });
-
-            return compatiblePorts;
-        }
-
+        #region Creating Nodes
+        
         public void CreateNewPatchNode(string nodeName)
         {
             AddElement(CreateNode(nodeName, new Vector2(100, 200), 
@@ -61,7 +59,8 @@ namespace StarSalvager.Editor.PatchTrees.Graph
                 {
                     GUID = Guid.NewGuid().ToString(),
                     Type = (int)PATCH_TYPE.EMPTY,
-                    Tier = 1
+                    Tier = 1,
+                    Level = 1
                 }));
         }
         public void CreateNewPatchNode(string nodeName, Vector2 position)
@@ -71,11 +70,12 @@ namespace StarSalvager.Editor.PatchTrees.Graph
                 {
                     GUID = Guid.NewGuid().ToString(),
                     Type = (int)PATCH_TYPE.EMPTY,
-                    Tier = 1
+                    Tier = 1,
+                    Level = 1
                 })
             );
         }
-
+        
         public Node CreateNode(string nodeName, Vector2 position, BaseNodeData nodeData)
         {
             return CreateNode(nodeName, new Rect(position, DefaultNodeSize), nodeData);
@@ -120,91 +120,48 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             var enumField = CreateEnumField("Patch Type", patchNode.PatchType, PATCH_TYPE.EMPTY, type =>
             {
                 patchNode.PatchType = type;
+                patchNode.UpdateTitle();
             });
             tempNode.mainContainer.Add(enumField);
 
             
-            tempNode.mainContainer.Add(CreateSliderField("Tier",patchNode.Tier, 1 , 4, tier =>
+            tempNode.mainContainer.Add(CreateIntInputField("Tier",patchNode.Tier, 1 , 4, tier =>
             {
                 patchNode.Tier = tier;
+                patchNode.UpdatePosition();
             }));
             tempNode.mainContainer.Add(CreateSliderField("Level",patchNode.Level, 1 , 4, level =>
             {
                 patchNode.Level = level;
+                patchNode.UpdateTitle();
             }));
             
-            //--------------------------------------------------------------------------------------------------------//
-            
-            /*var textField = new TextField("");
-            textField.RegisterValueChangedCallback(evt =>
-            {
-                //tempDialogueNode.PatchType = evt.newValue;
-                tempDialogueNode.title = evt.newValue;
-            });*/
-            /*textField.SetValueWithoutNotify(tempDialogueNode.title);
-            tempDialogueNode.mainContainer.Add(textField);*/
+            patchNode.UpdateTitle();
 
-            //--------------------------------------------------------------------------------------------------------//
-            
-            /*var button = new Button(() => { AddChoicePort(tempDialogueNode); })
-            {
-                text = "Add Choice"
-            };
-            tempDialogueNode.titleButtonContainer.Add(button);*/
-
-            //--------------------------------------------------------------------------------------------------------//
-            
             return tempNode;
         }
-        /*public void AddChoicePort(Node nodeCache, string overriddenPortName = "")
+
+        #endregion //Creating Nodes
+
+        //Ports
+        //====================================================================================================================//
+
+        #region Ports
+
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            var generatedPort = GetPortInstance(nodeCache, Direction.Output);
-            var portLabel = generatedPort.contentContainer.Q<Label>("type");
-            generatedPort.contentContainer.Remove(portLabel);
+            var compatiblePorts = new List<Port>();
+            var startPortView = startPort;
 
-            var outputPortCount = nodeCache.outputContainer.Query("connector").ToList().Count();
-            var outputPortName = string.IsNullOrEmpty(overriddenPortName)
-                ? $"Option {outputPortCount + 1}"
-                : overriddenPortName;
-
-
-            var textField = new TextField()
+            ports.ForEach(port =>
             {
-                name = string.Empty,
-                value = outputPortName
-            };
-            textField.RegisterValueChangedCallback(evt => generatedPort.portName = evt.newValue);
-            generatedPort.contentContainer.Add(new Label("  "));
-            generatedPort.contentContainer.Add(textField);
-            var deleteButton = new Button(() => RemovePort(nodeCache, generatedPort))
-            {
-                text = "X"
-            };
-            generatedPort.contentContainer.Add(deleteButton);
-            generatedPort.portName = outputPortName;
-            nodeCache.outputContainer.Add(generatedPort);
-            nodeCache.RefreshPorts();
-            nodeCache.RefreshExpandedState();
-        }*/
+                if (startPortView != port && startPortView.node != port.node)
+                    compatiblePorts.Add(port);
+            });
 
-        /*private void RemovePort(Node node, Port socket)
-        {
-            var targetEdge = edges.ToList()
-                .Where(x => x.output.portName == socket.portName && x.output.node == socket.node)
-                .ToList();
-            
-            if (targetEdge.Any())
-            {
-                var edge = targetEdge.First();
-                edge.input.Disconnect(edge);
-                RemoveElement(targetEdge.First());
-            }
-
-            node.outputContainer.Remove(socket);
-            node.RefreshPorts();
-            node.RefreshExpandedState();
-        }*/
-
+            return compatiblePorts;
+        }
+        
         private Port GetPortInstance(Node node, Direction nodeDirection, Port.Capacity capacity = Port.Capacity.Single)
         {
             return node.InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, typeof(float));
@@ -213,7 +170,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
         //TODO Need to finish integrating this
         private PartNode GetEntryPointNodeInstance(in PART_TYPE partType)
         {
-            var nodeCache = new PartNode
+            var partNode = new PartNode
             {
                 //title = "START",
                 GUID = Guid.NewGuid().ToString(),
@@ -221,20 +178,27 @@ namespace StarSalvager.Editor.PatchTrees.Graph
                 //DialogueText = "ENTRYPOINT",
                 //EntyPoint = true
             };
-            nodeCache.Updated();
+            partNode.UpdateTitle();
 
-            var generatedPort = GetPortInstance(nodeCache, Direction.Output, Port.Capacity.Multi);
+            var generatedPort = GetPortInstance(partNode, Direction.Output, Port.Capacity.Multi);
             generatedPort.portName = "Patches";
-            nodeCache.outputContainer.Add(generatedPort);
+            partNode.outputContainer.Add(generatedPort);
 
-            nodeCache.capabilities &= ~Capabilities.Movable;
-            nodeCache.capabilities &= ~Capabilities.Deletable;
+            partNode.capabilities &= ~Capabilities.Movable;
+            partNode.capabilities &= ~Capabilities.Deletable;
 
-            nodeCache.RefreshExpandedState();
-            nodeCache.RefreshPorts();
-            nodeCache.SetPosition(new Rect(100, 200, 100, 150));
-            return nodeCache;
+            partNode.RefreshExpandedState();
+            partNode.RefreshPorts();
+            partNode.SetPosition(new Rect(100, 200, 100, 150));
+            return partNode;
         }
+
+        #endregion //Ports
+
+        //Creating Visual Elements
+        //====================================================================================================================//
+
+        #region Creating Visual Elements
 
         private static VisualElement CreateEnumField<T>(in string title, in T value, in T @default, Action<T> onValueChanged) where T : Enum
         {
@@ -274,7 +238,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             intField.RegisterValueChangedCallback(evt =>
             {
                 var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
-                
+
                 intSlider.SetValueWithoutNotify(newValue);
                 onValueChangedCallback?.Invoke(newValue);   
             });
@@ -310,6 +274,7 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             floatField.RegisterValueChangedCallback(evt =>
             {
                 var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
+                
                 floatSlider.SetValueWithoutNotify(newValue);
                 
                 onValueChangedCallback?.Invoke(newValue);
@@ -321,5 +286,60 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             return layoutTest;
             //tempDialogueNode.mainContainer.Add(tierSli
         }
+        
+        private static VisualElement CreateInputField(in string title, in float value, in float min, in float max, Action<float> onValueChangedCallback)
+        {
+            var layoutTest = new Box();
+            layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("HorizontalLayout"));
+            layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("Inputs"));
+            layoutTest.AddToClassList("flex-horizontal");
+
+            var floatField = new FloatField(title);
+            layoutTest.contentContainer.Add(floatField);
+
+            var tempMin = min;
+            var tempMax = max;
+            floatField.RegisterValueChangedCallback(evt =>
+            {
+                var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
+                
+                floatField.SetValueWithoutNotify(newValue);
+                onValueChangedCallback?.Invoke(newValue);
+            });
+            
+            floatField.SetValueWithoutNotify(value);
+
+            return layoutTest;
+        }
+        
+        private static VisualElement CreateIntInputField(in string title, in int value, in int min, in int max, Action<int> onValueChangedCallback)
+        {
+            var layoutTest = new Box();
+            layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("HorizontalLayout"));
+            layoutTest.styleSheets.Add(Resources.Load<StyleSheet>("Inputs"));
+            layoutTest.AddToClassList("flex-horizontal");
+
+            var integerField = new IntegerField(title);
+            layoutTest.contentContainer.Add(integerField);
+
+            var tempMin = min;
+            var tempMax = max;
+            integerField.RegisterValueChangedCallback(evt =>
+            {
+                var newValue = Mathf.Clamp(evt.newValue, tempMin, tempMax);
+                
+                integerField.SetValueWithoutNotify(newValue);
+                onValueChangedCallback?.Invoke(newValue);
+            });
+            
+            integerField.SetValueWithoutNotify(value);
+
+            return layoutTest;
+        }
+
+        #endregion //Creating Visual Elements
+
+        //====================================================================================================================//
+        
     }
 }

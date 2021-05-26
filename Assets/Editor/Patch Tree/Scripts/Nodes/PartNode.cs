@@ -1,19 +1,13 @@
 ﻿
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.PatchTrees;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+using StarSalvager.ScriptableObjects.PatchTrees;
 
 namespace StarSalvager.Editor.PatchTrees.Nodes
 {
-    
-       
     public class PartNode : BaseNode<PartNodeData>
     {
-        [OnValueChanged("Updated")]
+        [OnValueChanged("UpdateTitle")]
         public PART_TYPE PartType;
         
         public override PartNodeData GetNodeData()
@@ -34,10 +28,12 @@ namespace StarSalvager.Editor.PatchTrees.Nodes
             GUID = partNodeData.GUID;
             PartType = (PART_TYPE)partNodeData.Type;
             SetPosition(nodeData.Position);
+
+            UpdateTitle();
         }
 
 #if UNITY_EDITOR
-        public void Updated()
+        public override void UpdateTitle()
         {
             title = PartType.ToString();
         }

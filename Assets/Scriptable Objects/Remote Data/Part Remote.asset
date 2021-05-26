@@ -96,6 +96,7 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 0
+    patchTreeData: 
   - isImplemented: 1
     partType: 2
     name: Repairer
@@ -112,6 +113,7 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 2
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 3
     name: Armor
@@ -123,6 +125,7 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 2
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 4
     name: Gun
@@ -140,6 +143,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 1
     PatchSockets: 2
+    patchTreeData: '[{"Type":1,"Level":1,"Tier":1,"PreReqs":[]},{"Type":2,"Level":1,"Tier":2,"PreReqs":[]},{"Type":3,"Level":1,"Tier":2,"PreReqs":[]},{"Type":1,"Level":2,"Tier":2,"PreReqs":[]},{"Type":2,"Level":2,"Tier":3,"PreReqs":[1]},{"Type":3,"Level":2,"Tier":3,"PreReqs":[2]},{"Type":2,"Level":3,"Tier":4,"PreReqs":[4]}]'
   - isImplemented: 0
     partType: 12
     name: Triple Shot
@@ -157,6 +161,7 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 5
     name: Shield
@@ -172,6 +177,7 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 19
     name: Grenade
@@ -193,6 +199,7 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 0
     partType: 13
     name: Missile
@@ -209,6 +216,7 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 14
     name: Sniper
@@ -225,6 +233,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 3
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 15
     name: Blaster
@@ -246,6 +255,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 6
     name: Freeze
@@ -263,6 +273,7 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 0
     partType: 34
     name: Upgrader
@@ -275,6 +286,7 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 10
     PatchSockets: 0
+    patchTreeData: 
   - isImplemented: 1
     partType: 35
     name: Wild Card
@@ -285,6 +297,7 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 3
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 36
     name: Railgun
@@ -299,6 +312,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 38
     name: Tractor Beam
@@ -313,6 +327,7 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 1
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 0
     partType: 39
     name: Heal
@@ -329,6 +344,7 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 0
     partType: 40
     name: Regen
@@ -341,6 +357,7 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 1
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 29
     name: Decoy
@@ -353,6 +370,7 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 5
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 41
     name: Bitsplosion
@@ -369,6 +387,7 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 5
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 31
     name: Hoover
@@ -381,6 +400,7 @@ MonoBehaviour:
     category: 5
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 0
     name: Core
@@ -399,6 +419,7 @@ MonoBehaviour:
     category: 2
     ammoUseCost: 5
     PatchSockets: 3
+    patchTreeData: 
   - isImplemented: 1
     partType: 42
     name: Sabre
@@ -419,6 +440,7 @@ MonoBehaviour:
     category: 3
     ammoUseCost: 5
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 43
     name: Blitz
@@ -435,6 +457,7 @@ MonoBehaviour:
     category: 4
     ammoUseCost: 10
     PatchSockets: 2
+    patchTreeData: 
   - isImplemented: 1
     partType: 44
     name: Force Field
@@ -455,3 +478,4 @@ MonoBehaviour:
     category: 1
     ammoUseCost: 5
     PatchSockets: 2
+    patchTreeData: 

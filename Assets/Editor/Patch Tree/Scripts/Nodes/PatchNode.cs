@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.PatchTrees;
-using UnityEditor.Experimental.GraphView;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using UnityEngine;
 
 namespace StarSalvager.Editor.PatchTrees.Nodes
@@ -37,6 +34,24 @@ namespace StarSalvager.Editor.PatchTrees.Nodes
             Tier = patchNodeData.Tier;
             Level = patchNodeData.Level;
             SetPosition(nodeData.Position);
+            
+            UpdateTitle();
+        }
+
+        public override void UpdateTitle()
+        {
+            title = $"{PatchType} {Level}";
+        }
+        
+        public void UpdatePosition()
+        {
+            SetPosition(GetPosition());
+        }
+        public override void SetPosition(Rect newPos)
+        {
+            newPos.x = Tier * 250;
+            
+            base.SetPosition(newPos);
         }
     }
 }

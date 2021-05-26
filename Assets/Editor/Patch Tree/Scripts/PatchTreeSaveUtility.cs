@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using StarSalvager.Editor.PatchTrees.Graph;
 using StarSalvager.Editor.PatchTrees.Nodes;
-using StarSalvager.PatchTrees;
+using StarSalvager.PatchTrees.Data;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using StarSalvager.Utilities.Extensions;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace StarSalvager.Editor.PatchTrees
 {
@@ -38,46 +37,49 @@ namespace StarSalvager.Editor.PatchTrees
             var assetPath = GetAssetPath(fileName);
             var filePath = GetFilePath(fileName);
 
-            var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
-            if (!SaveNodes(graphView, ref dialogueContainerObject))
+            var patchTreeContainer = GeneratePatchTreeContainer(graphView);
+
+            if (patchTreeContainer == null)
                 return;
 
             if (File.Exists(filePath))
             {
                 var loadedFile = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
 
-                loadedFile.NodeLinks = dialogueContainerObject.NodeLinks;
-                loadedFile.PartNodeData = dialogueContainerObject.PartNodeData;
-                loadedFile.PatchNodeDatas = new List<PatchNodeData>(dialogueContainerObject.PatchNodeDatas);
+                loadedFile.NodeLinks = patchTreeContainer.NodeLinks;
+                loadedFile.PartNodeData = patchTreeContainer.PartNodeData;
+                loadedFile.PatchNodeDatas = new List<PatchNodeData>(patchTreeContainer.PatchNodeDatas);
 
                 EditorUtility.SetDirty(loadedFile);
             }
             else
             {
-                AssetDatabase.CreateAsset(dialogueContainerObject, assetPath);
+                AssetDatabase.CreateAsset(patchTreeContainer, assetPath);
             }
 
             AssetDatabase.SaveAssets();
         }
 
-        private static bool SaveNodes(PatchTreeGraphView graphView,
-            ref PatchTreeContainer patchTreeContainer)
+        private static PatchTreeContainer GeneratePatchTreeContainer(in GraphView graphView)
         {
             var edges = graphView.edges.ToList();
             var nodes = graphView.nodes.ToList().Cast<BaseNode>().ToList();
 
-            if (!edges.Any()) return false;
+            if (!edges.Any()) 
+                return null;
+            
+            var patchTreeContainer = ScriptableObject.CreateInstance<PatchTreeContainer>();
 
             var connectedSockets = edges.Where(x => x.input.node != null).ToArray();
-            for (var i = 0; i < connectedSockets.Length; i++)
+            foreach (var connectedSocket in connectedSockets)
             {
-                var outputNode = (connectedSockets[i].output.node as BaseNode);
-                var inputNode = (connectedSockets[i].input.node as BaseNode);
+                var outputNode = (BaseNode)connectedSocket.output.node;
+                var inputNode = (BaseNode)connectedSocket.input.node;
 
                 patchTreeContainer.NodeLinks.Add(new NodeLinkData
                 {
                     BaseNodeGUID = outputNode.GUID,
-                    PortName = connectedSockets[i].output.portName,
+                    PortName = $"{outputNode.title} -> {inputNode.title}",
                     TargetNodeGUID = inputNode.GUID
                 });
             }
@@ -96,7 +98,7 @@ namespace StarSalvager.Editor.PatchTrees
                 }
             }
 
-            return true;
+            return patchTreeContainer;
         }
 
         //Loading Graph
@@ -122,9 +124,9 @@ namespace StarSalvager.Editor.PatchTrees
             
             var patchTreeContainer = AssetDatabase.LoadAssetAtPath<PatchTreeContainer>(assetPath);
             
-            ClearGraph(graphView, ref patchTreeContainer);
-            GeneratePatchTreeNodes(graphView, ref patchTreeContainer);
-            ConnectPatchTreeNodes(graphView, ref patchTreeContainer);
+            //ClearGraph(graphView, ref patchTreeContainer);
+            GeneratePatchTreeNodes(graphView, patchTreeContainer);
+            ConnectPatchTreeNodes(graphView, patchTreeContainer);
             //AddExposedProperties();
             //GenerateCommentBlocks();
         }
@@ -157,12 +159,15 @@ namespace StarSalvager.Editor.PatchTrees
         /// <summary>
         /// Create All serialized nodes and assign their guid and dialogue text to them
         /// </summary>
-        private static void GeneratePatchTreeNodes(in PatchTreeGraphView graphView, ref PatchTreeContainer patchTreeContainer)
+        private static void GeneratePatchTreeNodes(in PatchTreeGraphView graphView, in PatchTreeContainer patchTreeContainer)
         {
             //FIXME Find the existing Part Node
-            var partNode = patchTreeContainer.PartNodeData;
-            graphView.CreateNode(string.Empty, new Vector2(partNode.Position.x, partNode.Position.y), patchTreeContainer.PartNodeData);
+            var partNodeData = patchTreeContainer.PartNodeData;
             
+            //Creating the Graphview generates the initial PartNode, so we need to apply the new data
+            var partNode = (PartNode)graphView.nodes.ToList().FirstOrDefault(x => x is PartNode);
+            partNode.LoadFromNodeData(partNodeData);
+
             foreach (var patchNodeData in patchTreeContainer.PatchNodeDatas)
             {
                 var tempNode = (PatchNode)graphView.CreateNode(string.Empty, patchNodeData.Position, patchNodeData);
@@ -171,12 +176,13 @@ namespace StarSalvager.Editor.PatchTrees
             }
         }
 
-        private static void ConnectPatchTreeNodes(PatchTreeGraphView graphView, ref PatchTreeContainer patchTreeContainer)
+        private static void ConnectPatchTreeNodes(PatchTreeGraphView graphView,
+            in PatchTreeContainer patchTreeContainer)
         {
             var nodes = graphView.nodes.ToList().Cast<BaseNode>().ToList();
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void LinkNodesTogether(Port outputSocket, Port inputSocket)
             {
                 var tempEdge = new Edge
@@ -190,19 +196,38 @@ namespace StarSalvager.Editor.PatchTrees
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
-            for (var i = 0; i < nodes.Count; i++)
+
+            foreach (var nodeLinkData in patchTreeContainer.NodeLinks)
             {
-                var k = i; //Prevent access to modified closure
-                var connections = patchTreeContainer.NodeLinks
-                    .Where(x => x.BaseNodeGUID == nodes[k].GUID)
-                    .ToList();
+                var baseNode = nodes.FirstOrDefault(x => x.GUID == nodeLinkData.BaseNodeGUID);
+                var targetNode = nodes.FirstOrDefault(x => x.GUID == nodeLinkData.TargetNodeGUID);
+
+                var baseName = baseNode.title;
+                var targetName = targetNode.title;
+                
+                if(baseNode.outputContainer.childCount == 0)
+                    Debug.LogError($"{baseName} has no output");
+                
+                if(targetNode.inputContainer.childCount == 0)
+                    Debug.LogError($"{targetName} has no Input Container");
+                
+                LinkNodesTogether((Port) baseNode.outputContainer[0], (Port) targetNode.inputContainer[0]);
+            }
+
+            /*for (var i = 0; i < nodes.Count; i++)
+            {
                 var node = nodes[i];
-                foreach (var targetNode in connections.Select(connection => nodes.First(x => x.GUID == connection.TargetNodeGUID)))
+                var nodeGUID = node.GUID;
+
+                var connections = patchTreeContainer.NodeLinks
+                    .Where(x => x.BaseNodeGUID == nodeGUID)
+                    .ToList();
+                foreach (var targetNode in connections.Select(connection =>
+                    nodes.First(x => x.GUID == connection.TargetNodeGUID)))
                 {
                     LinkNodesTogether((Port) node.outputContainer[0], (Port) targetNode.inputContainer[0]);
                 }
-            }
+            }*/
         }
 
         //DoesPatchTreeExist
@@ -216,10 +241,62 @@ namespace StarSalvager.Editor.PatchTrees
             return File.Exists(filePath);
         }
 
-
         private static string GetFileName(in PART_TYPE partType) => $"{partType.ToString()}_PatchTree";
 
+        //Json I/O
         //====================================================================================================================//
+
+        #region Json I/O
+
+        public static string ExportJson(in GraphView graphView)
+        {
+            var patchTreeContainer = GeneratePatchTreeContainer(graphView);
+
+            if (patchTreeContainer is null) throw new ArgumentException();
+
+            return GetGraphAsJson(patchTreeContainer);
+        }
+
+        private static string GetGraphAsJson(in PatchTreeContainer patchTreeContainer)
+        {
+            var partNodeGUID = patchTreeContainer.PartNodeData.GUID;
+            var orderedNodes = patchTreeContainer.PatchNodeDatas
+                .OrderBy(x => x.Tier)
+                .ToList();
+
+            var outList = new List<PatchNodeJson>();
+            
+            foreach (var patchNodeData in orderedNodes)
+            {
+                var GUID = patchNodeData.GUID;
+
+                var preReqs = patchTreeContainer.NodeLinks
+                    .Where(x => !x.BaseNodeGUID.Equals(partNodeGUID))
+                    .Where(x => x.TargetNodeGUID.Equals(GUID))
+                    .Select(x => orderedNodes.FindIndex(y => y.GUID == x.BaseNodeGUID))
+                    .ToArray();
+                
+                var newData = new PatchNodeJson
+                {
+                    Type = patchNodeData.Type,
+                    Level = patchNodeData.Level,
+                    Tier = patchNodeData.Tier,
+                    PreReqs = preReqs
+                };
+                
+                outList.Add(newData);
+            }
+
+            var json = JsonConvert.SerializeObject(outList);
+            
+            return json;
+        }
+
+        #endregion //Json I/O
+
+        //====================================================================================================================//
+        
+        
 
     }
 }
