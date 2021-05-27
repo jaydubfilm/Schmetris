@@ -35,6 +35,9 @@ namespace StarSalvager.Utilities.Enemies
         
         private void Update()
         {
+            //Sometimes enemies are destroyed, and not recycled, throwing a null reference.
+            if (_enemy is null) return;
+            
             if (_enemy.IsRecycled)
             {
                 Recycler.Recycle<EnemyDecoy>(this);
