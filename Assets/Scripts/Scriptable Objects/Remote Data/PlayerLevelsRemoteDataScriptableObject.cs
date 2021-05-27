@@ -129,6 +129,8 @@ namespace StarSalvager.ScriptableObjects
         
         public static int GetXPForLevel(in int level)
         {
+            if (level < 0) return 0;
+            
             var playerLevelRemoteDatas = FactoryManager.Instance.PlayerLevelsRemoteData.playerLevelRemoteDatas;
             
             return level >= playerLevelRemoteDatas.Count

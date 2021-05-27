@@ -34,7 +34,7 @@ MonoBehaviour:
     part: Repairer
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
   - PartType: 3
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 1
@@ -64,7 +64,7 @@ MonoBehaviour:
     part: Shield
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
   - PartType: 6
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 1
     EFF: 1
@@ -84,7 +84,7 @@ MonoBehaviour:
     part: Sniper
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   - PartType: 29
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 1
@@ -104,7 +104,7 @@ MonoBehaviour:
     part: Hoover
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
   - PartType: 35
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 1
@@ -124,7 +124,7 @@ MonoBehaviour:
     part: Railgun
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   - PartType: 38
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 0
