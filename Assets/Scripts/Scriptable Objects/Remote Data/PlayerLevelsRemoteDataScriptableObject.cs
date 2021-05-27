@@ -43,6 +43,8 @@ namespace StarSalvager.ScriptableObjects
         //Other Functions
         //====================================================================================================================//
 
+        public PlayerLevelRemoteData GetPlayerLevelRemoteData(in int level) => playerLevelRemoteDatas[level];
+
         public IEnumerable<PlayerLevelRemoteData.UnlockData> GetUnlocksForLevel(in int level)
         {
             var unlockData =  new List<PlayerLevelRemoteData.UnlockData>(level >= playerLevelRemoteDatas.Count
