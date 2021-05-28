@@ -6,6 +6,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using StarSalvager.Waves;
 using UnityEngine;
 
 namespace StarSalvager.ScriptableObjects
@@ -16,6 +17,8 @@ namespace StarSalvager.ScriptableObjects
         public int WaveSeed;
         
         public int WaveXP;
+
+        public WAVE_TYPE Type = WAVE_TYPE.SURVIVAL;
         
         public List<StageObstacleShapeData> BonusShapes = new List<StageObstacleShapeData>();
         

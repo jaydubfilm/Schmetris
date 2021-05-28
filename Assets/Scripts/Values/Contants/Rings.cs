@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector.Editor;
+using StarSalvager.Waves;
 using UnityEngine;
 
 namespace StarSalvager.Values
@@ -15,45 +16,45 @@ namespace StarSalvager.Values
                 //[0]
                 new Ring.Node {Coordinate = new Vector2Int(0, 0), NodeType = NodeType.Base},
                 //[1]
-                new Ring.Node {Coordinate = new Vector2Int(1, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(1, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(1, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(1, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[2]
-                new Ring.Node {Coordinate = new Vector2Int(2, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(2, 0), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(2, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(2, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(2, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
+                new Ring.Node {Coordinate = new Vector2Int(2, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[3]
                 new Ring.Node {Coordinate = new Vector2Int(3, 1), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(3, -1), NodeType = NodeType.Wreck},
                 //[4]
-                new Ring.Node {Coordinate = new Vector2Int(4, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(4, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(4, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
+                new Ring.Node {Coordinate = new Vector2Int(4, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[5]
                 new Ring.Node {Coordinate = new Vector2Int(5, 0), NodeType = NodeType.Wreck},
                 //[6]
-                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(6, 0), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
+                new Ring.Node {Coordinate = new Vector2Int(6, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[7]
-                new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[8]
                 new Ring.Node {Coordinate = new Vector2Int(8, 1), NodeType =  NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(8, 0), NodeType =  NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(8, -1), NodeType = NodeType.Wreck},
                 //[9]
-                new Ring.Node {Coordinate = new Vector2Int(9, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(9, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(9, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(9, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[10]
-                new Ring.Node {Coordinate = new Vector2Int(10, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(10, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(10, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(10, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
                 //[11]
-                new Ring.Node {Coordinate = new Vector2Int(11, 1), NodeType =  NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(11, 0), NodeType =  NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(11, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(11, 1), NodeType =  NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(11, 0), NodeType =  NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(11, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
                 //[12]
                 new Ring.Node {Coordinate = new Vector2Int(12, 1), NodeType =  NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(12, -1), NodeType = NodeType.Wreck},
                 //[13]
-                new Ring.Node {Coordinate = new Vector2Int(13, 0), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(13, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
             },
             new[]
             {
@@ -119,44 +120,44 @@ namespace StarSalvager.Values
                 //[0]
                 new Ring.Node {Coordinate = new Vector2Int(0, 0), NodeType = NodeType.Base},
                 //[1]
-                new Ring.Node {Coordinate = new Vector2Int(1, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(1, 0), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(1, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(1, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(1, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(1, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[2]
                 new Ring.Node {Coordinate = new Vector2Int(2, 1), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(2, -1), NodeType = NodeType.Wreck},
                 //[3]
-                new Ring.Node {Coordinate = new Vector2Int(3, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(3, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(3, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(3, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
                 //[4]
-                new Ring.Node {Coordinate = new Vector2Int(4, 0), NodeType = NodeType.Level}, 
+                new Ring.Node {Coordinate = new Vector2Int(4, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL}, 
                 //[5]
                 new Ring.Node {Coordinate = new Vector2Int(5, 1), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(5, 0), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(5, -1), NodeType = NodeType.Wreck},
                 //[6]
-                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(6, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(6, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[7]
-                new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level}, 
+                new Ring.Node {Coordinate = new Vector2Int(7, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS}, 
                 //[8]
-                new Ring.Node {Coordinate = new Vector2Int(8, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(8, 0), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(8, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(8, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(8, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(8, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[9]
                 new Ring.Node {Coordinate = new Vector2Int(9, 1), NodeType = NodeType.Wreck},
                 new Ring.Node {Coordinate = new Vector2Int(9, -1), NodeType = NodeType.Wreck},
                 //[10]
-                new Ring.Node {Coordinate = new Vector2Int(10, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(10, 0), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(10, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(10, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.BONUS},
+                new Ring.Node {Coordinate = new Vector2Int(10, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(10, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[11]
-                new Ring.Node {Coordinate = new Vector2Int(11, 1), NodeType = NodeType.Level},
-                new Ring.Node {Coordinate = new Vector2Int(11, -1), NodeType = NodeType.Level},
+                new Ring.Node {Coordinate = new Vector2Int(11, 1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
+                new Ring.Node {Coordinate = new Vector2Int(11, -1), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL},
                 //[12]
                 new Ring.Node {Coordinate = new Vector2Int(12, 0), NodeType = NodeType.Wreck}, 
                 //[13]
-                new Ring.Node {Coordinate = new Vector2Int(13, 0), NodeType = NodeType.Level}, 
+                new Ring.Node {Coordinate = new Vector2Int(13, 0), NodeType = NodeType.Level, WaveType = WAVE_TYPE.SURVIVAL}, 
                 
             }, 
             new[]
@@ -226,6 +227,7 @@ namespace StarSalvager.Values
         {
             public Vector2Int Coordinate;
             public NodeType NodeType;
+            public WAVE_TYPE WaveType;
         }
         
         public readonly Node[] Nodes;

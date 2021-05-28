@@ -139,6 +139,7 @@ namespace StarSalvager.UI
                 }
 
             }*/
+            InitButtons();
             InitBackButton();
             DrawMap();
 
@@ -164,7 +165,7 @@ namespace StarSalvager.UI
         {
             //--------------------------------------------------------------------------------------------------------//
 
-            void CreateButtonElement(in int index, in Vector2Int coordinate, in NodeType nodeType)
+            void CreateButtonElement(in int index, in Vector2Int coordinate, in Ring.Node node)
             {
                 if (!Recycler.TryGrab(out UniverseMapButton button))
                 {
@@ -179,7 +180,7 @@ namespace StarSalvager.UI
                 //_universeMapButtons[index].transform.anchoredPosition = Vector2.zero;
 
                 _universeMapButtons[index].Reset();
-                _universeMapButtons[index].Init(index, coordinate.x, nodeType, OnNodePressed);
+                _universeMapButtons[index].Init(index, coordinate.x, node, OnNodePressed);
 
                 _universeMapButtons[index].gameObject.name = $"{nameof(UniverseMapButton)}_[{index}]";
 
@@ -242,16 +243,16 @@ namespace StarSalvager.UI
             for (var i = 0; i < nodeCount; i++)
             {
                 var nodeData = ring.Nodes[i];
-                CreateButtonElement(i, nodeData.Coordinate, nodeData.NodeType);
+                CreateButtonElement(i, nodeData.Coordinate, nodeData);
             }
 
         }
 
-        private void OnNodePressed(int nodeIndex, NodeType nodeType)
+        private void OnNodePressed(int nodeIndex, Ring.Node node)
         {
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
 
-            switch (nodeType)
+            switch (node.NodeType)
             {
                 case NodeType.Base:
                     //PlayerDataManager.SetCurrentWave(PlayerDataManager.GetCurrentWave() + 1);
@@ -299,7 +300,7 @@ namespace StarSalvager.UI
             for (var i = 0; i < _universeMapButtons.Length; i++)
             {
                 var currentMapButton = _universeMapButtons[i];
-                var isWreck = currentMapButton.NodeType == NodeType.Wreck;
+                var isWreck = currentMapButton.Node.NodeType == NodeType.Wreck;
 
                 currentMapButton.SetBotImageActive(i == playerCoordinateIndex);
 
@@ -370,7 +371,7 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             var unlockedWreck = _universeMapButtons
-                .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+                .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.Node.NodeType == NodeType.Wreck);
 
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {

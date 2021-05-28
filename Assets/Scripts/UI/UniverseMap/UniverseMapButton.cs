@@ -1,23 +1,14 @@
 ﻿using System;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
-using StarSalvager.Utilities;
-using StarSalvager.Utilities.SceneManagement;
-using StarSalvager.Values;
-using System.Collections;
-using System.Collections.Generic;
-using StarSalvager.Audio;
+
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using StarSalvager.Utilities.Saving;
-using System.Linq;
-using StarSalvager.AI;
 using StarSalvager.UI;
-using StarSalvager.Utilities.Interfaces;
-using UnityEngine.Serialization;
+using StarSalvager.Values;
+
 
 namespace StarSalvager
 {
@@ -35,11 +26,11 @@ namespace StarSalvager
 
         public bool IsButtonInteractable => Button.interactable;
         
-        public NodeType NodeType => nodeType;
+        public Ring.Node Node => _node;
         public int NodeIndex => nodeIndex;
         
         [SerializeField, ReadOnly]
-        private NodeType nodeType;
+        private Ring.Node _node;
 
         [SerializeField, ReadOnly] private int nodeIndex;
 
@@ -66,7 +57,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        public void Init(in int nodeIndex, in int sector, in NodeType nodeType, Action<int, NodeType> onPressedCallback)
+        public void Init(in int nodeIndex, in int sector, in Ring.Node node, Action<int, Ring.Node> onPressedCallback)
         {
             if (!_universeMap) _universeMap = FindObjectOfType<UniverseMap>();
             
@@ -75,15 +66,15 @@ namespace StarSalvager
             BotImage.sprite = PART_TYPE.EMPTY.GetSprite();
 
             this.nodeIndex = nodeIndex;
-            this.nodeType = nodeType;
+            _node = node;
             
-            Button.onClick.AddListener(() => onPressedCallback?.Invoke(this.nodeIndex, this.nodeType));
+            Button.onClick.AddListener(() => onPressedCallback?.Invoke(this.nodeIndex, _node));
 
 
-            SetShortcutImageActive(NodeType == NodeType.Wreck);
+            SetShortcutImageActive(Node.NodeType == NodeType.Wreck);
             
             string title;
-            switch (NodeType)
+            switch (Node.NodeType)
             {
                 case NodeType.Base:
                     title = "Base";
