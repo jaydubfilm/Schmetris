@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -19,7 +20,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -1013,20 +1014,35 @@ namespace StarSalvager.UI
         //FIXME Adding ammo in this method could cause a loss either from early destruction of the coroutine, or division
         #region Ammo Effect
 
-        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, [CallerMemberName] string calledMemberName = "")
         {
             CreateAmmoEffect(bitType, 
                 amount,
                 startPosition, 
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                calledMemberName);
         }
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange)
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
         {
-            const float RADIUS = 50;
+            if (bitType == BIT_TYPE.WHITE)
+                throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
             
-            var sprite = bitEffectSprites[(int) bitType - 1];
-            var targetTransform = sliderTargets[(int) bitType - 1];
+            const float RADIUS = 50;
+            Sprite sprite;
+            Transform targetTransform;
+            
+            try
+            {
+               sprite = bitEffectSprites[(int) bitType - 1];
+               targetTransform = sliderTargets[(int) bitType - 1];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.LogError($"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
+                throw;
+            }
+            
             
             var count = Random.Range(minCount, maxCount);
             var dividedAmount = amount / count;
@@ -1166,7 +1182,8 @@ namespace StarSalvager.UI
                 Random.Range(5, 50),
                 startPosition, 
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                nameof(TestComboEffect));
         }
 #endif
 

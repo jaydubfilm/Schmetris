@@ -172,7 +172,7 @@ namespace StarSalvager.AI
 
             if (currentPosition.y < -5)
             {
-                SetState(STATE.DEATH);
+                DestroyEnemy();
                 return;
             }
 
@@ -204,7 +204,7 @@ namespace StarSalvager.AI
                     throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
             }
 
-            SetState(STATE.DEATH);
+            DestroyEnemy();
         }
 
         #endregion //States

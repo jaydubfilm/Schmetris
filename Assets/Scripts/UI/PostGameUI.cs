@@ -69,9 +69,11 @@ namespace StarSalvager.UI
             var newLevel = PlayerSaveAccountData.GetCurrentLevel(currentXP);
             
             //TODO Need to add stars somewhere!
+
+            xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel - 1);
+            xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel);
             
-            xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel);
-            xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel + 1);
+            
 
             xpSlider.value = startXP;
 
@@ -89,22 +91,25 @@ namespace StarSalvager.UI
             
             float UpdateXP(in int addXp)
             {
+                var levelPause = false;
                 currentXP += addXp;
                 if (currentXP > xpSlider.maxValue)
                 {
                     var level = PlayerSaveAccountData.GetCurrentLevel(currentXP);
-                    xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(level);
-                    xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(level + 1);
+                    xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(level - 1);
+                    xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(level);
+                    
 
                     currentStars++;
                     starCountText.text = $"{currentStars}{TMP_SpriteHelper.STAR_ICON}";
-                    return 1f;
+                    //return 1f;
+                    levelPause = true;
                 }
 
                 xpSlider.value = currentXP;
                 xpSliderText.text = $"{currentXP}/{xpSlider.maxValue}";
 
-                return 0.25f;
+                return levelPause ? 1f : 0.25f;
             }
 
             //--------------------------------------------------------------------------------------------------------//

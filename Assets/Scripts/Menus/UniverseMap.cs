@@ -47,6 +47,9 @@ namespace StarSalvager.UI
         [SerializeField, Required] private ScrollRect m_scrollRect;
         [SerializeField, Required] private RectTransform m_scrollRectArea;
 
+        [SerializeField, Required] private Button backButton;
+        [SerializeField, Required] private TMP_Text backButtonText;
+
         //====================================================================================================================//
 
         [SerializeField, FoldoutGroup("Hover Window")]
@@ -89,6 +92,8 @@ namespace StarSalvager.UI
             //InitButtons();
             _connectionLines = new List<Image>();
             waveDataWindow.SetActive(false);
+
+            backButton.onClick.AddListener(Back);
         }
 
         //====================================================================================================================//
@@ -102,7 +107,7 @@ namespace StarSalvager.UI
                 /*case HINT.HOME:
                     return new object[]
                     {
-                        _shipwreckButtonRectTransform 
+                        _shipwreckButtonRectTransform
                     };*/
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -132,9 +137,9 @@ namespace StarSalvager.UI
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
+
             }*/
-            InitButtons();
+            InitBackButton();
             DrawMap();
 
             PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
@@ -172,7 +177,7 @@ namespace StarSalvager.UI
 
                 _universeMapButtons[index] = button;
                 //_universeMapButtons[index].transform.anchoredPosition = Vector2.zero;
-                
+
                 _universeMapButtons[index].Reset();
                 _universeMapButtons[index].Init(index, coordinate.x, nodeType, OnNodePressed);
 
@@ -182,7 +187,7 @@ namespace StarSalvager.UI
 
                 var anchoredPositionOffset = Vector2.right * (coordinate.x * sizeX * 2f);
                 anchoredPositionOffset += Vector2.up * (coordinate.y * sizeX * 2f);
-                
+
                 _universeMapButtons[index].transform.anchoredPosition += anchoredPositionOffset;
 
             }
@@ -196,7 +201,7 @@ namespace StarSalvager.UI
                         //FIXME Need to determine how best to reset positions
                         //Recycler.Recycle<UniverseMapButton>(_universeMapButtons[i]);
                         Destroy(_universeMapButtons[i].gameObject);
-                    } 
+                    }
                 }
 
                 _universeMapButtons = new UniverseMapButton[0];
@@ -217,11 +222,11 @@ namespace StarSalvager.UI
             {
                 var ringIndex = Globals.CurrentRingIndex + 1;
                 PlayerDataManager.SetCurrentRing(ringIndex);
-                
+
                 //Want to set the players map position back to the beginning
                 PlayerDataManager.SetPlayerCoordinate(Vector2Int.zero);
                 PlayerDataManager.SetPlayerTargetCoordinate(Vector2Int.zero);
-                
+
                 //Want to reset the players wave to first of this ring
                 PlayerDataManager.SetCurrentWave(0);
                 //Need to clear traversal history
@@ -245,7 +250,7 @@ namespace StarSalvager.UI
         private void OnNodePressed(int nodeIndex, NodeType nodeType)
         {
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
-            
+
             switch (nodeType)
             {
                 case NodeType.Base:
@@ -282,15 +287,15 @@ namespace StarSalvager.UI
         private void DrawMap()
         {
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
-            
+
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
             var playerCoordinateIndex = currentRingMap.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
-            
+
             CenterToItem(_universeMapButtons[playerCoordinateIndex].transform);
 
             //Setup Nodes
             //--------------------------------------------------------------------------------------------------------//
-            
+
             for (var i = 0; i < _universeMapButtons.Length; i++)
             {
                 var currentMapButton = _universeMapButtons[i];
@@ -310,7 +315,7 @@ namespace StarSalvager.UI
 
             //Try get list of path that should be marked as previously travelled
             //--------------------------------------------------------------------------------------------------------//
-            
+
             List<Vector2Int> traversedConnections = new List<Vector2Int>();
             var traversedCoordinates = new List<Vector2Int>(PlayerDataManager.GetTraversedCoordinates());
             if (traversedCoordinates.Count > 1)
@@ -325,12 +330,12 @@ namespace StarSalvager.UI
 
             //Draw connections
             //--------------------------------------------------------------------------------------------------------//
-            
+
             for (var i = 0; i < currentRingMap.Connections.Length; i++)
             {
                 var connectionColor = Color.white;
                 var connection = currentRingMap.Connections[i];
-                
+
                 var canTravelToNext = playerCoordinateIndex == connection.x;
                 var drawDottedLine = !canTravelToNext;
 
@@ -344,7 +349,7 @@ namespace StarSalvager.UI
                     drawDottedLine = false;
                 }
                 //Hide all the lines that weren't traversed behind the players coordinate
-                else if (endConnectionCoordinate.x <= playerCoordinate.x || 
+                else if (endConnectionCoordinate.x <= playerCoordinate.x ||
                          //Hide any lines emanating from nodes adjacent to the player that are impossible to traverse from
                          (startConnectionCoordinate.x == playerCoordinate.x && startConnectionCoordinate.y != playerCoordinate.y))
                 {
@@ -352,28 +357,28 @@ namespace StarSalvager.UI
                 }
 
                 DrawConnection(connection.x, connection.y, drawDottedLine, connectionColor);
-                
+
                 //If another iteration set this node to active, we don't want to cancel that out
                 if(_universeMapButtons[connection.y].IsButtonInteractable == false)
                     _universeMapButtons[connection.y].SetButtonInteractable(canTravelToNext);
             }
-            
+
             /*if (playerNodeLocation + 1 < _universeMapButtons.Length)
                 _universeMapButtons[playerNodeLocation + 1].SetButtonInteractable(true);*/
 
             //Check to see if the wreck is ahead of the player and can be interacted with
             //--------------------------------------------------------------------------------------------------------//
-                        
+
             var unlockedWreck = _universeMapButtons
                 .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
-            
+
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {
                 HintManager.TryShowHint(HINT.WRECK, ScreenFade.DEFAULT_TIME, unlockedWreck.transform);
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
         }
 
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine)
@@ -405,6 +410,46 @@ namespace StarSalvager.UI
             _connectionLines.Add(newLineImage);
         }
 
+        private void InitBackButton()
+        {
+            switch (SceneLoader.PreviousScene)
+            {
+                case SceneLoader.LEVEL:
+                    backButtonText.text = "Menu";
+                    break;
+                case SceneLoader.MAIN_MENU:
+                case SceneLoader.SCRAPYARD:
+                    backButtonText.text = "Back";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(SceneLoader.PreviousScene), SceneLoader.PreviousScene,
+                        null);
+            }
+        }
+        private void Back()
+        {
+            switch (SceneLoader.PreviousScene)
+            {
+                case SceneLoader.LEVEL:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.UNIVERSE_MAP, MUSIC.MAIN_MENU, true);
+                    });
+                    break;
+
+                case SceneLoader.MAIN_MENU:
+                case SceneLoader.SCRAPYARD:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.LoadPreviousScene();
+                    });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(SceneLoader.PreviousScene), SceneLoader.PreviousScene,
+                        null);
+            }
+        }
+
         //============================================================================================================//
 
         //TODO: ashulman, figure out if/why this works
@@ -421,7 +466,7 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         /*#region Ring Sums
-        
+
         private void CalculateRingSum()
         {
             _collectableBits = new Dictionary<BIT_TYPE, float>();
@@ -453,7 +498,7 @@ namespace StarSalvager.UI
                 Debug.Log($"[{collectable.Key}] = {collectable.Value}");
             }
         }
-        
+
         private void CalculateRingMax()
         {
             _collectableBits = new Dictionary<BIT_TYPE, float>();
@@ -626,17 +671,17 @@ namespace StarSalvager.UI
         {
             if (blockDatas.IsNullOrEmpty())
                 return null;
-            
+
             var outValue = new Dictionary<BIT_TYPE, int>();
             var remoteProfile = FactoryManager.Instance.BitsRemoteData;
-            
-            
+
+
             foreach (var bit in blockDatas)
             {
                 var bitType = (BIT_TYPE)bit.Type;
 
                 var remoteData = remoteProfile.GetRemoteData(bitType);
-                
+
                 if(!outValue.ContainsKey(bitType))
                     outValue.Add(bitType, 0);
 
