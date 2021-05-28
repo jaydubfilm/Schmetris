@@ -139,6 +139,7 @@ namespace StarSalvager.UI
                 }
 
             }*/
+            InitButtons();
             InitBackButton();
             DrawMap();
 
