@@ -20,7 +20,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -1021,9 +1021,20 @@ namespace StarSalvager.UI
                 throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
 
             const float RADIUS = 50;
+            Sprite sprite;
+            Transform targetTransform;
 
-            var sprite = bitEffectSprites[(int) bitType - 1];
-            var targetTransform = sliderTargets[(int) bitType - 1];
+            try
+            {
+               sprite = bitEffectSprites[(int) bitType - 1];
+               targetTransform = sliderTargets[(int) bitType - 1];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.LogError($"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
+                throw;
+            }
+
 
             var count = Random.Range(minCount, maxCount);
             var dividedAmount = amount / count;

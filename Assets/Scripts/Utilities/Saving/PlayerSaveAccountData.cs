@@ -238,6 +238,11 @@ namespace StarSalvager.Values
             var startCount = startLevel + 1; 
             for (var i = startCount; i <= newLevel; i++)
             {
+                var playerLevelData = FactoryManager.Instance.PlayerLevelsRemoteData.GetPlayerLevelRemoteData(i);
+
+                //If the player should be earning stars, ensure that they are granted
+                if (playerLevelData.givesStarPoint) AddStars(1);
+                
                 var unlocks = FactoryManager.Instance.PlayerLevelsRemoteData.GetUnlocksForLevel(i);
                 foreach (var unlockData in unlocks)
                 {

@@ -1146,6 +1146,7 @@ namespace StarSalvager
                     case BIT_TYPE.GREY:
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
 
                         //TODO This needs to bounce off instead of being destroyed
                         if (closestOnBot is EnemyAttachable /*||
@@ -3197,7 +3198,7 @@ _isShifting = true;
                 closestToCore,
                 orphans.ToArray(),
                 Globals.ComboMergeTime,
-                () =>
+                enumType =>
                 {
                     var position = closestToCore.transform.position;
                     var xpToAdd = Mathf.RoundToInt(comboData.points * xpMultiplier);
@@ -3231,7 +3232,7 @@ _isShifting = true;
                     }
                     else if (bit != null)
                     {
-                        var bitType = bit.Type;
+                        var bitType = (BIT_TYPE)enumType;
                         var bitLevel = bit.level;
                         switch (bit.level)
                         {
@@ -3833,7 +3834,7 @@ _isShifting = true;
             ICanCombo target,
             IReadOnlyList<OrphanMoveData> orphans,
             float seconds,
-            Action onFinishedCallback)
+            Action<int> onFinishedCallback)
         {
             target.IsBusy = true;
 
@@ -3949,6 +3950,15 @@ _isShifting = true;
             //Wrap up things now that everyone is in place
             //--------------------------------------------------------------------------------------------------------//
 
+            //Determine what type should be handled in the callback
+            int typeValue;
+            if (target is ICanCombo<Enum> iCanComboEnum)
+                typeValue = (int) (object) iCanComboEnum.Type;
+            else if (movingComboBlocks.FirstOrDefault() is Bit bitEnum)
+                typeValue = (int) bitEnum.Type;
+            else
+                throw new NotImplementedException();
+
             //Once all bits are moved, remove from list and dispose
             foreach (var canCombo in movingComboBlocks)
             {
@@ -3961,14 +3971,8 @@ _isShifting = true;
                         Recycler.Recycle<Bit>(bit);
 
                         break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
-
-                        break;
-                    case Crate crate:
-                        Recycler.Recycle<Crate>(crate);
-
-                        break;
+                   default:
+                       throw new ArgumentOutOfRangeException(nameof(canCombo), canCombo, null);
                 }
 
             }
@@ -3992,11 +3996,10 @@ _isShifting = true;
             CompositeCollider2D.GenerateGeometry();
             target.IsBusy = false;
 
-            onFinishedCallback?.Invoke();
+            onFinishedCallback?.Invoke(typeValue);
 
             //--------------------------------------------------------------------------------------------------------//
         }
-
 
         /// <summary>
         /// Moves a collection of AttachableBase 1 unit in the specified direction. Callback is triggered before the update

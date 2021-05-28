@@ -295,6 +295,8 @@ namespace StarSalvager
 
             FindObjectOfType<GameUI>();
             MagnetCount = 0;
+            
+            SetupGunRangeValues();
 
             //int value;
             foreach (var part in _parts)
@@ -412,7 +414,6 @@ namespace StarSalvager
                 _triggerPartTimers.Add(triggerPart, 0f);
             }
 
-            SetupGunRangeValues();
 
             if (!_turrets.IsNullOrEmpty())
             {
@@ -640,36 +641,28 @@ namespace StarSalvager
                 _healWaitTimer -= deltaTime;
                 return;
             }
-            
-            
+
+
             var repairTarget = bot;
 
             if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
             {
                 return;
             }
-            
+
 
             //--------------------------------------------------------------------------------------------------------//
-
-            var ammoCost = partRemoteData.ammoUseCost;
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = ammoCost * Time.deltaTime;
-            
-            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
-            
-            if (ammoResource.Ammo < cost)
+            if (!TryUseAmmo(part, partRemoteData, deltaTime))
                 return;
-            
-            ammoResource.SubtractAmmo(cost);
-            
+
             var heal = healAmount * deltaTime;
             repairTarget.ChangeHealth(heal);
-            
-            
+
+
 
             TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
@@ -745,19 +738,11 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var ammoCost = partRemoteData.ammoUseCost;
-
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            var cost = ammoCost * Time.deltaTime;
-            
-            var ammoResource = PlayerDataManager.GetResource(partRemoteData.category);
-            
-            if (ammoResource.Ammo < cost)
+            if (!TryUseAmmo(part, partRemoteData, deltaTime))
                 return;
-            
-            ammoResource.SubtractAmmo(cost);
             
             var heal = healAmount * deltaTime;
             repairTarget.ChangeHealth(heal);
@@ -996,6 +981,23 @@ namespace StarSalvager
 
         private void SetupGunRangeValues()
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            float GetProjectileRange(in Part part, in string projectileID)
+            {
+                var projectileData = ProjectileFactory.GetProfile(projectileID);
+
+                var range = projectileData.ProjectileRange;
+                var rangeBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
+
+                if (range == 0f) return 150 * Constants.gridCellSize;
+
+                return range * rangeBoost;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             _gunRanges = new Dictionary<Part, float>();
 
             foreach (var part in _parts)
@@ -1004,8 +1006,7 @@ namespace StarSalvager
                 if (/*part.Destroyed || */part.Disabled)
                     continue;
 
-                var partData = FactoryManager.Instance.GetFactory<PartAttachableFactory>()
-                    .GetRemoteData(part.Type);
+                var partData = part.Type.GetRemoteData();
 
                 switch (part.Type)
                 {
@@ -1024,8 +1025,7 @@ namespace StarSalvager
 
         private void CreateProjectile(in Part part, in PartRemoteData partRemoteData, in CollidableBase collidableTarget, params string[] collisionTags)
         {
-            var patches = part.Patches;
-            var rangeBoost = patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
+            var rangeBoost = part.Patches.GetPatchMultiplier(PATCH_TYPE.RANGE);
             
             
             var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
@@ -1115,20 +1115,6 @@ namespace StarSalvager
 
 
             return bulletPath;
-        }
-
-        private float GetProjectileRange(in Part part, in string projectileID)
-        {
-            var projectileData = ProjectileFactory.GetProfile(projectileID);
-
-            var range = projectileData.ProjectileRange;
-
-            if (range == 0f)
-                return 100 * Constants.gridCellSize;
-
-            //var rangeBoost = GetBoostValue(PART_TYPE.BOOSTRANGE, part);
-
-            return range;//* rangeBoost;
         }
 
         private static bool ShouldUseGunTurret(in PartRemoteData partRemoteData)
@@ -1308,7 +1294,7 @@ namespace StarSalvager
         
         private void TriggerGrenade(in Part part, in bool pressedState)
         {
-
+            var tempPart = part;
             //--------------------------------------------------------------------------------------------------------//
 
             void TriggerGrenadeLaunch()
@@ -1316,16 +1302,18 @@ namespace StarSalvager
                 var partRemoteData = PART_TYPE.GRENADE.GetRemoteData();
 
                 var botPosition = bot.transform.position;
-                var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
-                var damage = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Damage);
+
+                var explosionRadius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
                 var speed = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Speed);
+
+                TryGetPartProperty(PartProperties.KEYS.Damage, tempPart, partRemoteData, out var damage);
 
                 var grenade = FactoryManager.Instance.
                     GetFactory<ProjectileFactory>()
                     .CreateGrenadeProjectile(botPosition, Quaternion.identity);
                 
                 grenade.Init(botPosition,
-                    botPosition + (Vector3.up * _reticleDist),speed, damage, radius);
+                    botPosition + (Vector3.up * _reticleDist),speed, damage, explosionRadius);
 
                 _grenadeTriggered = true;
                 Destroy(_reticle.gameObject);
@@ -2074,6 +2062,13 @@ namespace StarSalvager
             return ammoCost <= currentAmmo;
         }
         
+        /// <summary>
+        /// Returns false if the player has insufficient ammunition to complete the use
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="partRemoteData"></param>
+        /// <param name="additional"></param>
+        /// <returns></returns>
         private bool TryUseAmmo(in Part part, in PartRemoteData partRemoteData, float additional = 1f)
         {
             if (!CanAffordAmmo(part, partRemoteData, out var ammoCost, additional))
@@ -2089,7 +2084,7 @@ namespace StarSalvager
 
         //====================================================================================================================//
 
-        private bool TryGetPartProperty(in PartProperties.KEYS key, in Part part, in PartRemoteData partRemoteData, out float value)
+        private static bool TryGetPartProperty(in PartProperties.KEYS key, in Part part, in PartRemoteData partRemoteData, out float value)
         {
             if (!partRemoteData.TryGetValue(key, out value))
                 return false;
@@ -2445,9 +2440,7 @@ namespace StarSalvager
                     return;
                 case PART_TYPE.GUN:
                 {
-                    var projectileId = partRemoteData.GetDataValue<string>(PartProperties.KEYS.Projectile);
-                    var range = FactoryManager.Instance.ProjectileProfile.GetProjectileProfileData(projectileId)
-                        .ProjectileRange;
+                    var range = _gunRanges[part];
 
                     var pointList = new List<Vector3>();
                     var degree = 360f / slices;
