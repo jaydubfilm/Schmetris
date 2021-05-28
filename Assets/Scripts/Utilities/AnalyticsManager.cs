@@ -163,8 +163,8 @@ namespace StarSalvager.Utilities
             var enemiesKilledThisRun = PlayerDataManager.GetEnemiesKilledThisRun().Sum(x => x.Value);
             var eventData = new Dictionary<string, object>
             {
-                {CURRENT_SECTOR, PlayerDataManager.GetSector()},
-                {CURRENT_WAVE, PlayerDataManager.GetWave()},
+                {CURRENT_SECTOR, PlayerDataManager.GetPlayerCoordinate().x},
+                {CURRENT_WAVE, PlayerDataManager.GetCurrentWave()},
                 
                 {XP_EARNED, PlayerDataManager.GetXPThisRun()},
                 {COMBOS_EARNED, combosThisRun},
@@ -248,7 +248,7 @@ namespace StarSalvager.Utilities
         {
             var eventData = new Dictionary<string, object>
             {
-                {CURRENT_SECTOR, PlayerDataManager.GetSector()},
+                {CURRENT_SECTOR, PlayerDataManager.GetPlayerCoordinate().x},
                 
                 {CURRENT_XP, PlayerDataManager.GetXP()},
                 {CURRENT_GEARS, PlayerDataManager.GetGears()},
