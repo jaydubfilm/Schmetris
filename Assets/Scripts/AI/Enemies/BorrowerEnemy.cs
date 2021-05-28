@@ -308,7 +308,7 @@ namespace StarSalvager.AI
                 //If the Borrower has stolen the last bit off of the bot, then to not harass the player, despawn
                 if (_stolenBits > 0 && !LevelManager.Instance.BotInLevel.AttachedBlocks.OfType<Bit>().Any())
                 {
-                    SetState(STATE.DEATH);
+                    DestroyEnemy();
                     return;
                 }
                 

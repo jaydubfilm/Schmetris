@@ -398,7 +398,7 @@ namespace StarSalvager.AI
             }
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
-            KillEnemy();
+            KilledEnemy();
         }
 
         //ICustomRotate functions
