@@ -135,7 +135,7 @@ namespace StarSalvager.AI
             _enemyMovementSpeed = Constants.gridCellSize / Globals.TimeForAsteroidToFallOneSquare;
 
             if (transform.position.y < -10)
-                SetState(STATE.DEATH);
+                DestroyEnemy();
         }
         
         protected virtual void ApplyFleeMotion()
@@ -354,7 +354,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            KillEnemy();
+            KilledEnemy();
         }
 
         protected void DropLoot()
@@ -371,7 +371,7 @@ namespace StarSalvager.AI
             }
         }
 
-        protected void KillEnemy(in STATE targetState = STATE.DEATH)
+        protected void KilledEnemy(in STATE targetState = STATE.DEATH)
         {
             DropLoot();
 
@@ -383,6 +383,17 @@ namespace StarSalvager.AI
             LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
+            SetState(targetState);
+        }
+
+        /// <summary>
+        /// Cleans the enemy from the Enemy Manager, without  recording this as a kill by the player
+        /// </summary>
+        /// <param name="targetState"></param>
+        protected void DestroyEnemy(in STATE targetState = STATE.DEATH)
+        {
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+
             SetState(targetState);
         }
 

@@ -43,6 +43,8 @@ namespace StarSalvager.ScriptableObjects
         //Other Functions
         //====================================================================================================================//
 
+        public PlayerLevelRemoteData GetPlayerLevelRemoteData(in int level) => playerLevelRemoteDatas[level];
+
         public IEnumerable<PlayerLevelRemoteData.UnlockData> GetUnlocksForLevel(in int level)
         {
             var unlockData =  new List<PlayerLevelRemoteData.UnlockData>(level >= playerLevelRemoteDatas.Count
@@ -129,6 +131,8 @@ namespace StarSalvager.ScriptableObjects
         
         public static int GetXPForLevel(in int level)
         {
+            if (level < 0) return 0;
+            
             var playerLevelRemoteDatas = FactoryManager.Instance.PlayerLevelsRemoteData.playerLevelRemoteDatas;
             
             return level >= playerLevelRemoteDatas.Count

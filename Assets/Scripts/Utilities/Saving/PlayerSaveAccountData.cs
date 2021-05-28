@@ -216,7 +216,7 @@ namespace StarSalvager.Values
             return XP - PlayerRunData.XPAtRunBeginning;
         }
 
-        public void AddXP(in int amount)
+        public void AddXP(in int amount, in bool updateValues = true)
         {
             var startXP = XP;
              var changedXP = startXP + amount;
@@ -238,6 +238,11 @@ namespace StarSalvager.Values
             var startCount = startLevel + 1; 
             for (var i = startCount; i <= newLevel; i++)
             {
+                var playerLevelData = FactoryManager.Instance.PlayerLevelsRemoteData.GetPlayerLevelRemoteData(i);
+
+                //If the player should be earning stars, ensure that they are granted
+                if (playerLevelData.givesStarPoint) AddStars(1);
+                
                 var unlocks = FactoryManager.Instance.PlayerLevelsRemoteData.GetUnlocksForLevel(i);
                 foreach (var unlockData in unlocks)
                 {
@@ -264,6 +269,7 @@ namespace StarSalvager.Values
             //var difference = newTotalLevels - totalLevels;
 
             //Do something to signify gaining a level
+            if(updateValues) PlayerDataManager.OnValuesChanged?.Invoke();
         }
 
         //XP Info Considerations: https://www.youtube.com/watch?v=MCPruAKSG0g
