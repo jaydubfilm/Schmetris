@@ -59,7 +59,7 @@ namespace StarSalvager.AI
                     CreateFreezeEffect(worldPosition, radius * 2);
                     //Do damage to relevant blocks
                     LevelManager.Instance.BotInLevel.TryAOEDamageFrom(worldPosition, radius, damage, true);
-                    SetState(STATE.DEATH);
+                    DestroyEnemy();
                     break;
                 case STATE.DEATH:
                     //Recycle ya boy
@@ -173,7 +173,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            KillEnemy(STATE.ATTACK);
+            KilledEnemy(STATE.ATTACK);
         }
 
         //====================================================================================================================//

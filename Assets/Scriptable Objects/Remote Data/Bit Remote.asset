@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BitRemoteData:
   - name: Bluesalt
-    refinedName: Water
+    categoryName: Defense System
     bitType: 1
     levels:
     - health: 10
@@ -28,7 +28,7 @@ MonoBehaviour:
     - health: 80
       resources: 810
   - name: Greenium
-    refinedName: Plasma
+    categoryName: 
     bitType: 2
     levels:
     - health: 10
@@ -42,7 +42,7 @@ MonoBehaviour:
     - health: 80
       resources: 810
   - name: Greyscale
-    refinedName: Scrap
+    categoryName: Main Weapon
     bitType: 3
     levels:
     - health: 10
@@ -56,7 +56,7 @@ MonoBehaviour:
     - health: 80
       resources: 810
   - name: Reddite
-    refinedName: Fuel
+    categoryName: Special Weapon
     bitType: 4
     levels:
     - health: 10
@@ -70,7 +70,7 @@ MonoBehaviour:
     - health: 80
       resources: 810
   - name: Yellectron
-    refinedName: Power
+    categoryName: Support Module
     bitType: 5
     levels:
     - health: 10
@@ -84,7 +84,7 @@ MonoBehaviour:
     - health: 80
       resources: 810
   - name: White
-    refinedName: Silver
+    categoryName: 
     bitType: 7
     levels:
     - health: 65

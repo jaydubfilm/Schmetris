@@ -6,6 +6,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -32,7 +33,7 @@ namespace StarSalvager.Values
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
         
-        public static int CurrentRingIndex = 0;
+        public static int CurrentRingIndex => PlayerDataManager.GetCurrentRing();
         public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
 
         public static int CurrentWave = 0;

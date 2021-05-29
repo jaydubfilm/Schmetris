@@ -96,7 +96,7 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 0
-  - isImplemented: 1
+  - isImplemented: 0
     partType: 2
     name: Repairer
     lockRotation: 0
