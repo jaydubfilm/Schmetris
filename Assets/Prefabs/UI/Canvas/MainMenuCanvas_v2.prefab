@@ -8835,7 +8835,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Wave Summary Title
+  m_text: Flight Log
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 93c1b68da25f8284584c3764c86eafc9, type: 2}
   m_sharedMaterial: {fileID: 9091516740914988671, guid: 93c1b68da25f8284584c3764c86eafc9,
@@ -8905,10 +8905,10 @@ MonoBehaviour:
   m_margin: {x: 30, y: 23.30127, z: 30, w: 8.931641}
   m_textInfo:
     textComponent: {fileID: 3801471584445263502}
-    characterCount: 18
+    characterCount: 10
     spriteCount: 0
-    spaceCount: 2
-    wordCount: 3
+    spaceCount: 1
+    wordCount: 2
     linkCount: 0
     lineCount: 1
     pageCount: 1
