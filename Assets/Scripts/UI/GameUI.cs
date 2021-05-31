@@ -10,6 +10,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -579,7 +580,7 @@ namespace StarSalvager.UI
 
         public void SetPlayerXP(in int xp)
         {
-            gearsText.text = $"{xp} XP";
+            gearsText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
         }
 
         public void SetPlayerComponents(in int points)
