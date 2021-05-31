@@ -1301,7 +1301,8 @@ namespace StarSalvager
         {
             destroyed = false;
 
-            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
+            //Don't want the player to get hurt if they've finished the level
+            if(!GameManager.IsState(GameState.LevelActive))
                 return false;
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
