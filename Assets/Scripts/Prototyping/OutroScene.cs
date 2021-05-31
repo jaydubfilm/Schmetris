@@ -119,7 +119,7 @@ namespace StarSalvager.Prototype
             
             LevelManager.Instance.GameUi.ShowWaveSummaryWindow(true,
                 "Game Over",
-                PlayerDataManager.GetRunSummaryString(),
+                string.Empty/*PlayerDataManager.GetRunSummaryString()*/,
                 () =>
                 {
                     Globals.CurrentWave = 0;

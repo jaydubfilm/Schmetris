@@ -56,7 +56,7 @@ public class WaveEndSummaryData
     {
         var outStringList = new List<string>
         {
-            $"{GetAsTitle("XP Gained")} {XPGained}",
+            $"{GetAsTitle($"{TMP_SpriteHelper.STARDUST_ICON} Gained")} {XPGained}",
         };
 
         if (NumTotalBonusShapesSpawned > 0)

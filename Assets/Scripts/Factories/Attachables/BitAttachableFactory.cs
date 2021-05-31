@@ -137,7 +137,7 @@ namespace StarSalvager.Factories
             //If there is an animation associated with this profile entry, create the animated version of the prefab
             if (profile.animation != null)
             {
-                if (!Recycler.TryGrab(out AnimatedBit anim))
+                if (!Recycler.TryGrab<AnimatedBit>(out AnimatedBit anim))
                 {
                     anim = CreateAnimatedObject<AnimatedBit>();
                 }
@@ -149,7 +149,7 @@ namespace StarSalvager.Factories
             }
             else
             {
-                if (!Recycler.TryGrab(out temp))
+                if (!Recycler.TryGrab<Bit>(out temp))
                 {
                     temp = CreateObject<Bit>();
                 }

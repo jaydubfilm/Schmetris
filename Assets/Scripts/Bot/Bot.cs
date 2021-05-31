@@ -36,6 +36,11 @@ namespace StarSalvager
     [RequireComponent(typeof(BotPartsLogic))]
     public class Bot : BotBase, ICustomRecycle, IRecycled, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
     {
+        //Structs
+        //====================================================================================================================//
+
+        #region Structs
+
         private readonly struct ShiftData
         {
             public readonly IAttachable Target;
@@ -57,6 +62,14 @@ namespace StarSalvager
                 ? DIRECTION.NULL
                 : (target.Coordinate - attachedTo.Coordinate).ToDirection();
         }
+
+        #endregion //Structs
+
+
+        //Properties
+        //====================================================================================================================//
+
+        #region Properties
 
         public static Action<Bot, string> OnBotDied;
 
@@ -184,6 +197,8 @@ namespace StarSalvager
         private bool isContinuousRotation;
 
         private float _dashCooldown;
+
+        #endregion //Properties
 
         //IHealth Test
         //====================================================================================================================//
@@ -365,6 +380,8 @@ namespace StarSalvager
                 direction = DIRECTION.NULL;
             }
 
+            distHorizontal = canMove ? distHorizontal : 0f;
+            
             //--------------------------------------------------------------------------------------------------------//
 
 
@@ -476,7 +493,28 @@ namespace StarSalvager
 
             if (_dashCooldown > 0f)
                 return;
+            
+            //Check to see if the player is able to dash in the intended Direction
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var currentPosition = transform.position;
+            bool canDash = true;
+            
+            if (direction < 0)
+            {
+                canDash = currentPosition.x > (Constants.gridCellSize * -Globals.GridSizeX) + distance;
+            }
+            else if (direction > 0)
+            {
+                canDash = currentPosition.x < (Constants.gridCellSize * Globals.GridSizeX) - distance;
+            }
+            
+            //TODO An alternative to consider is to set the dash distance to the remaining distance
+            if(canDash == false)
+                return;
 
+            //--------------------------------------------------------------------------------------------------------//
+            
             _isDashing = true;
             CanBeDamaged = false;
             SetColliderActive(false);
@@ -1301,7 +1339,8 @@ namespace StarSalvager
         {
             destroyed = false;
 
-            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
+            //Don't want the player to get hurt if they've finished the level
+            if(!GameManager.IsState(GameState.LevelActive))
                 return false;
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);

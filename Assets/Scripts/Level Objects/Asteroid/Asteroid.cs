@@ -184,14 +184,12 @@ namespace StarSalvager
 
                 return;
             }
-
-
-            var projectile = gameObject.GetComponent<Projectile>();
-
-            if (projectile != null)
+            
+            if (gameObject.GetComponent<Projectile>() is Projectile projectile)
             {
-
+                
             }
+
         }
 
         //Actor2DBase FunctionsB

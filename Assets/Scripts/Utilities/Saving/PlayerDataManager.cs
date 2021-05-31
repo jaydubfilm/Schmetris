@@ -341,7 +341,7 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         #region Gears
-
+        public static int GetGearsThisRun() =>HasRunData ? PlayerRunData.GearsEarned : 0;
         public static int GetGears() =>HasRunData ? PlayerRunData.Gears : 0;
         public static void SetGears(int value)
         {
@@ -371,7 +371,7 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Silver
-
+        public static int GetSilverThisRun() =>HasRunData ? PlayerRunData.SilverEarned : 0;
         public static int GetSilver() => PlayerRunData.Silver;
         public static void SetSilver(int value)
         {
