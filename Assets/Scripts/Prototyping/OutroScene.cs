@@ -72,6 +72,8 @@ namespace StarSalvager.Prototype
 
         private void SetupScene()
         {
+            //0: Mushroom Character
+            //1: Mechanic Character
             _dialogueLines = new List<(int, string)>
             {
                 (0, "Well, that wasn't an optimal outcome, was it?"),
@@ -130,6 +132,7 @@ namespace StarSalvager.Prototype
                     {
                         GameUI.Instance.SetDancersActive(false);
                         GameUI.Instance.FadeBackground(false, true);
+                        GameManager.SetCurrentGameState(GameState.AccountMenu);
                         SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.LEVEL, MUSIC.MAIN_MENU);
                     });
                     

@@ -83,6 +83,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
         [SerializeField, FoldoutGroup("Part Details Window")]
+        private Image partCategoryImage;
+        [SerializeField, FoldoutGroup("Part Details Window")]
+        private TMP_Text partCategoryText;
+        [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partUseTypeText;
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partDescriptionText;
@@ -574,6 +578,9 @@ namespace StarSalvager.UI.Scrapyard
             
             partImage.sprite = partProfile.Sprite;
             partImage.color = Globals.UsePartColors ? partRemote.category.GetColor() : Color.white;
+            
+            partCategoryImage.color = partRemote.category.GetColor();
+            partCategoryText.text = partRemote.category.GetCategoryName();
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

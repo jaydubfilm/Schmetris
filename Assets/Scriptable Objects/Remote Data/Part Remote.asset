@@ -96,7 +96,7 @@ MonoBehaviour:
     category: 0
     ammoUseCost: 0
     PatchSockets: 0
-  - isImplemented: 1
+  - isImplemented: 0
     partType: 2
     name: Repairer
     lockRotation: 0
@@ -127,8 +127,8 @@ MonoBehaviour:
     partType: 4
     name: Gun
     lockRotation: 0
-    description: This basic offensive weapon will fire on any enemy within range
-      and consumes scrap metal ammunition.  Aim leaves something to be desired.
+    description: This basic offensive weapon will fire on any enemy within range. 
+      Aim leaves something to be desired.
     dataTest:
     - key: Damage
       value: 5
@@ -279,7 +279,7 @@ MonoBehaviour:
     partType: 35
     name: Wild Card
     lockRotation: 0
-    description: Forms combos with two other resource bits of any colour or level.
+    description: Forms combos with two other bits of any colour.
     dataTest: []
     isManual: 0
     category: 5
@@ -403,7 +403,7 @@ MonoBehaviour:
     partType: 42
     name: Sabre
     lockRotation: 1
-    description: A short-range melee weapon.  Gets longer when you rotate!
+    description: A short-range melee weapon.  Extends when you spin!
     dataTest:
     - key: Cooldown
       value: 0.5
@@ -423,7 +423,8 @@ MonoBehaviour:
     partType: 43
     name: Blitz
     lockRotation: 0
-    description: 
+    description: Sends a volley of projectiles in every direction.  Good for dealing
+      with insectoid swarms.
     dataTest:
     - key: Cooldown
       value: 1
@@ -439,7 +440,8 @@ MonoBehaviour:
     partType: 44
     name: Force Field
     lockRotation: 0
-    description: 
+    description: A directional shield which absorbs a certain amount of damage. 
+      It recharges automatically.
     dataTest:
     - key: Health
       value: 40

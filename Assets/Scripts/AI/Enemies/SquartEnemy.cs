@@ -245,7 +245,7 @@ namespace StarSalvager.AI
                 return;
             
             //TODO When no longer visible, recycle this
-            SetState(STATE.DEATH);
+            DestroyEnemy();
         }
 
         #endregion //States
