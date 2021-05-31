@@ -420,6 +420,9 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.RightClick, RightClick
                 },
                 {
+                    Input.Actions.Default.SelfDestruct, SelfDestruct
+                },
+                {
                     Input.Actions.Default.SpeedChange, SpeedChange
                 },
                 {
@@ -549,6 +552,19 @@ namespace StarSalvager.Utilities.Inputs
             //FIXME Need to ensure that I map appropriate inputs to associated bots
             _bots[0].BotPartsLogic.TryTriggerPart(index);
         }*/
+
+        //====================================================================================================================//
+        
+        private void SelfDestruct(InputAction.CallbackContext ctx)
+        {
+            if (Console.Open)
+                return;
+
+            if (ctx.ReadValue<float>() != 1f)
+                return;
+
+            GameUI.Instance?.AbortPressed();
+        }
 
         //Movement
         //============================================================================================================//

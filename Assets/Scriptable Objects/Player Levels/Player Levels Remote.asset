@@ -36,17 +36,7 @@ MonoBehaviour:
     overrideXPRequired: 0
     xpRequired: 138
     givesStarPoint: 1
-    unlockData:
-    - levelIndex: 1
-      Unlock: 0
-      PartType: 2
-      PatchType: 0
-      Level: 0
-    - levelIndex: 1
-      Unlock: 0
-      PartType: 3
-      PatchType: 0
-      Level: 0
+    unlockData: []
   - level: 2
     overrideXPRequired: 0
     xpRequired: 554
@@ -57,11 +47,6 @@ MonoBehaviour:
       PartType: 35
       PatchType: 0
       Level: 0
-    - levelIndex: 2
-      Unlock: 1
-      PartType: 0
-      PatchType: 1
-      Level: 2
   - level: 3
     overrideXPRequired: 0
     xpRequired: 1246
@@ -71,7 +56,12 @@ MonoBehaviour:
     overrideXPRequired: 0
     xpRequired: 2215
     givesStarPoint: 1
-    unlockData: []
+    unlockData:
+    - levelIndex: 4
+      Unlock: 1
+      PartType: 0
+      PatchType: 1
+      Level: 2
   - level: 5
     overrideXPRequired: 0
     xpRequired: 3460
@@ -81,7 +71,12 @@ MonoBehaviour:
     overrideXPRequired: 0
     xpRequired: 4983
     givesStarPoint: 1
-    unlockData: []
+    unlockData:
+    - levelIndex: 6
+      Unlock: 0
+      PartType: 0
+      PatchType: 0
+      Level: 0
   - level: 7
     overrideXPRequired: 0
     xpRequired: 6782
@@ -203,12 +198,15 @@ MonoBehaviour:
     givesStarPoint: 1
     unlockData: []
   test:
-  - level: 1
-    parts: 'Parts: REPAIR, ARMOR'
-    patches: 'Patches: '
   - level: 2
     parts: 'Parts: WILDCARD'
+    patches: 'Patches: '
+  - level: 4
+    parts: 'Parts: '
     patches: 'Patches: POWER III'
+  - level: 6
+    parts: 'Parts: CORE'
+    patches: 'Patches: '
   levelCurve:
     serializedVersion: 2
     m_Curve:
