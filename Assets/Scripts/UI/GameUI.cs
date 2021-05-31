@@ -900,15 +900,10 @@ namespace StarSalvager.UI
 
         #region Patch Point Effects
 
-        [Button, DisableInEditorMode]
-        public void CreatePatchPointEffect()
-        {
-            CreatePatchPointEffect(effectCount);
-        }
-
         public void CreatePatchPointEffect(int count)
         {
-            if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
+            throw new NotImplementedException();
+            /*if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
@@ -932,7 +927,7 @@ namespace StarSalvager.UI
             /*if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
             {
                 HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
-            }*/
+            }#1#*/
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition, Sprite sprite, int count)

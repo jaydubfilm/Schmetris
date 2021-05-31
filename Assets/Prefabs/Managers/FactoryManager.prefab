@@ -50,7 +50,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 12a369d52e25b734e8a15bf1940609f0, type: 2}
   - {fileID: 11400000, guid: 2b59d33b3dfbb354380e9c5d656b1dcb, type: 2}
   currentModularDataIndex: 0
-  PatchSprite: {fileID: 21300000, guid: d5ed54d971d3f194185f37ab03cbe924, type: 3}
+  stardustSprite: {fileID: 21300000, guid: 7d5be969526e02e458cc52b872cb6024, type: 3}
+  silverSprite: {fileID: 21300000, guid: c013c2f9b417872428b7527f1925a3b3, type: 3}
+  gearsSprite: {fileID: -2232892330106914469, guid: 7dc358839dd853e4e94558a968dd764a,
+    type: 3}
   damageProfile: {fileID: 11400000, guid: 8f00112f389b3174ca721c8e026b8afe, type: 2}
   bitProfile: {fileID: 11400000, guid: 513850fd94d0c094fa60700409924873, type: 2}
   bitRemoteData: {fileID: 11400000, guid: 284ddcd54ebc2154ab2a6da6644407e6, type: 2}
