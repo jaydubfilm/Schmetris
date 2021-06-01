@@ -87,6 +87,7 @@ namespace StarSalvager.UI.PersistentUpgrades
             }
             
             //--------------------------------------------------------------------------------------------------------//
+            
             if (_uiElementContainers.IsNullOrEmpty())
                 _uiElementContainers = new Dictionary<UPGRADE_TYPE, RectTransform>();
             
