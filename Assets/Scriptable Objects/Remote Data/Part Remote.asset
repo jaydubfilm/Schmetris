@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f0b61dbe4de28a41a174085ffc4416e, type: 3}
   m_Name: Part Remote
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   starterGreen: 0
   starterBlue: 1
   starterYellow: 1
@@ -90,7 +90,7 @@ MonoBehaviour:
     partType: 1
     name: Empty Part
     lockRotation: 0
-    description: 
+    description:
     dataTest: []
     isManual: 0
     category: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
     partType: 4
     name: Gun
     lockRotation: 0
-    description: This basic offensive weapon will fire on any enemy within range. 
+    description: This basic offensive weapon will fire on any enemy within range.
       Aim leaves something to be desired.
     dataTest:
     - key: Damage
@@ -267,7 +267,7 @@ MonoBehaviour:
     partType: 34
     name: Upgrader
     lockRotation: 0
-    description: 
+    description:
     dataTest:
     - key: Cooldown
       value: 15
@@ -317,7 +317,7 @@ MonoBehaviour:
     partType: 39
     name: Heal
     lockRotation: 0
-    description: 
+    description:
     dataTest:
     - key: Cooldown
       value: 15
@@ -333,7 +333,7 @@ MonoBehaviour:
     partType: 40
     name: Regen
     lockRotation: 0
-    description: 
+    description:
     dataTest:
     - key: Heal
       value: 3
@@ -423,7 +423,7 @@ MonoBehaviour:
     partType: 43
     name: Blitz
     lockRotation: 0
-    description: Sends a volley of projectiles in every direction.  Good for dealing
+    description: Sends a volley of projectiles in every direction. Good for dealing
       with insectoid swarms.
     dataTest:
     - key: Cooldown
@@ -440,8 +440,8 @@ MonoBehaviour:
     partType: 44
     name: Force Field
     lockRotation: 0
-    description: A directional shield which absorbs a certain amount of damage. 
-      It recharges automatically.
+    description: A directional shield which absorbs a certain amount of damage. It
+      recharges automatically.
     dataTest:
     - key: Health
       value: 40

@@ -159,7 +159,7 @@ namespace StarSalvager.AI
                 return;
             
             if (!(hit.transform.GetComponent<BotBase>() is BotBase))
-                throw new Exception();
+                throw new ArgumentException($"Expected {nameof(BotBase)} on object {hit.transform.gameObject.name}");
 
             SetState(STATE.ATTACK);
         }
@@ -183,7 +183,7 @@ namespace StarSalvager.AI
                 return;
 
             if (!(hit.transform.GetComponent<BotBase>() is BotBase botBase))
-                throw new Exception();
+                throw new ArgumentException($"Expected {nameof(BotBase)} on object {hit.transform.gameObject.name}");
             
             switch (botBase)
             {

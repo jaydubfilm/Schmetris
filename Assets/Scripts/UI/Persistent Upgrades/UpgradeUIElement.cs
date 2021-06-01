@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.PersistentUpgrades
 {
-    [RequireComponent(typeof(Button))]
+    //[RequireComponent(typeof(Button))]
     public class UpgradeUIElement : ButtonReturnUIElement<UpgradeData>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField, Required]
@@ -20,8 +20,27 @@ namespace StarSalvager.UI.PersistentUpgrades
         private Image buttonImage;
         [SerializeField, Required]
         private TMP_Text buttonText;
+        
+        [SerializeField, Required]
+        private Image glowImage;
 
         private Action<UpgradeData, RectTransform> _onHover;
+
+        //Unity Functions
+        //====================================================================================================================//
+
+        private void OnEnable()
+        {
+            PlayerDataManager.OnValuesChanged += TryUpdate;
+        }
+
+        private void OnDisable()
+        {
+            PlayerDataManager.OnValuesChanged -= TryUpdate;
+        }
+
+        //====================================================================================================================//
+        
 
         public void Init(UpgradeData data, Action<UpgradeData> OnPressed, Action<UpgradeData, RectTransform> OnHover)
         {
@@ -46,30 +65,54 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         public void TryUpdate()
         {
-            float GetCost()
+            //--------------------------------------------------------------------------------------------------------//
+            
+            bool IsUnlocked()
             {
-                return FactoryManager.Instance.PersistentUpgrades.GetRemoteData(data.Type, data.BitType).Levels[data.Level].cost;
+                var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
+
+                return data.Level <= currentLevel + 1;
             }
+            bool HasPurchased()
+            {
+                var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
 
+                return data.Level <= currentLevel;
+            }
+            
+            int GetCost() => FactoryManager.Instance.PersistentUpgrades.GetRemoteData(data.Type, data.BitType).Levels[data.Level].cost;
+            
+            bool CanAfford(in int stars) => PlayerDataManager.GetStars() >= stars;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var cost = GetCost();
             var hasPurchased = HasPurchased();
-            buttonText.text = hasPurchased ? string.Empty : $"{GetCost()}{TMP_SpriteHelper.STAR_ICON}";
-            button.interactable = IsUnlocked() && !hasPurchased;
+            var isUnlocked = IsUnlocked();
+            var canAfford = CanAfford(cost);
+
+            var interactable = isUnlocked && !hasPurchased && canAfford;
+            
+            
+            if (hasPurchased)
+            {
+                button.interactable = true;
+                button.enabled = false;
+                buttonText.text = string.Empty;
+                glowImage.gameObject.SetActive(false);
+
+                return;
+            }
+            
+            button.interactable = interactable;
+            buttonText.text = $"{cost}{TMP_SpriteHelper.STAR_ICON}";
+
+            glowImage.gameObject.SetActive(interactable);
         }
 
-        private bool IsUnlocked()
-        {
-            var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
-
-            return data.Level <= currentLevel + 1;
-        }
+        //Pointer Events
+        //====================================================================================================================//
         
-        private bool HasPurchased()
-        {
-            var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
-
-            return data.Level <= currentLevel;
-        }
-
         public void OnPointerEnter(PointerEventData eventData)
         {
             _onHover?.Invoke(data, transform);
@@ -79,5 +122,8 @@ namespace StarSalvager.UI.PersistentUpgrades
         {
             _onHover?.Invoke(new UpgradeData(), null);
         }
+
+        //====================================================================================================================//
+        
     }
 }
