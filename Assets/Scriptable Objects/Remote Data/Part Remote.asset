@@ -423,8 +423,8 @@ MonoBehaviour:
     partType: 43
     name: Blitz
     lockRotation: 0
-    description: "Sends a volley of projectiles in every direction.  Good for dealing\r
-      with insectoid swarms."
+    description: Sends a volley of projectiles in every direction. Good for dealing
+      with insectoid swarms.
     dataTest:
     - key: Cooldown
       value: 1
@@ -440,8 +440,8 @@ MonoBehaviour:
     partType: 44
     name: Force Field
     lockRotation: 0
-    description: "A directional shield which absorbs a certain amount of damage.
-      \rIt recharges automatically."
+    description: A directional shield which absorbs a certain amount of damage. It
+      recharges automatically.
     dataTest:
     - key: Health
       value: 40

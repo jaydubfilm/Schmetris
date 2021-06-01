@@ -58,7 +58,7 @@ namespace StarSalvager.UI
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
                 backgroundImage.gameObject.SetActive(isTrigger);
-                triggerInputImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 if (!isTrigger)
                     return;
@@ -146,6 +146,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
+        
+        private static int[] _gameUIBitIndices;
 
         #region Properties
 
@@ -399,6 +401,15 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            _gameUIBitIndices = new int[5];
+            var bitList = Constants.BIT_ORDER.ToList();
+            for (var i = 1; i <= 5; i++)
+            {
+                var bitType = (BIT_TYPE) i;
+                var index = bitList.FindIndex(x => x == bitType);
+                _gameUIBitIndices[i - 1] = index;
+            }
+            
             SetupAmmoSliders();
 
             //InitSmartWeaponUI();
@@ -707,13 +718,31 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = partType.GetSprite();
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
+
             SliderPartUis[index].SetSprite(sprite);
             
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
 
-        public void SetFill(int index, float fillValue)
+        public void SetFill(in BIT_TYPE bitType, in float fillValue)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                case BIT_TYPE.GREEN:
+                case BIT_TYPE.GREY:
+                case BIT_TYPE.RED:
+                case BIT_TYPE.YELLOW:
+                    SetFill(_gameUIBitIndices[(int) bitType - 1], fillValue);
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        private void SetFill(in int index, in float fillValue)
         {
             if (index < 0) return;
             SliderPartUis[index].SetFill(fillValue);
