@@ -16,7 +16,8 @@ namespace StarSalvager.Utilities.Enemies
         private Enemy _enemy;
         private Collider2D _ignoredCollider;
 
-        private new Transform transform;
+        private new Transform transform => _transform ? _transform : _transform = gameObject.transform;
+        private Transform _transform;
 
         private bool _ready;
 
@@ -27,12 +28,6 @@ namespace StarSalvager.Utilities.Enemies
             collider.enabled = false;
         }
 
-        // Start is called before the first frame update
-        private void Start()
-        {
-            transform = gameObject.transform;
-        }
-        
         private void Update()
         {
             //Sometimes enemies are destroyed, and not recycled, throwing a null reference.
@@ -46,7 +41,7 @@ namespace StarSalvager.Utilities.Enemies
             
             if (!_ready)
                 return;
-            
+
             transform.position = _enemy.transform.position;
         }
 
