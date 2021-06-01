@@ -244,9 +244,6 @@ namespace StarSalvager
                     case JunkBit junkBit:
                         Recycler.Recycle<JunkBit>(junkBit);
                         break;
-                    case Mine mine:
-                        Recycler.Recycle<Mine>(mine);
-                        break;
                     case BlackHole blackHole:
                         Recycler.Recycle<BlackHole>(blackHole);
                         break;

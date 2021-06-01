@@ -105,14 +105,13 @@ namespace StarSalvager.Utilities.Enemies
         {
             _ready = false;
             _enemy = null;
+            
             collider.enabled = false;
 
             
-            if (_ignoredCollider is null)
-                return;
+            if (_ignoredCollider == null) return;
 
             Physics2D.IgnoreCollision(collider, _ignoredCollider, false);
-            _ignoredCollider = null;
         }
 
         

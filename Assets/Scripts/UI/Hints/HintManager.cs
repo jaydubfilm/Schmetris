@@ -236,6 +236,15 @@ namespace StarSalvager.UI.Hints
                 
                 //These should just be ambient hints, with no explicit highlight
                 case HINT.MAP:
+                    objectsToHighlight = new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.right * Globals.GridSizeX,
+                            size = Vector3.zero
+                        }
+                    };
+                    break;
                 case HINT.STAR:
                     objectsToHighlight = new object[]
                     {
