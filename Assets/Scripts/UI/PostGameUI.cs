@@ -88,6 +88,19 @@ namespace StarSalvager.UI
         {
             
             //--------------------------------------------------------------------------------------------------------//
+            void SetupCurrencyElement(in Sprite iconSprite, in int count)
+            {
+                var data = new XPData
+                {
+                    Sprite = iconSprite,
+                    Count = count,
+                    XpPerCount = 0
+                };
+                var currenciesXPElement = xpElementScrollview.AddElement(data);
+                currenciesXPElement.transform.SetSiblingIndex(0);
+                currenciesXPElement.Init(data);
+                currenciesXPElement.SetCount(count);
+            }
             
             float UpdateXP(in int addXp)
             {
@@ -151,26 +164,34 @@ namespace StarSalvager.UI
             
             //Based on the remaining XP assume (FOR NOW) that its from completing waves
             var waveXp = PlayerDataManager.GetXP() - currentXP;
-            
-            if(waveXp <= 0) yield break;
-            
-            var waveXPData = new XPData
+
+            if (waveXp > 0)
             {
-                Sprite = null,
-                Count = 1,
-                XpPerCount = waveXp
-            };
+                var waveXPData = new XPData
+                {
+                    Sprite = null,
+                    Count = 1,
+                    XpPerCount = waveXp
+                };
 
-            var waveXPElement = xpElementScrollview.AddElement(waveXPData);
-            waveXPElement.transform.SetSiblingIndex(0);
-            waveXPElement.Init(waveXPData);
-            waveXPElement.SetCountTextUnformatted("Completed Waves");
-            waveXPElement.SetXP(waveXp);
+                var waveXPElement = xpElementScrollview.AddElement(waveXPData);
+                waveXPElement.transform.SetSiblingIndex(0);
+                waveXPElement.Init(waveXPData);
+                waveXPElement.SetCountTextUnformatted("Completed Waves");
+                waveXPElement.SetXP(waveXp);
 
-            UpdateXP(waveXp);
-
-            //--------------------------------------------------------------------------------------------------------//
+                UpdateXP(waveXp);
+            }
             
+            //--------------------------------------------------------------------------------------------------------//
+
+            var factoryManager = FactoryManager.Instance;
+            yield return new WaitForSeconds(0.25f);
+            SetupCurrencyElement(factoryManager.gearsSprite, PlayerDataManager.GetGearsThisRun());
+            yield return new WaitForSeconds(0.25f);
+            SetupCurrencyElement(factoryManager.silverSprite, PlayerDataManager.GetSilverThisRun());
+            yield return new WaitForSeconds(0.25f);
+            SetupCurrencyElement(factoryManager.stardustSprite, PlayerDataManager.GetXPThisRun());
         }
 
         //====================================================================================================================//

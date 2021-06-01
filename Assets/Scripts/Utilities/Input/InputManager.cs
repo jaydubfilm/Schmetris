@@ -378,11 +378,6 @@ namespace StarSalvager.Utilities.Inputs
         {
             var actionMap = playerInput.currentActionMap.actions;
 
-            /*foreach (var action in actionMap)
-            {
-                Debug.Log(action.name);
-            }*/
-
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
@@ -401,18 +396,6 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.TriggerPart, TriggerPart
                 },
-                /*{
-                    Input.Actions.Default.SmartAction1, SmartAction1
-                },
-                {
-                    Input.Actions.Default.SmartAction2, SmartAction2
-                },
-                {
-                    Input.Actions.Default.SmartAction3, SmartAction3
-                },
-                {
-                    Input.Actions.Default.SmartAction4, SmartAction4
-                },*/
                 {
                     Input.Actions.Default.LeftClick, LeftClick
                 },
@@ -426,57 +409,16 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Dash, Dash
                 }
             };
-
-            /*//Here we setup the inputs dependent on the orientation
-            switch (Globals.Orientation)
-            {
-                case ORIENTATION.VERTICAL:
-                    _inputMap.Add(Input.Actions.Default.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Default.Rotate, RotateMovement);
-                    break;
-                case ORIENTATION.HORIZONTAL:
-                    _inputMap.Add(Input.Actions.Vertical.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Vertical.Rotate, RotateMovement);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }*/
         }
 
         //Smart Actions
         //====================================================================================================================//
-        /*public static readonly BIT_TYPE[] BIT_ORDER = 
-        {
-            BIT_TYPE.YELLOW,    /*Up#1#        
-            BIT_TYPE.GREY,      /*Down#1#    
-            BIT_TYPE.GREEN,     /*BR Window#1#    
-            BIT_TYPE.BLUE,      /*Left#1#    
-            BIT_TYPE.RED,       /*Right#1#
-        };*/
-
-        private void SmartAction1(InputAction.CallbackContext ctx)
-        {
-            //Up
-            //TriggerSmartWeapon(ctx, 0);
-        }
-        private void SmartAction2(InputAction.CallbackContext ctx)
-        {
-            //Down
-            //TriggerSmartWeapon(ctx, 1);
-        }
-        private void SmartAction3(InputAction.CallbackContext ctx)
-        {
-            //Left
-            //TriggerSmartWeapon(ctx, 3);
-        }
-        private void SmartAction4(InputAction.CallbackContext ctx)
-        {
-            //Right
-            //TriggerSmartWeapon(ctx, 4);
-        }
 
         private void TriggerPart(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             CheckForInputDeviceChange(ctx);
 
             var rawDirection = ctx.ReadValue<Vector2>();
@@ -519,36 +461,6 @@ namespace StarSalvager.Utilities.Inputs
             
             TriggerWeaponStateChange?.Invoke(index, state);
         }
-
-        /*private void TriggerSmartWeapon(in int index, in float input)
-        {
-            var isPressed = input == 1f;
-            
-            _triggersPressed[index] = input == 1f;
-        }
-
-        private void TryUpdateTriggers()
-        {
-            if (Console.Open)
-                return;
-
-            for (int i = 0; i < _triggersPressed.Length; i++)
-            {
-                if (_triggersPressed[i] == false)
-                    continue;
-
-                TriggerSmartWeapon(i);
-            }
-        }
-
-        public void TriggerSmartWeapon(int index)
-        {
-            if (Console.Open)
-                return;
-
-            //FIXME Need to ensure that I map appropriate inputs to associated bots
-            _bots[0].BotPartsLogic.TryTriggerPart(index);
-        }*/
 
         //====================================================================================================================//
 
@@ -998,7 +910,7 @@ namespace StarSalvager.Utilities.Inputs
 
             CheckForInputDeviceChange(ctx);
             
-            if (GameManager.IsState(GameState.LevelEndWave))
+            if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
                 return;
 
             if (ctx.ReadValue<float>() == 1f)

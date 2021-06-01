@@ -10,6 +10,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -58,7 +59,7 @@ namespace StarSalvager.UI
                     return;
 
                 backgroundImage.gameObject.SetActive(isTrigger);
-                triggerInputImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 if (!isTrigger)
                     return;
@@ -154,6 +155,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
+        
+        private static int[] _gameUIBitIndices;
 
         #region Properties
 
@@ -431,6 +434,15 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            _gameUIBitIndices = new int[5];
+            var bitList = Constants.BIT_ORDER.ToList();
+            for (var i = 1; i <= 5; i++)
+            {
+                var bitType = (BIT_TYPE) i;
+                var index = bitList.FindIndex(x => x == bitType);
+                _gameUIBitIndices[i - 1] = index;
+            }
+            
             SetupAmmoSliders();
 
             //InitSmartWeaponUI();
@@ -564,7 +576,7 @@ namespace StarSalvager.UI
 
         public void SetPlayerXP(in int xp)
         {
-            gearsText.text = $"{xp} XP";
+            gearsText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
         }
 
         public void SetPlayerComponents(in int points)
@@ -693,13 +705,31 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = partType.GetSprite();
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
+
             SliderPartUis[index].SetSprite(sprite);
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
 
-        public void SetFill(int index, float fillValue)
+        public void SetFill(in BIT_TYPE bitType, in float fillValue)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                case BIT_TYPE.GREEN:
+                case BIT_TYPE.GREY:
+                case BIT_TYPE.RED:
+                case BIT_TYPE.YELLOW:
+                    SetFill(_gameUIBitIndices[(int) bitType - 1], fillValue);
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        private void SetFill(in int index, in float fillValue)
         {
             if (index < 0) return;
             SliderPartUis[index].SetFill(fillValue);
@@ -886,15 +916,10 @@ namespace StarSalvager.UI
 
         #region Patch Point Effects
 
-        [Button, DisableInEditorMode]
-        public void CreatePatchPointEffect()
-        {
-            CreatePatchPointEffect(effectCount);
-        }
-
         public void CreatePatchPointEffect(int count)
         {
-            if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
+            throw new NotImplementedException();
+            /*if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
@@ -918,7 +943,7 @@ namespace StarSalvager.UI
             /*if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
             {
                 HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
-            }*/
+            }#1#*/
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition, Sprite sprite, int count)

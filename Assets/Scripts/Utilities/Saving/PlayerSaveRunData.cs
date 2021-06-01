@@ -69,6 +69,15 @@ namespace StarSalvager.Utilities.Saving
         //public int RationCapacity = 500;
 
         [JsonIgnore]
+        public int GearsEarned => _gearsEarned;
+        [JsonProperty]
+        private int _gearsEarned;
+        [JsonIgnore]
+        public int SilverEarned => _silverEarned;
+        [JsonProperty]
+        private int _silverEarned;
+
+        [JsonIgnore]
         public int Gears => _gears;
 
         [JsonProperty] private int _gears;
@@ -292,7 +301,10 @@ namespace StarSalvager.Utilities.Saving
 
         public void AddGears(int amount)
         {
-            _gears += Mathf.Abs(amount);
+            var abs = Mathf.Abs(amount);
+            _gears += abs;
+
+            _gearsEarned += abs;
         }
 
         public void SubtractGears(int amount)
@@ -314,7 +326,9 @@ namespace StarSalvager.Utilities.Saving
 
         public void AddSilver(int amount)
         {
-            _silver += Mathf.Abs(amount);
+            var abs = Mathf.Abs(amount);
+            _silver += abs;
+            _silverEarned += abs;
         }
 
         public void SubtractSilver(int amount)
