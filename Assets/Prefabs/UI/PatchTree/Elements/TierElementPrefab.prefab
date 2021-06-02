@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7629762910942096578}
   - component: {fileID: 2994626331338312408}
   m_Layer: 5
-  m_Name: TierPrefab
+  m_Name: TierElementPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,7 +54,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4772728505527029395}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

@@ -52,7 +52,7 @@ namespace StarSalvager.Factories.Data
         [FoldoutGroup("$title")] public int PatchSockets = 2;
 
         public bool HasPatchTree => !string.IsNullOrEmpty(patchTreeData);
-        [FoldoutGroup("$title"), HideInInspector] 
+        [FoldoutGroup("$title"), ReadOnly] 
         public string patchTreeData;
 
 

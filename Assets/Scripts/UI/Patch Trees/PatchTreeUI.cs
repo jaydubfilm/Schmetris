@@ -1,11 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.PatchTrees.Data;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace StarSalvager.UI.Scrapyard.PatchTrees
 {
@@ -24,17 +27,22 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         private RectTransform[] _activeTiers;
         private RectTransform[] _activeElements;
+        private RectTransform[] _activeElementLinks;
+        private RectTransform _lineContainer;
 
         //====================================================================================================================//
 
         [Button, DisableInEditorMode]
         private void TestGunPatchTree()
         {
-            GeneratePatchTree(PART_TYPE.GUN);
+            //GeneratePatchTree(PART_TYPE.GUN);
+            StartCoroutine(GeneratePatchTreeCoroutine(PART_TYPE.GUN));
         }
         
-        private void GeneratePatchTree(in PART_TYPE partType)
+        private IEnumerator GeneratePatchTreeCoroutine(PART_TYPE partType)
         {
+            yield return new WaitForSeconds(1f);
+            
             //Instantiate Functions
             //--------------------------------------------------------------------------------------------------------//
             
@@ -52,6 +60,23 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 //TODO Fill with patchData
                 
                 return (RectTransform) temp;
+            }
+
+            RectTransform CreateUILine(in RectTransform startTransform, in RectTransform endTransform)
+            {
+                if (_lineContainer == null)
+                {
+                    var temp = new GameObject("Line Container");
+                    var layoutElement = temp.gameObject.AddComponent<LayoutElement>();
+                    layoutElement.ignoreLayout = true;
+
+                    _lineContainer = (RectTransform)temp.transform;
+                    _lineContainer.SetParent(patchTreeTierContainer, false);
+                    _lineContainer.SetSiblingIndex(0);
+                }
+
+                var image = UILineCreator.DrawConnection(_lineContainer, startTransform, endTransform, Color.white);
+                return image.transform as RectTransform;
             }
             
             //--------------------------------------------------------------------------------------------------------//
@@ -84,7 +109,47 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 
             }
 
-            //TODO Connect Elements
+            //--------------------------------------------------------------------------------------------------------//
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(patchTreeTierContainer);
+            
+            //Wait one frame while elements reposition before drawing the lines
+            yield return null;
+            
+            //Lines
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var activeLinks = new List<RectTransform>();
+            //Connect Elements
+            for (var i = 0; i < patchTreeData.Count; i++)
+            {
+                var endIndex = i + 1;
+                var endElement = _activeElements[endIndex];
+
+                //var patchNode = patchTreeData[i];
+                var links = patchTreeData[i].PreReqs;
+
+                if (links.IsNullOrEmpty())
+                {
+                    //Create a line between this node and the part
+                    activeLinks.Add(CreateUILine(_activeElements[0], endElement));
+                    continue;
+                }
+
+                for (var j = 0; j < links.Length; j++)
+                {
+                    var startIndex = links[j] + 1;
+                    var startElement = _activeElements[startIndex];
+
+                    activeLinks.Add(CreateUILine(startElement, endElement));
+                }
+                
+            }
+
+            _activeElementLinks = activeLinks.ToArray();
+
+            //--------------------------------------------------------------------------------------------------------//
+            
         }
 
         private void CleanPatchTree()

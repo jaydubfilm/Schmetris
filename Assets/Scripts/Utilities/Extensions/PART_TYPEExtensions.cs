@@ -12,7 +12,8 @@ namespace StarSalvager.Utilities.Extensions
     {
         public static List<PatchNodeJson> GetPatchTree(this PART_TYPE partType)
         {
-            return JsonConvert.DeserializeObject<List<PatchNodeJson>>(partType.GetRemoteData().patchTreeData);
+            var rawData = partType.GetRemoteData().patchTreeData;
+            return JsonConvert.DeserializeObject<List<PatchNodeJson>>(rawData);
         }
         public static BIT_TYPE GetCategory(this PART_TYPE partType) => partType.GetRemoteData().category;
         

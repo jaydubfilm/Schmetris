@@ -382,12 +382,26 @@ namespace StarSalvager.UI
 
         }
 
-        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine)
+        private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, Color color)
         {
-            DrawConnection(connectionStart, connectionEnd, dottedLine, Color.white);
+            //DrawConnection(connectionStart, connectionEnd, dottedLine, Color.white);
+
+            if (dottedLine)
+                UILineCreator.DrawConnection(m_scrollRectArea.transform,
+                    _universeMapButtons[connectionStart].transform,
+                    _universeMapButtons[connectionEnd].transform,
+                    dottedLineImagePrefab,
+                    color);
+            else
+            {
+                UILineCreator.DrawConnection(m_scrollRectArea.transform,
+                    _universeMapButtons[connectionStart].transform,
+                    _universeMapButtons[connectionEnd].transform,
+                    color);
+            }
         }
 
-        private void DrawConnection(in int connectionStart, in int connectionEnd, in bool dottedLine, in Color color)
+        /*private void DrawConnection(in int connectionStart, in int connectionEnd, in bool dottedLine, in Color color)
         {
             var startPosition = _universeMapButtons[connectionStart].transform.position;
             var endPosition = _universeMapButtons[connectionEnd].transform.position;
@@ -409,7 +423,7 @@ namespace StarSalvager.UI
             newLineTransform.right = (startPosition - endPosition).normalized;
 
             _connectionLines.Add(newLineImage);
-        }
+        }*/
 
         private void InitBackButton()
         {
