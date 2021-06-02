@@ -426,7 +426,7 @@ namespace StarSalvager.UI
                 case HINT.HEALTH:
                     return new object[]
                     {
-                        botHealthBarImage.transform as RectTransform,
+                        botHealthBarSliderImage.transform as RectTransform,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
