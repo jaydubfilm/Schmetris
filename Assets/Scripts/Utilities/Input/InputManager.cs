@@ -193,16 +193,11 @@ namespace StarSalvager.Utilities.Inputs
             {
                 case ACTION_MAP.DEFAULT:
 
-
-                    Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
+                    Input.Actions.Default.Enable();
                     break;
                 case ACTION_MAP.MENU:
-                    if(Instance)
-                    {
-                        Instance.ProcessMovementInput(0);
-                        Instance.ProcessRotateInput(0);
-                    }
+                    if (Instance) Instance.OnPause();
 
                     Input.Actions.Default.Disable();
                     Input.Actions.MenuControls.Enable();
@@ -249,9 +244,8 @@ namespace StarSalvager.Utilities.Inputs
             {
                 case ACTION_MAP.DEFAULT:
 
-
-                    Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
+                    Input.Actions.Default.Enable();
                     break;
                 case ACTION_MAP.MENU:
                     if(Instance)
@@ -376,7 +370,7 @@ namespace StarSalvager.Utilities.Inputs
         
         private void SetupInputs()
         {
-            var actionMap = playerInput.currentActionMap.actions;
+            //var actionMap = playerInput.currentActionMap.actions;
 
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
