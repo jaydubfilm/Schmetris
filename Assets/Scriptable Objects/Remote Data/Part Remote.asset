@@ -127,8 +127,8 @@ MonoBehaviour:
     partType: 4
     name: Gun
     lockRotation: 0
-    description: "This basic offensive weapon will fire on any enemy within range.
-      \rAim leaves something to be desired."
+    description: This basic offensive weapon will fire on any enemy within range.
+      Aim leaves something to be desired.
     dataTest:
     - key: Damage
       value: 5
