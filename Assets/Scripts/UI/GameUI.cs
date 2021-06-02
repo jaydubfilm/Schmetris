@@ -155,7 +155,7 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
-        
+
         private static int[] _gameUIBitIndices;
 
         #region Properties
@@ -165,14 +165,18 @@ namespace StarSalvager.UI
         //Top Left Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
+        [FormerlySerializedAs("gearsText")] [SerializeField, Required, FoldoutGroup("TL Window")]
+        private TMP_Text xpText;
+
+        //[SerializeField, Required, FoldoutGroup("TL Window")]
+        //private Slider gearsSlider;
+        [FormerlySerializedAs("componentsText")]
+        [FormerlySerializedAs("patchPointsText")]
+        [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text gearsText;
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Slider gearsSlider;
-
-        [FormerlySerializedAs("patchPointsText")] [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
-        private TMP_Text componentsText;
+        [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
+        private TMP_Text silverText;
 
         //Top Right Window
         //====================================================================================================================//
@@ -405,6 +409,8 @@ namespace StarSalvager.UI
         //Hint UI
         //============================================================================================================//
 
+        #region Hint UI
+
         public object[] GetHintElements(HINT hint)
         {
             switch (hint)
@@ -414,18 +420,20 @@ namespace StarSalvager.UI
                 case HINT.MAGNET:
                     return null;
                 /*return new object[]
-                {
-                    magnetFlash.transform as RectTransform
-                };*/
+                    {
+                        magnetFlash.transform as RectTransform
+                    };*/
                 case HINT.HEALTH:
                     return new object[]
                     {
-                        botHealthBarSlider.transform as RectTransform,
+                        botHealthBarImage.transform as RectTransform,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
         }
+
+        #endregion //Hint UI
 
         //Init UI
         //====================================================================================================================//
@@ -442,7 +450,7 @@ namespace StarSalvager.UI
                 var index = bitList.FindIndex(x => x == bitType);
                 _gameUIBitIndices[i - 1] = index;
             }
-            
+
             SetupAmmoSliders();
 
             //InitSmartWeaponUI();
@@ -455,7 +463,8 @@ namespace StarSalvager.UI
             SetLevelProgressSlider(0f);
 
 
-            SetPlayerComponents(0);
+            SetPlayerGears(0);
+            SetPlayerSilver(0);
             SetPlayerXP(0);
 
             OutlineMagnet(false);
@@ -468,7 +477,8 @@ namespace StarSalvager.UI
         {
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
 
             UpdateAmmoSliders();
         }
@@ -550,8 +560,9 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
             //SetPlayerXP(PlayerDataManager.get);
 
             UpdateAmmoSliders();
@@ -576,12 +587,16 @@ namespace StarSalvager.UI
 
         public void SetPlayerXP(in int xp)
         {
-            gearsText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
+            xpText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
         }
 
-        public void SetPlayerComponents(in int points)
+        public void SetPlayerGears(in int gears)
         {
-            componentsText.text = $"{points}";
+            gearsText.text = $"{TMP_SpriteHelper.GEAR_ICON} {gears}";
+        }
+        public void SetPlayerSilver(in int silver)
+        {
+            silverText.text = $"{TMP_SpriteHelper.SILVER_ICON} {silver}";
         }
 
 
@@ -728,7 +743,7 @@ namespace StarSalvager.UI
                     return;
             }
         }
-        
+
         private void SetFill(in int index, in float fillValue)
         {
             if (index < 0) return;
