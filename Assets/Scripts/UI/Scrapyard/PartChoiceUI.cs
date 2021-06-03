@@ -122,6 +122,11 @@ namespace StarSalvager.UI.Scrapyard
                 var outDict = new Dictionary<PART_TYPE, bool>();
                 for (int i = 0; i < selectionUis.Length; i++)
                 {
+                    var partType = GetPartType(i);
+                    
+                    if(outDict.ContainsKey(partType))
+                        continue;
+                    
                     outDict.Add(GetPartType(i), i == index);
                 }
                 

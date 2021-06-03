@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Trello;
 using UnityEngine;
 
 namespace StarSalvager.Utilities
@@ -25,6 +26,8 @@ namespace StarSalvager.Utilities
         
         private static bool _isExceptionHandlingSetup;
 
+        private static bool _pauseRecording;
+
         
         //============================================================================================================//
 
@@ -36,7 +39,7 @@ namespace StarSalvager.Utilities
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F11))
             {
                 throw new Exception("Testing Exception");
             }
@@ -74,6 +77,9 @@ namespace StarSalvager.Utilities
 
         private static void HandleException(string condition, string stackTrace, LogType type)
         {
+            if (_pauseRecording)
+                return;
+            
             switch (type)
             {
                 /*case LogType.Error:
@@ -89,8 +95,19 @@ namespace StarSalvager.Utilities
                 case LogType.Error:
                     break;
                 case LogType.Exception:
+                    _pauseRecording = true;
+                    TrelloSender.Instance.TakeEarlyScreenShot();
                     //FIXME May want to show something else depending on the debug condition
-                    Alert.ShowAlert("Error Occured", $"<b>{condition}</b>\n{stackTrace}", "Okay", null);
+                    Alert.ShowAlert("Error Occured", $"<b>{condition}</b>\n{stackTrace}", "Okay", "Send Bug", 
+                        answer =>
+                        {
+                            if (answer) return;
+                            
+                            TrelloSender.Instance.OpenBugSubmissionWindow(() =>
+                            {
+                                _pauseRecording = false;
+                            }, false);
+                        });
                     break;
                 default:
                     return;

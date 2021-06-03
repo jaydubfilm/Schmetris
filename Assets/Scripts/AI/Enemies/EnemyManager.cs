@@ -166,7 +166,7 @@ namespace StarSalvager
         //Get the enemies in the specified stage of the wave, and determine their future spawn times in that stage
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.IsState(GameState.LevelActiveEndSequence) || GameManager.IsState(GameState.LevelBotDead))
+            if (GameManager.ContainsState(GameState.LevelActiveEndSequence | GameState.LevelBotDead))
             {
                 return;
             }
