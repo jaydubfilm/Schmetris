@@ -682,7 +682,7 @@ namespace StarSalvager
             if (timer <= 0f)
             {
                 _shieldActive = false;
-                _shieldObject.SetActive(false);
+                _shieldObject?.SetActive(false);
             }
 
             _shieldTimers[part] = timer;
