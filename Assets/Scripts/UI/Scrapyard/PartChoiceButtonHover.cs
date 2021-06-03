@@ -8,7 +8,18 @@ namespace StarSalvager.UI.Scrapyard
 {
     public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        private static DroneDesignUI DroneDesignUI
+        {
+            get
+            {
+                if(_droneDesignUI == null)
+                    _droneDesignUI = FindObjectOfType<DroneDesignUI>();
+
+                return _droneDesignUI;
+            }
+        }
         private static DroneDesignUI _droneDesignUI;
+        
         private PART_TYPE _partType;
         private PartData _partData;
 
@@ -16,9 +27,6 @@ namespace StarSalvager.UI.Scrapyard
 
         public void SetPartType(in PART_TYPE partType)
         {
-            if (_droneDesignUI == null)
-                _droneDesignUI = FindObjectOfType<DroneDesignUI>();
-            
             if(transform == null)
                 transform = gameObject.transform as RectTransform;
 
@@ -37,12 +45,12 @@ namespace StarSalvager.UI.Scrapyard
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _droneDesignUI.ShowPartDetails(true, _partData, transform);
+            DroneDesignUI.ShowPartDetails(true, _partData, transform);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _droneDesignUI.ShowPartDetails(false, new PartData(), null);
+            DroneDesignUI.ShowPartDetails(false, new PartData(), null);
         }
     }
 }
