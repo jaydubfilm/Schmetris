@@ -157,10 +157,16 @@ namespace StarSalvager.AI
             var hit = Physics2D.Raycast(transform.position, Vector2.down, CAST_DISTANCE, mask.value);
             if (hit.collider == null)
                 return;
-            
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase))
-                throw new Exception();
 
+            var iHealth = hit.transform.GetComponent<IHealth>();
+
+            switch (iHealth)
+            {
+                case ForceField _: break;
+                case BotBase _: break;
+                default: return;
+            }
+            
             SetState(STATE.ATTACK);
         }
 
@@ -182,11 +188,16 @@ namespace StarSalvager.AI
             if (hit.collider == null)
                 return;
 
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase botBase))
-                throw new Exception();
-            
-            switch (botBase)
+            var iHealth = hit.transform.GetComponent<IHealth>();
+
+            switch (iHealth)
             {
+                //--------------------------------------------------------------------------------------------------------//
+                case ForceField forceField:
+                    forceField.TryHitAt(damage);
+                    break;
+
+                //--------------------------------------------------------------------------------------------------------//
                 case Bot bot:
                     var closestAttachable = bot.GetClosestAttachable(hit.point);
                     var coordinateBelow = closestAttachable.Coordinate + Vector2Int.down;
@@ -197,11 +208,13 @@ namespace StarSalvager.AI
                     if(!(belowAttachable is null))
                         bot.TryHitAt(belowAttachable, damage);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 case DecoyDrone decoyDrone:
                     decoyDrone.TryHitAt(damage, true);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+                    return;
             }
 
             DestroyEnemy();
