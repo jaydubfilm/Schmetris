@@ -101,6 +101,12 @@ namespace StarSalvager
                     return m_currentGameState.HasFlag(gameState);
             }
         }
+        
+        public static bool ContainsState(in GameState gameState)
+        {
+            //Solution from: https://stackoverflow.com/a/1340003
+           return (m_currentGameState & gameState) != 0;
+        }
 
         public static void SetCurrentGameState(GameState newGameState)
         {

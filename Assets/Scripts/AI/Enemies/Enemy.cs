@@ -239,6 +239,8 @@ namespace StarSalvager.AI
 
         public bool CanMove()
         {
+            const GameState STATE = GameState.LevelActiveEndSequence | GameState.LevelBotDead | GameState.LevelEndWave | ~ GameState.LevelActive;
+
             if (GameTimer.IsPaused)
                 return false;
 
@@ -247,10 +249,8 @@ namespace StarSalvager.AI
                 ApplyFallMotion();
                 return false;
             }
-
-            if (!GameManager.IsState(GameState.LevelActive) || 
-                GameManager.IsState(GameState.LevelActiveEndSequence) ||
-                GameManager.IsState(GameState.LevelBotDead))
+           
+            if (GameManager.ContainsState(STATE))
             {
                 //FIXME Might be better to broadcast to every enemy that the level has concluded
                 if (this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
