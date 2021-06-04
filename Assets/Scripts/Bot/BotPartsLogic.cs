@@ -896,11 +896,13 @@ namespace StarSalvager
             if (!partRemoteData.TryGetValue(PartProperties.KEYS.Cooldown, out float triggerCooldown))
                 throw new ArgumentException($"Remote data for {partRemoteData.name} does not contain a value for {nameof(PartProperties.KEYS.Cooldown)}");
             
+            var fireRateMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
+            
             //Update the timer value for this frame
             //--------------------------------------------------------------------------------------------------------//
 
             timer -= deltaTime;
-            var fill = 1f - timer / triggerCooldown;
+            var fill = 1f - timer / (triggerCooldown * fireRateMultiplier);
             GameUI.SetFill(part.category, fill);
 
             _triggerPartTimers[part] = timer;
@@ -1204,10 +1206,7 @@ namespace StarSalvager
 
             partRemoteData = part.Type.GetRemoteData();
             
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
-            {
-                throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
-            }
+            
 
             if (!CanAffordAmmo(part, partRemoteData, out _))
             {
@@ -1223,7 +1222,14 @@ namespace StarSalvager
 
             //resource.SubtractAmmo(ammoCost);
             
-            _triggerPartTimers[part] = cooldown;
+            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Cooldown, out var cooldown))
+            {
+                throw new MissingFieldException($"{PartProperties.KEYS.Cooldown} missing from {part.Type} remote data");
+            }
+
+            var fireRateMultiplier = part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
+            
+            _triggerPartTimers[part] = cooldown * fireRateMultiplier;
 
             return true;
         }
