@@ -54,6 +54,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private RectTransform patchTreeTierContainer;
 
         [SerializeField, Required, BoxGroup("Patch Tree Window/Prefabs")]
+        private Image dottedLinePrefab;
+        [SerializeField, Required, BoxGroup("Patch Tree Window/Prefabs")]
         private GameObject tierElementPrefab;
 
         [FormerlySerializedAs("patchTreeElementPrefab")]
@@ -66,7 +68,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private Button swapPartButton;
 
         private RectTransform[] _activeTiers;
-        private RectTransform[] _activeElements;
+        private PatchNodeElement[] _activeElements;
         private RectTransform[] _activeElementLinks;
         private RectTransform _lineContainer;
         
@@ -206,26 +208,26 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 return (RectTransform) temp;
             }
 
-            RectTransform CreatePartNodeElement(in RectTransform container, in PART_TYPE type)
+            PatchNodeElement CreatePartNodeElement(in RectTransform container, in PART_TYPE type)
             {
                 var temp = Instantiate(patchNodeElementPrefab, container, false);
                 temp.Init(type);
                 //TODO Fill with patchData
 
-                return (RectTransform) temp.transform;
+                return temp;
             }
 
-            RectTransform CreatePatchNodeElement(in RectTransform container, in PART_TYPE type, in PatchData patchData,
+            PatchNodeElement CreatePatchNodeElement(in RectTransform container, in PART_TYPE type, in PatchData patchData,
                 in bool unlocked)
             {
                 var temp = Instantiate(patchNodeElementPrefab, container, false);
                 temp.Init(type, patchData, unlocked);
                 //TODO Fill with patchData
 
-                return (RectTransform) temp.transform;
+                return temp;
             }
 
-            RectTransform CreateUILine(in RectTransform startTransform, in RectTransform endTransform)
+            RectTransform CreateUILine(in PatchNodeElement startElement, in PatchNodeElement endElement)
             {
                 if (_lineContainer == null)
                 {
@@ -238,13 +240,22 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                     _lineContainer.SetSiblingIndex(0);
                 }
 
-                var image = UILineCreator.DrawConnection(_lineContainer, startTransform, endTransform, Color.white);
+                var image = endElement.Unlocked
+                    ? UILineCreator.DrawConnection(_lineContainer, startElement.transform, endElement.transform,
+                        Color.white)
+                    : UILineCreator.DrawConnection(_lineContainer, startElement.transform, endElement.transform,
+                        dottedLinePrefab, Color.white);
+                
+
                 return image.transform as RectTransform;
             }
 
-            bool HasUnlockedPatch(in PartData data, in PatchData patchData)
+            bool HasUnlockedPatch(in List<PatchNodeJson> patchTree, in PartData data, in PatchData patchData)
             {
-                //throw new NotImplementedException();
+                
+                
+                
+                
                 return true;
             }
 
@@ -261,7 +272,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             //Add one to account for the part Tier
             _activeTiers = new RectTransform[maxTier + 1];
             //Add one to account for the part Element
-            _activeElements = new RectTransform[patchTreeData.Count + 1];
+            _activeElements = new PatchNodeElement[patchTreeData.Count + 1];
 
             //Create the base Part Tier
             _activeTiers[0] = CreateTierElement();
@@ -277,7 +288,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             for (int i = 0; i < patchTreeData.Count; i++)
             {
                 var patchData = new PatchData();
-                var unlocked = HasUnlockedPatch(partData, patchData);
+                var unlocked = HasUnlockedPatch(patchTreeData, partData, patchData);
 
                 var tier = patchTreeData[i].Tier;
                 _activeElements[i + 1] = CreatePatchNodeElement(_activeTiers[tier], partType, patchData, unlocked);

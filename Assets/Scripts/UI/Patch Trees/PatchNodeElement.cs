@@ -9,6 +9,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 {
     public class PatchNodeElement : MonoBehaviour
     {
+        public new RectTransform transform => gameObject.transform as RectTransform;
+        
         [SerializeField]
         private Image image;
 
@@ -16,12 +18,14 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         [SerializeField, BoxGroup("Prototyping")]
         private Sprite patchSprite;
-        
+
+        public bool Unlocked { get; private set; }
+
         public void Init(in PART_TYPE partType)
         {
             image.sprite = partType.GetSprite();
             button.enabled = false;
-
+            Unlocked = true;
         }
 
         public void Init(in PART_TYPE partType, in PatchData patchData, bool unlocked)
@@ -30,6 +34,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             image.color = partType.GetCategory().GetColor();
 
             button.interactable = unlocked;
+            Unlocked = unlocked;
         }
     }
 }
