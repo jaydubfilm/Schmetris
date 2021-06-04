@@ -16,6 +16,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
+using Object = System.Object;
 
 namespace StarSalvager.UI.Hints
 {
@@ -36,7 +37,9 @@ namespace StarSalvager.UI.Hints
         WHITE,
         SILVER,
         HEALTH,
-        WRECK
+        WRECK,
+        STAR,
+        MAP
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -138,10 +141,8 @@ namespace StarSalvager.UI.Hints
                 WaitingHints.Remove(hint);
                 
                 //If we have an empty list, assume we want to obtain in it other ways
-                if(objectsToHighlight.IsNullOrEmpty())
-                    Instance.ShowHint(hint);
-                else
-                    Instance.ShowHint(hint, objectsToHighlight);
+                if(objectsToHighlight.IsNullOrEmpty()) Instance.ShowHint(hint);
+                else Instance.ShowHint(hint, objectsToHighlight);
             }));
         }
 
@@ -232,6 +233,28 @@ namespace StarSalvager.UI.Hints
                 case HINT.HEALTH:
                     objectsToHighlight = FindObjectOfType<GameUI>().GetHintElements(hint);
                     break;
+                
+                //These should just be ambient hints, with no explicit highlight
+                case HINT.MAP:
+                    objectsToHighlight = new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.right * Globals.GridSizeX,
+                            size = Vector3.zero
+                        }
+                    };
+                    break;
+                case HINT.STAR:
+                    objectsToHighlight = new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.zero,
+                            size = Vector3.zero
+                        }
+                    };
+                    break;
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -240,9 +263,8 @@ namespace StarSalvager.UI.Hints
 
             if (objectsToHighlight.IsNullOrEmpty())
                 throw new NullReferenceException("No objects to highlight");
-            
-            StartCoroutine(HintPagesCoroutine(hint, objectsToHighlight));
 
+            StartCoroutine(HintPagesCoroutine(hint, objectsToHighlight));
         }
 
         private void ShowHint(HINT hint, params object[] objectsToHighlight)

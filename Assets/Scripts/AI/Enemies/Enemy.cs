@@ -135,7 +135,7 @@ namespace StarSalvager.AI
             _enemyMovementSpeed = Constants.gridCellSize / Globals.TimeForAsteroidToFallOneSquare;
 
             if (transform.position.y < -10)
-                SetState(STATE.DEATH);
+                DestroyEnemy();
         }
         
         protected virtual void ApplyFleeMotion()
@@ -239,6 +239,8 @@ namespace StarSalvager.AI
 
         public bool CanMove()
         {
+            const GameState STATE = GameState.LevelActiveEndSequence | GameState.LevelBotDead | GameState.LevelEndWave | ~ GameState.LevelActive;
+
             if (GameTimer.IsPaused)
                 return false;
 
@@ -247,10 +249,8 @@ namespace StarSalvager.AI
                 ApplyFallMotion();
                 return false;
             }
-
-            if (!GameManager.IsState(GameState.LevelActive) || 
-                GameManager.IsState(GameState.LevelActiveEndSequence) ||
-                GameManager.IsState(GameState.LevelBotDead))
+           
+            if (GameManager.ContainsState(STATE))
             {
                 //FIXME Might be better to broadcast to every enemy that the level has concluded
                 if (this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
@@ -354,7 +354,7 @@ namespace StarSalvager.AI
             if (CurrentHealth > 0) 
                 return;
 
-            KillEnemy();
+            KilledEnemy();
         }
 
         protected void DropLoot()
@@ -371,7 +371,7 @@ namespace StarSalvager.AI
             }
         }
 
-        protected void KillEnemy(in STATE targetState = STATE.DEATH)
+        protected void KilledEnemy(in STATE targetState = STATE.DEATH)
         {
             DropLoot();
 
@@ -383,6 +383,17 @@ namespace StarSalvager.AI
             LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
+            SetState(targetState);
+        }
+
+        /// <summary>
+        /// Cleans the enemy from the Enemy Manager, without  recording this as a kill by the player
+        /// </summary>
+        /// <param name="targetState"></param>
+        protected void DestroyEnemy(in STATE targetState = STATE.DEATH)
+        {
+            LevelManager.Instance.EnemyManager.RemoveEnemy(this);
+
             SetState(targetState);
         }
 

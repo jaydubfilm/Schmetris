@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -9,6 +10,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -19,7 +21,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -57,7 +59,7 @@ namespace StarSalvager.UI
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
                 backgroundImage.gameObject.SetActive(isTrigger);
-                triggerInputImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 if (!isTrigger)
                     return;
@@ -145,6 +147,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
+        
+        private static int[] _gameUIBitIndices;
 
         #region Properties
 
@@ -154,14 +158,18 @@ namespace StarSalvager.UI
         //Top Left Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private TMP_Text gearsText;
+        [FormerlySerializedAs("gearsText")] [SerializeField, Required, FoldoutGroup("TL Window")]
+        private TMP_Text xpText;
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Slider gearsSlider;
+        //[SerializeField, Required, FoldoutGroup("TL Window")]
+        //private Slider gearsSlider;
+        [FormerlySerializedAs("componentsText")]
         [FormerlySerializedAs("patchPointsText")] 
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
-        private TMP_Text componentsText;
+        private TMP_Text gearsText;
+        
+        [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
+        private TMP_Text silverText;
 
         //Top Right Window
         //====================================================================================================================//
@@ -369,6 +377,8 @@ namespace StarSalvager.UI
         //Hint UI
         //============================================================================================================//
 
+        #region Hint UI
+
         public object[] GetHintElements(HINT hint)
         {
             switch (hint)
@@ -377,19 +387,21 @@ namespace StarSalvager.UI
                     return null;
                 case HINT.MAGNET:
                     return null;
-                    /*return new object[]
+                /*return new object[]
                     {
                         magnetFlash.transform as RectTransform
                     };*/
                 case HINT.HEALTH:
-                return new object[]
-                {
-                    botHealthBarImage.transform as RectTransform,
-                };
+                    return new object[]
+                    {
+                        botHealthBarImage.transform as RectTransform,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
         }
+
+        #endregion //Hint UI
 
         //Init UI
         //====================================================================================================================//
@@ -398,6 +410,15 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            _gameUIBitIndices = new int[5];
+            var bitList = Constants.BIT_ORDER.ToList();
+            for (var i = 1; i <= 5; i++)
+            {
+                var bitType = (BIT_TYPE) i;
+                var index = bitList.FindIndex(x => x == bitType);
+                _gameUIBitIndices[i - 1] = index;
+            }
+            
             SetupAmmoSliders();
 
             //InitSmartWeaponUI();
@@ -410,7 +431,8 @@ namespace StarSalvager.UI
             SetLevelProgressSlider(0f);
 
 
-            SetPlayerComponents(0);
+            SetPlayerGears(0);
+            SetPlayerSilver(0);
             SetPlayerXP(0);
             ShowAbortWindow(false);
 
@@ -425,8 +447,9 @@ namespace StarSalvager.UI
             ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetGears());
-
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
+            
             UpdateAmmoSliders();
         }
 
@@ -552,8 +575,9 @@ namespace StarSalvager.UI
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
             //SetPlayerXP(PlayerDataManager.get);
 
             UpdateAmmoSliders();
@@ -578,12 +602,16 @@ namespace StarSalvager.UI
 
         public void SetPlayerXP(in int xp)
         {
-            gearsText.text = $"{xp} XP";
+            xpText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
         }
 
-        public void SetPlayerComponents(in int points)
+        public void SetPlayerGears(in int gears)
         {
-            componentsText.text = $"{points}";
+            gearsText.text = $"{TMP_SpriteHelper.GEAR_ICON} {gears}";
+        }
+        public void SetPlayerSilver(in int silver)
+        {
+            silverText.text = $"{TMP_SpriteHelper.SILVER_ICON} {silver}";
         }
 
 
@@ -706,13 +734,31 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = partType.GetSprite();
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
+
             SliderPartUis[index].SetSprite(sprite);
             
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
 
-        public void SetFill(int index, float fillValue)
+        public void SetFill(in BIT_TYPE bitType, in float fillValue)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                case BIT_TYPE.GREEN:
+                case BIT_TYPE.GREY:
+                case BIT_TYPE.RED:
+                case BIT_TYPE.YELLOW:
+                    SetFill(_gameUIBitIndices[(int) bitType - 1], fillValue);
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        private void SetFill(in int index, in float fillValue)
         {
             if (index < 0) return;
             SliderPartUis[index].SetFill(fillValue);
@@ -898,15 +944,10 @@ namespace StarSalvager.UI
 
         #region Patch Point Effects
 
-        [Button, DisableInEditorMode]
-        public void CreatePatchPointEffect()
-        {
-            CreatePatchPointEffect(effectCount);
-        }
-
         public void CreatePatchPointEffect(int count)
         {
-            if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
+            throw new NotImplementedException();
+            /*if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
@@ -930,7 +971,7 @@ namespace StarSalvager.UI
             /*if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
             {
                 HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
-            }*/
+            }#1#*/
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition, Sprite sprite, int count)
@@ -1013,20 +1054,35 @@ namespace StarSalvager.UI
         //FIXME Adding ammo in this method could cause a loss either from early destruction of the coroutine, or division
         #region Ammo Effect
 
-        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, [CallerMemberName] string calledMemberName = "")
         {
             CreateAmmoEffect(bitType, 
                 amount,
                 startPosition, 
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                calledMemberName);
         }
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange)
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
         {
-            const float RADIUS = 50;
+            if (bitType == BIT_TYPE.WHITE)
+                throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
             
-            var sprite = bitEffectSprites[(int) bitType - 1];
-            var targetTransform = sliderTargets[(int) bitType - 1];
+            const float RADIUS = 50;
+            Sprite sprite;
+            Transform targetTransform;
+            
+            try
+            {
+               sprite = bitEffectSprites[(int) bitType - 1];
+               targetTransform = sliderTargets[(int) bitType - 1];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.LogError($"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
+                throw;
+            }
+            
             
             var count = Random.Range(minCount, maxCount);
             var dividedAmount = amount / count;
@@ -1166,7 +1222,8 @@ namespace StarSalvager.UI
                 Random.Range(5, 50),
                 startPosition, 
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                nameof(TestComboEffect));
         }
 #endif
 

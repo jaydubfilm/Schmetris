@@ -429,7 +429,13 @@ namespace StarSalvager
             if (!forceSpawn) 
                 return null;
             
-            Debug.LogError("Couldn't find position to spawn. Possible overlap occurring in grid region " + false + (double)gridRegion.x + ", " + (double)gridRegion.y);
+            var log = $"Couldn't find position to spawn. Possible overlap occurring in grid region {false} ({(double)gridRegion.x}, {(double)gridRegion.y})";
+            
+#if UNITY_EDITOR
+            Debug.LogError(log);
+#else
+            Debug.Log(log);
+#endif
             
             return GetLocalPositionOfCenterOfGridSquareAtCoordinates(new Vector2Int(randomGridRegion[0], m_gridSizeY - 1));
         }
@@ -447,7 +453,7 @@ namespace StarSalvager
             {
                 Vector2Int bitPosition = startingPoint +
                     (Vector2Int.up * UnityEngine.Random.Range(verticalExplosionRange - verticalExplosionRange / 3, verticalExplosionRange + 1)) +
-                    (Vector2Int.left * UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1));
+                    (Vector2Int.left * (UnityEngine.Random.Range(0, horizontalExplosionRange + 1) * (UnityEngine.Random.Range(0, 2) * 2 - 1)));
 
                 if (GetGridSquareAtCoordinates(bitPosition).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up).ObstacleInSquare || GetGridSquareAtCoordinates(bitPosition + Vector2Int.up * 2).ObstacleInSquare || bitExplosionPositions.Contains(bitPosition))
                 {

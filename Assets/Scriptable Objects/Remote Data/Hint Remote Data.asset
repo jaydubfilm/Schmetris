@@ -16,9 +16,8 @@ MonoBehaviour:
   - type: 1
     hintTexts:
     - shortText: Magnetism
-      longDescription: Your magnetism is maxed!  To free some up, MERGE 3 identical
-        bits, or TRIM unwanted bits with pulsars and asteroids.  To carry more stuff,
-        craft a magnet part in the wreckshop!
+      longDescription: 'Your magnetism is maxed!  To free some up, MATCH three identical
+        bits, or TRIM unwanted bits with pulsars and asteroids. '
   - type: 2
     hintTexts:
     - shortText: Bonus Shapes
@@ -28,9 +27,9 @@ MonoBehaviour:
   - type: 3
     hintTexts:
     - shortText: Gun
-      longDescription: Congratulations on building a gun!  This weapon will aim and
-        fire automatically as soon as an enemy comes in range... so long as you still
-        have ammo in your cargo!
+      longDescription: The gun is an excellent choice. This weapon will aim and fire
+        automatically as soon as an enemy comes in range... as long as you have ammo
+        in your cargo!
   - type: 4
     hintTexts:
     - shortText: Fuel
@@ -54,7 +53,7 @@ MonoBehaviour:
   - type: 7
     hintTexts:
     - shortText: Gears
-      longDescription: Nice work! That droid dropped some useful mechanical parts
+      longDescription: Nice work! That insectoid dropped some useful mechanical parts
         called GEARS. Gears are like money you can use to 'buy' repairs or upgrades
         at wrecks. Collect as many as you can.
   - type: 8
@@ -98,7 +97,18 @@ MonoBehaviour:
   - type: 15
     hintTexts:
     - shortText: Wrecks
-      longDescription: Congratulations, you discovered your first wreck! These are
-        treasure troves of useful salvage! Each wreck type offers a different selection
-        of salvageable components. Use what you find here to upgrade or repair your
+      longDescription: Congratulations, you reached your first wreck! These are treasure
+        troves of useful salvage! Each wreck type offers a different selection of
+        salvageable components. Use what you find here to upgrade or repair your
         drone.
+  - type: 16
+    hintTexts:
+    - shortText: 
+      longDescription: "\u201CStars\u201D are earned by skillful salvaging. Spend
+        them here to permanently improve your drone\u2019s performance. "
+  - type: 17
+    hintTexts:
+    - shortText: 
+      longDescription: 'Those wrecks have the parts we need. But our scanners are
+        picking up  movement in the rocks. Could be insectoids. Choose your path
+        carefully.  '

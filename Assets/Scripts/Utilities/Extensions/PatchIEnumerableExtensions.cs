@@ -24,24 +24,37 @@ namespace StarSalvager.Utilities.Extensions
 
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             
-            var total = 0f;
-            foreach (var patchData in patchesOfType)
-            {
-                var data = patchRemoteData.GetRemoteData(patchType).GetMultiplier(patchData.Level);
-                    //.GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
-
-                total += data;
-            }
+            
 
             switch (patchType)
             {
                 case PATCH_TYPE.POWER:
                 case PATCH_TYPE.RANGE:
+                {
+                    var total = 0f;
+                    foreach (var patchData in patchesOfType)
+                    {
+                        var data = patchRemoteData.GetRemoteData(patchType).GetMultiplier(patchData.Level);
+                        //.GetDataValue<float>(patchData.Level, PartProperties.KEYS.Multiplier);
+
+                        total += data;
+                    }
+                    
                     return 1 + total;
+                }
                 case PATCH_TYPE.REINFORCED:
                 case PATCH_TYPE.EFFICIENCY:
                 case PATCH_TYPE.FIRE_RATE:
-                    return  1 - total;
+                {
+                    var total = 1f;
+                    foreach (var patchData in patchesOfType)
+                    {
+                        var data = patchRemoteData.GetRemoteData(patchType).GetMultiplier(patchData.Level);
+
+                        total -= total * data;
+                    }
+                    return  total;
+                }
                 
                 case PATCH_TYPE.AOE:
                 case PATCH_TYPE.BURN:

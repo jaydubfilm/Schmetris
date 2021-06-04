@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Factories;
 using StarSalvager.Parts.Data;
+using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.Prototype;
 using StarSalvager.UI.PersistentUpgrades;
 using StarSalvager.Utilities;
@@ -115,6 +116,8 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Stars Window")]
         private GameObject starsMenuWindow;
+        [SerializeField, Required, FoldoutGroup("Stars Window")]
+        private Image starsButtonGlow;
         [SerializeField, Required, FoldoutGroup("Stars Window")]
         private Button starsBackButton;
         [SerializeField, Required, FoldoutGroup("Stars Window")]
@@ -326,6 +329,56 @@ namespace StarSalvager.UI
 
         private void SetupAccountMenuWindow()
         {
+            //--------------------------------------------------------------------------------------------------------//
+            bool HasStarsToSpend()
+            {
+                bool CanPurchase(UpgradeData data)
+                {
+                    bool IsUnlocked()
+                    {
+                        var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
+
+                        return data.Level <= currentLevel + 1;
+                    }
+                    bool HasPurchased()
+                    {
+                        var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
+
+                        return data.Level <= currentLevel;
+                    }
+            
+                    int GetCost() => FactoryManager.Instance.PersistentUpgrades.GetRemoteData(data.Type, data.BitType).Levels[data.Level].cost;
+            
+                    bool CanAfford(in int stars) => PlayerDataManager.GetStars() >= stars;
+                
+                    var cost = GetCost();
+                    var hasPurchased = HasPurchased();
+                    var isUnlocked = IsUnlocked();
+                    var canAfford = CanAfford(cost); 
+                    
+                    return isUnlocked && !hasPurchased && canAfford;
+                }
+                
+
+                
+                var upgrades = FactoryManager.Instance.PersistentUpgrades.Upgrades;
+
+                foreach (var upgradeRemoteData in upgrades)
+                {
+                    for (var i = 1; i < upgradeRemoteData.Levels.Count; i++)
+                    {
+                        var data = new UpgradeData(upgradeRemoteData.upgradeType, upgradeRemoteData.bitType, i);
+
+                        if (CanPurchase(data))
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             //TODO Get bool for current run
             bool hasActiveRun = PlayerDataManager.HasActiveRun();
 
@@ -337,6 +390,8 @@ namespace StarSalvager.UI
             EventSystem.current?.SetSelectedGameObject(hasActiveRun
                 ? continueRunButton.gameObject
                 : newRunButton.gameObject);
+            
+            starsButtonGlow.gameObject.SetActive(HasStarsToSpend());
 
         }
 

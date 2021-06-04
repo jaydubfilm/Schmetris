@@ -31,7 +31,7 @@ namespace StarSalvager.AI
         public override void LateInit()
         {
             base.LateInit();
-            
+
             SetState(STATE.MOVE);
         }
 
@@ -74,12 +74,12 @@ namespace StarSalvager.AI
         protected override void StateChanged(STATE newState)
         {
             var currentPosition = transform.position;
-            
+
             switch (newState)
             {
                 case STATE.MOVE:
                     CameraController.IsPointInCameraRect(Vector2.zero, Constants.VISIBLE_GAME_AREA);
-            
+
                     var cameraRect = CameraController.VisibleCameraRect;
                     var xBounds = new Vector2(cameraRect.xMin, cameraRect.xMax);
                     var yBounds = new Vector2(cameraRect.yMin, cameraRect.yMax);
@@ -90,7 +90,7 @@ namespace StarSalvager.AI
                         y = Mathf.Lerp(yBounds.x, yBounds.y, Random.Range(0.85f, 0.85f))
                     };
 
-                    
+
                     currentPosition.x = _targetLocation.x;
 
                     transform.position = currentPosition;
@@ -102,7 +102,7 @@ namespace StarSalvager.AI
                 case STATE.DEATH:
 
                     CreateExplosionEffect(currentPosition);
-                    
+
                     Recycler.Recycle<ShardEnemy>(this);
                     break;
                 default:
@@ -134,7 +134,7 @@ namespace StarSalvager.AI
         private void MoveState()
         {
             //TODO Move into position at top of screen
-            
+
             var currentPosition = transform.position;
 
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
@@ -153,13 +153,19 @@ namespace StarSalvager.AI
         {
             const float CAST_DISTANCE = 100f;
             //TODO Wait at that location until
-            
+
             var hit = Physics2D.Raycast(transform.position, Vector2.down, CAST_DISTANCE, mask.value);
             if (hit.collider == null)
                 return;
-            
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase))
-                throw new Exception();
+
+            var iHealth = hit.transform.GetComponent<IHealth>();
+
+            switch (iHealth)
+            {
+                case ForceField _: break;
+                case BotBase _: break;
+                default: return;
+            }
 
             SetState(STATE.ATTACK);
         }
@@ -172,7 +178,7 @@ namespace StarSalvager.AI
 
             if (currentPosition.y < -5)
             {
-                SetState(STATE.DEATH);
+                DestroyEnemy();
                 return;
             }
 
@@ -182,29 +188,36 @@ namespace StarSalvager.AI
             if (hit.collider == null)
                 return;
 
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase botBase))
-                throw new Exception();
-            
-            switch (botBase)
+            var iHealth = hit.transform.GetComponent<IHealth>();
+
+            switch (iHealth)
             {
+                //--------------------------------------------------------------------------------------------------------//
+                case ForceField forceField:
+                    forceField.TryHitAt(damage);
+                    break;
+
+                //--------------------------------------------------------------------------------------------------------//
                 case Bot bot:
                     var closestAttachable = bot.GetClosestAttachable(hit.point);
                     var coordinateBelow = closestAttachable.Coordinate + Vector2Int.down;
 
                     bot.TryHitAt(closestAttachable, damage);
-            
+
                     var belowAttachable = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coordinateBelow);
                     if(!(belowAttachable is null))
                         bot.TryHitAt(belowAttachable, damage);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 case DecoyDrone decoyDrone:
                     decoyDrone.TryHitAt(damage, true);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+                    return;
             }
 
-            SetState(STATE.DEATH);
+            DestroyEnemy();
         }
 
         #endregion //States

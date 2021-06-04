@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using StarSalvager.Utilities.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -74,7 +75,7 @@ namespace StarSalvager.UI.Elements
 
         public void SetXP(in int xp)
         {
-            xpText.text = $"+{xp}xp";
+            xpText.text = $"+{xp}{TMP_SpriteHelper.STARDUST_ICON}";
         }
 
         private void SetSpriteActive(in bool state)

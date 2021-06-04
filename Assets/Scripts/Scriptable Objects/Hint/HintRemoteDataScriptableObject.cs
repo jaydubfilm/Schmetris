@@ -33,7 +33,7 @@ namespace StarSalvager.ScriptableObjects.Hints
             public string longDescription;
         }
 
-        [SerializeField]
+        [SerializeField, ListDrawerSettings(ShowPaging = false)]
         private HintData[] HintDatas;
 
         public HintData GetHintData(HINT hint)

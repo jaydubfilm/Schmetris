@@ -9,6 +9,8 @@ namespace StarSalvager.Utilities.Extensions
     {
         public static Color GetColor(this BIT_TYPE bitType) => bitType.GetProfileData().color;
         
+        public static string GetCategoryName(this BIT_TYPE bitType) => bitType.GetRemoteData().categoryName;
+        
         public static Sprite GetSprite(this BIT_TYPE bitType, in int level) => bitType.GetProfileData().GetSprite(level);
 
         public static BitRemoteData GetRemoteData(this BIT_TYPE bitType)

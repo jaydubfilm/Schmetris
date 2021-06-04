@@ -30,8 +30,12 @@ namespace StarSalvager.Factories
 
         /*public int ModularDataCount => m_sectorRemoteData.Count;*/
 
-
-        public Sprite PatchSprite;
+        [BoxGroup("Sprites")]
+        public Sprite stardustSprite;
+        [BoxGroup("Sprites")]
+        public Sprite silverSprite;
+        [BoxGroup("Sprites")]
+        public Sprite gearsSprite;
 
         //====================================================================================================================//
         public DamageProfileScriptableObject DamageProfile => damageProfile;

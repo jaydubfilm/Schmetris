@@ -318,6 +318,9 @@ namespace StarSalvager.AI
             if (Target == null)
                 return false;
 
+            if (AttachedBot == null)
+                return false;
+
             //If the enemy didn't kill the bit, we shouldn't more to its position
             if (!DidIDestroyBit())
                 return false;
@@ -395,7 +398,7 @@ namespace StarSalvager.AI
             }
             
             transform.parent = LevelManager.Instance.ObstacleManager.WorldElementsRoot;
-            KillEnemy();
+            KilledEnemy();
         }
 
         //ICustomRotate functions

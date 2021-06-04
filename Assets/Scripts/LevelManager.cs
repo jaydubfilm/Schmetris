@@ -499,7 +499,7 @@ namespace StarSalvager
             }
             PlayerDataManager.SetCurrentNode(curNodeIndex);*/
 
-            PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
+            PlayerDataManager.SetCurrentWave(PlayerDataManager.GetCurrentWave() + 1);
 
             for (int i = 0; i < m_bots.Count; i++)
             {
@@ -577,7 +577,7 @@ namespace StarSalvager
             //string levelCompleteString = $"{WaveEndSummaryData.CompletedSector}.{WaveEndSummaryData.CompletedWave}";
             
             AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.WIN);
-            PlayerDataManager.SetSectorWave(WaveEndSummaryData.Sector, WaveEndSummaryData.Wave);
+            PlayerDataManager.SetPlayerCoordinate(PlayerDataManager.GetPlayerTargetCoordinate());
             /*AnalyticsManager.ReportAnalyticsEvent(AnalyticsManager.AnalyticsEventType.LevelComplete,
                 eventDataDictionary: levelCompleteAnalyticsDictionary, eventDataParameter: levelCompleteString);*/
 
@@ -848,7 +848,6 @@ namespace StarSalvager
 
         public void Activate()
         {
-
             TutorialManager.gameObject.SetActive(Globals.UsingTutorial);
 
             InitLevel();
@@ -873,7 +872,7 @@ namespace StarSalvager
 
         public void OnResume()
         {
-            GameUi.SetCurrentWaveText(0, Globals.CurrentWave + 1);
+            GameUi.SetCurrentWaveText(Globals.CurrentRingIndex + 1, Globals.CurrentWave + 1);
         }
 
         public void OnPause()

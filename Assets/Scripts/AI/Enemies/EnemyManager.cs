@@ -16,6 +16,11 @@ namespace StarSalvager
 {
     public class EnemyManager : MonoBehaviour, IReset, IPausable
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         private List<Enemy> m_enemies;
 
         //Variables to spawn enemies throughout a stage
@@ -38,7 +43,12 @@ namespace StarSalvager
 
         private bool _hasActiveEnemies;
 
+        #endregion //Properties
+
+        //Unity Functions
         //============================================================================================================//
+
+        #region Unity Functions
 
         // Start is called before the first frame update
         private void Start()
@@ -105,7 +115,12 @@ namespace StarSalvager
             }
         }
 
+        #endregion //Unity Functions
+
+        //IReset Functions
         //============================================================================================================//
+
+        #region IReset Functions
 
         public void Activate()
         {
@@ -136,7 +151,12 @@ namespace StarSalvager
             }
         }
 
+        #endregion //IReset Functions
+
+        //Enemy Manager Functions
         //============================================================================================================//
+
+        #region Enemy Manager Functions
 
         private void HandleEnemyUpdate()
         {
@@ -166,7 +186,7 @@ namespace StarSalvager
         //Get the enemies in the specified stage of the wave, and determine their future spawn times in that stage
         private void SetupStage(int stageNumber)
         {
-            if (GameManager.IsState(GameState.LevelActiveEndSequence) || GameManager.IsState(GameState.LevelBotDead))
+            if (GameManager.ContainsState(GameState.LevelActiveEndSequence | GameState.LevelBotDead))
             {
                 return;
             }
@@ -206,8 +226,6 @@ namespace StarSalvager
             m_spawnTimer = 0;
             m_nextStageToSpawn = stageNumber + 1;
         }
-
-
 
         private void CheckSpawns()
         {
@@ -273,25 +291,28 @@ namespace StarSalvager
             LevelManager.Instance.ObstacleManager.AddTransformToRoot(enemy.transform);
         }
 
+        #endregion //Enemy Manager Functions
+
         //====================================================================================================================//
         
         #region Console Spawn
         
-        public void InsertEnemySpawn(string enemyName, int count, float timeDelay)
+        public void InsertEnemySpawn(in string enemyId, int count, float timeDelay)
         {
-            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
+            StartCoroutine(SpawnEnemyCollectionCoroutine(enemyId, count, timeDelay));
         }
         public void InsertAllEnemySpawns(int count, float timeDelay)
         {
             var implementedEnemyNames = FactoryManager.Instance.EnemyRemoteData.m_enemyRemoteData
-                .Where(x => x.isImplemented).Select(x => x.Name);
+                .Where(x => x.isImplemented)
+                .Select(x => x.EnemyID);
             foreach (var enemyName in implementedEnemyNames)
             {
                 StartCoroutine(SpawnEnemyCollectionCoroutine(enemyName, count, timeDelay));
             }
         }
 
-        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyName, int count, float timeDelay)
+        private IEnumerator SpawnEnemyCollectionCoroutine(string enemyId, int count, float timeDelay)
         {
             if (timeDelay > 0)
                 yield return new WaitForSeconds(timeDelay);
@@ -301,8 +322,6 @@ namespace StarSalvager
 
             if (!LevelManager.Instance.gameObject.activeSelf)
                 yield break;
-
-            string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId(enemyName);
 
             for (int i = 0; i < count; i++)
             {

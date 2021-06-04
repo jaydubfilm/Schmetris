@@ -48,7 +48,7 @@ namespace StarSalvager.Utilities.Saving
         #region Upgrades
 
         public static float GetCurrentUpgradeValue(in UPGRADE_TYPE upgradeType, in BIT_TYPE bitType = BIT_TYPE.NONE) =>
-            PlayerAccountData.GetCurrentUpgradeValue(upgradeType, bitType);
+            PlayerAccountData?.GetCurrentUpgradeValue(upgradeType, bitType) ?? default;
 
         public static void SetUpgradeLevel(in UPGRADE_TYPE upgradeType, in int newLevel,
             in BIT_TYPE bitType = BIT_TYPE.NONE) =>
@@ -156,11 +156,8 @@ namespace StarSalvager.Utilities.Saving
         {
             return PlayerAccountData.GetCoordinateForCategory(bitType);
         }
-        
-        public static List<IBlockData> GetBlockDatas()
-        {
-            return PlayerRunData.DroneBlockData;
-        }
+
+        public static List<IBlockData> GetBlockDatas() => HasRunData ? PlayerRunData.DroneBlockData : default;
 
         public static void SetBlockData(IEnumerable<IBlockData> blockData)
         {
@@ -344,7 +341,7 @@ namespace StarSalvager.Utilities.Saving
         //============================================================================================================//
 
         #region Gears
-
+        public static int GetGearsThisRun() =>HasRunData ? PlayerRunData.GearsEarned : 0;
         public static int GetGears() =>HasRunData ? PlayerRunData.Gears : 0;
         public static void SetGears(int value)
         {
@@ -374,7 +371,7 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Silver
-
+        public static int GetSilverThisRun() =>HasRunData ? PlayerRunData.SilverEarned : 0;
         public static int GetSilver() => PlayerRunData.Silver;
         public static void SetSilver(int value)
         {
@@ -404,24 +401,22 @@ namespace StarSalvager.Utilities.Saving
 
         #region Map Nodes
         
-        public static bool CheckIfCompleted(in int waveAt)
+        [Obsolete]
+        public static bool CheckIfCompleted(in int nodeIndex)
         {
-            return PlayerRunData.CheckIfCompleted(waveAt);
+            throw new NotImplementedException();
+            //return PlayerRunData.CheckIfCompleted(nodeIndex);
         }
 
-        public static int GetCurrentNode()
-        {
-            return PlayerRunData.currentNode;
-        }
+        public static int GetCurrentWave()=>PlayerRunData.currentWave;
 
-        public static void SetCurrentNode(int node)
-        {
-            PlayerRunData.currentNode = node;
-        }
+        public static void SetCurrentWave(int node)=>PlayerRunData.currentWave = node;
 
+        public static int GetCurrentRing() => HasRunData ? PlayerRunData.currentRing : default;
+
+        public static void SetCurrentRing(in int ring) => PlayerRunData.currentRing = ring;
         
-        
-        public static void AddCompletedNode(int node)
+        /*public static void AddCompletedNode(int node)
         {
             PlayerRunData.playerPreviouslyCompletedNodes.Add(node);
         }
@@ -434,19 +429,26 @@ namespace StarSalvager.Utilities.Saving
         public static IReadOnlyList<int> GetWreckNodes()
         {
             return PlayerRunData.wreckNodes;
-        }
+        }*/
 
         #endregion //Map Nodes
 
         //Progress Data
         //====================================================================================================================//
-        public static int GetSector() => PlayerRunData.currentSector;
-        public static int GetWave() => PlayerRunData.currentWave;
-        
-        public static void SetSectorWave(in int sector, in int wave)
+        public static Vector2Int GetPlayerCoordinate() => HasRunData ? PlayerRunData.currentMapCoordinate : Vector2Int.zero;
+        public static Vector2Int GetPlayerTargetCoordinate() => HasRunData ? PlayerRunData.targetMapCoordinate : Vector2Int.zero;
+
+        public static void SetPlayerCoordinate(in Vector2Int coordinate)
         {
-            PlayerRunData.SetSectorWave(sector, wave);
+            PlayerRunData.currentMapCoordinate = coordinate;
+            PlayerRunData.TryAddTraversedCoordinate(coordinate);
         }
+        public static void SetPlayerTargetCoordinate(in Vector2Int coordinate) =>
+            PlayerRunData.targetMapCoordinate = coordinate;
+
+        public static IReadOnlyList<Vector2Int> GetTraversedCoordinates() => PlayerRunData.traversedMapCoordinates;
+
+        public static void ResetTraversedCoordinates() => PlayerRunData.ResetTraversedCoordinates();
 
         //Player Run Data Recording
         //====================================================================================================================//
