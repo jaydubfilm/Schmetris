@@ -42,9 +42,10 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private Image wreckImage;
 
         [SerializeField, Required, BoxGroup("Wreck Window/Prefabs")]
-        private GameObject patchOptionPrefab;
-        [SerializeField, Required, FoldoutGroup("Wreck Window")]
-        private RectTransform patchOptionsContainer;
+        private PartPatchUIElement partPatchOptionPrefab;
+       [SerializeField, Required, FoldoutGroup("Wreck Window")]
+       [FormerlySerializedAs("patchOptionsContainer")] 
+        private RectTransform partPatchOptionsContainer;
         
         //Patch Tree Data
         //====================================================================================================================//
@@ -99,6 +100,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
+            OnValuesChanged();
         }
 
         private void Start()
@@ -119,6 +121,9 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         {
             menuButton.onClick.AddListener(MenuPressed);
             launchButton.onClick.AddListener(LaunchPressed);
+            
+            scrapPartButton.onClick.AddListener(ScrapPartPressed);
+            swapPartButton.onClick.AddListener(SwapPartPressed);
         }
 
         private void SetupDroneUI()
@@ -166,10 +171,23 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         //Wreck Data Functions
         //====================================================================================================================//
 
-        public void InitWreck(in string wreckName, in Sprite wreckSprite, in PartData[] patchOptions)
+        public void InitWreck(in string wreckName, in Sprite wreckSprite, in PartData[] partPatchOptions)
         {
+            RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
+            {
+                var temp = Instantiate(partPatchOptionPrefab, container, false);
+                temp.Init(partData);
+
+                return (RectTransform) temp.transform;
+            }
+            
             wreckNameText.text = wreckName;
             wreckImage.sprite = wreckSprite;
+
+            foreach (var partPatchOption in partPatchOptions)
+            {
+                CreatePartNodeElement(partPatchOptionsContainer, partPatchOption);
+            }
         }
         
         //Patch Tree Functions
@@ -226,7 +244,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
             bool HasUnlockedPatch(in PartData data, in PatchData patchData)
             {
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
+                return true;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -361,6 +380,16 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             throw new NotImplementedException();
         }
 
+        private void ScrapPartPressed()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SwapPartPressed()
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnValuesChanged()
         {
             currenciesText.text =
@@ -376,6 +405,45 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         #region Unity Editor
 
 #if UNITY_EDITOR
+
+        [Button, DisableInEditorMode]
+        private void TestPartPatchOptions()
+        {
+            var partDatas = new[]
+            {
+                new PartData
+                {
+                    Type = (int)PART_TYPE.GUN,
+                    Patches = new []
+                    {
+                        new PatchData {Type = (int)PATCH_TYPE.POWER, Level = 0},
+                        new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
+                        new PatchData {Type = (int)PATCH_TYPE.FIRE_RATE, Level = 0},
+                        new PatchData {Type = (int)PATCH_TYPE.RANGE, Level = 0},
+                    }
+                },
+                new PartData
+                {
+                    Type = (int)PART_TYPE.CORE,
+                    Patches = new []
+                    {
+                        new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
+                    }
+                },
+                new PartData
+                {
+                    Type = (int)PART_TYPE.GRENADE,
+                    Patches = new []
+                    {
+                        new PatchData {Type = (int)PATCH_TYPE.POWER, Level = 0},
+                        new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
+                        new PatchData {Type = (int)PATCH_TYPE.FIRE_RATE, Level = 0},
+                    }
+                },
+            };
+
+            InitWreck("Test Wreck", null, partDatas);
+        }
 
         [Button, DisableInEditorMode]
         private void TestGunPatchTree()

@@ -372,7 +372,7 @@ namespace StarSalvager.Utilities.Saving
 
         #region Silver
         public static int GetSilverThisRun() =>HasRunData ? PlayerRunData.SilverEarned : 0;
-        public static int GetSilver() => PlayerRunData.Silver;
+        public static int GetSilver() => HasRunData ? PlayerRunData.Silver : 0;
         public static void SetSilver(int value)
         {
             PlayerRunData.SetSilver(value);
