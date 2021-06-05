@@ -207,64 +207,73 @@ namespace StarSalvager.Utilities
 
             var split = cmd.Split(' ');
 
-            if (!CheckForSplitLength(split, 1, out var print))
+            try
             {
-                _consoleDisplay += print;
-            }
-            else
-            {
-                switch (split[0].ToLower())
+                if (!CheckForSplitLength(split, 1, out var print))
                 {
-                    case "add":
-                        ParseAddCommand(split);
-                        break;
-                    case "clear":
-                        ParseClearCommand(split);
-                        break;
-                    case "damage":
-                        ParseDamageCommand(split);
-                        break;
-                    case "destroy":
-                        ParseDestroyCommand(split);
-                        break;
-                    case "help":
-                        _consoleDisplay += GetHelpString();
-                        break;
-                    case "hide":
-                        ParseHideCommand(split);
-                        break;
-                    case "print":
-                        ParsePrintCommand(split);
-                        break;
-                    case "reset":
-                        SceneLoader.ResetCurrentScene();
-                        break;
-                    case "set":
-                        ParseSetCommand(split);
-                        break;
-                    case "spawn":
-                        ParseSpawnCommand(split);
-                        break;
-                    case "unlock":
-                        ParseUnlockCmd(split);
-                        break;
-                    case "t0":
-                        Time.timeScale = 0;
-                        break;
-                    case "t1":
-                        Time.timeScale = 1;
-                        break;
-                    case "p":
-                        GameTimer.SetPaused(!GameTimer.IsPaused);
-                        break;
-                    case "fallspeed":
-                        ParseFallspeedCommand(split);
-                        break;
-                    default:
-                        _consoleDisplay += UnrecognizeCommand(split[0]);
-                        break;
+                    _consoleDisplay += print;
+                }
+                else
+                {
+                    switch (split[0].ToLower())
+                    {
+                        case "add":
+                            ParseAddCommand(split);
+                            break;
+                        case "clear":
+                            ParseClearCommand(split);
+                            break;
+                        case "damage":
+                            ParseDamageCommand(split);
+                            break;
+                        case "destroy":
+                            ParseDestroyCommand(split);
+                            break;
+                        case "help":
+                            _consoleDisplay += GetHelpString();
+                            break;
+                        case "hide":
+                            ParseHideCommand(split);
+                            break;
+                        case "print":
+                            ParsePrintCommand(split);
+                            break;
+                        case "reset":
+                            SceneLoader.ResetCurrentScene();
+                            break;
+                        case "set":
+                            ParseSetCommand(split);
+                            break;
+                        case "spawn":
+                            ParseSpawnCommand(split);
+                            break;
+                        case "unlock":
+                            ParseUnlockCmd(split);
+                            break;
+                        case "t0":
+                            Time.timeScale = 0;
+                            break;
+                        case "t1":
+                            Time.timeScale = 1;
+                            break;
+                        case "p":
+                            GameTimer.SetPaused(!GameTimer.IsPaused);
+                            break;
+                        case "fallspeed":
+                            ParseFallspeedCommand(split);
+                            break;
+                        default:
+                            _consoleDisplay += UnrecognizeCommand(split[0]);
+                            break;
+                    }
                 }
             }
+            catch (Exception)
+            {
+                Debug.LogError(cmd);
+                throw;
+            }
+
 
             _consoleDisplay += "\n";
 
@@ -354,6 +363,7 @@ namespace StarSalvager.Utilities
                                 {
                                     var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
                                         .Where(x => x.isImplemented)
+                                        .Where(x => x.partType != PART_TYPE.EMPTY && x.partType != PART_TYPE.CORE)
                                         .Select(x => x.partType);
 
                                     foreach (var partType in partTypes)
@@ -382,6 +392,12 @@ namespace StarSalvager.Utilities
                                     
                                     if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                                     {
+                                        if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                                        {
+                                            _consoleDisplay += $"\nCannot add {partType} part.";
+                                            return;
+                                        }
+                                        
                                         var patchSockets = partType.GetRemoteData().PatchSockets;
 
                                         var partBlockData = new PartData
@@ -1121,6 +1137,14 @@ namespace StarSalvager.Utilities
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
                         break;
+                    }
+
+                    switch (bit)
+                    {
+                        case BIT_TYPE.NONE:
+                        case BIT_TYPE.BUMPER:
+                            _consoleDisplay += $"\nCannot spawn bit type {bit} on bot";
+                            return;
                     }
 
                     if (!Vector2IntExtensions.TryParseVector2Int(split[3], out coord))

@@ -119,8 +119,8 @@ namespace StarSalvager.Utilities.Inputs
         private bool dasMovementTriggered;
         [SerializeField, BoxGroup("DAS"), ReadOnly]
         private float previousMovementInput;
-        [SerializeField, BoxGroup("DAS"), ReadOnly]
-        private float currentMovementInput;
+        /*[SerializeField, BoxGroup("DAS"), ReadOnly]
+        private float currentMovementInput;*/
 
         [ShowInInspector, BoxGroup("DAS"), ReadOnly]
         private float _darTimer;
@@ -128,8 +128,8 @@ namespace StarSalvager.Utilities.Inputs
         private bool _dasRotateTriggered;
         [ShowInInspector, BoxGroup("DAS"), ReadOnly]
         private float _previousRotateInput;
-        [ShowInInspector, BoxGroup("DAS"), ReadOnly]
-        private float currentRotateInput;
+        /*[ShowInInspector, BoxGroup("DAS"), ReadOnly]
+        private float currentRotateInput;*/
 
         private Dictionary<InputAction, Action<InputAction.CallbackContext>> _inputMap;
 
@@ -193,16 +193,11 @@ namespace StarSalvager.Utilities.Inputs
             {
                 case ACTION_MAP.DEFAULT:
 
-
-                    Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
+                    Input.Actions.Default.Enable();
                     break;
                 case ACTION_MAP.MENU:
-                    if(Instance)
-                    {
-                        Instance.ProcessMovementInput(0);
-                        Instance.ProcessRotateInput(0);
-                    }
+                    if (Instance) Instance.OnPause();
 
                     Input.Actions.Default.Disable();
                     Input.Actions.MenuControls.Enable();
@@ -249,9 +244,8 @@ namespace StarSalvager.Utilities.Inputs
             {
                 case ACTION_MAP.DEFAULT:
 
-
-                    Input.Actions.Default.Enable();
                     Input.Actions.MenuControls.Disable();
+                    Input.Actions.Default.Enable();
                     break;
                 case ACTION_MAP.MENU:
                     if(Instance)
@@ -376,12 +370,7 @@ namespace StarSalvager.Utilities.Inputs
         
         private void SetupInputs()
         {
-            var actionMap = playerInput.currentActionMap.actions;
-
-            /*foreach (var action in actionMap)
-            {
-                Debug.Log(action.name);
-            }*/
+            //var actionMap = playerInput.currentActionMap.actions;
 
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
@@ -401,26 +390,11 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     Input.Actions.Default.TriggerPart, TriggerPart
                 },
-                /*{
-                    Input.Actions.Default.SmartAction1, SmartAction1
-                },
-                {
-                    Input.Actions.Default.SmartAction2, SmartAction2
-                },
-                {
-                    Input.Actions.Default.SmartAction3, SmartAction3
-                },
-                {
-                    Input.Actions.Default.SmartAction4, SmartAction4
-                },*/
                 {
                     Input.Actions.Default.LeftClick, LeftClick
                 },
                 {
                     Input.Actions.Default.RightClick, RightClick
-                },
-                {
-                    Input.Actions.Default.SelfDestruct, SelfDestruct
                 },
                 {
                     Input.Actions.Default.SpeedChange, SpeedChange
@@ -429,57 +403,16 @@ namespace StarSalvager.Utilities.Inputs
                     Input.Actions.Default.Dash, Dash
                 }
             };
-
-            /*//Here we setup the inputs dependent on the orientation
-            switch (Globals.Orientation)
-            {
-                case ORIENTATION.VERTICAL:
-                    _inputMap.Add(Input.Actions.Default.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Default.Rotate, RotateMovement);
-                    break;
-                case ORIENTATION.HORIZONTAL:
-                    _inputMap.Add(Input.Actions.Vertical.SideMovement, SideMovement);
-                    _inputMap.Add(Input.Actions.Vertical.Rotate, RotateMovement);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }*/
         }
 
         //Smart Actions
         //====================================================================================================================//
-        /*public static readonly BIT_TYPE[] BIT_ORDER = 
-        {
-            BIT_TYPE.YELLOW,    /*Up#1#        
-            BIT_TYPE.GREY,      /*Down#1#    
-            BIT_TYPE.GREEN,     /*BR Window#1#    
-            BIT_TYPE.BLUE,      /*Left#1#    
-            BIT_TYPE.RED,       /*Right#1#
-        };*/
-
-        private void SmartAction1(InputAction.CallbackContext ctx)
-        {
-            //Up
-            //TriggerSmartWeapon(ctx, 0);
-        }
-        private void SmartAction2(InputAction.CallbackContext ctx)
-        {
-            //Down
-            //TriggerSmartWeapon(ctx, 1);
-        }
-        private void SmartAction3(InputAction.CallbackContext ctx)
-        {
-            //Left
-            //TriggerSmartWeapon(ctx, 3);
-        }
-        private void SmartAction4(InputAction.CallbackContext ctx)
-        {
-            //Right
-            //TriggerSmartWeapon(ctx, 4);
-        }
 
         private void TriggerPart(InputAction.CallbackContext ctx)
         {
+            if (Console.Open)
+                return;
+            
             CheckForInputDeviceChange(ctx);
 
             var rawDirection = ctx.ReadValue<Vector2>();
@@ -523,48 +456,7 @@ namespace StarSalvager.Utilities.Inputs
             TriggerWeaponStateChange?.Invoke(index, state);
         }
 
-        /*private void TriggerSmartWeapon(in int index, in float input)
-        {
-            var isPressed = input == 1f;
-            
-            _triggersPressed[index] = input == 1f;
-        }
-
-        private void TryUpdateTriggers()
-        {
-            if (Console.Open)
-                return;
-
-            for (int i = 0; i < _triggersPressed.Length; i++)
-            {
-                if (_triggersPressed[i] == false)
-                    continue;
-
-                TriggerSmartWeapon(i);
-            }
-        }
-
-        public void TriggerSmartWeapon(int index)
-        {
-            if (Console.Open)
-                return;
-
-            //FIXME Need to ensure that I map appropriate inputs to associated bots
-            _bots[0].BotPartsLogic.TryTriggerPart(index);
-        }*/
-
         //====================================================================================================================//
-        
-        private void SelfDestruct(InputAction.CallbackContext ctx)
-        {
-            if (Console.Open)
-                return;
-
-            if (ctx.ReadValue<float>() != 1f)
-                return;
-
-            GameUI.Instance?.AbortPressed();
-        }
 
         //Movement
         //============================================================================================================//
@@ -719,7 +611,7 @@ namespace StarSalvager.Utilities.Inputs
         private void TryApplyMove(float moveDirection)
         {
 
-            currentMovementInput = moveDirection;
+            _currentMoveInput = moveDirection;
 
             //If we're trying to move, set things up for the DAS movement
             if (!dasMovementTriggered)
@@ -729,19 +621,19 @@ namespace StarSalvager.Utilities.Inputs
                     return;
 
                 //If this is the first time its pressed, set the press directions
-                previousMovementInput = currentMovementInput;
+                previousMovementInput = _currentMoveInput;
 
                 //Set the countdown timer to the intended value
                 dasMovementTimer = Globals.DASTime;
 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
-                Move(currentMovementInput);
+                Move(_currentMoveInput);
                 Move(0);
                 return;
             }
 
             //If the DAS has triggered already, go ahead and update the relevant managers
-            Move(currentMovementInput);
+            Move(_currentMoveInput);
         }
 
         /// <summary>
@@ -886,6 +778,8 @@ namespace StarSalvager.Utilities.Inputs
         private void RotateMovement(InputAction.CallbackContext ctx)
         {
             _currentRotateInput = ctx.ReadValue<float>();
+            Debug.Log($"Current Rotation Input: {_currentRotateInput}");
+            
             ProcessRotateInput(_currentRotateInput);
         }
 
@@ -928,7 +822,7 @@ namespace StarSalvager.Utilities.Inputs
         /// <param name="rotateDirection"></param>
         private void TryApplyRotate(float rotateDirection)
         {
-            currentRotateInput = rotateDirection;
+            _currentRotateInput = rotateDirection;
 
             //If we're trying to move, set things up for the DAS movement
             if (!_dasRotateTriggered)
@@ -938,13 +832,13 @@ namespace StarSalvager.Utilities.Inputs
                     return;
 
                 //If this is the first time its pressed, set the press directions
-                _previousRotateInput = currentRotateInput;
+                _previousRotateInput = _currentRotateInput;
 
                 //Set the countdown timer to the intended value
                 _darTimer = Globals.DARTime;
 
                 //Quickly move the relevant managers, then reset their input, so that they will pause until DAS is ready
-                Rotate(currentRotateInput);
+                Rotate(_currentRotateInput);
                 Rotate(0);
                 return;
             }
@@ -959,7 +853,7 @@ namespace StarSalvager.Utilities.Inputs
                 }
             }
 
-            Rotate(currentRotateInput);
+            Rotate(_currentRotateInput);
         }
 
         /// <summary>
@@ -1012,7 +906,7 @@ namespace StarSalvager.Utilities.Inputs
 
             CheckForInputDeviceChange(ctx);
             
-            if (GameManager.IsState(GameState.LevelEndWave))
+            if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
                 return;
 
             if (ctx.ReadValue<float>() == 1f)
@@ -1050,7 +944,7 @@ namespace StarSalvager.Utilities.Inputs
         private void DasChecksMovement()
         {
             //If the user is no longer pressing a direction, these checks do not matter
-            if (currentMovementInput == 0f)
+            if (_currentMoveInput == 0f)
                 return;
 
             //If we've already triggered the DAS, don't bother with following checks
@@ -1068,14 +962,14 @@ namespace StarSalvager.Utilities.Inputs
             dasMovementTimer = 0f;
 
             //If the User is still pressing the same input, go ahead and try and reapply it
-            if(currentMovementInput == previousMovementInput)
-                TryApplyMove(currentMovementInput);
+            if(_currentMoveInput == previousMovementInput)
+                TryApplyMove(_currentMoveInput);
         }
 
         private void DasChecksRotate()
         {
             //If the user is no longer pressing a direction, these checks do not matter
-            if (currentRotateInput == 0f)
+            if (_currentRotateInput == 0f)
                 return;
 
             //Commented out because a delay is required for rotate DAS to function correctly
@@ -1094,8 +988,8 @@ namespace StarSalvager.Utilities.Inputs
             _darTimer = 0f;
 
             //If the User is still pressing the same input, go ahead and try and reapply it
-            if (currentRotateInput == _previousRotateInput)
-                TryApplyRotate(currentRotateInput);
+            if (_currentRotateInput == _previousRotateInput)
+                TryApplyRotate(_currentRotateInput);
         }
 
         //IPausable Functions
@@ -1113,9 +1007,10 @@ namespace StarSalvager.Utilities.Inputs
 
         public void OnPause()
         {
+            previousMovementInput = _currentMoveInput = MostRecentSideMovement = 0;
             Move(0);
 
-            currentRotateInput = MostRecentRotateMovement = 0;
+            _previousRotateInput = _currentRotateInput = MostRecentRotateMovement = 0;
             Rotate(0);
         }
 

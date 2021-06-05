@@ -372,6 +372,13 @@ namespace StarSalvager.AI
             StateUpdate();
         }
 
+        protected override void ApplyFleeMotion()
+        {
+            base.ApplyFleeMotion();
+
+            _lineRenderer.enabled = false;
+        }
+
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             return (_currentPosition - _lastPosition).normalized;
