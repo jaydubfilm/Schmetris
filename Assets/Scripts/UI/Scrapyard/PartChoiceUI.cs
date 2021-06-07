@@ -23,7 +23,7 @@ namespace StarSalvager.UI.Scrapyard
     public class PartChoiceUI : MonoBehaviour
     {
         [Serializable]
-        private struct PartSelectionUI
+        public struct PartSelectionUI
         {
             public Button optionButton;
             public PartChoiceButtonHover PartChoiceButtonHover;

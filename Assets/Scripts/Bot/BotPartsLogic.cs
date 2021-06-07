@@ -657,13 +657,13 @@ namespace StarSalvager
                 if (part.Type == PART_TYPE.SABRE && _sabreActive)
                     return;
 
-                    for (var i = 0; i < _triggerPartStates.Length; i++)
-                    {
-                        if(_triggerPartStates[i] == false)
-                            continue;
+                for (var i = 0; i < _triggerPartStates.Length; i++)
+                {
+                    if(_triggerPartStates[i] == false)
+                        continue;
 
-                        TryTriggerPart(i);
-                    }
+                    TryTriggerPart(i);
+                }
 
                 foreach (var triggerPart in _triggerParts)
                 {
@@ -671,9 +671,9 @@ namespace StarSalvager
                     TriggerPartUpdates(triggerPart, null, deltaTime);
                 }
 
-                var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == partRemoteData.category);
+                //var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == partRemoteData.category);
                 var fill = 1f - cooldownData.Value;
-                GameUI.SetFill(uiIndex, fill);
+                GameUI.SetFill(part.category, fill);
             }
 
 
@@ -979,7 +979,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             _gunTargets[part] = fireTarget;
-            _projectileTimers[part] = cooldownValue;
+            //_projectileTimers[part] = cooldownValue;
 
 
             //Use resources
@@ -1028,7 +1028,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------//
         }
 
-        private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
+        /*private void TriggerPartUpdates(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
             //TODO This still needs to account for multiple bombs
             if (!_triggerPartTimers.TryGetValue(part, out var timer))
@@ -1065,7 +1065,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-        }
+        }*/
 
         #endregion //Part Updates
 
@@ -1253,8 +1253,8 @@ namespace StarSalvager
                 return;
 
             //Find the index of the ui element to show cooldown
-            var tempPart = part;
-            var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
+            //var tempPart = part;
+            //var uiIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == tempPart.category);//_triggerParts.FindIndex(0, _triggerParts.Count, x => x == tempPart);
 
             //Get the max cooldown value
             //--------------------------------------------------------------------------------------------------------//
@@ -1266,7 +1266,7 @@ namespace StarSalvager
             //--------------------------------------------------------------------------------------------------------//
 
             var fill = 1f - cooldownData.Value;
-            GameUI.SetFill(uiIndex, fill);
+            GameUI.SetFill(part.category, fill);
 
             //--------------------------------------------------------------------------------------------------------//
         }

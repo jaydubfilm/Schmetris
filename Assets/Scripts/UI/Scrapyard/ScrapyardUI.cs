@@ -33,21 +33,12 @@ namespace StarSalvager.UI.Scrapyard
         //Prototype
         //====================================================================================================================//
 
-        //FIXME This should be combined with the part choice UI
-        [Serializable]
-        private struct SelectionUI
-        {
-            public Button partButton;
-            public PartChoiceButtonHover PartChoiceButtonHover;
-            public TMP_Text partTitle;
-        }
-
         [SerializeField, Required, FoldoutGroup("Prototype")]
         private GameObject partDisposeWindow;
         [SerializeField, Required, FoldoutGroup("Prototype")]
         private TMP_Text titleText;
         [SerializeField, Required, FoldoutGroup("Prototype")]
-        private SelectionUI[] selectionUis;
+        private PartChoiceUI.PartSelectionUI[] selectionUis;
 
         //FIXME This should be moving to the drone designer once its ready
         public void CheckForPartOverage()
@@ -93,11 +84,6 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
-            var bitProfile = FactoryManager.Instance.BitProfileData;
-
-            var partRemote = FactoryManager.Instance.PartsRemoteData;
-            var partProfile = FactoryManager.Instance.PartsProfileData;
-
             var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
             currentParts.AddRange(PlayerDataManager.GetBlockDatas().OfType<PartData>());
 
@@ -107,7 +93,7 @@ namespace StarSalvager.UI.Scrapyard
                     continue;
 
                 var parts = currentParts
-                    .Where(x => partRemote.GetRemoteData((PART_TYPE) x.Type).category == bitType)
+                    .Where(x => ((PART_TYPE) x.Type).GetCategory() == bitType)
                     .ToList();
 
                 if(parts.Count <= Globals.MaxPartTypeCount)
@@ -118,25 +104,27 @@ namespace StarSalvager.UI.Scrapyard
 
                 var partOptions = parts
                     .Where(x => PartChoiceUI.LastPicked != (PART_TYPE)x.Type)
-                    .Select(x => (PART_TYPE) x.Type)
                     .Take(2)
                     .ToArray();
 
                 for (int i = 0; i < partOptions.Length; i++)
                 {
-                    var partType = partOptions[i];
-                    var partRemoteData = partRemote.GetRemoteData(partType);
+                    var partData = partOptions[i];
+                    var partType = (PART_TYPE)partData.Type;
+                    var category = partType.GetCategory();
 
-                    selectionUis[i].partTitle.text = partRemoteData.name;
-                    selectionUis[i].partButton.image.sprite = partProfile.GetProfile(partType).Sprite;
-                    selectionUis[i].partButton.image.color = partRemoteData.category.GetColor();
+                    selectionUis[i].optionText.text = partType.GetRemoteData().name;
+                    selectionUis[i].optionImage.sprite = partType.GetSprite();
 
                     selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
+                    
+                    selectionUis[i].categoryImage.color = category.GetColor();
+                    selectionUis[i].categoryText.text = category.GetCategoryName();
 
-                    selectionUis[i].partButton.onClick.RemoveAllListeners();
-                    selectionUis[i].partButton.onClick.AddListener(() =>
+                    selectionUis[i].optionButton.onClick.RemoveAllListeners();
+                    selectionUis[i].optionButton.onClick.AddListener(() =>
                     {
-                        _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
+                        _droneDesigner.DroneDesignUi.ShowPartDetails(false, partData, null);
                         FindAndDestroyPart(partType);
                         partDisposeWindow.SetActive(false);
                     });
@@ -253,6 +241,8 @@ namespace StarSalvager.UI.Scrapyard
         // Start is called before the first frame update
         private void Start()
         {
+            partDisposeWindow.SetActive(false);
+            
             _droneDesigner = FindObjectOfType<DroneDesigner>();
             _partChoice = FindObjectOfType<PartChoiceUI>();
 

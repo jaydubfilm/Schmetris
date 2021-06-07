@@ -60,6 +60,7 @@ namespace StarSalvager.UI
                     return;
 
                 backgroundImage.gameObject.SetActive(isTrigger);
+                
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 if (!isTrigger)
@@ -79,7 +80,11 @@ namespace StarSalvager.UI
             }
             public void SetSecondSprite(in Sprite partSprite)
             {
-                secondPartImage.sprite = partSprite;
+                //FIXME Need to determine when to actually start showing this stuff
+                //if (secondPartImage is null) return;
+                //
+                //secondPartImage.gameObject.SetActive(partSprite != null);
+                //secondPartImage.sprite = partSprite;
             }
 
             public void SetColor(in Color color)

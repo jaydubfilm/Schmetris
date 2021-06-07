@@ -72,8 +72,6 @@ namespace StarSalvager.Values
         public static float PartSwapTime => m_gameSettings.partSwapTime;
         public static bool UsePartColors => m_gameSettings.usePartColors;
 
-        public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
-
         public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
         public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
         public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
