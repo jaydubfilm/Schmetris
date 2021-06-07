@@ -23,16 +23,6 @@ MonoBehaviour:
     RFRCD: 0
     part: Core
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
-  - PartType: 2
-    POWER: 0
-    AOE: 0
-    RATE: 0
-    EFF: 1
-    RANGE: 0
-    BURN: 0
-    RFRCD: 0
-    part: Repairer
-    color: {r: 0.45882353, g: 1, b: 0, a: 1}
   - PartType: 3
     POWER: 0
     AOE: 0
@@ -58,7 +48,7 @@ MonoBehaviour:
     AOE: 0
     RATE: 1
     EFF: 1
-    RANGE: 1
+    RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Shield

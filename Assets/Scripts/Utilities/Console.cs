@@ -363,6 +363,7 @@ namespace StarSalvager.Utilities
                                 {
                                     var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
                                         .Where(x => x.isImplemented)
+                                        .Where(x => x.partType != PART_TYPE.EMPTY && x.partType != PART_TYPE.CORE)
                                         .Select(x => x.partType);
 
                                     foreach (var partType in partTypes)
@@ -391,6 +392,12 @@ namespace StarSalvager.Utilities
                                     
                                     if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                                     {
+                                        if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
+                                        {
+                                            _consoleDisplay += $"\nCannot add {partType} part.";
+                                            return;
+                                        }
+                                        
                                         var patchSockets = partType.GetRemoteData().PatchSockets;
 
                                         var partBlockData = new PartData
