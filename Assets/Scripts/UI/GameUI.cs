@@ -38,6 +38,7 @@ namespace StarSalvager.UI
         {
             [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
             [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image secondPartImage;
 
             [Required, FoldoutGroup("$NAME")] public Image triggerInputImage;
 
@@ -59,11 +60,13 @@ namespace StarSalvager.UI
                     return;
 
                 backgroundImage.gameObject.SetActive(isTrigger);
+                
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
-                if (!isTrigger)
-                    return;
+                //if (!isTrigger)
+                //    return;
 
+                triggerInputImage.gameObject.SetActive(isTrigger);
                 triggerInputImage.sprite = triggerSprite;
             }
 
@@ -74,12 +77,21 @@ namespace StarSalvager.UI
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
             }
+            public void SetSecondSprite(in Sprite partSprite)
+            {
+                //FIXME Need to determine when to actually start showing this stuff
+                //if (secondPartImage is null) return;
+                //
+                //secondPartImage.gameObject.SetActive(partSprite != null);
+                //secondPartImage.sprite = partSprite;
+            }
 
             public void SetColor(in Color color)
             {
                 if (foregroundImage is null)
                     return;
                 foregroundImage.color = color;
+                secondPartImage.color = color;
             }
 
             public void SetBackgroundColor(in Color color)
@@ -675,6 +687,8 @@ namespace StarSalvager.UI
 
         private void TryUpdateInputSprites(string newDeviceName)
         {
+            Debug.Log($"{nameof(TryUpdateInputSprites)} is not implemented for this Prototype");
+            return;
             var indices = new[]
             {
                 0, 1, 3, 4
@@ -727,7 +741,24 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
+        public void SetSecondIconImage(int index, in PART_TYPE partType)
+        {
+            //--------------------------------------------------------------------------------------------------------//
 
+            if (index < 0) return;
+
+            var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
+
+            SliderPartUis[index].SetSecondSprite(sprite);
+        }
+
+        public bool GetIsFilled(in int index)
+        {
+            throw new NotImplementedException();
+            // if (index < 0)
+            //     return false;
+            // return SliderPartUis[index].isFilled;
+        }
         public void SetFill(in BIT_TYPE bitType, in float fillValue)
         {
             switch (bitType)

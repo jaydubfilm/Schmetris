@@ -10,9 +10,11 @@ namespace StarSalvager.ScriptableObjects
     {
         [BoxGroup("Prototyping")]
         public bool usePartColors = true;
-        
+
         [BoxGroup("Prototyping")]
         public bool useCenterFiring = true;
+        [BoxGroup("Prototyping")]
+        public int maxPartTypeCount = 2;
         [BoxGroup("Prototyping")]
         public bool useShuffleDance = true;
         [BoxGroup("Prototyping")]
@@ -22,8 +24,8 @@ namespace StarSalvager.ScriptableObjects
 
         [BoxGroup("Prototyping"), PropertyRange(0, 50)]
         public int preSpawnedRows;
-        
-        
+
+
         [BoxGroup("Prototyping")]
         public int startingAmmo = 20;
 
@@ -48,7 +50,7 @@ namespace StarSalvager.ScriptableObjects
 
         [BoxGroup("Waves")]
         public float timeForAsteroidToFallOneSquare = 0.25f;
-        
+
 
         [BoxGroup("Waves")]
         public float obstacleMass = 2.0f;
@@ -72,12 +74,16 @@ namespace StarSalvager.ScriptableObjects
         //Bot Properties
         //====================================================================================================================//
 
+        [BoxGroup("Bot"), SuffixLabel("s", true)]
+        public float partSwapTime = 1f;
+
+
         [BoxGroup("Bot"), Range(0f,10f)]
         public float botHealWaitTime = 2f;
-        
+
         [BoxGroup("Bot")]
         public float decoyDroneHealth = 20f;
-        
+
         [BoxGroup("Bot"), Range(0f,1f)]
         public float bitDropCollectionMultiplier = 1f;
 
@@ -113,7 +119,7 @@ namespace StarSalvager.ScriptableObjects
         public float dashSpeed = 60f;
         [FoldoutGroup("Bot/Movement")]
         public float dashCooldown = 1f;
-        
+
         //Camera Properties
         //====================================================================================================================//
 

@@ -83,7 +83,7 @@ namespace StarSalvager.Utilities
             //string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             //string.Concat("set ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
             string.Concat("set ", "godmode ", "[bool]").ToUpper(),
-            
+
             string.Concat("set ", "orientation ", "[Horizontal | Vertical]").ToUpper(),
             //string.Concat("set ", "partprofile ", "[index:uint]").ToUpper(),
             string.Concat("set ", "paused ", "[bool]").ToUpper(),
@@ -306,7 +306,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!int.TryParse(split[2], out var compAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -325,7 +325,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!int.TryParse(split[2], out var xp))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -356,7 +356,7 @@ namespace StarSalvager.Utilities
                     {
                         case "parts":
                         {
-                            
+
                             switch (split[3].ToLower())
                             {
                                 case "all":
@@ -389,7 +389,7 @@ namespace StarSalvager.Utilities
                                         _consoleDisplay += "\nTo Add a part, an amount greater than 0 is required";
                                         return;
                                     }
-                                    
+
                                     if (Enum.TryParse(split[3], true, out PART_TYPE partType))
                                     {
                                         if (partType == PART_TYPE.EMPTY || partType == PART_TYPE.CORE)
@@ -397,7 +397,7 @@ namespace StarSalvager.Utilities
                                             _consoleDisplay += $"\nCannot add {partType} part.";
                                             return;
                                         }
-                                        
+
                                         var patchSockets = partType.GetRemoteData().PatchSockets;
 
                                         var partBlockData = new PartData
@@ -529,7 +529,7 @@ namespace StarSalvager.Utilities
                 _cmds.Clear();
                 return;
             }
-            
+
             switch (split[1].ToLower())
             {
                 case "console":
@@ -676,7 +676,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!TryParseBool(split[2], out state))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -735,7 +735,7 @@ namespace StarSalvager.Utilities
                     var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
                         .Where(x => x.isImplemented)
                         .Select(x => x.partType);
-                    
+
                     _consoleDisplay += $"\n{string.Join(", ", partTypes)}";
                     break;
                 case "enemies":
@@ -841,7 +841,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!int.TryParse(split[2], out var columns))
                     {
                         UnrecognizeCommand(split[2]);
@@ -876,7 +876,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!int.TryParse(split[2], out var gears))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -896,7 +896,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!TryParseBool(split[2], out state))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1032,7 +1032,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!float.TryParse(split[2], out var scale))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1049,7 +1049,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!Enum.TryParse(split[2], true, out UPGRADE_TYPE upgrade))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1069,7 +1069,7 @@ namespace StarSalvager.Utilities
                             _consoleDisplay += UnrecognizeCommand(split[4]);
                             break;
                         }
-                        
+
                         PlayerDataManager.SetUpgradeLevel(upgrade, level, bit);
                     }
                     else if (split.Length == 4)
@@ -1079,7 +1079,7 @@ namespace StarSalvager.Utilities
                             _consoleDisplay += UnrecognizeCommand(split[4]);
                             break;
                         }
-                        
+
                         PlayerDataManager.SetUpgradeLevel(upgrade, level);
                     }
                     else
@@ -1132,7 +1132,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!Enum.TryParse(split[2], true, out BIT_TYPE bit))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1186,7 +1186,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     if (!Enum.TryParse(split[2], true, out PART_TYPE part))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1233,7 +1233,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
-                    
+
                     var delay = 0f;
                     var type = split[2].Replace('_', ' ');
 
@@ -1340,15 +1340,15 @@ namespace StarSalvager.Utilities
         {
             value = string.Empty;
 
-            if (split.Length >= min) 
+            if (split.Length >= min)
                 return true;
-            
+
             value =  "\nMissing arguments in command. Enter 'help' to see possible commands";
-            
+
             return false;
 
         }
-        
+
         private static string UnrecognizeCommand(string cmd)
         {
             return $"\nUnrecognized command at '{cmd}'. Enter 'help' to see possible commands";

@@ -7381,30 +7381,35 @@ MonoBehaviour:
   SliderPartUis:
   - backgroundImage: {fileID: 7205011842918447406}
     foregroundImage: {fileID: 7754792598957592740}
+    secondPartImage: {fileID: 4062249533422245520}
     triggerInputImage: {fileID: 4062249533422245520}
     slider: {fileID: 1847234627506919358}
     fillImage: {fileID: 1416946799750667688}
     NAME: UP [YELLOW]
   - backgroundImage: {fileID: 7342643545682775317}
     foregroundImage: {fileID: 7565618612073681340}
+    secondPartImage: {fileID: 4724887726770228755}
     triggerInputImage: {fileID: 4724887726770228755}
     slider: {fileID: 99700352731938398}
     fillImage: {fileID: 166218794203415415}
     NAME: DOWN [GREY]
   - backgroundImage: {fileID: 0}
     foregroundImage: {fileID: 0}
+    secondPartImage: {fileID: 0}
     triggerInputImage: {fileID: 0}
     slider: {fileID: 3630173962964315094}
     fillImage: {fileID: 3101586041847298314}
     NAME: BOTTOM [GREEN]
   - backgroundImage: {fileID: 1723467421872320879}
     foregroundImage: {fileID: 5935934571182234917}
+    secondPartImage: {fileID: 6793601072814814115}
     triggerInputImage: {fileID: 6793601072814814115}
     slider: {fileID: 5647413199682952836}
     fillImage: {fileID: 606840679958182004}
     NAME: LEFT [BLUE]
   - backgroundImage: {fileID: 6916574585216323674}
     foregroundImage: {fileID: 13232506991855823}
+    secondPartImage: {fileID: 4249702566115244229}
     triggerInputImage: {fileID: 4249702566115244229}
     slider: {fileID: 3757709100253414771}
     fillImage: {fileID: 7747246944542671947}
