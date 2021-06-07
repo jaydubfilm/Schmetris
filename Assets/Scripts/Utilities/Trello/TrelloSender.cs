@@ -8,6 +8,7 @@ using StarSalvager.UI;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Jira;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.SceneManagement;
 using TMPro;
@@ -28,6 +29,8 @@ namespace StarSalvager.Utilities.Trello
 
         //====================================================================================================================//
 
+        private Action _callBack;
+        
         [SerializeField]
         private GameObject bugWindowObject;
         [SerializeField]
@@ -67,7 +70,7 @@ namespace StarSalvager.Utilities.Trello
                 ResetInput();
                 bugWindowObject.SetActive(false);
                 GameTimer.SetPaused(false);
-                
+                _callBack?.Invoke();
             });
             bugWindowObject.SetActive(false);
             
@@ -114,7 +117,7 @@ namespace StarSalvager.Utilities.Trello
         {
             if (Input.GetKeyDown(openWindowKey))
             {
-                OpenBugSubmissionWindow();
+                OpenBugSubmissionWindow(null);
             }
         }
 
@@ -122,15 +125,12 @@ namespace StarSalvager.Utilities.Trello
 
         //private ACTION_MAP _previousInputMap;
 
-        private void OpenBugSubmissionWindow()
+        public void OpenBugSubmissionWindow(Action callback, in bool takeScreenShot = true)
         {
-            if (bugWindowObject.activeInHierarchy) 
-                return;
 
-            //_previousInputMap = InputManager.CurrentActionMap;
-            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
+            //--------------------------------------------------------------------------------------------------------//
             
-            StartCoroutine(TakeScreenshotRoutine(() =>
+            void Ready()
             {
                 rawImage.texture = _screenshot;
                 
@@ -141,11 +141,32 @@ namespace StarSalvager.Utilities.Trello
                 
                 bugWindowObject.SetActive(true);
                 
-                GameTimer.SetPaused(true);
+                GameTimer.SetPaused(true); 
+            }
 
-            }));
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (bugWindowObject.activeInHierarchy) 
+                return;
 
+            _callBack = callback;
+            
+            //_previousInputMap = InputManager.CurrentActionMap;
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
+            if (takeScreenShot)
+            {
+                StartCoroutine(TakeScreenshotRoutine(Ready));
+                return;
+            }
+
+            Ready();
+
+        }
+
+        public void TakeEarlyScreenShot()
+        {
+            StartCoroutine(TakeScreenshotRoutine(null));
         }
 
         private void SendReport()
@@ -172,7 +193,7 @@ namespace StarSalvager.Utilities.Trello
             
             
             TrelloCard card = trello.NewCard(title, description, CATEGORY, LABELS);
-            StartCoroutine(SendReportCoroutine(card, _screenshot, 
+            StartCoroutine(JiraSender.SendReportCoroutine(card, _screenshot, 
                 () =>
                 {
                     processingSendObject.SetActive(true);
@@ -186,7 +207,24 @@ namespace StarSalvager.Utilities.Trello
                     Toast.AddToast("Bug Submitted");
 
                     ResetInput();
+                    
+                    _callBack?.Invoke();
                 }));
+            /*StartCoroutine(SendReportCoroutine(card, _screenshot, 
+                () =>
+                {
+                    processingSendObject.SetActive(true);
+                },
+                () =>
+                {
+                    GameTimer.SetPaused(false);
+                    processingSendObject.SetActive(false);
+                    bugWindowObject.SetActive(false);
+                    
+                    Toast.AddToast("Bug Submitted");
+
+                    ResetInput();
+                }));*/
         }
 
         private void ResetInput()
@@ -301,7 +339,7 @@ namespace StarSalvager.Utilities.Trello
 
         //====================================================================================================================//
         
-        public IEnumerator TakeScreenshotRoutine(Action onfinishedCallback)
+        private IEnumerator TakeScreenshotRoutine(Action onfinishedCallback)
         {
             yield return new WaitForEndOfFrame();
             

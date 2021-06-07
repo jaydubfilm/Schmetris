@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
@@ -9,6 +10,7 @@ using StarSalvager.Factories.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
@@ -19,7 +21,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
@@ -34,22 +36,15 @@ namespace StarSalvager.UI
         [Serializable]
         public struct SliderPartUI
         {
-            public bool isFilled => Math.Abs(foregroundImage.fillAmount - 1f) < 0.02f;
+            [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image secondPartImage;
 
-            [Required, FoldoutGroup("$NAME")]
-            public Image backgroundImage;
-            [Required, FoldoutGroup("$NAME")]
-            public Image foregroundImage;
-            
-            [Required, FoldoutGroup("$NAME")]
-            public Image secondPartImage;
-
-            [Required, FoldoutGroup("$NAME")]
-            public Image triggerInputImage;
+            [Required, FoldoutGroup("$NAME")] public Image triggerInputImage;
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
-            
+
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
@@ -61,8 +56,11 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
+                if (triggerInputImage is null || backgroundImage is null)
+                    return;
+
                 backgroundImage.gameObject.SetActive(isTrigger);
-                triggerInputImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 if (!isTrigger)
                     return;
@@ -74,6 +72,8 @@ namespace StarSalvager.UI
 
             public void SetSprite(in Sprite partSprite)
             {
+                if (foregroundImage is null || backgroundImage is null) return;
+
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
             }
@@ -84,17 +84,25 @@ namespace StarSalvager.UI
 
             public void SetColor(in Color color)
             {
+                if (foregroundImage is null)
+                    return;
                 foregroundImage.color = color;
                 secondPartImage.color = color;
             }
-            
+
             public void SetBackgroundColor(in Color color)
             {
+                if (backgroundImage is null)
+                    return;
+
                 backgroundImage.color = color;
             }
 
             public void SetFill(float val)
             {
+                if (foregroundImage is null)
+                    return;
+
                 foregroundImage.fillAmount = val;
             }
         }
@@ -109,8 +117,10 @@ namespace StarSalvager.UI
 #endif
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite keyboardSprite;
+
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite xboxControllerSprite;
+
             [SerializeField, Required, FoldoutGroup("$NAME")]
             private Sprite playstationControllerSprite;
 
@@ -139,14 +149,10 @@ namespace StarSalvager.UI
                 RED
             }
 
-            [FoldoutGroup("$type")]
-            public TYPE type;
-            [FoldoutGroup("$type")]
-            public Sprite backgroundImage;
-            [FoldoutGroup("$type")]
-            public Sprite crossbarImage;
-            [FoldoutGroup("$type")]
-            public Sprite verticalBarImage;
+            [FoldoutGroup("$type")] public TYPE type;
+            [FoldoutGroup("$type")] public Sprite backgroundImage;
+            [FoldoutGroup("$type")] public Sprite crossbarImage;
+            [FoldoutGroup("$type")] public Sprite verticalBarImage;
 
             [FoldoutGroup("$type")] public Color titleColor;
             [FoldoutGroup("$type")] public Color textColor;
@@ -158,22 +164,27 @@ namespace StarSalvager.UI
 
         private const float MAGNET_FILL_VALUE = 0.02875f;
 
+        private static int[] _gameUIBitIndices;
+
         #region Properties
 
-        [SerializeField]
-        private RectTransform viewableAreaTransform;
+        [SerializeField] private RectTransform viewableAreaTransform;
 
         //Top Left Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
+        [FormerlySerializedAs("gearsText")] [SerializeField, Required, FoldoutGroup("TL Window")]
+        private TMP_Text xpText;
+
+        //[SerializeField, Required, FoldoutGroup("TL Window")]
+        //private Slider gearsSlider;
+        [FormerlySerializedAs("componentsText")]
+        [FormerlySerializedAs("patchPointsText")]
+        [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
         private TMP_Text gearsText;
 
-        [SerializeField, Required, FoldoutGroup("TL Window")]
-        private Slider gearsSlider;
-        [FormerlySerializedAs("patchPointsText")] 
         [SerializeField, Required, FoldoutGroup("TL Window"), Space(10f)]
-        private TMP_Text componentsText;
+        private TMP_Text silverText;
 
         //Top Right Window
         //====================================================================================================================//
@@ -188,6 +199,7 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("B Window")]
         private GameObject abortWindow;
+
         [SerializeField, Required, FoldoutGroup("B Window")]
         private Button abortButton;
 
@@ -220,11 +232,14 @@ namespace StarSalvager.UI
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        [FormerlySerializedAs("heatFillImage")]
-        private Image botHealthBarImage;
+        private Slider botHealthBarSlider;
+
+        [SerializeField, Required, FoldoutGroup("BR Window")]
+        private Image botHealthBarSliderImage;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
+
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Image carryCapacityFillImage;
 
@@ -242,19 +257,25 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryText;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Button confirmButton;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text confirmButtonText;
 
         [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image backgroundImage;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image crossbarImage;
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private Image[] verticalBarImages;
 
@@ -265,6 +286,7 @@ namespace StarSalvager.UI
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Extras"), FoldoutGroup("Extras/Cracks")]
         private CanvasGroup cracksCanvasGroup;
+
         [SerializeField, Required, FoldoutGroup("Extras/Cracks")]
         private Image[] crackImages;
 
@@ -275,14 +297,19 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform effectArea;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private RectTransform moveTargetTransform;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private Image imagePrefab;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Required]
         private float imageSize = 50;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.1f, 20f)]
         private float effectRadius;
+
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(1, 10)]
         private int effectCount;
 
@@ -291,11 +318,13 @@ namespace StarSalvager.UI
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
         private float spawnTime;
+
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve spawnCurve;
 
         [SerializeField, FoldoutGroup("Patch Point Effect"), Range(0.01f, 2f)]
         private float moveTime;
+
         [SerializeField, FoldoutGroup("Patch Point Effect")]
         private AnimationCurve moveCurve;
 
@@ -306,12 +335,15 @@ namespace StarSalvager.UI
 
         #region Combo Effect Properties
 
-        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(1,10,true)]
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(1, 10, true)]
         private Vector2Int effectElementCount;
-        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(0,2,true)]
+
+        [SerializeField, BoxGroup("Combo Effect"), MinMaxSlider(0, 2, true)]
         private Vector2 moveTimeRange;
+
         [SerializeField, BoxGroup("Combo Effect")]
         private Sprite[] bitEffectSprites;
+
         [SerializeField, BoxGroup("Combo Effect")]
         private RectTransform[] sliderTargets;
 
@@ -324,23 +356,27 @@ namespace StarSalvager.UI
 
         [SerializeField, MinMaxSlider(0.2f, 2f, true), FoldoutGroup("Extras/Neon Border")]
         private Vector2 flashTimeRange;
+
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image borderGlow;
+
         [SerializeField, Required, FoldoutGroup("Extras/Neon Border")]
         private Image border;
+
         [SerializeField, FoldoutGroup("Extras/Neon Border")]
         private AnimationCurve flashCurve;
+
         private bool _flashingBorder;
-        
-        
+
+
         private Image[] glowImages;
         private float _alpha;
         private float speed = 4f;
-        
+
         private Canvas _canvas;
 
         #endregion //Properties
-        
+
         //Unity Functions
         //============================================================================================================//
 
@@ -381,6 +417,8 @@ namespace StarSalvager.UI
         //Hint UI
         //============================================================================================================//
 
+        #region Hint UI
+
         public object[] GetHintElements(HINT hint)
         {
             switch (hint)
@@ -389,14 +427,21 @@ namespace StarSalvager.UI
                     return null;
                 case HINT.MAGNET:
                     return null;
-                    /*return new object[]
+                /*return new object[]
                     {
                         magnetFlash.transform as RectTransform
                     };*/
+                case HINT.HEALTH:
+                    return new object[]
+                    {
+                        botHealthBarSliderImage.transform as RectTransform,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
         }
+
+        #endregion //Hint UI
 
         //Init UI
         //====================================================================================================================//
@@ -405,6 +450,15 @@ namespace StarSalvager.UI
 
         private void InitValues()
         {
+            _gameUIBitIndices = new int[5];
+            var bitList = Constants.BIT_ORDER.ToList();
+            for (var i = 1; i <= 5; i++)
+            {
+                var bitType = (BIT_TYPE) i;
+                var index = bitList.FindIndex(x => x == bitType);
+                _gameUIBitIndices[i - 1] = index;
+            }
+
             SetupAmmoSliders();
 
             //InitSmartWeaponUI();
@@ -417,28 +471,28 @@ namespace StarSalvager.UI
             SetLevelProgressSlider(0f);
 
 
-            SetPlayerComponents(0);
+            SetPlayerGears(0);
+            SetPlayerSilver(0);
             SetPlayerXP(0);
-            ShowAbortWindow(false);
 
             OutlineMagnet(false);
 
             SetDancersActive(false);
             FadeBackground(false, true);
         }
-        
+
         private void SetupPlayerValues()
         {
-            ShowAbortWindow(false);
 
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
-            SetPlayerComponents(PlayerDataManager.GetGears());
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
 
             UpdateAmmoSliders();
         }
 
         #endregion //Init UI
-        
+
         //Ammo Sliders
         //============================================================================================================//
 
@@ -491,51 +545,6 @@ namespace StarSalvager.UI
 
         #endregion //Magnets
 
-        //Abort Window
-        //============================================================================================================//
-
-        #region Abort Window
-
-        private bool _abortWindowShown = true;
-        public void ShowAbortWindow(bool shown)
-        {
-            //Prevent repeated calls
-            if (_abortWindowShown == shown)
-                return;
-
-            _abortWindowShown = shown;
-
-            if (!shown)
-            {
-                abortButton.onClick.RemoveAllListeners();
-                abortWindow.SetActive(false);
-                return;
-            }
-
-            abortWindow.SetActive(true);
-
-            if (Globals.UsingTutorial)
-            {
-                abortButton.gameObject.SetActive(false);
-                return;
-            }
-
-            abortButton.gameObject.SetActive(true);
-
-            abortButton.onClick.AddListener(AbortPressed);
-        }
-        
-        public void AbortPressed()
-        {
-            LevelManager.Instance.BotInLevel.TrySelfDestruct();
-
-            //If the bot was able to be killed, hide this window
-            if(LevelManager.Instance.BotInLevel.Destroyed)
-                ShowAbortWindow(false);
-        }
-
-        #endregion //Abort Window
-
         //Update UI
         //============================================================================================================//
 
@@ -554,13 +563,14 @@ namespace StarSalvager.UI
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
         }
 
         private void ValuesUpdated()
         {
-            SetPlayerComponents(PlayerDataManager.GetGears());
             SetPlayerXP(PlayerDataManager.GetXPThisRun());
+            SetPlayerGears(PlayerDataManager.GetGears());
+            SetPlayerSilver(PlayerDataManager.GetSilver());
             //SetPlayerXP(PlayerDataManager.get);
 
             UpdateAmmoSliders();
@@ -578,19 +588,23 @@ namespace StarSalvager.UI
             }
 
 
-            botHealthBarImage.color = Color.Lerp(Color.red, Color.green, value);
-            botHealthBarImage.fillAmount = value;
+            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            botHealthBarSlider.value = value;
 
         }
 
         public void SetPlayerXP(in int xp)
         {
-            gearsText.text = $"{xp} XP";
+            xpText.text = $"{xp} {TMP_SpriteHelper.STARDUST_ICON}";
         }
 
-        public void SetPlayerComponents(in int points)
+        public void SetPlayerGears(in int gears)
         {
-            componentsText.text = $"{points}";
+            gearsText.text = $"{TMP_SpriteHelper.GEAR_ICON} {gears}";
+        }
+        public void SetPlayerSilver(in int silver)
+        {
+            silverText.text = $"{TMP_SpriteHelper.SILVER_ICON} {silver}";
         }
 
 
@@ -608,7 +622,7 @@ namespace StarSalvager.UI
         {
             sectorText.text = text;
         }
-        
+
         #endregion //Update UI
 
         //Neon Border Flashing
@@ -621,6 +635,7 @@ namespace StarSalvager.UI
         {
             FlashNeonBorder(Random.Range(flashTimeRange.x, flashTimeRange.y));
         }
+
         public void FlashNeonBorder(in float time)
         {
             if (_flashingBorder)
@@ -638,7 +653,7 @@ namespace StarSalvager.UI
             Color endGlowColor = Color.clear;
 
             Color startBorderColor = Color.white;
-            Color darkBorderColor = new Color(0.5f,0.5f,0.5f);
+            Color darkBorderColor = new Color(0.5f, 0.5f, 0.5f);
 
             var mult = Random.Range(1f, 5f);
 
@@ -674,7 +689,7 @@ namespace StarSalvager.UI
             {
                 0, 1, 3, 4
             };
-            
+
             for (var i = 0; i < indices.Length; i++)
             {
                 var index = indices[i];
@@ -692,14 +707,14 @@ namespace StarSalvager.UI
         public void SetIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             Sprite GetInputSprite(in int bitIndex)
             {
                 return inputIcons[bitIndex].GetInputSprite(InputManager.CurrentInputDeviceName);
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (index < 0) return;
 
             if (partType == PART_TYPE.EMPTY)
@@ -715,14 +730,17 @@ namespace StarSalvager.UI
             var isTrigger = partRemoteData.isManual;
             var sprite = partType.GetSprite();
 
-            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
+            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
+
             SliderPartUis[index].SetSprite(sprite);
-            SliderPartUis[index].SetColor(partRemoteData.category.GetColor());
+
+            SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
         public void SetSecondIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (index < 0) return;
 
             var sprite = FactoryManager.Instance.PartsProfileData.GetProfile(partType).GetSprite(0);
@@ -732,12 +750,28 @@ namespace StarSalvager.UI
 
         public bool GetIsFilled(in int index)
         {
-            if (index < 0) 
-                return false;
-            return SliderPartUis[index].isFilled;
+            throw new NotImplementedException();
+            // if (index < 0)
+            //     return false;
+            // return SliderPartUis[index].isFilled;
         }
-        
-        public void SetFill(int index, float fillValue)
+        public void SetFill(in BIT_TYPE bitType, in float fillValue)
+        {
+            switch (bitType)
+            {
+                case BIT_TYPE.BLUE:
+                case BIT_TYPE.GREEN:
+                case BIT_TYPE.GREY:
+                case BIT_TYPE.RED:
+                case BIT_TYPE.YELLOW:
+                    SetFill(_gameUIBitIndices[(int) bitType - 1], fillValue);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private void SetFill(in int index, in float fillValue)
         {
             if (index < 0) return;
             SliderPartUis[index].SetFill(fillValue);
@@ -858,7 +892,7 @@ namespace StarSalvager.UI
 
         //Dancers
         //====================================================================================================================//
-        
+
         #region Dancers
 
         public void SetDancersActive(bool state)
@@ -893,6 +927,7 @@ namespace StarSalvager.UI
         }
 
         private bool _fading;
+
         private IEnumerator FadeBackground(float time, Color startColor, Color endColor)
         {
             _fading = true;
@@ -923,15 +958,10 @@ namespace StarSalvager.UI
 
         #region Patch Point Effects
 
-        [Button, DisableInEditorMode]
-        public void CreatePatchPointEffect()
-        {
-            CreatePatchPointEffect(effectCount);
-        }
-
         public void CreatePatchPointEffect(int count)
         {
-            if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
+            throw new NotImplementedException();
+            /*if (LevelManager.Instance is null || LevelManager.Instance.BotInLevel is null)
                 return;
 
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
@@ -955,7 +985,7 @@ namespace StarSalvager.UI
             /*if (count >= 1 && HintManager.CanShowHint(HINT.PATCH_POINT))
             {
                 HintManager.TryShowHint(HINT.PATCH_POINT, patchPointsText.transform as RectTransform);
-            }*/
+            }#1#*/
         }
 
         private IEnumerator PatchPointEffectCoroutine(Vector2 startPosition, Sprite sprite, int count)
@@ -969,7 +999,7 @@ namespace StarSalvager.UI
                 var image = Instantiate(imagePrefab);
                 image.sprite = sprite;
 
-                var trans = (RectTransform)image.transform;
+                var trans = (RectTransform) image.transform;
                 trans.sizeDelta = Vector2.one * imageSize;
                 trans.SetParent(effectArea, false);
                 trans.localScale = Vector3.zero;
@@ -977,7 +1007,8 @@ namespace StarSalvager.UI
                 transforms[i] = trans;
 
                 spawnPositions[i] = startPosition +
-                                    new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * (effectRadius * 10f);
+                                    new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized *
+                                    (effectRadius * 10f);
                 rotateDirection[i] = Random.value > 0.5f;
             }
 
@@ -992,7 +1023,8 @@ namespace StarSalvager.UI
                 {
                     transforms[i].localPosition = Vector2.Lerp(startPosition, spawnPositions[i], td);
                     transforms[i].localScale = Vector3.Lerp(Vector3.zero, Vector3.one, td);
-                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                    transforms[i].localEulerAngles +=
+                        Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }
 
                 t += deltaTime;
@@ -1015,8 +1047,10 @@ namespace StarSalvager.UI
                 for (var i = 0; i < count; i++)
                 {
                     transforms[i].localPosition = Vector2.Lerp(spawnPositions[i], targetPosition, td);
-                    transforms[i].localScale = Vector3.Lerp(Vector3.one, Vector3.zero, spawnCurve.Evaluate(t/moveTime));
-                    transforms[i].localEulerAngles += Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
+                    transforms[i].localScale =
+                        Vector3.Lerp(Vector3.one, Vector3.zero, spawnCurve.Evaluate(t / moveTime));
+                    transforms[i].localEulerAngles +=
+                        Vector3.forward * (rotationSpeed * (rotateDirection[i] ? 1f : -1f) * deltaTime);
                 }
 
                 t += deltaTime;
@@ -1036,26 +1070,42 @@ namespace StarSalvager.UI
         //====================================================================================================================//
 
         //FIXME Adding ammo in this method could cause a loss either from early destruction of the coroutine, or division
+
         #region Ammo Effect
 
-        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition)
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, [CallerMemberName] string calledMemberName = "")
         {
-            CreateAmmoEffect(bitType, 
+            CreateAmmoEffect(bitType,
                 amount,
-                startPosition, 
+                startPosition,
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                calledMemberName);
         }
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange)
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
         {
+            if (bitType == BIT_TYPE.WHITE)
+                throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
+
             const float RADIUS = 50;
-            
-            var sprite = bitEffectSprites[(int) bitType - 1];
-            var targetTransform = sliderTargets[(int) bitType - 1];
-            
+            Sprite sprite;
+            Transform targetTransform;
+
+            try
+            {
+               sprite = bitEffectSprites[(int) bitType - 1];
+               targetTransform = sliderTargets[(int) bitType - 1];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.LogError($"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
+                throw;
+            }
+
+
             var count = Random.Range(minCount, maxCount);
             var dividedAmount = amount / count;
-            
+
             var screenPoint = CameraController.Camera.WorldToScreenPoint(startPosition);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -1069,25 +1119,25 @@ namespace StarSalvager.UI
                 bitType,
                 dividedAmount,
                 targetTransform,
-                newPosition, 
+                newPosition,
                 sprite,
                 RADIUS,
-                count, 
+                count,
                 moveTimeRange));
         }
 
         private IEnumerator AmmoEffectCoroutine(
             BIT_TYPE bitType,
             float dividedAmount,
-            Transform targetTransform, 
-            Vector2 startPosition, 
+            Transform targetTransform,
+            Vector2 startPosition,
             Sprite sprite,
-            float radius, 
-            int count, 
+            float radius,
+            int count,
             Vector2 delayRange)
         {
             Vector3 TARGET_SCALE = Vector3.one * 0.2f;
-            
+
             var transforms = new RectTransform[count];
             var rotateDirection = new bool[count];
 
@@ -1125,9 +1175,9 @@ namespace StarSalvager.UI
                 t += deltaTime;
                 yield return null;
             }
-            
+
             var targetPosition = effectArea.transform.InverseTransformPoint(targetTransform.position);
-            
+
             for (int i = 0; i < count; i++)
             {
                 StartCoroutine(AmmoElementMoveCoroutine(
@@ -1155,7 +1205,7 @@ namespace StarSalvager.UI
             var startPosition = movingTransform.localPosition;
 
             yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
-            
+
             while (t / moveTime <= 1f)
             {
                 var deltaTime = Time.deltaTime;
@@ -1173,11 +1223,11 @@ namespace StarSalvager.UI
 
             var resource = PlayerDataManager.GetResource(bitType);
             resource.AddAmmo(dividedAmount);
-            
-            
+
+
             Destroy(movingTransform.gameObject);
         }
-        
+
 #if UNITY_EDITOR
         [Button, BoxGroup("Combo Effect"), DisableInEditorMode]
         private void TestComboEffect()
@@ -1187,24 +1237,25 @@ namespace StarSalvager.UI
             var startPosition = LevelManager.Instance.BotInLevel.AttachedBlocks[Random.Range(0, count)].transform
                 .position;
 
-            CreateAmmoEffect(bitType, 
+            CreateAmmoEffect(bitType,
                 Random.Range(5, 50),
-                startPosition, 
+                startPosition,
                 effectElementCount.x, effectElementCount.y,
-                moveTimeRange);
+                moveTimeRange,
+                nameof(TestComboEffect));
         }
 #endif
 
         #endregion //Ammo Effect
 
         //====================================================================================================================//
-        
+
         public static void ClearEventSelected()
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
 
         //====================================================================================================================//
-        
+
     }
 }

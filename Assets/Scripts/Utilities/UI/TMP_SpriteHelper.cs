@@ -5,6 +5,11 @@ namespace StarSalvager.Utilities.Helpers
 {
     public static class TMP_SpriteHelper
     {
+        //Stardust Icon
+        //====================================================================================================================//
+
+        public  const string STARDUST_ICON = "<sprite=\"Stardust\" name=\"Stardust\">";
+        
         //Silver Icon
         //====================================================================================================================//
 

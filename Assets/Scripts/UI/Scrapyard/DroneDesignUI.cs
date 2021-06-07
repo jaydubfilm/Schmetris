@@ -83,6 +83,10 @@ namespace StarSalvager.UI.Scrapyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
         [SerializeField, FoldoutGroup("Part Details Window")]
+        private Image partCategoryImage;
+        [SerializeField, FoldoutGroup("Part Details Window")]
+        private TMP_Text partCategoryText;
+        [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partUseTypeText;
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partDescriptionText;
@@ -212,8 +216,19 @@ namespace StarSalvager.UI.Scrapyard
 
             launchButton.onClick.AddListener(() =>
             {
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
-                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
+                ScreenFade.Fade(() =>
+                {
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                    AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
+                });
+
+                if (HintManager.CanShowHint(HINT.MAP))
+                {
+                    ScreenFade.WaitForFade(() =>
+                    {
+                        HintManager.TryShowHint(HINT.MAP);
+                    });
+                }
             });
             
             closePartUpgradeWindowButton.onClick.AddListener(() =>
@@ -562,7 +577,10 @@ namespace StarSalvager.UI.Scrapyard
             partDescriptionText.text = partRemote.description;
             
             partImage.sprite = partProfile.Sprite;
-            partImage.color = partRemote.category.GetColor();
+            partImage.color = Globals.UsePartColors ? partRemote.category.GetColor() : Color.white;
+            
+            partCategoryImage.color = partRemote.category.GetColor();
+            partCategoryText.text = partRemote.category.GetCategoryName();
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

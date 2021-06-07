@@ -20,9 +20,7 @@ MonoBehaviour:
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 39e4b50b-e078-47cb-8bae-a4bc7e1034d1
-      m_enemyCount: 2
-    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
       m_enemyCount: 2
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
@@ -96,9 +94,7 @@ MonoBehaviour:
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 603bd8a5-ca60-4089-95bd-680be431941a
-      m_enemyCount: 2
-    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
+    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
       m_enemyCount: 4
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
@@ -122,13 +118,31 @@ MonoBehaviour:
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenSingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.20088044
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 15
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: 4eeac5cf-1c0c-492d-82a1-86108b574464
-      m_enemyCount: 1
+    - m_enemyType: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
+      m_enemyCount: 4
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5
@@ -151,13 +165,31 @@ MonoBehaviour:
       m_spawnsPerScreenWidthPerMinute: 8
       m_maxOut: 0
       spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreySingle
+      m_category: 
+      m_rotation: 0
+      m_asteroidSize: 0
+      m_density: 0.19508804
+      m_spawnsPerScreenWidthPerMinute: 8
+      m_maxOut: 0
+      spawningMultiplier: 1
+    - m_selectionType: 0
+      m_shapeName: GreenSingle
+      m_category: 
+      m_rotation: -1
+      m_asteroidSize: 0
+      m_density: 0
+      m_spawnsPerScreenWidthPerMinute: 12
+      m_maxOut: 0
+      spawningMultiplier: 1
     m_stageColumnGroupObstacleData: []
   - m_stageDuration: 10
     m_stageBlendPeriod: 0
     m_waitUntilAllEnemiesDefeatedToBegin: 0
     m_stageEnemyData:
-    - m_enemyType: f3a25d26-67e9-4a21-b421-8c1a1f312915
-      m_enemyCount: 6
+    - m_enemyType: cb7aa80f-8c23-4982-a7a5-a6175dc7f33b
+      m_enemyCount: 2
     m_stageType: 0
     m_spawningObstacleMultiplier: 1
     m_centerChannelWidth: 0.5

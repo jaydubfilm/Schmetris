@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.PersistentUpgrades.Data;
+using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
@@ -70,6 +71,9 @@ namespace StarSalvager.UI.PersistentUpgrades
         
         public void SetupUpgrades()
         {
+            if(HintManager.CanShowHint(HINT.STAR))
+                HintManager.TryShowHint(HINT.STAR);
+            
             //--------------------------------------------------------------------------------------------------------//
 
             UpgradeUIElement CreateElement(in RectTransform parent, in UpgradeData upgradeData, in int index)
@@ -83,6 +87,7 @@ namespace StarSalvager.UI.PersistentUpgrades
             }
             
             //--------------------------------------------------------------------------------------------------------//
+            
             if (_uiElementContainers.IsNullOrEmpty())
                 _uiElementContainers = new Dictionary<UPGRADE_TYPE, RectTransform>();
             

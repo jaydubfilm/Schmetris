@@ -36,6 +36,11 @@ namespace StarSalvager
     [RequireComponent(typeof(BotPartsLogic))]
     public class Bot : BotBase, ICustomRecycle, IRecycled, IPausable, ISetSpriteLayer, IMoveOnInput, IHasBounds
     {
+        //Structs
+        //====================================================================================================================//
+
+        #region Structs
+
         private readonly struct ShiftData
         {
             public readonly IAttachable Target;
@@ -57,6 +62,14 @@ namespace StarSalvager
                 ? DIRECTION.NULL
                 : (target.Coordinate - attachedTo.Coordinate).ToDirection();
         }
+
+        #endregion //Structs
+
+
+        //Properties
+        //====================================================================================================================//
+
+        #region Properties
 
         public static Action<Bot, string> OnBotDied;
 
@@ -185,6 +198,8 @@ namespace StarSalvager
 
         private float _dashCooldown;
 
+        #endregion //Properties
+
         //IHealth Test
         //====================================================================================================================//
 
@@ -197,6 +212,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            var addsHealth = amount > 0;
+            
             CurrentHealth += amount;
 
             //TODO Need to update UI
@@ -205,8 +222,19 @@ namespace StarSalvager
             //Here we check to make sure to not display tiny values of damage
             var check = Mathf.Abs(amount);
             if(!(check > 0 && check < 1f))
-                FloatingText.Create($"{amount}", transform.position, amount > 0 ? Color.green : Color.red);
+                FloatingText.Create($"{amount}", transform.position, addsHealth ? Color.green : Color.red);
 
+            //Display hint if damaged & has resources to heal
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
+            {
+                if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (CurrentHealth > 0)
                 return;
 
@@ -352,6 +380,8 @@ namespace StarSalvager
                 direction = DIRECTION.NULL;
             }
 
+            distHorizontal = canMove ? distHorizontal : 0f;
+            
             //--------------------------------------------------------------------------------------------------------//
 
 
@@ -463,7 +493,28 @@ namespace StarSalvager
 
             if (_dashCooldown > 0f)
                 return;
+            
+            //Check to see if the player is able to dash in the intended Direction
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var currentPosition = transform.position;
+            bool canDash = true;
+            
+            if (direction < 0)
+            {
+                canDash = currentPosition.x > (Constants.gridCellSize * -Globals.GridSizeX) + distance;
+            }
+            else if (direction > 0)
+            {
+                canDash = currentPosition.x < (Constants.gridCellSize * Globals.GridSizeX) - distance;
+            }
+            
+            //TODO An alternative to consider is to set the dash distance to the remaining distance
+            if(canDash == false)
+                return;
 
+            //--------------------------------------------------------------------------------------------------------//
+            
             _isDashing = true;
             CanBeDamaged = false;
             SetColliderActive(false);
@@ -1133,6 +1184,7 @@ namespace StarSalvager
                     case BIT_TYPE.GREY:
                     case BIT_TYPE.RED:
                     case BIT_TYPE.YELLOW:
+                    case BIT_TYPE.WHITE:
 
                         //TODO This needs to bounce off instead of being destroyed
                         if (closestOnBot is EnemyAttachable /*||
@@ -1287,7 +1339,8 @@ namespace StarSalvager
         {
             destroyed = false;
 
-            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
+            //Don't want the player to get hurt if they've finished the level
+            if(!GameManager.IsState(GameState.LevelActive))
                 return false;
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
@@ -3184,7 +3237,7 @@ _isShifting = true;
                 closestToCore,
                 orphans.ToArray(),
                 Globals.ComboMergeTime,
-                () =>
+                enumType =>
                 {
                     var position = closestToCore.transform.position;
                     var xpToAdd = Mathf.RoundToInt(comboData.points * xpMultiplier);
@@ -3218,7 +3271,7 @@ _isShifting = true;
                     }
                     else if (bit != null)
                     {
-                        var bitType = bit.Type;
+                        var bitType = (BIT_TYPE)enumType;
                         var bitLevel = bit.level;
                         switch (bit.level)
                         {
@@ -3226,9 +3279,10 @@ _isShifting = true;
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
                                 break;
                             case 2:
+                                //This change must occur before checking for combos
+                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
 
                                 CheckForCombosAround(AttachedBlocks.OfType<Bit>());
-                                bit.UpdateBitData(BIT_TYPE.WHITE, 0);
                                 //We have to override the level value here to ensure that the ammo given is
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
@@ -3795,7 +3849,6 @@ _isShifting = true;
 
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
-            GameUi.ShowAbortWindow(false);
 
              StartCoroutine(DestroyCoroutine(deathMethod));
         }
@@ -3820,7 +3873,7 @@ _isShifting = true;
             ICanCombo target,
             IReadOnlyList<OrphanMoveData> orphans,
             float seconds,
-            Action onFinishedCallback)
+            Action<int> onFinishedCallback)
         {
             target.IsBusy = true;
 
@@ -3936,6 +3989,15 @@ _isShifting = true;
             //Wrap up things now that everyone is in place
             //--------------------------------------------------------------------------------------------------------//
 
+            //Determine what type should be handled in the callback
+            int typeValue;
+            if (target is ICanCombo<Enum> iCanComboEnum)
+                typeValue = (int) (object) iCanComboEnum.Type;
+            else if (movingComboBlocks.FirstOrDefault() is Bit bitEnum)
+                typeValue = (int) bitEnum.Type;
+            else
+                throw new NotImplementedException();
+
             //Once all bits are moved, remove from list and dispose
             foreach (var canCombo in movingComboBlocks)
             {
@@ -3948,14 +4010,8 @@ _isShifting = true;
                         Recycler.Recycle<Bit>(bit);
 
                         break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
-
-                        break;
-                    case Crate crate:
-                        Recycler.Recycle<Crate>(crate);
-
-                        break;
+                   default:
+                       throw new ArgumentOutOfRangeException(nameof(canCombo), canCombo, null);
                 }
 
             }
@@ -3979,11 +4035,10 @@ _isShifting = true;
             CompositeCollider2D.GenerateGeometry();
             target.IsBusy = false;
 
-            onFinishedCallback?.Invoke();
+            onFinishedCallback?.Invoke(typeValue);
 
             //--------------------------------------------------------------------------------------------------------//
         }
-
 
         /// <summary>
         /// Moves a collection of AttachableBase 1 unit in the specified direction. Callback is triggered before the update

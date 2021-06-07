@@ -6,6 +6,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -32,7 +33,7 @@ namespace StarSalvager.Values
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
 
-        public static int CurrentRingIndex = 0;
+        public static int CurrentRingIndex => PlayerDataManager.GetCurrentRing();
         public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
 
         public static int CurrentWave = 0;
@@ -69,7 +70,9 @@ namespace StarSalvager.Values
         private static GameSettingsScriptableObject m_gameSettings = null;
 
         public static float PartSwapTime => m_gameSettings.partSwapTime;
+        public static bool UsePartColors => m_gameSettings.usePartColors;
 
+        public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
 
         public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
         public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
@@ -114,7 +117,7 @@ namespace StarSalvager.Values
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         //public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
-        
+
         //public static float LevelXPConstant => m_gameSettings.levelXPConstant;
         /*public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
         public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;*/

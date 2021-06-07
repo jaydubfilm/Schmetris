@@ -3,6 +3,7 @@ using System.Linq;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
+using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,7 +74,9 @@ namespace StarSalvager.UI.Scrapyard
             //ShowPreviewChanges(this.data.PartData);
             
             partImage.sprite = partProfile.GetProfile(partType).Sprite;
-            partImage.color = partRemote.GetRemoteData(partType).category.GetColor();
+            partImage.color = Globals.UsePartColors
+                ? partRemote.GetRemoteData(partType).category.GetColor()
+                : Color.white;
 
             SetSelected(false);
 

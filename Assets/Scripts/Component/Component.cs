@@ -1,11 +1,13 @@
 ﻿using Recycling;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
 {
-    public class Component : CollidableBase, IObstacle, IAdditiveMove
+    public class Component : CollidableBase, IObstacle, IAdditiveMove, IHasBounds
     {
 
         public int GearNum { get; set; }
@@ -66,5 +68,20 @@ namespace StarSalvager
             
             _speed = 0f;
         }
+        
+        //IHasBounds Functions
+        //====================================================================================================================//
+        
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
+        //====================================================================================================================//
+        
     }
 }

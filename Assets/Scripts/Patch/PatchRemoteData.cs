@@ -40,6 +40,7 @@ namespace StarSalvager.Factories.Data
 
         [TextArea, FoldoutGroup("$title")] public string description;
 
+        [InfoBox("$GetInfoBox", InfoMessageType.Info)]
         [FoldoutGroup("$title"), TableList(AlwaysExpanded = true),LabelText("Patch Level Data"), OnValueChanged("UpdateLevels")]
         public List<Data> Levels;
 
@@ -68,6 +69,27 @@ namespace StarSalvager.Factories.Data
                 level.level = i + 1;
 
                 Levels[i] = level;
+            }
+        }
+
+        private string GetInfoBox()
+        {
+            switch (type)
+            {
+                case PATCH_TYPE.POWER:
+                case PATCH_TYPE.RANGE:
+                    return "Multiplier represents the additional percentage on top of default value";
+                case PATCH_TYPE.REINFORCED:
+                case PATCH_TYPE.EFFICIENCY:
+                case PATCH_TYPE.FIRE_RATE:
+                    return  "Multiplier represents the discounted percentage from the default value";
+                
+                case PATCH_TYPE.AOE:
+                case PATCH_TYPE.BURN:
+                    throw new NotImplementedException($"{type} not yet implemented");
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
         }
         

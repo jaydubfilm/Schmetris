@@ -16,6 +16,7 @@ using StarSalvager.Utilities.Saving;
 using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Interfaces;
 using UnityEngine.Serialization;
 
 namespace StarSalvager
@@ -31,6 +32,8 @@ namespace StarSalvager
     public class UniverseMapButton : MonoBehaviour
     {
         private static UniverseMap _universeMap;
+
+        public bool IsButtonInteractable => Button.interactable;
         
         public NodeType NodeType => nodeType;
         public int NodeIndex => nodeIndex;
@@ -44,86 +47,37 @@ namespace StarSalvager
         [SerializeField] private TMP_Text Text;
         [SerializeField] private TMP_Text TextBelow;
 
-        [SerializeField] private int ringIndex = -1;
-        [SerializeField] private int waveIndex = -1;
-        
         [SerializeField] private Image BotImage;
         [SerializeField] private Image ShortcutImage;
+
         //[SerializeField] private Image PointOfInterestImage;
 
-        public new RectTransform transform { get; private set; }
-
-        //Unity Functions
-        //====================================================================================================================//
-
-        public void Awake()
+        public new RectTransform transform
         {
-            transform = gameObject.transform as RectTransform;
-        }
-
-        public void Start()
-        {
-            Button.onClick.AddListener(() =>
+            get
             {
-                switch (nodeType)
-                {
-                    case NodeType.Base:
-                        PlayerDataManager.SetCurrentNode(PlayerDataManager.GetCurrentNode() + 1);
-                        ScreenFade.Fade(() =>
-                        {
-                            _universeMap.ForceDrawMap();
-                        });
-                        break;
-                    case NodeType.Level:
-                        Globals.CurrentRingIndex = ringIndex;
-                        Globals.CurrentWave = waveIndex;
+                if(_transform == null)
+                    _transform = gameObject.transform as RectTransform;
 
-                        ScreenFade.Fade(() =>
-                        {
-                            SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
-                        });
-                        break;
-                    case NodeType.Wreck:
-                        PlayerDataManager.SetCurrentNode(nodeIndex);
-
-                        if (!PlayerDataManager.GetPlayerPreviouslyCompletedNodes().Contains(nodeIndex))
-                        {
-                            PlayerDataManager.AddCompletedNode(nodeIndex);
-                        }
-
-                        ScreenFade.Fade(() =>
-                        {
-                            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
-                            AnalyticsManager.WreckStartEvent();
-                        });
-                        break;
-                }
-            });
+                return _transform;
+            }
         }
-
-        public void Update()
-        {
-            PulseBotObject();
-        }
+        private RectTransform _transform;
 
         //====================================================================================================================//
 
-        public void Init(in int nodeIndex, in int ringIndex, in NodeData nodeData)
+        public void Init(in int nodeIndex, in int sector, in NodeType nodeType, Action<int, NodeType> onPressedCallback)
         {
-
-            if (!_universeMap)
-                _universeMap = FindObjectOfType<UniverseMap>();
+            if (!_universeMap) _universeMap = FindObjectOfType<UniverseMap>();
             
-            if (!transform)
-                transform = gameObject.transform as RectTransform;
+            Button.onClick.RemoveAllListeners();
             
             BotImage.sprite = PART_TYPE.EMPTY.GetSprite();
 
             this.nodeIndex = nodeIndex;
-
-            SetWaveIndex(ringIndex, nodeData.waveIndex);
-
-            nodeType = nodeData.NodeType;
+            this.nodeType = nodeType;
+            
+            Button.onClick.AddListener(() => onPressedCallback?.Invoke(this.nodeIndex, this.nodeType));
 
 
             SetShortcutImageActive(NodeType == NodeType.Wreck);
@@ -135,7 +89,7 @@ namespace StarSalvager
                     title = "Base";
                     break;
                 case NodeType.Level:
-                    title = $"{ringIndex + 1}.{waveIndex + 1}";
+                    title = $"{nodeIndex}";
                     break;
                 case NodeType.Wreck:
                     title = "Wreck";
@@ -153,12 +107,6 @@ namespace StarSalvager
         {
             Text.text = title;
             TextBelow.text = subTitle;
-        }
-
-        public void SetWaveIndex(in int ringIndex, in int waveIndex)
-        {
-            this.ringIndex = ringIndex;
-            this.waveIndex = waveIndex;
         }
 
         public void SetButtonProperties(in bool buttonInteractable, in Color color)

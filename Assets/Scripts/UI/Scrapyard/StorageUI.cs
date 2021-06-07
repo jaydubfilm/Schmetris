@@ -75,7 +75,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 var sprite = partProfiles.GetProfile(type).GetSprite(0);
                 var category = partRemoteData.GetRemoteData(type).category;
-                var color = bitProfiles.GetProfile(category).color;
+                var color = Globals.UsePartColors ? bitProfiles.GetProfile(category).color : Color.white;
 
                 int tempInt = i;
                 TEST_Storage testStorage = new TEST_Storage

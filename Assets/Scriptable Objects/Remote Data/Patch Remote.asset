@@ -23,18 +23,8 @@ MonoBehaviour:
     RFRCD: 0
     part: Core
     color: {r: 0.45882353, g: 1, b: 0, a: 1}
-  - PartType: 2
-    POWER: 0
-    AOE: 0
-    RATE: 0
-    EFF: 0
-    RANGE: 0
-    BURN: 0
-    RFRCD: 0
-    part: Repairer
-    color: {r: 0.45882353, g: 1, b: 0, a: 1}
   - PartType: 3
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 1
@@ -58,13 +48,13 @@ MonoBehaviour:
     AOE: 0
     RATE: 1
     EFF: 1
-    RANGE: 1
+    RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Shield
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
   - PartType: 6
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 1
     EFF: 1
@@ -78,13 +68,13 @@ MonoBehaviour:
     AOE: 0
     RATE: 1
     EFF: 1
-    RANGE: 1
+    RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Sniper
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   - PartType: 29
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 1
@@ -104,10 +94,10 @@ MonoBehaviour:
     part: Hoover
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
   - PartType: 35
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
-    EFF: 0
+    EFF: 1
     RANGE: 0
     BURN: 0
     RFRCD: 0
@@ -124,7 +114,7 @@ MonoBehaviour:
     part: Railgun
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   - PartType: 38
-    POWER: 1
+    POWER: 0
     AOE: 0
     RATE: 0
     EFF: 0
@@ -154,10 +144,10 @@ MonoBehaviour:
     part: Sabre
     color: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   - PartType: 15
-    POWER: 0
+    POWER: 1
     AOE: 0
     RATE: 0
-    EFF: 0
+    EFF: 1
     RANGE: 0
     BURN: 0
     RFRCD: 0
@@ -177,12 +167,22 @@ MonoBehaviour:
     POWER: 0
     AOE: 0
     RATE: 0
-    EFF: 0
+    EFF: 1
     RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Blitz
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
+  - PartType: 44
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 1
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Force Field
+    color: {r: 0, g: 0.9620137, b: 1, a: 1}
   patchRemoteData:
   - isImplemented: 1
     name: POWER
@@ -209,11 +209,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.5
+      multiplier: 0.25
       level: 1
     - gears: 250
       silver: 0
-      multiplier: 1
+      multiplier: 0.5
       level: 2
   - isImplemented: 1
     name: EFFECIENCY
@@ -222,11 +222,11 @@ MonoBehaviour:
     Levels:
     - gears: 100
       silver: 0
-      multiplier: 0.5
+      multiplier: 0.25
       level: 1
     - gears: 250
       silver: 0
-      multiplier: 1
+      multiplier: 0.5
       level: 2
   - isImplemented: 1
     name: RANGE

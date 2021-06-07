@@ -244,9 +244,6 @@ namespace StarSalvager
                     case JunkBit junkBit:
                         Recycler.Recycle<JunkBit>(junkBit);
                         break;
-                    case Mine mine:
-                        Recycler.Recycle<Mine>(mine);
-                        break;
                     case BlackHole blackHole:
                         Recycler.Recycle<BlackHole>(blackHole);
                         break;
@@ -1003,6 +1000,14 @@ namespace StarSalvager
                             .CreateObject<Component>(gears);
 
                         _obstacles.Add(newComponent);
+                    }
+
+                    if (count > 0 && HintManager.CanShowHint(HINT.GEARS))
+                    {
+                        var rect = _obstacles
+                            .FirstOrDefault(x => x is Component);
+                        
+                        HintManager.TryShowHint(HINT.GEARS, 0.75f, rect);
                     }
                 }
                 else
