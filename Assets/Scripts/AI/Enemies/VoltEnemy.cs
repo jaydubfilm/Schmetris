@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -15,8 +16,10 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class VoltEnemy : Enemy
+    public class VoltEnemy : Enemy, IPlayEnemySounds<VoltSounds>
     {
+        public VoltSounds EnemySound => (VoltSounds) EnemySoundBase;
+        
         private float anticipationTime => 0.0f;
         private float timeChooseNewPosition => 1.5f;
         private int chanceSwapDirections = 7;
@@ -281,5 +284,7 @@ namespace StarSalvager.AI
         {
             return typeof(VoltEnemy);
         }
+
+
     }
 }

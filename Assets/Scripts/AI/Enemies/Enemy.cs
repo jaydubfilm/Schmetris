@@ -9,6 +9,7 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
 using StarSalvager.Prototype;
@@ -20,10 +21,8 @@ using StarSalvager.Utilities.Saving;
 namespace StarSalvager.AI
 {
     [RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds
     {
-        
-        
         protected static EnemyManager EnemyManager
         {
             get
@@ -45,7 +44,7 @@ namespace StarSalvager.AI
         protected float _enemyMovementSpeed { get; set; }
 
         public string EnemyName => m_enemyData.Name;
-
+        
         //ICanBeSeen Properties
         //====================================================================================================================//
         
@@ -77,6 +76,8 @@ namespace StarSalvager.AI
 
         public bool Frozen => FreezeTime > 0f;
         public float FreezeTime { get; private set; }
+
+        public EnemySoundBase EnemySoundBase { get; protected set; }
 
         //IStateAnimation Properties 
         //============================================================================================================//
@@ -375,7 +376,7 @@ namespace StarSalvager.AI
         {
             DropLoot();
 
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+            Killed();
 
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             PlayerDataManager.RecordEnemyKilled(m_enemyData.EnemyType);
@@ -384,6 +385,11 @@ namespace StarSalvager.AI
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
             SetState(targetState);
+        }
+
+        protected void Killed()
+        {
+            EnemySoundBase.deathSound.Play();
         }
 
         /// <summary>
@@ -440,6 +446,7 @@ namespace StarSalvager.AI
         public abstract Type GetOverrideType();
 
         //============================================================================================================//
+
 
     }
 }

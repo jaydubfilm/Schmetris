@@ -2,6 +2,7 @@
 using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
@@ -12,8 +13,10 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class SleeperMineEnemy : Enemy
+    public class SleeperMineEnemy : Enemy, IPlayEnemySounds<SleeperMineSounds>
     {
+        public SleeperMineSounds EnemySound => (SleeperMineSounds) EnemySoundBase;
+        
         public float anticipationTime = 1f;
 
         //====================================================================================================================//
@@ -176,7 +179,7 @@ namespace StarSalvager.AI
 
             KilledEnemy(STATE.ATTACK);
         }
-
+        
         #endregion //IHealth Override
 
         //====================================================================================================================//

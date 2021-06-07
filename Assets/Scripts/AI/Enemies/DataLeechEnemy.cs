@@ -1,12 +1,15 @@
 ﻿using System;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class DataLeechEnemy : EnemyAttachable
+    public class DataLeechEnemy : EnemyAttachable, IPlayEnemySounds<DataLeechSounds>
     {
+        public DataLeechSounds EnemySound => (DataLeechSounds) EnemySoundBase;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 
@@ -33,6 +36,8 @@ namespace StarSalvager.AI
             {
                 SetState(Attached ? STATE.ATTACK : STATE.PURSUE);
             }
+            
+            if(Attached) EnemySound.latchOnSound.Play();
         }
 
         /*public override void ChangeHealth(float amount)
@@ -186,6 +191,7 @@ namespace StarSalvager.AI
             }
 
             AttachedBot.TryHitAt(Target, m_dataLeechDamage);
+            EnemySound.attackSound.Play();
         }
 
         #endregion

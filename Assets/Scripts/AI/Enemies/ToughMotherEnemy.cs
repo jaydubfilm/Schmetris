@@ -1,19 +1,16 @@
 ﻿using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using StarSalvager.Audio.Enemies;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class ToughMotherEnemy : Enemy
+    public class ToughMotherEnemy : Enemy, IPlayEnemySounds<ToughMotherSounds>
     {
+        public ToughMotherSounds EnemySound => (ToughMotherSounds) EnemySoundBase;
         public float anticipationTime = 1f;
 
         public override bool IgnoreObstacleAvoidance => true;

@@ -1,6 +1,8 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
@@ -10,8 +12,9 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class IceWingEnemy : Enemy
+    public class IceWingEnemy : Enemy, IPlayEnemySounds<IceWingSounds>
     {
+        public IceWingSounds EnemySound => (IceWingSounds) EnemySoundBase;
 
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;

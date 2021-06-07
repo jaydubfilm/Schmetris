@@ -3,15 +3,18 @@ using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System.Linq;
 using Recycling;
-
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class MoonMinerEnemy : Enemy
+    public class MoonMinerEnemy : Enemy, IPlayEnemySounds<MoonMinerSounds>
     {
+        public MoonMinerSounds EnemySound => (MoonMinerSounds) EnemySoundBase;
+        
         private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
 
         public float anticipationTime = 1f;
@@ -106,12 +109,14 @@ namespace StarSalvager.AI
                 case STATE.ANTICIPATION:
                     SetBeamActive(true, SEMI_TRANSPARENT);
                     _anticipationTime = anticipationTime;
+                    EnemySound.chargeLaser.Play();
                     break;
                 case STATE.ATTACK:
                     SetBeamActive(true);
                     //beamObject.SetActive(true);
                     _attackTime = 2f;
                     _attackEffectTimer = 0;
+                    EnemySound.attackSound.Play();
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<MoonMinerEnemy>(this);
@@ -266,8 +271,15 @@ namespace StarSalvager.AI
 
             _attackCount--;
 
+            if (_attackCount > 0)
+            {
+                SetState(STATE.MOVE);
+                EnemySound.attackEnd.Play();
+                return;
+            }
+            
             //TODO Set to MoveState
-            SetState(_attackCount == 0 ? STATE.FLEE : STATE.MOVE);
+            SetState(STATE.FLEE);
         }
 
         #endregion //States
@@ -336,6 +348,8 @@ namespace StarSalvager.AI
                 y = Mathf.Lerp(yBounds.x, yBounds.y, Random.Range(0.4f, 0.85f))
             };
         }
+
+        
 
         public override Type GetOverrideType()
         {

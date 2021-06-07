@@ -7,12 +7,15 @@ namespace StarSalvager.Audio.Data
     [Serializable]
     public struct LoopingSound : IEquatable<LoopingSound>
     {
+        //====================================================================================================================//
+        
         public static readonly LoopingSound Empty = new LoopingSound
         {
             clip = null,
             maxChannels = 0
         };
-        
+
+        //====================================================================================================================//
         
         [HorizontalGroup("Row1"), LabelWidth(50), Required]
         public AudioClip clip;
@@ -20,6 +23,8 @@ namespace StarSalvager.Audio.Data
         [HorizontalGroup("Row1"), Range(0, 32), LabelWidth(100)]
         public int maxChannels;
 
+        //====================================================================================================================//
+        
         #region IEquatable
 
         public bool Equals(LoopingSound other)
@@ -42,6 +47,6 @@ namespace StarSalvager.Audio.Data
 
         #endregion
 
-
+        //====================================================================================================================//
     }
 }

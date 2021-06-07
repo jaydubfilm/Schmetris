@@ -2,17 +2,16 @@
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class SquartEnemy : Enemy
+    public class SquartEnemy : Enemy, IPlayEnemySounds<SquartSounds>
     {
+        public SquartSounds EnemySound => (SquartSounds) EnemySoundBase;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
@@ -114,6 +113,7 @@ namespace StarSalvager.AI
 
             return m_currentHorizontalMovementDirection + addedVertical;*/
         }
+
 
         #endregion
 

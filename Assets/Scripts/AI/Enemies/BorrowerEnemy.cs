@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -8,9 +10,11 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class BorrowerEnemy  : EnemyAttachable
+    public class BorrowerEnemy  : EnemyAttachable, IPlayEnemySounds<BorrowerSounds>
     {
         public float anticipationTime = 1f;
+
+        public BorrowerSounds EnemySound => (BorrowerSounds) EnemySoundBase;
 
         //====================================================================================================================//
         
@@ -382,5 +386,6 @@ namespace StarSalvager.AI
         {
             return typeof(BorrowerEnemy);
         }
+
     }
 }

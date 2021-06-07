@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Helpers;
@@ -11,8 +13,9 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class PulseCannonEnemy : Enemy
+    public class PulseCannonEnemy : Enemy, IPlayEnemySounds<PulseCannonSounds>
     {
+        public PulseCannonSounds EnemySound => (PulseCannonSounds) EnemySoundBase;
 
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;

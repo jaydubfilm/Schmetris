@@ -5,13 +5,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class ShardEnemy : Enemy
+    public class ShardEnemy : Enemy, IPlayEnemySounds<ShardSounds>
     {
+        public ShardSounds EnemySound => (ShardSounds) EnemySoundBase;
+
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 
@@ -228,5 +232,6 @@ namespace StarSalvager.AI
         {
             return typeof(ShardEnemy);
         }
+
     }
 }

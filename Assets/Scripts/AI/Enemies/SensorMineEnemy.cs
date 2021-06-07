@@ -2,6 +2,7 @@
 using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
@@ -11,8 +12,9 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class SensorMineEnemy  : Enemy, IOverrideRecycleType
+    public class SensorMineEnemy  : Enemy, IPlayEnemySounds<SensorMineSounds>
     {
+        public SensorMineSounds EnemySound => (SensorMineSounds) EnemySoundBase;
         public float anticipationTime = 1f;
         public float triggerDistance = 5f;
         
@@ -175,7 +177,7 @@ namespace StarSalvager.AI
 
             KilledEnemy(STATE.ATTACK);
         }
-
+        
         //====================================================================================================================//
 
         public override void CustomRecycle(params object[] args)
