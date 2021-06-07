@@ -619,8 +619,8 @@ namespace StarSalvager
 
         public void DisplayHints()
         {
-            if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
-                HintManager.TryShowHint(HINT.GUN);
+            /*if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
+                HintManager.TryShowHint(HINT.GUN);*/
         }
 
 
