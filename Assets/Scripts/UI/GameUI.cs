@@ -63,12 +63,11 @@ namespace StarSalvager.UI
                 
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
-                if (!isTrigger)
-                    return;
+                //if (!isTrigger)
+                //    return;
 
-                Debug.Log($"{nameof(SetIsTrigger)} is not implemented for this Prototype");
-                triggerInputImage.gameObject.SetActive(false);
-                //triggerInputImage.sprite = triggerSprite;
+                triggerInputImage.gameObject.SetActive(isTrigger);
+                triggerInputImage.sprite = triggerSprite;
             }
 
             public void SetSprite(in Sprite partSprite)
