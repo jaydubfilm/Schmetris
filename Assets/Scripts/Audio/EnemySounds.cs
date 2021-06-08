@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarSalvager.Audio.Enemies
 {
@@ -80,7 +81,9 @@ namespace StarSalvager.Audio.Enemies
     public class ShardSounds : EnemySoundBase
     {
         [BoxGroup] public EnemySoundClip lockPositionSound;
-        [BoxGroup] public EnemySoundClip beginAttachFallSound;
+
+        [FormerlySerializedAs("beginAttachFallSound")] [BoxGroup]
+        public EnemySoundClip beginAttackFallSound;
     }
 
     [Serializable]
@@ -109,8 +112,7 @@ namespace StarSalvager.Audio.Enemies
 
     [Serializable]
     public class PulseCannonSounds : EnemySoundBase
-    {
-    }
+    { }
 
     [Serializable]
     public class IceWingSounds : EnemySoundBase

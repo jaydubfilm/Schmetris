@@ -100,8 +100,10 @@ namespace StarSalvager.AI
                     transform.position = currentPosition;
                     break;
                 case STATE.ANTICIPATION:
+                    EnemySound.lockPositionSound.Play();
                     break;
                 case STATE.ATTACK:
+                    EnemySound.beginAttackFallSound.Play();
                     break;
                 case STATE.DEATH:
 

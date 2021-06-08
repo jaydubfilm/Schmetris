@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
@@ -66,8 +65,11 @@ namespace StarSalvager.AI
             SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
             
             //This is important to change the target, as attaching may have changed the intended target
-            if(Attached)
+            if (Attached)
+            {
                 _attachTarget = AttachedBot.GetClosestAttachable(Coordinate, 1f) as Bit;
+                EnemySound.latchOntoBotSound.Play();
+            }
 
         }
 
@@ -148,6 +150,7 @@ namespace StarSalvager.AI
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
                     _enemyMovementSpeed = 0f;
+                    EnemySound.waitSound.Play();
                     break;
                 case STATE.ATTACK:
                     break;
@@ -294,6 +297,8 @@ namespace StarSalvager.AI
             bit.SetAttached(true);
 
             _carryingBit = bit;
+            
+            EnemySound.attackSound.Play();
             
             //Set the State to Flee
             SetState(STATE.FLEE);

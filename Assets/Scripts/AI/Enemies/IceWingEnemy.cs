@@ -130,6 +130,8 @@ namespace StarSalvager.AI
 
                     var dist = Vector2.Distance(_startLocation, _targetLocation);
                     _travelTime = dist / m_enemyData.MovementSpeed;
+                    
+                    EnemySound.swoopSound.Play();
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<IceWingEnemy>(this);
@@ -260,11 +262,17 @@ namespace StarSalvager.AI
                         {
                             var closestAttachable = bot.GetClosestAttachable(hit.point);
                             if (closestAttachable is Bit bit)
+                            {
                                 bit.SetFrozen(freezeTime);
+                                EnemySound.freezeSound.Play();
+                            }
                         }
                             break;
                         case Bit bit when bit.Frozen == false:
+                        {
                             bit.SetFrozen(freezeTime);
+                            EnemySound.freezeSound.Play();
+                        }
                             break;
 
                     }

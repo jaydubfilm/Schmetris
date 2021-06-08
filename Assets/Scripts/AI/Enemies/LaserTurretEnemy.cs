@@ -1,6 +1,7 @@
 ﻿using System;
 using Recycling;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -10,8 +11,10 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class LaserTurretEnemy  : Enemy
+    public class LaserTurretEnemy  : Enemy, IPlayEnemySounds<LaserTurretSounds>
     {
+        public LaserTurretSounds EnemySound => (LaserTurretSounds) EnemySoundBase;
+        
         private static readonly Color SEMI_TRANSPARENT = new Color(0.8f, 0.25f, 0.25f, 0.3f);
         const float DISTANCE = 100f;
         
@@ -26,8 +29,9 @@ namespace StarSalvager.AI
 
         [SerializeField]
         private float anticipationTime = 1f;
-
         private float _anticipationTimer;
+        private bool _chargingLaser;
+        
         [SerializeField]
         private float attackTime;
         private float _attackTimer;
@@ -66,7 +70,7 @@ namespace StarSalvager.AI
                     Quaternion.Euler(0, 0, 245) * Vector3.down
                 };
 
-            SetState(STATE.ANTICIPATION );
+            SetState(STATE.ANTICIPATION);
             
             MostRecentMovementDirection = Vector3.down;
             
@@ -86,11 +90,13 @@ namespace StarSalvager.AI
                 case STATE.ANTICIPATION:
                     SetBeamsActive(false);
                     _anticipationTimer = anticipationTime;
+                    _chargingLaser = false;
                     break;
                 case STATE.ATTACK:
                     SetBeamsActive(true);
                     _attackTimer = attackTime;
                     _attackEffectTimer = 0;
+                    EnemySound.attackSound.Play();
                     break;
                 case STATE.DEATH:
                     //Recycle ya boy
@@ -139,9 +145,12 @@ namespace StarSalvager.AI
 
             _anticipationTimer -= Time.deltaTime;
 
-            if (_anticipationTimer <= anticipationTime / 3f)
+            if (_anticipationTimer <= anticipationTime / 3f && !_chargingLaser)
             {
                 SetBeamsActive(true, SEMI_TRANSPARENT);
+                EnemySound.chargeLaser.Play();
+
+                _chargingLaser = true;
             }
 
             if (_anticipationTimer > 0)

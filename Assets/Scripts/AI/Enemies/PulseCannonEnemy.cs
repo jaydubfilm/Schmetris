@@ -9,6 +9,7 @@ using StarSalvager.Factories;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
@@ -26,8 +27,8 @@ namespace StarSalvager.AI
         private float dotThreshold = 0.1f;
 
 
-        [SerializeField]
-        private float anticipcationTime;
+        [FormerlySerializedAs("anticipcationTime")] [SerializeField]
+        private float anticipationTime;
         private float _anticipationTimer;
 
         [SerializeField]
@@ -117,7 +118,7 @@ namespace StarSalvager.AI
                 case STATE.IDLE:
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationTimer = anticipcationTime;
+                    _anticipationTimer = anticipationTime;
                     break;
                 case STATE.ATTACK:
                     _burstCount = burstCount;
@@ -253,6 +254,8 @@ namespace StarSalvager.AI
                     0f,
                     false,
                     true);
+            
+            EnemySound.attackSound.Play();
         }
 
         //====================================================================================================================//

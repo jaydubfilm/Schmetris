@@ -102,6 +102,7 @@ namespace StarSalvager.AI
                     break;
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
+                    EnemySound.anticipationSound.Play();
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<VoltEnemy>(this);
@@ -274,6 +275,8 @@ namespace StarSalvager.AI
             iCanBeHit.TryHitAt(targetLocation, LaserDamage);
             
             Debug.DrawLine(currentPosition, raycastHit.point, Color.green, 1f);
+            
+            EnemySound.attackSound.Play();
         }
 
         #endregion

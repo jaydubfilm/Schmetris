@@ -65,6 +65,8 @@ namespace StarSalvager.AI
                 case STATE.ATTACK:
                     break;
                 case STATE.DEATH:
+                    EnemySound.spawnLeechSound.Play();
+                    
                     TrySpawnDataLeech(Vector3.left);
                     TrySpawnDataLeech(Vector3.right);
                     TrySpawnDataLeech(Vector3.up);
@@ -152,6 +154,8 @@ namespace StarSalvager.AI
         {
             if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
+            
+            EnemySound.spawnLeechSound.Play();
 
             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("DataLeech");
             LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, transform.position + offsetPosition);
