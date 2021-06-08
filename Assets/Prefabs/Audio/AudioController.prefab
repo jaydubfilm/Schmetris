@@ -520,7 +520,7 @@ MonoBehaviour:
       _clip: {fileID: 8300000, guid: 804f8d79c0064ef4d8d1ac6c8fd094f2, type: 3}
     freezeSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 750df27e5d2bc494283259603f226a76, type: 3}
   EnemyEffects:
   - enemyID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     moveSound:
