@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 

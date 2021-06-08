@@ -5,6 +5,7 @@ using StarSalvager.Values;
 using System;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using UnityEngine;
 
 namespace StarSalvager.AI

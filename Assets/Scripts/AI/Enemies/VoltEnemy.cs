@@ -5,6 +5,7 @@ using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities;
@@ -12,6 +13,7 @@ using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
@@ -20,12 +22,17 @@ namespace StarSalvager.AI
     {
         public VoltSounds EnemySound => (VoltSounds) EnemySoundBase;
         
-        private float anticipationTime => 0.0f;
-        private float timeChooseNewPosition => 1.5f;
+        [SerializeField]
+        private float anticipationTime;
+        [SerializeField]
+        private float timeChooseNewPosition = 1.5f;
+        [SerializeField]
         private int chanceSwapDirections = 7;
 
-        public float AverageOrbitDistance = 6.5f;
-        public int LaserDamage = 1;
+        [SerializeField]
+        private float averageOrbitDistance = 6.5f;
+        [SerializeField]
+        private int laserDamage = 5;
 
         //====================================================================================================================//
 
@@ -43,14 +50,14 @@ namespace StarSalvager.AI
         
 
         private float _anticipationTime;
-        public float _minDistance => AverageOrbitDistance - 1.5f;
-        public float _maxDistance => AverageOrbitDistance + 1.5f;
+        public float _minDistance => averageOrbitDistance - 1.5f;
+        public float _maxDistance => averageOrbitDistance + 1.5f;
 
         private float _repositionMinDistance => 0.5f;
         private float _repositionMaxDistance => 1.75f;
 
-        private bool _hasReachedPlayer = false;
-        private float _timeChooseNewPosition = 0.0f;
+        private bool _hasReachedPlayer;
+        private float _timeChooseNewPosition;
 
         [SerializeField]
         private LayerMask collisionMask;
@@ -172,11 +179,10 @@ namespace StarSalvager.AI
 
             _targetOffset += ChooseOffset(_repositionMinDistance, _repositionMaxDistance);
 
-            if (_jumpCount <= 0)
-            {
-                SetState(STATE.ANTICIPATION);
+            if (_jumpCount > 0)
                 return;
-            }
+            
+            SetState(CanHitTarget(out _) ? STATE.ANTICIPATION : STATE.MOVE);
         }
 
         private void AnticipationState()
@@ -234,50 +240,58 @@ namespace StarSalvager.AI
 
         #region Firing
 
-        protected override void FireAttack()
+        /// <summary>
+        /// Ensure that the volt can attack the player at the intended location, avoid wasting shots on Bits, which are ineffective
+        /// </summary>
+        /// <param name="iCanBeHit"></param>
+        /// <returns></returns>
+        private bool CanHitTarget(out ICanBeHit iCanBeHit)
         {
             const float DISTANCE = 100f;
+
+            iCanBeHit = null;
             
             var currentPosition = transform.position;
-            
-            if (!CameraController.IsPointInCameraRect(currentPosition, Constants.VISIBLE_GAME_AREA))
-                return;
-
             Vector2 targetLocation = _playerLocation;
-
             Vector2 shootDirection = (targetLocation - (Vector2)currentPosition).normalized;
 
             var raycastHit = Physics2D.Raycast(currentPosition, shootDirection, DISTANCE, collisionMask.value);
-            //Debug.DrawRay(transform.position, shootDirection * 100, Color.blue, 1.0f);
 
             if (raycastHit.collider == null)
             {
                 Debug.DrawRay(currentPosition, shootDirection * DISTANCE, Color.red, 1f);
-                return;
+                return false;
             }
+            
+            var canBeHit = raycastHit.transform.GetComponent<ICanBeHit>();
+            
+            if (canBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point) is Bit)
+                return false;
 
-            var iCanBeHit = raycastHit.transform.GetComponent<ICanBeHit>();
+            iCanBeHit = canBeHit;
+            Debug.DrawLine(currentPosition, raycastHit.point, Color.green, 1f);
+            return true;
+        }
 
-            if (iCanBeHit is Bot bot && bot.GetClosestAttachable(raycastHit.point) is Bit bit)
-            {
-                //Debug.Log($"Hit {bit.gameObject.name}", bit);
-                //Debug.DrawLine(currentPosition, raycastHit.point, Color.yellow, 1f);
+        protected override void FireAttack()
+        {
+            if (!CanHitTarget(out var iCanBeHit))
                 return;
-            }
 
+            Debug.DrawLine(Position, _playerLocation, Color.green, 1f);
+
+            
             var lineShrink = FactoryManager.Instance
                 .GetFactory<EffectFactory>()
                 .CreateObject<LineShrink>();
-            lineShrink.Init(transform.position, targetLocation);
+            
+            lineShrink.Init(Position, _playerLocation);
 
             
             _jumpCount = Random.Range(6, 9);
 
 
-            iCanBeHit.TryHitAt(targetLocation, LaserDamage);
-            
-            Debug.DrawLine(currentPosition, raycastHit.point, Color.green, 1f);
-            
+            iCanBeHit.TryHitAt(_playerLocation, laserDamage);
             EnemySound.attackSound.Play();
         }
 

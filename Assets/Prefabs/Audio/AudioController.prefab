@@ -378,14 +378,14 @@ MonoBehaviour:
       _clip: {fileID: 8300000, guid: bac90cee743462e4b835267b90d03093, type: 3}
   DataLeechSounds:
     attackSound:
-      _volume: 1
-      _clip: {fileID: 0}
+      _volume: 0.65
+      _clip: {fileID: 8300000, guid: bd45d4b5fe2374147b1384d1acb59320, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: acf4463e4f1b08842a9ea4c6469d9c5b, type: 3}
     latchOnSound:
-      _volume: 1
-      _clip: {fileID: 0}
+      _volume: 0.7
+      _clip: {fileID: 8300000, guid: 70657bfc8dd4bd6449c8544fcf09136b, type: 3}
   MoonMinerSounds:
     attackSound:
       _volume: 1
@@ -412,13 +412,16 @@ MonoBehaviour:
   SquartSounds:
     attackSound:
       _volume: 1
-      _clip: {fileID: 8300000, guid: aa178414a43fb734d810957c325d6869, type: 3}
+      _clip: {fileID: 8300000, guid: e7ed10fa58b908a4082112a957a93564, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: 378afeeddb0659e448aaa90dee025e82, type: 3}
     fleeSound:
       _volume: 1
       _clip: {fileID: 0}
+    chargeSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: aa178414a43fb734d810957c325d6869, type: 3}
   ToughMotherSounds:
     attackSound:
       _volume: 1
@@ -448,10 +451,14 @@ MonoBehaviour:
   SleeperMineSounds:
     attackSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 824ec9840d521cf429f7d3f672903515, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 0}
+    idleLoop:
+      clip: {fileID: 8300000, guid: d0736584675b61d4c8328baa883538c3, type: 3}
+      maxChannels: 3
+      volume: 1
   SensorMineSounds:
     attackSound:
       _volume: 1

@@ -5,6 +5,7 @@ using System;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 
@@ -26,6 +27,11 @@ namespace StarSalvager.AI
         [SerializeField]
         private float attackTime;
         private float _attackTimer;
+        
+        [SerializeField]
+        private float attackDelayTime;
+        private float _attackDelayTimer;
+        private bool _chargingAttack;
 
         [SerializeField]
         private float sinFrequency = 5f;
@@ -102,6 +108,7 @@ namespace StarSalvager.AI
                     _startPosition = _targetLocation;
 
                     MostRecentMovementDirection = Vector3.zero;
+                    _attackDelayTimer = attackDelayTime;
                     break;
                 case STATE.FLEE:
                     EnemySound.fleeSound.Play();
@@ -152,31 +159,47 @@ namespace StarSalvager.AI
 
             SetState(STATE.MOVE);
         }
-        
+
         private void MoveState()
         {
             //TODO SIN move between screen x locations
             void AttackUpdate()
             {
+                //Timer used to determine when to start attack
                 if (_attackTimer > 0f)
                 {
                     _attackTimer -= Time.deltaTime;
                     return;
                 }
 
+                if (!_chargingAttack)
+                {
+                    //TODO Start Attack Animation
+                    EnemySound.chargeSound.Play();
+                    _chargingAttack = true;
+                }
+                
+                //Timer used to wait for Sound/Animation to line up to start firing
+                if (_attackDelayTimer > 0f)
+                {
+                    _attackDelayTimer -= Time.deltaTime;
+                    return;
+                }
+
                 FireAttack();
                 _attackTimer = attackTime;
+                _attackDelayTimer = attackDelayTime;
+                _chargingAttack = false;
             }
 
             AttackUpdate();
-            
+
             _targetLocation = GetNewPosition(_flipped);
             _reachTargetTime = Vector2.Distance(_startPosition, _targetLocation) / EnemyMovementSpeed;
 
 
             if (_t / _reachTargetTime <= 1.0f)
             {
-
                 var newPosition = Vector2.Lerp(_startPosition, _targetLocation, tCurve.Evaluate(_t / _reachTargetTime));
 
                 _t += Time.deltaTime;
@@ -184,7 +207,7 @@ namespace StarSalvager.AI
                 newPosition.y += Mathf.Sin(Time.time * sinFrequency) * sinMagnitude;
 
                 transform.position = newPosition;
-                
+
                 return;
             }
 

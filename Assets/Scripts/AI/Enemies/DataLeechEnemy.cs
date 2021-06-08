@@ -2,6 +2,7 @@
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Values;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.DataLeechSounds;
+            
             base.LateInit();
             SetState(STATE.PURSUE);
         }

@@ -3,6 +3,7 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
@@ -86,6 +87,8 @@ namespace StarSalvager.AI
 
             //--------------------------------------------------------------------------------------------------------//
 
+            EnemySoundBase = AudioController.Instance.IceWingSounds;            
+            
             base.LateInit();
 
             _attackPassCount = 0;

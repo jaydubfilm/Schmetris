@@ -46,8 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 028f9c9a562112e429e611078c757089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AverageOrbitDistance: 6.5
-  LaserDamage: 5
+  anticipationTime: 0.5
+  timeChooseNewPosition: 1.5
+  chanceSwapDirections: 7
+  averageOrbitDistance: 6.5
+  laserDamage: 5
   collisionMask:
     serializedVersion: 2
     m_Bits: 256

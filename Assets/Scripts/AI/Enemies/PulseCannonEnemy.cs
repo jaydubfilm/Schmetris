@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Helpers;
@@ -123,6 +124,7 @@ namespace StarSalvager.AI
                     _anticipationTimer = anticipationTime;
                     break;
                 case STATE.ATTACK:
+                    EnemySound.attackSound.Play();
                     _burstCount = burstCount;
                     _burstShotDelayTimer = 0f;
                     break;
@@ -257,7 +259,6 @@ namespace StarSalvager.AI
                     false,
                     true);
             
-            EnemySound.attackSound.Play();
         }
 
         //====================================================================================================================//

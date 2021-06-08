@@ -2,6 +2,7 @@
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;

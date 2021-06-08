@@ -3,6 +3,7 @@ using System.Linq;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
@@ -13,15 +14,8 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class SensorMineEnemy  : Enemy, IPlayEnemySounds<SensorMineSounds>
+    public class SensorMineEnemy  : Enemy, IPlayEnemySounds<SensorMineSounds>, IUseAudioStates
     {
-        private enum AUDIO_STATE
-        {
-            NONE,
-            IDLE,
-            WARNING
-        }
-        
         public SensorMineSounds EnemySound => (SensorMineSounds) EnemySoundBase;
         public float anticipationTime = 1f;
         public float triggerDistance = 5f;
@@ -42,8 +36,12 @@ namespace StarSalvager.AI
         private float _anticipationTime;
         private Vector2 _playerPosition;
         private AudioSource _audioSource;
-        private AUDIO_STATE _audioState = AUDIO_STATE.NONE;
-        private AUDIO_STATE _previousAudioState = AUDIO_STATE.NONE;
+
+        //IUseAudioStates Properties
+        //====================================================================================================================//
+        
+        public AUDIO_STATE CurrentAudioState { get; private set; } = AUDIO_STATE.NONE;
+        public AUDIO_STATE PreviousAudioState { get; private set; } = AUDIO_STATE.NONE;
         
 
         //====================================================================================================================//
@@ -99,7 +97,6 @@ namespace StarSalvager.AI
             ApplyFallMotion();
 
             _distanceToPlayer = Vector2.Distance(transform.position, _playerPosition);
-            UpdateAudioState();
 
             switch (currentState)
             {
@@ -122,7 +119,7 @@ namespace StarSalvager.AI
         {
             base.CleanStateData();
 
-            CleanAudio();
+            CleanAudioState();
         }
 
         //====================================================================================================================//
@@ -148,50 +145,50 @@ namespace StarSalvager.AI
 
         #endregion //State Functions
 
-        private void UpdateAudioState()
+        //IUseAudioStates Functions
+        //====================================================================================================================//
+
+        #region IUseAudioStates Functions
+
+        public void SetAudioState(in AUDIO_STATE newAudioState)
         {
-            //--------------------------------------------------------------------------------------------------------//
-            
-            void SetAudioState(in AUDIO_STATE newAudioState)
+            if (newAudioState == CurrentAudioState) return;
+                
+            PreviousAudioState = CurrentAudioState;
+            CurrentAudioState = newAudioState;
+                
+            if (PreviousAudioState != newAudioState)
             {
-                if (newAudioState == _audioState) return;
-                
-                _previousAudioState = _audioState;
-                _audioState = newAudioState;
-                
-                if (_previousAudioState != newAudioState)
-                {
-                    switch (_previousAudioState)
-                    {
-                        case AUDIO_STATE.NONE: break;
-                        case AUDIO_STATE.IDLE:
-                            EnemySound.idleLoop.Stop();
-                            _audioSource = null;
-                            break;
-                        case AUDIO_STATE.WARNING:
-                            EnemySound.warningLoop.Stop();
-                            _audioSource = null;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                switch (newAudioState)
+                switch (PreviousAudioState)
                 {
                     case AUDIO_STATE.NONE: break;
                     case AUDIO_STATE.IDLE:
-                        EnemySound.idleLoop.Play(out _audioSource);
+                        EnemySound.idleLoop.Stop();
+                        _audioSource = null;
                         break;
-                    case AUDIO_STATE.WARNING:
-                        EnemySound.warningLoop.Play(out _audioSource);
+                    case AUDIO_STATE.ANTICIPATION:
+                        EnemySound.warningLoop.Stop();
+                        _audioSource = null;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(newAudioState), newAudioState, null);
+                        throw new ArgumentOutOfRangeException();
                 }
             }
-
-            //--------------------------------------------------------------------------------------------------------//
-            
+            switch (newAudioState)
+            {
+                case AUDIO_STATE.NONE: break;
+                case AUDIO_STATE.IDLE:
+                    EnemySound.idleLoop.Play(out _audioSource);
+                    break;
+                case AUDIO_STATE.ANTICIPATION:
+                    EnemySound.warningLoop.Play(out _audioSource);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newAudioState), newAudioState, null);
+            }
+        }
+        public void UpdateAudioState()
+        {
             if (_distanceToPlayer > minSoundThreshold)
             {
                 SetAudioState(AUDIO_STATE.NONE);
@@ -205,29 +202,29 @@ namespace StarSalvager.AI
             }
             else if (_distanceToPlayer < idleSoundDistance && _distanceToPlayer > warningSoundDistance)
             {
-                SetAudioState(AUDIO_STATE.WARNING);
+                SetAudioState(AUDIO_STATE.ANTICIPATION);
                 _audioSource.volume = EnemySound.warningLoop.volume;
             }
         }
 
-        private void CleanAudio()
+        public void CleanAudioState()
         {
             _audioSource = null;
-            switch (_audioState)
+            switch (CurrentAudioState)
             {
                 case AUDIO_STATE.NONE:
                     break;
                 case AUDIO_STATE.IDLE:
                     EnemySound.idleLoop.Stop();
                     break;
-                case AUDIO_STATE.WARNING:
+                case AUDIO_STATE.ANTICIPATION:
                     EnemySound.warningLoop.Stop();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            _previousAudioState = _audioState = AUDIO_STATE.NONE;
+            PreviousAudioState = CurrentAudioState = AUDIO_STATE.NONE;
         }
         
 #if UNITY_EDITOR
@@ -245,6 +242,9 @@ namespace StarSalvager.AI
         }
 #endif
 
+        #endregion //IUseAudioStates Functions
+
+        //Movement
         //====================================================================================================================//
 
         #region Movement
@@ -252,6 +252,7 @@ namespace StarSalvager.AI
         public override void UpdateEnemy(Vector2 playerLocation)
         {
             _playerPosition = playerLocation;
+            UpdateAudioState();
             StateUpdate();
         }
         
@@ -300,13 +301,6 @@ namespace StarSalvager.AI
         }
         
         //====================================================================================================================//
-
-        public override void CustomRecycle(params object[] args)
-        {
-            CleanStateData();
-            
-            base.CustomRecycle(args);
-        }
 
         public override Type GetOverrideType()
         {

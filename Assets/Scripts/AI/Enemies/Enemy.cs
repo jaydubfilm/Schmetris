@@ -10,6 +10,7 @@ using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
 using StarSalvager.Prototype;

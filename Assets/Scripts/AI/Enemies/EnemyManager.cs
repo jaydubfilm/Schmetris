@@ -166,8 +166,7 @@ namespace StarSalvager
             {
                 Enemy enemy = m_enemies[i];
                 
-                if(enemy.IsRecycled)
-                    continue;
+                if(enemy.IsRecycled) continue;
 
                 //Check to see if the enemy can Move
                 if (!enemy.CanMove())

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -35,6 +37,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.BorrowerSounds;
+            
             base.LateInit();
 
             _stolenBits = 0;

@@ -21,14 +21,7 @@ namespace StarSalvager.Audio.Enemies
         private AudioClip _clip;
     }
 
-    public interface IPlayEnemySounds
-    {
-        EnemySoundBase EnemySoundBase { get; }
-    }
-    public interface IPlayEnemySounds<T> : IPlayEnemySounds where T: EnemySoundBase
-    {
-        T EnemySound { get; }
-    }
+    
 
     public abstract class EnemySoundBase
     {
@@ -69,6 +62,7 @@ namespace StarSalvager.Audio.Enemies
     public class SquartSounds : EnemySoundBase
     {
         [BoxGroup] public EnemySoundClip fleeSound;
+        [BoxGroup] public EnemySoundClip chargeSound;
     }
 
     [Serializable]
@@ -90,7 +84,8 @@ namespace StarSalvager.Audio.Enemies
     [Serializable]
     public class SleeperMineSounds : EnemySoundBase
     {
-        
+        [BoxGroup("Idle Loop"), HideLabel]
+        public LoopingSound idleLoop;
     }
 
     [Serializable]
