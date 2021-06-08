@@ -46,8 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db03bea7c4358924b8a4f9963257036a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
-  Radius: 0
+  anticipationTime: 1
+  triggerDistance: 5
+  minSoundThreshold: 20
+  idleSoundDistance: 10
+  warningSoundDistance: 5
 --- !u!114 &5026375194549460751
 MonoBehaviour:
   m_ObjectHideFlags: 0

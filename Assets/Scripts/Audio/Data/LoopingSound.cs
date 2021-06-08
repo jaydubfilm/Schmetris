@@ -12,18 +12,34 @@ namespace StarSalvager.Audio.Data
         public static readonly LoopingSound Empty = new LoopingSound
         {
             clip = null,
-            maxChannels = 0
+            maxChannels = 0,
+            volume = 0f
         };
 
         //====================================================================================================================//
         
-        [HorizontalGroup("Row1"), LabelWidth(50), Required]
+        [LabelWidth(50), Required]
         public AudioClip clip;
 
         [HorizontalGroup("Row1"), Range(0, 32), LabelWidth(100)]
         public int maxChannels;
+        [HorizontalGroup("Row1"), Range(0f, 1f), LabelWidth(100)]
+        public float volume;
 
         //====================================================================================================================//
+
+        public void Play()
+        {
+            AudioController.PlayLoop(this);
+        }
+        public void Play(out AudioSource audioSource)
+        {
+            AudioController.PlayLoop(this, out audioSource);
+        }
+        public void Stop()
+        {
+            AudioController.StopLoop(this);
+        }
         
         #region IEquatable
 

@@ -420,12 +420,12 @@ namespace StarSalvager.AI
         
         public void OnEnterCamera()
         {
-            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+            //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
         public void OnExitCamera()
         {
-            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }
         //============================================================================================================//
 
@@ -439,7 +439,7 @@ namespace StarSalvager.AI
 
             FreezeTime = 0f;
             Disabled = false;
-            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
             UnregisterCanBeSeen();
         }
 

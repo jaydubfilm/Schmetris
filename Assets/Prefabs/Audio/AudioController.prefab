@@ -428,7 +428,10 @@ MonoBehaviour:
       _clip: {fileID: 8300000, guid: 92a80964957ec6849b7bd575a5e179a5, type: 3}
     spawnLeechSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 7bc1099af56426048953f6c4b6b447f8, type: 3}
+    shieldSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 1348ec32bf35fdd499c462b58b328cd7, type: 3}
   ShardSounds:
     attackSound:
       _volume: 1
@@ -439,7 +442,7 @@ MonoBehaviour:
     lockPositionSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: c956542d700951842b8f50fab847515e, type: 3}
-    beginAttachFallSound:
+    beginAttackFallSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: dd3bf2116e4e48f4cb86a1ee6460e300, type: 3}
   SleeperMineSounds:
@@ -452,10 +455,18 @@ MonoBehaviour:
   SensorMineSounds:
     attackSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 2249df0aca4132a4bb0aaa68d11e32ec, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 0}
+    idleLoop:
+      clip: {fileID: 8300000, guid: 44bba57a85b55f14fbeca79d78260138, type: 3}
+      maxChannels: 3
+      volume: 0.65
+    warningLoop:
+      clip: {fileID: 8300000, guid: fc68b565adf03b24589b74843da0a867, type: 3}
+      maxChannels: 3
+      volume: 1
   BorrowerSounds:
     attackSound:
       _volume: 1
@@ -472,13 +483,13 @@ MonoBehaviour:
   LaserTurretSounds:
     attackSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: c803055aa93b8374fbb8ff6264c0d4b4, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: 344b926e088598c498b2fc1bd755d007, type: 3}
     chargeLaser:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 2d9e88d520a1a83429ea74bf7488bc4a, type: 3}
   PulseCannonSounds:
     attackSound:
       _volume: 1
@@ -504,26 +515,31 @@ MonoBehaviour:
     moveSound:
       clip: {fileID: 8300000, guid: c42fa33ccff9e3446a2b596dc5b933e8, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: d58c98190d06eb04da6ce0231ebcb356, type: 3}
   - enemyID: 4eeac5cf-1c0c-492d-82a1-86108b574464
     moveSound:
       clip: {fileID: 8300000, guid: 707e738e2031e7e47a4fa4cc9d0d15dc, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: cd4d5e8bd9fd3f2408e1347c533c4ccd, type: 3}
   - enemyID: f3c96622-609f-498c-be89-8cc575e46fe0
     moveSound:
       clip: {fileID: 8300000, guid: ffe73d9309c4d7a428a333cecba2e338, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: b14bfed80763c124e9de5d644c1d5ec9, type: 3}
   - enemyID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     moveSound:
       clip: {fileID: 8300000, guid: 82faa0e5dca6a3b41b5cdc4083c2f1a7, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: 5c24b43784be3a443a963dab8799bacf, type: 3}
   - enemyID: 71b8347a-1d17-4ade-81d4-85930af8210e
     moveSound:
       clip: {fileID: 8300000, guid: bd29752dc806102439df484a078113e7, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 0}
   audioSourcePrefab: {fileID: 8252700639282968980, guid: 4f40b5a640b0cea4bbd3a7078911d340,
     type: 3}

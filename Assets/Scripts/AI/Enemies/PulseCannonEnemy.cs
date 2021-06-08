@@ -72,6 +72,8 @@ namespace StarSalvager.AI
 
             //--------------------------------------------------------------------------------------------------------//
             
+            EnemySoundBase = AudioController.Instance.PulseCannonSounds;
+            
             base.LateInit();
 
             var currentPosition = Position;

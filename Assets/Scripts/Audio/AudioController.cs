@@ -11,6 +11,7 @@ using StarSalvager.Audio.Enemies;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -193,6 +194,34 @@ namespace StarSalvager.Audio
                     return;
             }
         }
+        
+        //Loops
+        //====================================================================================================================//
+
+        public static void PlayLoop(in LoopingSound loopingSound)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.PlayLoopingSound(loopingSound, out var _);
+        }
+        public static void PlayLoop(in LoopingSound loopingSound, out AudioSource audioSource)
+        {
+            audioSource = null;
+            
+            if (Instance == null)
+                return;
+
+            Instance.PlayLoopingSound(loopingSound, out audioSource);
+        }
+        
+        public static void StopLoop(in LoopingSound loopingSound)
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.StopLoopingSound(loopingSound);
+        }
 
         #endregion //Play Sounds
 
@@ -325,7 +354,7 @@ namespace StarSalvager.Audio
                 return;
             }
 
-            PlayLoopingSound(enemySoundData.moveSound);
+            PlayLoopingSound(enemySoundData.moveSound, out var _);
         }
 
         private void StopMoveSound(string enemyId)
@@ -380,6 +409,8 @@ namespace StarSalvager.Audio
             
             sfxAudioSource.PlayOneShot(clip, volume);
         }
+
+        
         
         //Music Functions
         //============================================================================================================//
@@ -444,7 +475,7 @@ namespace StarSalvager.Audio
             {
                 clip = clip,
                 maxChannels = MAX_CHANNELS
-            });
+            }, out var _);
         }
         
         private void StopLoopingSound(SOUND sound)
@@ -459,8 +490,10 @@ namespace StarSalvager.Audio
             });
         }
         
-        private void PlayLoopingSound(LoopingSound loopingSound)
+        private void PlayLoopingSound(in LoopingSound loopingSound, out AudioSource audioSource)
         {
+            audioSource = null;
+            
             if(activeLoopingSounds == null)
                 activeLoopingSounds = new Dictionary<LoopingSound, Stack<AudioSource>>();
             
@@ -473,7 +506,7 @@ namespace StarSalvager.Audio
                 return;
 
             //TODO Need to get use the recycling system here
-            if (!Recycler.TryGrab<AudioSource>(out AudioSource newAudioSource))
+            if (!Recycler.TryGrab(out AudioSource newAudioSource))
             {
                 newAudioSource = Instantiate(audioSourcePrefab).GetComponent<AudioSource>();
             }
@@ -485,27 +518,28 @@ namespace StarSalvager.Audio
             activeLoopingSounds[loopingSound].Push(newAudioSource);
             newAudioSource.outputAudioMixerGroup = sfxAudioMixerGroup;
             newAudioSource.clip = loopingSound.clip;
+            newAudioSource.volume = loopingSound.volume;
             newAudioSource.loop = true;
             newAudioSource.Play();
+
+            audioSource = newAudioSource;
         }
 
-        private void StopLoopingSound(LoopingSound loopingSound)
+        private void StopLoopingSound(in LoopingSound loopingSound)
         {
-            if (activeLoopingSounds == null || activeLoopingSounds.Count == 0)
-                return;
+            if (activeLoopingSounds.IsNullOrEmpty()) return;
             
             
-            if (!activeLoopingSounds.ContainsKey(loopingSound))
-                return;
+            if (!activeLoopingSounds.ContainsKey(loopingSound)) return;
             
             //TODO Need to check if there are any existing sounds when trying to remove it
 
-            if (activeLoopingSounds[loopingSound].Count <= 0)
-                return;
+            if (activeLoopingSounds[loopingSound].Count <= 0) return;
             
             var audioSource = activeLoopingSounds[loopingSound].Pop();
             audioSource.Stop();
             audioSource.clip = null;
+            audioSource.volume = 1f;
             
             Recycler.Recycle<AudioSource>(audioSource);
         }

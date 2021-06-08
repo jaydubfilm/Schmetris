@@ -56,6 +56,8 @@ namespace StarSalvager.AI
         
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.MoonMinerSounds;
+            
             base.LateInit();
             
             beamObject.SetActive(false);

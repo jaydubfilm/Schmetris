@@ -75,6 +75,7 @@ namespace StarSalvager.Audio.Enemies
     public class ToughMotherSounds : EnemySoundBase
     {
         [BoxGroup] public EnemySoundClip spawnLeechSound;
+        [BoxGroup] public EnemySoundClip shieldSound;
     }
 
     [Serializable]
@@ -95,6 +96,11 @@ namespace StarSalvager.Audio.Enemies
     [Serializable]
     public class SensorMineSounds : EnemySoundBase
     {
+        [BoxGroup("Idle Loop"), HideLabel]
+        public LoopingSound idleLoop;
+        [BoxGroup("Warning Loop"), HideLabel]
+        public LoopingSound warningLoop;
+        
     }
 
     [Serializable]

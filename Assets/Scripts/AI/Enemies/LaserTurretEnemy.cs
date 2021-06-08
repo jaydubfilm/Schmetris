@@ -57,6 +57,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.LaserTurretSounds;
+            
             base.LateInit();
 
             _rotateDirection = Random.value > 0.5f ? -1 : 1;

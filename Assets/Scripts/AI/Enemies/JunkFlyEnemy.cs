@@ -38,6 +38,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.FlySounds;
+            
             base.LateInit();
 
             m_horizontalMovementYLevel = transform.position.y;

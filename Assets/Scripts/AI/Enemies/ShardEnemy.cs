@@ -34,6 +34,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.ShardSounds;
+            
             base.LateInit();
 
             SetState(STATE.MOVE);

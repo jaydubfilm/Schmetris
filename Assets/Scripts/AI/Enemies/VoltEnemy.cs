@@ -61,6 +61,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.VoltSounds;
+            
             base.LateInit();
 
             _hasReachedPlayer = false;

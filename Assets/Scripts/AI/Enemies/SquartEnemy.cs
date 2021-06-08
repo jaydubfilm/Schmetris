@@ -3,6 +3,7 @@ using StarSalvager.Factories;
 using StarSalvager.Values;
 using System;
 using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
@@ -47,6 +48,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.SquartSounds;
+            
             base.LateInit();
 
             _attackTimer = attackTime;

@@ -3,6 +3,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using System;
+using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
 using UnityEngine;
 
@@ -29,6 +30,8 @@ namespace StarSalvager.AI
 
         public override void LateInit()
         {
+            EnemySoundBase = AudioController.Instance.ToughMotherSounds;
+            
             base.LateInit();
 
             SetState(STATE.MOVE);
