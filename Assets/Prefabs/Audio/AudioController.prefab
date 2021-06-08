@@ -514,7 +514,7 @@ MonoBehaviour:
       _clip: {fileID: 0}
     deathSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: f2f338cf2e3230640b9ff592a40773af, type: 3}
     swoopSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: 804f8d79c0064ef4d8d1ac6c8fd094f2, type: 3}
