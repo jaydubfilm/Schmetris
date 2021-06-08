@@ -101,8 +101,11 @@ namespace StarSalvager.Audio.Enemies
     [Serializable]
     public class BorrowerSounds : EnemySoundBase
     {
+        [BoxGroup] public EnemySoundClip spawnSound;
         [BoxGroup] public EnemySoundClip latchOntoBotSound;
-        [BoxGroup] public EnemySoundClip waitSound;
+        
+        [BoxGroup("Wait Sound"), HideLabel] 
+        public LoopingSound waitSound;
     }
 
     [Serializable]

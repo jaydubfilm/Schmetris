@@ -11,8 +11,13 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class BorrowerEnemy  : EnemyAttachable, IPlayEnemySounds<BorrowerSounds>
+    public class BorrowerEnemy  : EnemyAttachable, IPlayEnemySounds<BorrowerSounds>, IUseAudioStates
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         public float anticipationTime = 1f;
 
         public BorrowerSounds EnemySound => (BorrowerSounds) EnemySoundBase;
@@ -34,7 +39,19 @@ namespace StarSalvager.AI
         private int _stolenBits;
 
         private float _carrySpeed;
+        
+        private AudioSource _audioSource;
+        
+        //IUseAudioStates Properties
+        //====================================================================================================================//
 
+        public AUDIO_STATE CurrentAudioState { get; private set; }
+        public AUDIO_STATE PreviousAudioState { get; private set; }
+
+        #endregion //Properties
+
+        //====================================================================================================================//
+        
         public override void LateInit()
         {
             EnemySoundBase = AudioController.Instance.BorrowerSounds;
@@ -44,7 +61,6 @@ namespace StarSalvager.AI
             _stolenBits = 0;
             
             SetState(STATE.PURSUE);
-            
         }
 
         //====================================================================================================================//
@@ -82,6 +98,7 @@ namespace StarSalvager.AI
             base.OnBumped();
             
             SetState(STATE.IDLE);
+            UpdateAudioState();
         }
 
         #endregion //EnemyAttachable Overrides
@@ -90,10 +107,10 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void UpdateEnemy(Vector2 playerlocation)
+        public override void UpdateEnemy(Vector2 playerLocation)
         {
-            _playerLocation = playerlocation;
-            
+            _playerLocation = playerLocation;
+            UpdateAudioState();   
             StateUpdate();
         }
 
@@ -154,7 +171,6 @@ namespace StarSalvager.AI
                 case STATE.ANTICIPATION:
                     _anticipationTime = anticipationTime;
                     _enemyMovementSpeed = 0f;
-                    EnemySound.waitSound.Play();
                     break;
                 case STATE.ATTACK:
                     break;
@@ -345,7 +361,70 @@ namespace StarSalvager.AI
         }
 
         #endregion //States
+        
+        //IUseAudioStates Functions
+        //====================================================================================================================//
 
+        #region IUseAudioStates Functions
+
+        public void SetAudioState(in AUDIO_STATE newAudioState)
+        {
+            if (newAudioState == CurrentAudioState) return;
+
+            PreviousAudioState = CurrentAudioState;
+            CurrentAudioState = newAudioState;
+
+            if (PreviousAudioState != newAudioState)
+            {
+                switch (PreviousAudioState)
+                {
+                    case AUDIO_STATE.NONE: break;
+                    case AUDIO_STATE.ANTICIPATION:
+                        
+                        if(_audioSource) EnemySound.waitSound.Stop();
+                        _audioSource = null;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            switch (newAudioState)
+            {
+                case AUDIO_STATE.NONE: break;
+                case AUDIO_STATE.ANTICIPATION:
+                    EnemySound.waitSound.Play(out _audioSource);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newAudioState), newAudioState, null);
+            }
+        }
+
+        public void UpdateAudioState()
+        {
+            SetAudioState(Attached ? AUDIO_STATE.ANTICIPATION : AUDIO_STATE.NONE);
+        }
+
+        public void CleanAudioState()
+        {
+            switch (CurrentAudioState)
+            {
+                case AUDIO_STATE.NONE: break;
+                case AUDIO_STATE.ANTICIPATION:
+                    if(_audioSource) EnemySound.waitSound.Stop();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _audioSource = null;
+            PreviousAudioState = CurrentAudioState = AUDIO_STATE.NONE;
+        }
+
+        #endregion //IUseAudioStates Functions
+
+        //====================================================================================================================//
+        
         protected override void ApplyFleeMotion()
         {
             if (IsOffScreen(transform.position))
@@ -389,8 +468,20 @@ namespace StarSalvager.AI
             return false;
         }
 
+        public override void OnEnterCamera()
+        {
+            base.OnEnterCamera();
+            EnemySound.spawnSound.Play();
+        }
+
         //============================================================================================================//
-        
+
+        protected override void CleanStateData()
+        {
+            base.CleanStateData();
+            CleanAudioState();
+        }
+
         public override Type GetOverrideType()
         {
             return typeof(BorrowerEnemy);

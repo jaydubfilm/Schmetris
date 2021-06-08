@@ -163,11 +163,11 @@ namespace StarSalvager.AI
                 {
                     case AUDIO_STATE.NONE: break;
                     case AUDIO_STATE.IDLE:
-                        EnemySound.idleLoop.Stop();
+                        if(_audioSource) EnemySound.idleLoop.Stop();
                         _audioSource = null;
                         break;
                     case AUDIO_STATE.ANTICIPATION:
-                        EnemySound.warningLoop.Stop();
+                        if(_audioSource) EnemySound.warningLoop.Stop();
                         _audioSource = null;
                         break;
                     default:
@@ -209,21 +209,21 @@ namespace StarSalvager.AI
 
         public void CleanAudioState()
         {
-            _audioSource = null;
             switch (CurrentAudioState)
             {
                 case AUDIO_STATE.NONE:
                     break;
                 case AUDIO_STATE.IDLE:
-                    EnemySound.idleLoop.Stop();
+                    if(_audioSource) EnemySound.idleLoop.Stop();
                     break;
                 case AUDIO_STATE.ANTICIPATION:
-                    EnemySound.warningLoop.Stop();
+                    if(_audioSource) EnemySound.warningLoop.Stop();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+            _audioSource = null;
             PreviousAudioState = CurrentAudioState = AUDIO_STATE.NONE;
         }
         

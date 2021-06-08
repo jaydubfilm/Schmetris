@@ -419,12 +419,12 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
         
-        public void OnEnterCamera()
+        public virtual void OnEnterCamera()
         {
             //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
-        public void OnExitCamera()
+        public virtual void OnExitCamera()
         {
             //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }

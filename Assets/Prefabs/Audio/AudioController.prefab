@@ -477,16 +477,20 @@ MonoBehaviour:
   BorrowerSounds:
     attackSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 246d9cfef88fd8943978572e81150928, type: 3}
     deathSound:
       _volume: 1
       _clip: {fileID: 8300000, guid: 66d8182dacf442848b4cd02bdb01a66e, type: 3}
+    spawnSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: e8adb7c824dd98d4da7ff69bf686ea46, type: 3}
     latchOntoBotSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 1224eba610f74fb4a9f69a1686088186, type: 3}
     waitSound:
-      _volume: 1
-      _clip: {fileID: 0}
+      clip: {fileID: 8300000, guid: 34ea8423c2ccf834ba5e27eed96b0b2b, type: 3}
+      maxChannels: 2
+      volume: 0.7
   LaserTurretSounds:
     attackSound:
       _volume: 1
@@ -513,7 +517,7 @@ MonoBehaviour:
       _clip: {fileID: 0}
     swoopSound:
       _volume: 1
-      _clip: {fileID: 0}
+      _clip: {fileID: 8300000, guid: 804f8d79c0064ef4d8d1ac6c8fd094f2, type: 3}
     freezeSound:
       _volume: 1
       _clip: {fileID: 0}
