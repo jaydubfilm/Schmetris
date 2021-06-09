@@ -3575,7 +3575,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }
@@ -3600,7 +3600,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }

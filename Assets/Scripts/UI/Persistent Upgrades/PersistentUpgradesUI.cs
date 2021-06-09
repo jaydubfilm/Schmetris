@@ -163,6 +163,8 @@ namespace StarSalvager.UI.PersistentUpgrades
                         upgradeData.Level,
                         upgradeData.BitType);
                     
+                    PlayerDataManager.SavePlayerAccountData();
+                    
                     SetupUpgrades();
                 });
         }

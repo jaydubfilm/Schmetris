@@ -15,6 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.UI;
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 
@@ -107,10 +108,21 @@ namespace StarSalvager.UI.Scrapyard
 
             partsOnBot.AddRange(partsInStorage);
 
-            partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
+            try
+            {
+                partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
+            }
+            catch (Exception)
+            {
+                partChoiceWindow.SetActive(false);
+                throw;
+            }
 
             if (_partOptions[0] == _partOptions[1])
+            {
+                partChoiceWindow.SetActive(false);
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
+            }
 
             for (var i = 0; i < _partOptions.Length; i++)
             {
