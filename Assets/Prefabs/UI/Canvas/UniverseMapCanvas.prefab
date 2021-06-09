@@ -1180,13 +1180,12 @@ MonoBehaviour:
   m_scrollRectArea: {fileID: 5553311265975264999}
   backButton: {fileID: 5993306269349233175}
   backButtonText: {fileID: 3738847559760603693}
-  waveDataWindow: {fileID: 2894955673799114641}
-  missingDataObject: {fileID: 1870446565998202489}
-  windowTitle: {fileID: 1283540868601642870}
-  waveDataScrollView:
-    contentTransform: {fileID: 4623226693895520633}
-    contentPrefab: {fileID: 8662621323246322072, guid: c37e2c705ee60134baa17ecf007f1cfe,
-      type: 3}
+  wreckBackgroundSprite: {fileID: 21300000, guid: 969e29a38411df147b031cc0399ddeed,
+    type: 3}
+  waveBackgroundSprite: {fileID: 21300000, guid: c0b6679475c66f44f8bedd28393cd3a7,
+    type: 3}
+  waveSprite: {fileID: 21300000, guid: bb6ab4757d5145d468a2d485eb5055b0, type: 3}
+  wreckSprite: {fileID: 21300000, guid: 4712e18c2bf2a7843ae4a245d092d7d7, type: 3}
   dottedLineImagePrefab: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,
     type: 3}
   botDisplayRectTransform: {fileID: 5059624597965075289}

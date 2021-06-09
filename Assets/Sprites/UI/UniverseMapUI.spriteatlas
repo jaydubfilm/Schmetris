@@ -31,16 +31,46 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 1c592d1374f4d134d8e23417f03f92b0, type: 3}
-    totalSpriteSurfaceArea: 96384
+    totalSpriteSurfaceArea: 385617
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 9b9e06116e666204fa1e4cf38a33916e, type: 3}
+  - {fileID: 21300000, guid: ef0be733ee1c3c04fb7ae3a5c6f09e75, type: 3}
+  - {fileID: 21300000, guid: 311eb9434c0692a469d2fb8d8603e2d8, type: 3}
+  - {fileID: 21300000, guid: 969e29a38411df147b031cc0399ddeed, type: 3}
+  - {fileID: 21300000, guid: 5e7ce824fcf0446498e2bfc457c0ce22, type: 3}
+  - {fileID: 21300000, guid: c0b6679475c66f44f8bedd28393cd3a7, type: 3}
+  - {fileID: 21300000, guid: bb6ab4757d5145d468a2d485eb5055b0, type: 3}
+  - {fileID: 21300000, guid: fa9f6778586cc6a449cdfad4f02ea3ca, type: 3}
+  - {fileID: 21300000, guid: d6e374890afb52c4ba7fe6577ce53126, type: 3}
   - {fileID: 21300000, guid: 036a10c9fb5aefb4380345b8dbd7be2c, type: 3}
+  - {fileID: 21300000, guid: 22ae3b0ac3931b947a4772feb8781174, type: 3}
+  - {fileID: 21300000, guid: 3ca85fab689030249808aa7131293c20, type: 3}
   - {fileID: 21300000, guid: 1dba08fb1ea87d649891313d4abb9d69, type: 3}
+  - {fileID: 21300000, guid: c505d22c60574f94fbaeedd07838bf6f, type: 3}
+  - {fileID: 21300000, guid: 7948f97c6db1f504ebf8d39e5f9ba328, type: 3}
+  - {fileID: 21300000, guid: 4712e18c2bf2a7843ae4a245d092d7d7, type: 3}
+  - {fileID: 21300000, guid: 5774d39de0930474db3209012937b2d5, type: 3}
   - {fileID: 21300000, guid: 4fd147bdcc6167748bde0f87d37fd4c1, type: 3}
   m_PackedSpriteNamesToIndex:
+  - map_WRECKCIRCLEGREEN_0_v1
+  - map_WILDCARDWAVEICON_0_v1
+  - map_WRECKCIRCLEPURPLE_0_v1
+  - map_WRECKBACK_0_v1
+  - map_WRECKCIRCLEBLUE_0_v1
+  - map_WAVEBACK_0_v1
+  - map_DEFENCEWAVEICON_0_v1
+  - map_WRECKLEVEL_0_v1
+  - map_WRECKCIRCLEYELLOW_0_v1
   - map_SHORTCUTWHITE_1_v1
+  - map_WRECKCIRCLERED_0_v1
+  - map_BOSSWAVEICON_0_v1
   - PointOfInterestImage
+  - map_WAVEICON_0_v1
+  - map_WRECKWILDCARDICON_0_v1
+  - map_WRECKICON_0_v1
+  - map_BONUSWAVEICON_0_v1
   - ShortcutImage
   m_Tag: UniverseMapUI
   m_IsVariant: 0
