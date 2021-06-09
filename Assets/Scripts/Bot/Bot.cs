@@ -212,6 +212,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            if (amount == 0) return;
+            
             var addsHealth = amount > 0;
             
             CurrentHealth += amount;
