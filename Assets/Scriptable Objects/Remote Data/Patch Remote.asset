@@ -216,7 +216,7 @@ MonoBehaviour:
       multiplier: 0.5
       level: 2
   - isImplemented: 1
-    name: EFFECIENCY
+    name: EFFICIENCY
     type: 4
     description: 
     Levels:
