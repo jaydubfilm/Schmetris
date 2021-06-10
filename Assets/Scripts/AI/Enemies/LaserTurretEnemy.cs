@@ -294,6 +294,7 @@ namespace StarSalvager.AI
         
         protected override void ApplyFleeMotion()
         {
+            SetBeamsActive(false);
             ApplyFallMotion();
         }
         
