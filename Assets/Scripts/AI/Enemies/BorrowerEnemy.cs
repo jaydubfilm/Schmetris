@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
@@ -8,9 +11,16 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class BorrowerEnemy  : EnemyAttachable
+    public class BorrowerEnemy  : EnemyAttachable, IPlayEnemySounds<BorrowerSounds>, IUseAudioStates
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         public float anticipationTime = 1f;
+
+        public BorrowerSounds EnemySound => (BorrowerSounds) EnemySoundBase;
 
         //====================================================================================================================//
         
@@ -29,15 +39,28 @@ namespace StarSalvager.AI
         private int _stolenBits;
 
         private float _carrySpeed;
+        
+        private AudioSource _audioSource;
+        
+        //IUseAudioStates Properties
+        //====================================================================================================================//
 
-        public override void LateInit()
+        public AUDIO_STATE CurrentAudioState { get; private set; }
+        public AUDIO_STATE PreviousAudioState { get; private set; }
+
+        #endregion //Properties
+
+        //====================================================================================================================//
+        
+        public override void OnSpawned()
         {
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.BorrowerSounds;
+            
+            base.OnSpawned();
 
             _stolenBits = 0;
             
             SetState(STATE.PURSUE);
-            
         }
 
         //====================================================================================================================//
@@ -62,8 +85,11 @@ namespace StarSalvager.AI
             SetState(Attached ? STATE.ANTICIPATION : STATE.PURSUE);
             
             //This is important to change the target, as attaching may have changed the intended target
-            if(Attached)
+            if (Attached)
+            {
                 _attachTarget = AttachedBot.GetClosestAttachable(Coordinate, 1f) as Bit;
+                EnemySound.latchOntoBotSound.Play();
+            }
 
         }
 
@@ -72,6 +98,7 @@ namespace StarSalvager.AI
             base.OnBumped();
             
             SetState(STATE.IDLE);
+            UpdateAudioState();
         }
 
         #endregion //EnemyAttachable Overrides
@@ -80,10 +107,10 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        public override void UpdateEnemy(Vector2 playerlocation)
+        public override void UpdateEnemy(Vector2 playerLocation)
         {
-            _playerLocation = playerlocation;
-            
+            _playerLocation = playerLocation;
+            UpdateAudioState();   
             StateUpdate();
         }
 
@@ -291,6 +318,8 @@ namespace StarSalvager.AI
 
             _carryingBit = bit;
             
+            EnemySound.attackSound.Play();
+            
             //Set the State to Flee
             SetState(STATE.FLEE);
         }
@@ -332,7 +361,70 @@ namespace StarSalvager.AI
         }
 
         #endregion //States
+        
+        //IUseAudioStates Functions
+        //====================================================================================================================//
 
+        #region IUseAudioStates Functions
+
+        public void SetAudioState(in AUDIO_STATE newAudioState)
+        {
+            if (newAudioState == CurrentAudioState) return;
+
+            PreviousAudioState = CurrentAudioState;
+            CurrentAudioState = newAudioState;
+
+            if (PreviousAudioState != newAudioState)
+            {
+                switch (PreviousAudioState)
+                {
+                    case AUDIO_STATE.NONE: break;
+                    case AUDIO_STATE.ANTICIPATION:
+                        
+                        if(_audioSource) EnemySound.waitSound.Stop();
+                        _audioSource = null;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            switch (newAudioState)
+            {
+                case AUDIO_STATE.NONE: break;
+                case AUDIO_STATE.ANTICIPATION:
+                    EnemySound.waitSound.Play(out _audioSource);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newAudioState), newAudioState, null);
+            }
+        }
+
+        public void UpdateAudioState()
+        {
+            SetAudioState(Attached ? AUDIO_STATE.ANTICIPATION : AUDIO_STATE.NONE);
+        }
+
+        public void CleanAudioState()
+        {
+            switch (CurrentAudioState)
+            {
+                case AUDIO_STATE.NONE: break;
+                case AUDIO_STATE.ANTICIPATION:
+                    if(_audioSource) EnemySound.waitSound.Stop();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _audioSource = null;
+            PreviousAudioState = CurrentAudioState = AUDIO_STATE.NONE;
+        }
+
+        #endregion //IUseAudioStates Functions
+
+        //====================================================================================================================//
+        
         protected override void ApplyFleeMotion()
         {
             if (IsOffScreen(transform.position))
@@ -376,11 +468,24 @@ namespace StarSalvager.AI
             return false;
         }
 
+        public override void OnEnterCamera()
+        {
+            base.OnEnterCamera();
+            EnemySound.spawnSound.Play();
+        }
+
         //============================================================================================================//
-        
+
+        protected override void CleanStateData()
+        {
+            base.CleanStateData();
+            CleanAudioState();
+        }
+
         public override Type GetOverrideType()
         {
             return typeof(BorrowerEnemy);
         }
+
     }
 }

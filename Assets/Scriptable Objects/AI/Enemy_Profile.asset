@@ -71,7 +71,7 @@ MonoBehaviour:
   - m_sprite: {fileID: 5074050927133369148, guid: b5386671a00ee86428886a0c1e9fcc31,
       type: 3}
     m_enemyTypeID: f3a25d26-67e9-4a21-b421-8c1a1f312915
-    m_enemyPrefab: {fileID: 6795578211728555506, guid: a0936226dbbe28640ac0190ae7ee6c78,
+    m_enemyPrefab: {fileID: 760440165786649154, guid: 07de99a956d1e0f49b42093ad2f8a195,
       type: 3}
     m_isAttachable: 0
     m_enemyAnimationController: {fileID: 0}

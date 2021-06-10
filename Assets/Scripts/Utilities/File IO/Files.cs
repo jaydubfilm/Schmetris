@@ -18,6 +18,8 @@ namespace StarSalvager.Utilities.FileIO
 {
     public static class Files
     {
+        private const Formatting JSON_FORMAT = Formatting.Indented;
+
         private const string PLAYER_PATTERN = "*.player";
 
         private const string BUILDDATA_PATH = "BuildData";
@@ -110,7 +112,7 @@ namespace StarSalvager.Utilities.FileIO
 #elif UNITY_STANDALONE_OSX
             var path = Path.Combine(Application.dataPath, BUILDDATA_PATH, BOTSHAPEEDITOR_FILE);
 #endif
-            var jsonToExport = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var jsonToExport = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
 
 
             File.WriteAllText(path, jsonToExport);
@@ -198,7 +200,7 @@ namespace StarSalvager.Utilities.FileIO
 
         public static string ExportGameMetaData(GameMetadata editorData)
         {
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var export = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
             File.WriteAllText(GAME_META_PATH, export);
 
             return export;
@@ -233,7 +235,7 @@ namespace StarSalvager.Utilities.FileIO
             /*var export = JsonConvert.SerializeObject(playerSaveAccountData, Formatting.None);
             File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);*/
 
-            var export = ExportJsonData(playerSaveAccountData, 
+            var export = ExportJsonData(playerSaveAccountData,
                 PlayerAccountSavePaths[saveSlotIndex],
                 CONVERTERS);
 
@@ -260,7 +262,7 @@ namespace StarSalvager.Utilities.FileIO
 
         public static string ExportLayoutData(List<ScrapyardLayout> editorData)
         {
-            var export = JsonConvert.SerializeObject(editorData, Formatting.None);
+            var export = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
 
             File.WriteAllText(Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE), export);
 
@@ -301,7 +303,7 @@ namespace StarSalvager.Utilities.FileIO
 
             var path = Path.Combine(directory, $"{fileName}.session");
 
-            var json = JsonConvert.SerializeObject(sessionData, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(sessionData, JSON_FORMAT);
 
             File.WriteAllText(path, json);
 
@@ -397,27 +399,27 @@ namespace StarSalvager.Utilities.FileIO
         private static T ImportJsonData<T>(string path)
         {
             var jsonData = File.ReadAllText(path);
-            
+
             var settings = new JsonSerializerSettings
             {
                 ObjectCreationHandling = ObjectCreationHandling.Replace,
             };
-            
+
             return JsonConvert.DeserializeObject<T>(jsonData, settings);
         }
         private static T ImportJsonData<T>(string path, params JsonConverter[] converters)
         {
             var jsonData = File.ReadAllText(path);
-            
+
             var settings = new JsonSerializerSettings
             {
                 ObjectCreationHandling = ObjectCreationHandling.Replace,
                 Converters = converters
             };
-            
+
             return JsonConvert.DeserializeObject<T>(jsonData, settings);
         }
-        
+
         private static string ExportJsonData(in object data, in string path, params JsonConverter[] converters)
         {
             var settings = new JsonSerializerSettings
@@ -425,7 +427,7 @@ namespace StarSalvager.Utilities.FileIO
                 Formatting = Formatting.None,
                 Converters = converters
             };
-            
+
             var export = JsonConvert.SerializeObject(data, settings);
 
             File.WriteAllText(path, export);

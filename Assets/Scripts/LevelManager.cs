@@ -462,12 +462,16 @@ namespace StarSalvager
         //This handles cleanup for when you've entered the end wave state above. This and the above function likely should be combined in some way, I don't recall why it was originally set up like this and its on the list to fix.
         private void TryBeginWaveEndSequence()
         {
+            //Checks to see if there are any collectible bits in view of the player before wrapping
             if (!m_endLevelOverride && _afterWaveTimer >= 0)
             {
                 _afterWaveTimer -= Time.deltaTime;
                 CheckPlayWarningSound();
                 return;
             }
+            
+            if (ObstacleManager.AnyAttachableBitOnScreen) return;
+
 
             //AudioController.PlaySound(SOUND.END_WAVE);
 
@@ -482,7 +486,6 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            GameUi.ShowAbortWindow(false);
 
             BotInLevel.SetSortingLayer(LayerHelper.OVERLAY, 10000);
 

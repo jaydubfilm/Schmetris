@@ -9,6 +9,8 @@ using StarSalvager.Utilities.Animations;
 using StarSalvager.Utilities;
 using System.Linq;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Projectiles;
 using StarSalvager.Prototype;
@@ -19,11 +21,10 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.AI
 {
-    [RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType
+    //Explore this as solution to removing the requirement: http://answers.unity.com/answers/874150/view.html
+    //[RequireComponent(typeof(StateAnimator))]
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds
     {
-        
-        
         protected static EnemyManager EnemyManager
         {
             get
@@ -45,7 +46,7 @@ namespace StarSalvager.AI
         protected float _enemyMovementSpeed { get; set; }
 
         public string EnemyName => m_enemyData.Name;
-
+        
         //ICanBeSeen Properties
         //====================================================================================================================//
         
@@ -77,6 +78,8 @@ namespace StarSalvager.AI
 
         public bool Frozen => FreezeTime > 0f;
         public float FreezeTime { get; private set; }
+
+        public EnemySoundBase EnemySoundBase { get; protected set; }
 
         //IStateAnimation Properties 
         //============================================================================================================//
@@ -111,13 +114,13 @@ namespace StarSalvager.AI
             
             SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
             
-            renderer.sprite = m_enemyData?.Sprite;
-            StateAnimator.SetController(m_enemyData?.AnimationController);
+            SetSprite(m_enemyData?.Sprite);
+            SetAnimationController(m_enemyData?.AnimationController);
             
             RegisterCanBeSeen();
         }
 
-        public virtual void LateInit()
+        public virtual void OnSpawned()
         { }
 
         public void SetFrozen(in float time)
@@ -239,6 +242,8 @@ namespace StarSalvager.AI
 
         public bool CanMove()
         {
+            const GameState STATE = GameState.LevelActiveEndSequence | GameState.LevelBotDead | GameState.LevelEndWave | ~ GameState.LevelActive;
+
             if (GameTimer.IsPaused)
                 return false;
 
@@ -247,10 +252,8 @@ namespace StarSalvager.AI
                 ApplyFallMotion();
                 return false;
             }
-
-            if (!GameManager.IsState(GameState.LevelActive) || 
-                GameManager.IsState(GameState.LevelActiveEndSequence) ||
-                GameManager.IsState(GameState.LevelBotDead))
+           
+            if (GameManager.ContainsState(STATE))
             {
                 //FIXME Might be better to broadcast to every enemy that the level has concluded
                 if (this is EnemyAttachable enemyAttachable && enemyAttachable.IsAttachable)
@@ -310,6 +313,17 @@ namespace StarSalvager.AI
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint) { }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region Animations
+
+        protected virtual void SetAnimationController(in AnimationControllerScriptableObject animationController)
+        {
+            StateAnimator.SetController(animationController);
+        }
+
+        #endregion //Animations
 
         //ICanBeHit functions
         //============================================================================================================//
@@ -375,7 +389,7 @@ namespace StarSalvager.AI
         {
             DropLoot();
 
-            AudioController.PlaySound(SOUND.ENEMY_DEATH);
+            Killed();
 
             SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
             PlayerDataManager.RecordEnemyKilled(m_enemyData.EnemyType);
@@ -384,6 +398,11 @@ namespace StarSalvager.AI
             LevelManager.Instance.EnemyManager.RemoveEnemy(this);
             
             SetState(targetState);
+        }
+
+        protected void Killed()
+        {
+            EnemySoundBase.deathSound.Play();
         }
 
         /// <summary>
@@ -412,14 +431,14 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
         
-        public void OnEnterCamera()
+        public virtual void OnEnterCamera()
         {
-            AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
+            //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
-        public void OnExitCamera()
+        public virtual void OnExitCamera()
         {
-            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }
         //============================================================================================================//
 
@@ -433,13 +452,14 @@ namespace StarSalvager.AI
 
             FreezeTime = 0f;
             Disabled = false;
-            AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
+            //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
             UnregisterCanBeSeen();
         }
 
         public abstract Type GetOverrideType();
 
         //============================================================================================================//
+
 
     }
 }

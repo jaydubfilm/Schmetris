@@ -1,17 +1,20 @@
 ﻿using StarSalvager.Cameras;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class ShardEnemy : Enemy
+    public class ShardEnemy : SpineEnemy, IPlayEnemySounds<ShardSounds>
     {
+        public ShardSounds EnemySound => (ShardSounds) EnemySoundBase;
+
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
 
@@ -24,15 +27,33 @@ namespace StarSalvager.AI
         [SerializeField]
         private LayerMask mask;
 
+
+        private bool _triggered;
+        [SerializeField]
+        private float anticipationTime;
+        private float _anticipationTimer;
+
         private Vector2 _targetLocation;
+
+        //ISpine Override Tests
+        //====================================================================================================================//
+
+        private static readonly SpineAnimation IDLE_ANIMATION = new SpineAnimation("Idle", true);
+        private static readonly SpineAnimation ANTICIPATION_ANIMATION = new SpineAnimation("Anticipation", false);
+        private static readonly SpineAnimation FLY_ANIMATION = new SpineAnimation("Fly", false);
+
+        
 
         //============================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.ShardSounds;
             
+            base.OnSpawned();
+
             SetState(STATE.MOVE);
+            SetSpineAnimation(IDLE_ANIMATION);
         }
 
         #region Movement
@@ -40,24 +61,6 @@ namespace StarSalvager.AI
         public override void UpdateEnemy(Vector2 playerLocation)
         {
             StateUpdate();
-            /*if (CameraController.IsPointInCameraRect(transform.position, 0.6f))
-            {
-                if (!m_isAccelerating)
-                {
-                    if (playerLocation.x - transform.position.x <= 1.0f)
-                    {
-                        m_isAccelerating = true;
-                    }
-                }
-            }
-
-            if (m_isAccelerating)
-            {
-                m_accelerationAmount = Mathf.Max(2.0f, m_accelerationAmount + 3 * Time.deltaTime);
-            }
-
-            Vector3 fallAmount = Vector3.up * ((Constants.gridCellSize * Time.deltaTime) / Globals.TimeForAsteroidToFallOneSquare) * (1.0f + m_accelerationAmount);
-            transform.position -= fallAmount;*/
         }
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
@@ -74,12 +77,12 @@ namespace StarSalvager.AI
         protected override void StateChanged(STATE newState)
         {
             var currentPosition = transform.position;
-            
+
             switch (newState)
             {
                 case STATE.MOVE:
                     CameraController.IsPointInCameraRect(Vector2.zero, Constants.VISIBLE_GAME_AREA);
-            
+
                     var cameraRect = CameraController.VisibleCameraRect;
                     var xBounds = new Vector2(cameraRect.xMin, cameraRect.xMax);
                     var yBounds = new Vector2(cameraRect.yMin, cameraRect.yMax);
@@ -90,19 +93,23 @@ namespace StarSalvager.AI
                         y = Mathf.Lerp(yBounds.x, yBounds.y, Random.Range(0.85f, 0.85f))
                     };
 
-                    
+
                     currentPosition.x = _targetLocation.x;
 
                     transform.position = currentPosition;
                     break;
                 case STATE.ANTICIPATION:
+                    EnemySound.lockPositionSound.Play();
+                    _anticipationTimer = anticipationTime;
+                    _triggered = false;
                     break;
                 case STATE.ATTACK:
+                    EnemySound.beginAttackFallSound.Play();
+                    SetSpineAnimation(FLY_ANIMATION);
                     break;
                 case STATE.DEATH:
 
                     CreateExplosionEffect(currentPosition);
-                    
                     Recycler.Recycle<ShardEnemy>(this);
                     break;
                 default:
@@ -134,7 +141,7 @@ namespace StarSalvager.AI
         private void MoveState()
         {
             //TODO Move into position at top of screen
-            
+
             var currentPosition = transform.position;
 
             if (Vector2.Distance(currentPosition, _targetLocation) > 0.1f)
@@ -152,14 +159,34 @@ namespace StarSalvager.AI
         private void AnticipationState()
         {
             const float CAST_DISTANCE = 100f;
-            //TODO Wait at that location until
-            
-            var hit = Physics2D.Raycast(transform.position, Vector2.down, CAST_DISTANCE, mask.value);
-            if (hit.collider == null)
+
+            if (!_triggered)
+            {
+                //TODO Wait at that location until
+
+                var hit = Physics2D.Raycast(transform.position, Vector2.down, CAST_DISTANCE, mask.value);
+                if (hit.collider == null)
+                    return;
+
+                var iHealth = hit.transform.GetComponent<IHealth>();
+
+                switch (iHealth)
+                {
+                    case ForceField _: break;
+                    case BotBase _: break;
+                    default: return;
+                }
+
+                SetSpineAnimation(ANTICIPATION_ANIMATION);
+                _triggered = true;
+            }
+
+            if (_anticipationTimer > 0f)
+            {
+                _anticipationTimer -= Time.deltaTime;
                 return;
+            }
             
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase))
-                throw new ArgumentException($"Expected {nameof(BotBase)} on object {hit.transform.gameObject.name}");
 
             SetState(STATE.ATTACK);
         }
@@ -182,26 +209,33 @@ namespace StarSalvager.AI
             if (hit.collider == null)
                 return;
 
-            if (!(hit.transform.GetComponent<BotBase>() is BotBase botBase))
-                throw new ArgumentException($"Expected {nameof(BotBase)} on object {hit.transform.gameObject.name}");
-            
-            switch (botBase)
+            var iHealth = hit.transform.GetComponent<IHealth>();
+
+            switch (iHealth)
             {
+                //--------------------------------------------------------------------------------------------------------//
+                case ForceField forceField:
+                    forceField.TryHitAt(damage);
+                    break;
+
+                //--------------------------------------------------------------------------------------------------------//
                 case Bot bot:
                     var closestAttachable = bot.GetClosestAttachable(hit.point);
                     var coordinateBelow = closestAttachable.Coordinate + Vector2Int.down;
 
                     bot.TryHitAt(closestAttachable, damage);
-            
+
                     var belowAttachable = bot.AttachedBlocks.FirstOrDefault(x => x.Coordinate == coordinateBelow);
                     if(!(belowAttachable is null))
                         bot.TryHitAt(belowAttachable, damage);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 case DecoyDrone decoyDrone:
                     decoyDrone.TryHitAt(damage, true);
                     break;
+                //--------------------------------------------------------------------------------------------------------//
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(botBase), botBase, null);
+                    return;
             }
 
             DestroyEnemy();
@@ -215,5 +249,7 @@ namespace StarSalvager.AI
         {
             return typeof(ShardEnemy);
         }
+
+
     }
 }

@@ -94,6 +94,8 @@ namespace StarSalvager.Utilities.Debugging
             Debug.DrawRay(endPos, right * arrowHeadLength, color);
             Debug.DrawRay(endPos, left * arrowHeadLength, color);
         }
+
+
     }
 }
 

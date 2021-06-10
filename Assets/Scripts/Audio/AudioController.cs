@@ -7,9 +7,11 @@ using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.AI;
 using StarSalvager.Audio.Data;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -63,8 +65,38 @@ namespace StarSalvager.Audio
         [SerializeField]
         private List<Song> Songs;
         
+        //Enemy Sounds
         //============================================================================================================//
 
+        [FoldoutGroup("Enemy Sounds")]
+        public FlySounds FlySounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public DataLeechSounds DataLeechSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public MoonMinerSounds MoonMinerSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public VoltSounds VoltSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public SquartSounds SquartSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public ToughMotherSounds ToughMotherSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public ShardSounds ShardSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public SleeperMineSounds SleeperMineSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public SensorMineSounds SensorMineSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public BorrowerSounds BorrowerSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public LaserTurretSounds LaserTurretSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public PulseCannonSounds PulseCannonSounds;
+        [FoldoutGroup("Enemy Sounds")]
+        public IceWingSounds IceWingSounds;
+
+        //====================================================================================================================//
+        
         [SerializeField, PropertySpace(SpaceBefore = 10f)]
         [DetailedInfoBox("EnemyEffects AttackClip Only Plays as OneShot","This sound does not use the looping system, and is not affected by the max channel value")]
         private List<EnemySound> EnemyEffects;
@@ -113,6 +145,8 @@ namespace StarSalvager.Audio
             PlaySound(sound, pitch);
         }
 
+        #region Play Sounds
+
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
         /// </summary>
@@ -139,6 +173,13 @@ namespace StarSalvager.Audio
             else
                 Instance.PlayOneShot(sound);
         }
+        public static void PlaySound(in BaseSound baseSound)
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.PlayOneShot(baseSound);
+        }
         
         public static void StopSound(SOUND sound)
         {
@@ -153,8 +194,38 @@ namespace StarSalvager.Audio
                     return;
             }
         }
+        
+        //Loops
+        //====================================================================================================================//
 
+        public static void PlayLoop(in LoopingSound loopingSound)
+        {
+            if (Instance == null)
+                return;
 
+            Instance.PlayLoopingSound(loopingSound, out var _);
+        }
+        public static void PlayLoop(in LoopingSound loopingSound, out AudioSource audioSource)
+        {
+            audioSource = null;
+            
+            if (Instance == null)
+                return;
+
+            Instance.PlayLoopingSound(loopingSound, out audioSource);
+        }
+        
+        public static void StopLoop(in LoopingSound loopingSound)
+        {
+            if (Instance == null)
+                return;
+            
+            Instance.StopLoopingSound(loopingSound);
+        }
+
+        #endregion //Play Sounds
+
+        #region Volume
 
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
@@ -181,6 +252,11 @@ namespace StarSalvager.Audio
             _sfxVolume = Mathf.Clamp01(volume);
             Instance.SetVolume(SFX_VOLUME, _sfxVolume);
         }
+
+        #endregion //Volume
+
+        #region Music
+
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0
         /// </summary>
@@ -201,51 +277,34 @@ namespace StarSalvager.Audio
             
             Instance.CrossFadeMusic(trackTarget);
         }
-        /*public static void CrossFadePreviousTrack()
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.CrossFadeMusic(Instance._previousMusic);
-        }*/
-        
-        /*public static void FadeInMusic()
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.FadeMusicIn();
-        }
-        
-        public static void FadeOutMusic()
-        {
-            if (Instance == null)
-                return;
-            
-            Instance.FadeMusicOut();
-        }*/
-        
+
+        #endregion //Music
+
         //============================================================================================================//
 
+        [Obsolete]
         public static void PlayEnemyFireSound(string enemyId, float volume)
         {
-            if (string.IsNullOrEmpty(enemyId)) return;
+            throw new NotImplementedException();
+            /*if (string.IsNullOrEmpty(enemyId)) return;
             
-            Instance?.EnemyFireSound(enemyId, volume);
+            Instance?.EnemyFireSound(enemyId, volume);*/
         }
-        
+        [Obsolete]
         public static void PlayEnemyMoveSound(string enemyId)
         {
-            if (string.IsNullOrEmpty(enemyId)) return;
+            throw new NotImplementedException();
+            /*if (string.IsNullOrEmpty(enemyId)) return;
             
-            Instance?.EnemyMoveSound(enemyId);
+            Instance?.EnemyMoveSound(enemyId);*/
         }
-        
+        [Obsolete]
         public static void StopEnemyMoveSound(string enemyId)
         {
-            if (string.IsNullOrEmpty(enemyId)) return;
+            throw new NotImplementedException();
+            /*if (string.IsNullOrEmpty(enemyId)) return;
             
-            Instance?.StopMoveSound(enemyId);
+            Instance?.StopMoveSound(enemyId);*/
         }
         //============================================================================================================//
 
@@ -295,7 +354,7 @@ namespace StarSalvager.Audio
                 return;
             }
 
-            PlayLoopingSound(enemySoundData.moveSound);
+            PlayLoopingSound(enemySoundData.moveSound, out var _);
         }
 
         private void StopMoveSound(string enemyId)
@@ -316,6 +375,13 @@ namespace StarSalvager.Audio
         //SFX Functions
         //============================================================================================================//
 
+        private void PlayOneShot(in BaseSound baseSound)
+        {
+            if (baseSound == null) return;
+
+            PlayOneShot(baseSound.clip, baseSound.Volume);
+        }
+        
         private void PlayOneShot(SOUND sound)
         {
             if (!TryGetSound(sound, out var soundClip))
@@ -343,6 +409,8 @@ namespace StarSalvager.Audio
             
             sfxAudioSource.PlayOneShot(clip, volume);
         }
+
+        
         
         //Music Functions
         //============================================================================================================//
@@ -407,7 +475,7 @@ namespace StarSalvager.Audio
             {
                 clip = clip,
                 maxChannels = MAX_CHANNELS
-            });
+            }, out var _);
         }
         
         private void StopLoopingSound(SOUND sound)
@@ -422,8 +490,10 @@ namespace StarSalvager.Audio
             });
         }
         
-        private void PlayLoopingSound(LoopingSound loopingSound)
+        private void PlayLoopingSound(in LoopingSound loopingSound, out AudioSource audioSource)
         {
+            audioSource = null;
+            
             if(activeLoopingSounds == null)
                 activeLoopingSounds = new Dictionary<LoopingSound, Stack<AudioSource>>();
             
@@ -436,7 +506,7 @@ namespace StarSalvager.Audio
                 return;
 
             //TODO Need to get use the recycling system here
-            if (!Recycler.TryGrab<AudioSource>(out AudioSource newAudioSource))
+            if (!Recycler.TryGrab(out AudioSource newAudioSource))
             {
                 newAudioSource = Instantiate(audioSourcePrefab).GetComponent<AudioSource>();
             }
@@ -448,27 +518,28 @@ namespace StarSalvager.Audio
             activeLoopingSounds[loopingSound].Push(newAudioSource);
             newAudioSource.outputAudioMixerGroup = sfxAudioMixerGroup;
             newAudioSource.clip = loopingSound.clip;
+            newAudioSource.volume = loopingSound.volume;
             newAudioSource.loop = true;
             newAudioSource.Play();
+
+            audioSource = newAudioSource;
         }
 
-        private void StopLoopingSound(LoopingSound loopingSound)
+        private void StopLoopingSound(in LoopingSound loopingSound)
         {
-            if (activeLoopingSounds == null || activeLoopingSounds.Count == 0)
-                return;
+            if (activeLoopingSounds.IsNullOrEmpty()) return;
             
             
-            if (!activeLoopingSounds.ContainsKey(loopingSound))
-                return;
+            if (!activeLoopingSounds.ContainsKey(loopingSound)) return;
             
             //TODO Need to check if there are any existing sounds when trying to remove it
 
-            if (activeLoopingSounds[loopingSound].Count <= 0)
-                return;
+            if (activeLoopingSounds[loopingSound].Count <= 0) return;
             
             var audioSource = activeLoopingSounds[loopingSound].Pop();
             audioSource.Stop();
             audioSource.clip = null;
+            audioSource.volume = 1f;
             
             Recycler.Recycle<AudioSource>(audioSource);
         }

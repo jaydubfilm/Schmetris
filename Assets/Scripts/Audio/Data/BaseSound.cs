@@ -6,57 +6,27 @@ using Object = UnityEngine.Object;
 namespace StarSalvager.Audio.Data
 {
     [Serializable]
-    public abstract class BaseSound<E> where E : Enum
+    public abstract class BaseSound<E>: BaseSound where E : Enum
     {
         public abstract E sound { get; set; }
+    }
+    
+    [Serializable]
+    public abstract class BaseSound
+    {
         public abstract AudioClip clip { get; set; }
-
-/*#if UNITY_EDITOR
-
-        private string playButtonText => playingSound ? "Stop" : "Play";
-        private bool playingSound;
-        private AudioSource playingSource;
-        private AudioClip previousClip;
         
-        [TableColumnWidth(80, false)]
-        [Button("$playButtonText"), DisableIf("HasNoSound")]
-        private void Listen()
+        public float Volume
         {
-            if (playingSound)
-            {
-                if(playingSource == null)
-                    return;
-
-                playingSource.clip = previousClip;
-                playingSource.Stop();
-
-            
-            
-                playingSource = null;
-                previousClip = null;
-            
-                playingSound = false;
-                return;
-            }
-            
-            if(clip == null)
-                return;
-            
-            playingSource = Object.FindObjectOfType<AudioSource>();
-            previousClip = playingSource.clip;
-            
-            playingSource.Stop();
-            playingSource.clip = clip;
-            playingSource.Play();
-
-            playingSound = true;
+            get => _volume; 
+            set => _volume = value; 
         }
-
-        private bool HasNoSound()
+        [SerializeField, Range(0f,1f),TableColumnWidth(50)]
+        private float _volume = 1f;
+        
+        public void Play()
         {
-            return clip == null;
+            AudioController.PlaySound(this);
         }
-
-#endif*/
     }
 }

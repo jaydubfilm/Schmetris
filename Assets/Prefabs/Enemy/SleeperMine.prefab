@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25615c4d5600aeb4290a73ec8e195373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
-  Radius: 0
+  anticipationTime: 1
+  minSoundThreshold: 20
 --- !u!114 &6390705805771784718
 MonoBehaviour:
   m_ObjectHideFlags: 0

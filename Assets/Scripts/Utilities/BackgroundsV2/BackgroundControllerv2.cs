@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Utilities.Debugging;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.UI;
@@ -235,17 +236,25 @@ namespace StarSalvager.Utilities.Backgrounds
 
         private void CheckSpriteWrap(in Background background)
         {
-            var pos = background.Transform.localPosition;
+            //var pos = background.Transform.localPosition;
             var spriteRenderer = (SpriteRenderer)background.Renderer;
+            var bounds = spriteRenderer.bounds;
+
+            var pos = background.Transform.position - bounds.extents;
+
+
             
             var lowestPoint = _camera.ViewportToWorldPoint(Vector3.zero).y;
             var highestPoint = _camera.ViewportToWorldPoint(Vector3.one).y;
             
-            if (pos.y < lowestPoint - spriteRenderer.bounds.extents.y)
+            SSDebug.DrawSquare(new Rect(pos, bounds.size), Color.blue, Time.deltaTime);
+            
+            if (pos.y < lowestPoint - bounds.size.y)
             {
-                pos.y = Mathf.Abs(highestPoint + spriteRenderer.bounds.extents.y * 1.2f);
+                var currentPos = background.Transform.position;
+                currentPos.y = Mathf.Abs(highestPoint + bounds.size.y * 1.2f);
                 
-                background.Transform.localPosition = pos;
+                background.Transform.position = currentPos;
             }
         }
 

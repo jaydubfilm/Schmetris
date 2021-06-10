@@ -212,6 +212,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            if (amount == 0) return;
+            
             var addsHealth = amount > 0;
             
             CurrentHealth += amount;
@@ -619,8 +621,8 @@ namespace StarSalvager
 
         public void DisplayHints()
         {
-            if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
-                HintManager.TryShowHint(HINT.GUN);
+            /*if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
+                HintManager.TryShowHint(HINT.GUN);*/
         }
 
 
@@ -1338,10 +1340,6 @@ namespace StarSalvager
         public bool TryAsteroidBounceAt(in Vector2 hitPosition, in float damage, out bool destroyed)
         {
             destroyed = false;
-
-            //Don't want the player to get hurt if they've finished the level
-            if(!GameManager.IsState(GameState.LevelActive))
-                return false;
 
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
 
@@ -3579,7 +3577,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }
@@ -3604,7 +3602,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }
@@ -3849,7 +3847,6 @@ _isShifting = true;
 
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
-            GameUi.ShowAbortWindow(false);
 
              StartCoroutine(DestroyCoroutine(deathMethod));
         }

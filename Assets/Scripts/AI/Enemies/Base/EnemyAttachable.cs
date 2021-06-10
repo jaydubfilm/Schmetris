@@ -2,6 +2,7 @@
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Animations;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public abstract class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach, IOverrideRecycleType
+    public abstract class EnemyAttachable : Enemy, IAttachable, ICustomRotate, IWasBumped, ICanDetach 
     {
         private static readonly int DEFAULT = Animator.StringToHash("Default");
         private static readonly int ATTACK  = Animator.StringToHash("Attack");

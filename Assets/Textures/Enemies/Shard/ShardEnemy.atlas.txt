@@ -1,0 +1,41 @@
+
+ShardEnemy.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Spike_BackGlow
+  rotate: false
+  xy: 116, 211
+  size: 144, 283
+  orig: 152, 292
+  offset: 4, 5
+  index: -1
+Spike_FlyGlow
+  rotate: false
+  xy: 0, 113
+  size: 114, 381
+  orig: 114, 386
+  offset: 0, 2
+  index: -1
+Spike_MainBody
+  rotate: false
+  xy: 262, 235
+  size: 115, 259
+  orig: 115, 259
+  offset: 0, 0
+  index: -1
+Spike_MainBodyFly
+  rotate: false
+  xy: 379, 235
+  size: 115, 259
+  orig: 115, 259
+  offset: 0, 0
+  index: -1
+Spike_Puple
+  rotate: false
+  xy: 262, 217
+  size: 12, 16
+  orig: 12, 16
+  offset: 0, 0
+  index: -1

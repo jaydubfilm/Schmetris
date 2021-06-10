@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flightPasses: 3
   attackTime: 2
+  attackDelayTime: 1.2
   sinFrequency: 2
   sinMagnitude: 2
   tCurve:

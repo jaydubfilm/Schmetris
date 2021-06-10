@@ -2,35 +2,22 @@
 using StarSalvager.Factories;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class SquartEnemy : Enemy
+    public class SquartEnemy : Enemy, IPlayEnemySounds<SquartSounds>
     {
+        public SquartSounds EnemySound => (SquartSounds) EnemySoundBase;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
         private Vector2 _targetLocation;
-
-        //Temp variables
-        /*private Vector2 m_currentHorizontalMovementDirection = Vector2.right;
-        private float m_horizontalMovementYLevel;
-
-        private float m_sinusoidalValue = 0.0f;
-
-        private float m_sinusoidalSpeed = 5.0f;
-        private float m_sinusoidalModifier = Constants.gridCellSize * 2;
-        private int m_numDirectionSwaps = 0;
-        private int m_numTotalDirectionSwaps = 6;
-
-        private float horizontalFarLeftX;
-        private float horizontalFarRightX;*/
 
         [SerializeField]
         private int flightPasses = 3;
@@ -40,6 +27,11 @@ namespace StarSalvager.AI
         [SerializeField]
         private float attackTime;
         private float _attackTimer;
+        
+        [SerializeField]
+        private float attackDelayTime;
+        private float _attackDelayTimer;
+        private bool _chargingAttack;
 
         [SerializeField]
         private float sinFrequency = 5f;
@@ -60,13 +52,11 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
-            base.LateInit();
-
-            /*m_horizontalMovementYLevel = transform.position.y;
-            horizontalFarLeftX = -1 * Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;
-            horizontalFarRightX = Constants.gridCellSize * Globals.ColumnsOnScreen / 3.5f;*/
+            EnemySoundBase = AudioController.Instance.SquartSounds;
+            
+            base.OnSpawned();
 
             _attackTimer = attackTime;
             _flightPasses = flightPasses;
@@ -78,11 +68,6 @@ namespace StarSalvager.AI
 
         #region Movement
 
-        /*private float GetHorizontalMovementYLevel()
-        {
-            return m_horizontalMovementYLevel + m_sinusoidalModifier * Mathf.Sin(m_sinusoidalValue);
-        }*/
-
 
         public override void UpdateEnemy(Vector2 playerLocation)
         {
@@ -92,28 +77,8 @@ namespace StarSalvager.AI
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
             return Vector2.down;
-            /*if (m_numDirectionSwaps >= m_numTotalDirectionSwaps)
-            {
-                return Vector2.down;
-            }
-
-            m_sinusoidalValue += Time.deltaTime * m_sinusoidalSpeed;
-
-            if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector2.right)
-            {
-                m_currentHorizontalMovementDirection = Vector2.right;
-                m_numDirectionSwaps++;
-            }
-            else if (transform.position.x >= playerLocation.x + horizontalFarRightX && m_currentHorizontalMovementDirection != Vector2.left)
-            {
-                m_currentHorizontalMovementDirection = Vector2.left;
-                m_numDirectionSwaps++;
-            }
-
-            Vector2 addedVertical = Vector2.up * (GetHorizontalMovementYLevel() - transform.position.y);
-
-            return m_currentHorizontalMovementDirection + addedVertical;*/
         }
+
 
         #endregion
 
@@ -143,8 +108,10 @@ namespace StarSalvager.AI
                     _startPosition = _targetLocation;
 
                     MostRecentMovementDirection = Vector3.zero;
+                    _attackDelayTimer = attackDelayTime;
                     break;
                 case STATE.FLEE:
+                    EnemySound.fleeSound.Play();
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<SquartEnemy>(this);
@@ -192,31 +159,47 @@ namespace StarSalvager.AI
 
             SetState(STATE.MOVE);
         }
-        
+
         private void MoveState()
         {
             //TODO SIN move between screen x locations
             void AttackUpdate()
             {
+                //Timer used to determine when to start attack
                 if (_attackTimer > 0f)
                 {
                     _attackTimer -= Time.deltaTime;
                     return;
                 }
 
+                if (!_chargingAttack)
+                {
+                    //TODO Start Attack Animation
+                    EnemySound.chargeSound.Play();
+                    _chargingAttack = true;
+                }
+                
+                //Timer used to wait for Sound/Animation to line up to start firing
+                if (_attackDelayTimer > 0f)
+                {
+                    _attackDelayTimer -= Time.deltaTime;
+                    return;
+                }
+
                 FireAttack();
                 _attackTimer = attackTime;
+                _attackDelayTimer = attackDelayTime;
+                _chargingAttack = false;
             }
 
             AttackUpdate();
-            
+
             _targetLocation = GetNewPosition(_flipped);
             _reachTargetTime = Vector2.Distance(_startPosition, _targetLocation) / EnemyMovementSpeed;
 
 
             if (_t / _reachTargetTime <= 1.0f)
             {
-
                 var newPosition = Vector2.Lerp(_startPosition, _targetLocation, tCurve.Evaluate(_t / _reachTargetTime));
 
                 _t += Time.deltaTime;
@@ -224,7 +207,7 @@ namespace StarSalvager.AI
                 newPosition.y += Mathf.Sin(Time.time * sinFrequency) * sinMagnitude;
 
                 transform.position = newPosition;
-                
+
                 return;
             }
 
@@ -344,6 +327,8 @@ namespace StarSalvager.AI
                     0f,
                     false,
                     true);
+            
+            EnemySound.attackSound.Play();
         }
 
         #endregion
