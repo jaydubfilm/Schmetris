@@ -58,28 +58,25 @@ namespace StarSalvager
 
         public bool HasActiveBonusShapes => m_bonusShapes != null &&
                                             m_bonusShapes.Count > 0 &&
-                                            m_bonusShapes.Any(x => ObstacleInCameraRect(x));
+                                            m_bonusShapes.Any(ObstacleInCameraRect);
 
         public IEnumerable<Shape> ActiveBonusShapes => m_bonusShapes
-            .Where(x => ObstacleInCameraRect(x));
+            .Where(ObstacleInCameraRect);
 
-        public bool ObstacleInCameraRect(IObstacle obstacle)
+        private static bool ObstacleInCameraRect(IObstacle obstacle)
         {
             return CameraController.IsPointInCameraRect(obstacle.transform.position, Constants.VISIBLE_GAME_AREA);
         }
 
         public bool isPaused => GameTimer.IsPaused;
 
-        public bool HasNoActiveObstacles
-        {
-            get
-            {
-                if (m_obstacles == null || m_offGridMovingObstacles == null)
-                    return false;
-
-                return !m_obstacles.Any(o => o != null && o.CanMove && ObstacleInCameraRect(o));
-            }
-        }
+        public bool AnyAttachableBitOnScreen => m_obstacles
+            .OfType<Bit>()
+            .Any(x => 
+                x.IsRecycled == false && 
+                x.Type != BIT_TYPE.BUMPER && 
+                x.Attached == false &&
+                ObstacleInCameraRect(x));
 
         #endregion //Properties
 
@@ -356,7 +353,6 @@ namespace StarSalvager
         
         //====================================================================================================================//
         
-
         private void HandleObstacleMovement()
         {
             Vector3 amountShift = Vector3.up *
@@ -652,8 +648,6 @@ namespace StarSalvager
                 m_offGridMovingObstacles[i].SpeedUpModifier = speedModifier;
             }
         }
-
-        
 
         //====================================================================================================================//
 
