@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f0b61dbe4de28a41a174085ffc4416e, type: 3}
   m_Name: Part Remote
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   starterGreen: 0
   starterBlue: 1
   starterYellow: 1
@@ -90,7 +90,7 @@ MonoBehaviour:
     partType: 1
     name: Empty Part
     lockRotation: 0
-    description:
+    description: 
     dataTest: []
     isManual: 0
     category: 0
@@ -118,7 +118,9 @@ MonoBehaviour:
     lockRotation: 0
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
-    dataTest: []
+    dataTest:
+    - key: Multiplier
+      value: 0.2
     isManual: 0
     category: 1
     ammoUseCost: 2
@@ -267,7 +269,7 @@ MonoBehaviour:
     partType: 34
     name: Upgrader
     lockRotation: 0
-    description:
+    description: 
     dataTest:
     - key: Cooldown
       value: 15
@@ -317,7 +319,7 @@ MonoBehaviour:
     partType: 39
     name: Heal
     lockRotation: 0
-    description:
+    description: 
     dataTest:
     - key: Cooldown
       value: 15
@@ -333,7 +335,7 @@ MonoBehaviour:
     partType: 40
     name: Regen
     lockRotation: 0
-    description:
+    description: 
     dataTest:
     - key: Heal
       value: 3

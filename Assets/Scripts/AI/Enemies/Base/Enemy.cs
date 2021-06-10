@@ -123,7 +123,7 @@ namespace StarSalvager.AI
         public virtual void OnSpawned()
         { }
 
-        public void SetFrozen(in float time)
+        public virtual void SetFrozen(in float time)
         {
             FreezeTime = time;
         }
@@ -264,8 +264,7 @@ namespace StarSalvager.AI
                 return false;
             }
 
-            if (!Frozen)
-                return true;
+            if (!Frozen) return true;
 
             FreezeTime -= Time.deltaTime;
             return false;

@@ -272,6 +272,11 @@ namespace StarSalvager.AI
         }
 
         #endregion //State Functions
+        
+        public override void SetFrozen(in float time)
+        {
+            Disabled = true;
+        }
 
         //====================================================================================================================//
 
