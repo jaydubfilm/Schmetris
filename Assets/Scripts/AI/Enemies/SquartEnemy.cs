@@ -52,11 +52,11 @@ namespace StarSalvager.AI
 
         //============================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             EnemySoundBase = AudioController.Instance.SquartSounds;
             
-            base.LateInit();
+            base.OnSpawned();
 
             _attackTimer = attackTime;
             _flightPasses = flightPasses;

@@ -119,7 +119,7 @@ namespace StarSalvager.AI
             RegisterCanBeSeen();
         }
 
-        public virtual void LateInit()
+        public virtual void OnSpawned()
         { }
 
         public void SetFrozen(in float time)

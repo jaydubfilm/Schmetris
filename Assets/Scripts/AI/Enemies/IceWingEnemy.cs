@@ -71,7 +71,7 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             //--------------------------------------------------------------------------------------------------------//
 
@@ -89,7 +89,7 @@ namespace StarSalvager.AI
 
             EnemySoundBase = AudioController.Instance.IceWingSounds;            
             
-            base.LateInit();
+            base.OnSpawned();
 
             _attackPassCount = 0;
             _attackSwoopCount = 0;

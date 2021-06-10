@@ -29,11 +29,11 @@ namespace StarSalvager.AI
 
         private Vector2 currentDestination;
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             EnemySoundBase = AudioController.Instance.ToughMotherSounds;
             
-            base.LateInit();
+            base.OnSpawned();
 
             SetState(STATE.MOVE);
         }

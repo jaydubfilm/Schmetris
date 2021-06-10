@@ -37,11 +37,11 @@ namespace StarSalvager.AI
 
         private Vector2 _playerLocation;
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             EnemySoundBase = AudioController.Instance.FlySounds;
             
-            base.LateInit();
+            base.OnSpawned();
 
             m_horizontalMovementYLevel = transform.position.y;
             verticalLowestAllowed = m_horizontalMovementYLevel - (Constants.gridCellSize * m_numberCellsDescend * m_numberTimesDescend);

@@ -19,11 +19,11 @@ namespace StarSalvager.AI
 
         private Vector2 _playerLocation;
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             EnemySoundBase = AudioController.Instance.DataLeechSounds;
             
-            base.LateInit();
+            base.OnSpawned();
             SetState(STATE.PURSUE);
         }
 

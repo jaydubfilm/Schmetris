@@ -56,11 +56,11 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             EnemySoundBase = AudioController.Instance.LaserTurretSounds;
             
-            base.LateInit();
+            base.OnSpawned();
 
             _rotateDirection = Random.value > 0.5f ? -1 : 1;
             transform.eulerAngles = Vector3.forward * Random.Range(0, 360);

@@ -55,7 +55,7 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             //--------------------------------------------------------------------------------------------------------//
             
@@ -75,7 +75,7 @@ namespace StarSalvager.AI
             
             EnemySoundBase = AudioController.Instance.PulseCannonSounds;
             
-            base.LateInit();
+            base.OnSpawned();
 
             var currentPosition = Position;
             var leftSide = Random.value > 0.5;

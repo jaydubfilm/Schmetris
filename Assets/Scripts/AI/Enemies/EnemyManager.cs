@@ -254,7 +254,7 @@ namespace StarSalvager
 
             newEnemy.transform.localPosition = spawnLocationOverride ?? LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
 
-            newEnemy.LateInit();
+            newEnemy.OnSpawned();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
 
