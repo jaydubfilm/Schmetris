@@ -7422,7 +7422,7 @@ MonoBehaviour:
     playstationControllerSprite: {fileID: 21300000, guid: c92a3f64b637ef64db482ddac1b5e5ca,
       type: 3}
   - NAME: Down[1]
-    keyboardSprite: {fileID: 21300000, guid: 18c3d1b669096984a9f4c2fbb88af95a, type: 3}
+    keyboardSprite: {fileID: 21300000, guid: 1b123d1f758102745a189e04bcdba4fa, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 6bbc26aec2ef7394e9c32ccecfc4926e,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: c4c4a6a848bec8947b83de6866ee65bd,
@@ -7432,7 +7432,7 @@ MonoBehaviour:
     xboxControllerSprite: {fileID: 0}
     playstationControllerSprite: {fileID: 0}
   - NAME: Left[3]
-    keyboardSprite: {fileID: 21300000, guid: 1b123d1f758102745a189e04bcdba4fa, type: 3}
+    keyboardSprite: {fileID: 21300000, guid: 18c3d1b669096984a9f4c2fbb88af95a, type: 3}
     xboxControllerSprite: {fileID: 21300000, guid: 2dc5aadd939fb3a49a8bc6572e11dd11,
       type: 3}
     playstationControllerSprite: {fileID: 21300000, guid: 15bbb4a0d4ff37a40818a689ac9c3dec,

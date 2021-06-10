@@ -640,7 +640,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""down"",
                     ""id"": ""0c8307f8-5f81-4ac5-ae20-8f7dcec5fd66"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
@@ -651,7 +651,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     ""name"": ""left"",
                     ""id"": ""fed224b2-9945-44b4-b5b4-1b54756cefee"",
-                    ""path"": ""<Keyboard>/3"",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
