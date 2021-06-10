@@ -21,7 +21,8 @@ using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager.AI
 {
-    [RequireComponent(typeof(StateAnimator))]
+    //Explore this as solution to removing the requirement: http://answers.unity.com/answers/874150/view.html
+    //[RequireComponent(typeof(StateAnimator))]
     public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds
     {
         protected static EnemyManager EnemyManager
@@ -113,8 +114,8 @@ namespace StarSalvager.AI
             
             SetupHealthValues(m_enemyData.Health, m_enemyData.Health);
             
-            renderer.sprite = m_enemyData?.Sprite;
-            StateAnimator.SetController(m_enemyData?.AnimationController);
+            SetSprite(m_enemyData?.Sprite);
+            SetAnimationController(m_enemyData?.AnimationController);
             
             RegisterCanBeSeen();
         }
@@ -312,6 +313,17 @@ namespace StarSalvager.AI
         protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint) { }
 
         #endregion
+
+        //====================================================================================================================//
+
+        #region Animations
+
+        protected virtual void SetAnimationController(in AnimationControllerScriptableObject animationController)
+        {
+            StateAnimator.SetController(animationController);
+        }
+
+        #endregion //Animations
 
         //ICanBeHit functions
         //============================================================================================================//
