@@ -118,7 +118,7 @@ namespace StarSalvager.UI
             InitBackButton();
             DrawMap();
 
-            PlayerDataManager.GetBlockDatas().CreateBotPreview(botDisplayRectTransform);
+            PlayerDataManager.GetBotBlockDatas().CreateBotPreview(botDisplayRectTransform);
         }
 
         public void Reset()

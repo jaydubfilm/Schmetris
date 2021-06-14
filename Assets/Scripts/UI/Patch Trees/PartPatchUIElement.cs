@@ -24,7 +24,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         {
             Init((PART_TYPE) partData.Type, partData.Patches);
         }
-        public void Init(in PART_TYPE partType, in PatchData[] patches)
+        public void Init(in PART_TYPE partType, in List<PatchData> patches)
         {
             void CreatePatchOption(in PatchData patchData)
             {

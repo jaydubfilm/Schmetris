@@ -368,12 +368,10 @@ namespace StarSalvager.Utilities
 
                                     foreach (var partType in partTypes)
                                     {
-                                        var patchSockets = partType.GetRemoteData().PatchSockets;
-
                                         var partBlockData = new PartData
                                         {
                                             Type = (int) partType,
-                                            Patches = new PatchData[patchSockets]
+                                            Patches = new List<PatchData>()
 
                                         };
 
@@ -398,13 +396,10 @@ namespace StarSalvager.Utilities
                                             return;
                                         }
 
-                                        var patchSockets = partType.GetRemoteData().PatchSockets;
-
                                         var partBlockData = new PartData
                                         {
                                             Type = (int) partType,
-                                            Patches = new PatchData[patchSockets]
-
+                                            Patches = new List<PatchData>()
                                         };
 
                                         for (var i = 0; i < addAmount; i++)

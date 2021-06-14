@@ -83,7 +83,7 @@ namespace StarSalvager
 
             AttachNewBit(Vector2Int.zero, core);
 
-            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            var botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
                 if (_attachedBlocks.Any(b => b.Coordinate == botLayout[i]))

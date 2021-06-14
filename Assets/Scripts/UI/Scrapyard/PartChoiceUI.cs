@@ -96,7 +96,7 @@ namespace StarSalvager.UI.Scrapyard
             Random.InitState(DateTime.Now.Millisecond);
 
             var partsOnBot = PlayerDataManager
-                .GetBlockDatas()
+                .GetBotBlockDatas()
                 .OfType<PartData>()
                 .Select(x => (PART_TYPE) x.Type)
                 .Where(x => x != PART_TYPE.EMPTY)
@@ -156,24 +156,24 @@ namespace StarSalvager.UI.Scrapyard
             void CreatePart(PART_TYPE partType)
             {
                 var partRemoteData = partType.GetRemoteData();
-                var patchCount = partRemoteData.PatchSockets;
+                //var patchCount = partRemoteData.PatchSockets;
 
                 var partData = new PartData
                 {
                     Type = (int)partType,
-                    Patches = new PatchData[patchCount]
+                    Patches = new List<PatchData>()
                 };
 
                 var category = partRemoteData.category;
                 var botCoordinate = PlayerDataManager.GetCoordinateForCategory(category);
-
+                var botParts = PlayerDataManager.GetBotBlockDatas()?.OfType<PartData>().ToList();
+                
                 //If the player has an empty part at the location, auto equip it
-                if (!_droneDesigner._scrapyardBot.AttachedBlocks
-                    .OfType<ScrapyardPart>()
-                    .Any(x => x.Type != PART_TYPE.EMPTY && x.Coordinate == botCoordinate))
+                if (!botParts.Any(x => x.Type != (int)PART_TYPE.EMPTY && x.Coordinate == botCoordinate))
                 {
-                    var attachable = FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData);
-                    _droneDesigner._scrapyardBot.AttachNewBit(botCoordinate, attachable);
+                    partData.Coordinate = botCoordinate;
+                    
+                    PlayerDataManager.SetDroneBlockDataAtCoordinate(botCoordinate, partData, true);
                 }
                 else
                 {
@@ -183,7 +183,7 @@ namespace StarSalvager.UI.Scrapyard
 
 
                 FindObjectOfType<ScrapyardUI>().CheckForPartOverage();
-                _droneDesigner.SaveBlockData();
+                PlayerDataManager.OnValuesChanged?.Invoke();
 
                 CloseWindow();
             }

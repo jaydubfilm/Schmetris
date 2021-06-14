@@ -5,15 +5,19 @@ using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.PatchTrees.Data;
+using StarSalvager.UI.Hints;
+using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Console = System.Console;
 
 namespace StarSalvager.UI.Scrapyard.PatchTrees
 {
@@ -82,11 +86,14 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         [SerializeField, Required, FoldoutGroup("Drone Window")]
         private RectTransform secondaryPartsAreaTransform;
 
-        private Dictionary<DIRECTION, Image> _primaryPartImages;
-        private Dictionary<DIRECTION, Image> _secondaryPartImages;
+        private Dictionary<BIT_TYPE, Image> _primaryPartImages;
+        private Dictionary<BIT_TYPE, Image> _secondaryPartImages;
 
-        //FIXME I might need to actually select the Part Mono object, not just the type
-        private PART_TYPE _selectedPart = PART_TYPE.EMPTY;
+        private List<BitData> _bitsOnDrone;
+        private List<PartData> _partOnDrone;
+        private List<PartData> _partsInStorage;
+
+        private (PART_TYPE type, bool inStorage) _selectedPart;
 
 
         //====================================================================================================================//
@@ -98,6 +105,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         //Unity Functions
         //====================================================================================================================//
+
+        #region Unity Functions
 
         private void OnEnable()
         {
@@ -116,8 +125,12 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             PlayerDataManager.OnValuesChanged -= OnValuesChanged;
         }
 
+        #endregion //Unity Functions
+
         //Setup Wreck Screen
         //====================================================================================================================//
+
+        #region Setup Wreck Screen
 
         private void SetupButtons()
         {
@@ -133,48 +146,61 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
-            Image CreatePartImage(in RectTransform container, in DIRECTION direction, in PART_TYPE partType)
+            Image CreatePartImage(in RectTransform container, in Vector2Int coordinate, in PART_TYPE partType, in bool storage)
             {
                 var temp = new GameObject();
                 var tempImage = temp.AddComponent<Image>();
+                var tempButton = temp.AddComponent<Button>();
+                var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
                 tempImage.sprite = partType.GetSprite();
-                tempImage.color = PlayerDataManager.GetCategoryAtCoordinate(direction.ToVector2Int()).GetColor();
-                var tempTransform = temp.transform as RectTransform;
+                tempImage.color = category.GetColor();
+
+                var tempData = (partType.GetCategory(), storage);
+                tempButton.onClick.AddListener(() =>
+                {
+                    OnPartPressed(category, tempData.storage);
+                });
+                
+                var tempTransform = (RectTransform)temp.transform;
 
                 tempTransform.SetParent(container, false);
                 tempTransform.sizeDelta = Vector2.one * partImageSize;
-                tempTransform.anchoredPosition = direction.ToVector2() * partImageSize;
+                tempTransform.anchoredPosition = (Vector2)coordinate * partImageSize;
 
                 return tempImage;
             }
 
             //--------------------------------------------------------------------------------------------------------//
+
+            var botLayout = PlayerDataManager.GetBotLayout();
             
-            var directions = new[]
-            {
-                DIRECTION.UP,
-                DIRECTION.RIGHT,
-                DIRECTION.DOWN,
-                DIRECTION.LEFT
-            };
-            
-            _primaryPartImages = new Dictionary<DIRECTION, Image>();
-            _secondaryPartImages = new Dictionary<DIRECTION, Image>();
+            _primaryPartImages = new Dictionary<BIT_TYPE, Image>();
+            _secondaryPartImages = new Dictionary<BIT_TYPE, Image>();
             
             //Setup 4 directions for Primary & Secondary
-            foreach (var direction in directions)
+            foreach (var coordinate in botLayout)
             {
-                _primaryPartImages.Add(direction, CreatePartImage(primaryPartsAreaTransform, direction, PART_TYPE.EMPTY));
-                _secondaryPartImages.Add(direction, CreatePartImage(secondaryPartsAreaTransform, direction, PART_TYPE.EMPTY));
+                var bitType = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
+                
+                _primaryPartImages.Add(bitType, CreatePartImage(primaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, false));
+                
+                if (coordinate == Vector2Int.zero) continue;
+                
+                _secondaryPartImages.Add(bitType, CreatePartImage(secondaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, true));
             }
         }
-        
+
+        #endregion //Setup Wreck Screen
 
         //Wreck Data Functions
         //====================================================================================================================//
 
+        #region Init Wreck
+
         public void InitWreck(in string wreckName, in Sprite wreckSprite, in PartData[] partPatchOptions)
         {
+            //--------------------------------------------------------------------------------------------------------//
+            
             RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
             {
                 var temp = Instantiate(partPatchOptionPrefab, container, false);
@@ -182,19 +208,36 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
                 return (RectTransform) temp.transform;
             }
-            
+
+            //--------------------------------------------------------------------------------------------------------//
+
             wreckNameText.text = wreckName;
             wreckImage.sprite = wreckSprite;
 
-            foreach (var partPatchOption in partPatchOptions)
+            if (!partPatchOptions.IsNullOrEmpty())
             {
-                CreatePartNodeElement(partPatchOptionsContainer, partPatchOption);
+                foreach (var partPatchOption in partPatchOptions)
+                {
+                    CreatePartNodeElement(partPatchOptionsContainer, partPatchOption);
+                }
             }
+
+            swapPartButton.gameObject.SetActive(false);
+            DrawDroneStorage();
         }
+
+        #endregion //Init Wreck
         
         //Patch Tree Functions
         //====================================================================================================================//
 
+        #region Patch Tree Functions
+
+        private void GeneratePatchTree(in PartData partData)
+        {
+            StartCoroutine(GeneratePatchTreeCoroutine(partData));
+        }
+        
         private IEnumerator GeneratePatchTreeCoroutine(PartData partData)
         {
             //Instantiate Functions
@@ -267,6 +310,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             yield return null;
 
             var patchTreeData = partType.GetPatchTree();
+            if(patchTreeData.IsNullOrEmpty()) yield break;
+            
             var maxTier = patchTreeData.Max(x => x.Tier);
 
             //Add one to account for the part Tier
@@ -345,45 +390,78 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
             for (int i = _activeTiers.Length - 1; i >= 0; i--)
             {
-                Destroy(_activeTiers[i].gameObject);
+                if(_activeTiers[i].gameObject) Destroy(_activeTiers[i].gameObject);
             }
         }
+
+        #endregion //Patch Tree Functions
 
         //Drone Functions
         //====================================================================================================================//
 
-        private void SwapSelectedPart()
-        {
-            if (_selectedPart == PART_TYPE.EMPTY)
-                throw new Exception();
-            
-            var direction = _selectedPart.GetCoordinateForCategory().ToDirection();
-            //TODO This is likely going to be stored in the player data, so I would also be communicating with that here
-            var primary = _primaryPartImages[direction].sprite;
-            var secondary = _secondaryPartImages[direction].sprite;
+        #region Drone Functions
 
-            _primaryPartImages[direction].sprite = secondary;
-            _secondaryPartImages[direction].sprite = primary;
+        private void DrawDroneStorage()
+        {
+            if(_partOnDrone.IsNullOrEmpty()) return;
+            foreach (var partData in _partOnDrone)
+            {
+                var partType = (PART_TYPE) partData.Type;
+                if (partType == PART_TYPE.EMPTY) continue;
+                
+                var category = partType.GetCategory();
+                _primaryPartImages[category].sprite = partType.GetSprite();
+            }
+            
+            //Get Parts in Storage
+            if(_partsInStorage.IsNullOrEmpty()) return;
+            //_secondaryPartImages
+            foreach (var partData in _partsInStorage)
+            {
+                var partType = (PART_TYPE) partData.Type;
+                if (partType == PART_TYPE.EMPTY) continue;
+                
+                var category = partType.GetCategory();
+                //We cannot currently swap out the core
+                if (category == BIT_TYPE.GREEN) continue;
+                _secondaryPartImages[category].sprite = partType.GetSprite();
+            }
+
+
         }
-        
+
         public void SetPrimaryPart(in PART_TYPE partType) => SetPartImage(_primaryPartImages, partType);
 
         public void SetSecondaryPart(in PART_TYPE partType) => SetPartImage(_secondaryPartImages, partType);
 
-        private static void SetPartImage(in Dictionary<DIRECTION, Image> partImages, in PART_TYPE partType)
+        private static void SetPartImage(in Dictionary<BIT_TYPE, Image> partImages, in PART_TYPE partType)
         {
-            var direction = partType.GetCoordinateForCategory().ToDirection();
-            partImages[direction].sprite = partType.GetSprite();
+            var category = partType.GetCategory();
+            partImages[category].sprite = partType.GetSprite();
         }
 
+        #endregion //Drone Functions
 
-
-        //Extra Functions
+        //On Button Pressed Functions
         //====================================================================================================================//
 
-        private void LaunchPressed()
+        #region On Button Pressed Functions
+
+        private static void LaunchPressed()
         {
-            throw new NotImplementedException();
+            ScreenFade.Fade(() =>
+            {
+                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
+            });
+
+            if (HintManager.CanShowHint(HINT.MAP))
+            {
+                ScreenFade.WaitForFade(() =>
+                {
+                    HintManager.TryShowHint(HINT.MAP);
+                });
+            }
         }
 
         private void MenuPressed()
@@ -398,9 +476,117 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         private void SwapPartPressed()
         {
-            throw new NotImplementedException();
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void ListShuffles(in PartData _partData, ref List<PartData> fromList, ref List<PartData> toList)
+            {
+                var category = _selectedPart.type.GetCategory();
+
+                //Get the mirrored part on the bot
+                var otherPartData = toList.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == category);
+                //Store that part but also remove it from that list
+                toList.Remove(otherPartData);
+                
+                //Add the new part into the list
+                toList.Add(_partData);
+                fromList.Remove(_partData);
+
+                //Add old part in old list
+                fromList.Add(otherPartData);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (_selectedPart.type == PART_TYPE.EMPTY) throw new Exception();
+
+            var intPartType = (int) _selectedPart.type;
+            var partData = _selectedPart.inStorage
+                ? _partsInStorage.FirstOrDefault(x => x.Type == intPartType)
+                : _partOnDrone.FirstOrDefault(x => x.Type == intPartType);
+
+            if (_selectedPart.inStorage)
+            {
+                ListShuffles(partData, ref _partsInStorage, ref _partOnDrone);
+                _selectedPart.inStorage = false;
+            }
+            else
+            {
+                ListShuffles(partData, ref _partOnDrone, ref _partsInStorage);
+                _selectedPart.inStorage = true;
+            }
+
+            SaveBlockData();
         }
 
+        private void OnPartPressed(in BIT_TYPE category, in bool inStorage)
+        {
+            var cat = category;
+            //var typeInt = (int)partType;
+            var partData = inStorage
+                ? _partsInStorage.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == cat)
+                : _partOnDrone.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == cat);
+
+            var partType = (PART_TYPE)partData.Type;
+            
+            Debug.Log($"Selected {partType}");
+            
+            //TODO Show this part on the PatchTree
+            GeneratePatchTree(partData);
+            
+            //TODO Check if part can be swapped, show button if true
+            var canSwap = PartCanBeSwapped(partType);
+            swapPartButton.gameObject.SetActive(canSwap);
+
+            _selectedPart = (partType, inStorage);
+        }
+        private void OnPatchPressed()
+        {
+            throw new NotImplementedException();
+        }
+        
+        #endregion //On Button Pressed Functions
+
+        //Extra Functions
+        //====================================================================================================================//
+
+        #region Extra Functions
+
+        private bool PartCanBeSwapped(in PART_TYPE partType)
+        {
+            var category = partType.GetCategory();
+
+
+            return _partsInStorage.Any(x => ((PART_TYPE) x.Type).GetCategory() == category) &&
+                _partOnDrone.Any(x => ((PART_TYPE) x.Type).GetCategory() == category);
+        }
+        
+
+        #endregion //Extra Functions
+
+        private void UpdateBlockData()
+        {
+            var droneBlockData = PlayerDataManager.GetBotBlockDatas();
+
+            if (droneBlockData.IsNullOrEmpty()) return;
+            
+            _bitsOnDrone = new List<BitData>(droneBlockData.OfType<BitData>());
+            _partOnDrone = new List<PartData>(droneBlockData.OfType<PartData>());
+            _partsInStorage = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
+
+            DrawDroneStorage();
+        }
+
+        private void SaveBlockData()
+        {
+            var droneBlockData = new List<IBlockData>(_partOnDrone.OfType<IBlockData>());
+            droneBlockData.AddRange(_bitsOnDrone.OfType<IBlockData>());
+
+            PlayerDataManager.SetDroneBlockData(droneBlockData);
+            PlayerDataManager.SetCurrentPartsInStorage(_partsInStorage.OfType<IBlockData>());
+            PlayerDataManager.SavePlayerAccountData();
+            PlayerDataManager.OnValuesChanged?.Invoke();
+        }
+        
         private void OnValuesChanged()
         {
             currenciesText.text =
@@ -408,8 +594,9 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 $"{TMP_SpriteHelper.GEAR_ICON} {PlayerDataManager.GetGears()}";
             
             //TODO Need to update the parts storage here
+            UpdateBlockData();
         }
-
+        
         //Unity Editor
         //====================================================================================================================//
 
@@ -425,7 +612,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 new PartData
                 {
                     Type = (int)PART_TYPE.GUN,
-                    Patches = new []
+                    Patches = new List<PatchData>
                     {
                         new PatchData {Type = (int)PATCH_TYPE.POWER, Level = 0},
                         new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
@@ -436,7 +623,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 new PartData
                 {
                     Type = (int)PART_TYPE.CORE,
-                    Patches = new []
+                    Patches = new List<PatchData>
                     {
                         new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
                     }
@@ -444,7 +631,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 new PartData
                 {
                     Type = (int)PART_TYPE.GRENADE,
-                    Patches = new []
+                    Patches = new List<PatchData>
                     {
                         new PatchData {Type = (int)PATCH_TYPE.POWER, Level = 0},
                         new PatchData {Type = (int)PATCH_TYPE.EFFICIENCY, Level = 0},
@@ -463,17 +650,20 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             {
                 Type = (int) PART_TYPE.GUN,
                 Coordinate = Vector2Int.zero,
-                Patches = new[]
+                Patches = new List<PatchData>
                 {
                     new PatchData {Type = (int) PATCH_TYPE.POWER, Level = 0}
                 }
             };
-            //GeneratePatchTree(PART_TYPE.GUN);
-            StartCoroutine(GeneratePatchTreeCoroutine(gunPartData));
+
+            GeneratePatchTree(gunPartData);
         }
 
 #endif
 
         #endregion //Unity Editor
+
+        //====================================================================================================================//
+        
     }
 }

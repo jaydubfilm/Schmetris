@@ -8,6 +8,7 @@ using StarSalvager.Parts.Data;
 using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.Prototype;
 using StarSalvager.UI.PersistentUpgrades;
+using StarSalvager.UI.Scrapyard.PatchTrees;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
@@ -543,7 +544,7 @@ namespace StarSalvager.UI
                 AudioController.CrossFadeTrack(MUSIC.SCRAPYARD);
                 //TODO Need to load existing account run here
                 PlayerDataManager.SetRunStarted(true);
-                LeaveMenu(SceneLoader.UNIVERSE_MAP);
+                LeaveMenu(SceneLoader.UNIVERSE_MAP, null);
             });
             abandonRunButton.onClick.AddListener(() =>
             {
@@ -731,7 +732,7 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
-        private void LeaveMenu(string targetScene)
+        private void LeaveMenu(string targetScene, Action onFadedCallback)
         {
             SetupAccountMenuWindow();
             OpenWindow(WINDOW.ACCOUNT_MENU);
@@ -739,6 +740,7 @@ namespace StarSalvager.UI
             ScreenFade.Fade(() =>
             {
                 SceneLoader.ActivateScene(targetScene, SceneLoader.MAIN_MENU);
+                onFadedCallback?.Invoke();
             });
         }
 

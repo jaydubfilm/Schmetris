@@ -142,27 +142,25 @@ namespace StarSalvager.Utilities.Saving
 
         #region Bot Data
 
-        public static List<Vector2Int> GetBotLayout()
-        {
-            return PlayerSaveAccountData.BotLayout.Keys.ToList();
-        }
+        #region LayoutData
 
-        public static BIT_TYPE GetCategoryAtCoordinate(Vector2Int coordinate)
-        {
-            return PlayerAccountData.GetCategoryAtCoordinate(coordinate);
-        }
+        public static IReadOnlyList<Vector2Int> GetBotLayout() =>PlayerSaveAccountData.BotLayout.Keys.ToList();
 
-        public static Vector2Int GetCoordinateForCategory(BIT_TYPE bitType)
-        {
-            return PlayerAccountData.GetCoordinateForCategory(bitType);
-        }
+        public static BIT_TYPE GetCategoryAtCoordinate(in Vector2Int coordinate) =>PlayerAccountData.GetCategoryAtCoordinate(coordinate);
 
-        public static List<IBlockData> GetBlockDatas() => HasRunData ? PlayerRunData.DroneBlockData : default;
+        public static Vector2Int GetCoordinateForCategory(in BIT_TYPE bitType)=>PlayerAccountData.GetCoordinateForCategory(bitType);
 
-        public static void SetBlockData(IEnumerable<IBlockData> blockData)
+        public static List<IBlockData> GetBotBlockDatas() => HasRunData ? PlayerRunData.DroneBlockData : default;
+
+        #endregion //LayoutData
+
+        public static void SetDroneBlockDataAtCoordinate(in Vector2Int coordinate, in IBlockData blockData, in bool updateValues = false)
         {
-            PlayerRunData.SetDroneBlockData(blockData);
+            PlayerRunData.SetDroneBlockDataAtCoordinate(coordinate, blockData);
+            
+            if(updateValues) OnValuesChanged?.Invoke();
         }
+        public static void SetDroneBlockData(in IEnumerable<IBlockData> blockData) => PlayerRunData.SetDroneBlockData(blockData);
         
         public static void DowngradeAllBits(int removeBelowLevel, bool downgradeBits)
         {
@@ -190,7 +188,7 @@ namespace StarSalvager.Utilities.Saving
 
             //--------------------------------------------------------------------------------------------------------//
             
-            var droneBlockData = new List<IBlockData>(GetBlockDatas());
+            var droneBlockData = new List<IBlockData>(GetBotBlockDatas());
             var originalBackup = new List<IBlockData>(droneBlockData);
 
             var bitsToRemove = droneBlockData
@@ -237,7 +235,7 @@ namespace StarSalvager.Utilities.Saving
             }
 
            
-            SetBlockData(droneBlockData);
+            SetDroneBlockData(droneBlockData);
         }
 
         #endregion //Bot Data

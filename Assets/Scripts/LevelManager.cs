@@ -262,7 +262,7 @@ namespace StarSalvager
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
-            var botDataToLoad = PlayerDataManager.GetBlockDatas();
+            var botDataToLoad = PlayerDataManager.GetBotBlockDatas();
 
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
@@ -754,7 +754,7 @@ namespace StarSalvager
                 var blockData = bot.GetBlockDatas();
 
                 PlayerDataManager.SetBotHealth(bot.CurrentHealth);
-                PlayerDataManager.SetBlockData(blockData);
+                PlayerDataManager.SetDroneBlockData(blockData);
             }
         }
 

@@ -559,7 +559,7 @@ namespace StarSalvager
 
             AttachNewBlock(Vector2Int.zero, core);
 
-            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            var botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
                 if (botLayout[i] == Vector2Int.zero)

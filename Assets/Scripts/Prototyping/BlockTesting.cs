@@ -22,7 +22,7 @@ public class BlockTesting : MonoBehaviour
             {
                 Coordinate = new Vector2Int(-1, 0),
                 Type = (int)PART_TYPE.GUN,
-                Patches = new []
+                Patches = new List<PatchData>
                 {
                     new PatchData
                     {
@@ -40,7 +40,7 @@ public class BlockTesting : MonoBehaviour
             {
                 Coordinate = new Vector2Int(1, 0),
                 Type = (int)PART_TYPE.ARMOR,
-                Patches = new []
+                Patches = new List<PatchData>
                 {
                     new PatchData
                     {

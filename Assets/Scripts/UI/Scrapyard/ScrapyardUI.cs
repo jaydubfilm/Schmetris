@@ -74,18 +74,18 @@ namespace StarSalvager.UI.Scrapyard
                     {
                         Type = (int) PART_TYPE.EMPTY,
                         Coordinate = coordinate,
-                        Patches = new PatchData[0]
+                        Patches = new List<PatchData>()
                     });
 
                 _droneDesigner._scrapyardBot.AttachNewBit(coordinate, attachable);
 
-                PlayerDataManager.SetBlockData(_droneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetDroneBlockData(_droneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
 
             //--------------------------------------------------------------------------------------------------------//
 
             var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
-            currentParts.AddRange(PlayerDataManager.GetBlockDatas().OfType<PartData>());
+            currentParts.AddRange(PlayerDataManager.GetBotBlockDatas().OfType<PartData>());
 
             foreach (BIT_TYPE bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
@@ -354,7 +354,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void TryLaunch()
         {
-            if (PlayerDataManager.GetBlockDatas().CheckHasDisconnects())
+            if (PlayerDataManager.GetBotBlockDatas().CheckHasDisconnects())
             {
                 Alert.ShowAlert("Alert!",
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",

@@ -156,7 +156,6 @@ namespace StarSalvager.Utilities.Saving
                 ? new Dictionary<string, int>(enemiesKilledAtRunBeginning)
                 : new Dictionary<string, int>();
 
-            DroneBlockData = new List<IBlockData>();
             PartsInStorageBlockData = new List<IBlockData>();
             _currentPatchOptions = new List<PatchData>();
 
@@ -174,6 +173,28 @@ namespace StarSalvager.Utilities.Saving
             {
                 _playerResources.Add(new PlayerResource(bitType, Globals.StartingAmmo, capacity));
             }
+
+            //Default Drone Data
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var botLayout = PlayerDataManager.GetBotLayout();
+            var defaultDrone = new List<IBlockData>();
+            for (var i = 0; i < botLayout.Count; i++)
+            {
+                PartData partData = new PartData
+                {
+                    Type = (int) (botLayout[i] == Vector2Int.zero ? PART_TYPE.CORE : PART_TYPE.EMPTY),
+                    Coordinate = botLayout[i],
+                    Patches = new List<PatchData>()
+                };
+
+                defaultDrone.Add(partData);
+            }
+            
+            DroneBlockData = new List<IBlockData>(defaultDrone);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
         }
 
         //Bot data
@@ -181,15 +202,21 @@ namespace StarSalvager.Utilities.Saving
 
         #region Block Data
 
-        public List<IBlockData> GetCurrentBlockData()
-        {
-            return DroneBlockData;
-        }
+        public IReadOnlyList<IBlockData> GetCurrentBlockData() => DroneBlockData;
 
-        public void SetDroneBlockData(IEnumerable<IBlockData> blockData)
+        public void SetDroneBlockData(in IEnumerable<IBlockData> blockData)
         {
-            DroneBlockData.Clear();
-            DroneBlockData.AddRange(blockData);
+            DroneBlockData = new List<IBlockData>(blockData);
+        }
+        
+        public void SetDroneBlockDataAtCoordinate(in Vector2Int coordinate, in IBlockData blockData)
+        {
+            var temp = coordinate;
+            var index = DroneBlockData.FindIndex(x => x.Coordinate == temp);
+
+            if (index < 0) throw new ArgumentException();
+
+            DroneBlockData[index] = blockData;
         }
 
         #endregion //Block Data

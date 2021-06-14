@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class ScrapyardPart : Actor2DBase, IAttachable, ISaveable<PartData>, IPart, ICustomRecycle
     {
 
@@ -34,14 +36,14 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
 
-        public PatchData[] Patches { get; set; }
+        public List<PatchData> Patches { get; set; }
 
         //IPart Functions
         //====================================================================================================================//
         
         public void AddPatch(in PatchData patchData)
         {
-            for (int i = 0; i < Patches.Length; i++)
+            for (int i = 0; i < Patches.Count; i++)
             {
                 if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
                     continue;
@@ -55,7 +57,7 @@ namespace StarSalvager
 
         public void RemovePatch(in PatchData patchData)
         {
-            for (int i = 0; i < Patches.Length; i++)
+            for (int i = 0; i < Patches.Count; i++)
             {
                 if(!Patches[i].Equals(patchData))
                     continue;

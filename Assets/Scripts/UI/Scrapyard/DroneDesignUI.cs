@@ -349,7 +349,7 @@ namespace StarSalvager.UI.Scrapyard
             //Parts On Bot
             //--------------------------------------------------------------------------------------------------------//
             
-            var attachedParts = PlayerDataManager.GetBlockDatas();
+            var attachedParts = PlayerDataManager.GetBotBlockDatas();
             AddPartsToView(attachedParts, true);
 
             //--------------------------------------------------------------------------------------------------------//
@@ -584,7 +584,7 @@ namespace StarSalvager.UI.Scrapyard
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 
-            for (var i = 0; i < partData.Patches.Length; i++)
+            for (var i = 0; i < partData.Patches.Count; i++)
             {
                 if (i >= patchUis.Length)
                     break;

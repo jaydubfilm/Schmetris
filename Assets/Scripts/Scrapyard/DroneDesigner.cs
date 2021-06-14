@@ -599,7 +599,7 @@ namespace StarSalvager
         {
             if (_scrapyardBot != null)
             {
-                PlayerDataManager.SetBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetDroneBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 
@@ -623,7 +623,7 @@ namespace StarSalvager
             _scrapyardBot = FactoryManager.Instance.GetFactory<BotFactory>().CreateScrapyardObject<ScrapyardBot>();
             
 
-            var currentBlockData = PlayerDataManager.GetBlockDatas();
+            var currentBlockData = PlayerDataManager.GetBotBlockDatas();
             //Checks to make sure there is a core on the bot
             if (currentBlockData.Count == 0 /*|| !currentBlockData.Any(x => x.ClassType.Contains(nameof(Part)) && x.Type == (int)PART_TYPE.CORE)*/)
             {
@@ -658,11 +658,11 @@ namespace StarSalvager
                     if(partType == PART_TYPE.EMPTY)
                         continue;
                     
-                    var patchCount = remoteData.GetRemoteData(partType).PatchSockets;
+                    //var patchCount = remoteData.GetRemoteData(partType).PatchSockets;
                     var partData = new PartData
                     {
                         Type = (int)partType,
-                        Patches = new PatchData[patchCount]
+                        Patches = new List<PatchData>()
                     };
                     var scrapyardObject = partAttachableFactory.CreateScrapyardObject<ScrapyardPart>(partData);
                     var coordinate =

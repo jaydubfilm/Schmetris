@@ -347,7 +347,7 @@ namespace StarSalvager
                 false,
                 true);
 
-            PlayerDataManager.SetBlockData(bot.GetBlockDatas());
+            PlayerDataManager.SetDroneBlockData(bot.GetBlockDatas());
 
             newPart.transform.localScale = endScale;
             newPart.transform.position = pos;

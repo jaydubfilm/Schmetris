@@ -35,11 +35,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 Type = (int) _partType,
                 Coordinate = Vector2Int.zero,
-                Patches = new []
-                {
-                    new PatchData(),
-                    new PatchData()
-                }
+                Patches = new List<PatchData>()
             };
         }
 
