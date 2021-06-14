@@ -1833,7 +1833,8 @@ MonoBehaviour:
     type: 3}
   partPatchOptionsContainer: {fileID: 5577722124456220442}
   patchTreeTierContainer: {fileID: 8402415354317374481}
-  dottedLinePrefab: {fileID: 0}
+  dottedLinePrefab: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,
+    type: 3}
   tierElementPrefab: {fileID: 4772728505527029395, guid: 8d482c0b670773340b50d56d60ba3550,
     type: 3}
   patchNodeElementPrefab: {fileID: -815819173994695028, guid: 0871bc8c2179a144f87b162d9152d272,
