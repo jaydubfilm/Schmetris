@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace StarSalvager
 {
-    [RequireComponent(typeof(SpriteRenderer))]
+    //Explore this as solution to removing the requirement: http://answers.unity.com/answers/874150/view.html
+    //[RequireComponent(typeof(SpriteRenderer))]
     public abstract class Actor2DBase : MonoBehaviour, IRecycled, ISetSpriteLayer
     {
         public virtual Vector3 Position => transform.position;

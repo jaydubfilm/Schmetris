@@ -15,6 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.UI;
+using Console = System.Console;
 using Random = UnityEngine.Random;
 
 
@@ -23,7 +24,7 @@ namespace StarSalvager.UI.Scrapyard
     public class PartChoiceUI : MonoBehaviour
     {
         [Serializable]
-        private struct PartSelectionUI
+        public struct PartSelectionUI
         {
             public Button optionButton;
             public PartChoiceButtonHover PartChoiceButtonHover;
@@ -33,6 +34,10 @@ namespace StarSalvager.UI.Scrapyard
             public Image categoryImage;
             public TMP_Text categoryText;
         }
+
+        //====================================================================================================================//
+
+        public static PART_TYPE LastPicked { get; private set; }
 
 
         [SerializeField]
@@ -56,7 +61,7 @@ namespace StarSalvager.UI.Scrapyard
         {
             if(!_noPartButtonText)
                 _noPartButtonText = noPartSelectedOptionButton.GetComponentInChildren<TMP_Text>();
-            
+
             _partOptions = new PART_TYPE[2];
             InitButtons();
         }
@@ -78,7 +83,7 @@ namespace StarSalvager.UI.Scrapyard
             void SetUI(in int index, in PART_TYPE partType)
             {
                 var category = partRemoteData.GetRemoteData(partType).category;
-                
+
                 selectionUis[index].PartChoiceButtonHover.SetPartType(partType);
                 selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
                 selectionUis[index].optionImage.color = Globals.UsePartColors ? category.GetColor() : Color.white;
@@ -87,7 +92,7 @@ namespace StarSalvager.UI.Scrapyard
                 selectionUis[index].categoryImage.color = category.GetColor();
                 selectionUis[index].categoryText.text = category.GetCategoryName();
             }
-            
+
             Random.InitState(DateTime.Now.Millisecond);
 
             var partsOnBot = PlayerDataManager
@@ -100,19 +105,30 @@ namespace StarSalvager.UI.Scrapyard
                 .GetCurrentPartsInStorage()
                 .OfType<PartData>()
                 .Select(x => (PART_TYPE) x.Type);
-            
+
             partsOnBot.AddRange(partsInStorage);
 
-            partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
+            try
+            {
+                partFactory.SelectPartOptions(ref _partOptions, partOptionType, partsOnBot.Distinct().ToArray());
+            }
+            catch (Exception)
+            {
+                partChoiceWindow.SetActive(false);
+                throw;
+            }
 
             if (_partOptions[0] == _partOptions[1])
+            {
+                partChoiceWindow.SetActive(false);
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
+            }
 
             for (var i = 0; i < _partOptions.Length; i++)
             {
                 SetUI(i, _partOptions[i]);
             }
-            
+
         }
 
         private void InitButtons()
@@ -129,19 +145,19 @@ namespace StarSalvager.UI.Scrapyard
                     
                     outDict.Add(GetPartType(i), i == index);
                 }
-                
+
                 AnalyticsManager.PickedPartEvent(outDict);
             }
             PART_TYPE GetPartType(in int index)
             {
                 return _partOptions[index];
             }
-            
+
             void CreatePart(PART_TYPE partType)
             {
                 var partRemoteData = partType.GetRemoteData();
                 var patchCount = partRemoteData.PatchSockets;
-                
+
                 var partData = new PartData
                 {
                     Type = (int)partType,
@@ -166,19 +182,23 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
+                FindObjectOfType<ScrapyardUI>().CheckForPartOverage();
                 _droneDesigner.SaveBlockData();
 
                 CloseWindow();
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             for (int i = 0; i < selectionUis.Length; i++)
             {
                 var index = i;
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
-                    CreatePart(GetPartType(index));
+                    var partType = GetPartType(index);
+
+                    LastPicked = partType;
+                    CreatePart(partType);
                     RecordSelectedParts(index);
                 });
             }
@@ -197,7 +217,7 @@ namespace StarSalvager.UI.Scrapyard
             PlayerDataManager.SetRunStarted(true);
             PlayerDataManager.SetCanChoosePart(false);
             partChoiceWindow.SetActive(false);
-                
+
             _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
         }
 
@@ -214,7 +234,7 @@ namespace StarSalvager.UI.Scrapyard
             partChoiceWindow.SetActive(true);
             Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
         }
-        
+
 #endif
     }
 }

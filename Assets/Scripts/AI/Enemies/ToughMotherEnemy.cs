@@ -1,19 +1,18 @@
 ﻿using Recycling;
-using StarSalvager.Audio;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
-using StarSalvager.Utilities.Analytics;
-using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class ToughMotherEnemy : Enemy
+    public class ToughMotherEnemy : Enemy, IPlayEnemySounds<ToughMotherSounds>
     {
+        public ToughMotherSounds EnemySound => (ToughMotherSounds) EnemySoundBase;
         public float anticipationTime = 1f;
 
         public override bool IgnoreObstacleAvoidance => true;
@@ -30,9 +29,11 @@ namespace StarSalvager.AI
 
         private Vector2 currentDestination;
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.ToughMotherSounds;
+            
+            base.OnSpawned();
 
             SetState(STATE.MOVE);
         }
@@ -68,6 +69,8 @@ namespace StarSalvager.AI
                 case STATE.ATTACK:
                     break;
                 case STATE.DEATH:
+                    EnemySound.spawnLeechSound.Play();
+                    
                     TrySpawnDataLeech(Vector3.left);
                     TrySpawnDataLeech(Vector3.right);
                     TrySpawnDataLeech(Vector3.up);
@@ -155,6 +158,8 @@ namespace StarSalvager.AI
         {
             if (!CameraController.IsPointInCameraRect(transform.position, Constants.VISIBLE_GAME_AREA))
                 return;
+            
+            EnemySound.spawnLeechSound.Play();
 
             string enemyId = FactoryManager.Instance.EnemyRemoteData.GetEnemyId("DataLeech");
             LevelManager.Instance.EnemyManager.SpawnEnemy(enemyId, transform.position + offsetPosition);

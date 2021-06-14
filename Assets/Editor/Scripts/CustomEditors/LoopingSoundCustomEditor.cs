@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace StarSalvager.Editor.CustomEditors
 {
-    public class LoopingSoundCustomEditor : OdinValueDrawer<LoopingSound>
+    public class LoopingSoundCustomEditor //: OdinValueDrawer<LoopingSound>
     {
-        protected override void DrawPropertyLayout(GUIContent label)
+        /*protected override void DrawPropertyLayout(GUIContent label)
         {
             Rect rect = EditorGUILayout.GetControlRect();
 
@@ -25,11 +25,15 @@ namespace StarSalvager.Editor.CustomEditors
             GUIHelper.PopLabelWidth();
             
             GUIHelper.PushLabelWidth(100);
-            loopingSound.maxChannels = EditorGUI.IntSlider(rect.AlignRight(rect.width * 0.65f), "Max Channels", loopingSound.maxChannels, 0, 32);
+            loopingSound.maxChannels = EditorGUI.IntSlider(rect.AlignRight(rect.width * 0.325f), "Max Channels", loopingSound.maxChannels, 0, 32);
+            GUIHelper.PopLabelWidth();
+            
+            GUIHelper.PushLabelWidth(100);
+            loopingSound.volume = EditorGUI.Slider(rect.AlignRight(rect.width * 0.325f), "Vol", loopingSound.volume, 0f, 1f);
             GUIHelper.PopLabelWidth();
 
 
             ValueEntry.SmartValue = loopingSound;
-        }
+        }*/
     }
 }

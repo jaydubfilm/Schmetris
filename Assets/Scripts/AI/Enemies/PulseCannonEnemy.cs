@@ -2,17 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using Recycling;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Values;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class PulseCannonEnemy : Enemy
+    public class PulseCannonEnemy : Enemy, IPlayEnemySounds<PulseCannonSounds>
     {
+        public PulseCannonSounds EnemySound => (PulseCannonSounds) EnemySoundBase;
 
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
@@ -23,8 +28,8 @@ namespace StarSalvager.AI
         private float dotThreshold = 0.1f;
 
 
-        [SerializeField]
-        private float anticipcationTime;
+        [FormerlySerializedAs("anticipcationTime")] [SerializeField]
+        private float anticipationTime;
         private float _anticipationTimer;
 
         [SerializeField]
@@ -50,7 +55,7 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             //--------------------------------------------------------------------------------------------------------//
             
@@ -68,7 +73,9 @@ namespace StarSalvager.AI
 
             //--------------------------------------------------------------------------------------------------------//
             
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.PulseCannonSounds;
+            
+            base.OnSpawned();
 
             var currentPosition = Position;
             var leftSide = Random.value > 0.5;
@@ -114,9 +121,10 @@ namespace StarSalvager.AI
                 case STATE.IDLE:
                     break;
                 case STATE.ANTICIPATION:
-                    _anticipationTimer = anticipcationTime;
+                    _anticipationTimer = anticipationTime;
                     break;
                 case STATE.ATTACK:
+                    EnemySound.attackSound.Play();
                     _burstCount = burstCount;
                     _burstShotDelayTimer = 0f;
                     break;
@@ -250,6 +258,7 @@ namespace StarSalvager.AI
                     0f,
                     false,
                     true);
+            
         }
 
         //====================================================================================================================//

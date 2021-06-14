@@ -16,6 +16,11 @@ namespace StarSalvager
 {
     public class EnemyManager : MonoBehaviour, IReset, IPausable
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         private List<Enemy> m_enemies;
 
         //Variables to spawn enemies throughout a stage
@@ -38,7 +43,12 @@ namespace StarSalvager
 
         private bool _hasActiveEnemies;
 
+        #endregion //Properties
+
+        //Unity Functions
         //============================================================================================================//
+
+        #region Unity Functions
 
         // Start is called before the first frame update
         private void Start()
@@ -105,7 +115,12 @@ namespace StarSalvager
             }
         }
 
+        #endregion //Unity Functions
+
+        //IReset Functions
         //============================================================================================================//
+
+        #region IReset Functions
 
         public void Activate()
         {
@@ -136,7 +151,12 @@ namespace StarSalvager
             }
         }
 
+        #endregion //IReset Functions
+
+        //Enemy Manager Functions
         //============================================================================================================//
+
+        #region Enemy Manager Functions
 
         private void HandleEnemyUpdate()
         {
@@ -146,8 +166,7 @@ namespace StarSalvager
             {
                 Enemy enemy = m_enemies[i];
                 
-                if(enemy.IsRecycled)
-                    continue;
+                if(enemy.IsRecycled) continue;
 
                 //Check to see if the enemy can Move
                 if (!enemy.CanMove())
@@ -207,8 +226,6 @@ namespace StarSalvager
             m_nextStageToSpawn = stageNumber + 1;
         }
 
-
-
         private void CheckSpawns()
         {
             if (m_timesToSpawn.Count == 0)
@@ -237,7 +254,7 @@ namespace StarSalvager
 
             newEnemy.transform.localPosition = spawnLocationOverride ?? LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
 
-            newEnemy.LateInit();
+            newEnemy.OnSpawned();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
 
@@ -272,6 +289,8 @@ namespace StarSalvager
         {
             LevelManager.Instance.ObstacleManager.AddTransformToRoot(enemy.transform);
         }
+
+        #endregion //Enemy Manager Functions
 
         //====================================================================================================================//
         

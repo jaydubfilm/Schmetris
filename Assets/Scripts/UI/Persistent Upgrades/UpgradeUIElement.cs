@@ -105,6 +105,7 @@ namespace StarSalvager.UI.PersistentUpgrades
             }
             
             button.interactable = interactable;
+            button.enabled = true;
             buttonText.text = $"{cost}{TMP_SpriteHelper.STAR_ICON}";
 
             glowImage.gameObject.SetActive(interactable);

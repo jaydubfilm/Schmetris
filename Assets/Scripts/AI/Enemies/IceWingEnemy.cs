@@ -1,6 +1,9 @@
 ﻿using System;
 using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Utilities;
 using StarSalvager.Values;
@@ -10,8 +13,9 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.AI
 {
-    public class IceWingEnemy : Enemy
+    public class IceWingEnemy : Enemy, IPlayEnemySounds<IceWingSounds>
     {
+        public IceWingSounds EnemySound => (IceWingSounds) EnemySoundBase;
 
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => true;
@@ -67,7 +71,7 @@ namespace StarSalvager.AI
 
         //====================================================================================================================//
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
             //--------------------------------------------------------------------------------------------------------//
 
@@ -83,7 +87,9 @@ namespace StarSalvager.AI
 
             //--------------------------------------------------------------------------------------------------------//
 
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.IceWingSounds;            
+            
+            base.OnSpawned();
 
             _attackPassCount = 0;
             _attackSwoopCount = 0;
@@ -127,6 +133,8 @@ namespace StarSalvager.AI
 
                     var dist = Vector2.Distance(_startLocation, _targetLocation);
                     _travelTime = dist / m_enemyData.MovementSpeed;
+                    
+                    EnemySound.swoopSound.Play();
                     break;
                 case STATE.DEATH:
                     Recycler.Recycle<IceWingEnemy>(this);
@@ -257,11 +265,17 @@ namespace StarSalvager.AI
                         {
                             var closestAttachable = bot.GetClosestAttachable(hit.point);
                             if (closestAttachable is Bit bit)
+                            {
                                 bit.SetFrozen(freezeTime);
+                                EnemySound.freezeSound.Play();
+                            }
                         }
                             break;
                         case Bit bit when bit.Frozen == false:
+                        {
                             bit.SetFrozen(freezeTime);
+                            EnemySound.freezeSound.Play();
+                        }
                             break;
 
                     }
