@@ -262,6 +262,7 @@ namespace StarSalvager.Editor.PatchTrees
             var partNodeGUID = patchTreeContainer.PartNodeData.GUID;
             var orderedNodes = patchTreeContainer.PatchNodeDatas
                 .OrderBy(x => x.Tier)
+                .ThenByDescending(x => x.Position.y)
                 .ToList();
 
             var outList = new List<PatchNodeJson>();
