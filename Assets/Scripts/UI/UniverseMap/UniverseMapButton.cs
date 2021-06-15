@@ -263,6 +263,7 @@ namespace StarSalvager
             
             Button.image.sprite = backgroundSprite;
             foregroundImage.sprite = foregroundSprite;
+            foregroundImage.gameObject.SetActive(foregroundSprite != null);
         }
 
         public void SetBotImageActive(in bool state)

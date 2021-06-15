@@ -1939,21 +1939,23 @@ namespace StarSalvager
                 return true;
             }
 
-            var armors = bot.AttachedBlocks
+            var armor = bot.AttachedBlocks
                 .OfType<Part>()
-                .Where(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false)
-                .ToArray();
+                .FirstOrDefault(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false);
 
-            if (armors.IsNullOrEmpty())
-                return false;
+            if (armor == null) return false;
 
             var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
+
+            var temp = damage;
+            //FIXME This is not a sustainable way of using ammo, need to find something better
+            if (!TryUseAmmo(armor, partRemoteData, temp < 1f ? Time.deltaTime : 1f)) return false;
 
             if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
             {
                 return false;
             }
-
+            
             damage *= 1.0f - multiplier;
 
             return true;
@@ -2495,15 +2497,17 @@ namespace StarSalvager
                 _repairEffects = new Dictionary<Bit, GameObject>();
             }
 
+            _shieldActive = false;
             if(_shieldObject != null)
                 Destroy(_shieldObject);
 
+            _sabreActive = false;
             if (_sabreObject != null)
             {
                 Recycler.Recycle<Sabre>(_sabreObject);
                 _sabreObject = null;
             }
-
+            
             if (_forceField != null)
             {
                 Destroy(_forceField.gameObject);

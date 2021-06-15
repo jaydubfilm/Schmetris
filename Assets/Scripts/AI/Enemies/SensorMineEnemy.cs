@@ -36,7 +36,7 @@ namespace StarSalvager.AI
         private float _anticipationTime;
         private Vector2 _playerPosition;
         private AudioSource _audioSource;
-
+        
         //IUseAudioStates Properties
         //====================================================================================================================//
         
@@ -53,6 +53,11 @@ namespace StarSalvager.AI
             base.OnSpawned();
             
             SetState(STATE.SEARCH);
+        }
+        
+        public override void SetFrozen(in float time)
+        {
+            Disabled = true;
         }
 
         //State Functions
@@ -126,8 +131,7 @@ namespace StarSalvager.AI
 
         private void SearchState()
         {
-            if (_distanceToPlayer > triggerDistance)
-                return;
+            if (_distanceToPlayer > triggerDistance) return;
             
             SetState(STATE.ANTICIPATION);
         }
