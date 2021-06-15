@@ -74,7 +74,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        [SerializeField, FoldoutGroup("Part Details Window")]
+        /*[SerializeField, FoldoutGroup("Part Details Window")]
         private RectTransform partDetailsContainerRectTransform;
 
         [SerializeField, FoldoutGroup("Part Details Window")]
@@ -98,7 +98,7 @@ namespace StarSalvager.UI.Scrapyard
         private PatchUI[] patchUis;
 
         [SerializeField, FoldoutGroup("Part Details Window")]
-        private TMP_Text partDetailsText;
+        private TMP_Text partDetailsText;*/
 
         /*[FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
         private GradeUI[] gradeUis;*/
@@ -169,7 +169,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            HidePartDetails();
+            //HidePartDetails();
             SetUpgradeWindowActive(false);
         }
 
@@ -258,7 +258,8 @@ namespace StarSalvager.UI.Scrapyard
 
         public void InitPurchasePatches()
         {
-            purchasePatchUIElementScrollView.ClearElements();
+            throw new NotImplementedException();
+            /*purchasePatchUIElementScrollView.ClearElements();
             
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             var patches = PlayerDataManager.CurrentPatchOptions;
@@ -289,7 +290,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
                 element.Init(t, ShowPartUpgradeSelectionWindow);
-            }
+            }*/
             
         }
 
@@ -479,7 +480,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public void HidePartDetails()
+        /*public void HidePartDetails()
         {
             ShowPartDetails(false, null);
             HoveringStoragePartUIElement = false;
@@ -607,7 +608,7 @@ namespace StarSalvager.UI.Scrapyard
             
             partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
             
-        }
+        }*/
         //====================================================================================================================//
 
     }

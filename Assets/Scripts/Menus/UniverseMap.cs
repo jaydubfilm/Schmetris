@@ -18,6 +18,7 @@ using StarSalvager.AI;
 using StarSalvager.Audio;
 using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
+using StarSalvager.UI.Scrapyard.PatchTrees;
 using StarSalvager.Utilities.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -253,6 +254,7 @@ namespace StarSalvager.UI
                     {
                         SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                         AnalyticsManager.WreckStartEvent();
+                        FindObjectOfType<PatchTreeUI>().InitWreck("Wreck", null);
                     });
                     break;
             }

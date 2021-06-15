@@ -35,19 +35,23 @@ namespace StarSalvager.UI.Scrapyard
             public TMP_Text categoryText;
         }
 
+        //Properties
         //====================================================================================================================//
+        
+
 
         public static PART_TYPE LastPicked { get; private set; }
 
-
+        [SerializeField, Required]
+        private TMP_Text titleText;
         [SerializeField]
         private GameObject partChoiceWindow;
 
         [SerializeField] private Button noPartSelectedOptionButton;
         private TMP_Text _noPartButtonText;
 
-        [SerializeField]
-        private DroneDesigner _droneDesigner;
+        /*[SerializeField]
+        private DroneDesigner _droneDesigner;*/
 
         [SerializeField]
         private PartSelectionUI[] selectionUis;
@@ -56,6 +60,21 @@ namespace StarSalvager.UI.Scrapyard
 
         private PartAttachableFactory.PART_OPTION_TYPE _partOptionType;
 
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
+
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
+
+        //Unity Functions
+        //====================================================================================================================//
+        
         // Start is called before the first frame update
         private void Start()
         {
@@ -72,6 +91,8 @@ namespace StarSalvager.UI.Scrapyard
 
         public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
         {
+            titleText.text = "Pick a Part";
+            
             noPartSelectedOptionButton.gameObject.SetActive(partOptionType != PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
 
             _partOptionType = partOptionType;
@@ -182,7 +203,7 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
-                FindObjectOfType<ScrapyardUI>().CheckForPartOverage();
+                CheckForPartOverage();
                 PlayerDataManager.OnValuesChanged?.Invoke();
 
                 CloseWindow();
@@ -218,10 +239,102 @@ namespace StarSalvager.UI.Scrapyard
             PlayerDataManager.SetCanChoosePart(false);
             partChoiceWindow.SetActive(false);
 
-            _droneDesigner.DroneDesignUi.ShowPartDetails(false, new PartData(), null);
+            PartDetailsUI.ShowPartDetails(false, new PartData(), null);
         }
 
         #endregion //Init
+
+        private void CheckForPartOverage()
+        {
+            //--------------------------------------------------------------------------------------------------------//
+
+            void FindAndDestroyPart(in PART_TYPE partType)
+            {
+                var type = partType;
+
+                var storage = new List<IBlockData>(PlayerDataManager.GetCurrentPartsInStorage());
+                var index = storage.FindIndex(x => x is PartData p && p.Type == (int) type);
+                if (index >= 0)
+                {
+                    //TODO From the part from the storage
+                    PlayerDataManager.RemovePartFromStorageAtIndex(index);
+                    PlayerDataManager.OnValuesChanged?.Invoke();
+                    return;
+                }
+
+                var botBlockDatas = new List<IBlockData>(PlayerDataManager.GetBotBlockDatas());
+                index = botBlockDatas.FindIndex(x => x is PartData && x.Type == (int) type);
+
+                if (index < 0)
+                    throw new Exception();
+
+                var partData = botBlockDatas[index];
+                var coordinate = partData.Coordinate;
+                
+                botBlockDatas.RemoveAt(index);
+                botBlockDatas.Add(new PartData
+                {
+                    Type = (int) PART_TYPE.EMPTY,
+                    Coordinate = coordinate,
+                    Patches = new List<PatchData>()
+                });
+
+                PlayerDataManager.SetDroneBlockData(botBlockDatas);
+                PlayerDataManager.OnValuesChanged?.Invoke();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
+            currentParts.AddRange(PlayerDataManager.GetBotBlockDatas().OfType<PartData>());
+
+            foreach (BIT_TYPE bitType in Enum.GetValues(typeof(BIT_TYPE)))
+            {
+                if(bitType == BIT_TYPE.WHITE || bitType == BIT_TYPE.NONE)
+                    continue;
+
+                var parts = currentParts
+                    .Where(x => ((PART_TYPE) x.Type).GetCategory() == bitType)
+                    .ToList();
+
+                if(parts.Count <= Globals.MaxPartTypeCount)
+                    continue;
+                
+                partChoiceWindow.SetActive(true);
+                titleText.text = "Discard 1 Part";
+
+                var partOptions = parts
+                    .Where(x => LastPicked != (PART_TYPE)x.Type)
+                    .Take(2)
+                    .ToArray();
+
+                for (int i = 0; i < partOptions.Length; i++)
+                {
+                    var partData = partOptions[i];
+                    var partType = (PART_TYPE)partData.Type;
+                    var category = partType.GetCategory();
+
+                    selectionUis[i].optionText.text = partType.GetRemoteData().name;
+                    selectionUis[i].optionImage.sprite = partType.GetSprite();
+
+                    selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
+                    
+                    selectionUis[i].categoryImage.color = category.GetColor();
+                    selectionUis[i].categoryText.text = category.GetCategoryName();
+
+                    selectionUis[i].optionButton.onClick.RemoveAllListeners();
+                    selectionUis[i].optionButton.onClick.AddListener(() =>
+                    {
+                        PartDetailsUI.ShowPartDetails(false, partData, null);
+                        FindAndDestroyPart(partType);
+                        partChoiceWindow.SetActive(false);
+                    });
+                }
+
+                break;
+            }
+        }
+
 
         //Unity Editor
         //============================================================================================================//

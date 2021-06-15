@@ -413,7 +413,7 @@ namespace StarSalvager.Utilities
                             }
                             break;
                         }
-                        case "patches":
+                        /*case "patches":
                         {
                             switch (split[3].ToLower())
                             {
@@ -463,7 +463,7 @@ namespace StarSalvager.Utilities
                                 }
                             }
                             break;
-                        }
+                        }*/
                         default:
                             _consoleDisplay += UnrecognizeCommand(split[2]);
                             break;

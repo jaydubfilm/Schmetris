@@ -103,11 +103,11 @@ namespace StarSalvager.Utilities.Saving
         public List<int> playerPreviouslyCompletedNodes;
 
         [JsonIgnore]
-        public IReadOnlyList<PatchData> CurrentPatchOptions => _currentPatchOptions;
+        public IReadOnlyList<PartData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
-        private List<PatchData> _currentPatchOptions;
+        private List<PartData> _currentPatchOptions;
         [JsonProperty]
-        private List<PatchData> _wreckPatchOptions;
+        private List<PartData> _wreckPatchOptions;
 
         #endregion //Properties
 
@@ -157,7 +157,7 @@ namespace StarSalvager.Utilities.Saving
                 : new Dictionary<string, int>();
 
             PartsInStorageBlockData = new List<IBlockData>();
-            _currentPatchOptions = new List<PatchData>();
+            _currentPatchOptions = new List<PartData>();
 
             _dontShowAgainKeys = new List<string>();
 
@@ -291,10 +291,10 @@ namespace StarSalvager.Utilities.Saving
 
         #region Patches
 
-        public void SetCurrentPatchOptions(in IEnumerable<PatchData> patches)
+        public void SetCurrentPatchOptions(in IEnumerable<PartData> partPatches)
         {
-            _currentPatchOptions = new List<PatchData>(patches);
-            _wreckPatchOptions = new List<PatchData>(patches);
+            _currentPatchOptions = new List<PartData>(partPatches);
+            _wreckPatchOptions = new List<PartData>(partPatches);
         }
 
         public void ClearAllPatches()
@@ -307,11 +307,11 @@ namespace StarSalvager.Utilities.Saving
             _currentPatchOptions.RemoveAt(index);
         }
 
-        public List<PatchData> GetPurchasedPatches()
+        public List<PartData> GetPurchasedPatches()
         {
             return _wreckPatchOptions.IsNullOrEmpty()
                 ? null
-                : new List<PatchData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
+                : new List<PartData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
         }
 
         #endregion //Patches

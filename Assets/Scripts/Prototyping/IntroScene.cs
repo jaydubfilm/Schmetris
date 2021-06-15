@@ -84,7 +84,7 @@ namespace StarSalvager.Prototype
         {
             SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
             var patchTreeUI = FindObjectOfType<PatchTreeUI>();
-            patchTreeUI.InitWreck("Base", null, default);
+            patchTreeUI.InitWreck("Base", null);
         }
     }
 }

@@ -470,7 +470,7 @@ namespace StarSalvager
                 return;
             }
             
-            if (ObstacleManager.AnyAttachableBitOnScreen) return;
+            if (ObstacleManager.AnyAttachableBitOnScreen && !m_endLevelOverride) return;
 
 
             //AudioController.PlaySound(SOUND.END_WAVE);

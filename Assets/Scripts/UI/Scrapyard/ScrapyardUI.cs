@@ -33,7 +33,7 @@ namespace StarSalvager.UI.Scrapyard
         //Prototype
         //====================================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("Prototype")]
+        /*[SerializeField, Required, FoldoutGroup("Prototype")]
         private GameObject partDisposeWindow;
         [SerializeField, Required, FoldoutGroup("Prototype")]
         private TMP_Text titleText;
@@ -124,7 +124,7 @@ namespace StarSalvager.UI.Scrapyard
                     selectionUis[i].optionButton.onClick.RemoveAllListeners();
                     selectionUis[i].optionButton.onClick.AddListener(() =>
                     {
-                        _droneDesigner.DroneDesignUi.ShowPartDetails(false, partData, null);
+                        PartDetailsUI.ShowPartDetails(false, partData, null);
                         FindAndDestroyPart(partType);
                         partDisposeWindow.SetActive(false);
                     });
@@ -132,7 +132,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 break;
             }
-        }
+        }*/
 
         //====================================================================================================================//
 
@@ -173,7 +173,19 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text gearsAmountText;
         [SerializeField, Required, FoldoutGroup("Silver Indicator")]
         private TMP_Text silverAmountText;
+        
+        
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
 
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
 
         //====================================================================================================================//
 
@@ -229,7 +241,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
 
-                    PlayerDataManager.SetCurrentPatchOptions(Globals.CurrentRing.GenerateRingPatches());
+                    //PlayerDataManager.SetCurrentPatchOptions(Globals.CurrentRing.GenerateRingPatches());
                     _droneDesigner.DroneDesignUi.InitPurchasePatches();
                 }
             }
@@ -241,7 +253,7 @@ namespace StarSalvager.UI.Scrapyard
         // Start is called before the first frame update
         private void Start()
         {
-            partDisposeWindow.SetActive(false);
+            //partDisposeWindow.SetActive(false);
             
             _droneDesigner = FindObjectOfType<DroneDesigner>();
             _partChoice = FindObjectOfType<PartChoiceUI>();

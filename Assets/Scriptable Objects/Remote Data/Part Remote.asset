@@ -95,7 +95,6 @@ MonoBehaviour:
     isManual: 0
     category: 0
     ammoUseCost: 0
-    PatchSockets: 0
     patchTreeData: 
   - isImplemented: 0
     partType: 2
@@ -112,7 +111,6 @@ MonoBehaviour:
     isManual: 0
     category: 2
     ammoUseCost: 2
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 3
@@ -126,7 +124,6 @@ MonoBehaviour:
     isManual: 0
     category: 1
     ammoUseCost: 2
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 4
@@ -144,8 +141,7 @@ MonoBehaviour:
     isManual: 0
     category: 3
     ammoUseCost: 1
-    PatchSockets: 2
-    patchTreeData: '[{"Type":1,"Level":1,"Tier":1,"PreReqs":[]},{"Type":3,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":2,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":2,"Tier":3,"PreReqs":[1]},{"Type":2,"Level":2,"Tier":3,"PreReqs":[3]},{"Type":2,"Level":3,"Tier":4,"PreReqs":[5]}]'
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":2,"Level":1,"Tier":3,"PreReqs":[3]},{"Type":2,"Level":2,"Tier":4,"PreReqs":[5]}]'
   - isImplemented: 0
     partType: 12
     name: Triple Shot
@@ -162,7 +158,6 @@ MonoBehaviour:
     isManual: 0
     category: 0
     ammoUseCost: 0
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 5
@@ -178,7 +173,6 @@ MonoBehaviour:
     isManual: 1
     category: 1
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 19
@@ -200,7 +194,6 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 0
     partType: 13
@@ -217,7 +210,6 @@ MonoBehaviour:
     isManual: 0
     category: 0
     ammoUseCost: 0
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 14
@@ -234,7 +226,6 @@ MonoBehaviour:
     isManual: 0
     category: 3
     ammoUseCost: 3
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 15
@@ -256,7 +247,6 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 6
@@ -274,7 +264,6 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 0
     partType: 34
@@ -287,7 +276,6 @@ MonoBehaviour:
     isManual: 1
     category: 5
     ammoUseCost: 10
-    PatchSockets: 0
     patchTreeData: 
   - isImplemented: 1
     partType: 35
@@ -298,7 +286,6 @@ MonoBehaviour:
     isManual: 0
     category: 5
     ammoUseCost: 3
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 36
@@ -313,7 +300,6 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 38
@@ -328,7 +314,6 @@ MonoBehaviour:
     isManual: 1
     category: 5
     ammoUseCost: 1
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 0
     partType: 39
@@ -345,7 +330,6 @@ MonoBehaviour:
     isManual: 1
     category: 1
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 0
     partType: 40
@@ -358,7 +342,6 @@ MonoBehaviour:
     isManual: 0
     category: 1
     ammoUseCost: 1
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 29
@@ -371,7 +354,6 @@ MonoBehaviour:
     isManual: 1
     category: 1
     ammoUseCost: 5
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 41
@@ -388,7 +370,6 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 5
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 31
@@ -401,7 +382,6 @@ MonoBehaviour:
     isManual: 1
     category: 5
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 0
@@ -420,7 +400,6 @@ MonoBehaviour:
     isManual: 0
     category: 2
     ammoUseCost: 5
-    PatchSockets: 3
     patchTreeData: 
   - isImplemented: 1
     partType: 42
@@ -441,7 +420,6 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 5
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 43
@@ -459,7 +437,6 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    PatchSockets: 2
     patchTreeData: 
   - isImplemented: 1
     partType: 44
@@ -481,5 +458,4 @@ MonoBehaviour:
     isManual: 0
     category: 1
     ammoUseCost: 5
-    PatchSockets: 2
     patchTreeData: 

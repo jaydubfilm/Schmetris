@@ -277,10 +277,11 @@ namespace StarSalvager.Editor.PatchTrees
                     .Select(x => orderedNodes.FindIndex(y => y.GUID == x.BaseNodeGUID))
                     .ToArray();
                 
+                //Need to offset level here since the UI is different than the index used by the levels
                 var newData = new PatchNodeJson
                 {
                     Type = patchNodeData.Type,
-                    Level = patchNodeData.Level,
+                    Level = patchNodeData.Level - 1,
                     Tier = patchNodeData.Tier,
                     PreReqs = preReqs
                 };

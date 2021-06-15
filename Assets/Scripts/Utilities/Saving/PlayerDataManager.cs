@@ -310,9 +310,9 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Patches
-        public static IReadOnlyList<PatchData> PurchasedPatches => PlayerRunData.GetPurchasedPatches();
-        public static IReadOnlyList<PatchData> CurrentPatchOptions => PlayerRunData.CurrentPatchOptions;
-        public static void SetCurrentPatchOptions(in IEnumerable<PatchData> patches) => PlayerRunData.SetCurrentPatchOptions(patches);
+        public static IReadOnlyList<PartData> PurchasedPatches => PlayerRunData.GetPurchasedPatches();
+        public static IReadOnlyList<PartData> CurrentPatchOptions => PlayerRunData.CurrentPatchOptions;
+        public static void SetCurrentPatchOptions(in IEnumerable<PartData> patches) => PlayerRunData.SetCurrentPatchOptions(patches);
         public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
         public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
 

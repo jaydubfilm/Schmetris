@@ -21,6 +21,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         public bool Unlocked { get; private set; }
 
+        public PatchData PatchData;
+
         public void Init(in PART_TYPE partType)
         {
             image.sprite = partType.GetSprite();
@@ -35,6 +37,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
             button.interactable = unlocked;
             Unlocked = unlocked;
+
+            PatchData = patchData;
         }
     }
 }

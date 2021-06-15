@@ -275,8 +275,8 @@ namespace StarSalvager.Utilities
                     var spentGears = 0;
 
                     var purchasedPatches = PlayerDataManager.PurchasedPatches;
-
-                    if (!purchasedPatches.IsNullOrEmpty())
+                    Debug.Log("THIS NEEDS TO BE FIXED");
+                    /*if (!purchasedPatches.IsNullOrEmpty())
                     {
                         foreach (var patchData in purchasedPatches)
                         {
@@ -286,7 +286,7 @@ namespace StarSalvager.Utilities
                             spentGears += Mathf.RoundToInt(remoteData.Levels[patchData.Level].gears *
                                                            PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST));
                         }
-                    }
+                    }*/
 
                     eventData = new Dictionary<string, object>
                     {

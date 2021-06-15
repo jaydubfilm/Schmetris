@@ -69,6 +69,18 @@ namespace StarSalvager
 
         public List<ScrapyardLayout> ScrapyardLayouts => _scrapyardLayouts;
         private List<ScrapyardLayout> _scrapyardLayouts;
+        
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
+
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
 
         private bool _isStarted;
         /*private bool _isDragging;
@@ -540,7 +552,7 @@ namespace StarSalvager
                 return;
 
             _hoveredPart = partData;
-            DroneDesignUi.ShowPartDetails(show, partData);
+            PartDetailsUI.ShowPartDetails(show, partData);
         }
 
         private bool TryHoverPart(out ScrapyardPart scrapyardPart)
@@ -1079,7 +1091,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
             
-            DroneDesignUi.HidePartDetails();
+            PartDetailsUI.HidePartDetails();
 
         }
 
@@ -1106,7 +1118,7 @@ namespace StarSalvager
             if (!corePartData)
                 return;
             
-            DroneDesignUi.ShowPartDetails(true, corePartData);
+            PartDetailsUI.ShowPartDetails(true, corePartData);
         }
     }
 }
