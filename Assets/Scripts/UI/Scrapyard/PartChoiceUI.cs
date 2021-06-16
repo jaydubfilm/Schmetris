@@ -86,7 +86,8 @@ namespace StarSalvager.UI.Scrapyard
         }
 
         //============================================================================================================//
-
+        
+        
         #region Init
 
         public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
@@ -135,13 +136,13 @@ namespace StarSalvager.UI.Scrapyard
             }
             catch (Exception)
             {
-                partChoiceWindow.SetActive(false);
+                SetActive(false);
                 throw;
             }
 
             if (_partOptions[0] == _partOptions[1])
             {
-                partChoiceWindow.SetActive(false);
+                SetActive(false);
                 throw new Exception($"Attempting to let the player choose two of the same part [{_partOptions[1]}]");
             }
 
@@ -150,6 +151,7 @@ namespace StarSalvager.UI.Scrapyard
                 SetUI(i, _partOptions[i]);
             }
 
+            SetActive(true);
         }
 
         private void InitButtons()
@@ -203,8 +205,15 @@ namespace StarSalvager.UI.Scrapyard
                 }
 
 
-                CheckForPartOverage();
+                if (HasOverage(out var parts))
+                {
+                    PresentPartOverage(parts);
+                    return;
+                }
+                
+                
                 PlayerDataManager.OnValuesChanged?.Invoke();
+                PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, partType);
 
                 CloseWindow();
             }
@@ -230,6 +239,7 @@ namespace StarSalvager.UI.Scrapyard
                 CloseWindow();
                 PlayerDataManager.AddGears(10);
                 RecordSelectedParts(-1);
+                PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, PART_TYPE.EMPTY);
             });
         }
 
@@ -244,8 +254,11 @@ namespace StarSalvager.UI.Scrapyard
 
         #endregion //Init
 
-        private void CheckForPartOverage()
+        private void PresentPartOverage(in PartData[] partDatas)
         {
+            titleText.text = "Discard a Part";
+            noPartSelectedOptionButton.gameObject.SetActive(false);
+            
             //--------------------------------------------------------------------------------------------------------//
 
             void FindAndDestroyPart(in PART_TYPE partType)
@@ -285,6 +298,37 @@ namespace StarSalvager.UI.Scrapyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+            for (int i = 0; i < partDatas.Length; i++)
+            {
+                var partData = partDatas[i];
+                var partType = (PART_TYPE)partData.Type;
+                var category = partType.GetCategory();
+
+                selectionUis[i].optionText.text = partType.GetRemoteData().name;
+                selectionUis[i].optionImage.sprite = partType.GetSprite();
+
+                selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
+                    
+                selectionUis[i].categoryImage.color = category.GetColor();
+                selectionUis[i].categoryText.text = category.GetCategoryName();
+
+                selectionUis[i].optionButton.onClick.RemoveAllListeners();
+                selectionUis[i].optionButton.onClick.AddListener(() =>
+                {
+                    FindAndDestroyPart(partType);
+                    
+                    PlayerDataManager.OnValuesChanged?.Invoke();
+                    PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, LastPicked);
+
+                    CloseWindow();
+                });
+            }
+        }
+
+        private bool HasOverage(out PartData[] partDatas)
+        {
+            partDatas = default;
+            
             var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
             currentParts.AddRange(PlayerDataManager.GetBotBlockDatas().OfType<PartData>());
 
@@ -300,41 +344,23 @@ namespace StarSalvager.UI.Scrapyard
                 if(parts.Count <= Globals.MaxPartTypeCount)
                     continue;
                 
-                partChoiceWindow.SetActive(true);
-                titleText.text = "Discard 1 Part";
-
                 var partOptions = parts
                     .Where(x => LastPicked != (PART_TYPE)x.Type)
                     .Take(2)
                     .ToArray();
 
-                for (int i = 0; i < partOptions.Length; i++)
-                {
-                    var partData = partOptions[i];
-                    var partType = (PART_TYPE)partData.Type;
-                    var category = partType.GetCategory();
-
-                    selectionUis[i].optionText.text = partType.GetRemoteData().name;
-                    selectionUis[i].optionImage.sprite = partType.GetSprite();
-
-                    selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
-                    
-                    selectionUis[i].categoryImage.color = category.GetColor();
-                    selectionUis[i].categoryText.text = category.GetCategoryName();
-
-                    selectionUis[i].optionButton.onClick.RemoveAllListeners();
-                    selectionUis[i].optionButton.onClick.AddListener(() =>
-                    {
-                        PartDetailsUI.ShowPartDetails(false, partData, null);
-                        FindAndDestroyPart(partType);
-                        partChoiceWindow.SetActive(false);
-                    });
-                }
-
-                break;
+                partDatas = partOptions;
+                return true;
             }
+
+            return false;
         }
 
+
+        public void SetActive(in bool state)
+        {
+            partChoiceWindow.SetActive(state);
+        }
 
         //Unity Editor
         //============================================================================================================//

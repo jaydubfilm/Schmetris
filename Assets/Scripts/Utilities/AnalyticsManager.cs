@@ -274,8 +274,9 @@ namespace StarSalvager.Utilities
                     var spentSilver = 0;
                     var spentGears = 0;
 
-                    var purchasedPatches = PlayerDataManager.PurchasedPatches;
                     Debug.Log("THIS NEEDS TO BE FIXED");
+                    //var purchasedPatches = PlayerDataManager.PurchasedPatches;
+
                     /*if (!purchasedPatches.IsNullOrEmpty())
                     {
                         foreach (var patchData in purchasedPatches)

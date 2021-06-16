@@ -5,12 +5,14 @@ using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using UnityEngine;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Puzzle.Data;
 using StarSalvager.Utilities.Puzzle.Structs;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.Utilities.Saving
 {
@@ -19,6 +21,7 @@ namespace StarSalvager.Utilities.Saving
         public static Action<PlayerLevelRemoteData.UnlockData> OnItemUnlocked;
         public static Action OnValuesChanged;
         public static Action OnCapacitiesChanged;
+        public static Action<PartAttachableFactory.PART_OPTION_TYPE, PART_TYPE> NewPartPicked;
 
         //Properties
         //====================================================================================================================//
@@ -316,6 +319,22 @@ namespace StarSalvager.Utilities.Saving
         public static void ClearAllPatches()=> PlayerRunData.ClearAllPatches();
         public static void RemovePatchAtIndex(in int index) => PlayerRunData.RemovePatchAtIndex(index);
 
+        public static void RemovePartPatchOption(in PART_TYPE partType) =>
+            PlayerRunData.RemovePartPatchOption(partType);
+        public static void GeneratePartPatchOptions()
+        {
+            var partsOnDrone = GetBotBlockDatas().OfType<PartData>();
+            var partsInStorage = GetCurrentPartsInStorage().OfType<PartData>();
+            
+            var parts = new List<PartData>(partsOnDrone);
+            parts.AddRange(partsInStorage);
+
+            var patchOptions = GetPatchOptionsForPurchase(
+                parts,
+                Constants.BIT_ORDER);
+            SetCurrentPatchOptions(patchOptions);
+        }
+
         #endregion //Patches
 
         //Player Resources
@@ -334,6 +353,19 @@ namespace StarSalvager.Utilities.Saving
         }
 
         #endregion //Player Resources
+
+        public static bool CanAfford(in int gears, in int silver)
+        {
+            return GetGears() >= gears && GetSilver() >= silver;
+        }
+        
+        public static void PurchaseItem(in int gears, in int silver, bool updateValuesChanged = true)
+        {
+            SubtractGears(gears, false);
+            SubtractSilver(silver, false);
+            
+            if (updateValuesChanged) OnValuesChanged?.Invoke();
+        }
         
         //Gears
         //============================================================================================================//
@@ -356,11 +388,12 @@ namespace StarSalvager.Utilities.Saving
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractGears(int amount)
+        public static void SubtractGears(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.SubtractGears(amount);
 
-            OnValuesChanged?.Invoke();
+            if (updateValuesChanged)
+                OnValuesChanged?.Invoke();
         }
 
         #endregion //Gears
@@ -386,10 +419,11 @@ namespace StarSalvager.Utilities.Saving
                 OnValuesChanged?.Invoke();
         }
 
-        public static void SubtractSilver(int amount)
+        public static void SubtractSilver(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.SubtractSilver(amount);
-            OnValuesChanged?.Invoke();
+            if (updateValuesChanged)
+                OnValuesChanged?.Invoke();
         }
 
         #endregion //Silver
@@ -751,6 +785,94 @@ namespace StarSalvager.Utilities.Saving
         #endregion //Save Data I/O
 
         //====================================================================================================================//
+        
+                //Part Patch Option Generation
+        //====================================================================================================================//
+        
+        #region PatchOptionGeneration
+
+        private static List<PartData> GetPatchOptionsForPurchase(in IEnumerable<PartData> partDatas, in BIT_TYPE[] categories,
+            in int count)
+        {
+            var outData = GetPatchOptionsForPurchase(partDatas, categories);
+            var get = Mathf.Min(outData.Count, count);
+            
+            return outData.GetRange(0, get);
+        }
+        private static List<PartData> GetPatchOptionsForPurchase(in IEnumerable<PartData> partDatas, in BIT_TYPE[] categories)
+        {
+            var outData = new List<PartData>();
+            foreach (var partData in partDatas)
+            {
+                var partType = (PART_TYPE)partData.Type;
+
+                if (partType == PART_TYPE.EMPTY) continue;
+
+                if (!categories.Contains(partType.GetCategory())) continue;
+                
+                var patchesCanPurchase = GetPatchOptionsForPurchase(partData);
+                //Don't want to present a part with no patch options
+                if(patchesCanPurchase.Patches.IsNullOrEmpty()) continue;
+                outData.Add(patchesCanPurchase);
+            }
+
+            return outData;
+        }
+
+        private static PartData GetPatchOptionsForPurchase(in PartData partData)
+        {
+            var patchesAvailableForPurchase = new PartData
+            {
+                Type = partData.Type,
+                Patches = new List<PatchData>()
+            };
+            
+            var patchTree = ((PART_TYPE) partData.Type).GetPatchTree();
+            if (patchTree.IsNullOrEmpty()) return patchesAvailableForPurchase;
+
+            foreach (var patchNodeJson in patchTree)
+            {
+                var patch = new PatchData
+                {
+                    Type = patchNodeJson.Type,
+                    Level = patchNodeJson.Level
+                };
+
+                //If the part already has the patch, don't display it again
+                if (partData.Patches.Contains(patch)) continue;
+                
+                //If the patch has no prerequisits, so its ready to be added
+                if(patchNodeJson.PreReqs.IsNullOrEmpty())
+                    patchesAvailableForPurchase.Patches.Add(patch);
+                else
+                {
+                    //Go through each pre-req to see if any are available
+                    foreach (var index in patchNodeJson.PreReqs)
+                    {
+                        var preReq = new PatchData
+                        {
+                            Type = patchTree[index].Type,
+                            Level = patchTree[index].Level
+                        };
+
+                        //If the part does not contain the patch, keep looking
+                        if (!partData.Patches.Contains(preReq)) continue;
+                        
+                        //Once any has been found, patch is ready to be considered
+                        patchesAvailableForPurchase.Patches.Add(patch);
+                        break;
+                    }
+                    
+                }
+            }
+
+            return patchesAvailableForPurchase;
+        }
+
+        #endregion //PatchOptionGeneration
+
+        //====================================================================================================================//
+        
         
     }
 }

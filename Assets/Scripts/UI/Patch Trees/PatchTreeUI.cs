@@ -25,6 +25,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 {
     public class PatchTreeUI : MonoBehaviour
     {
+        private const int PART_SCRAP_VALUE = 10;
+        
         //Properties
         //====================================================================================================================//
 
@@ -50,6 +52,32 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
        [SerializeField, Required, FoldoutGroup("Wreck Window")]
        [FormerlySerializedAs("patchOptionsContainer")] 
         private RectTransform partPatchOptionsContainer;
+
+        private RectTransform[] _partPatchOptionElements;
+
+        //Purchase Patch Window
+        //====================================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
+        private GameObject purchasePatchWindow;
+        [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
+        private Button purchasePatchButton;
+        [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
+        private TMP_Text patchNameText;
+        [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
+        private TMP_Text patchDetailsText;
+        
+
+        //Part Data
+        //====================================================================================================================//
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private TMP_Text partNameText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private TMP_Text partDetailsText;
+        
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private Button scrapPartButton;
+        private TMP_Text _scrapPartButtonText;
         
         //Patch Tree Data
         //====================================================================================================================//
@@ -65,11 +93,6 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         [FormerlySerializedAs("patchTreeElementPrefab")]
         [SerializeField, Required, BoxGroup("Patch Tree Window/Prefabs")]
         private PatchNodeElement patchNodeElementPrefab;
-        
-        [SerializeField, Required, FoldoutGroup("Patch Tree Window")]
-        private Button scrapPartButton;
-        [SerializeField, Required, FoldoutGroup("Patch Tree Window")]
-        private Button swapPartButton;
 
         private RectTransform[] _activeTiers;
         private PatchNodeElement[] _activeElements;
@@ -85,6 +108,9 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private RectTransform primaryPartsAreaTransform;
         [SerializeField, Required, FoldoutGroup("Drone Window")]
         private RectTransform secondaryPartsAreaTransform;
+        
+        [SerializeField, Required, FoldoutGroup("Drone Window")]
+        private Button swapPartButton;
 
         private Dictionary<BIT_TYPE, Image> _primaryPartImages;
         private Dictionary<BIT_TYPE, Image> _secondaryPartImages;
@@ -93,6 +119,10 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private List<PartData> _partsOnDrone;
         private List<PartData> _partsInStorage;
 
+
+        //====================================================================================================================//
+        
+        private (PART_TYPE partType, PatchData patchData) _selectedPatch;
         private (PART_TYPE type, bool inStorage) _selectedPart;
 
 
@@ -122,6 +152,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         private void OnEnable()
         {
+            PlayerDataManager.NewPartPicked += OnNewPartSelected;
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
             OnValuesChanged();
         }
@@ -134,6 +165,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         private void OnDisable()
         {
+            PlayerDataManager.NewPartPicked -= OnNewPartSelected;
             PlayerDataManager.OnValuesChanged -= OnValuesChanged;
         }
 
@@ -149,6 +181,10 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             launchButton.onClick.AddListener(LaunchPressed);
             
             scrapPartButton.onClick.AddListener(ScrapPartPressed);
+            _scrapPartButtonText = scrapPartButton.GetComponentInChildren<TMP_Text>();
+            
+            purchasePatchButton.onClick.AddListener(OnPurchasePatchPressed);
+            
             swapPartButton.onClick.AddListener(SwapPartPressed);
         }
 
@@ -208,65 +244,66 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         #region Init Wreck
 
-        public void InitWreck(in string wreckName, in Sprite wreckSprite)
+        private void GenerateUIElements()
         {
-            InitWreck(wreckName, wreckSprite, PlayerDataManager.CurrentPatchOptions);
+            SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
+            DrawDroneStorage();
         }
-        public void InitWreck(in string wreckName, in Sprite wreckSprite, in IEnumerable<PartData> partPatchOptions)
+        
+        public void InitWreck(in string wreckName, in Sprite wreckSprite/*, in IEnumerable<PartData> partPatchOptions*/)
         {
             //--------------------------------------------------------------------------------------------------------//
             
-            RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
+            void TryShowPartChoice()
             {
-                var temp = Instantiate(partPatchOptionPrefab, container, false);
-                temp.Init(partData);
+                PartChoice.SetActive(PlayerDataManager.CanChoosePart);
+            
+                if (!PlayerDataManager.CanChoosePart) 
+                    return;
+            
+                var notYetStarted = PlayerDataManager.HasRunStarted();
 
-                return (RectTransform) temp.transform;
+                if (!notYetStarted)
+                {
+                    PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
+                    PlayerDataManager.ClearAllPatches();
+                }
+                else
+                {
+                    PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+                }
             }
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            //Clean up anything before we show new data
+            CleanPatchTreeUI();
             TryShowPartChoice();
 
             wreckNameText.text = wreckName;
             wreckImage.sprite = wreckSprite;
+            
+            if (PlayerDataManager.CanChoosePart) 
+                return;
 
-            if (!partPatchOptions.IsNullOrEmpty())
-            {
-                foreach (var partPatchOption in partPatchOptions)
-                {
-                    CreatePartNodeElement(partPatchOptionsContainer, partPatchOption);
-                }
-            }
-
-            swapPartButton.gameObject.SetActive(false);
-            DrawDroneStorage();
+            GenerateUIElements();
         }
 
-        private void TryShowPartChoice()
+        private void OnNewPartSelected(PartAttachableFactory.PART_OPTION_TYPE optionType, PART_TYPE partType)
         {
-            if (!PlayerDataManager.CanChoosePart) 
-                return;
-            
-            var notYetStarted = PlayerDataManager.HasRunStarted();
-
-            if (!notYetStarted)
+            switch (optionType)
             {
-                PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
-                PlayerDataManager.ClearAllPatches();
+                case PartAttachableFactory.PART_OPTION_TYPE.InitialSelection:
+                    break;
+                case PartAttachableFactory.PART_OPTION_TYPE.Any:
+                    PlayerDataManager.GeneratePartPatchOptions();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(optionType), optionType, null);
             }
-            else
-            {
-                PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
 
-                var parts = new List<PartData>(_partsOnDrone);
-                parts.AddRange(_partsInStorage);
-                
-                var patchOptions = GetPatchOptionsForPurchase(
-                    parts, 
-                    Constants.BIT_ORDER, 
-                    Random.Range(1,5));
-                PlayerDataManager.SetCurrentPatchOptions(patchOptions);
-            }
+            CheckForPartAvailability();
+            GenerateUIElements();
         }
 
         #endregion //Init Wreck
@@ -303,12 +340,13 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 return temp;
             }
 
-            PatchNodeElement CreatePatchNodeElement(in RectTransform container, in PART_TYPE type, in PatchData patchData,
+            PatchNodeElement CreatePatchNodeElement(in RectTransform container, in PART_TYPE type, 
+                in PatchData patchData,
+                in bool purchased,
                 in bool unlocked)
             {
                 var temp = Instantiate(patchNodeElementPrefab, container, false);
-                temp.Init(type, patchData, unlocked);
-                //TODO Fill with patchData
+                temp.Init(type, patchData, purchased, unlocked, OnPatchPressed);
 
                 return temp;
             }
@@ -332,7 +370,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                     _lineContainer.SetSiblingIndex(0);
                 }
 
-                var drawDottedLine = ShouldDrawDashedLine(partData, endElement.PatchData);
+                var drawDottedLine = ShouldDrawDashedLine(partData, endElement.patchData);
 
                 var image = !drawDottedLine
                     ? UILineCreator.DrawConnection(_lineContainer, startElement.transform, endElement.transform,
@@ -344,23 +382,23 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                 return image.transform as RectTransform;
             }
 
-            bool HasUnlockedPatch(in List<PatchNodeJson> patchTree, in PartData currentPart, in PatchData patchToCheck)
+            (bool hasPurchased, bool hasUnlocked) HasUnlockedPatch(in List<PatchNodeJson> patchTree, in PartData currentPart, in PatchData patchToCheck)
             {
                 var type = currentPart.Type;
                 
                 //Determine if patch has been purchased
-                if (currentPart.Patches.Contains(patchToCheck)) return true;
+                if (currentPart.Patches.Contains(patchToCheck)) return (true, true);
 
                 var options = PlayerDataManager.CurrentPatchOptions;
-                if (options.IsNullOrEmpty()) return false;
+                if (options.IsNullOrEmpty()) return (false, false);
 
                 var part = options.FirstOrDefault(x => x.Type == type);
-                if (part.Patches.IsNullOrEmpty()) return false;
+                if (part.Patches.IsNullOrEmpty()) return (false, false);
                 
                 //Determine if patch can be purchased
                 var canPurchase = part.Patches.Contains(patchToCheck);
 
-                return canPurchase;
+                return (false, canPurchase);
                 //TODO Determine if patch is missing pre-reqs
             }
             
@@ -400,11 +438,11 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
                     Type = patchTreeData[i].Type,
                     Level = patchTreeData[i].Level
                 };
-                var unlocked = HasUnlockedPatch(patchTreeData, partData, patchData);
+                var (hasPurchased, hasUnlocked) = HasUnlockedPatch(patchTreeData, partData, patchData);
                 
 
                 var tier = patchTreeData[i].Tier;
-                _activeElements[i + 1] = CreatePatchNodeElement(_activeTiers[tier], partType, patchData, unlocked);
+                _activeElements[i + 1] = CreatePatchNodeElement(_activeTiers[tier], partType, patchData, hasPurchased, hasUnlocked);
 
             }
 
@@ -472,6 +510,55 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         #endregion //Patch Tree Functions
 
+        //Patch Purchase Functions
+        //====================================================================================================================//
+
+        #region Patch Purchase Functions
+
+        private void SetupPurchaseOptions(in IEnumerable<PartData> partPatchOptions)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
+            {
+                var temp = Instantiate(partPatchOptionPrefab, container, false);
+                temp.Init(partData, OnPartPressed, OnPatchPressed);
+
+                return (RectTransform) temp.transform;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (partPatchOptions.IsNullOrEmpty()) 
+                return;
+            
+            var optionsArray = partPatchOptions.ToArray();
+            _partPatchOptionElements = new RectTransform[optionsArray.Length];
+            for (var i = 0; i < optionsArray.Length; i++)
+            {
+                var partOption = optionsArray[i];
+                _partPatchOptionElements[i] = CreatePartNodeElement(partPatchOptionsContainer, partOption);
+            }
+        }
+        
+        
+
+        private void CleanPurchaseOptions()
+        {
+            if (_partPatchOptionElements.IsNullOrEmpty())
+                return;
+
+            for (var i = _partPatchOptionElements.Length - 1; i >= 0; i--)
+            {
+                Destroy(_partPatchOptionElements[i].gameObject);
+            }
+
+            _partPatchOptionElements = new RectTransform[0];
+        }
+
+        #endregion //Patch Purchase Functions
+
         //Drone Functions
         //====================================================================================================================//
 
@@ -479,7 +566,24 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         private void DrawDroneStorage()
         {
+            //Reset the drone Images
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var emptyPartSprite = PART_TYPE.EMPTY.GetSprite();
+            foreach (var partImage in _primaryPartImages)
+            {
+                partImage.Value.sprite = emptyPartSprite;
+            }
+            foreach (var partImage in _secondaryPartImages)
+            {
+                partImage.Value.sprite = emptyPartSprite;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            
             if(_partsOnDrone.IsNullOrEmpty()) return;
+            
             foreach (var partData in _partsOnDrone)
             {
                 var partType = (PART_TYPE) partData.Type;
@@ -540,80 +644,230 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             }
         }
 
-
         private void ScrapPartPressed()
         {
-            throw new NotImplementedException();
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void ScrapPart()
+            {
+                var partTypeInt = (int) _selectedPart.type;
+                //Find the part on Bot/in Storage & Destroy Part
+                if (_selectedPart.inStorage)
+                {
+                    var index = _partsInStorage.FindIndex(x => x.Type == partTypeInt);
+                   
+                    var partData = _partsInStorage[index];
+                    partData.Type = (int)PART_TYPE.EMPTY;
+                    partData.Patches = new List<PatchData>();
+                    _partsInStorage[index] = partData;
+                }
+                else
+                {
+                    var index = _partsOnDrone.FindIndex(x => x.Type == partTypeInt);
+                    
+                    var partData = _partsOnDrone[index];
+                    partData.Type = (int)PART_TYPE.EMPTY;
+                    partData.Patches = new List<PatchData>();
+                    _partsOnDrone[index] = partData;
+                    
+                    //If i have a part available in storage I should attempt to auto equip it
+                }
+                //Add currency to player account
+                PlayerDataManager.AddGears(PART_SCRAP_VALUE, false);
+                
+                //If the player destroyed something on the Drone, try and add something from storage
+                if(!_selectedPart.inStorage)
+                    CheckForPartAvailability(false);
+                
+                SetSelectedPart(PART_TYPE.EMPTY, false);
+                SetPartText(string.Empty, string.Empty);
+                CleanPatchTree();
+                
+                //Check if there are any Patches available for the part just scrapped. Remove & Update the UI
+                if (PlayerDataManager.CurrentPatchOptions.Any(x => x.Type == partTypeInt))
+                {
+                    PlayerDataManager.RemovePartPatchOption((PART_TYPE)partTypeInt);
+                    CleanPurchaseOptions();
+                    SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
+                }
+
+                
+                //Update Values
+                SaveBlockData();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            //TODO Determine the value of the part
+            var partName = _selectedPart.type.GetRemoteData().name;
+            
+            Alert.ShowAlert($"Scrap {partName}", 
+                $"Are you sure you want to scrap {partName} for {PART_SCRAP_VALUE}{TMP_SpriteHelper.GEAR_ICON}?",
+                "Scrap", "Cancel",
+                answer =>
+                {
+                    if (!answer)
+                        return;
+
+                    ScrapPart();
+                });
         }
 
         private void SwapPartPressed()
         {
             //--------------------------------------------------------------------------------------------------------//
             
-            void ListShuffles(in PartData _partData, ref List<PartData> fromList, ref List<PartData> toList)
+            void ListShuffles(in int targetPartIndex, ref List<PartData> fromList, ref List<PartData> toList)
             {
                 var category = _selectedPart.type.GetCategory();
+                var coordinate = PlayerDataManager.GetCoordinateForCategory(category);
 
                 //Get the mirrored part on the bot
-                var otherPartData = toList.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == category);
+                var otherPartIndex = toList.FindIndex(x => ((PART_TYPE) x.Type).GetCategory() == category);
+                var targetPartData = fromList[targetPartIndex];
+                var otherPartData = toList[otherPartIndex];
+                //var tempContainer = targetPartData;
+
+                targetPartData.Coordinate = coordinate;
+                otherPartData.Coordinate = coordinate;
+
                 //Store that part but also remove it from that list
-                toList.Remove(otherPartData);
+                toList[otherPartIndex] = targetPartData;
                 
                 //Add the new part into the list
-                toList.Add(_partData);
-                fromList.Remove(_partData);
+                fromList[targetPartIndex] = otherPartData;
+                //fromList.Remove(_partData);
 
                 //Add old part in old list
-                fromList.Add(otherPartData);
+                //fromList.Add(otherPartData);
             }
 
             //--------------------------------------------------------------------------------------------------------//
             
             if (_selectedPart.type == PART_TYPE.EMPTY) throw new Exception();
 
-            var intPartType = (int) _selectedPart.type;
-            var partData = _selectedPart.inStorage
-                ? _partsInStorage.FirstOrDefault(x => x.Type == intPartType)
-                : _partsOnDrone.FirstOrDefault(x => x.Type == intPartType);
+            var (index, inStorage) = FindSelectedPartIndex(_selectedPart.type);
 
-            if (_selectedPart.inStorage)
+            if (inStorage)
             {
-                ListShuffles(partData, ref _partsInStorage, ref _partsOnDrone);
+                ListShuffles(index, ref _partsInStorage, ref _partsOnDrone);
                 _selectedPart.inStorage = false;
             }
             else
             {
-                ListShuffles(partData, ref _partsOnDrone, ref _partsInStorage);
+                ListShuffles(index, ref _partsOnDrone, ref _partsInStorage);
                 _selectedPart.inStorage = true;
             }
 
             SaveBlockData();
         }
 
+        /// <summary>
+        /// Callback alternative for the Part Patch Options elements, where they do not know the location of the part.
+        /// </summary>
+        /// <param name="partType"></param>
+        /// <exception cref="Exception"></exception>
+        private void OnPartPressed(PART_TYPE partType)
+        {
+            //Determine if the part is in storage or on the bot
+            if (partType == PART_TYPE.EMPTY)
+                throw new Exception();
+
+            var category = partType.GetCategory();
+            var temp = (int)partType;
+
+            if (_partsOnDrone.Any(x => x.Type == temp))
+                OnPartPressed(category, false);
+            else if (_partsInStorage.Any(x => x.Type == temp))
+                OnPartPressed(category, true);
+            else
+                throw new Exception();
+        }
         private void OnPartPressed(in BIT_TYPE category, in bool inStorage)
         {
+            SetSelectedPatch(PART_TYPE.EMPTY, default);
+            
             var cat = category;
-            //var typeInt = (int)partType;
+            var partType = PART_TYPE.EMPTY;
+            
+
             var partData = inStorage
-                ? _partsInStorage.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == cat)
-                : _partsOnDrone.FirstOrDefault(x => ((PART_TYPE)x.Type).GetCategory() == cat);
+                ? _partsInStorage.FirstOrDefault(x => ((PART_TYPE) x.Type).GetCategory() == cat)
+                : _partsOnDrone.FirstOrDefault(x => ((PART_TYPE) x.Type).GetCategory() == cat);
 
-            var partType = (PART_TYPE)partData.Type;
-            
-            //TODO Show this part on the PatchTree
+            //If the player hasn't actually selected the core, and the default value is providing a false positive, check
+            if ((PART_TYPE) partData.Type == PART_TYPE.CORE && category == PART_TYPE.CORE.GetCategory() ||
+                (PART_TYPE) partData.Type != PART_TYPE.CORE)
+                partType = (PART_TYPE) partData.Type;
+
+            if (partType == PART_TYPE.EMPTY)
+            {
+                SetSelectedPart(PART_TYPE.EMPTY, default);
+                SetPartText(string.Empty, string.Empty);
+                CleanPatchTree();
+                return;
+            }
+
+            //Show this part on the PatchTree
             GeneratePatchTree(partData);
-            
-            //TODO Check if part can be swapped, show button if true
-            var canSwap = PartCanBeSwapped(partType);
-            swapPartButton.gameObject.SetActive(canSwap);
 
-            _selectedPart = (partType, inStorage);
+            SetSelectedPart(partType, inStorage);
+            _scrapPartButtonText.text = $"Scrap Part {PART_SCRAP_VALUE}{TMP_SpriteHelper.GEAR_ICON}";
+
+            SetPartText(partType.GetRemoteData().name, partData.GetPartDetails());
         }
-        private void OnPatchPressed()
+
+        private void OnPatchPressed(PART_TYPE partType, PatchData patchData)
         {
-            throw new NotImplementedException();
+            //Present the purchase option window to the player
+            SetSelectedPatch(partType, patchData);
+            //Ensure that when a loose patch is selected, that we change which part its selected for
+            SetSelectedPart(partType, FindSelectedPart(partType).inStorage);
+            
+            
+            //TODO Highlight the patch selected on tree & on patch purchase 
+            
+            
+            
+            //Preview the changes for purchasing this patch
+            var partData = FindSelectedPart(partType).partData;
+            var partRemoteData = partType.GetRemoteData();
+            
+            SetPartText(partRemoteData.name,
+                partData.GetPartDetailsPatchPreview(partRemoteData, patchData));
         }
-        
+
+        private void OnPurchasePatchPressed()
+        {
+            //Get the price of Patch
+            var (gears, silver) = _selectedPatch.patchData.GetPatchCost();
+            //Check that the player can afford the patch
+            if (!PlayerDataManager.CanAfford(gears, silver))
+                throw new Exception();
+            
+            //Remove the cost of Patch
+            PlayerDataManager.PurchaseItem(gears, silver, false);
+            
+            //Add the patch to the Selected Part
+            var (index, inStorage) = FindSelectedPartIndex(_selectedPatch.partType);
+            
+            if(inStorage)
+                _partsInStorage[index].Patches.Add(_selectedPatch.patchData);
+            else
+                _partsOnDrone[index].Patches.Add(_selectedPatch.patchData);
+            
+            //Remove the PartPatchOption
+            PlayerDataManager.RemovePartPatchOption(_selectedPatch.partType);
+            
+            //Redraw everything
+            CleanPatchTreeUI();
+            SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
+
+            //Update the Datas
+            SaveBlockData();
+        }
+
         #endregion //On Button Pressed Functions
 
         //Extra Functions
@@ -629,7 +883,127 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             return _partsInStorage.Any(x => ((PART_TYPE) x.Type).GetCategory() == category) &&
                 _partsOnDrone.Any(x => ((PART_TYPE) x.Type).GetCategory() == category);
         }
+
+        private void CleanPatchTreeUI()
+        {
+            //Deselect part
+            SetSelectedPart(PART_TYPE.EMPTY, false);
+            //Deselect Patch
+            SetSelectedPatch(PART_TYPE.EMPTY, default);
+            //Clear Text
+            SetPartText(string.Empty, string.Empty);
+            SetPatchText(string.Empty, string.Empty);
+            //Clean Patch Tree
+            CleanPatchTree();
+            //Clean the Patch Purchase Options
+            CleanPurchaseOptions();
+        }
+
+        private void SetSelectedPart(in PART_TYPE partType, in bool inStorage)
+        {
+            _selectedPart = (partType, inStorage);
+
+            var partIsEmpty = partType == PART_TYPE.EMPTY;
+            //Check if part can be swapped, show button if true
+            var canSwap = !partIsEmpty && PartCanBeSwapped(partType);
+            
+            swapPartButton.gameObject.SetActive(canSwap);
+            //Can't scrap empty parts nor the Core
+            scrapPartButton.gameObject.SetActive(partType != PART_TYPE.CORE && !partIsEmpty);
+        }
+
+        private void SetPartText(in string partName, in string partDetails)
+        {
+            partNameText.text = partName;
+            partDetailsText.text = partDetails;
+        }
+
+
+        private void SetSelectedPatch(in PART_TYPE partType, in PatchData patchData)
+        {
+            _selectedPatch = (partType, patchData);
+            
+            var partIsEmpty = partType == PART_TYPE.EMPTY;
+            purchasePatchWindow.SetActive(!partIsEmpty);
+
+            if (partIsEmpty)
+            {
+                SetPatchText(string.Empty, string.Empty);
+                return;
+            }
+
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchData.Type);
+
+            var (gears, silver) = patchData.GetPatchCost();
+
+            //Determine whether or not the Patch is affordable
+            var canAffordPatch = PlayerDataManager.CanAfford(gears, silver);
+            
+            //Set the purchase button active from there
+            purchasePatchButton.interactable = canAffordPatch;
+
+            SetPatchText(
+                $"{patchRemoteData.name} {Mathfx.ToRoman(patchData.Level + 1)} - " +
+                $"{gears}{TMP_SpriteHelper.GEAR_ICON}" +
+                $"{(silver > 0 ? $" {silver}{TMP_SpriteHelper.SILVER_ICON}" : string.Empty)}",
+                patchRemoteData.description);
+
+            if (_selectedPart.type == partType)
+                return;
+            
+            var partData = FindSelectedPart(partType).partData;
+            GeneratePatchTree(partData);
+        }
+
+        private void SetPatchText(in string patchName, in string patchDetails)
+        {
+            patchNameText.text = patchName;
+            patchDetailsText.text = patchDetails;
+        }
+
+        private (PartData partData, bool inStorage) FindSelectedPart(in PART_TYPE partType)
+        {
+            //Determine if the part is in storage or on the bot
+            if (partType == PART_TYPE.EMPTY)
+                throw new Exception();
+
+            var temp = (int)partType;
+
+            var index = _partsOnDrone.FindIndex(x => x.Type == temp);
+
+            //Check the drone parts first
+            if (index >= 0) return (_partsOnDrone[index], false);
+            
+            index = _partsInStorage.FindIndex(x => x.Type == temp);
+            
+            //Then check the parts in storage
+            if (index >= 0) return (_partsInStorage[index], true);
+
+            //If we couldn't find parts, something is wrong
+            throw new Exception();
+        }
         
+        private (int index, bool inStorage) FindSelectedPartIndex(in PART_TYPE partType)
+        {
+            //Determine if the part is in storage or on the bot
+            if (partType == PART_TYPE.EMPTY)
+                throw new Exception();
+
+            var temp = (int)partType;
+
+            var index = _partsOnDrone.FindIndex(x => x.Type == temp);
+
+            //Check the drone parts first
+            if (index >= 0) return (index, false);
+            
+            index = _partsInStorage.FindIndex(x => x.Type == temp);
+            
+            //Then check the parts in storage
+            if (index >= 0) return (index, true);
+
+            //If we couldn't find parts, something is wrong
+            throw new Exception();
+        }
 
         #endregion //Extra Functions
 
@@ -637,6 +1011,38 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         //====================================================================================================================//
         
         #region Data Functions
+
+        private void CheckForPartAvailability(in bool updateValues = true)
+        {
+            bool changesMade = false;
+            
+            foreach (var bitType in Constants.BIT_ORDER)
+            {
+                if(bitType == BIT_TYPE.GREEN) continue;
+                
+                //Check if the drone has a part with category bitType
+                if(_partsOnDrone.Any(x => ((PART_TYPE)x.Type).GetCategory() == bitType)) continue;
+                
+                //Check if there is an option in storage that could be equipped
+                if(_partsInStorage.All(x => ((PART_TYPE) x.Type).GetCategory() != bitType)) continue;
+                
+                var partIndex = _partsInStorage.FindIndex(x => ((PART_TYPE)x.Type).GetCategory() == bitType);
+                
+                var partData = _partsInStorage[partIndex];
+                _partsInStorage.RemoveAt(partIndex);
+
+                partData.Coordinate = PlayerDataManager.GetCoordinateForCategory(bitType);
+
+                var droneIndex = _partsOnDrone.FindIndex(x => x.Coordinate == partData.Coordinate);
+                _partsOnDrone[droneIndex] = partData;
+                changesMade = true;
+            }
+
+            if (changesMade && updateValues)
+            {
+                SaveBlockData();
+            }
+        }
 
         private void UpdateBlockData()
         {
@@ -673,91 +1079,6 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         }
 
         #endregion //Data Functions
-
-        //Part Patch Option Generation
-        //====================================================================================================================//
-        
-        #region PatchOptionGeneration
-
-        private List<PartData> GetPatchOptionsForPurchase(in IEnumerable<PartData> partDatas, in BIT_TYPE[] categories,
-            in int count)
-        {
-            var outData = GetPatchOptionsForPurchase(partDatas, categories);
-            var get = Mathf.Min(outData.Count, count);
-            
-            return outData.GetRange(0, get);
-        }
-        private List<PartData> GetPatchOptionsForPurchase(in IEnumerable<PartData> partDatas, in BIT_TYPE[] categories)
-        {
-            var outData = new List<PartData>();
-            foreach (var partData in partDatas)
-            {
-                var partType = (PART_TYPE)partData.Type;
-
-                if (partType == PART_TYPE.EMPTY) continue;
-
-                if (!categories.Contains(partType.GetCategory())) continue;
-                
-                var patchesCanPurchase = GetPatchOptionsForPurchase(partData);
-                //Don't want to present a part with no patch options
-                if(patchesCanPurchase.Patches.IsNullOrEmpty()) continue;
-                outData.Add(patchesCanPurchase);
-            }
-
-            return outData;
-        }
-
-        private PartData GetPatchOptionsForPurchase(in PartData partData)
-        {
-            var patchesAvailableForPurchase = new PartData
-            {
-                Type = partData.Type,
-                Patches = new List<PatchData>()
-            };
-            
-            var patchTree = ((PART_TYPE) partData.Type).GetPatchTree();
-            if (patchTree.IsNullOrEmpty()) return patchesAvailableForPurchase;
-
-            foreach (var patchNodeJson in patchTree)
-            {
-                var patch = new PatchData
-                {
-                    Type = patchNodeJson.Type,
-                    Level = patchNodeJson.Level
-                };
-
-                //If the part already has the patch, don't display it again
-                if (partData.Patches.Contains(patch)) continue;
-                
-                //If the patch has no prerequisits, so its ready to be added
-                if(patchNodeJson.PreReqs.IsNullOrEmpty())
-                    patchesAvailableForPurchase.Patches.Add(patch);
-                else
-                {
-                    //Go through each pre-req to see if any are available
-                    foreach (var index in patchNodeJson.PreReqs)
-                    {
-                        var preReq = new PatchData
-                        {
-                            Type = patchTree[index].Type,
-                            Level = patchTree[index].Level
-                        };
-
-                        //If the part does not contain the patch, keep looking
-                        if (!partData.Patches.Contains(preReq)) continue;
-                        
-                        //Once any has been found, patch is ready to be considered
-                        patchesAvailableForPurchase.Patches.Add(patch);
-                        break;
-                    }
-                    
-                }
-            }
-
-            return patchesAvailableForPurchase;
-        }
-
-        #endregion //PatchOptionGeneration
         
         //Unity Editor
         //====================================================================================================================//
@@ -766,7 +1087,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
 #if UNITY_EDITOR
 
-        [Button, DisableInEditorMode]
+        /*[Button, DisableInEditorMode]
         private void TestPartPatchOptions()
         {
             var partDatas = new[]
@@ -803,7 +1124,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             };
 
             InitWreck("Test Wreck", null, partDatas);
-        }
+        }*/
 
         [Button, DisableInEditorMode]
         private void TestGunPatchTree()

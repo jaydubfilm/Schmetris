@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
@@ -21,7 +22,8 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
 
         public bool Unlocked { get; private set; }
 
-        public PatchData PatchData;
+        public PatchData patchData;
+        private PART_TYPE _partType;
 
         public void Init(in PART_TYPE partType)
         {
@@ -30,15 +32,28 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
             Unlocked = true;
         }
 
-        public void Init(in PART_TYPE partType, in PatchData patchData, bool unlocked)
+        public void Init(in PART_TYPE partType, in PatchData patchData,bool hasPurchased, bool unlocked, Action<PART_TYPE, PatchData> onPressedCallback)
         {
             image.sprite = patchSprite;
             image.color = partType.GetCategory().GetColor();
 
-            button.interactable = unlocked;
+            //If the player has already purchased this patch, show it solid, but not interactable
+            button.enabled = !hasPurchased;
+            if(!hasPurchased)
+                button.interactable = unlocked;
+            
             Unlocked = unlocked;
 
-            PatchData = patchData;
+            _partType = partType;
+            this.patchData = patchData;
+
+            if (!unlocked)
+                return;
+            
+            button.onClick.AddListener(() =>
+            {
+                onPressedCallback?.Invoke(_partType, this.patchData);
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
@@ -16,27 +17,43 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         private PatchOptionUIElement patchOptionPrefab;
         
         [SerializeField, Required]
-        private Image partImage;
+        private Button partButton;
+        [SerializeField, Required]
+        private Image partButtonImage;
         [SerializeField, Required]
         private RectTransform patchOptionsContainer;
 
-        public void Init(in PartData partData)
+        private PART_TYPE _data;
+
+        public void Init(in PartData partData, Action<PART_TYPE> onPartSelected, Action<PART_TYPE, PatchData> onPatchSelected)
         {
-            Init((PART_TYPE) partData.Type, partData.Patches);
+            Init((PART_TYPE) partData.Type, partData.Patches, onPartSelected, onPatchSelected);
         }
-        public void Init(in PART_TYPE partType, in List<PatchData> patches)
+        public void Init(in PART_TYPE partType, in List<PatchData> patches, Action<PART_TYPE> onPartSelected, Action<PART_TYPE, PatchData> onPatchSelected)
         {
-            void CreatePatchOption(in PatchData patchData)
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void CreatePatchOption(in PART_TYPE type, in PatchData patchData)
             {
                 var temp = Instantiate(patchOptionPrefab, patchOptionsContainer, false);
-                temp.Init(patchData);
+                temp.Init(type, patchData, onPatchSelected);
             }
+
+            //--------------------------------------------------------------------------------------------------------//
             
-            partImage.sprite = partType.GetSprite();
+            _data = partType;
+            
+            partButton.onClick.AddListener(() =>
+            {
+                onPartSelected?.Invoke(_data);
+            });
+            
+            partButtonImage.sprite = partType.GetSprite();
 
             foreach (var patchData in patches)
             {
-                CreatePatchOption(patchData);
+                CreatePatchOption(partType, patchData);
             }
             
             LayoutRebuilder.MarkLayoutForRebuild(patchOptionsContainer);

@@ -67,8 +67,9 @@ namespace StarSalvager.Utilities.Extensions
         public static IReadOnlyDictionary<PATCH_TYPE, float> GetPatchMultipliers(this IEnumerable<PatchData> patches, params PATCH_TYPE[] patchTypes)
         {
             var outData = new Dictionary<PATCH_TYPE, float>();
-            
-            var patchDatas = patches as PatchData[] ?? patches.ToArray();
+
+
+            var patchDatas = patches == null ? new PatchData[0] : patches.ToArray();
             foreach (var patchType in patchTypes)
             {
                 if(outData.ContainsKey(patchType))

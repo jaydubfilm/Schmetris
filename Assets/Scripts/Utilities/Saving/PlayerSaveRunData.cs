@@ -106,8 +106,8 @@ namespace StarSalvager.Utilities.Saving
         public IReadOnlyList<PartData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
         private List<PartData> _currentPatchOptions;
-        [JsonProperty]
-        private List<PartData> _wreckPatchOptions;
+        /*[JsonProperty]
+        private List<PartData> _wreckPatchOptions;*/
 
         #endregion //Properties
 
@@ -294,24 +294,31 @@ namespace StarSalvager.Utilities.Saving
         public void SetCurrentPatchOptions(in IEnumerable<PartData> partPatches)
         {
             _currentPatchOptions = new List<PartData>(partPatches);
-            _wreckPatchOptions = new List<PartData>(partPatches);
+            //_wreckPatchOptions = new List<PartData>(partPatches);
         }
 
-        public void ClearAllPatches()
-        {
-            _currentPatchOptions.Clear();
-        }
+        public void ClearAllPatches()=>_currentPatchOptions.Clear();
 
-        public void RemovePatchAtIndex(in int index)
+        public void RemovePatchAtIndex(in int index) => throw new NotImplementedException();
+        
+        public void RemovePartPatchOption(in PART_TYPE partType)
         {
+            if (partType == PART_TYPE.EMPTY) throw new ArgumentException();
+            
+            var temp = (int) partType;
+            var index = _currentPatchOptions.FindIndex(x => x.Type == temp);
+
+            if (index < 0) throw new ArgumentException();
+
             _currentPatchOptions.RemoveAt(index);
         }
 
         public List<PartData> GetPurchasedPatches()
         {
-            return _wreckPatchOptions.IsNullOrEmpty()
+            throw new NotImplementedException();
+            /*return _wreckPatchOptions.IsNullOrEmpty()
                 ? null
-                : new List<PartData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));
+                : new List<PartData>(_wreckPatchOptions.Where(x => !_currentPatchOptions.Contains(x)));*/
         }
 
         #endregion //Patches
