@@ -1,0 +1,19 @@
+﻿.flex-horizontal IntegerField{
+    flex-grow: 1;
+    align-items: flex-start;
+    min-height: 25px;
+}
+
+.flex-horizontal IntegerField Label{
+    min-width: 45px;
+}
+
+.flex-horizontal FloatField{
+    flex-grow: 1;
+    align-items: flex-start;
+    min-height: 25px;
+}
+
+.flex-horizontal FloatField Label{
+    min-width: 45px;
+}

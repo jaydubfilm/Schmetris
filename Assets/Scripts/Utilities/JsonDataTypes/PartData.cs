@@ -17,18 +17,18 @@ namespace StarSalvager.Utilities.JsonDataTypes
 
         public int Type { get; set; }
 
-        public PatchData[] Patches { get; set; }
+        public List<PatchData> Patches { get; set; }
 
         public PartData(in PartData partData)
         {
             Coordinate = partData.Coordinate;
             Type = partData.Type;
-            Patches = new List<PatchData>(partData.Patches).ToArray();
+            Patches = new List<PatchData>(partData.Patches);
         }
         
         public void AddPatch(in PatchData patchData)
         {
-            for (int i = 0; i < Patches.Length; i++)
+            for (int i = 0; i < Patches.Count; i++)
             {
                 if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
                     continue;

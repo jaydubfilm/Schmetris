@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IPointerEnterHandler, IPointerExitHandler
     {
         private static DroneDesignUI _droneDesignUI;
@@ -17,6 +18,18 @@ namespace StarSalvager.UI.Scrapyard
         private RectTransform partDragImageTransform;
 
         private Image _damageImage;
+        
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
+
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
 
         //============================================================================================================//
 
@@ -55,7 +68,7 @@ namespace StarSalvager.UI.Scrapyard
             if (!(data.blockData is PartData partData))
                 return;
 
-            _droneDesignUI.ShowPartDetails(true, partData, transform);
+            PartDetailsUI.ShowPartDetails(true, partData, transform);
             
         }
 
@@ -64,7 +77,7 @@ namespace StarSalvager.UI.Scrapyard
             if (!(data.blockData is PartData))
                 return;
 
-            _droneDesignUI.ShowPartDetails(false, new PartData(), null);
+            PartDetailsUI.ShowPartDetails(false, new PartData(), null);
         }
 
         //============================================================================================================//

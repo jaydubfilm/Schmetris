@@ -9,8 +9,9 @@ using StarSalvager.Values;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class StorageUI : MonoBehaviour, IHasHintElement
     {
 
@@ -154,7 +155,7 @@ namespace StarSalvager.UI.Scrapyard
 #endif*/
     }
 
-    [System.Serializable]
+    [System.Serializable, Obsolete]
     public class StorageUIElementScrollView : UIElementContentScrollView<StorageUIElement, TEST_Storage>
     {
     }

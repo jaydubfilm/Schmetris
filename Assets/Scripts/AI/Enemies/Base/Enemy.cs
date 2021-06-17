@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Recycling;
 using UnityEngine;
 using StarSalvager.Factories;
@@ -12,7 +11,6 @@ using StarSalvager.Audio;
 using StarSalvager.Audio.Enemies;
 using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
-using StarSalvager.Projectiles;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;

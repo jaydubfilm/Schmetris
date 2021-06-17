@@ -1,0 +1,7 @@
+﻿.flex-horizontal {
+    /* Populates the elements in this container horizontally. */
+    flex-direction: row;
+    /* Makes the content of the container wrap when resized. */
+    flex-wrap: wrap;
+}
+

@@ -5,7 +5,6 @@ using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.SceneManagement;
 using StarSalvager.Values;
 using StarSalvager.Cameras.Data;
-using StarSalvager.Utilities;
 using StarSalvager.Utilities.UI;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;

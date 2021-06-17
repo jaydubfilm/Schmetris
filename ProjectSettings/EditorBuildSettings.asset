@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/_Scenes/MainMenuScene.unity
     guid: 4684fd8ddcb614949b17eea53beef826
   - enabled: 1
-    path: Assets/_Scenes/ScrapyardScene.unity
+    path: Assets/_Scenes/WreckyardScene.unity
     guid: 5f9eb5e23d1bf604190b26d1137e9939
   - enabled: 1
     path: Assets/_Scenes/LevelScene.unity

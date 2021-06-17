@@ -22,8 +22,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
  {
+     [Obsolete]
     public class DroneDesignUI : MonoBehaviour
     {
         public bool CanAffordRepair { get; private set; }
@@ -74,7 +75,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //====================================================================================================================//
         
-        [SerializeField, FoldoutGroup("Part Details Window")]
+        /*[SerializeField, FoldoutGroup("Part Details Window")]
         private RectTransform partDetailsContainerRectTransform;
 
         [SerializeField, FoldoutGroup("Part Details Window")]
@@ -98,7 +99,7 @@ namespace StarSalvager.UI.Scrapyard
         private PatchUI[] patchUis;
 
         [SerializeField, FoldoutGroup("Part Details Window")]
-        private TMP_Text partDetailsText;
+        private TMP_Text partDetailsText;*/
 
         /*[FormerlySerializedAs("GradeUis")] [SerializeField, FoldoutGroup("Part Details Window")]
         private GradeUI[] gradeUis;*/
@@ -169,7 +170,7 @@ namespace StarSalvager.UI.Scrapyard
 
             _currentlyOverwriting = false;
 
-            HidePartDetails();
+            //HidePartDetails();
             SetUpgradeWindowActive(false);
         }
 
@@ -218,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
                     AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
                 });
 
@@ -258,7 +259,8 @@ namespace StarSalvager.UI.Scrapyard
 
         public void InitPurchasePatches()
         {
-            purchasePatchUIElementScrollView.ClearElements();
+            throw new NotImplementedException();
+            /*purchasePatchUIElementScrollView.ClearElements();
             
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
             var patches = PlayerDataManager.CurrentPatchOptions;
@@ -289,7 +291,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 var element = purchasePatchUIElementScrollView.AddElement(t);
                 element.Init(t, ShowPartUpgradeSelectionWindow);
-            }
+            }*/
             
         }
 
@@ -349,7 +351,7 @@ namespace StarSalvager.UI.Scrapyard
             //Parts On Bot
             //--------------------------------------------------------------------------------------------------------//
             
-            var attachedParts = PlayerDataManager.GetBlockDatas();
+            var attachedParts = PlayerDataManager.GetBotBlockDatas();
             AddPartsToView(attachedParts, true);
 
             //--------------------------------------------------------------------------------------------------------//
@@ -479,7 +481,7 @@ namespace StarSalvager.UI.Scrapyard
 
         //============================================================================================================//
 
-        public void HidePartDetails()
+        /*public void HidePartDetails()
         {
             ShowPartDetails(false, null);
             HoveringStoragePartUIElement = false;
@@ -584,7 +586,7 @@ namespace StarSalvager.UI.Scrapyard
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 
-            for (var i = 0; i < partData.Patches.Length; i++)
+            for (var i = 0; i < partData.Patches.Count; i++)
             {
                 if (i >= patchUis.Length)
                     break;
@@ -607,7 +609,7 @@ namespace StarSalvager.UI.Scrapyard
             
             partDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
             
-        }
+        }*/
         //====================================================================================================================//
 
     }
