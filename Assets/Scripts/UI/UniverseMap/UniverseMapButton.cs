@@ -228,7 +228,8 @@ namespace StarSalvager
                 
                 case NodeType.Level:
                     backgroundSprite = waveBackgroundSprite;
-                    foregroundSprite = waveSprite;
+                    // Change from: https://agamestudios.atlassian.net/browse/SS-187
+                    foregroundSprite = Random.value <= 0.25f ? wildcardWaveSprite : waveSprite;
                     break;
                 case NodeType.Base:
                     foregroundSprite = null;

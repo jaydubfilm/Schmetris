@@ -16,6 +16,7 @@ using StarSalvager.UI.Hints;
 using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities.UI;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
@@ -35,6 +36,9 @@ namespace StarSalvager.UI
 
         [SerializeField, Required] private Button backButton;
         [SerializeField, Required] private TMP_Text backButtonText;
+
+        [SerializeField]
+        private Vector2 offsetAmount;
 
         //====================================================================================================================//
 
@@ -127,7 +131,6 @@ namespace StarSalvager.UI
                 }
 
                 _universeMapButtons[index] = button;
-                //_universeMapButtons[index].transform.anchoredPosition = Vector2.zero;
 
                 _universeMapButtons[index].Reset();
                 _universeMapButtons[index].Init(index, coordinate.x, nodeType, OnNodePressed);
@@ -136,8 +139,26 @@ namespace StarSalvager.UI
 
                 var sizeX = _universeMapButtons[index].transform.sizeDelta.x;
 
-                var anchoredPositionOffset = Vector2.right * (coordinate.x * sizeX * 2f);
-                anchoredPositionOffset += Vector2.up * (coordinate.y * sizeX * 2f);
+                var xCoord = coordinate.x;
+
+                var anchoredPositionOffset = Vector2.right * (xCoord * sizeX * 2f);
+
+                //Offset based on https://agamestudios.atlassian.net/browse/SS-187
+                //--------------------------------------------------------------------------------------------------------//
+                
+                var sectorNodeCount = Rings.RingMaps[Globals.CurrentRingIndex].Nodes
+                    .Count(x => x.Coordinate.x == xCoord);
+                
+                if(sectorNodeCount == 2)
+                    anchoredPositionOffset += Vector2.up * (coordinate.y * sizeX);
+                else
+                    anchoredPositionOffset += Vector2.up * (coordinate.y * sizeX * 2f);
+
+                //--------------------------------------------------------------------------------------------------------//
+                
+                anchoredPositionOffset += new Vector2(
+                    Random.Range(-offsetAmount.x, offsetAmount.x),
+                    Random.Range(-offsetAmount.y, offsetAmount.y));
 
                 _universeMapButtons[index].transform.anchoredPosition += anchoredPositionOffset;
 
