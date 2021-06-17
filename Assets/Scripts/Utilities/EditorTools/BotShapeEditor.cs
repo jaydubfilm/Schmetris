@@ -359,7 +359,7 @@ namespace StarSalvager
                     }
                 }
 
-                PlayerDataManager.SetBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetDroneBlockData(_scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
         }
 

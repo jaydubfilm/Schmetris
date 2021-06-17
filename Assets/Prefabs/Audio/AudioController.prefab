@@ -359,6 +359,9 @@ MonoBehaviour:
   - _volume: 1
     _sound: 58
     _clip: {fileID: 8300000, guid: facecdb1f3019ea488c8049220845fe8, type: 3}
+  - _volume: 1
+    _sound: 59
+    _clip: {fileID: 8300000, guid: 12e59ee06e216784ab3ef1bcd3dde353, type: 3}
   startingMusic: 0
   Songs:
   - {fileID: 4861476716751203581}

@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: RAILGUN_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 36
+  NodeLinks:
+  - BaseNodeGUID: 2bb11bf776def0e4498818f2db683877
+    PortName: RAILGUN -> POWER 1
+    TargetNodeGUID: 40e8c150-052d-4f52-b724-a9f229f6e46e
+  - BaseNodeGUID: 40e8c150-052d-4f52-b724-a9f229f6e46e
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: 84d6b1b2-137f-4d8a-9e4b-a3ac3c075b2c
+  - BaseNodeGUID: 40e8c150-052d-4f52-b724-a9f229f6e46e
+    PortName: POWER 1 -> FIRE_RATE 1
+    TargetNodeGUID: d95ffd4d-51ff-4deb-b075-5cefe778dc37
+  - BaseNodeGUID: d95ffd4d-51ff-4deb-b075-5cefe778dc37
+    PortName: FIRE_RATE 1 -> FIRE_RATE 2
+    TargetNodeGUID: 7212d399-3e00-49dd-89a1-085cce89a45c
+  - BaseNodeGUID: 7212d399-3e00-49dd-89a1-085cce89a45c
+    PortName: FIRE_RATE 2 -> POWER 3
+    TargetNodeGUID: 6ef2330a-9e24-491e-8080-a066cd4c19a1
+  - BaseNodeGUID: 84d6b1b2-137f-4d8a-9e4b-a3ac3c075b2c
+    PortName: POWER 2 -> POWER 3
+    TargetNodeGUID: 6ef2330a-9e24-491e-8080-a066cd4c19a1
+  PartNodeData:
+    GUID: 2bb11bf776def0e4498818f2db683877
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 101
+      height: 77
+    Type: 36
+  PatchNodeDatas:
+  - GUID: 40e8c150-052d-4f52-b724-a9f229f6e46e
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -14
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 1
+    Level: 1
+  - GUID: d95ffd4d-51ff-4deb-b075-5cefe778dc37
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 200
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 2
+    Level: 1
+  - GUID: 7212d399-3e00-49dd-89a1-085cce89a45c
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 200
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 3
+    Level: 2
+  - GUID: 84d6b1b2-137f-4d8a-9e4b-a3ac3c075b2c
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -15
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 2
+    Level: 2
+  - GUID: 6ef2330a-9e24-491e-8080-a066cd4c19a1
+    Position:
+      serializedVersion: 2
+      x: 1000
+      y: -12
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 4
+    Level: 3

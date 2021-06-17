@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: GRENADE_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 19
+  NodeLinks:
+  - BaseNodeGUID: 2f2b9debd36bf8b4894546da6fa908e3
+    PortName: GRENADE -> POWER 1
+    TargetNodeGUID: 4d7cb08a-dd65-4183-956e-d3f101175304
+  - BaseNodeGUID: 4d7cb08a-dd65-4183-956e-d3f101175304
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: d4b63954-862c-4df4-9fb1-e3c76f4cbb87
+  - BaseNodeGUID: 4d7cb08a-dd65-4183-956e-d3f101175304
+    PortName: POWER 1 -> RANGE 1
+    TargetNodeGUID: cd27468f-4913-4d33-b6da-e0af80d1c6aa
+  - BaseNodeGUID: cd27468f-4913-4d33-b6da-e0af80d1c6aa
+    PortName: RANGE 1 -> RANGE 2
+    TargetNodeGUID: e6aa1359-bd3d-400b-966d-199e4148f37b
+  PartNodeData:
+    GUID: 2f2b9debd36bf8b4894546da6fa908e3
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 105
+      height: 77
+    Type: 19
+  PatchNodeDatas:
+  - GUID: 4d7cb08a-dd65-4183-956e-d3f101175304
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -33
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 1
+    Level: 1
+  - GUID: d4b63954-862c-4df4-9fb1-e3c76f4cbb87
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -33
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 2
+    Level: 2
+  - GUID: cd27468f-4913-4d33-b6da-e0af80d1c6aa
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -221
+      width: 214
+      height: 150
+    Type: 2
+    Tier: 2
+    Level: 1
+  - GUID: e6aa1359-bd3d-400b-966d-199e4148f37b
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -221
+      width: 214
+      height: 150
+    Type: 2
+    Tier: 3
+    Level: 2

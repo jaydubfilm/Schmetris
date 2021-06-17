@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: BLASTER_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 15
+  NodeLinks:
+  - BaseNodeGUID: db039ca31ce365e4da45d21fddb5c913
+    PortName: BLASTER -> POWER 1
+    TargetNodeGUID: b7b0a835-5c8a-42dc-86ec-c61f7aeab089
+  - BaseNodeGUID: b7b0a835-5c8a-42dc-86ec-c61f7aeab089
+    PortName: POWER 1 -> RANGE 1
+    TargetNodeGUID: b9c77d60-332b-4561-a5d1-324cc23509f8
+  - BaseNodeGUID: b7b0a835-5c8a-42dc-86ec-c61f7aeab089
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: f4242441-4006-45e3-8335-30a6e5d8b50d
+  - BaseNodeGUID: b7b0a835-5c8a-42dc-86ec-c61f7aeab089
+    PortName: POWER 1 -> FIRE_RATE 1
+    TargetNodeGUID: 227a89c9-ccce-4944-8e16-d1c9555b6332
+  - BaseNodeGUID: 227a89c9-ccce-4944-8e16-d1c9555b6332
+    PortName: FIRE_RATE 1 -> FIRE_RATE 2
+    TargetNodeGUID: b291d4c3-5196-4de3-9f1e-e761e4929d77
+  - BaseNodeGUID: f4242441-4006-45e3-8335-30a6e5d8b50d
+    PortName: POWER 2 -> POWER 3
+    TargetNodeGUID: 930087d4-485b-4c32-99c0-cb7e5cbaaf54
+  - BaseNodeGUID: b9c77d60-332b-4561-a5d1-324cc23509f8
+    PortName: RANGE 1 -> RANGE 2
+    TargetNodeGUID: d26dd777-fb19-4ead-b2b1-bfd4302716ff
+  PartNodeData:
+    GUID: db039ca31ce365e4da45d21fddb5c913
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 100
+      height: 77
+    Type: 15
+  PatchNodeDatas:
+  - GUID: b7b0a835-5c8a-42dc-86ec-c61f7aeab089
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -27
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 1
+    Level: 1
+  - GUID: 930087d4-485b-4c32-99c0-cb7e5cbaaf54
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -27
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 3
+    Level: 3
+  - GUID: b9c77d60-332b-4561-a5d1-324cc23509f8
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -272
+      width: 214
+      height: 150
+    Type: 2
+    Tier: 2
+    Level: 1
+  - GUID: d26dd777-fb19-4ead-b2b1-bfd4302716ff
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -275
+      width: 214
+      height: 150
+    Type: 2
+    Tier: 3
+    Level: 2
+  - GUID: 227a89c9-ccce-4944-8e16-d1c9555b6332
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 200
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 2
+    Level: 1
+  - GUID: b291d4c3-5196-4de3-9f1e-e761e4929d77
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 200
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 3
+    Level: 2
+  - GUID: f4242441-4006-45e3-8335-30a6e5d8b50d
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -28
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 2
+    Level: 2

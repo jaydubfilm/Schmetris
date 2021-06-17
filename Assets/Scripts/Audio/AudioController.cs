@@ -150,7 +150,6 @@ namespace StarSalvager.Audio
         /// <summary>
         /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
         /// </summary>
-        /// <param name="volume"></param>
         public static void PlaySound(SOUND sound, float pitch = 1f)
         {
             if (Instance == null)
@@ -179,6 +178,21 @@ namespace StarSalvager.Audio
                 return;
             
             Instance.PlayOneShot(baseSound);
+        }
+
+        /// <summary>
+        /// Volume should be any value between 0.0 - 1.0. Pitch should be between 0.01 - 3.0
+        /// </summary>
+        /// <param name="delayTime"></param>
+        public static void PlayDelayedSound(SOUND sound, float delayTime)
+        {
+            if (Instance == null)
+                return;
+
+            Instance.StartCoroutine(DelayedEvent(delayTime, () =>
+            {
+                Instance.PlayOneShot(sound);
+            }));
         }
         
         public static void StopSound(SOUND sound)
@@ -599,6 +613,13 @@ namespace StarSalvager.Audio
         #endregion
 
         //============================================================================================================//
+
+        private static IEnumerator DelayedEvent(float time, Action onFinishedCallback)
+        {
+            yield return new WaitForSeconds(time);
+            
+            onFinishedCallback?.Invoke();
+        }
 
 #if UNITY_EDITOR
 

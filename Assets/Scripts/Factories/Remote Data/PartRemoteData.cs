@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Parts.Data;
+using StarSalvager.PatchTrees;
+using StarSalvager.ScriptableObjects.PatchTrees;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
-
+using System.IO;
+using StarSalvager.Utilities;
 using UnityEditor;
 
 #endif
@@ -46,7 +49,11 @@ namespace StarSalvager.Factories.Data
 
         [FoldoutGroup("$title")] public int ammoUseCost;
 
-        [FoldoutGroup("$title")] public int PatchSockets = 2;
+        //[FoldoutGroup("$title")] public int PatchSockets = 2;
+
+        public bool HasPatchTree => !string.IsNullOrEmpty(patchTreeData);
+        [FoldoutGroup("$title"), SerializeField] 
+        public string patchTreeData;
 
 
         //====================================================================================================================//
@@ -184,6 +191,52 @@ namespace StarSalvager.Factories.Data
 
             return !(partProfile is null);
         }
+
+
+        //Patch Trees
+        //====================================================================================================================//
+        
+        //TODO I really should centralize the file naming schemes
+        [Button, FoldoutGroup("$title"), HideIf("HasPatchTreeFile"), PropertyOrder(-1000)]
+        private void CreatePatchTree()
+        {
+            var patchTreeContainer = ScriptableObject.CreateInstance<PatchTreeContainer>();
+            patchTreeContainer.PartType = partType;
+            patchTreeContainer.PartNodeData = new PartNodeData
+            {
+                GUID = GUID.Generate().ToString(),
+                Type = (int)partType
+            };
+            
+            AssetDatabase.CreateAsset(patchTreeContainer, GetAssetPath());
+            AssetDatabase.SaveAssets();
+
+            EditPatchTree();
+        }
+        [Button, FoldoutGroup("$title"), ShowIf("HasPatchTreeFile"), PropertyOrder(-1000)]
+        private void EditPatchTree()
+        {
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(GetAssetPath());
+        }
+
+        private bool HasPatchTreeFile() => File.Exists(GetFilePath());
+
+        private string GetFilePath()
+        {
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+            string GetFilePath(in string filename) => $"{Application.dataPath}{DIRECTORY}{filename}.asset";
+
+            return  GetFilePath($"{partType.ToString()}_PatchTree");
+        }
+
+        private string GetAssetPath()
+        {
+            const string DIRECTORY = "/Scriptable Objects/Patch Trees/";
+            return $"Assets{DIRECTORY}{partType.ToString()}_PatchTree.asset";
+        }
+
+        //====================================================================================================================//
+        
 
 #endif
     }

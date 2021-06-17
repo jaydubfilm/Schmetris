@@ -5,7 +5,6 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
-using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
@@ -222,12 +221,12 @@ namespace StarSalvager.UI.Hints
                     break;*/
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.DAMAGE:
-                    objectsToHighlight = FindObjectOfType<DroneDesigner>().GetHintElements(hint);
+                    /*objectsToHighlight = FindObjectOfType<DroneDesigner>().GetHintElements(hint);
 
                     var canAfford = FindObjectOfType<DroneDesignUI>().CanAffordRepair;
                     var textIndex = canAfford ? 0 : 1;
                     
-                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));
+                    StartCoroutine(HintCoroutine(hint, textIndex, objectsToHighlight.FirstOrDefault()));*/
                     return;
                 //----------------------------------------------------------------------------------------------------//
                 case HINT.HEALTH:

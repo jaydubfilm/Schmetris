@@ -66,6 +66,9 @@
         END_WAVE_COUNT,
         END_WAVE,
         RESOURCE_WARNING,
+        
+        COLLECT_GEARS,
+        SLIDING_BITS
     }
 }
 

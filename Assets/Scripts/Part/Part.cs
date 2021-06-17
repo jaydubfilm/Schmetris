@@ -29,7 +29,7 @@ namespace StarSalvager
         [ShowInInspector, ReadOnly]
         public PART_TYPE Type { get; set; }
 
-        public PatchData[] Patches { get; set; }
+        public List<PatchData> Patches { get; set; }
 
 
         public bool LockRotation { get; set; }
@@ -69,7 +69,7 @@ namespace StarSalvager
         
         public void AddPatch(in PatchData patchData)
         {
-            for (int i = 0; i < Patches.Length; i++)
+            for (int i = 0; i < Patches.Count; i++)
             {
                 if(Patches[i].Type != (int)PATCH_TYPE.EMPTY)
                     continue;
@@ -83,7 +83,7 @@ namespace StarSalvager
 
         public void RemovePatch(in PatchData patchData)
         {
-            for (int i = 0; i < Patches.Length; i++)
+            for (int i = 0; i < Patches.Count; i++)
             {
                 if(!Patches[i].Equals(patchData))
                     continue;

@@ -370,6 +370,7 @@ namespace StarSalvager.AI
         public void SetAudioState(in AUDIO_STATE newAudioState)
         {
             if (newAudioState == CurrentAudioState) return;
+            if (_audioSource == null) return;
 
             PreviousAudioState = CurrentAudioState;
             CurrentAudioState = newAudioState;

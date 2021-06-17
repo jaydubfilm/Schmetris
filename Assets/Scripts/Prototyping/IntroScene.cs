@@ -1,4 +1,5 @@
 ﻿using StarSalvager.Audio;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
@@ -63,10 +64,7 @@ namespace StarSalvager.Prototype
                     panel2Character.SetActive(true);
                     
                     
-                    ScreenFade.Fade(() =>
-                    {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
-                    });
+                    ScreenFade.Fade(FadedCallback);
                 }
             }
 
@@ -78,11 +76,15 @@ namespace StarSalvager.Prototype
                 panel1.SetActive(true);
                 panel2.SetActive(false);
                 introSceneStage = 0;
-                ScreenFade.Fade(() =>
-                {
-                    SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
-                });
+                ScreenFade.Fade(FadedCallback);
             }
+        }
+
+        private static void FadedCallback()
+        {
+            SceneLoader.ActivateScene(SceneLoader.WRECKYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
+            var patchTreeUI = FindObjectOfType<PatchTreeUI>();
+            patchTreeUI.InitWreck("Base", null);
         }
     }
 }

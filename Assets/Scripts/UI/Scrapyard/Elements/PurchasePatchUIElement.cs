@@ -1,15 +1,11 @@
 ﻿using System;
-using StarSalvager;
 using StarSalvager.Factories;
-using StarSalvager.UI;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
-using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class PurchasePatchUIElement : ButtonReturnUIElement<Purchase_PatchData, Purchase_PatchData>
     {

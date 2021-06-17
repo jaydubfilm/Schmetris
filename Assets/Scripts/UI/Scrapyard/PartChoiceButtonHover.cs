@@ -4,7 +4,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -19,6 +19,18 @@ namespace StarSalvager.UI.Scrapyard
             }
         }
         private static DroneDesignUI _droneDesignUI;
+        
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
+
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
         
         private PART_TYPE _partType;
         private PartData _partData;
@@ -35,22 +47,18 @@ namespace StarSalvager.UI.Scrapyard
             {
                 Type = (int) _partType,
                 Coordinate = Vector2Int.zero,
-                Patches = new []
-                {
-                    new PatchData(),
-                    new PatchData()
-                }
+                Patches = new List<PatchData>()
             };
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            DroneDesignUI.ShowPartDetails(true, _partData, transform);
+            PartDetailsUI.ShowPartDetails(true, _partData, transform);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            DroneDesignUI.ShowPartDetails(false, new PartData(), null);
+            PartDetailsUI.ShowPartDetails(false, new PartData(), null);
         }
     }
 }

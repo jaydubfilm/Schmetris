@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using StarSalvager.AI;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Animations;
-using StarSalvager.Utilities.JsonDataTypes;
-using StarSalvager.UI.Scrapyard;
 using StarSalvager.Factories;
 using StarSalvager.Projectiles;
 using StarSalvager.Utilities.Extensions;

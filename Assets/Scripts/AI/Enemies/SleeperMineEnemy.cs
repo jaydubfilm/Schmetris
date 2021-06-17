@@ -171,6 +171,8 @@ namespace StarSalvager.AI
 
         public void UpdateAudioState()
         {
+            if (_audioSource == null) return;
+            
             if (_distanceToPlayer > minSoundThreshold)
             {
                 SetAudioState(AUDIO_STATE.NONE);

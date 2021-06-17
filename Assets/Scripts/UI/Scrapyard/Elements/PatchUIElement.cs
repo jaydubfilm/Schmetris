@@ -2,9 +2,8 @@
 using StarSalvager.Factories;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     [Obsolete]
     public class PatchUIElement : UIElement<Patch_Storage>/*,IBeginDragHandler, IDragHandler, IEndDragHandler*/
@@ -91,6 +90,7 @@ namespace StarSalvager.UI.Scrapyard
         
     }
 
+    [Obsolete]
     public class Patch_Storage : IEquatable<Patch_Storage>
     {
         public int storageIndex;

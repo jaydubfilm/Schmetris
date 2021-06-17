@@ -347,7 +347,7 @@ namespace StarSalvager
                 false,
                 true);
 
-            PlayerDataManager.SetBlockData(bot.GetBlockDatas());
+            PlayerDataManager.SetDroneBlockData(bot.GetBlockDatas());
 
             newPart.transform.localScale = endScale;
             newPart.transform.position = pos;
@@ -833,8 +833,7 @@ namespace StarSalvager
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
         {
-            if (!_shieldActive)
-                return;
+            if (!_shieldActive) return;
 
             var timer = _shieldTimers[part];
 
@@ -1684,23 +1683,37 @@ namespace StarSalvager
 
         private void TriggerBitsplosion(in Part part)
         {
+            //Check to see if we can use this part.
+            if (!CanUseTriggerPart(part, out _, false))
+                return;
+            
+            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
+
+            //Ensure that there are bits to affect
+            if (bits.IsNullOrEmpty()) return;
+            
+            //Once above are true, then we can trigger the part.
             if (!CanUseTriggerPart(part, out var partRemoteData))
                 return;
 
-            //Damage all the enemies
+            //Get Damage
             if (!TryGetPartProperty(PartProperties.KEYS.Damage, part, partRemoteData, out var damage))
                 throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Damage)} on {partRemoteData.name}");
+            
+            //Get explosion range
+            if (!TryGetPartProperty(PartProperties.KEYS.Radius, part, partRemoteData, out var radius))
+                throw new ArgumentOutOfRangeException($"Missing {nameof(PartProperties.KEYS.Radius)} on {partRemoteData.name}");
 
-            EnemyManager.DamageAllEnemies(damage);
-
-            var bits = LevelManager.Instance.ObstacleManager.TryGetBitsOnScreen();
             for (var i = 0; i < bits.Count; i++)
             {
                 CreateBombEffect(bits[i], 5f);
+                
+                //Damage any enemies around this bit, as diameter
+                EnemyManager.DamageAllEnemiesInRange(damage, bits[i].Position, radius * 2f);
 
                 Recycler.Recycle<Bit>(bits[i]);
             }
-
+            
             AudioController.PlaySound(SOUND.BOMB_BLAST);
         }
 
@@ -2219,8 +2232,22 @@ namespace StarSalvager
 
         private static bool TryGetPartProperty(in PartProperties.KEYS key, in Part part, in PartRemoteData partRemoteData, out float value)
         {
-            if (!partRemoteData.TryGetValue(key, out value))
+            value = 0f;
+            if (!partRemoteData.TryGetValue(key, out var _value))
                 return false;
+
+            switch (_value)
+            {
+                case int i:
+                    value = i;
+                    break;
+                case float f:
+                    value = f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_value), _value, null);
+            }
+            
 
             switch (key)
             {

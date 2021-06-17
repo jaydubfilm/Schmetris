@@ -6,7 +6,7 @@ using StarSalvager.AI;
 using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
-using StarSalvager.UI.Scrapyard;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -359,7 +359,7 @@ namespace StarSalvager.Utilities
 
                             switch (split[3].ToLower())
                             {
-                                case "all":
+                                /*case "all":
                                 {
                                     var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
                                         .Where(x => x.isImplemented)
@@ -368,12 +368,10 @@ namespace StarSalvager.Utilities
 
                                     foreach (var partType in partTypes)
                                     {
-                                        var patchSockets = partType.GetRemoteData().PatchSockets;
-
                                         var partBlockData = new PartData
                                         {
                                             Type = (int) partType,
-                                            Patches = new PatchData[patchSockets]
+                                            Patches = new List<PatchData>()
 
                                         };
 
@@ -381,7 +379,7 @@ namespace StarSalvager.Utilities
                                     }
 
                                     break;
-                                }
+                                }*/
                                 default:
                                 {
                                     if (addAmount <= 0)
@@ -398,19 +396,15 @@ namespace StarSalvager.Utilities
                                             return;
                                         }
 
-                                        var patchSockets = partType.GetRemoteData().PatchSockets;
-
                                         var partBlockData = new PartData
                                         {
                                             Type = (int) partType,
-                                            Patches = new PatchData[patchSockets]
-
+                                            Patches = new List<PatchData>()
                                         };
 
-                                        for (var i = 0; i < addAmount; i++)
-                                        {
-                                            PlayerDataManager.AddPartToStorage(partBlockData);
-                                        }
+                                        PlayerDataManager.AddPartToStorage(partBlockData);
+                                        
+                                        FindObjectOfType<PatchTreeUI>().OnConsolePartAdded();
                                     }
 
                                     break;
@@ -418,7 +412,7 @@ namespace StarSalvager.Utilities
                             }
                             break;
                         }
-                        case "patches":
+                        /*case "patches":
                         {
                             switch (split[3].ToLower())
                             {
@@ -468,7 +462,7 @@ namespace StarSalvager.Utilities
                                 }
                             }
                             break;
-                        }
+                        }*/
                         default:
                             _consoleDisplay += UnrecognizeCommand(split[2]);
                             break;

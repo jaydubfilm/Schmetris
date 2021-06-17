@@ -21,8 +21,9 @@ using UnityEngine.Analytics;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class ScrapyardUI : MonoBehaviour
     {
         //============================================================================================================//
@@ -33,7 +34,7 @@ namespace StarSalvager.UI.Scrapyard
         //Prototype
         //====================================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("Prototype")]
+        /*[SerializeField, Required, FoldoutGroup("Prototype")]
         private GameObject partDisposeWindow;
         [SerializeField, Required, FoldoutGroup("Prototype")]
         private TMP_Text titleText;
@@ -74,18 +75,18 @@ namespace StarSalvager.UI.Scrapyard
                     {
                         Type = (int) PART_TYPE.EMPTY,
                         Coordinate = coordinate,
-                        Patches = new PatchData[0]
+                        Patches = new List<PatchData>()
                     });
 
                 _droneDesigner._scrapyardBot.AttachNewBit(coordinate, attachable);
 
-                PlayerDataManager.SetBlockData(_droneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas());
+                PlayerDataManager.SetDroneBlockData(_droneDesigner._scrapyardBot.AttachedBlocks.GetBlockDatas());
             }
 
             //--------------------------------------------------------------------------------------------------------//
 
             var currentParts = new List<PartData>(PlayerDataManager.GetCurrentPartsInStorage().OfType<PartData>());
-            currentParts.AddRange(PlayerDataManager.GetBlockDatas().OfType<PartData>());
+            currentParts.AddRange(PlayerDataManager.GetBotBlockDatas().OfType<PartData>());
 
             foreach (BIT_TYPE bitType in Enum.GetValues(typeof(BIT_TYPE)))
             {
@@ -124,7 +125,7 @@ namespace StarSalvager.UI.Scrapyard
                     selectionUis[i].optionButton.onClick.RemoveAllListeners();
                     selectionUis[i].optionButton.onClick.AddListener(() =>
                     {
-                        _droneDesigner.DroneDesignUi.ShowPartDetails(false, partData, null);
+                        PartDetailsUI.ShowPartDetails(false, partData, null);
                         FindAndDestroyPart(partType);
                         partDisposeWindow.SetActive(false);
                     });
@@ -132,7 +133,7 @@ namespace StarSalvager.UI.Scrapyard
 
                 break;
             }
-        }
+        }*/
 
         //====================================================================================================================//
 
@@ -173,7 +174,19 @@ namespace StarSalvager.UI.Scrapyard
         private TMP_Text gearsAmountText;
         [SerializeField, Required, FoldoutGroup("Silver Indicator")]
         private TMP_Text silverAmountText;
+        
+        
+        private PartDetailsUI PartDetailsUI
+        {
+            get
+            {
+                if (_partDetailsUI == null)
+                    _partDetailsUI = FindObjectOfType<PartDetailsUI>();
 
+                return _partDetailsUI;
+            }
+        }
+        private PartDetailsUI _partDetailsUI;
 
         //====================================================================================================================//
 
@@ -229,7 +242,7 @@ namespace StarSalvager.UI.Scrapyard
                 {
                     _partChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
 
-                    PlayerDataManager.SetCurrentPatchOptions(Globals.CurrentRing.GenerateRingPatches());
+                    //PlayerDataManager.SetCurrentPatchOptions(Globals.CurrentRing.GenerateRingPatches());
                     _droneDesigner.DroneDesignUi.InitPurchasePatches();
                 }
             }
@@ -241,7 +254,7 @@ namespace StarSalvager.UI.Scrapyard
         // Start is called before the first frame update
         private void Start()
         {
-            partDisposeWindow.SetActive(false);
+            //partDisposeWindow.SetActive(false);
             
             _droneDesigner = FindObjectOfType<DroneDesigner>();
             _partChoice = FindObjectOfType<PartChoiceUI>();
@@ -315,7 +328,7 @@ namespace StarSalvager.UI.Scrapyard
                             {
 
                                 _windows[(int)Window.Settings].SetActive(false);
-                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
+                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.WRECKYARD, MUSIC.MAIN_MENU);
                                 AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
                             });
 
@@ -354,7 +367,7 @@ namespace StarSalvager.UI.Scrapyard
 
         private void TryLaunch()
         {
-            if (PlayerDataManager.GetBlockDatas().CheckHasDisconnects())
+            if (PlayerDataManager.GetBotBlockDatas().CheckHasDisconnects())
             {
                 Alert.ShowAlert("Alert!",
                     "A disconnected piece is active on your Bot! Please repair before continuing", "Fix",
