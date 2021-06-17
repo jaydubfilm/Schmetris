@@ -23,6 +23,7 @@ using System;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Helpers;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager
 {
@@ -739,6 +740,7 @@ namespace StarSalvager
             
             Globals.CurrentWave = 0;
 
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }

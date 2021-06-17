@@ -14,6 +14,7 @@ using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Analytics;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Console = System.Console;
 using Random = UnityEngine.Random;
@@ -152,6 +153,7 @@ namespace StarSalvager.UI.Wreckyard
             }
 
             SetActive(true);
+            EventSystem.current.SetSelectedGameObject(selectionUis[0].optionButton.gameObject);
         }
 
         private void InitButtons()
