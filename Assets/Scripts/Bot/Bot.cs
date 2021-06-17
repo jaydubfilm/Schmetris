@@ -951,6 +951,7 @@ namespace StarSalvager
                             //Try and shift collided row (Depending on direction)
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
+                            //AudioController.PlayDelayedSound(SOUND.SLIDING_BITS, 0.6f);
                             SessionDataProcessor.Instance.HitBumper();
 
                             if(shift) OnBitShift?.Invoke();
