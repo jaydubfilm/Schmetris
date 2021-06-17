@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 1537811953138797957}
   - component: {fileID: 3460377436595043976}
   - component: {fileID: 8160010643359144942}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShardEnemy_Spine
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

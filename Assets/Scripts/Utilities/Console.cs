@@ -6,6 +6,7 @@ using StarSalvager.AI;
 using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -358,7 +359,7 @@ namespace StarSalvager.Utilities
 
                             switch (split[3].ToLower())
                             {
-                                case "all":
+                                /*case "all":
                                 {
                                     var partTypes = FactoryManager.Instance.PartsRemoteData.partRemoteData
                                         .Where(x => x.isImplemented)
@@ -378,7 +379,7 @@ namespace StarSalvager.Utilities
                                     }
 
                                     break;
-                                }
+                                }*/
                                 default:
                                 {
                                     if (addAmount <= 0)
@@ -401,10 +402,9 @@ namespace StarSalvager.Utilities
                                             Patches = new List<PatchData>()
                                         };
 
-                                        for (var i = 0; i < addAmount; i++)
-                                        {
-                                            PlayerDataManager.AddPartToStorage(partBlockData);
-                                        }
+                                        PlayerDataManager.AddPartToStorage(partBlockData);
+                                        
+                                        FindObjectOfType<PatchTreeUI>().OnConsolePartAdded();
                                     }
 
                                     break;

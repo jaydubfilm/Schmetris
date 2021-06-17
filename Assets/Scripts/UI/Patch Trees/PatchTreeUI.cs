@@ -300,7 +300,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     throw new ArgumentOutOfRangeException(nameof(optionType), optionType, null);
             }
 
-            CheckForPartAvailability();
+            CheckForPartPositionAvailability();
             GenerateUIElements();
         }
 
@@ -676,7 +676,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
                 //If the player destroyed something on the Drone, try and add something from storage
                 if(!_selectedPart.inStorage)
-                    CheckForPartAvailability(false);
+                    CheckForPartPositionAvailability(false);
                 
                 SetSelectedPart(PART_TYPE.EMPTY, false);
                 SetPartText(string.Empty, string.Empty);
@@ -1010,7 +1010,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         
         #region Data Functions
 
-        private void CheckForPartAvailability(in bool updateValues = true)
+        private void CheckForPartPositionAvailability(in bool updateValues = true)
         {
             bool changesMade = false;
             
@@ -1077,6 +1077,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
 
         #endregion //Data Functions
+
+        public void OnConsolePartAdded() => CheckForPartPositionAvailability();
         
         //Unity Editor
         //====================================================================================================================//

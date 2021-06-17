@@ -44,7 +44,8 @@ namespace StarSalvager.UI
         [FormerlySerializedAs("dottedLineImage")] [SerializeField]
         private Image dottedLineImagePrefab;
 
-        private List<Image> _connectionLines;
+        private List<Image> _connectionImages;
+
 
         //====================================================================================================================//
 
@@ -59,10 +60,6 @@ namespace StarSalvager.UI
 
         private void Start()
         {
-            //InitButtons();
-            _connectionLines = new List<Image>();
-            //waveDataWindow.SetActive(false);
-
             backButton.onClick.AddListener(Back);
         }
 
@@ -89,26 +86,7 @@ namespace StarSalvager.UI
 
         public void Activate()
         {
-            /*if (PROTO_useSum)
-            {
-                switch (IconType)
-                {
-                    case ICON_TYPE.WAVE:
-                        PROTO_useSum = false;
-                        break;
-                    case ICON_TYPE.RING_SUM:
-                        PROTO_useSum = true;
-                        CalculateRingSum();
-                        break;
-                    case ICON_TYPE.RING_MAX:
-                        PROTO_useSum = true;
-                        CalculateRingMax();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
 
-            }*/
             InitButtons();
             InitBackButton();
             DrawMap();
@@ -118,12 +96,14 @@ namespace StarSalvager.UI
 
         public void Reset()
         {
-            for (int i = _connectionLines.Count - 1; i >= 0; i--)
+            if (_connectionImages.IsNullOrEmpty()) return;
+            
+            for (int i = _connectionImages.Count - 1; i >= 0; i--)
             {
-                Destroy(_connectionLines[i].gameObject);
+                Destroy(_connectionImages[i].gameObject);
             }
 
-            _connectionLines.Clear();
+            _connectionImages.Clear();
         }
 
 
@@ -353,48 +333,30 @@ namespace StarSalvager.UI
 
         }
 
+        
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, Color color)
         {
+            if (_connectionImages == null)
+                _connectionImages = new List<Image>();
+            
             //DrawConnection(connectionStart, connectionEnd, dottedLine, Color.white);
-
+            Image connectionImage;
             if (dottedLine)
-                UILineCreator.DrawConnection(m_scrollRectArea.transform,
+                connectionImage = UILineCreator.DrawConnection(m_scrollRectArea.transform,
                     _universeMapButtons[connectionStart].transform,
                     _universeMapButtons[connectionEnd].transform,
                     dottedLineImagePrefab,
                     color);
             else
             {
-                UILineCreator.DrawConnection(m_scrollRectArea.transform,
+                connectionImage = UILineCreator.DrawConnection(m_scrollRectArea.transform,
                     _universeMapButtons[connectionStart].transform,
                     _universeMapButtons[connectionEnd].transform,
                     color);
             }
+            
+            _connectionImages.Add(connectionImage);
         }
-
-        /*private void DrawConnection(in int connectionStart, in int connectionEnd, in bool dottedLine, in Color color)
-        {
-            var startPosition = _universeMapButtons[connectionStart].transform.position;
-            var endPosition = _universeMapButtons[connectionEnd].transform.position;
-
-            var newLineImage = dottedLine ? Instantiate(dottedLineImagePrefab) : new GameObject().AddComponent<Image>();
-            newLineImage.name = $"Line_[{connectionStart}][{connectionEnd}]";
-            newLineImage.color = color;
-
-
-            var newLineTransform = (RectTransform) newLineImage.transform;
-
-            newLineTransform.SetParent(m_scrollRectArea.transform);
-            newLineTransform.SetAsFirstSibling();
-
-            newLineTransform.position = (startPosition + endPosition) / 2;
-
-            newLineTransform.sizeDelta = new Vector2(Vector2.Distance(startPosition, endPosition), 5);
-
-            newLineTransform.right = (startPosition - endPosition).normalized;
-
-            _connectionLines.Add(newLineImage);
-        }*/
 
         private void InitBackButton()
         {
