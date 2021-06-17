@@ -1,5 +1,5 @@
 ﻿using StarSalvager.Audio;
-using StarSalvager.UI.Scrapyard.PatchTrees;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
@@ -82,7 +82,7 @@ namespace StarSalvager.Prototype
 
         private static void FadedCallback()
         {
-            SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
+            SceneLoader.ActivateScene(SceneLoader.WRECKYARD, SceneLoader.MAIN_MENU, MUSIC.SCRAPYARD);
             var patchTreeUI = FindObjectOfType<PatchTreeUI>();
             patchTreeUI.InitWreck("Base", null);
         }

@@ -10,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     //TODO I should include the colors lerp here
     public class WreckHealthUI : MonoBehaviour

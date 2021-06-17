@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class AttachableEditorToolBase : MonoBehaviour
     {
         private const int MAX_DISTANCE = 3;

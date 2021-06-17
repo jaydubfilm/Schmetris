@@ -22,8 +22,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
  {
+     [Obsolete]
     public class DroneDesignUI : MonoBehaviour
     {
         public bool CanAffordRepair { get; private set; }
@@ -218,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
             {
                 ScreenFade.Fade(() =>
                 {
-                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                    SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
                     AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
                 });
 

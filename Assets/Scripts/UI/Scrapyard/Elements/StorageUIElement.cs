@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class StorageUIElement : ButtonReturnUIElement<TEST_Storage, TEST_Storage>, IPointerEnterHandler, IPointerExitHandler
     {
         private static DroneDesignUI _droneDesignUI;

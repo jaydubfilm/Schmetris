@@ -8,8 +8,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     //FIXME This needs to be cleaned up once approved
     public class PartCardElement : ButtonReturnUIElement<TEST_PartUpgrd, TEST_PartUpgrd>
     {

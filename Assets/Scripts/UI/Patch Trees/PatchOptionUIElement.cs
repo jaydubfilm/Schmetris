@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard.PatchTrees
+namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
     public class PatchOptionUIElement : MonoBehaviour
     {

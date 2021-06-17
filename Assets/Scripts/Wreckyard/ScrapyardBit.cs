@@ -1,13 +1,12 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JsonDataTypes;
-using System.Collections;
-using System.Collections.Generic;
 using StarSalvager.Values;
 using UnityEngine;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class ScrapyardBit : MonoBehaviour, IAttachable, IBit, ISaveable<BitData>
     {
         protected new SpriteRenderer renderer

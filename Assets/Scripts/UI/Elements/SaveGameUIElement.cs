@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class SaveGameUIElement : ButtonReturnUIElement<SaveFileData, SaveFileData>
     {

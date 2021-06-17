@@ -1,30 +1,27 @@
-﻿using StarSalvager.Values;
-using StarSalvager.Factories;
+﻿using StarSalvager.Factories;
 using UnityEngine;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.UI;
-using StarSalvager.Utilities.SceneManagement;
 using UnityEngine.InputSystem;
 
 using Recycling;
 using StarSalvager.Utilities.JsonDataTypes;
 using System;
 using Sirenix.OdinInspector;
-using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.FileIO;
-using StarSalvager.Utilities.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Saving;
-using StarSalvager.Factories.Data;
 using StarSalvager.Parts.Data;
+using StarSalvager.UI.Wreckyard;
 using StarSalvager.Utilities.Helpers;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class DroneDesigner : AttachableEditorToolBase, IReset, IInput, IHasHintElement
     {
         public DroneDesignUI DroneDesignUi

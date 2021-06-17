@@ -4,7 +4,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

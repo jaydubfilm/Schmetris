@@ -21,8 +21,9 @@ using UnityEngine.Analytics;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class ScrapyardUI : MonoBehaviour
     {
         //============================================================================================================//
@@ -327,7 +328,7 @@ namespace StarSalvager.UI.Scrapyard
                             {
 
                                 _windows[(int)Window.Settings].SetActive(false);
-                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
+                                SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.WRECKYARD, MUSIC.MAIN_MENU);
                                 AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
                             });
 

@@ -6,7 +6,6 @@ using StarSalvager.AI;
 using StarSalvager.Audio;
 using StarSalvager.Cameras.Data;
 using StarSalvager.Factories;
-using StarSalvager.UI.Scrapyard;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;

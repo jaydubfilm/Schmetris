@@ -1,11 +1,13 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
+    [Obsolete]
     public class ShipInteriorHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField, Required] private RectTransform hoverWindowRectTransform;

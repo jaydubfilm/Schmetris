@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
-using StarSalvager.Utilities.Saving;
-using StarSalvager.Values;
-using UnityEngine;
 
 namespace StarSalvager 
 {

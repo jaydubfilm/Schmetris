@@ -1,11 +1,9 @@
-﻿using Sirenix.OdinInspector;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace StarSalvager.Utilities.JsonDataTypes
 {
+    [Obsolete]
     public class ScrapyardLayout : IEquatable<ScrapyardLayout>
     {
         public string Name;

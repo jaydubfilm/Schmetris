@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
@@ -12,15 +10,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using StarSalvager.Utilities.Saving;
-using StarSalvager.Utilities.JsonDataTypes;
 using Recycling;
-using StarSalvager.AI;
 using StarSalvager.Audio;
-using StarSalvager.ScriptableObjects;
 using StarSalvager.UI.Hints;
-using StarSalvager.UI.Scrapyard.PatchTrees;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace StarSalvager.UI
@@ -252,7 +246,7 @@ namespace StarSalvager.UI
 
                     ScreenFade.Fade(() =>
                     {
-                        SceneLoader.ActivateScene(SceneLoader.SCRAPYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
+                        SceneLoader.ActivateScene(SceneLoader.WRECKYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                         AnalyticsManager.WreckStartEvent();
                         FindObjectOfType<PatchTreeUI>().InitWreck("Wreck", null);
                     });
@@ -410,7 +404,7 @@ namespace StarSalvager.UI
                     backButtonText.text = "Menu";
                     break;
                 case SceneLoader.MAIN_MENU:
-                case SceneLoader.SCRAPYARD:
+                case SceneLoader.WRECKYARD:
                     backButtonText.text = "Back";
                     break;
                 default:
@@ -430,7 +424,7 @@ namespace StarSalvager.UI
                     break;
 
                 case SceneLoader.MAIN_MENU:
-                case SceneLoader.SCRAPYARD:
+                case SceneLoader.WRECKYARD:
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.LoadPreviousScene();

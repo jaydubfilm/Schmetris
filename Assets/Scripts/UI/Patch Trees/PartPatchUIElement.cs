@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
@@ -7,7 +6,7 @@ using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard.PatchTrees
+namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
     public class PartPatchUIElement : MonoBehaviour
     {

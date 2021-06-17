@@ -10,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     [System.Obsolete]
     public class SaveGameUI : MonoBehaviour
@@ -219,7 +219,7 @@ namespace StarSalvager.UI.Scrapyard
 
     }
     
-    [Serializable]
+    [Serializable, Obsolete]
     public class SaveGameContentScrollView : UIElementContentScrollView<SaveGameUIElement, SaveFileData>
     {}
 }

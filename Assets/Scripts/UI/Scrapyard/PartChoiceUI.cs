@@ -19,7 +19,7 @@ using Console = System.Console;
 using Random = UnityEngine.Random;
 
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class PartChoiceUI : MonoBehaviour
     {

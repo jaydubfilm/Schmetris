@@ -200,10 +200,15 @@ namespace StarSalvager.Factories.Data
         [Button, FoldoutGroup("$title"), HideIf("HasPatchTreeFile"), PropertyOrder(-1000)]
         private void CreatePatchTree()
         {
-            var dialogueContainerObject = ScriptableObject.CreateInstance<PatchTreeContainer>();
-            dialogueContainerObject.PartType = partType;
+            var patchTreeContainer = ScriptableObject.CreateInstance<PatchTreeContainer>();
+            patchTreeContainer.PartType = partType;
+            patchTreeContainer.PartNodeData = new PartNodeData
+            {
+                GUID = GUID.Generate().ToString(),
+                Type = (int)partType
+            };
             
-            AssetDatabase.CreateAsset(dialogueContainerObject, GetAssetPath());
+            AssetDatabase.CreateAsset(patchTreeContainer, GetAssetPath());
             AssetDatabase.SaveAssets();
 
             EditPatchTree();

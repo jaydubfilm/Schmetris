@@ -194,7 +194,7 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":1,"Tier":3,"PreReqs":[2]}]'
   - isImplemented: 0
     partType: 13
     name: Missile
@@ -226,7 +226,7 @@ MonoBehaviour:
     isManual: 0
     category: 3
     ammoUseCost: 3
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]}]'
   - isImplemented: 1
     partType: 15
     name: Blaster
@@ -247,7 +247,7 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 10
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":3,"PreReqs":[2]},{"Type":2,"Level":1,"Tier":3,"PreReqs":[3]}]'
   - isImplemented: 1
     partType: 6
     name: Freeze
@@ -300,7 +300,7 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 10
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":4,"PreReqs":[3,2]}]'
   - isImplemented: 1
     partType: 38
     name: Tractor Beam
@@ -420,7 +420,7 @@ MonoBehaviour:
     isManual: 1
     category: 3
     ammoUseCost: 5
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":2,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":2,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":3,"PreReqs":[2]},{"Type":2,"Level":2,"Tier":4,"PreReqs":[3]}]'
   - isImplemented: 1
     partType: 43
     name: Blitz
@@ -437,7 +437,7 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[2]}]'
   - isImplemented: 1
     partType: 44
     name: Force Field

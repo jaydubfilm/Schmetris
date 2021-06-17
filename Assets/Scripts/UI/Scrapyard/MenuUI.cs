@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
@@ -10,7 +11,7 @@ using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     public class MenuUI : MonoBehaviour
     {
@@ -124,7 +125,7 @@ namespace StarSalvager.UI.Scrapyard
                             SetSettingsMenuActive(false);
                             
                             //_windows[(int)Window.Settings].SetActive(false);
-                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.SCRAPYARD, MUSIC.MAIN_MENU);
+                            SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.WRECKYARD, MUSIC.MAIN_MENU);
                             AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
                         });
 

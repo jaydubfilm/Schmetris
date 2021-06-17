@@ -10,10 +10,10 @@ using System.Linq;
 using UnityEngine;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
-using StarSalvager.Parts.Data;
 
 namespace StarSalvager
 {
+    [Obsolete]
     public class ScrapyardBot : MonoBehaviour, ICustomRecycle, IHealth
     {
         public float StartingHealth { get; private set; }

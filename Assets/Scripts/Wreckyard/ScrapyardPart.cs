@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Recycling;
 using Sirenix.OdinInspector;
-using StarSalvager.Factories;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
 using UnityEngine;

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.PatchTrees.Data;
@@ -19,9 +18,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
-namespace StarSalvager.UI.Scrapyard.PatchTrees
+namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
     public class PatchTreeUI : MonoBehaviour
     {
@@ -631,7 +629,7 @@ namespace StarSalvager.UI.Scrapyard.PatchTrees
         {
             ScreenFade.Fade(() =>
             {
-                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.SCRAPYARD);
+                SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
                 AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
             });
 

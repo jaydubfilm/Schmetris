@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: SNIPER_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 14
+  NodeLinks:
+  - BaseNodeGUID: f972c680acfca1f488c9ea057769648c
+    PortName: SNIPER -> POWER 1
+    TargetNodeGUID: 85678760-4229-4c97-b966-61eeeafd4e25
+  - BaseNodeGUID: 85678760-4229-4c97-b966-61eeeafd4e25
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: e4b92d47-9581-4d32-b55a-6cec3744234f
+  - BaseNodeGUID: 85678760-4229-4c97-b966-61eeeafd4e25
+    PortName: POWER 1 -> FIRE_RATE 1
+    TargetNodeGUID: d2469fe5-0a7e-4465-8bd0-2fc697715b0d
+  - BaseNodeGUID: d2469fe5-0a7e-4465-8bd0-2fc697715b0d
+    PortName: FIRE_RATE 1 -> FIRE_RATE 2
+    TargetNodeGUID: 44aaa687-e297-419f-acc2-c72884d2e056
+  PartNodeData:
+    GUID: f972c680acfca1f488c9ea057769648c
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 91
+      height: 77
+    Type: 14
+  PatchNodeDatas:
+  - GUID: e4b92d47-9581-4d32-b55a-6cec3744234f
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 5
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 2
+    Level: 2
+  - GUID: d2469fe5-0a7e-4465-8bd0-2fc697715b0d
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 200
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 2
+    Level: 1
+  - GUID: 44aaa687-e297-419f-acc2-c72884d2e056
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 202
+      width: 214
+      height: 150
+    Type: 3
+    Tier: 3
+    Level: 2
+  - GUID: 85678760-4229-4c97-b966-61eeeafd4e25
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: 5
+      width: 214
+      height: 152
+    Type: 1
+    Tier: 1
+    Level: 1
