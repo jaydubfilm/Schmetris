@@ -221,7 +221,7 @@ namespace StarSalvager
 
         public void Activate()
         {
-            GameManager.SetCurrentGameState(GameState.Scrapyard);
+            GameManager.SetCurrentGameState(GameState.Wreckyard);
 
             GameTimer.SetPaused(true);
 

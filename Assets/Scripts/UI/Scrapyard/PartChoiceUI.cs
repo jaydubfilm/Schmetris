@@ -93,6 +93,8 @@ namespace StarSalvager.UI.Wreckyard
 
         public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
         {
+            InitButtons();
+            
             titleText.text = "Pick a Part";
             
             noPartSelectedOptionButton.gameObject.SetActive(partOptionType != PartAttachableFactory.PART_OPTION_TYPE.InitialSelection);
@@ -225,6 +227,7 @@ namespace StarSalvager.UI.Wreckyard
             for (int i = 0; i < selectionUis.Length; i++)
             {
                 var index = i;
+                selectionUis[i].optionButton.onClick.RemoveAllListeners();
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
                     var partType = GetPartType(index);
@@ -236,6 +239,7 @@ namespace StarSalvager.UI.Wreckyard
             }
 
             _noPartButtonText.text = $"No Part +{10}{TMP_SpriteHelper.GEAR_ICON}";
+            noPartSelectedOptionButton.onClick.RemoveAllListeners();
             noPartSelectedOptionButton.onClick.AddListener(() =>
             {
                 CloseWindow();

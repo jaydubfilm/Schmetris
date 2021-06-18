@@ -230,7 +230,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     case GameState.MainMenu:
                     case GameState.AccountMenu:
-                    case GameState.Scrapyard:
+                    case GameState.Wreckyard:
                     case GameState.UniverseMap:
                         actionMap = ACTION_MAP.MENU;
                         break;
