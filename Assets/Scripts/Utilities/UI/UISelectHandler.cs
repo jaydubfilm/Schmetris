@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.UI
 {
-    public class UISelectHandler : Singleton<UISelectHandler>
+    public class UISelectHandler : Singleton<UISelectHandler>, IStartedUsingController
     {
         [SerializeField]
         private Image outlinePrefab;
@@ -15,38 +18,75 @@ namespace StarSalvager.Utilities.UI
         
         public static void OutlineObject(in RectTransform rectTransform)
         {
-            Instance.Outline(rectTransform, Color.black);
+            Instance.Outline(rectTransform, Vector2.zero, Color.black);
         }
-        public static void OutlineObject(in RectTransform rectTransform, in Color color)
+        public static void OutlineObject(in RectTransform rectTransform, in Vector2 sizeMultiplier, in Color color)
         {
-            Instance.Outline(rectTransform, color);
+            Instance.Outline(rectTransform, sizeMultiplier, color);
         }
 
-        private void Outline(in RectTransform rectTransform, in Color color)
+        //Unity Functions
+        //====================================================================================================================//
+
+        private void OnEnable()
+        {
+            InputManager.OnStartedUsingController += StartedUsingController;
+        }
+
+        private void OnDisable()
+        {
+            InputManager.OnStartedUsingController -= StartedUsingController;
+        }
+
+        //====================================================================================================================//
+        
+
+        private void Outline(in RectTransform rectTransform, in Vector2 sizeMultiplier, in Color color)
         {
             if (_outline == null)
             {
                 _outline = Instantiate(outlinePrefab);
+                
+                var layoutElement = _outline.gameObject.AddComponent<LayoutElement>();
+                layoutElement.ignoreLayout = true;
+                
                 _outlineTransform = (RectTransform)_outline.transform;
             }
 
             if (rectTransform == null)
             {
-                _outline.gameObject.SetActive(false);
+                SetActive(false);
                 return;
             }
+            
+            _outlineTransform.SetParent(null);
 
-            _outline.gameObject.SetActive(true);
+            SetActive(true);
+            //var siblingIndex = rectTransform.GetSiblingIndex();
+            
             _outlineTransform.SetParent(rectTransform.parent, false);
+            _outlineTransform.SetSiblingIndex(0);
 
-            var siblingIndex = rectTransform.GetSiblingIndex();
-            _outlineTransform.SetSiblingIndex(siblingIndex);
-
-            _outlineTransform.sizeDelta = rectTransform.sizeDelta;
+            _outlineTransform.position = rectTransform.position;
+            _outlineTransform.sizeDelta = rectTransform.sizeDelta * sizeMultiplier;
             _outline.color = color;
         }
 
-        //====================================================================================================================//
+        public void StartedUsingController(bool usingController)
+        {
+            if (usingController) return;
+            
+            SetActive(false);
+        }
         
+        private void SetActive(in bool state)
+        {
+            if (_outline is null) return;
+            
+            _outline.gameObject.SetActive(state);
+        }
+
+        //====================================================================================================================//
+
     }
 }

@@ -14,6 +14,8 @@ namespace StarSalvager.UI.PersistentUpgrades
     //[RequireComponent(typeof(Button))]
     public class UpgradeUIElement : ButtonReturnUIElement<UpgradeData>, IPointerEnterHandler, IPointerExitHandler
     {
+        public GameObject ButtonObject => button.gameObject;
+        
         [SerializeField, Required]
         private Button button;
         [SerializeField, Required]

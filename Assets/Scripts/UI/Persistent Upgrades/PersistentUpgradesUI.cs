@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.PersistentUpgrades
 {
-    public class PersistentUpgradesUI : MonoBehaviour
+    public class PersistentUpgradesUI : MonoBehaviour, IStartedUsingController
     {
         //Properties
         //====================================================================================================================//
@@ -53,6 +57,7 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         private void OnEnable()
         {
+            InputManager.AddStartedControllerListener(this);
             PlayerDataManager.OnValuesChanged += OnValueChanged;
             OnValueChanged();
 
@@ -63,6 +68,7 @@ namespace StarSalvager.UI.PersistentUpgrades
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= OnValueChanged;
+            InputManager.RemoveControllerListener(this);
         }
 
         #endregion //Unity Functions
@@ -255,6 +261,18 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         #endregion //Callback Functions
         
+        //IStartUsingController Functions
+        //====================================================================================================================//
+
+        public void StartedUsingController(bool usingController)
+        {
+            if (scrollContentRect.gameObject.activeInHierarchy == false) return;
+
+            EventSystem.current.SetSelectedGameObject(usingController
+                ? _uiElements.FirstOrDefault().Value.ButtonObject
+                : null);
+        }
+
         //====================================================================================================================//
         
     }
