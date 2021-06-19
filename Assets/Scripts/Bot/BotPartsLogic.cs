@@ -1706,7 +1706,7 @@ namespace StarSalvager
 
             for (var i = 0; i < bits.Count; i++)
             {
-                CreateBombEffect(bits[i], 5f);
+                CreateBombEffect(bits[i], radius * 2f);
                 
                 //Damage any enemies around this bit, as diameter
                 EnemyManager.DamageAllEnemiesInRange(damage, bits[i].Position, radius * 2f);

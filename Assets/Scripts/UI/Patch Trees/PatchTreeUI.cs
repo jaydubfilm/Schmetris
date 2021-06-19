@@ -274,13 +274,19 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
+            GameTimer.SetPaused(true);
+            GameManager.SetCurrentGameState(GameState.Wreckyard);
+            PlayerDataManager.DowngradeAllBits(1, false);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             //Clean up anything before we show new data
             CleanPatchTreeUI();
             TryShowPartChoice();
 
             wreckNameText.text = wreckName;
             wreckImage.sprite = wreckSprite;
-            
+
             if (PlayerDataManager.CanChoosePart) 
                 return;
 
