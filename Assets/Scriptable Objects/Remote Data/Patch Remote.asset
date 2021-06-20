@@ -54,7 +54,7 @@ MonoBehaviour:
     part: Shield
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
   - PartType: 6
-    POWER: 0
+    POWER: 1
     AOE: 0
     RATE: 1
     EFF: 1
@@ -86,7 +86,7 @@ MonoBehaviour:
   - PartType: 31
     POWER: 0
     AOE: 0
-    RATE: 0
+    RATE: 1
     EFF: 1
     RANGE: 0
     BURN: 0
@@ -117,14 +117,14 @@ MonoBehaviour:
     POWER: 0
     AOE: 0
     RATE: 0
-    EFF: 0
+    EFF: 1
     RANGE: 0
     BURN: 0
     RFRCD: 0
     part: Tractor Beam
     color: {r: 1, g: 0.9869578, b: 0.3537736, a: 1}
   - PartType: 41
-    POWER: 0
+    POWER: 1
     AOE: 0
     RATE: 1
     EFF: 1
@@ -164,9 +164,9 @@ MonoBehaviour:
     part: Grenade
     color: {r: 1, g: 0.19339621, b: 0.19339621, a: 1}
   - PartType: 43
-    POWER: 0
+    POWER: 1
     AOE: 0
-    RATE: 0
+    RATE: 1
     EFF: 1
     RANGE: 0
     BURN: 0
@@ -178,7 +178,7 @@ MonoBehaviour:
     AOE: 0
     RATE: 0
     EFF: 1
-    RANGE: 0
+    RANGE: 1
     BURN: 0
     RFRCD: 0
     part: Force Field
@@ -216,7 +216,7 @@ MonoBehaviour:
       multiplier: 0.5
       level: 2
   - isImplemented: 1
-    name: EFFECIENCY
+    name: EFFICIENCY
     type: 4
     description: 
     Levels:

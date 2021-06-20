@@ -1,14 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
+using StarSalvager.PatchTrees.Data;
+using StarSalvager.Utilities.Saving;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
 {
     public static class PART_TYPEExtensions
     {
+        public static List<PatchNodeJson> GetPatchTree(this PART_TYPE partType)
+        {
+            var rawData = partType.GetRemoteData().patchTreeData;
+            return JsonConvert.DeserializeObject<List<PatchNodeJson>>(rawData);
+        }
         public static BIT_TYPE GetCategory(this PART_TYPE partType) => partType.GetRemoteData().category;
+        public static Vector2Int GetCoordinateForCategory(this PART_TYPE partType) => PlayerDataManager.GetCoordinateForCategory(partType.GetRemoteData().category);
         
         public static Sprite GetSprite(this PART_TYPE partType)=> partType.GetProfileData().GetSprite();
 

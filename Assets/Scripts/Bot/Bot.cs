@@ -212,6 +212,8 @@ namespace StarSalvager
 
         public override void ChangeHealth(float amount)
         {
+            if (amount == 0) return;
+            
             var addsHealth = amount > 0;
             
             CurrentHealth += amount;
@@ -557,7 +559,7 @@ namespace StarSalvager
 
             AttachNewBlock(Vector2Int.zero, core);
 
-            List<Vector2Int> botLayout = PlayerDataManager.GetBotLayout();
+            var botLayout = PlayerDataManager.GetBotLayout();
             for (int i = 0; i < botLayout.Count; i++)
             {
                 if (botLayout[i] == Vector2Int.zero)
@@ -619,8 +621,8 @@ namespace StarSalvager
 
         public void DisplayHints()
         {
-            if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
-                HintManager.TryShowHint(HINT.GUN);
+            /*if(HintManager.CanShowHint(HINT.GUN) && AttachedBlocks.HasPartAttached(PART_TYPE.GUN))
+                HintManager.TryShowHint(HINT.GUN);*/
         }
 
 
@@ -949,6 +951,7 @@ namespace StarSalvager
                             //Try and shift collided row (Depending on direction)
                             var shift = TryShift(connectionDirection.Reflected(), closestAttachable);
                             AudioController.PlaySound(shift ? SOUND.BUMPER_BONK_SHIFT : SOUND.BUMPER_BONK_NOSHIFT);
+                            //AudioController.PlayDelayedSound(SOUND.SLIDING_BITS, 0.6f);
                             SessionDataProcessor.Instance.HitBumper();
 
                             if(shift) OnBitShift?.Invoke();
@@ -1339,10 +1342,6 @@ namespace StarSalvager
         {
             destroyed = false;
 
-            //Don't want the player to get hurt if they've finished the level
-            if(!GameManager.IsState(GameState.LevelActive))
-                return false;
-
             var closestAttachable = AttachedBlocks.GetClosestAttachable(hitPosition);
 
             switch (closestAttachable)
@@ -1404,8 +1403,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            if (damage <= 0f)
-                return;
+            if (damage <= 0f) return;
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -3579,7 +3577,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }
@@ -3604,7 +3602,7 @@ _isShifting = true;
                 if (AttachedBlocks.HasPathToCore(AttachedBlocks[i], leavingCoordinates))
                     continue;
 
-                Debug.LogError(
+                Debug.Log(
                     $"Found a potential floater {AttachedBlocks[i].gameObject.name} at {AttachedBlocks[i].Coordinate}",
                     AttachedBlocks[i].gameObject);
             }
@@ -3849,7 +3847,6 @@ _isShifting = true;
 
             _isDestroyed = true;
             CompositeCollider2D.enabled = false;
-            GameUi.ShowAbortWindow(false);
 
              StartCoroutine(DestroyCoroutine(deathMethod));
         }

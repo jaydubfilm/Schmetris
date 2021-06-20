@@ -9,13 +9,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Audio.Enemies;
+using StarSalvager.Audio.Interfaces;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 
 namespace StarSalvager.AI
 {
-    public class JunkFlyEnemy : Enemy, IOverrideRecycleType
+    public class JunkFlyEnemy : Enemy, IPlayEnemySounds<FlySounds>
     {
+        public FlySounds EnemySound => (FlySounds) EnemySoundBase;
         public override bool IgnoreObstacleAvoidance => true;
         public override bool SpawnAboveScreen => false;
 
@@ -34,9 +37,11 @@ namespace StarSalvager.AI
 
         private Vector2 _playerLocation;
 
-        public override void LateInit()
+        public override void OnSpawned()
         {
-            base.LateInit();
+            EnemySoundBase = AudioController.Instance.FlySounds;
+            
+            base.OnSpawned();
 
             m_horizontalMovementYLevel = transform.position.y;
             verticalLowestAllowed = m_horizontalMovementYLevel - (Constants.gridCellSize * m_numberCellsDescend * m_numberTimesDescend);
@@ -56,6 +61,14 @@ namespace StarSalvager.AI
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)
         {
+            void Descend()
+            {
+                m_horizontalMovementYLevel -= Constants.gridCellSize * m_numberCellsDescend;
+                AudioController.Instance.FlySounds.moveDownSound.Play();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (m_horizontalMovementYLevel <= verticalLowestAllowed)
             {
                 return Vector2.down;
@@ -64,12 +77,12 @@ namespace StarSalvager.AI
             if (transform.position.x <= playerLocation.x + horizontalFarLeftX && m_currentHorizontalMovementDirection != Vector2.right)
             {
                 m_currentHorizontalMovementDirection = Vector2.right;
-                m_horizontalMovementYLevel -= Constants.gridCellSize * m_numberCellsDescend;
+                Descend();
             }
             else if (transform.position.x >= playerLocation.x + horizontalFarRightX && m_currentHorizontalMovementDirection != Vector2.left)
             {
                 m_currentHorizontalMovementDirection = Vector2.left;
-                m_horizontalMovementYLevel -= Constants.gridCellSize * m_numberCellsDescend;
+                Descend();
             }
 
             Vector2 addedVertical = Vector2.up * (m_horizontalMovementYLevel - transform.position.y);
@@ -176,6 +189,8 @@ namespace StarSalvager.AI
                     0f,
                     false,
                     true);
+            
+            AudioController.Instance.FlySounds.attackSound.Play();
         }
 
         #endregion

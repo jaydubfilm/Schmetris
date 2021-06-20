@@ -18,6 +18,7 @@ using StarSalvager.AI;
 using StarSalvager.UI;
 using StarSalvager.Utilities.Interfaces;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace StarSalvager
 {
@@ -31,6 +32,11 @@ namespace StarSalvager
     [RequireComponent(typeof(Button)), RequireComponent(typeof(PointerEvents))]
     public class UniverseMapButton : MonoBehaviour
     {
+        //Properties
+        //====================================================================================================================//
+        
+        #region Properties
+
         private static UniverseMap _universeMap;
 
         public bool IsButtonInteractable => Button.interactable;
@@ -44,14 +50,43 @@ namespace StarSalvager
         [SerializeField, ReadOnly] private int nodeIndex;
 
         [SerializeField] private Button Button;
-        [SerializeField] private TMP_Text Text;
-        [SerializeField] private TMP_Text TextBelow;
+        [SerializeField] private Image foregroundImage;
 
         [SerializeField] private Image BotImage;
-        [SerializeField] private Image ShortcutImage;
+        
+        private Image[] _wreckTypeImages;
+        private Image[] _wreckLevelImages;
 
-        //[SerializeField] private Image PointOfInterestImage;
+        //Sprites
+        //====================================================================================================================//
+        
+        [SerializeField, FoldoutGroup("Sprites")]
+        private Sprite wreckBackgroundSprite;
+        [SerializeField, FoldoutGroup("Sprites")]
+        private Sprite waveBackgroundSprite;
 
+        [SerializeField, BoxGroup("Sprites/Waves")]
+        private Sprite waveSprite;
+        [SerializeField, BoxGroup("Sprites/Waves")]
+        private Sprite defenceWaveSprite;
+        [SerializeField, BoxGroup("Sprites/Waves")]
+        private Sprite bonusWaveSprite;
+        [SerializeField, BoxGroup("Sprites/Waves")]
+        private Sprite bossWaveSprite;
+        [SerializeField, BoxGroup("Sprites/Waves")]
+        private Sprite wildcardWaveSprite;
+        
+        [SerializeField, BoxGroup("Sprites/Wrecks")]
+        private Sprite wreckSprite;
+        [SerializeField, BoxGroup("Sprites/Wrecks")]
+        private Sprite wreckWildcardSprite;
+        [SerializeField, BoxGroup("Sprites/Wrecks")]
+        private Sprite wreckLevelSprite;
+        [SerializeField, BoxGroup("Sprites/Wrecks")]
+        private Sprite[] wreckBitSprites;
+
+        //====================================================================================================================//
+        
         public new RectTransform transform
         {
             get
@@ -64,6 +99,8 @@ namespace StarSalvager
         }
         private RectTransform _transform;
 
+        #endregion //Properties
+
         //====================================================================================================================//
 
         public void Init(in int nodeIndex, in int sector, in NodeType nodeType, Action<int, NodeType> onPressedCallback)
@@ -72,55 +109,162 @@ namespace StarSalvager
             
             Button.onClick.RemoveAllListeners();
             
-            BotImage.sprite = PART_TYPE.EMPTY.GetSprite();
+            BotImage.sprite = PART_TYPE.CORE.GetSprite();
 
             this.nodeIndex = nodeIndex;
             this.nodeType = nodeType;
             
             Button.onClick.AddListener(() => onPressedCallback?.Invoke(this.nodeIndex, this.nodeType));
 
-
-            SetShortcutImageActive(NodeType == NodeType.Wreck);
-            
-            string title;
-            switch (NodeType)
-            {
-                case NodeType.Base:
-                    title = "Base";
-                    break;
-                case NodeType.Level:
-                    title = $"{nodeIndex}";
-                    break;
-                case NodeType.Wreck:
-                    title = "Wreck";
-                    
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            
-            SetTitles(title, string.Empty);
-
+            SetupSprites();
         }
 
-        public void SetTitles(in string title, in string subTitle)
-        {
-            Text.text = title;
-            TextBelow.text = subTitle;
-        }
-
-        public void SetButtonProperties(in bool buttonInteractable, in Color color)
+        private void SetButtonProperties(in bool buttonInteractable, in Color color)
         {
             SetButtonColor(color);
             SetButtonInteractable(buttonInteractable);
         }
-        public void SetButtonColor(in Color buttonColor)
+        private void SetButtonColor(in Color buttonColor)
         {
             Button.image.color = buttonColor;
         }
         public void SetButtonInteractable(in bool buttonInteractable)
         {
             Button.interactable = buttonInteractable;
+
+            foregroundImage.color = buttonInteractable ? Button.colors.normalColor : Button.colors.disabledColor;
+        }
+
+
+        private void SetupSprites()
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void SetupWreckTypeImages()
+            {
+                const float DEGREE_OFFSET = 0;
+                const float DEGREE_SPREAD = 180;
+
+                var size = ((RectTransform) Button.image.transform).sizeDelta.x * 0.9f;
+
+                var count = wreckBitSprites.Length;
+                var degIncrement = DEGREE_SPREAD / (count - 1);
+                _wreckTypeImages = new Image[count];
+                
+                for (int i = 0; i < count; i++)
+                {
+                    var point = Mathfx.GetAsPointOnCircle((i * degIncrement) + DEGREE_OFFSET, size / 2);
+
+                    var temp = new GameObject(wreckBitSprites[i].name);
+                    var image = temp.AddComponent<Image>();
+                    temp.transform.SetParent(Button.transform);
+                    temp.transform.SetSiblingIndex(0);
+                    ((RectTransform)temp.transform).sizeDelta = Vector2.one * 17f;
+
+                    image.sprite = wreckBitSprites[i];
+                    image.raycastTarget = false;
+
+                    temp.transform.localPosition = point;
+
+                    _wreckTypeImages[i] = image;
+                }
+            }
+
+            void SetupWreckLevelImages()
+            {
+                const float DEGREE_SPREAD = 100;
+                const int LEVELS = 3;
+
+                var size = ((RectTransform) Button.image.transform).sizeDelta.x * 0.9f;
+
+                var degIncrement = DEGREE_SPREAD / LEVELS;
+                _wreckLevelImages = new Image[LEVELS];
+
+                var degree_offset = 270 - degIncrement;
+                
+                for (var i = 0; i < LEVELS; i++)
+                {
+                    var point = Mathfx.GetAsPointOnCircle((i * degIncrement) + degree_offset, size / 2);
+
+                    var temp = new GameObject($"{wreckLevelSprite.name}_{i + 1}");
+                    var image = temp.AddComponent<Image>();
+                    temp.transform.SetParent(Button.transform);
+                    temp.transform.SetSiblingIndex(0);
+                    ((RectTransform)temp.transform).sizeDelta = Vector2.one * 20f;
+
+                    image.sprite = wreckLevelSprite;
+                    image.raycastTarget = false;
+
+                    temp.transform.localPosition = point;
+
+                    _wreckLevelImages[i] = image;
+                }
+            }
+
+            void ShowWreckSprites(in int level, in BIT_TYPE[] bitTypes)
+            {
+                for (var i = 0; i < _wreckLevelImages.Length; i++)
+                {
+                    _wreckLevelImages[i].gameObject.SetActive(i <= level);
+                }
+
+                var bitList = bitTypes.Select(x => (int)x).ToList();
+                for (var i = 0; i < _wreckTypeImages.Length; i++)
+                {
+                    var type = i + 1;
+                    
+                    _wreckTypeImages[i].gameObject.SetActive(bitList.Contains(type));
+                }
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Sprite backgroundSprite;
+            Sprite foregroundSprite;
+
+            switch (NodeType)
+            {
+                
+                case NodeType.Level:
+                    backgroundSprite = waveBackgroundSprite;
+                    // Change from: https://agamestudios.atlassian.net/browse/SS-187
+                    foregroundSprite = Random.value <= 0.25f ? wildcardWaveSprite : waveSprite;
+                    break;
+                case NodeType.Base:
+                    foregroundSprite = null;
+                    backgroundSprite = wreckBackgroundSprite;
+                    break;
+                case NodeType.Wreck:
+                    if(_wreckTypeImages.IsNullOrEmpty()) 
+                        SetupWreckTypeImages();
+                    if(_wreckLevelImages.IsNullOrEmpty()) 
+                        SetupWreckLevelImages();
+                    backgroundSprite = wreckBackgroundSprite;
+                    foregroundSprite = wreckSprite;
+
+                    //Random Test Values
+                    //--------------------------------------------------------------------------------------------------------//
+                    
+                    var level = Random.Range(0, 3);
+                    var count = Random.Range(1, 6);
+                    var types = new BIT_TYPE[count];
+                    for (var i = 0; i < count; i++)
+                    {
+                        types[i] = (BIT_TYPE) i + 1;
+                    }
+
+                    //--------------------------------------------------------------------------------------------------------//
+                    
+                    ShowWreckSprites(level, types);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            Button.image.sprite = backgroundSprite;
+            foregroundImage.sprite = foregroundSprite;
+            foregroundImage.gameObject.SetActive(foregroundSprite != null);
         }
 
         public void SetBotImageActive(in bool state)
@@ -128,56 +272,11 @@ namespace StarSalvager
             BotImage.gameObject.SetActive(state);
         }
 
-        public void SetShortcutImageActive(in bool state)
-        {
-            ShortcutImage.gameObject.SetActive(state);
-        }
-
-        /*public void SetWaveType(in NodeType nodeType, in int waveIndex)
-        {
-            this.nodeType = nodeType;
-            switch (nodeType)
-            {
-                case NodeType.Level when waveIndex < 0:
-                    throw new ArgumentException("Missing the wave number for level");
-                case NodeType.Level:
-                    waveNumber = waveIndex;
-                    break;
-            }
-        }*/
-
         public void Reset()
         {
-            SetTitles(string.Empty, string.Empty);
             SetButtonProperties(false, Color.white);
             SetBotImageActive(false);
-            SetShortcutImageActive(false);
         }
-
-
-        private void PulseBotObject()
-        {
-            if (!BotImage.gameObject.activeSelf)
-            {
-                return;
-            }
-
-            float scale = 1.0f + Mathf.PingPong(Time.time / 3, 0.25f);
-            BotImage.gameObject.transform.localScale = Vector3.one * scale;
-        }
-
-        /*public void SetupHoveredCallback(Action<bool, int, int, RectTransform> onHoveredCallback)
-        {
-            _onHoveredCallback = onHoveredCallback;
-
-            PointerEvents.PointerEntered += hovered =>
-            {
-                if (hovered)
-                    _onHoveredCallback?.Invoke(true, SectorNumber, WaveNumber, gameObject.transform as RectTransform);
-                else
-                    _onHoveredCallback?.Invoke(false, -1, -1, null);
-            };
-        }*/
 
         //====================================================================================================================//
 

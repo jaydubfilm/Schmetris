@@ -166,8 +166,7 @@ namespace StarSalvager
             {
                 Enemy enemy = m_enemies[i];
                 
-                if(enemy.IsRecycled)
-                    continue;
+                if(enemy.IsRecycled) continue;
 
                 //Check to see if the enemy can Move
                 if (!enemy.CanMove())
@@ -255,7 +254,7 @@ namespace StarSalvager
 
             newEnemy.transform.localPosition = spawnLocationOverride ?? LevelManager.Instance.WorldGrid.GetLocalPositionOfSpawnPositionForEnemy(newEnemy);
 
-            newEnemy.LateInit();
+            newEnemy.OnSpawned();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
 

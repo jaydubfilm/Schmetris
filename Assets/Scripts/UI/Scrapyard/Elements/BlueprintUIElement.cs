@@ -1,7 +1,6 @@
 ﻿using StarSalvager.Factories;
 using System;
 using Sirenix.OdinInspector;
-using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,7 +8,7 @@ using UnityEngine.UI;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Saving;
 
-namespace StarSalvager.UI.Scrapyard
+namespace StarSalvager.UI.Wreckyard
 {
     [Obsolete]
     public class BlueprintUIElement : UIElement<Blueprint>, IPointerEnterHandler, IPointerExitHandler

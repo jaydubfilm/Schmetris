@@ -223,11 +223,11 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(PART_TYPE partType)
         {
-            var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
+            //var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
             var blockData = new PartData
             {
                 Type = (int) partType,
-                Patches = new PatchData[patchSockets]
+                Patches = new List<PatchData>()
             };
 
             return CreateGameObject(blockData);
@@ -300,11 +300,11 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PART_TYPE partType)
         {
-            var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
+            //var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
             var blockData = new PartData
             {
                 Type = (int)partType,
-                Patches = new PatchData[patchSockets]
+                Patches = new List<PatchData>()
             };
 
             return CreateScrapyardGameObject(blockData);

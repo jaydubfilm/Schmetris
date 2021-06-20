@@ -1,4 +1,5 @@
 ﻿using Recycling;
+using StarSalvager.Audio;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
@@ -40,6 +41,7 @@ namespace StarSalvager
 
             PlayerDataManager.AddGears(GearNum);
             FloatingText.Create($"+{GearNum}", transform.position, color);
+            AudioController.PlaySound(SOUND.COLLECT_GEARS);
 
             Recycler.Recycle<Component>(this);
 

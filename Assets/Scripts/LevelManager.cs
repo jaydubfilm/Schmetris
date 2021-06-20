@@ -23,6 +23,7 @@ using System;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Helpers;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager
 {
@@ -262,7 +263,7 @@ namespace StarSalvager
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
 
-            var botDataToLoad = PlayerDataManager.GetBlockDatas();
+            var botDataToLoad = PlayerDataManager.GetBotBlockDatas();
 
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
@@ -462,12 +463,16 @@ namespace StarSalvager
         //This handles cleanup for when you've entered the end wave state above. This and the above function likely should be combined in some way, I don't recall why it was originally set up like this and its on the list to fix.
         private void TryBeginWaveEndSequence()
         {
+            //Checks to see if there are any collectible bits in view of the player before wrapping
             if (!m_endLevelOverride && _afterWaveTimer >= 0)
             {
                 _afterWaveTimer -= Time.deltaTime;
                 CheckPlayWarningSound();
                 return;
             }
+            
+            if (ObstacleManager.AnyAttachableBitOnScreen && !m_endLevelOverride) return;
+
 
             //AudioController.PlaySound(SOUND.END_WAVE);
 
@@ -482,7 +487,6 @@ namespace StarSalvager
             LevelManagerUI.OverrideText = string.Empty;
             m_levelTimer += m_waveTimer;
             m_waveTimer = 0;
-            GameUi.ShowAbortWindow(false);
 
             BotInLevel.SetSortingLayer(LayerHelper.OVERLAY, 10000);
 
@@ -736,6 +740,7 @@ namespace StarSalvager
             
             Globals.CurrentWave = 0;
 
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }
@@ -751,7 +756,7 @@ namespace StarSalvager
                 var blockData = bot.GetBlockDatas();
 
                 PlayerDataManager.SetBotHealth(bot.CurrentHealth);
-                PlayerDataManager.SetBlockData(blockData);
+                PlayerDataManager.SetDroneBlockData(blockData);
             }
         }
 

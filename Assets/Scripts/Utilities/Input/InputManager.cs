@@ -24,7 +24,7 @@ namespace StarSalvager.Utilities.Inputs
     {
         public static Action<int, bool> TriggerWeaponStateChange;
         public static Action<string> InputDeviceChanged;
-        
+
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
 
@@ -150,17 +150,24 @@ namespace StarSalvager.Utilities.Inputs
         //Unity Functions
         //============================================================================================================//
 
+        private bool _controlPressed;
+
         #region Unity Functions
 
         private void Start()
         {
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
-            
+
         }
 
         private void Update()
         {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftControl))
+                _controlPressed = true;
+            else if(UnityEngine.Input.GetKeyUp(KeyCode.LeftControl))
+                _controlPressed = false;
+
             DasChecksMovement();
             DasChecksRotate();
 
@@ -223,7 +230,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     case GameState.MainMenu:
                     case GameState.AccountMenu:
-                    case GameState.Scrapyard:
+                    case GameState.Wreckyard:
                     case GameState.UniverseMap:
                         actionMap = ACTION_MAP.MENU;
                         break;
@@ -239,7 +246,7 @@ namespace StarSalvager.Utilities.Inputs
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            
+
             switch (actionMap)
             {
                 case ACTION_MAP.DEFAULT:
@@ -285,7 +292,7 @@ namespace StarSalvager.Utilities.Inputs
 
             _moveOnInput.Add(toAdd);
         }
-        
+
         //IInput Functions
         //============================================================================================================//
 
@@ -350,24 +357,24 @@ namespace StarSalvager.Utilities.Inputs
         {
             const string KEYBOARD = "Keyboard";
             const string MOUSE = "Mouse";
-            
+
             var deviceName = inputDevice.name;
-            
+
             if (deviceName.Equals(KEYBOARD) || deviceName.Equals(MOUSE))
                 deviceName = KEYBOARD;
-            
+
             if (_currentInputDevice.Equals(deviceName))
                 return;
 
             _currentInputDevice = deviceName;
-            
+
             Debug.Log($"New Device Name: {deviceName}");
-            //TODO Notify whoever that the 
+            //TODO Notify whoever that the
             InputDeviceChanged?.Invoke(deviceName);
         }
-        
-        
-        
+
+
+
         private void SetupInputs()
         {
             //var actionMap = playerInput.currentActionMap.actions;
@@ -375,6 +382,9 @@ namespace StarSalvager.Utilities.Inputs
             //Setup the unchanging inputs
             _inputMap = new Dictionary<InputAction, Action<InputAction.CallbackContext>>
             {
+                {
+                    Input.Actions.Default.SwapPart, TrySwapPart
+                },
                 /*{
                     Input.Actions.Default.ShuffleAlt, ShuffleInput
                 },*/
@@ -405,6 +415,20 @@ namespace StarSalvager.Utilities.Inputs
             };
         }
 
+        private void TrySwapPart(InputAction.CallbackContext ctx)
+        {
+            var vector2 = ctx.ReadValue<Vector2>();
+
+            if (vector2 == Vector2.zero)
+                return;
+
+            var direction = vector2.ToDirection();
+
+            Debug.Log($"Try swap {direction} part");
+
+            _bots[0].BotPartsLogic.TrySwapPart(direction);
+        }
+
         //Smart Actions
         //====================================================================================================================//
 
@@ -412,7 +436,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             if (Console.Open)
                 return;
-            
+
             CheckForInputDeviceChange(ctx);
 
             var rawDirection = ctx.ReadValue<Vector2>();
@@ -452,7 +476,7 @@ namespace StarSalvager.Utilities.Inputs
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             TriggerWeaponStateChange?.Invoke(index, state);
         }
 
@@ -468,7 +492,7 @@ namespace StarSalvager.Utilities.Inputs
 #if UNITY_EDITOR
             if (Console.Open)
                 return;
-            
+
             if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
 
@@ -484,21 +508,21 @@ namespace StarSalvager.Utilities.Inputs
             }
 #endif
         }
-        
+
         private void Dash(InputAction.CallbackContext ctx)
         {
             if (Console.Open)
                 return;
-            
+
             CheckForInputDeviceChange(ctx);
-            
-            if (!GameManager.IsState(GameState.LEVEL_ACTIVE)) 
+
+            if (!GameManager.IsState(GameState.LEVEL_ACTIVE))
                 return;
-            
+
             var direction = ctx.ReadValue<float>();
-            
+
             _bots[0].Dash(direction, Globals.DashDistance);
-            
+
             /*if (direction < 0)
             {
                 Globals.DecreaseFallSpeed();
@@ -515,7 +539,7 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             CheckForInputDeviceChange(ctx);
-            
+
             switch (ctx.action.name)
             {
                 case "Side Movement":
@@ -548,7 +572,7 @@ namespace StarSalvager.Utilities.Inputs
             //If the input is already set to the updated value, we can ignore it.
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
-            
+
             if(Globals.UseShuffleDance)
                 TrySideShuffleDance(Mathf.RoundToInt(newValue));
 
@@ -689,12 +713,12 @@ namespace StarSalvager.Utilities.Inputs
                 newValue = 1f;
             else
                 newValue = 0f;
-            
+
             //If the input is already set to the updated value, we can ignore it.
             if (System.Math.Abs(newValue - _currentMoveInput) < 0.05f)
                 return;
-            
-            
+
+
         }*/
 
         private void UpdateShuffleCountdown()
@@ -779,7 +803,7 @@ namespace StarSalvager.Utilities.Inputs
         {
             _currentRotateInput = ctx.ReadValue<float>();
             Debug.Log($"Current Rotation Input: {_currentRotateInput}");
-            
+
             ProcessRotateInput(_currentRotateInput);
         }
 
@@ -905,7 +929,7 @@ namespace StarSalvager.Utilities.Inputs
                 return;
 
             CheckForInputDeviceChange(ctx);
-            
+
             if (GameManager.IsState(GameState.LevelEndWave) || GameManager.IsState(GameState.LevelBotDead))
                 return;
 

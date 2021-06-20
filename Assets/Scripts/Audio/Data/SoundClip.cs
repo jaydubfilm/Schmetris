@@ -22,14 +22,8 @@ namespace StarSalvager.Audio.Data
         }
         [SerializeField, AssetSelector(Paths = "Assets/Audio/SFX")]
         private AudioClip _clip;
-
-        public float Volume
-        {
-            get => _volume; 
-            set => _volume = value; 
-        }
-        [SerializeField, Range(0f,1f),TableColumnWidth(50)]
-        private float _volume = 1f;
     }
+    
+    
     
 }

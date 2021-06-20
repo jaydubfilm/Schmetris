@@ -16,7 +16,7 @@ namespace StarSalvager.Values
     {
         //Properties
         //====================================================================================================================//
-        
+
         #region Properties
 
         //Values that don't change throughout gameplay
@@ -32,7 +32,7 @@ namespace StarSalvager.Values
         public static int ColumnsOnScreen = Constants.initialColumnsOnScreen;
         //FIXME I no longer like how this is implemented
         public static DIRECTION MovingDirection = DIRECTION.NULL;
-        
+
         public static int CurrentRingIndex => PlayerDataManager.GetCurrentRing();
         public static RingRemoteDataScriptableObject CurrentRing => FactoryManager.Instance.RingRemoteDatas[CurrentRingIndex];
 
@@ -48,7 +48,7 @@ namespace StarSalvager.Values
         //Values set by Game Settings - do not set values here
         public static bool TestingFeatures;
         public static float AsteroidFallTimer;
-        
+
         public static ORIENTATION Orientation
         {
             get => _orientation;
@@ -61,7 +61,7 @@ namespace StarSalvager.Values
         private static ORIENTATION _orientation;
 
         #endregion //Properties
-        
+
         //Game Settings Values
         //====================================================================================================================//
 
@@ -69,24 +69,24 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static float PartSwapTime => m_gameSettings.partSwapTime;
         public static bool UsePartColors => m_gameSettings.usePartColors;
 
+        public static int MaxPartTypeCount => m_gameSettings.maxPartTypeCount;
         public static int PreSpawnedRows => m_gameSettings.preSpawnedRows;
-
         public static float BotHealWaitTime => m_gameSettings.botHealWaitTime;
 
 
         public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
-        
+
         public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
-        
         public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
         //public static int Magnetism => m_gameSettings.magnetAmount;
-        
+
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 
         public static int StartingAmmo => m_gameSettings.startingAmmo;
-        
+
         public static bool UseShuffleDance => m_gameSettings.useShuffleDance;
         public static bool ShuffleCanDisconnect => m_gameSettings.shuffleCanDisconnect;
 
@@ -95,7 +95,7 @@ namespace StarSalvager.Values
         public static int AsteroidBounceDistance => m_gameSettings.bounceDistance;
         public static float DashSpeed => m_gameSettings.dashSpeed;
         public static float DashCooldown => m_gameSettings.dashCooldown;
-        
+
         //public static float BotStartingHealth => m_gameSettings.botHealth;
         //public static float GreenHealAmount => m_gameSettings.greenHealAmount;
         public static bool BitsPushThroughParts => m_gameSettings.bitsPushThroughParts;
@@ -115,7 +115,7 @@ namespace StarSalvager.Values
         public static float AsteroidDamage => m_gameSettings.asteroidDamage;
         public static float BonusShapeDuration => m_gameSettings.bonusShapeSpeed;
         //public static float LevelResourceDropReductionAmount => m_gameSettings.levelResourceDropReductionAmount;
-        
+
         //public static float LevelXPConstant => m_gameSettings.levelXPConstant;
         /*public static int LevelBaseExperience => m_gameSettings.levelBaseExperience;
         public static int LevelExperienceIncrement => m_gameSettings.levelExperienceIncrement;*/
@@ -149,7 +149,7 @@ namespace StarSalvager.Values
             TestingFeatures = m_gameSettings.testingFeatures;
             AsteroidFallTimer = TimeForAsteroidToFallOneSquare / 2;
         }
-        
+
         //Fall Speed
         //====================================================================================================================//
 
@@ -179,7 +179,7 @@ namespace StarSalvager.Values
         #endregion //Fall Speed
 
         //====================================================================================================================//
-        
+
         public static int GetBonusShapeGearRewards(int numCells, int numColours)
         {
             BonusShapeGearsValue bonusShapeValue = m_gameSettings.bonusShapeGearsRewards.FirstOrDefault(b => b.numCells == numCells && b.numColours == numColours);
@@ -218,6 +218,6 @@ namespace StarSalvager.Values
         }
 
         //====================================================================================================================//
-        
+
     }
 }

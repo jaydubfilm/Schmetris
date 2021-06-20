@@ -16,14 +16,14 @@ namespace StarSalvager.Utilities.SceneManagement
 
         public const string MAIN_MENU = "MainMenuScene";
         public const string LEVEL = "LevelScene";
-        public const string SCRAPYARD = "ScrapyardScene";
+        public const string WRECKYARD = "WreckyardScene";
         public const string UNIVERSE_MAP = "UniverseMapScene";
         
         private static readonly Dictionary<string, SceneRoot> SCENES = new Dictionary<string, SceneRoot>
         {
             { MAIN_MENU, null },
             { LEVEL, null },
-            { SCRAPYARD, null },
+            { WRECKYARD, null },
             { UNIVERSE_MAP, null }
         };
 
@@ -201,7 +201,7 @@ namespace StarSalvager.Utilities.SceneManagement
             {
                 case MAIN_MENU:
                 case UNIVERSE_MAP:
-                case SCRAPYARD:
+                case WRECKYARD:
                     target = ACTION_MAP.MENU;
                     break;
                 case LEVEL:

@@ -182,183 +182,186 @@ MonoBehaviour:
   sfxAudioMixerGroup: {fileID: 7001779846859700073, guid: a2e153dc1c5ab37498cbd00d93cc5ddd,
     type: 2}
   soundClips:
-  - _sound: 0
+  - _volume: 1
+    _sound: 0
     _clip: {fileID: 8300000, guid: 365a0e09e5a7c384a904305561bff330, type: 3}
-    _volume: 1
-  - _sound: 1
+  - _volume: 1
+    _sound: 1
     _clip: {fileID: 8300000, guid: 4fa8f218abd6a274da2424aa7ce8f137, type: 3}
-    _volume: 1
-  - _sound: 2
+  - _volume: 1
+    _sound: 2
     _clip: {fileID: 8300000, guid: 76ae6cdd1d241e844b5c3adde28272cb, type: 3}
-    _volume: 1
-  - _sound: 3
+  - _volume: 1
+    _sound: 3
     _clip: {fileID: 8300000, guid: 4c1113bf1e950d943aa959d48a0ba6a9, type: 3}
-    _volume: 1
-  - _sound: 4
+  - _volume: 1
+    _sound: 4
     _clip: {fileID: 8300000, guid: d8c867afac2aaae47935ab463d0a8b06, type: 3}
-    _volume: 1
-  - _sound: 5
+  - _volume: 1
+    _sound: 5
     _clip: {fileID: 8300000, guid: 6d3ee16a6bf292f4a8134ea41befb4b9, type: 3}
-    _volume: 1
-  - _sound: 6
+  - _volume: 1
+    _sound: 6
     _clip: {fileID: 8300000, guid: 6cf65982efcf7c0469adcce471a7fcea, type: 3}
-    _volume: 1
-  - _sound: 7
+  - _volume: 1
+    _sound: 7
     _clip: {fileID: 8300000, guid: 06dcdd7b9bb814943991b834a37c94d3, type: 3}
-    _volume: 1
-  - _sound: 8
+  - _volume: 1
+    _sound: 8
     _clip: {fileID: 8300000, guid: 0be61b37a5cb2c241a293075332e10b6, type: 3}
-    _volume: 1
-  - _sound: 9
+  - _volume: 1
+    _sound: 9
     _clip: {fileID: 8300000, guid: 8f55bfb84fecd5a4fb866dd14a0fbf9e, type: 3}
-    _volume: 1
-  - _sound: 10
+  - _volume: 1
+    _sound: 10
     _clip: {fileID: 8300000, guid: 2b22f0ea09f59844780eb5184e0e35a8, type: 3}
-    _volume: 1
-  - _sound: 11
+  - _volume: 1
+    _sound: 11
     _clip: {fileID: 8300000, guid: 3a06a49de17cc834aa14e1eb76778065, type: 3}
-    _volume: 1
-  - _sound: 12
+  - _volume: 1
+    _sound: 12
     _clip: {fileID: 8300000, guid: 7cd70c07411f3004b84d8f9b596c2f06, type: 3}
-    _volume: 1
-  - _sound: 13
+  - _volume: 1
+    _sound: 13
     _clip: {fileID: 8300000, guid: cb149e644153e1246ab8ee2c221f2119, type: 3}
-    _volume: 1
-  - _sound: 14
+  - _volume: 1
+    _sound: 14
     _clip: {fileID: 8300000, guid: 9de1da5d624256f4b91c00c19117e5c1, type: 3}
-    _volume: 1
-  - _sound: 15
+  - _volume: 1
+    _sound: 15
     _clip: {fileID: 8300000, guid: 4e83c9b2ff47a304b9c482748fe80ea5, type: 3}
-    _volume: 1
-  - _sound: 16
+  - _volume: 1
+    _sound: 16
     _clip: {fileID: 8300000, guid: 5fd1cef2784af304cac3841f29ca043b, type: 3}
-    _volume: 1
-  - _sound: 17
+  - _volume: 1
+    _sound: 17
     _clip: {fileID: 8300000, guid: f4b7de92bf17e07428bb170e47f24eab, type: 3}
-    _volume: 1
-  - _sound: 18
+  - _volume: 1
+    _sound: 18
     _clip: {fileID: 8300000, guid: 226f697dab28cc140871901dbc25939b, type: 3}
-    _volume: 1
-  - _sound: 19
+  - _volume: 1
+    _sound: 19
     _clip: {fileID: 8300000, guid: 209c944b34d9d264cb3369f9d6979d5e, type: 3}
-    _volume: 1
-  - _sound: 20
+  - _volume: 1
+    _sound: 20
     _clip: {fileID: 8300000, guid: 511bf0892179e1a4984aef737f84845e, type: 3}
-    _volume: 1
-  - _sound: 21
+  - _volume: 1
+    _sound: 21
     _clip: {fileID: 8300000, guid: 8ba23f7b7cf831548be89d44beb70f18, type: 3}
-    _volume: 1
-  - _sound: 22
+  - _volume: 1
+    _sound: 22
     _clip: {fileID: 8300000, guid: 6e4572e8eaf42444aac185be45322f64, type: 3}
-    _volume: 1
-  - _sound: 23
+  - _volume: 1
+    _sound: 23
     _clip: {fileID: 8300000, guid: 9b4e3e8554bc4e44b9e8556fb5082a44, type: 3}
-    _volume: 1
-  - _sound: 24
+  - _volume: 1
+    _sound: 24
     _clip: {fileID: 8300000, guid: b0a5f40b732604d40803c3a85846c866, type: 3}
-    _volume: 1
-  - _sound: 25
+  - _volume: 1
+    _sound: 25
     _clip: {fileID: 8300000, guid: fea8c07ee1c2c6048841b02adc41e1ac, type: 3}
-    _volume: 1
-  - _sound: 26
+  - _volume: 1
+    _sound: 26
     _clip: {fileID: 8300000, guid: c42fa33ccff9e3446a2b596dc5b933e8, type: 3}
-    _volume: 1
-  - _sound: 27
+  - _volume: 1
+    _sound: 27
     _clip: {fileID: 8300000, guid: 707e738e2031e7e47a4fa4cc9d0d15dc, type: 3}
-    _volume: 1
-  - _sound: 28
+  - _volume: 1
+    _sound: 28
     _clip: {fileID: 8300000, guid: ffe73d9309c4d7a428a333cecba2e338, type: 3}
-    _volume: 1
-  - _sound: 29
+  - _volume: 1
+    _sound: 29
     _clip: {fileID: 8300000, guid: 82faa0e5dca6a3b41b5cdc4083c2f1a7, type: 3}
-    _volume: 1
-  - _sound: 30
+  - _volume: 1
+    _sound: 30
     _clip: {fileID: 8300000, guid: bd29752dc806102439df484a078113e7, type: 3}
-    _volume: 1
-  - _sound: 31
+  - _volume: 1
+    _sound: 31
     _clip: {fileID: 8300000, guid: d58c98190d06eb04da6ce0231ebcb356, type: 3}
-    _volume: 1
-  - _sound: 32
+  - _volume: 1
+    _sound: 32
     _clip: {fileID: 8300000, guid: 2edc832c649ca5a41bb73b78281ad7ec, type: 3}
-    _volume: 1
-  - _sound: 33
+  - _volume: 1
+    _sound: 33
     _clip: {fileID: 8300000, guid: cd4d5e8bd9fd3f2408e1347c533c4ccd, type: 3}
-    _volume: 1
-  - _sound: 34
+  - _volume: 1
+    _sound: 34
     _clip: {fileID: 8300000, guid: b14bfed80763c124e9de5d644c1d5ec9, type: 3}
-    _volume: 1
-  - _sound: 35
+  - _volume: 1
+    _sound: 35
     _clip: {fileID: 8300000, guid: 5c24b43784be3a443a963dab8799bacf, type: 3}
-    _volume: 1
-  - _sound: 36
+  - _volume: 1
+    _sound: 36
     _clip: {fileID: 8300000, guid: 560ab6084ec5b7f46bf8db19ee50cde4, type: 3}
-    _volume: 1
-  - _sound: 37
+  - _volume: 1
+    _sound: 37
     _clip: {fileID: 8300000, guid: b151e5ac18d68694fbaeea150c758b9e, type: 3}
-    _volume: 1
-  - _sound: 38
+  - _volume: 1
+    _sound: 38
     _clip: {fileID: 8300000, guid: 0acd065b02b64434194364f41d8b7af0, type: 3}
-    _volume: 1
-  - _sound: 39
+  - _volume: 1
+    _sound: 39
     _clip: {fileID: 8300000, guid: f764559464b847f4d83e1242e8615e29, type: 3}
-    _volume: 1
-  - _sound: 40
+  - _volume: 1
+    _sound: 40
     _clip: {fileID: 8300000, guid: 0dbb1954ec1ec1249a77ae203d9db11c, type: 3}
-    _volume: 1
-  - _sound: 41
+  - _volume: 1
+    _sound: 41
     _clip: {fileID: 8300000, guid: f8dd651c285f5634b844feb8bfdd67be, type: 3}
-    _volume: 1
-  - _sound: 42
+  - _volume: 1
+    _sound: 42
     _clip: {fileID: 8300000, guid: 3993e3bc5fbffca49b4cd8702b164d65, type: 3}
-    _volume: 1
-  - _sound: 43
+  - _volume: 1
+    _sound: 43
     _clip: {fileID: 8300000, guid: ba03485ae9bac8b4e8c73ccf6ca35420, type: 3}
-    _volume: 1
-  - _sound: 44
+  - _volume: 1
+    _sound: 44
     _clip: {fileID: 8300000, guid: f15293df1be111345afdf45c1c624ac4, type: 3}
-    _volume: 1
-  - _sound: 45
+  - _volume: 1
+    _sound: 45
     _clip: {fileID: 8300000, guid: 709394b714ba5354ea8667fc9e1dd94a, type: 3}
-    _volume: 1
-  - _sound: 46
+  - _volume: 1
+    _sound: 46
     _clip: {fileID: 8300000, guid: 2d94aee041b4c6c499e94fe979228888, type: 3}
-    _volume: 1
-  - _sound: 47
+  - _volume: 1
+    _sound: 47
     _clip: {fileID: 8300000, guid: 44969c03eea6a3a42bb568a5aba3c44c, type: 3}
-    _volume: 1
-  - _sound: 48
+  - _volume: 1
+    _sound: 48
     _clip: {fileID: 8300000, guid: 90e6a9586a6a06b43b8a383cf8d78261, type: 3}
-    _volume: 1
-  - _sound: 49
+  - _volume: 1
+    _sound: 49
     _clip: {fileID: 8300000, guid: 90e6a9586a6a06b43b8a383cf8d78261, type: 3}
-    _volume: 1
-  - _sound: 50
+  - _volume: 1
+    _sound: 50
     _clip: {fileID: 0}
-    _volume: 1
-  - _sound: 51
+  - _volume: 1
+    _sound: 51
     _clip: {fileID: 8300000, guid: 0f03ec6e48f56f94e83b014ac4468ca1, type: 3}
-    _volume: 1
-  - _sound: 52
+  - _volume: 1
+    _sound: 52
     _clip: {fileID: 8300000, guid: 7d6b08a452e494c44b3849f8dcb81997, type: 3}
-    _volume: 1
-  - _sound: 53
+  - _volume: 1
+    _sound: 53
     _clip: {fileID: 8300000, guid: 4f4b0251a672a5242adfb98d06c80fee, type: 3}
-    _volume: 1
-  - _sound: 54
+  - _volume: 1
+    _sound: 54
     _clip: {fileID: 8300000, guid: 93eb968010087d741b95fa8d51f8b2f1, type: 3}
-    _volume: 1
-  - _sound: 55
+  - _volume: 1
+    _sound: 55
     _clip: {fileID: 8300000, guid: 7a2d5d91fdee650478a43eccfba44cbb, type: 3}
-    _volume: 1
-  - _sound: 56
+  - _volume: 0.75
+    _sound: 56
     _clip: {fileID: 8300000, guid: 183f4bbc756354a469b1296e2768db9c, type: 3}
-    _volume: 0.75
-  - _sound: 57
+  - _volume: 0.75
+    _sound: 57
     _clip: {fileID: 8300000, guid: 9fe4690ff1ca2704c9063f0e0c1477db, type: 3}
-    _volume: 0.75
-  - _sound: 58
+  - _volume: 1
+    _sound: 58
     _clip: {fileID: 8300000, guid: facecdb1f3019ea488c8049220845fe8, type: 3}
-    _volume: 1
+  - _volume: 1
+    _sound: 59
+    _clip: {fileID: 8300000, guid: 12e59ee06e216784ab3ef1bcd3dde353, type: 3}
   startingMusic: 0
   Songs:
   - {fileID: 4861476716751203581}
@@ -366,56 +369,191 @@ MonoBehaviour:
   - {fileID: 1444583858010852529}
   - {fileID: 2528187958632766695}
   - {fileID: 6119654755891836475}
+  FlySounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 253edb39d76323440ab2a2e518e34092, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: f4b10a1b920ac344fac91baffb506483, type: 3}
+    moveDownSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: bac90cee743462e4b835267b90d03093, type: 3}
+  DataLeechSounds:
+    attackSound:
+      _volume: 0.65
+      _clip: {fileID: 8300000, guid: bd45d4b5fe2374147b1384d1acb59320, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: acf4463e4f1b08842a9ea4c6469d9c5b, type: 3}
+    latchOnSound:
+      _volume: 0.7
+      _clip: {fileID: 8300000, guid: 70657bfc8dd4bd6449c8544fcf09136b, type: 3}
+  MoonMinerSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 11e5d3cacf6f5f04d9d4de121528bf3e, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 2bfa00f8e32000e46b559e3aa8bf75fc, type: 3}
+    attackEnd:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: c3f1319d2362bc749bbf3e9403768c81, type: 3}
+    chargeLaser:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 8d1c8ad9b1201444c8654d1e1357ada5, type: 3}
+  VoltSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 34a7bec2172387b419ea615b3973f378, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: bd4164e5085be8a43b2eb5557e177633, type: 3}
+    anticipationSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 2bc654f1cdde9844ea823e0c3fecfc46, type: 3}
+  SquartSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: e7ed10fa58b908a4082112a957a93564, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 378afeeddb0659e448aaa90dee025e82, type: 3}
+    fleeSound:
+      _volume: 1
+      _clip: {fileID: 0}
+    chargeSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: aa178414a43fb734d810957c325d6869, type: 3}
+  ToughMotherSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 0}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 92a80964957ec6849b7bd575a5e179a5, type: 3}
+    spawnLeechSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 7bc1099af56426048953f6c4b6b447f8, type: 3}
+    shieldSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 1348ec32bf35fdd499c462b58b328cd7, type: 3}
+  ShardSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 1663b6d4c9f11c14b8568275b0c8b712, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 151c9f9687314ef45923dd80ca6b0328, type: 3}
+    lockPositionSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: c956542d700951842b8f50fab847515e, type: 3}
+    beginAttackFallSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: dd3bf2116e4e48f4cb86a1ee6460e300, type: 3}
+  SleeperMineSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 824ec9840d521cf429f7d3f672903515, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 0}
+    idleLoop:
+      clip: {fileID: 8300000, guid: d0736584675b61d4c8328baa883538c3, type: 3}
+      maxChannels: 3
+      volume: 1
+  SensorMineSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 2249df0aca4132a4bb0aaa68d11e32ec, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 0}
+    idleLoop:
+      clip: {fileID: 8300000, guid: 44bba57a85b55f14fbeca79d78260138, type: 3}
+      maxChannels: 3
+      volume: 0.65
+    warningLoop:
+      clip: {fileID: 8300000, guid: fc68b565adf03b24589b74843da0a867, type: 3}
+      maxChannels: 3
+      volume: 1
+  BorrowerSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 246d9cfef88fd8943978572e81150928, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 66d8182dacf442848b4cd02bdb01a66e, type: 3}
+    spawnSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: e8adb7c824dd98d4da7ff69bf686ea46, type: 3}
+    latchOntoBotSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 1224eba610f74fb4a9f69a1686088186, type: 3}
+    waitSound:
+      clip: {fileID: 8300000, guid: 34ea8423c2ccf834ba5e27eed96b0b2b, type: 3}
+      maxChannels: 2
+      volume: 0.7
+  LaserTurretSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: c803055aa93b8374fbb8ff6264c0d4b4, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 344b926e088598c498b2fc1bd755d007, type: 3}
+    chargeLaser:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 2d9e88d520a1a83429ea74bf7488bc4a, type: 3}
+  PulseCannonSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: ed3520a45081c2a4f91e2ec105ce85b3, type: 3}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 0c1c9cff99d08d940aabce9e14f6170e, type: 3}
+  IceWingSounds:
+    attackSound:
+      _volume: 1
+      _clip: {fileID: 0}
+    deathSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: f2f338cf2e3230640b9ff592a40773af, type: 3}
+    swoopSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 804f8d79c0064ef4d8d1ac6c8fd094f2, type: 3}
+    freezeSound:
+      _volume: 1
+      _clip: {fileID: 8300000, guid: 750df27e5d2bc494283259603f226a76, type: 3}
   EnemyEffects:
   - enemyID: '3363c379-70c7-47d1-8cc6-1ca650259a31  '
     moveSound:
       clip: {fileID: 8300000, guid: c42fa33ccff9e3446a2b596dc5b933e8, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: d58c98190d06eb04da6ce0231ebcb356, type: 3}
   - enemyID: 4eeac5cf-1c0c-492d-82a1-86108b574464
     moveSound:
       clip: {fileID: 8300000, guid: 707e738e2031e7e47a4fa4cc9d0d15dc, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: cd4d5e8bd9fd3f2408e1347c533c4ccd, type: 3}
   - enemyID: f3c96622-609f-498c-be89-8cc575e46fe0
     moveSound:
       clip: {fileID: 8300000, guid: ffe73d9309c4d7a428a333cecba2e338, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: b14bfed80763c124e9de5d644c1d5ec9, type: 3}
   - enemyID: da3d4cfc-0ec0-4bf0-b9e2-9446aaba949a
     moveSound:
       clip: {fileID: 8300000, guid: 82faa0e5dca6a3b41b5cdc4083c2f1a7, type: 3}
       maxChannels: 2
+      volume: 0
     attackClip: {fileID: 8300000, guid: 5c24b43784be3a443a963dab8799bacf, type: 3}
   - enemyID: 71b8347a-1d17-4ade-81d4-85930af8210e
     moveSound:
       clip: {fileID: 8300000, guid: bd29752dc806102439df484a078113e7, type: 3}
       maxChannels: 2
-    attackClip: {fileID: 0}
-  - enemyID: 29b4a36e-47f7-47a4-8922-f7de5f531383
-    moveSound:
-      clip: {fileID: 0}
-      maxChannels: 2
-    attackClip: {fileID: 0}
-  - enemyID: 599761cf-c12a-45b0-bbab-918008384f28
-    moveSound:
-      clip: {fileID: 0}
-      maxChannels: 2
-    attackClip: {fileID: 0}
-  - enemyID: 842a2d03-61be-4bc2-8391-ae25826a30af
-    moveSound:
-      clip: {fileID: 0}
-      maxChannels: 2
-    attackClip: {fileID: 0}
-  - enemyID: e90054ce-9f64-4b84-9aab-5c6808cf3c67
-    moveSound:
-      clip: {fileID: 0}
-      maxChannels: 2
-    attackClip: {fileID: 0}
-  - enemyID: 1f78cb36-17d7-48d7-8e1c-a44536df7949
-    moveSound:
-      clip: {fileID: 0}
-      maxChannels: 2
+      volume: 0
     attackClip: {fileID: 0}
   audioSourcePrefab: {fileID: 8252700639282968980, guid: 4f40b5a640b0cea4bbd3a7078911d340,
     type: 3}

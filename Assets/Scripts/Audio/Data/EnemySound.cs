@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace StarSalvager.Audio.Data
 {
-     [Serializable]
+     [Serializable, Obsolete]
     public struct EnemySound : IEquatable<EnemySound>
     {
         public static readonly EnemySound Empty = new EnemySound
@@ -28,7 +28,8 @@ namespace StarSalvager.Audio.Data
         public AudioClip attackClip;
 
 
-
+        //====================================================================================================================//
+        
         #region IEquatable
 
         public bool Equals(EnemySound other)
@@ -55,6 +56,8 @@ namespace StarSalvager.Audio.Data
 
         #endregion
 
+        //====================================================================================================================//
+        
         #region Unity Editor
 
 #if UNITY_EDITOR
@@ -71,7 +74,8 @@ namespace StarSalvager.Audio.Data
 
         #endregion
 
-
+        //====================================================================================================================//
+        
     }
 
 }
