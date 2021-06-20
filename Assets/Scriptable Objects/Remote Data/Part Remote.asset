@@ -264,7 +264,7 @@ MonoBehaviour:
     isManual: 1
     category: 4
     ammoUseCost: 10
-    patchTreeData: 
+    patchTreeData: '[{"Type":10,"Level":0,"Tier":1,"PreReqs":[]},{"Type":4,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":10,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":4,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":10,"Level":2,"Tier":3,"PreReqs":[2]},{"Type":3,"Level":0,"Tier":3,"PreReqs":[3]},{"Type":10,"Level":3,"Tier":4,"PreReqs":[5]}]'
   - isImplemented: 0
     partType: 34
     name: Upgrader

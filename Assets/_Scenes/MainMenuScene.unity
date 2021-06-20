@@ -326,7 +326,7 @@ PrefabInstance:
     - target: {fileID: 1544597919944142110, guid: c4303a0e45d7b444aa039bfdb3d12d59,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00046971007
+      value: -0.00004145074
       objectReference: {fileID: 0}
     - target: {fileID: 1876234614905382024, guid: c4303a0e45d7b444aa039bfdb3d12d59,
         type: 3}
@@ -456,6 +456,11 @@ PrefabInstance:
     - target: {fileID: 3024580651305202328, guid: c4303a0e45d7b444aa039bfdb3d12d59,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3024580651305202328, guid: c4303a0e45d7b444aa039bfdb3d12d59,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3037665983665766684, guid: c4303a0e45d7b444aa039bfdb3d12d59,
@@ -1728,12 +1733,12 @@ PrefabInstance:
         type: 3}
       propertyPath: soundClips.Array.data[5]._clip
       value: 
-      objectReference: {fileID: 8300000, guid: 50b2e7b235b403c49a67cc0e62450aac, type: 3}
+      objectReference: {fileID: 8300000, guid: a44ad7a28b637344cb71c92cb5ac09dc, type: 3}
     - target: {fileID: 6446213062609164517, guid: 0c3f70f15c34a467fa95e6eacc4eaa2d,
         type: 3}
       propertyPath: soundClips.Array.data[6]._clip
       value: 
-      objectReference: {fileID: 8300000, guid: 471553c318d240843994e769aed468be, type: 3}
+      objectReference: {fileID: 8300000, guid: 7aeca2d3d8d3468469dcaf393760a8a2, type: 3}
     - target: {fileID: 6446213062609164517, guid: 0c3f70f15c34a467fa95e6eacc4eaa2d,
         type: 3}
       propertyPath: soundClips.Array.data[15]._clip

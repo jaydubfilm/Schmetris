@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: DECOY_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 29
+  NodeLinks:
+  - BaseNodeGUID: 0aec8f94ef3a99e45be17295b840422b
+    PortName: DECOY -> POWER 1
+    TargetNodeGUID: 4f5379fd-55e0-4b66-b90c-4514dfacc0a5
+  - BaseNodeGUID: 4f5379fd-55e0-4b66-b90c-4514dfacc0a5
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: 2c5202b3-ea73-4565-ac78-93126ffc8218
+  - BaseNodeGUID: 2c5202b3-ea73-4565-ac78-93126ffc8218
+    PortName: POWER 2 -> POWER 3
+    TargetNodeGUID: 1c431cc7-bf34-4feb-a3dc-314e479cb0b8
+  - BaseNodeGUID: 10d00c82-5fef-4274-9cb2-dc8df1635712
+    PortName: FIRE_RATE 1 -> FIRE_RATE 2
+    TargetNodeGUID: 9e34d027-2538-4c23-8433-24a99d4cb2c1
+  - BaseNodeGUID: 4f5379fd-55e0-4b66-b90c-4514dfacc0a5
+    PortName: POWER 1 -> FIRE_RATE 1
+    TargetNodeGUID: 10d00c82-5fef-4274-9cb2-dc8df1635712
+  PartNodeData:
+    GUID: 0aec8f94ef3a99e45be17295b840422b
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 87
+      height: 77
+    Type: 29
+  PatchNodeDatas:
+  - GUID: 4f5379fd-55e0-4b66-b90c-4514dfacc0a5
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -25
+      width: 214
+      height: 147
+    Type: 1
+    Tier: 1
+    Level: 1
+  - GUID: 1c431cc7-bf34-4feb-a3dc-314e479cb0b8
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -23
+      width: 214
+      height: 147
+    Type: 1
+    Tier: 3
+    Level: 3
+  - GUID: 9e34d027-2538-4c23-8433-24a99d4cb2c1
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 195
+      width: 214
+      height: 147
+    Type: 3
+    Tier: 3
+    Level: 2
+  - GUID: 10d00c82-5fef-4274-9cb2-dc8df1635712
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 195
+      width: 214
+      height: 147
+    Type: 3
+    Tier: 2
+    Level: 1
+  - GUID: 2c5202b3-ea73-4565-ac78-93126ffc8218
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -23
+      width: 214
+      height: 147
+    Type: 1
+    Tier: 2
+    Level: 2

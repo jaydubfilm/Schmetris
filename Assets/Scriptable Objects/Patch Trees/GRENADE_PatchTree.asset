@@ -21,11 +21,14 @@ MonoBehaviour:
     PortName: POWER 1 -> POWER 2
     TargetNodeGUID: d4b63954-862c-4df4-9fb1-e3c76f4cbb87
   - BaseNodeGUID: 4d7cb08a-dd65-4183-956e-d3f101175304
-    PortName: POWER 1 -> RANGE 1
+    PortName: POWER 1 -> AOE 1
     TargetNodeGUID: cd27468f-4913-4d33-b6da-e0af80d1c6aa
   - BaseNodeGUID: cd27468f-4913-4d33-b6da-e0af80d1c6aa
-    PortName: RANGE 1 -> RANGE 2
+    PortName: AOE 1 -> AOE 2
     TargetNodeGUID: e6aa1359-bd3d-400b-966d-199e4148f37b
+  - BaseNodeGUID: d4b63954-862c-4df4-9fb1-e3c76f4cbb87
+    PortName: POWER 2 -> POWER 3
+    TargetNodeGUID: 8a8d5c86-1915-4ab3-b621-8d005f8fd22d
   PartNodeData:
     GUID: 2f2b9debd36bf8b4894546da6fa908e3
     Position:
@@ -42,7 +45,7 @@ MonoBehaviour:
       x: 250
       y: -33
       width: 214
-      height: 150
+      height: 147
     Type: 1
     Tier: 1
     Level: 1
@@ -52,7 +55,7 @@ MonoBehaviour:
       x: 500
       y: -33
       width: 214
-      height: 150
+      height: 147
     Type: 1
     Tier: 2
     Level: 2
@@ -62,8 +65,8 @@ MonoBehaviour:
       x: 500
       y: -221
       width: 214
-      height: 150
-    Type: 2
+      height: 147
+    Type: 10
     Tier: 2
     Level: 1
   - GUID: e6aa1359-bd3d-400b-966d-199e4148f37b
@@ -72,7 +75,17 @@ MonoBehaviour:
       x: 750
       y: -221
       width: 214
-      height: 150
-    Type: 2
+      height: 147
+    Type: 10
     Tier: 3
     Level: 2
+  - GUID: 8a8d5c86-1915-4ab3-b621-8d005f8fd22d
+    Position:
+      serializedVersion: 2
+      x: 1000
+      y: -34
+      width: 214
+      height: 147
+    Type: 1
+    Tier: 4
+    Level: 3
