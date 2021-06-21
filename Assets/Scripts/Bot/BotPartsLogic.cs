@@ -1708,8 +1708,8 @@ namespace StarSalvager
             {
                 CreateBombEffect(bits[i], radius * 2f);
                 
-                //Damage any enemies around this bit, as diameter
-                EnemyManager.DamageAllEnemiesInRadius(damage, bits[i].Position, radius * 2f);
+                //Damage any enemies around this bit, as radius
+                EnemyManager.DamageAllEnemiesInRadius(damage, bits[i].Position, radius);
 
                 Recycler.Recycle<Bit>(bits[i]);
             }

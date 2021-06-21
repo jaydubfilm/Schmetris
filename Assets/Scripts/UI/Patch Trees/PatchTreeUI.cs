@@ -303,7 +303,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             GameTimer.SetPaused(true);
             GameManager.SetCurrentGameState(GameState.Wreckyard);
-            PlayerDataManager.DowngradeAllBits(1, false);
+            //PlayerDataManager.DowngradeAllBits(1, false);
 
             //--------------------------------------------------------------------------------------------------------//
             
