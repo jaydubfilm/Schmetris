@@ -555,7 +555,6 @@ namespace StarSalvager
             }
 
             PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
-            PlayerDataManager.DowngradeAllBits(1, false);
 
             
             SavePlayerData();
@@ -756,8 +755,10 @@ namespace StarSalvager
             {
                 var blockData = bot.GetBlockDatas();
 
+                
                 PlayerDataManager.SetBotHealth(bot.CurrentHealth);
                 PlayerDataManager.SetDroneBlockData(blockData);
+                PlayerDataManager.DowngradeAllBits(1, false);
             }
         }
 
