@@ -555,6 +555,8 @@ namespace StarSalvager
             }
 
             PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
+            PlayerDataManager.DowngradeAllBits(1, false);
+
             
             SavePlayerData();
             GameTimer.SetPaused(true);
@@ -567,7 +569,6 @@ namespace StarSalvager
                 m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                 () =>
                 {
-
                     GameManager.SetCurrentGameState(GameState.UniverseMap);
                     //ProcessScrapyardUsageBeginAnalytics();
                     PlayerDataManager.SetCanChoosePart(true);
