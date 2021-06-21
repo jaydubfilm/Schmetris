@@ -18,11 +18,11 @@ namespace StarSalvager.Utilities.UI
         
         public static void OutlineObject(in RectTransform rectTransform)
         {
-            Instance.Outline(rectTransform, Vector2.zero, Color.black);
+            //Instance.Outline(rectTransform, Vector2.zero, Color.black);
         }
         public static void OutlineObject(in RectTransform rectTransform, in Vector2 sizeMultiplier, in Color color)
         {
-            Instance.Outline(rectTransform, sizeMultiplier, color);
+            //Instance.Outline(rectTransform, sizeMultiplier, color);
         }
 
         //Unity Functions
