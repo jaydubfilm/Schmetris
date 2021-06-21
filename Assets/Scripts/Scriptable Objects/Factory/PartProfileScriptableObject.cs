@@ -12,10 +12,11 @@ namespace StarSalvager.ScriptableObjects
     public class PartProfileScriptableObject : AttachableProfileScriptableObject<PartProfile, PART_TYPE>
     {
         [Serializable]
-        private struct PartBorder
+        private class PartBorder
         {
             public BIT_TYPE bitType;
             public Sprite sprite;
+            public Color color = Color.white;
         }
         
         //Properties
@@ -39,8 +40,17 @@ namespace StarSalvager.ScriptableObjects
         [TableList, SerializeField, PropertyOrder(-1000)]
         private PartBorder[] partBorders;
 
-        public Sprite GetPartBorder(PART_TYPE partType) => partBorders.FirstOrDefault(x => x.bitType == partType.GetCategory()).sprite;
-        public Sprite GetPartBorder(BIT_TYPE bitType) => partBorders.FirstOrDefault(x => x.bitType == bitType).sprite;
+        public (Sprite, Color) GetPartBorder(PART_TYPE partType)
+        {
+            var data = partBorders.FirstOrDefault(x => x.bitType == partType.GetCategory());
+            return data is null ? (null, Color.clear) : (data.sprite, data.color);
+        }
+
+        public (Sprite, Color) GetPartBorder(BIT_TYPE bitType)
+        {
+            var data = partBorders.FirstOrDefault(x => x.bitType == bitType);
+            return data is null ? (null, Color.clear) : (data.sprite, data.color);
+        }
         
         //====================================================================================================================//
         

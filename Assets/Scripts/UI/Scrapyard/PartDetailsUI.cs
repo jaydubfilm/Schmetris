@@ -148,6 +148,7 @@ namespace StarSalvager.UI.Wreckyard
             var partType = (PART_TYPE) partData.Type;
             var partRemote = partType.GetRemoteData();
             var partProfile = partType.GetProfileData();
+            var (sprite, color) = partType.GetBorderData();
 
             //====================================================================================================================//
 
@@ -160,7 +161,8 @@ namespace StarSalvager.UI.Wreckyard
             
             partCategoryImage.color = partRemote.category.GetColor();
             partCategoryText.text = partRemote.category.GetCategoryName();
-            _partBorderImage.sprite = partType.GetBorderSprite();
+            _partBorderImage.sprite = sprite;
+            _partBorderImage.color = color;
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

@@ -164,8 +164,7 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(0);
-            var borderSprite = type.GetBorderSprite();
-            ;
+            var (bSprite, bColor) = type.GetBorderData();
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -204,7 +203,8 @@ namespace StarSalvager.Factories
                 temp.BorderSpriteRenderer = CreatePartBorder(temp.transform);
 
             temp.SetSprite(sprite);
-            temp.BorderSpriteRenderer.sprite = borderSprite;
+            temp.BorderSpriteRenderer.sprite = bSprite;
+            temp.BorderSpriteRenderer.color = bColor;
             if (Globals.UsePartColors)
             {
                 temp.SetColor(color);
@@ -417,11 +417,13 @@ namespace StarSalvager.Factories
             var tempBorderImage = tempBorder.AddComponent<Image>();
             tempBorderImage.transform.SetParent(targetTransform, false);
             var borderTransform = (RectTransform) tempBorder.transform;
+            var (sprite, color) = FactoryManager.Instance.PartsProfileData.GetPartBorder(bitType);
                 
                 
             tempBorderImage.raycastTarget = false;
             tempBorderImage.preserveAspect = true;
-            tempBorderImage.sprite = FactoryManager.Instance.PartsProfileData.GetPartBorder(bitType);
+            tempBorderImage.sprite = sprite;
+            tempBorderImage.color = color;
                 
             borderTransform.anchorMin = Vector2.zero;
             borderTransform.anchorMax = Vector2.one;
