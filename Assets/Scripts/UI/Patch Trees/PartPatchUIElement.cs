@@ -24,11 +24,17 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private PART_TYPE _data;
 
-        public void Init(in PartData partData, Action<PART_TYPE> onPartSelected, Action<PART_TYPE, PatchData> onPatchSelected)
+        public void Init(in PartData partData, 
+            Action<PART_TYPE> onPartSelected, 
+            Action<PART_TYPE, PatchData> onPatchSelected,
+            Action<RectTransform, PatchData, bool> onPatchHovered)
         {
-            Init((PART_TYPE) partData.Type, partData.Patches, onPartSelected, onPatchSelected);
+            Init((PART_TYPE) partData.Type, partData.Patches, onPartSelected, onPatchSelected, onPatchHovered);
         }
-        public void Init(in PART_TYPE partType, in List<PatchData> patches, Action<PART_TYPE> onPartSelected, Action<PART_TYPE, PatchData> onPatchSelected)
+        public void Init(in PART_TYPE partType, in List<PatchData> patches, 
+            Action<PART_TYPE> onPartSelected, 
+            Action<PART_TYPE, PatchData> onPatchSelected,
+            Action<RectTransform, PatchData, bool> onPatchHovered)
         {
 
             //--------------------------------------------------------------------------------------------------------//
@@ -36,7 +42,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             void CreatePatchOption(in PART_TYPE type, in PatchData patchData)
             {
                 var temp = Instantiate(patchOptionPrefab, patchOptionsContainer, false);
-                temp.Init(type, patchData, onPatchSelected);
+                temp.Init(type, patchData, onPatchSelected, onPatchHovered);
             }
 
             //--------------------------------------------------------------------------------------------------------//

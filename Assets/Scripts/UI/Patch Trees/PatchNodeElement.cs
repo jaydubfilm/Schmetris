@@ -2,13 +2,16 @@
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Extensions;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchNodeElement : MonoBehaviour
+    public class PatchNodeElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public new RectTransform transform => gameObject.transform as RectTransform;
+
+        private Action<RectTransform, PatchData, bool> _onHovered;
         
         [SerializeField]
         private Image image;
@@ -30,8 +33,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             Unlocked = true;
         }
 
-        public void Init(in PART_TYPE partType, in PatchData patchData,bool hasPurchased, bool unlocked, Action<PART_TYPE, PatchData> onPressedCallback)
+        public void Init(in PART_TYPE partType, in PatchData patchData,bool hasPurchased, bool unlocked, Action<PART_TYPE, PatchData> onPressedCallback, Action<RectTransform, PatchData, bool> onPatchHovered)
         {
+            _onHovered = onPatchHovered;
+
             image.sprite = patchSprite;
             image.color = partType.GetCategory().GetColor();
 
@@ -52,6 +57,20 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             {
                 onPressedCallback?.Invoke(_partType, this.patchData);
             });
+
+        }
+
+        //IPointerEvent Functions
+        //====================================================================================================================//
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _onHovered?.Invoke(transform, patchData, true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _onHovered?.Invoke(null, default, false);
         }
     }
 }

@@ -352,22 +352,22 @@ namespace StarSalvager
             }
         }
 
-        public void DamageAllEnemiesInRange(float damage, Vector2 damagePosition, float range)
+        public void DamageAllEnemiesInRadius(in float damage, in Vector2 worldPosition, in float radius)
         {
-            var existingEnemies = new List<Enemy>(m_enemies);
+            var existingEnemies = m_enemies.AsReadOnly();
             var damageAbs = Mathf.Abs(damage);
             foreach (var enemy in existingEnemies)
             {
                 if (enemy.IsRecycled)
                     continue;
 
-                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
+                var position = enemy.Position;
+
+                if (!CameraController.IsPointInCameraRect(position))
                     continue;
 
-                if (Vector2.Distance(damagePosition, (Vector2) enemy.transform.position) > range)
-                {
+                if (Vector2.Distance(worldPosition, position) > radius)
                     continue;
-                }
 
                 if (enemy is ICanBeHit canBeHit)
                 {

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 404087361540810058}
   - component: {fileID: 6839698573590340230}
   - component: {fileID: 360317393319261044}
+  - component: {fileID: -3381447050516264505}
   m_Layer: 5
   m_Name: UniverseMapButton
   m_TagString: Untagged
@@ -103,7 +104,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
     m_PressedColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+    m_DisabledColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -170,6 +171,19 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 311eb9434c0692a469d2fb8d8603e2d8, type: 3}
   - {fileID: 21300000, guid: 22ae3b0ac3931b947a4772feb8781174, type: 3}
   - {fileID: 21300000, guid: d6e374890afb52c4ba7fe6577ce53126, type: 3}
+--- !u!114 &-3381447050516264505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 404087361540810060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &4066580884299684642
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,14 +16,17 @@ using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
     public class PatchTreeUI : MonoBehaviour
     {
         private const int PART_SCRAP_VALUE = 10;
+        private const string NO_PART_TEXT = "No Part Selected";
         
         //Properties
         //====================================================================================================================//
@@ -64,6 +67,17 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text patchNameText;
         [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
         private TMP_Text patchDetailsText;
+
+        //Patch Details Window
+        //====================================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private GameObject patchDetailsWindow;
+        private RectTransform _patchDetailsWindowTransform;
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private TMP_Text patchHoverTitleText;
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private TMP_Text patchHoverDetailsText;
         
 
         //Part Data
@@ -150,22 +164,29 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnEnable()
         {
+            Input.Actions.MenuControls.Cancel.performed += OnCancelPerformed;
             PlayerDataManager.NewPartPicked += OnNewPartSelected;
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
             OnValuesChanged();
         }
 
+        
+
         private void Start()
         {
             SetupButtons();
             SetupDroneUI();
+            SetupPatchHoverUI();
         }
 
         private void OnDisable()
         {
+            Input.Actions.MenuControls.Cancel.performed -= OnCancelPerformed;
             PlayerDataManager.NewPartPicked -= OnNewPartSelected;
             PlayerDataManager.OnValuesChanged -= OnValuesChanged;
         }
+        
+
 
         #endregion //Unity Functions
 
@@ -233,6 +254,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
                 _secondaryPartImages.Add(bitType, CreatePartImage(secondaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, true));
             }
+        }
+
+        private void SetupPatchHoverUI()
+        {
+            _patchDetailsWindowTransform = (RectTransform)patchDetailsWindow.transform;
+            OnPatchHovered(null, default, false);
         }
 
         #endregion //Setup Wreck Screen
@@ -350,7 +377,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 in bool unlocked)
             {
                 var temp = Instantiate(patchNodeElementPrefab, container, false);
-                temp.Init(type, patchData, purchased, unlocked, OnPatchPressed);
+                temp.Init(type, patchData, purchased, unlocked, OnPatchPressed, OnPatchHovered);
 
                 return temp;
             }
@@ -527,7 +554,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
             {
                 var temp = Instantiate(partPatchOptionPrefab, container, false);
-                temp.Init(partData, OnPartPressed, OnPatchPressed);
+                temp.Init(partData, OnPartPressed, OnPatchPressed, OnPatchHovered);
 
                 return (RectTransform) temp.transform;
             }
@@ -685,7 +712,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     CheckForPartPositionAvailability(false);
                 
                 SetSelectedPart(PART_TYPE.EMPTY, false);
-                SetPartText(string.Empty, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty);
                 CleanPatchTree();
                 
                 //Check if there are any Patches available for the part just scrapped. Remove & Update the UI
@@ -808,7 +835,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (partType == PART_TYPE.EMPTY)
             {
                 SetSelectedPart(PART_TYPE.EMPTY, default);
-                SetPartText(string.Empty, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty);
                 CleanPatchTree();
                 return;
             }
@@ -895,12 +922,13 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //Deselect Patch
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             //Clear Text
-            SetPartText(string.Empty, string.Empty);
+            SetPartText(NO_PART_TEXT, string.Empty);
             SetPatchText(string.Empty, string.Empty);
             //Clean Patch Tree
             CleanPatchTree();
             //Clean the Patch Purchase Options
             CleanPurchaseOptions();
+            SetupPatchHoverUI();
         }
 
         private void SetSelectedPart(in PART_TYPE partType, in bool inStorage)
@@ -1007,6 +1035,60 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //If we couldn't find parts, something is wrong
             throw new Exception();
+        }
+        private void OnPatchHovered(RectTransform rectTransform, PatchData patchData, bool hovering)
+        {
+            //If hovering false, close window, clean elements, return
+            //--------------------------------------------------------------------------------------------------------//
+            
+            patchDetailsWindow.gameObject.SetActive(hovering);
+
+            if (!hovering) return;
+            
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            _patchDetailsWindowTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+            var patchType = (PATCH_TYPE) patchData.Type;
+            var patchRemote = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
+            var cost = (patchRemote.Levels[patchData.Level].gears, patchRemote.Levels[patchData.Level].silver);
+
+            //====================================================================================================================//
+
+            patchHoverTitleText.text = $"{patchRemote.name} {Mathfx.ToRoman(patchData.Level + 1)}";
+            patchHoverDetailsText.text = $"{patchRemote.description}\n" +
+                                         $"{cost.gears}{TMP_SpriteHelper.GEAR_ICON}" +
+                                         $"{(cost.silver > 0 ? $" {cost.silver}{TMP_SpriteHelper.SILVER_ICON}":string.Empty)}";
+            
+            //====================================================================================================================//
+
+            _patchDetailsWindowTransform.TryFitInScreenBounds(canvasRect, 20f);
+        }
+        
+        private void OnCancelPerformed(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.ReadValueAsButton()) return;
+            
+            //When patch window is open, close. return.
+            if (_selectedPatch.partType != PART_TYPE.EMPTY)
+            {
+                SetSelectedPatch(PART_TYPE.EMPTY, default);
+                return;
+            }
+            //When Part Window is open, close. return;
+            if (_selectedPart.type == PART_TYPE.EMPTY) 
+                return;
+
+            SetSelectedPart(PART_TYPE.EMPTY, default);
+            SetPartText(NO_PART_TEXT, string.Empty);
+            CleanPatchTree();
         }
 
         #endregion //Extra Functions
