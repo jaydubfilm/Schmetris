@@ -20,6 +20,9 @@ namespace StarSalvager.Utilities.Extensions
         public static Vector2Int GetCoordinateForCategory(this PART_TYPE partType) => PlayerDataManager.GetCoordinateForCategory(partType.GetRemoteData().category);
         
         public static Sprite GetSprite(this PART_TYPE partType)=> partType.GetProfileData().GetSprite();
+        
+        public static Sprite GetBorderSprite(this PART_TYPE partType)=> FactoryManager.Instance.PartsProfileData.GetPartBorder(partType);
+
 
         public static PartRemoteData GetRemoteData(this PART_TYPE partType)
         {

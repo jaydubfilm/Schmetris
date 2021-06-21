@@ -193,12 +193,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             Image CreatePartImage(in RectTransform container, in Vector2Int coordinate, in PART_TYPE partType, in bool storage)
             {
-                var temp = new GameObject();
+                var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
+
+                var temp = new GameObject($"{category}_Part_Icon");
                 var tempImage = temp.AddComponent<Image>();
                 var tempButton = temp.AddComponent<Button>();
-                var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
                 tempImage.sprite = partType.GetSprite();
-                tempImage.color = category.GetColor();
 
                 var tempData = (partType.GetCategory(), storage);
                 tempButton.onClick.AddListener(() =>
@@ -211,6 +211,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 tempTransform.SetParent(container, false);
                 tempTransform.sizeDelta = Vector2.one * partImageSize;
                 tempTransform.anchoredPosition = (Vector2)coordinate * partImageSize;
+
+                //--------------------------------------------------------------------------------------------------------//
+                
+                PartAttachableFactory.CreateUIPartBorder(tempTransform, category);
+
+                //--------------------------------------------------------------------------------------------------------//
 
                 return tempImage;
             }
@@ -341,6 +347,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 temp.Init(type);
                 //TODO Fill with patchData
 
+                PartAttachableFactory.CreateUIPartBorder(temp.transform, type);
+                
                 return temp;
             }
 
@@ -1010,6 +1018,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
 
         #endregion //Extra Functions
+
+
 
         //Data Functions
         //====================================================================================================================//

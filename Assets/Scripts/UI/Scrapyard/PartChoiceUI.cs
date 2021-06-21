@@ -30,6 +30,7 @@ namespace StarSalvager.UI.Wreckyard
             public Button optionButton;
             public PartChoiceButtonHover PartChoiceButtonHover;
             public Image optionImage;
+            [HideInInspector] public Image partBorderImage;
             public TMP_Text optionText;
             
             public Image categoryImage;
@@ -116,6 +117,7 @@ namespace StarSalvager.UI.Wreckyard
                 
                 selectionUis[index].categoryImage.color = category.GetColor();
                 selectionUis[index].categoryText.text = category.GetCategoryName();
+                selectionUis[index].partBorderImage.sprite = partType.GetBorderSprite();
             }
 
             Random.InitState(DateTime.Now.Millisecond);
@@ -208,6 +210,8 @@ namespace StarSalvager.UI.Wreckyard
                     PlayerDataManager.AddPartToStorage(partData);
                 }
 
+                
+
 
                 if (HasOverage(out var parts))
                 {
@@ -247,6 +251,14 @@ namespace StarSalvager.UI.Wreckyard
                 RecordSelectedParts(-1);
                 PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, PART_TYPE.EMPTY);
             });
+            
+            for (var i = 0; i < selectionUis.Length; i++)
+            {
+                selectionUis[i].partBorderImage =
+                    PartAttachableFactory.CreateUIPartBorder(
+                        (RectTransform)selectionUis[i].optionButton.transform,
+                        BIT_TYPE.WHITE);
+            }
         }
 
         private void CloseWindow()
@@ -304,14 +316,17 @@ namespace StarSalvager.UI.Wreckyard
 
             //--------------------------------------------------------------------------------------------------------//
 
+            var partProfileScriptableObject = FactoryManager.Instance.PartsProfileData;
             for (int i = 0; i < partDatas.Length; i++)
             {
                 var partData = partDatas[i];
                 var partType = (PART_TYPE)partData.Type;
                 var category = partType.GetCategory();
+                var borderSprite = partProfileScriptableObject.GetPartBorder(category);
 
                 selectionUis[i].optionText.text = partType.GetRemoteData().name;
                 selectionUis[i].optionImage.sprite = partType.GetSprite();
+                selectionUis[i].partBorderImage.sprite = borderSprite;
 
                 selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
                     
