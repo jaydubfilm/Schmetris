@@ -25,6 +25,8 @@ namespace StarSalvager.UI.Wreckyard
         [SerializeField, FoldoutGroup("Part Details Window")]
         private Image partImage;
 
+        private Image _partBorderImage;
+
         [SerializeField, FoldoutGroup("Part Details Window")]
         private TMP_Text partNameText;
         [SerializeField, FoldoutGroup("Part Details Window")]
@@ -51,6 +53,8 @@ namespace StarSalvager.UI.Wreckyard
         private void Start()
         {
             HidePartDetails();
+
+            _partBorderImage = PartAttachableFactory.CreateUIPartBorder(partImage, BIT_TYPE.WHITE);
         }
 
         //PartDetailsUI Functions
@@ -144,7 +148,7 @@ namespace StarSalvager.UI.Wreckyard
             var partType = (PART_TYPE) partData.Type;
             var partRemote = partType.GetRemoteData();
             var partProfile = partType.GetProfileData();
-            //var patchRemoteData = FactoryManager.Instance.PatchRemoteData;
+            var (sprite, color) = partType.GetBorderData();
 
             //====================================================================================================================//
 
@@ -157,6 +161,8 @@ namespace StarSalvager.UI.Wreckyard
             
             partCategoryImage.color = partRemote.category.GetColor();
             partCategoryText.text = partRemote.category.GetCategoryName();
+            _partBorderImage.sprite = sprite;
+            _partBorderImage.color = color;
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 

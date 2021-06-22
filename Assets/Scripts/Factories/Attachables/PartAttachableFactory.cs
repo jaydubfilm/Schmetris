@@ -6,11 +6,13 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
+using UnityEngine.UI;
 
 namespace StarSalvager.Factories
 {
@@ -162,9 +164,8 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(0);
-            //var startingHealth = remote.levels[partData.Level].health;//.health[blockData.Level];
-
-
+            var (bSprite, bColor) = type.GetBorderData();
+            
             //--------------------------------------------------------------------------------------------------------//
 
             Part temp;
@@ -198,7 +199,12 @@ namespace StarSalvager.Factories
                 ? Color.white
                 : remoteData.category.GetColor();
 
+            if (temp.BorderSpriteRenderer == null)
+                temp.BorderSpriteRenderer = CreatePartBorder(temp.transform);
+
             temp.SetSprite(sprite);
+            temp.BorderSpriteRenderer.sprite = bSprite;
+            temp.BorderSpriteRenderer.color = bColor;
             if (Globals.UsePartColors)
             {
                 temp.SetColor(color);
@@ -209,6 +215,8 @@ namespace StarSalvager.Factories
             temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";
+            
+            temp.SetSortingLayer(LayerHelper.ACTORS);
             return temp.gameObject;
         }
         public T CreateObject<T>(PartData partData)
@@ -364,6 +372,67 @@ namespace StarSalvager.Factories
             return temp.GetComponent<T>();
         }
 
+        
+        
         //============================================================================================================//
+
+        public static SpriteRenderer CreatePartBorder(in Transform transform)
+        {
+            var tempBorder = new GameObject("Border_SpriteRenderer");
+            var borderSpriteRenderer = tempBorder.AddComponent<SpriteRenderer>();
+            tempBorder.transform.SetParent(transform, false);
+
+            return borderSpriteRenderer;
+        }
+
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetGraphic"></param>
+        /// <param name="bitType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in Graphic targetGraphic, in BIT_TYPE bitType)
+        {
+            return CreateUIPartBorder((RectTransform)targetGraphic.transform, bitType);
+        }
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetTransform">Parent transform to attach new image</param>
+        /// <param name="partType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in RectTransform targetTransform, in PART_TYPE partType)
+        {
+            return CreateUIPartBorder(targetTransform, partType.GetCategory());
+        }
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetTransform">Parent transform to attach new image</param>
+        /// <param name="bitType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in RectTransform targetTransform, in BIT_TYPE bitType)
+        {
+            var tempBorder = new GameObject($"{bitType}_Border");
+            var tempBorderImage = tempBorder.AddComponent<Image>();
+            tempBorderImage.transform.SetParent(targetTransform, false);
+            var borderTransform = (RectTransform) tempBorder.transform;
+            var (sprite, color) = FactoryManager.Instance.PartsProfileData.GetPartBorder(bitType);
+                
+                
+            tempBorderImage.raycastTarget = false;
+            tempBorderImage.preserveAspect = true;
+            tempBorderImage.sprite = sprite;
+            tempBorderImage.color = color;
+                
+            borderTransform.anchorMin = Vector2.zero;
+            borderTransform.anchorMax = Vector2.one;
+            borderTransform.sizeDelta = Vector2.zero;
+
+            return tempBorderImage;
+        }
+
+        //====================================================================================================================//
+        
     }
 }

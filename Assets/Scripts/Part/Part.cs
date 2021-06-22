@@ -30,8 +30,6 @@ namespace StarSalvager
         public PART_TYPE Type { get; set; }
 
         public List<PatchData> Patches { get; set; }
-
-
         public bool LockRotation { get; set; }
 
         public Color partColor = Color.white;
@@ -46,8 +44,9 @@ namespace StarSalvager
                 SetColor(value ? Color.gray : partColor);
             }
         }
-
         private bool _disabled;
+
+        public SpriteRenderer BorderSpriteRenderer { get; set; }
 
         //Unity Functions
         //====================================================================================================================//
@@ -159,6 +158,14 @@ namespace StarSalvager
 
             Disabled = false;
             SetColliderActive(true);
+        }
+
+        public override void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
+        {
+            base.SetSortingLayer(sortingLayerName, sortingOrder);
+            
+            BorderSpriteRenderer.sortingLayerName = sortingLayerName;
+            BorderSpriteRenderer.sortingOrder = sortingOrder + 1;
         }
 
         //IHasBounds Functions

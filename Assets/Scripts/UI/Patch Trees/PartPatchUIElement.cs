@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
@@ -55,6 +56,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             });
             
             partButtonImage.sprite = partType.GetSprite();
+            PartAttachableFactory.CreateUIPartBorder((RectTransform)partButtonImage.transform, partType);
 
             foreach (var patchData in patches)
             {

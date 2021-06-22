@@ -15,7 +15,7 @@ namespace StarSalvager.Utilities.UI
         private RectTransform _outlineTransform;
 
         //====================================================================================================================//
-        
+
         public static void OutlineObject(in RectTransform rectTransform)
         {
             //Instance.Outline(rectTransform, Vector2.zero, Color.black);
@@ -39,17 +39,17 @@ namespace StarSalvager.Utilities.UI
         }
 
         //====================================================================================================================//
-        
+
 
         private void Outline(in RectTransform rectTransform, in Vector2 sizeMultiplier, in Color color)
         {
             if (_outline == null)
             {
                 _outline = Instantiate(outlinePrefab);
-                
+
                 var layoutElement = _outline.gameObject.AddComponent<LayoutElement>();
                 layoutElement.ignoreLayout = true;
-                
+
                 _outlineTransform = (RectTransform)_outline.transform;
             }
 
@@ -58,12 +58,12 @@ namespace StarSalvager.Utilities.UI
                 SetActive(false);
                 return;
             }
-            
+
             _outlineTransform.SetParent(null);
 
             SetActive(true);
             //var siblingIndex = rectTransform.GetSiblingIndex();
-            
+
             _outlineTransform.SetParent(rectTransform.parent, false);
             _outlineTransform.SetSiblingIndex(0);
 
@@ -75,14 +75,14 @@ namespace StarSalvager.Utilities.UI
         public void StartedUsingController(bool usingController)
         {
             if (usingController) return;
-            
+
             SetActive(false);
         }
-        
+
         private void SetActive(in bool state)
         {
             if (_outline is null) return;
-            
+
             _outline.gameObject.SetActive(state);
         }
 
