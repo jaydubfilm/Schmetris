@@ -458,7 +458,6 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            FindObjectOfType<GameUI>();
             MagnetCount = 0;
 
             SetupGunRangeValues();
