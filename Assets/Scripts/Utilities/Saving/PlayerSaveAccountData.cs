@@ -45,6 +45,9 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
+        [JsonProperty]
+        public bool FinishedIntro;
+        
         //public bool HasStarted = false;
         [JsonProperty]
         public int TotalRuns { get; private set; }

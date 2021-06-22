@@ -2,9 +2,11 @@
 using StarSalvager.Audio;
 using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace StarSalvager.Prototype
 {
@@ -21,6 +23,12 @@ namespace StarSalvager.Prototype
 
         public GameObject panelText1;
 
+        [SerializeField]
+        private Sprite[] tutorialSlides;
+
+        [SerializeField]
+        private Image tutorialSlideImage;
+
 
         //====================================================================================================================//
         private void OnEnable()
@@ -32,22 +40,8 @@ namespace StarSalvager.Prototype
         private void Awake()
         {
             gameObject.SetActive(false);
+            tutorialSlideImage.gameObject.SetActive(false);
         }
-
-        // Update is called once per frame
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                NextStep();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Skip();
-            }
-        }
-
         private void OnDisable()
         {
             Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPressed;
@@ -59,15 +53,13 @@ namespace StarSalvager.Prototype
 
         private void OnSubmitPressed(InputAction.CallbackContext ctx)
         {
-            if (!ctx.ReadValueAsButton())
-                return;
+            if (!ctx.ReadValueAsButton()) return;
             
             NextStep();
         }
         private void OnSkipPressed(InputAction.CallbackContext ctx)
         {
-            if (!ctx.ReadValueAsButton())
-                return;
+            if (!ctx.ReadValueAsButton()) return;
             
             Skip();
         }
@@ -82,13 +74,22 @@ namespace StarSalvager.Prototype
                     panel2Character.SetActive(true);
                     break;
                 case 1:
-                    _introSceneStage = 0;
                     panel1.SetActive(true);
                     panelText1.SetActive(true);
                     panel2.SetActive(false);
 
-                    Skip();
-                    return;
+                    //Skip();
+                    tutorialSlideImage.gameObject.SetActive(true);
+                    tutorialSlideImage.sprite = tutorialSlides[0];
+                    break;
+                default:
+                    if (_introSceneStage - 1 >= tutorialSlides.Length)
+                    {
+                        Skip();
+                        return;
+                    }
+                    tutorialSlideImage.sprite = tutorialSlides[_introSceneStage - 1];
+                    break;
             }
             
             _introSceneStage++;
@@ -96,11 +97,14 @@ namespace StarSalvager.Prototype
 
         private void Skip()
         {
+            PlayerDataManager.SetIntroCompleted(true);
             _introSceneStage = 0;
             
             gameObject.SetActive(false);
             panel1.SetActive(true);
             panel2.SetActive(false);
+
+            tutorialSlideImage.gameObject.SetActive(false);
             
             ScreenFade.Fade(FadedCallback);
         }

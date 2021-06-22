@@ -44,6 +44,13 @@ namespace StarSalvager.Utilities.Saving
         public static string GetAccountSummaryString() => PlayerAccountData.GetSummaryString();
 
         public static string GetRunSummaryString() => PlayerRunData.GetSummaryString();
+
+        //Intro Checks
+        //====================================================================================================================//
+
+        public static bool IntroCompleted() => PlayerAccountData.FinishedIntro;
+        
+        public static void  SetIntroCompleted(in bool isComplete) => PlayerAccountData.FinishedIntro = isComplete;
         
         //Upgrades
         //====================================================================================================================//
