@@ -1708,8 +1708,8 @@ namespace StarSalvager
             {
                 CreateBombEffect(bits[i], radius * 2f);
                 
-                //Damage any enemies around this bit, as diameter
-                EnemyManager.DamageAllEnemiesInRange(damage, bits[i].Position, radius * 2f);
+                //Damage any enemies around this bit, as radius
+                EnemyManager.DamageAllEnemiesInRadius(damage, bits[i].Position, radius);
 
                 Recycler.Recycle<Bit>(bits[i]);
             }
@@ -2407,7 +2407,7 @@ namespace StarSalvager
             _turrets.Add(part, effect.transform);
         }
 
-        private void CreateBombEffect(in IAttachable attachable, in float range)
+        private void CreateBombEffect(in IAttachable attachable, in float diameter)
         {
 
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2417,12 +2417,12 @@ namespace StarSalvager
 
             var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
 
-            effectAnimationComponent.SetSimulationSize(range);
+            effectAnimationComponent.SetSimulationSize(diameter);
 
             Destroy(effect, effectAnimationComponent.AnimationTime);
         }
 
-        private void CreateFreezeEffect(in Part part, in float range)
+        private void CreateFreezeEffect(in Part part, in float diameter)
         {
 
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2432,7 +2432,7 @@ namespace StarSalvager
 
             var effectAnimationComponent = effect.GetComponent<ParticleSystemGroupScaling>();
 
-            effectAnimationComponent.SetSimulationSize(range);
+            effectAnimationComponent.SetSimulationSize(diameter);
 
             Destroy(effect, effectAnimationComponent.AnimationTime);
         }

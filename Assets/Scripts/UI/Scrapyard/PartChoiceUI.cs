@@ -10,6 +10,8 @@ using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
@@ -22,7 +24,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class PartChoiceUI : MonoBehaviour
+    public class PartChoiceUI : MonoBehaviour, IStartedUsingController
     {
         [Serializable]
         public struct PartSelectionUI
@@ -39,8 +41,8 @@ namespace StarSalvager.UI.Wreckyard
 
         //Properties
         //====================================================================================================================//
-        
 
+        #region Properties
 
         public static PART_TYPE LastPicked { get; private set; }
 
@@ -74,21 +76,32 @@ namespace StarSalvager.UI.Wreckyard
         }
         private PartDetailsUI _partDetailsUI;
 
+        #endregion //Properties
+
         //Unity Functions
         //====================================================================================================================//
-        
+
+        private void OnEnable()
+        {
+            InputManager.AddStartedControllerListener(this);
+        }
+
         // Start is called before the first frame update
         private void Start()
         {
-            if(!_noPartButtonText)
-                _noPartButtonText = noPartSelectedOptionButton.GetComponentInChildren<TMP_Text>();
+            if(!_noPartButtonText) _noPartButtonText = noPartSelectedOptionButton.GetComponentInChildren<TMP_Text>();
 
             _partOptions = new PART_TYPE[2];
             InitButtons();
         }
-
-        //============================================================================================================//
         
+        private void OnDisable()
+        {
+            InputManager.RemoveControllerListener(this);
+        }
+
+        //Init
+        //============================================================================================================//
         
         #region Init
 
@@ -159,7 +172,7 @@ namespace StarSalvager.UI.Wreckyard
             }
 
             SetActive(true);
-            EventSystem.current.SetSelectedGameObject(selectionUis[0].optionButton.gameObject);
+            
         }
 
         private void InitButtons()
@@ -274,6 +287,11 @@ namespace StarSalvager.UI.Wreckyard
 
         #endregion //Init
 
+        //Discard Part
+        //====================================================================================================================//
+
+        #region Discard Parts
+
         private void PresentPartOverage(in PartData[] partDatas)
         {
             titleText.text = "Discard a Part";
@@ -380,11 +398,20 @@ namespace StarSalvager.UI.Wreckyard
             return false;
         }
 
+        #endregion //Discard Parts
 
-        public void SetActive(in bool state)
+        //IStartedUsingController Functions
+        //====================================================================================================================//
+        
+        public void StartedUsingController(bool usingController)
         {
-            partChoiceWindow.SetActive(state);
+            EventSystem.current.SetSelectedGameObject(usingController ? selectionUis[0].optionButton.gameObject : null);
         }
+
+        //Extra Functions
+        //====================================================================================================================//
+        
+        public void SetActive(in bool state) => partChoiceWindow.SetActive(state);
 
         //Unity Editor
         //============================================================================================================//
@@ -399,5 +426,6 @@ namespace StarSalvager.UI.Wreckyard
         }
 
 #endif
+
     }
 }

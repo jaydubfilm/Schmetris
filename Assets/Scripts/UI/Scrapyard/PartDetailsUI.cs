@@ -166,22 +166,6 @@ namespace StarSalvager.UI.Wreckyard
 
             partDetailsText.text = partData.GetPartDetails(partRemote);
 
-            /*for (var i = 0; i < partData.Patches.Count; i++)
-            {
-                if (i >= patchUis.Length)
-                    break;
-                
-                var patchData = partData.Patches[i];
-                var type = (PATCH_TYPE) patchData.Type;
-
-                patchUis[i].backgroundImage.enabled = type != PATCH_TYPE.EMPTY;
-
-                patchUis[i].text.text = type == PATCH_TYPE.EMPTY
-                    ? string.Empty
-                    : $"{patchRemoteData.GetRemoteData(type).name} {patchData.Level + 1}";
-
-            }*/
-
             //====================================================================================================================//
 
             //Resize the details text to accomodate the text

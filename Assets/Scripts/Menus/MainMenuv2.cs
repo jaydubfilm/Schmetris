@@ -9,6 +9,8 @@ using StarSalvager.UI.PersistentUpgrades;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -21,7 +23,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class MainMenuv2 : MonoBehaviour, IReset
+    public class MainMenuv2 : MonoBehaviour, IReset, IStartedUsingController
     {
         private enum WINDOW
         {
@@ -169,15 +171,19 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             RefreshWindow(_currentWindow);
+            InputManager.AddStartedControllerListener(this);
         }
 
         private void Start()
         {
-            //partSprite.sprite = FactoryManager.Instance.PartsProfileData.GetProfile(PART_TYPE.CORE).GetSprite(0);
-
             Globals.Init();
             SetupWindows();
             SetupButtons();
+        }
+
+        private void OnDisable()
+        {
+            InputManager.RemoveControllerListener(this);
         }
 
         //IReset Functions
@@ -227,6 +233,13 @@ namespace StarSalvager.UI
                     SetupAccountMenuWindow();
                     break;
                 case WINDOW.STARS:
+                    continueRunButton.gameObject.SetActive(false);
+                    abandonRunButton.gameObject.SetActive(false);
+                    newRunButton.gameObject.SetActive(false);
+                    starsButton.gameObject.SetActive(false);
+                    settingsButton.gameObject.SetActive(false);
+                    quitButton.gameObject.SetActive(false);
+                    changeAccountButton.gameObject.SetActive(false);
                     SetupStarsWindow();
                     break;
                 default:
@@ -236,7 +249,7 @@ namespace StarSalvager.UI
 
         private void SetSelectedElement(WINDOW window)
         {
-            switch (window)
+            /*switch (window)
             {
                 case WINDOW.NONE:
                     break;
@@ -260,7 +273,7 @@ namespace StarSalvager.UI
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
-            }
+            }*/
         }
 
         #region Setup Windows
@@ -383,6 +396,11 @@ namespace StarSalvager.UI
             newRunButton.gameObject.SetActive(!hasActiveRun);
             continueRunButton.gameObject.SetActive(hasActiveRun);
             abandonRunButton.gameObject.SetActive(hasActiveRun);
+            
+            starsButton.gameObject.SetActive(true);
+            settingsButton.gameObject.SetActive(true);
+            quitButton.gameObject.SetActive(true);
+            changeAccountButton.gameObject.SetActive(true);
 
             //FIXME This should wait until a EventSystem exists to be able to use
             EventSystem.current?.SetSelectedGameObject(hasActiveRun
@@ -763,5 +781,37 @@ namespace StarSalvager.UI
         //====================================================================================================================//
 
 
+        public void StartedUsingController(bool usingController)
+        {
+            if (usingController == false)
+                return;
+            
+            switch (_currentWindow)
+            {
+                case WINDOW.NONE:
+                    EventSystem.current.SetSelectedGameObject(null);
+                    break;
+                case WINDOW.MAIN_MENU:
+                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+                    break;
+                case WINDOW.SETTINGS:
+                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
+                    break;
+                case WINDOW.ACCOUNT:
+                    EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
+                    break;
+                case WINDOW.ACCOUNT_MENU:
+                    bool hasActiveRun = PlayerDataManager.HasActiveRun();
+                    EventSystem.current.SetSelectedGameObject(hasActiveRun
+                        ? continueRunButton.gameObject
+                        : newRunButton.gameObject);
+                    break;
+                case WINDOW.STARS:
+                    EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_currentWindow), _currentWindow, null);
+            }
+        }
     }
 }

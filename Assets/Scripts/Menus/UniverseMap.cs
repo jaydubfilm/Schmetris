@@ -14,13 +14,16 @@ using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.UI.Hints;
 using StarSalvager.UI.Wreckyard.PatchTrees;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IStartedUsingController
     {
         //#3658df
         private static Color LINE_COLOR = new Color(0.2117f, 0.34509f, 0.874509f);
@@ -61,10 +64,18 @@ namespace StarSalvager.UI
 
         //Unity Functions
         //============================================================================================================//
-
+        private void OnEnable()
+        {
+            InputManager.AddStartedControllerListener(this);
+        }
         private void Start()
         {
             backButton.onClick.AddListener(Back);
+        }
+        
+        private void OnDisable()
+        {
+            InputManager.RemoveControllerListener(this);
         }
 
         //====================================================================================================================//
@@ -96,6 +107,9 @@ namespace StarSalvager.UI
             DrawMap();
 
             PlayerDataManager.GetBotBlockDatas().CreateBotPreview(botDisplayRectTransform);
+
+            //Wait until the map is generated to try and highlight
+            StartedUsingController(InputManager.Instance.UsingController);
         }
 
         public void Reset()
@@ -257,12 +271,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+
         private void DrawMap()
         {
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
 
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
-            var playerCoordinateIndex = currentRingMap.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            var playerCoordinateIndex = GetPlayerCoordinateIndex(currentRingMap);
 
             CenterToItem(_universeMapButtons[playerCoordinateIndex].transform);
 
@@ -324,7 +339,8 @@ namespace StarSalvager.UI
                 //Hide all the lines that weren't traversed behind the players coordinate
                 else if (endConnectionCoordinate.x <= playerCoordinate.x ||
                          //Hide any lines emanating from nodes adjacent to the player that are impossible to traverse from
-                         (startConnectionCoordinate.x == playerCoordinate.x && startConnectionCoordinate.y != playerCoordinate.y))
+                         (startConnectionCoordinate.x == playerCoordinate.x &&
+                          startConnectionCoordinate.y != playerCoordinate.y))
                 {
                     connectionColor = Color.clear;
                 }
@@ -332,7 +348,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y, drawDottedLine, connectionColor);
 
                 //If another iteration set this node to active, we don't want to cancel that out
-                if(_universeMapButtons[connection.y].IsButtonInteractable == false)
+                if (_universeMapButtons[connection.y].IsButtonInteractable == false)
                     _universeMapButtons[connection.y].SetButtonInteractable(canTravelToNext);
             }
 
@@ -343,7 +359,8 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             var unlockedWreck = _universeMapButtons
-                .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+                .FirstOrDefault(x =>
+                    playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
 
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {
@@ -354,7 +371,7 @@ namespace StarSalvager.UI
 
         }
 
-        
+
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, Color color)
         {
             if (_connectionImages == null)
@@ -378,6 +395,21 @@ namespace StarSalvager.UI
             
             _connectionImages.Add(connectionImage);
         }
+
+        private static int GetPlayerCoordinateIndex()
+        {
+            var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
+            return GetPlayerCoordinateIndex(currentRingMap);
+        }
+        private static int GetPlayerCoordinateIndex(in Ring ring)
+        {
+            var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
+            return ring.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+        }
+        
+        //Buttons Pressed Functions
+        //====================================================================================================================//
+        
 
         private void InitBackButton()
         {
@@ -432,6 +464,23 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
+        
+        public void StartedUsingController(bool usingController)
+        {
+            if (_universeMapButtons.IsNullOrEmpty())
+                return;
+            
+            if (usingController)
+            {
+                var playerCoordinateIndex = GetPlayerCoordinateIndex();
+                var buttonObject = _universeMapButtons[playerCoordinateIndex].gameObject;
+
+                EventSystem.current.SetSelectedGameObject(buttonObject);
+                return;
+            }
+            
+            EventSystem.current.SetSelectedGameObject(null);
+        }
         
     }
 }

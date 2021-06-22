@@ -197,6 +197,14 @@ MonoBehaviour:
       silver: 1
       multiplier: 1
       level: 2
+    - gears: 250
+      silver: 1
+      multiplier: 1
+      level: 3
+    - gears: 250
+      silver: 1
+      multiplier: 1
+      level: 4
   - isImplemented: 0
     name: AREA OF EFFECT
     type: 10
@@ -215,6 +223,14 @@ MonoBehaviour:
       silver: 0
       multiplier: 0.5
       level: 2
+    - gears: 250
+      silver: 0
+      multiplier: 0.5
+      level: 3
+    - gears: 250
+      silver: 0
+      multiplier: 0.5
+      level: 4
   - isImplemented: 1
     name: EFFICIENCY
     type: 4
@@ -228,6 +244,14 @@ MonoBehaviour:
       silver: 0
       multiplier: 0.5
       level: 2
+    - gears: 250
+      silver: 0
+      multiplier: 0.5
+      level: 3
+    - gears: 250
+      silver: 0
+      multiplier: 0.5
+      level: 4
   - isImplemented: 1
     name: RANGE
     type: 2
@@ -241,6 +265,14 @@ MonoBehaviour:
       silver: 0
       multiplier: 1
       level: 2
+    - gears: 250
+      silver: 0
+      multiplier: 1
+      level: 3
+    - gears: 250
+      silver: 0
+      multiplier: 1
+      level: 4
   - isImplemented: 0
     name: BURN
     type: 8

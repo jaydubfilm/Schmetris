@@ -5,15 +5,17 @@ using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class Alert : Singleton<Alert>
+    public class Alert : Singleton<Alert>, IStartedUsingController
     {
         public static bool Displayed => Instance.windowObject.activeInHierarchy;
 
@@ -47,7 +49,12 @@ namespace StarSalvager.UI
         private string _activeDontShowKey;
 
         //============================================================================================================//
-        
+
+        private void OnEnable()
+        {
+            InputManager.AddStartedControllerListener(this);
+        }
+
         private void Start()
         {
             versionText.text = $"v{Application.version}";
@@ -57,6 +64,11 @@ namespace StarSalvager.UI
             _neutralButtonText = neutralButton.GetComponentInChildren<TMP_Text>();
 
             SetActive(false);
+        }
+        
+        private void OnDisable()
+        {
+            InputManager.RemoveControllerListener(this);
         }
 
         //====================================================================================================================//
@@ -295,6 +307,35 @@ namespace StarSalvager.UI
         {
             windowObject.SetActive(state);
         }
+
+        //IStartedUsingController Functions
+        //====================================================================================================================//
+        
+        public void StartedUsingController(bool usingController)
+        {
+            if (!Displayed) return;
+
+            if (!usingController)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                return;
+            }
+
+            if (neutralButton.gameObject.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(neutralButton.gameObject);
+            }
+            else if (negativeButton.gameObject.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(negativeButton.gameObject);
+            }
+            else if (positiveButton.gameObject.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(positiveButton.gameObject);
+            }
+            else
+               throw new Exception();
+        }
         
         //============================================================================================================//
 
@@ -307,6 +348,7 @@ namespace StarSalvager.UI
         }
         
 #endif
+
     }
 }
 
