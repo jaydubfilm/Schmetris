@@ -2632,6 +2632,15 @@ namespace StarSalvager
                     break;
                 }
                 case PART_TYPE.RAILGUN:
+                    //From: https://agamestudios.atlassian.net/browse/SS-206
+                    if (Globals.UseRailgunFireLine == false)
+                        return;
+                    points = new[]
+                    {
+                        firePosition,
+                        Vector3.up * 100
+                    };
+                    break;
                 case PART_TYPE.LASER_CANNON:
                     points = new[]
                     {

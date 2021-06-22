@@ -25,6 +25,8 @@ namespace StarSalvager.Factories.Data
         public string ProjectileTypeID => m_projectileTypeID;
 
         public Sprite Sprite => m_sprite;
+        
+        public float Scale => scale;
 
         public bool UseTrail => useTrail;
         public Color Color => color;
@@ -65,6 +67,7 @@ namespace StarSalvager.Factories.Data
 
         [SerializeField, VerticalGroup("$title/row2/right")]
         private string m_projectileType;
+        
 
         [SerializeField, HorizontalGroup("$title/row2/right/trail")]
         private bool useTrail;
@@ -72,6 +75,9 @@ namespace StarSalvager.Factories.Data
         [SerializeField, HorizontalGroup("$title/row2/right/trail"), HideLabel, EnableIf("useTrail")]
         private Color color = Color.white;
         
+        
+        [SerializeField, FoldoutGroup("$title"), Range(0.1f,5f)]
+        private float scale = 1f;
         
 
         [SerializeField, FoldoutGroup("$title")]

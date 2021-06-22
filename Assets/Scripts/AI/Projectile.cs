@@ -67,6 +67,7 @@ namespace StarSalvager.AI
             float rangeBoost,
             Vector2 direction, 
             Vector2 velocity,
+            float scale,
             IHealth vampirismCaster,
             float vampirismValue)
         {
@@ -81,6 +82,7 @@ namespace StarSalvager.AI
             EnemyVelocityModifier = velocity;
 
             transform.up = direction;
+            transform.localScale = Vector3.one * scale;
 
             if (ProjectileData.ProjectileRange > 0)
             {

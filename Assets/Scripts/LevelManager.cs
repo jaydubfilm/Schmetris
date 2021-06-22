@@ -31,13 +31,15 @@ namespace StarSalvager
     {
         //Properties
         //====================================================================================================================//
-        private float yTopPosition => Constants.gridCellSize * Globals.GridSizeY;
-        private bool BotIsInPosition => m_bots[0].transform.position.y >= yTopPosition;
+
         
         [SerializeField, Required, BoxGroup("Prototyping")]
         private OutroScene OutroScene;
 
         #region Properties
+        
+        private float yTopPosition => Constants.gridCellSize * Globals.GridSizeY;
+        private bool BotIsInPosition => m_bots[0].transform.position.y >= yTopPosition;
 
         private List<Bot> m_bots = new List<Bot>();
         public Bot BotInLevel => m_bots.Count > 0 ? m_bots[0] : null;
@@ -155,13 +157,12 @@ namespace StarSalvager
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
 
+        private bool _playerDataSaved;
+
         private float botMoveOffScreenSpeed = 1.0f;
 
         private bool m_endLevelOverride = false;
-
-        #endregion //Properties
-
-
+        
         [SerializeField] private AnimationCurve enterCurve;
 
         private GameObject _thrusterEffectObject;
@@ -174,6 +175,11 @@ namespace StarSalvager
         private float _enterTime => 1.3f;
         private float _t;
         private float _startY;
+
+        #endregion //Properties
+
+
+
 
 
 
@@ -748,6 +754,10 @@ namespace StarSalvager
         //====================================================================================================================//
         private void SavePlayerData()
         {
+            //For some reason the function was being called MANY TIMES. Added this bool to prevent.
+            if (_playerDataSaved)
+                return;
+            
             if (Globals.UsingTutorial)
                 return;
 
@@ -760,6 +770,8 @@ namespace StarSalvager
                 PlayerDataManager.SetDroneBlockData(blockData);
                 PlayerDataManager.DowngradeAllBits(1, false);
             }
+
+            _playerDataSaved = true;
         }
 
         private void CleanLevel()
@@ -788,7 +800,7 @@ namespace StarSalvager
             ProjectileManager.Reset();
             m_endLevelOverride = false;
 
-
+            _playerDataSaved = false;
         }
 
         //UI Functions

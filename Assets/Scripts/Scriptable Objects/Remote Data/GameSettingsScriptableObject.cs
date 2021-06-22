@@ -10,6 +10,9 @@ namespace StarSalvager.ScriptableObjects
     {
         [BoxGroup("Prototyping")]
         public bool usePartColors = true;
+        
+        [BoxGroup("Prototyping")]
+        public bool useRailgunFireLine = true;
 
         [BoxGroup("Prototyping")]
         public bool useCenterFiring = true;

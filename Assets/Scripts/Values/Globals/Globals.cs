@@ -69,6 +69,7 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static bool UseRailgunFireLine => m_gameSettings.useRailgunFireLine;
         public static float PartSwapTime => m_gameSettings.partSwapTime;
         public static bool UsePartColors => m_gameSettings.usePartColors;
 
