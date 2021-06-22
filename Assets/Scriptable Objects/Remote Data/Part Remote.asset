@@ -301,7 +301,7 @@ MonoBehaviour:
       value: f4741159-a277-4dc0-97ca-849327e73192
     isManual: 1
     category: 3
-    ammoUseCost: 3
+    ammoUseCost: 2
     patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":4,"PreReqs":[3,2]}]'
   - isImplemented: 1
     partType: 38
