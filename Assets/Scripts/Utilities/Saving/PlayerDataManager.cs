@@ -74,11 +74,11 @@ namespace StarSalvager.Utilities.Saving
 
         #region XP
 
-        public static int GetXP() => PlayerAccountData.XP;
+        public static int GetXP() => PlayerAccountData?.XP ?? 0;
 
-        public static int GetXPThisRun() => PlayerAccountData.GetXPThisRun();
+        public static int GetXPThisRun() => PlayerAccountData?.GetXPThisRun() ?? 0;
 
-        public static void ChangeXP(in int amount) => PlayerAccountData.AddXP(amount);
+        public static void ChangeXP(in int amount) => PlayerAccountData?.AddXP(amount);
 
         #endregion //XP
 

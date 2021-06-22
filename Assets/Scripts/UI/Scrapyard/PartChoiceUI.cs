@@ -269,6 +269,9 @@ namespace StarSalvager.UI.Wreckyard
             
             for (var i = 0; i < selectionUis.Length; i++)
             {
+                if (selectionUis[i].partBorderImage != null)
+                    continue;
+                
                 selectionUis[i].partBorderImage =
                     PartAttachableFactory.CreateUIPartBorder(
                         (RectTransform)selectionUis[i].optionButton.transform,

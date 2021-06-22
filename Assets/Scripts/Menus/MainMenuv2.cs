@@ -641,8 +641,7 @@ namespace StarSalvager.UI
                     
                     //Set the ACCOUNT_MENU to open, so that when we return its ready to view
                     OpenWindow(WINDOW.ACCOUNT_MENU);
-                    if(PlayerDataManager.IntroCompleted() == false)
-                        IntroScene.gameObject.SetActive(true);
+                    IntroScene.Init();
                     gameObject.SetActive(false);
                     break;
                 case GAME_TYPE.HARDCORE:

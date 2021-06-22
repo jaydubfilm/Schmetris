@@ -39,6 +39,7 @@ namespace StarSalvager.Prototype
 
         private void Awake()
         {
+            
             gameObject.SetActive(false);
             tutorialSlideImage.gameObject.SetActive(false);
         }
@@ -48,6 +49,20 @@ namespace StarSalvager.Prototype
             Utilities.Inputs.Input.Actions.MenuControls.Pause.performed -= OnSkipPressed;
         }
 
+        //IntroScene Functions
+        //====================================================================================================================//
+
+        public void Init()
+        {
+            if (PlayerDataManager.IntroCompleted())
+            {
+                Skip();
+                return;
+            }
+            
+            gameObject.SetActive(true);
+        }
+        
         //Intro Scene Functions
         //====================================================================================================================//
 

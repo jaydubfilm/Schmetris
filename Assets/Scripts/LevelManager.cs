@@ -555,15 +555,12 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetLevelProgressSlider(1f);
-            foreach (var bot in m_bots)
-            {
-                bot.ResetRotationToIdentity();
-            }
+            
 
             PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
 
             
-            SavePlayerData();
+            //SavePlayerData();
             GameTimer.SetPaused(true);
 
             //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
@@ -763,13 +760,14 @@ namespace StarSalvager
 
             foreach (Bot bot in m_bots)
             {
-                var blockData = bot.GetBlockDatas();
-
+                bot.ResetRotationToIdentity();
                 
                 PlayerDataManager.SetBotHealth(bot.CurrentHealth);
-                PlayerDataManager.SetDroneBlockData(blockData);
+                PlayerDataManager.SetDroneBlockData(bot.GetBlockDatas());
                 PlayerDataManager.DowngradeAllBits(1, false);
             }
+            
+            PlayerDataManager.SavePlayerAccountData();
 
             _playerDataSaved = true;
         }

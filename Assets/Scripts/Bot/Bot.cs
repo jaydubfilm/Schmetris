@@ -704,17 +704,33 @@ namespace StarSalvager
 
         public void ResetRotationToIdentity()
         {
-            PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-
-            if (AttachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
+            var rotate = false;
+            foreach (var part in AttachedBlocks.OfType<Part>())
             {
-                foreach (var attachedBlock in AttachedBlocks)
-                {
-                    attachedBlock.RotateCoordinate(ROTATION.CW);
-                }
-
-                ResetRotationToIdentity();
+                if(part.Type == PART_TYPE.EMPTY)
+                    continue;
+                if (part.category == PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)) 
+                    continue;
+                
+                rotate = true;
+                break;
             }
+            
+            if(rotate == false)
+                return;
+            
+            /*if (!AttachedBlocks.Any(b => b is Part part &&
+                                         part.Type != PART_TYPE.EMPTY &&
+                                         part.category !=
+                                         PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate))) 
+                return;*/
+            
+            foreach (var attachedBlock in AttachedBlocks)
+            {
+                attachedBlock.RotateCoordinate(ROTATION.CW);
+            }
+
+            ResetRotationToIdentity();
         }
 
         public void TrySelfDestruct()
