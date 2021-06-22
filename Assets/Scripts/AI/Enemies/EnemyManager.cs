@@ -354,7 +354,8 @@ namespace StarSalvager
 
         public void DamageAllEnemiesInRadius(in float damage, in Vector2 worldPosition, in float radius)
         {
-            var existingEnemies = m_enemies.AsReadOnly();
+            //Store a copy of the list in the event that one is removed due to a previous attack iteration
+            IReadOnlyList<Enemy> existingEnemies = new List<Enemy>(m_enemies);
             var damageAbs = Mathf.Abs(damage);
             foreach (var enemy in existingEnemies)
             {
