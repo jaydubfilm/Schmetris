@@ -475,11 +475,11 @@ namespace StarSalvager.UI
                 var playerCoordinateIndex = GetPlayerCoordinateIndex();
                 var buttonObject = _universeMapButtons[playerCoordinateIndex].gameObject;
 
-                EventSystem.current.SetSelectedGameObject(buttonObject);
+                EventSystem.current?.SetSelectedGameObject(buttonObject);
                 return;
             }
             
-            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current?.SetSelectedGameObject(null);
         }
         
     }

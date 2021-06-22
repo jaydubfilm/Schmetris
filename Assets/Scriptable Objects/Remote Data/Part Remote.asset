@@ -294,12 +294,14 @@ MonoBehaviour:
     description: A long range, trigger-fired projectile weapon.  Has a quick cooldown.
     dataTest:
     - key: Damage
-      value: 20
+      value: 5
     - key: Cooldown
-      value: 3
+      value: .5
+    - key: Projectile
+      value: f4741159-a277-4dc0-97ca-849327e73192
     isManual: 1
     category: 3
-    ammoUseCost: 10
+    ammoUseCost: 3
     patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":4,"PreReqs":[3,2]}]'
   - isImplemented: 1
     partType: 38
@@ -458,4 +460,28 @@ MonoBehaviour:
     isManual: 0
     category: 1
     ammoUseCost: 5
+    patchTreeData: 
+  - isImplemented: 1
+    partType: 37
+    name: Laser Cannon
+    lockRotation: 0
+    description: A long range, trigger-fired projectile weapon.  Has a quick cooldown.
+    dataTest:
+    - key: Damage
+      value: 20
+    - key: Cooldown
+      value: 3
+    isManual: 1
+    category: 3
+    ammoUseCost: 10
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":4,"PreReqs":[3,2]}]'
+  - isImplemented: 0
+    partType: 0
+    name: 
+    lockRotation: 0
+    description: 
+    dataTest: []
+    isManual: 0
+    category: 0
+    ammoUseCost: 0
     patchTreeData: 

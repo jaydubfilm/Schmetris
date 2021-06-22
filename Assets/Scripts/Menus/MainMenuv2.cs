@@ -210,10 +210,10 @@ namespace StarSalvager.UI
                 case WINDOW.NONE:
                     break;
                 case WINDOW.MAIN_MENU:
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+                    EventSystem.current?.SetSelectedGameObject(playButton.gameObject);
                     break;
                 case WINDOW.SETTINGS:
-                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
+                    EventSystem.current?.SetSelectedGameObject(settingsBackButton.gameObject);
                     break;
                 case WINDOW.ACCOUNT:
                     if (CheckVersionConflict())

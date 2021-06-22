@@ -317,7 +317,7 @@ namespace StarSalvager.UI
 
             if (!usingController)
             {
-                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current?.SetSelectedGameObject(null);
                 return;
             }
 

@@ -527,6 +527,7 @@ namespace StarSalvager
                         break;
                     case PART_TYPE.BLASTER:
                     case PART_TYPE.RAILGUN:
+                    case PART_TYPE.LASER_CANNON:
                         InitFireLine(part, partRemoteData);
                         break;
                     case PART_TYPE.SABRE:
@@ -607,13 +608,10 @@ namespace StarSalvager
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.BLASTER:
-                        //BlasterUpdate(part, partRemoteData, deltaTime);
                         UpdateFireLine(part, partRemoteData);
                         break;
                     //------------------------------------------------------------------------------------------------//
                     case PART_TYPE.SNIPER:
-                    //case PART_TYPE.MISSILE:
-                    //case PART_TYPE.TRIPLESHOT:
                     case PART_TYPE.GUN:
                         GunUpdate(part, partRemoteData, deltaTime);
                         UpdateFireLine(part, partRemoteData);
@@ -637,7 +635,10 @@ namespace StarSalvager
                         UpdateFireLine(part, partRemoteData);
                         break;
                     //--------------------------------------------------------------------------------------------------------//
+                    
                     case PART_TYPE.RAILGUN:
+                    case PART_TYPE.LASER_CANNON:
+
                         UpdateFireLine(part, partRemoteData);
                         break;
                     case PART_TYPE.FORCE_FIELD:
@@ -918,16 +919,7 @@ namespace StarSalvager
 
             var target = _gunTargets[part];
 
-            /*if (target &&
-                target.IsRecycled == false &&
-                /*!_turrets.IsNullOrEmpty() &&
-                _turrets.TryGetValue(part, out var turretTransform)#1#)
-            {
-                var targetTransform = target.transform;
-                var normDirection = (targetTransform.position - part.transform.position).normalized;
-                turretTransform.up = normDirection;
-            }
-            else */if (target && target.IsRecycled)
+            if (target && target.IsRecycled)
             {
                 _gunTargets[part] = null;
             }
@@ -1307,6 +1299,9 @@ namespace StarSalvager
                 case PART_TYPE.RAILGUN:
                     TriggerRailgun(part);
                     break;
+                case PART_TYPE.LASER_CANNON:
+                    TriggerLaserCannon(part);
+                    break;
                 case PART_TYPE.TRACTOR:
                     TriggerTractorBeam(part);
                     break;
@@ -1362,6 +1357,7 @@ namespace StarSalvager
                 case PART_TYPE.FREEZE:
                 case PART_TYPE.SHIELD:
                 case PART_TYPE.RAILGUN:
+                case PART_TYPE.LASER_CANNON:
                 case PART_TYPE.TRACTOR:
                 case PART_TYPE.HEAL:
                 case PART_TYPE.DECOY:
@@ -1587,6 +1583,14 @@ namespace StarSalvager
 
         private void TriggerRailgun(in Part part)
         {
+            if (!CanUseTriggerPart(part, out var partRemoteData))
+                return;
+
+            var tag = TagsHelper.ENEMY;
+            CreateProjectile(part, partRemoteData, null, tag);
+        }
+        private void TriggerLaserCannon(in Part part)
+        {
             const float WIDTH = 5f;
             const float LENGTH = 50f;
             const float TIME = 0.4f;
@@ -1627,7 +1631,6 @@ namespace StarSalvager
             }
 
         }
-
         private void TriggerTractorBeam(in Part part)
         {
             if (!CanUseTriggerPart(part, out _, false))
@@ -2629,6 +2632,7 @@ namespace StarSalvager
                     break;
                 }
                 case PART_TYPE.RAILGUN:
+                case PART_TYPE.LASER_CANNON:
                     points = new[]
                     {
                         firePosition,
@@ -2656,6 +2660,7 @@ namespace StarSalvager
                     return;
                 case PART_TYPE.GUN:
                 case PART_TYPE.RAILGUN:
+                case PART_TYPE.LASER_CANNON:
                     fireLineRenderer.transform.rotation = Quaternion.identity;
                     break;
                 default:

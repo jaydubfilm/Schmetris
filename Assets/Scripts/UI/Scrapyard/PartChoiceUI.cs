@@ -405,7 +405,7 @@ namespace StarSalvager.UI.Wreckyard
         
         public void StartedUsingController(bool usingController)
         {
-            EventSystem.current.SetSelectedGameObject(usingController ? selectionUis[0].optionButton.gameObject : null);
+            EventSystem.current?.SetSelectedGameObject(usingController ? selectionUis[0].optionButton.gameObject : null);
         }
 
         //Extra Functions

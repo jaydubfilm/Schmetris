@@ -48,7 +48,7 @@
         
         RAILGUN = 36,
 
-        //MAGNET = 37,
+        LASER_CANNON = 37,
         
         TRACTOR = 38,
         HEAL = 39,
