@@ -458,10 +458,10 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
 
-            FindObjectOfType<GameUI>();
             MagnetCount = 0;
 
             SetupGunRangeValues();
+            CleanFireLine();
 
             //int value;
             foreach (var part in _parts)
@@ -2589,7 +2589,7 @@ namespace StarSalvager
             {
                 case PART_TYPE.SABRE:
                 case PART_TYPE.SNIPER:
-                    fireLineRenderer.gameObject.SetActive(false);
+                    CleanFireLine();
                     return;
                 case PART_TYPE.GUN:
                 {
@@ -2661,6 +2661,11 @@ namespace StarSalvager
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void CleanFireLine()
+        {
+            fireLineRenderer.gameObject.SetActive(false);
         }
 
         //====================================================================================================================//

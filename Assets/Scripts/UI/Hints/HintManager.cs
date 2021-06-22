@@ -13,9 +13,9 @@ using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
-using Object = System.Object;
 
 namespace StarSalvager.UI.Hints
 {
@@ -286,6 +286,21 @@ namespace StarSalvager.UI.Hints
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private IEnumerator HintPagesCoroutine(HINT hint, IReadOnlyList<object> objectsToHighlight)
         {
+            var buttonPressed = false;
+            
+            //Menu Controls Input
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void OnSubmitPerformed(InputAction.CallbackContext ctx)
+            {
+                if (ctx.ReadValueAsButton() == false)
+                    return;
+
+                buttonPressed = true;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             var hintData = hintRemoteData.GetHintData(hint);
             
             Time.timeScale = 0f;
@@ -294,12 +309,14 @@ namespace StarSalvager.UI.Hints
             _previousInputActionGroup = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
-            var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.onClick.AddListener(() =>
             {
                 buttonPressed = true;
             });
+            
+            //FIXME I probably want all of these functionalities to occur in the Input Manager
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed += OnSubmitPerformed;
             
             for (var i = 0; i < hintData.hintTexts.Count; i++)
             {
@@ -329,7 +346,7 @@ namespace StarSalvager.UI.Hints
                 ShowHintText(hintData.hintTexts[i]);
 
                 //TODO Need to also include waiting for button Press
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
+                yield return new WaitUntil(() => buttonPressed);
                 
                 buttonPressed = false;
 
@@ -344,7 +361,7 @@ namespace StarSalvager.UI.Hints
             Time.timeScale = 1f;
             ShowingHint = false;
             highlightManager.SetActive(false);
-
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
         }
 
         /// <summary>
