@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using Sirenix.OdinInspector.Editor;
-using StarSalvager.Factories;
 using StarSalvager.ScriptableObjects.Analytics;
 using StarSalvager.ScriptableObjects.Analytics.StarSalvager.ScriptableObjects.Analytics.Editor;
-using StarSalvager.Utilities.Analytics.Data;
+using StarSalvager.Utilities.Analytics.SessionTracking.Data;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace StarSalvager.Utilities.Analytics.Editor
 {
@@ -25,9 +24,6 @@ namespace StarSalvager.Utilities.Analytics.Editor
         private static void OpenWindow()
         {
             GetWindow<SessionDataViewerWindow>().Show();
-            
-            
-            
         }
 
         private void FindSettingsAsset()
@@ -56,28 +52,7 @@ namespace StarSalvager.Utilities.Analytics.Editor
             var tree = new OdinMenuTree();
             tree.Selection.SupportsMultiSelect = false;
             
-            var directory = new DirectoryInfo(_summarySettingsScriptableObject.SessionsDirectory);
-
-            var files = directory.GetFiles("*.session");
-            
-            _playerSessions = new Dictionary<string, List<SessionData>>();
-
-            foreach (var file in files)
-            {
-                var jsonData = File.ReadAllText(file.FullName);
-
-                var sessionData = Newtonsoft.Json.JsonConvert.DeserializeObject<SessionData>(jsonData);
-
-                //Don't want to add any sessions that are no longer supported
-                if (sessionData.Version != SessionDataProcessor.VERSION)
-                    continue;
-                
-            
-                if(!_playerSessions.ContainsKey(sessionData.PlayerID))
-                    _playerSessions.Add(sessionData.PlayerID, new List<SessionData>());
-                
-                _playerSessions[sessionData.PlayerID].Add(sessionData);
-            }
+            _playerSessions = Files.ImportSessionData(_summarySettingsScriptableObject.SessionsDirectory);
             
             tree.Add("Settings", _summarySettingsScriptableObject);
             
@@ -106,7 +81,7 @@ namespace StarSalvager.Utilities.Analytics.Editor
                             $"{playerSession.Key}/{sessionDateName}/Session {i + 1}/Sector {wave.sectorNumber + 1} Wave {wave.waveNumber + 1}[{index}]",
                             wave);*/
                         tree.Add(
-                            $"{playerSession.Key}/Session {i + 1}/Sector {wave.sectorNumber + 1} Wave {wave.waveNumber + 1}[{index}]",
+                            $"{playerSession.Key}/Session {i + 1}/Ring {wave.ringIndex + 1} Wave {wave.waveNumber + 1}[{index}]",
                             wave);
                     }
                 }
@@ -118,23 +93,23 @@ namespace StarSalvager.Utilities.Analytics.Editor
     
 
     
-    public class BlockDataListDrawer : OdinValueDrawer<List<BlockData>>
+    public class BlockDataListDrawer<T> : OdinValueDrawer<List<T>> where T: IBlockData
     {
         private const float BRICK_SIZE = 32;
         private const float PREVIEW_HEIGHT = 256;
         protected override void DrawPropertyLayout(GUIContent label)
         {
+            Vector2 CoordinateToPosition(Vector2Int coordinate)
+            {
+                return new Vector2(coordinate.x * BRICK_SIZE, -coordinate.y * BRICK_SIZE);
+            }
+            
             Rect rect = EditorGUILayout.GetControlRect(false, PREVIEW_HEIGHT);
             rect.width = rect.height = PREVIEW_HEIGHT;
             
             Vector2 center = new Vector2(rect.x + rect.width / 2f, rect.y + rect.height / 2f);
             
 
-            //if (label != null)
-            //{
-            //    rect = EditorGUI.PrefixLabel(rect, label);
-            //}
-            
             EditorGUI.DrawRect(rect, new Color(0.17f, 0.17f, 0.17f));
 
             if (label != null)
@@ -145,7 +120,7 @@ namespace StarSalvager.Utilities.Analytics.Editor
                 EditorGUI.LabelField(labelRect, label, newStyle);
             }
 
-            var blockDataList = this.ValueEntry.SmartValue;
+            var blockDataList = ValueEntry.SmartValue;
             foreach (var blockData in blockDataList)
             {
                 var sprite = GetSprite(blockData);
@@ -164,7 +139,7 @@ namespace StarSalvager.Utilities.Analytics.Editor
         {
             Vector2 fullSize = new Vector2(sprite.texture.width, sprite.texture.height);
             Vector2 size = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
- 
+
             Rect coords = sprite.textureRect;
             coords.x /= fullSize.x;
             coords.width /= fullSize.x;
@@ -183,26 +158,17 @@ namespace StarSalvager.Utilities.Analytics.Editor
  
             GUI.DrawTextureWithTexCoords(position, sprite.texture, coords);
         }
-        private static Sprite GetSprite(BlockData blockData)
+        private static Sprite GetSprite(IBlockData blockData)
         {
-            switch (blockData.ClassType)
+            switch (blockData)
             {
-                case nameof(ScrapyardBit):
-                case nameof(Bit):
-                    return Object.FindObjectOfType<FactoryManager>().BitProfileData.GetProfile((BIT_TYPE)blockData.Type).GetSprite(blockData.Level);
-                case nameof(Component):
-                    return Object.FindObjectOfType<FactoryManager>().componentSprite;
-                case nameof(ScrapyardPart):
-                case nameof(Part):
-                    return Object.FindObjectOfType<FactoryManager>().PartsProfileData.GetProfile((PART_TYPE)blockData.Type).GetSprite(blockData.Level);
+                case BitData bitData:
+                    return ((BIT_TYPE)blockData.Type).GetSprite(bitData.Level);
+                case PartData _:
+                    return ((PART_TYPE)blockData.Type).GetSprite();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(blockData.ClassType), blockData.ClassType, null);
             }
-        }
-
-        private static Vector2 CoordinateToPosition(Vector2Int coordinate)
-        {
-            return new Vector2(coordinate.x * BRICK_SIZE, coordinate.y * BRICK_SIZE);
         }
     }
 

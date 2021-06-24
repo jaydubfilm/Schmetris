@@ -21,6 +21,7 @@ using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Particles;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -948,7 +949,7 @@ namespace StarSalvager
 
                             AudioController.PlayBitConnectSound(bit.Type);
 
-                            SessionDataProcessor.Instance.BitCollected(bit.Type);
+                            SessionDataProcessor.Instance.RecordBitConnected(bit.ToBlockData());
                             PlayerDataManager.RecordBitConnection(bit.Type);
 
                             break;
@@ -1257,7 +1258,7 @@ namespace StarSalvager
                             }
 
                             AttachNewBlock(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
-                            SessionDataProcessor.Instance.BitCollected(bitsToAdd[i].Type);
+                            SessionDataProcessor.Instance.RecordBitConnected(bitsToAdd[i].ToBlockData());
                         }
 
                         //Recycle the Shape, without also recycling the Bits since they were just attached to the bot
@@ -2338,7 +2339,7 @@ namespace StarSalvager
 
                 foreach (var attachedBit in detachables.OfType<Bit>())
                 {
-                    SessionDataProcessor.Instance.BitDetached(attachedBit.Type);
+                    SessionDataProcessor.Instance.RecordBitDetached(attachedBit.ToBlockData());
                 }
 
                 if (detachables.Count == 1)

@@ -13,6 +13,7 @@ using StarSalvager.Audio.Interfaces;
 using StarSalvager.Cameras;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
@@ -387,8 +388,7 @@ namespace StarSalvager.AI
             DropLoot();
 
             Killed();
-
-            SessionDataProcessor.Instance.EnemyKilled(m_enemyData.EnemyType);
+            
             PlayerDataManager.RecordEnemyKilled(m_enemyData.EnemyType);
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemyKilled(name);

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
@@ -61,6 +62,7 @@ namespace StarSalvager.UI.Wreckyard
         private PartSelectionUI[] selectionUis;
 
         private PART_TYPE[] _partOptions;
+        private PART_TYPE[] _partDiscardOptions;
 
         private PartAttachableFactory.PART_OPTION_TYPE _partOptionType;
 
@@ -226,10 +228,11 @@ namespace StarSalvager.UI.Wreckyard
                 }
 
                 
-
+                SessionDataProcessor.Instance.RecordPartSelection(partType, _partOptions);
 
                 if (HasOverage(out var parts))
                 {
+                    
                     PresentPartOverage(parts);
                     return;
                 }
@@ -237,6 +240,7 @@ namespace StarSalvager.UI.Wreckyard
                 
                 PlayerDataManager.OnValuesChanged?.Invoke();
                 PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, partType);
+                
 
                 CloseWindow();
             }
@@ -295,7 +299,7 @@ namespace StarSalvager.UI.Wreckyard
 
         #region Discard Parts
 
-        private void PresentPartOverage(in PartData[] partDatas)
+        private void PresentPartOverage(IReadOnlyList<PartData> partDatas)
         {
             titleText.text = "Discard a Part";
             noPartSelectedOptionButton.gameObject.SetActive(false);
@@ -304,6 +308,9 @@ namespace StarSalvager.UI.Wreckyard
 
             void FindAndDestroyPart(in PART_TYPE partType)
             {
+                var partDiscardOptions = partDatas.Select(x => (PART_TYPE)x.Type).ToArray();
+                SessionDataProcessor.Instance.RecordPartDiscarding(partType, partDiscardOptions);
+                
                 var type = partType;
 
                 var storage = new List<IBlockData>(PlayerDataManager.GetCurrentPartsInStorage());
@@ -340,7 +347,7 @@ namespace StarSalvager.UI.Wreckyard
             //--------------------------------------------------------------------------------------------------------//
 
             var partProfileScriptableObject = FactoryManager.Instance.PartsProfileData;
-            for (int i = 0; i < partDatas.Length; i++)
+            for (int i = 0; i < partDatas.Count; i++)
             {
                 var partData = partDatas[i];
                 var partType = (PART_TYPE)partData.Type;

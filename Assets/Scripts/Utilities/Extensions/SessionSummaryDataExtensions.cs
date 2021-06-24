@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using StarSalvager.Utilities.Analytics.Data;
 
+using StarSalvager.Utilities.Analytics.SessionTracking.Data;
+
 namespace StarSalvager.Utilities.Extensions
 {
     public static class SessionSummaryDataExtensions
@@ -9,48 +11,30 @@ namespace StarSalvager.Utilities.Extensions
         {
             sessionSummaryData.totalTimeIn += toAdd.totalTimeIn;
             sessionSummaryData.timesKilled += toAdd.timesKilled;
-            sessionSummaryData.TotalBumpersHit += toAdd.TotalBumpersHit;
+            sessionSummaryData.totalBumpersHit += toAdd.totalBumpersHit;
             sessionSummaryData.totalDamageReceived += toAdd.totalDamageReceived;
 
 
-            if (sessionSummaryData.BitSummaryData == null)
-                sessionSummaryData.BitSummaryData = new List<BitSummaryData>();
+            if (sessionSummaryData.bitSummaryData == null)
+                sessionSummaryData.bitSummaryData = new List<BitSummaryData>();
 
-            foreach (var bitSummary in toAdd.BitSummaryData)
+            foreach (var bitSummary in toAdd.bitSummaryData)
             {
-                var index = sessionSummaryData.BitSummaryData.FindIndex(x => x.type == bitSummary.type);
+                var bitData = bitSummary.bitData;
+                var index = sessionSummaryData.bitSummaryData
+                    .FindIndex(x => x.bitData.Type == bitData.Type && x.bitData.Level == bitData.Level);
                 if (index < 0)
-                    sessionSummaryData.BitSummaryData.Add(bitSummary);
+                    sessionSummaryData.bitSummaryData.Add(bitSummary);
                 else
                 {
-                    var temp = sessionSummaryData.BitSummaryData[index];
+                    var temp = sessionSummaryData.bitSummaryData[index];
 
                     temp.collected += bitSummary.collected;
-                    temp.diconnected += bitSummary.diconnected;
-                    temp.liquidProcessed += bitSummary.liquidProcessed;
+                    temp.disconnected += bitSummary.disconnected;
 
-                    sessionSummaryData.BitSummaryData[index] = temp;
+                    sessionSummaryData.bitSummaryData[index] = temp;
                 }
             }
-
-            if (sessionSummaryData.ComponentSummaryData == null)
-                sessionSummaryData.ComponentSummaryData = new List<ComponentSummaryData>();
-
-            /*foreach (var componentSummary in toAdd.ComponentSummaryData)
-            {
-                var index = sessionSummaryData.ComponentSummaryData.FindIndex(x => x.type == componentSummary.type);
-                if (index < 0)
-                    sessionSummaryData.ComponentSummaryData.Add(componentSummary);
-                else
-                {
-                    var temp = sessionSummaryData.ComponentSummaryData[index];
-
-                    temp.collected += componentSummary.collected;
-                    temp.diconnected += componentSummary.diconnected;
-
-                    sessionSummaryData.ComponentSummaryData[index] = temp;
-                }
-            }*/
 
             if (sessionSummaryData.enemiesKilledData == null)
                 sessionSummaryData.enemiesKilledData = new List<EnemySummaryData>();
