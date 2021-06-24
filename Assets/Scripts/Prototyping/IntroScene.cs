@@ -116,6 +116,7 @@ namespace StarSalvager.Prototype
             _introSceneStage = 0;
             
             gameObject.SetActive(false);
+            panel1Character.SetActive(true);
             panel1.SetActive(true);
             panel2.SetActive(false);
 
