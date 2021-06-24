@@ -183,6 +183,16 @@ MonoBehaviour:
     RFRCD: 0
     part: Force Field
     color: {r: 0, g: 0.9620137, b: 1, a: 1}
+  - PartType: 37
+    POWER: 0
+    AOE: 0
+    RATE: 0
+    EFF: 0
+    RANGE: 0
+    BURN: 0
+    RFRCD: 0
+    part: Laser Cannon
+    color: {r: 0.59607846, g: 0.49411765, b: 1, a: 1}
   patchRemoteData:
   - isImplemented: 1
     name: POWER

@@ -67,6 +67,7 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             InputManager.AddStartedControllerListener(this);
+            HintManager.OnShowingHintAction += LockMap;
         }
         private void Start()
         {
@@ -76,7 +77,10 @@ namespace StarSalvager.UI
         private void OnDisable()
         {
             InputManager.RemoveControllerListener(this);
+            HintManager.OnShowingHintAction -= LockMap;
         }
+
+
 
         //====================================================================================================================//
 
@@ -235,6 +239,9 @@ namespace StarSalvager.UI
 
         private void OnNodePressed(int nodeIndex, NodeType nodeType)
         {
+            //Prevent the selecting of a node while the fading is still occuring
+            if (ScreenFade.Fading) return;
+            
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
 
             switch (nodeType)
@@ -364,7 +371,11 @@ namespace StarSalvager.UI
 
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {
-                HintManager.TryShowHint(HINT.WRECK, ScreenFade.DEFAULT_TIME, unlockedWreck.transform);
+                ScreenFade.WaitForFade(() =>
+                {
+                    HintManager.TryShowHint(HINT.WRECK, unlockedWreck.transform);
+                });
+                
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -452,6 +463,16 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+        
+        /// <summary>
+        /// Prevents the scroll rect moving around when it is meant to be locked.
+        /// </summary>
+        /// <param name="lock"></param>
+        private void LockMap(bool @lock)
+        {
+            //Possible issue with Unity causing the stacked canvases  to not use the Graphics Raycaster correctly
+            m_scrollRect.enabled = !@lock;
+        }
 
         //TODO: ashulman, figure out if/why this works
         private void CenterToItem(RectTransform obj)

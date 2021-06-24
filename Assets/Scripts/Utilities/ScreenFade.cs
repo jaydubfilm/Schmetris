@@ -10,10 +10,8 @@ public class ScreenFade : Singleton<ScreenFade>
     [SerializeField]
     private Image image;
 
-    public bool Fading => _fading;
+    public static bool Fading { get; private set; }
 
-    private bool _fading;
-    
     //Unity Functions
     //====================================================================================================================//
     
@@ -26,21 +24,20 @@ public class ScreenFade : Singleton<ScreenFade>
     //ScreenFade Functions
     //====================================================================================================================//
 
-    public static void Fade(Action onFadedCallback, float time = DEFAULT_TIME)
+    public static void Fade(Action onFadedCallback, Action onFadeCompleted = null, float time = DEFAULT_TIME)
     {
         if (Instance == null)
             return;
 
-        Instance.FadeScreen(onFadedCallback, time);
+        Instance.FadeScreen(onFadedCallback, onFadeCompleted, time);
 
     }
 
-    private void FadeScreen(Action onFadedCallback, float time)
+    private void FadeScreen(Action onFadedCallback, Action onFadeCompleted, float time)
     {
-        if (_fading)
-            return;
+        if (Fading) return;
 
-        StartCoroutine(FadeCoroutine(onFadedCallback, time));
+        StartCoroutine(FadeCoroutine(onFadedCallback, onFadeCompleted, time));
 
     }
 
@@ -57,15 +54,15 @@ public class ScreenFade : Singleton<ScreenFade>
     
     private static IEnumerator WaitForFadeCoroutine(Action onFadeFinishedCallback)
     {
-        yield return new WaitUntil(() => Instance.Fading == false);
+        yield return new WaitUntil(() => Fading == false);
         
         onFadeFinishedCallback?.Invoke();
     }
     
 
-    private IEnumerator FadeCoroutine(Action onFadedCallback, float time)
+    private IEnumerator FadeCoroutine(Action onFadedCallback, Action onFadeCompleted, float time)
     {
-        _fading = true;
+        Fading = true;
         
         var startColor = Color.clear;
         var endColor = Color.black;
@@ -80,7 +77,10 @@ public class ScreenFade : Singleton<ScreenFade>
 
         image.gameObject.SetActive(false);
         
-        _fading = false;
+        onFadeCompleted?.Invoke();
+        
+        Fading = false;
+        
     }
 
     private static IEnumerator FadeColorCoroutine(Graphic targetImage, Color startColor, Color endColor, float time)

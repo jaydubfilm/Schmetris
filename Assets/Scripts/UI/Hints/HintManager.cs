@@ -46,6 +46,8 @@ namespace StarSalvager.UI.Hints
     {
         public static bool USE_HINTS = true;
 
+        public static Action<bool> OnShowingHintAction;
+
         public bool ShowingHint { get; private set; }
 
         [SerializeField, Required]
@@ -304,6 +306,7 @@ namespace StarSalvager.UI.Hints
             var hintData = hintRemoteData.GetHintData(hint);
             
             Time.timeScale = 0f;
+            OnShowingHintAction?.Invoke(true);
             ShowingHint = true;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
@@ -357,7 +360,8 @@ namespace StarSalvager.UI.Hints
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = ACTION_MAP.NULL;
-            
+
+            OnShowingHintAction?.Invoke(false);
             Time.timeScale = 1f;
             ShowingHint = false;
             highlightManager.SetActive(false);

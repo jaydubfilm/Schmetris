@@ -221,15 +221,13 @@ namespace StarSalvager.UI.Wreckyard
                 {
                     SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
                     AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.LEAVE);
-                });
-
-                if (HintManager.CanShowHint(HINT.MAP))
+                }, () =>
                 {
-                    ScreenFade.WaitForFade(() =>
+                    if (HintManager.CanShowHint(HINT.MAP))
                     {
                         HintManager.TryShowHint(HINT.MAP);
-                    });
-                }
+                    }
+                });
             });
             
             closePartUpgradeWindowButton.onClick.AddListener(() =>
