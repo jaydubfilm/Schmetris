@@ -20,6 +20,7 @@ using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
+using System.Linq;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Helpers;
@@ -828,10 +829,13 @@ namespace StarSalvager
                 bot.ForceCompleteRotation();
             }
 
-            var lowestCoordinate =
-                bot.AttachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
+            //Find the lowest world space positioned block on bot
+            var lowestPosition = bot.AttachedBlocks
+                .Select(x => (Vector2)x.transform.position)
+                .OrderBy(pos => pos.y)
+                .First();
 
-            var localPosition = bot.transform.position + (Vector3) (lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
+            var localPosition = lowestPosition + DIRECTION.DOWN.ToVector2() / 2f;
 
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
             var effectTransform = effect.transform;

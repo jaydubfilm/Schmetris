@@ -620,6 +620,8 @@ namespace StarSalvager
 
         public List<BlackHole> GetAllBlackHoles()
         {
+            return new List<BlackHole>();
+            
             List<BlackHole> blackHoles = new List<BlackHole>();
 
             for (int i = 0; i < m_obstacles.Count; i++)
