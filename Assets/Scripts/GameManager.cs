@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;

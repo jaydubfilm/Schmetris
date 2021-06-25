@@ -14,6 +14,7 @@ using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.UI.Hints;
 using StarSalvager.UI.Wreckyard.PatchTrees;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.UI;
@@ -254,13 +255,16 @@ namespace StarSalvager.UI
                     break;
                 case NodeType.Level:
                     PlayerDataManager.SetPlayerTargetCoordinate(currentRingMap.Nodes[nodeIndex].Coordinate);
-
                     //Globals.CurrentRingIndex = 0;
                     Globals.CurrentWave = PlayerDataManager.GetCurrentWave();
 
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                    }, () =>
+                    {
+                        SessionDataProcessor.Instance.StartNewWave(Globals.CurrentRingIndex, Globals.CurrentWave,
+                            PlayerDataManager.GetBotBlockDatas());
                     });
                     break;
                 case NodeType.Wreck:
@@ -271,6 +275,9 @@ namespace StarSalvager.UI
                         SceneLoader.ActivateScene(SceneLoader.WRECKYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                         AnalyticsManager.WreckStartEvent();
                         FindObjectOfType<PatchTreeUI>().InitWreck("Wreck", null);
+                    }, () =>
+                    {
+                        SessionDataProcessor.Instance.StartNewWreck(currentRingMap.Nodes[nodeIndex].Coordinate);
                     });
                     break;
             }

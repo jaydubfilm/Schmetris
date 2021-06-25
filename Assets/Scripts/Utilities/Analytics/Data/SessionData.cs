@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StarSalvager.Utilities.Analytics.Data
+namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
 {
     [Serializable]
     public struct SessionData

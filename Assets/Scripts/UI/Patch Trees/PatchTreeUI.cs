@@ -7,6 +7,7 @@ using StarSalvager.Factories;
 using StarSalvager.PatchTrees.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -895,7 +896,16 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 _partsInStorage[index].Patches.Add(_selectedPatch.patchData);
             else
                 _partsOnDrone[index].Patches.Add(_selectedPatch.patchData);
-            
+
+            SessionDataProcessor.Instance.RecordPatchPurchase(new PartData
+            {
+                Type = (int)_selectedPatch.partType,
+                Patches = new List<PatchData>
+                {
+                    _selectedPatch.patchData
+                }
+            });
+                
             //Remove the PartPatchOption
             PlayerDataManager.RemovePartPatchOption(_selectedPatch.partType);
             
@@ -905,6 +915,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //Update the Datas
             SaveBlockData();
+            
+           ;
         }
 
         #endregion //On Button Pressed Functions
@@ -1100,8 +1112,6 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
 
         #endregion //Extra Functions
-
-
 
         //Data Functions
         //====================================================================================================================//

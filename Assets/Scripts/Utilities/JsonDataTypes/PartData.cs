@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.JSON.Converters;
@@ -10,9 +11,10 @@ namespace StarSalvager.Utilities.JsonDataTypes
     [Serializable]
     public struct PartData : IBlockData, IEquatable<PartData>
     {
-        [ShowInInspector] public string ClassType => nameof(Part);
+        [ShowInInspector, HideInTables]
+        public string ClassType => nameof(Part);
 
-        [ShowInInspector, JsonConverter(typeof(Vector2IntConverter))]
+        [ShowInInspector, JsonConverter(typeof(Vector2IntConverter)), HideInTables]
         public Vector2Int Coordinate { get; set; }
 
         public int Type { get; set; }
@@ -64,5 +66,13 @@ namespace StarSalvager.Utilities.JsonDataTypes
         }
 
         #endregion //IEquatable
+
+#if UNITY_EDITOR
+        [JsonIgnore, ShowInInspector, DisplayAsString] 
+        public string PartTypeName => ((PART_TYPE) Type).ToString();
+        [JsonIgnore, ShowInInspector, DisplayAsString] 
+        public string PatchNames => string.Join(", ",
+            Patches.Select(x => x.ToString()));
+#endif
     }
 }

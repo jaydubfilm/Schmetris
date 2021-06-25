@@ -1,56 +1,85 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using StarSalvager.Utilities.Analytics.Data;
+
+using StarSalvager.Utilities.Analytics.SessionTracking.Data;
 
 namespace StarSalvager.Utilities.Extensions
 {
-    public static class SessionSummaryDataExtensions
+    internal static class SessionSummaryDataExtensions
     {
         public static SessionSummaryData Add(this SessionSummaryData sessionSummaryData, SessionSummaryData toAdd)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+
             sessionSummaryData.totalTimeIn += toAdd.totalTimeIn;
             sessionSummaryData.timesKilled += toAdd.timesKilled;
-            sessionSummaryData.TotalBumpersHit += toAdd.TotalBumpersHit;
+            sessionSummaryData.totalBumpersHit += toAdd.totalBumpersHit;
             sessionSummaryData.totalDamageReceived += toAdd.totalDamageReceived;
 
+            //--------------------------------------------------------------------------------------------------------//
 
-            if (sessionSummaryData.BitSummaryData == null)
-                sessionSummaryData.BitSummaryData = new List<BitSummaryData>();
+            sessionSummaryData.totalXpEarned += toAdd.totalXpEarned;
+            sessionSummaryData.totalGearsCollected += toAdd.totalGearsCollected;
+            sessionSummaryData.totalSilverEarned += toAdd.totalSilverEarned;
 
-            foreach (var bitSummary in toAdd.BitSummaryData)
+            sessionSummaryData.totalGearsSpent += toAdd.totalGearsSpent;
+            sessionSummaryData.totalSilverSpent += toAdd.totalSilverSpent;
+
+            //Bit Data Adding
+            //--------------------------------------------------------------------------------------------------------//
+
+            if (sessionSummaryData.bitSummaryData == null)
+                sessionSummaryData.bitSummaryData = new List<BitSummaryData>();
+
+            foreach (var bitSummary in toAdd.bitSummaryData)
             {
-                var index = sessionSummaryData.BitSummaryData.FindIndex(x => x.type == bitSummary.type);
+                var bitData = bitSummary.bitData;
+                var index = sessionSummaryData.bitSummaryData
+                    .FindIndex(x => x.bitData.Type == bitData.Type && x.bitData.Level == bitData.Level);
                 if (index < 0)
-                    sessionSummaryData.BitSummaryData.Add(bitSummary);
+                    sessionSummaryData.bitSummaryData.Add(bitSummary);
                 else
                 {
-                    var temp = sessionSummaryData.BitSummaryData[index];
+                    var temp = sessionSummaryData.bitSummaryData[index];
 
                     temp.collected += bitSummary.collected;
-                    temp.diconnected += bitSummary.diconnected;
-                    temp.liquidProcessed += bitSummary.liquidProcessed;
+                    temp.disconnected += bitSummary.disconnected;
 
-                    sessionSummaryData.BitSummaryData[index] = temp;
+                    sessionSummaryData.bitSummaryData[index] = temp;
                 }
             }
 
-            if (sessionSummaryData.ComponentSummaryData == null)
-                sessionSummaryData.ComponentSummaryData = new List<ComponentSummaryData>();
+            //Combo Data Adding
+            //--------------------------------------------------------------------------------------------------------//
+            if (sessionSummaryData.comboSummaryData == null)
+                sessionSummaryData.comboSummaryData = new List<ComboSummaryData>();
 
-            /*foreach (var componentSummary in toAdd.ComponentSummaryData)
+            foreach (var comboSummary in toAdd.comboSummaryData)
             {
-                var index = sessionSummaryData.ComponentSummaryData.FindIndex(x => x.type == componentSummary.type);
+                var bitData = comboSummary.bitData;
+
+                var index = sessionSummaryData.comboSummaryData
+                    .FindIndex(x =>
+                        x.bitData.Type == bitData.Type &&
+                        x.bitData.Level == bitData.Level &&
+                        x.comboType == comboSummary.comboType);
+
                 if (index < 0)
-                    sessionSummaryData.ComponentSummaryData.Add(componentSummary);
+                    sessionSummaryData.comboSummaryData.Add(comboSummary);
                 else
                 {
-                    var temp = sessionSummaryData.ComponentSummaryData[index];
+                    var temp = sessionSummaryData.comboSummaryData[index];
 
-                    temp.collected += componentSummary.collected;
-                    temp.diconnected += componentSummary.diconnected;
+                    temp.created += comboSummary.created;
 
-                    sessionSummaryData.ComponentSummaryData[index] = temp;
+                    sessionSummaryData.comboSummaryData[index] = temp;
                 }
-            }*/
+            }
+
+            //Enemy Data Adding
+            //--------------------------------------------------------------------------------------------------------//
 
             if (sessionSummaryData.enemiesKilledData == null)
                 sessionSummaryData.enemiesKilledData = new List<EnemySummaryData>();
@@ -67,6 +96,96 @@ namespace StarSalvager.Utilities.Extensions
                     temp.killed += enemySummary.killed;
 
                     sessionSummaryData.enemiesKilledData[index] = temp;
+                }
+            }
+
+            //Part Selection Aggregation
+            //--------------------------------------------------------------------------------------------------------//
+            if (sessionSummaryData.partSelectionSummaries == null)
+                sessionSummaryData.partSelectionSummaries = new List<SessionSummaryData.PartSelectionSummary>();
+            
+            foreach (var selectionSummary in toAdd.partSelectionSummaries)
+            {
+                var index = sessionSummaryData.partSelectionSummaries
+                    .FindIndex(x => x.partType == selectionSummary.partType);
+
+                if (index < 0)
+                {
+                    sessionSummaryData.partSelectionSummaries.Add(new SessionSummaryData.PartSelectionSummary
+                    {
+                        partType = selectionSummary.partType,
+                        timesAppeared = selectionSummary.timesAppeared,
+                        timesPicked = selectionSummary.timesPicked
+                    });
+                }
+                else
+                {
+                    var data = sessionSummaryData.partSelectionSummaries[index];
+                    data.timesAppeared += selectionSummary.timesAppeared;
+                    data.timesPicked += selectionSummary.timesPicked;
+
+                    sessionSummaryData.partSelectionSummaries[index] = data;
+                }
+            }
+
+            
+            //Part Discard Aggregation
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (sessionSummaryData.partDiscardSummaries == null)
+                sessionSummaryData.partDiscardSummaries = new List<SessionSummaryData.PartSelectionSummary>();
+            
+            foreach (var selectionSummary in toAdd.partDiscardSummaries)
+            {
+                var index = sessionSummaryData.partDiscardSummaries
+                    .FindIndex(x => x.partType == selectionSummary.partType);
+
+                if (index < 0)
+                {
+                    sessionSummaryData.partDiscardSummaries.Add(new SessionSummaryData.PartSelectionSummary
+                    {
+                        partType = selectionSummary.partType,
+                        timesAppeared = selectionSummary.timesAppeared,
+                        timesPicked = selectionSummary.timesPicked
+                    });
+                }
+                else
+                {
+                    var data = sessionSummaryData.partDiscardSummaries[index];
+                    data.timesAppeared += selectionSummary.timesAppeared;
+                    data.timesPicked += selectionSummary.timesPicked;
+
+                    sessionSummaryData.partDiscardSummaries[index] = data;
+                }
+            }
+
+
+            //Patch Purchase Aggregation
+            //--------------------------------------------------------------------------------------------------------//
+            
+            if (sessionSummaryData.PatchPurchaseSummaries == null)
+                sessionSummaryData.PatchPurchaseSummaries = new List<SessionSummaryData.PatchPurchaseSummary>();
+            
+            foreach (var purchaseSummary in toAdd.PatchPurchaseSummaries)
+            {
+                var index = sessionSummaryData.PatchPurchaseSummaries
+                    .FindIndex(x => x.partType == purchaseSummary.partType);
+
+                if (index < 0)
+                {
+                    sessionSummaryData.PatchPurchaseSummaries.Add(new SessionSummaryData.PatchPurchaseSummary
+                    {
+                        partType = purchaseSummary.partType,
+                        patchData = purchaseSummary.patchData,
+                        amount = purchaseSummary.amount,
+                    });
+                }
+                else
+                {
+                    var data = sessionSummaryData.PatchPurchaseSummaries[index];
+                    data.amount += purchaseSummary.amount;
+
+                    sessionSummaryData.PatchPurchaseSummaries[index] = data;
                 }
             }
 

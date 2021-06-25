@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using StarSalvager.Utilities.Analytics.Data;
+using StarSalvager.Utilities.Analytics.SessionTracking;
+using StarSalvager.Utilities.Analytics.SessionTracking.Data;
 using StarSalvager.Utilities.Converters;
 using StarSalvager.Utilities.JSON.Converters;
 using StarSalvager.Utilities.JsonDataTypes;
@@ -284,8 +286,7 @@ namespace StarSalvager.Utilities.FileIO
         //TODO Move this to the Files location
         public static void ExportSessionData(string playerID, SessionData sessionData)
         {
-            if (sessionData.waves.Count == 0)
-                return;
+            if (sessionData.waves.Count == 0) return;
 
             var fileName = Base64.Encode($"{playerID}_{sessionData.date:yyyyMMddHHmm}");
 
@@ -297,21 +298,45 @@ namespace StarSalvager.Utilities.FileIO
                 "Sessions");
 #endif
 
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
 
             var path = Path.Combine(directory, $"{fileName}.session");
 
-            var json = JsonConvert.SerializeObject(sessionData, JSON_FORMAT);
-
-            File.WriteAllText(path, json);
-
+            var json = ExportJsonData(sessionData,
+                path,
+                CONVERTERS);
 
 #if !UNITY_EDITOR
             //Sends file to master to review data
             SendSessionData(path, playerID);
 #endif
+        }
+
+        public static Dictionary<string, List<SessionData>> ImportSessionData(in string directoryPath)
+        {
+            const string SEARCH_PATTERN = "*.session";
+            
+            var directory = new DirectoryInfo(directoryPath);
+
+            var files = directory.GetFiles(SEARCH_PATTERN);
+            
+            var playerSessions = new Dictionary<string, List<SessionData>>();
+            foreach (var file in files)
+            {
+                var sessionData = ImportJsonData<SessionData>(file.FullName, CONVERTERS);
+
+                //Don't want to add any sessions that are no longer supported
+                if (sessionData.Version != SessionDataProcessor.VERSION)
+                    continue;
+                
+                if(!playerSessions.ContainsKey(sessionData.PlayerID))
+                    playerSessions.Add(sessionData.PlayerID, new List<SessionData>());
+                
+                playerSessions[sessionData.PlayerID].Add(sessionData);
+            }
+
+            return playerSessions;
         }
 
         private static void SendSessionData(string filePath, string playerID)

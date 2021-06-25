@@ -9,6 +9,7 @@ using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
 using UnityEngine;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Puzzle.Data;
 using StarSalvager.Utilities.Puzzle.Structs;
@@ -78,7 +79,11 @@ namespace StarSalvager.Utilities.Saving
 
         public static int GetXPThisRun() => PlayerAccountData?.GetXPThisRun() ?? 0;
 
-        public static void ChangeXP(in int amount) => PlayerAccountData?.AddXP(amount);
+        public static void ChangeXP(in int amount)
+        {
+            PlayerAccountData?.AddXP(amount);
+            SessionDataProcessor.Instance.RecordXPEarned(amount);
+        }
 
         #endregion //XP
 
@@ -390,7 +395,8 @@ namespace StarSalvager.Utilities.Saving
         public static void AddGears(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddGears(amount);
-
+            SessionDataProcessor.Instance.RecordGearsEarned(amount);
+            
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
@@ -399,6 +405,7 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.SubtractGears(amount);
 
+            SessionDataProcessor.Instance.RecordGearsSpent(amount);
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
@@ -421,7 +428,8 @@ namespace StarSalvager.Utilities.Saving
         public static void AddSilver(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.AddSilver(amount);
-
+            SessionDataProcessor.Instance.RecordSilverEarned(amount);
+            
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
@@ -429,6 +437,9 @@ namespace StarSalvager.Utilities.Saving
         public static void SubtractSilver(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.SubtractSilver(amount);
+            
+            SessionDataProcessor.Instance.RecordSilverSpent(amount);
+            
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
@@ -494,9 +505,14 @@ namespace StarSalvager.Utilities.Saving
 
         #region Player Run Data Tracking
 
-        
 
-        public static void RecordCombo(in ComboRecordData comboRecordData) => PlayerAccountData.RecordCombo(comboRecordData);
+
+        public static void RecordCombo(in ComboRecordData comboRecordData)
+        {
+            PlayerAccountData.RecordCombo(comboRecordData);
+            SessionDataProcessor.Instance.RecordCombo(comboRecordData);
+        }
+
         public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMade() => PlayerAccountData.CombosMade;
 
         public static IReadOnlyDictionary<ComboRecordData, int> GetCombosMadeThisRun()
@@ -543,7 +559,12 @@ namespace StarSalvager.Utilities.Saving
             return outDict;
         }
 
-        public static void RecordEnemyKilled(in string enemyId) => PlayerAccountData.RecordEnemyKilled(enemyId);
+        public static void RecordEnemyKilled(in string enemyId) 
+        {
+            PlayerAccountData.RecordEnemyKilled(enemyId);
+            SessionDataProcessor.Instance.EnemyKilled(enemyId);
+            
+        }
 
         public static IReadOnlyDictionary<string, int> GetEnemiesKilled() => PlayerAccountData.EnemiesKilled;
 

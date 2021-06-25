@@ -7,6 +7,7 @@ using StarSalvager.PersistentUpgrades.Data;
 using StarSalvager.Prototype;
 using StarSalvager.UI.PersistentUpgrades;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.FileIO;
 using StarSalvager.Utilities.Inputs;
@@ -632,6 +633,7 @@ namespace StarSalvager.UI
                     
                     AnalyticsManager.StartNewRunEvent();
                     PlayerDataManager.StartNewPlayerRun();
+                    SessionDataProcessor.Instance.StartNewWreck(Vector2Int.zero);
                     /*var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
                     
                     PlayerDataManager.SetGears((int)PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY));

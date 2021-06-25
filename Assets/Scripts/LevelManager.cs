@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Helpers;
 using Input = UnityEngine.Input;
 
@@ -294,7 +295,7 @@ namespace StarSalvager
             InputManager.Instance.LockRotation = true;
 
             //FIXME
-            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
+            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentRingIndex, Globals.CurrentWave, BotInLevel.GetBlockDatas());
 
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen,
                 BotInLevel.transform.position);
@@ -559,6 +560,7 @@ namespace StarSalvager
             
 
             PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
+           
 
             
             //SavePlayerData();
