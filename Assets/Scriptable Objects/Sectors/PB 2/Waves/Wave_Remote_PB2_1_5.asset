@@ -190,8 +190,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0
-      m_spawnsPerScreenWidthPerMinute: 4
+      m_density: 0.23595
+      m_spawnsPerScreenWidthPerMinute: 20
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
@@ -248,8 +248,8 @@ MonoBehaviour:
       m_category: 
       m_rotation: 0
       m_asteroidSize: 0
-      m_density: 0.20088044
-      m_spawnsPerScreenWidthPerMinute: 12
+      m_density: 0.22824769
+      m_spawnsPerScreenWidthPerMinute: 18
       m_maxOut: 0
       spawningMultiplier: 1
     - m_selectionType: 0
