@@ -228,7 +228,7 @@ namespace StarSalvager.UI.Wreckyard
                 }
 
                 
-                SessionDataProcessor.Instance.RecordPartSelection(partType, _partOptions);
+                SessionDataProcessor.Instance.RecordPartSelection(partType, new List<PART_TYPE>(_partOptions).ToArray());
 
                 if (HasOverage(out var parts))
                 {
@@ -309,7 +309,7 @@ namespace StarSalvager.UI.Wreckyard
             void FindAndDestroyPart(in PART_TYPE partType)
             {
                 var partDiscardOptions = partDatas.Select(x => (PART_TYPE)x.Type).ToArray();
-                SessionDataProcessor.Instance.RecordPartDiscarding(partType, partDiscardOptions);
+                SessionDataProcessor.Instance.RecordPartDiscarding(partType, new List<PART_TYPE>(partDiscardOptions).ToArray());
                 
                 var type = partType;
 

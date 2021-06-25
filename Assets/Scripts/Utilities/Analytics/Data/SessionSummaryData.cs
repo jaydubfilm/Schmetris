@@ -4,6 +4,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.Extensions;
+using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 
 namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
@@ -11,6 +12,30 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
     [Serializable]
     public struct SessionSummaryData
     {
+        [Serializable]
+        public struct PartSelectionSummary
+        {
+            [DisplayAsString]
+            public PART_TYPE partType;
+            [DisplayAsString]
+            public int timesPicked;
+            [DisplayAsString]
+            public int timesAppeared;
+        }
+        
+        [Serializable]
+        public struct PatchPurchaseSummary
+        {
+            [DisplayAsString]
+            public PART_TYPE partType;
+
+            [DisplayAsString]
+            public PatchData patchData;
+            
+            [DisplayAsString]
+            public int amount;
+        }
+        
         //Properties
         //====================================================================================================================//
         
@@ -27,12 +52,42 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
 
         [SerializeField, DisplayAsString] public float totalDamageReceived;
 
+        [SerializeField, DisplayAsString] 
+        public int totalXpEarned;
+        [SerializeField, DisplayAsString] 
+        public int totalGearsCollected;
+        [SerializeField, DisplayAsString] 
+        public int totalSilverEarned;
+        
+
 
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
         public List<BitSummaryData> bitSummaryData;
-
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        public List<ComboSummaryData> comboSummaryData;
         [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
         public List<EnemySummaryData> enemiesKilledData;
+
+        //====================================================================================================================//
+
+        [Title("Wreck Data")]
+        [Title("Chosen Parts", horizontalLine:false, bold:false)]
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        public List<PartSelectionSummary> partSelectionSummaries;
+        [Title("Discarded Parts", horizontalLine:false, bold:false)]
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        public List<PartSelectionSummary> partDiscardSummaries;
+
+        //====================================================================================================================//
+
+        [SerializeField, DisplayAsString] 
+        public int totalGearsSpent; 
+        [SerializeField, DisplayAsString] 
+        public int totalSilverSpent;
+        
+        [Title("Purchased Patches", horizontalLine:false, bold:false)]
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        public List<PatchPurchaseSummary> PatchPurchaseSummaries;
 
         //====================================================================================================================//
         
@@ -51,11 +106,32 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
             totalDamageReceived = waves.Sum(x => x.totalDamageReceived);
 
 
+            //--------------------------------------------------------------------------------------------------------//
+
+            totalXpEarned = waves.Sum(x => x.xpEarned);
+            totalGearsCollected = waves.Sum(x => x.gearsCollected);
+            totalSilverEarned = waves.Sum(x => x.silverEarned);
+
+            totalGearsSpent = waves.Sum(x => x.spentGears);
+            totalSilverSpent = waves.Sum(x => x.spentSilver);
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             bitSummaryData = new List<BitSummaryData>();
             enemiesKilledData = new List<EnemySummaryData>();
+            comboSummaryData = new List<ComboSummaryData>();
 
+            partSelectionSummaries = new List<PartSelectionSummary>();
+            partDiscardSummaries = new List<PartSelectionSummary>();
+            
+            PatchPurchaseSummaries = new List<PatchPurchaseSummary>();
+            
             foreach (var waveData in waves)
             {
+
+                //Bit Data aggregation
+                //--------------------------------------------------------------------------------------------------------//
+                
                 foreach (var bitSummary in waveData.BitSummaryData)
                 {
                     var bitData = bitSummary.bitData;
@@ -75,6 +151,34 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
                     }
                 }
 
+                //Combo Data aggregation
+                //--------------------------------------------------------------------------------------------------------//
+                
+                foreach (var comboSummary in waveData.comboSummaryData)
+                {
+                    var bitData = comboSummary.bitData;
+                    
+                    var index = comboSummaryData
+                        .FindIndex(x => 
+                                        x.bitData.Type == bitData.Type &&
+                                        x.bitData.Level == bitData.Level &&
+                                        x.comboType == comboSummary.comboType);
+                    
+                    if (index < 0)
+                        comboSummaryData.Add(comboSummary);
+                    else
+                    {
+                        var temp = comboSummaryData[index];
+
+                        temp.created += comboSummary.created;
+
+                        comboSummaryData[index] = temp;
+                    }
+                }
+
+                //Enemy Data aggregation
+                //--------------------------------------------------------------------------------------------------------//
+                
                 foreach (var enemySummary in waveData.enemiesKilledData)
                 {
                     var index = enemiesKilledData.FindIndex(x => x.id == enemySummary.id);
@@ -89,6 +193,101 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
                         enemiesKilledData[index] = temp;
                     }
                 }
+
+                //Part Selection Aggregation
+                //--------------------------------------------------------------------------------------------------------//
+                var partSelection = waveData.SelectedPart;
+                foreach (var selectionOption in partSelection.Options)
+                {
+                    var index = partSelectionSummaries.FindIndex(x => x.partType == selectionOption);
+
+                    if (index < 0)
+                    {
+                        partSelectionSummaries.Add(new PartSelectionSummary
+                        {
+                            partType = selectionOption,
+                            timesAppeared = 1,
+                            timesPicked = partSelection.Selected == selectionOption ? 1 : 0
+                        });
+                    }
+                    else
+                    {
+                        var data = partSelectionSummaries[index];
+                        data.timesAppeared++;
+
+                        if (selectionOption == partSelection.Selected) data.timesPicked++;
+
+                        partSelectionSummaries[index] = data;
+                    }
+                }
+
+                //Part Discard Aggregation
+                //--------------------------------------------------------------------------------------------------------//
+                var partDiscard = waveData.DiscardedPart;
+                foreach (var selectionOption in partDiscard.Options)
+                {
+                    var index = partDiscardSummaries.FindIndex(x => x.partType == selectionOption);
+
+                    if (index < 0)
+                    {
+                        partDiscardSummaries.Add(new PartSelectionSummary
+                        {
+                            partType = selectionOption,
+                            timesAppeared = 1,
+                            timesPicked = partDiscard.Selected == selectionOption ? 1 : 0
+                        });
+                    }
+                    else
+                    {
+                        var data = partDiscardSummaries[index];
+                        data.timesAppeared++;
+
+                        if (selectionOption == partDiscard.Selected)
+                            data.timesPicked++;
+
+                        partDiscardSummaries[index] = data;
+                    }
+                }
+
+                //Patch Purchase Aggregation
+                //--------------------------------------------------------------------------------------------------------//
+
+                if (waveData.purchasedPatches.IsNullOrEmpty())
+                    continue;
+                
+                foreach (var purchasedPatch in waveData.purchasedPatches)
+                {
+                    var partType = (PART_TYPE) purchasedPatch.Type;
+                    foreach (var patchData in purchasedPatch.Patches)
+                    {
+                        var index = PatchPurchaseSummaries
+                            .FindIndex(x => x.partType == partType &&
+                                            x.patchData.Equals(patchData));
+
+                        if (index < 0)
+                        {
+                            PatchPurchaseSummaries.Add(new PatchPurchaseSummary
+                            {
+                                partType = partType,
+                                patchData = patchData,
+                                amount = 1
+                            });
+                        }
+                        else
+                        {
+                            var data = PatchPurchaseSummaries[index];
+                            data.amount++;
+                            PatchPurchaseSummaries[index] = data;
+                        }
+                    }
+                    PatchPurchaseSummaries =
+                        new List<PatchPurchaseSummary>(
+                            PatchPurchaseSummaries.OrderBy(x => x.partType));
+                    
+                }
+
+                //--------------------------------------------------------------------------------------------------------//
+                
             }
 
         }

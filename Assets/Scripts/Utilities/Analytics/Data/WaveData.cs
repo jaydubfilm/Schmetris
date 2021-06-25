@@ -13,7 +13,7 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
     [Serializable]
     public struct WaveData
     {
-        [JsonIgnore] public string Title => $"Ring {ringIndex + 1} - Wave {waveNumber + 1}";
+        [JsonIgnore] public string Title => isWreck ? $"Wreck {wreckCoordinates}" : $"Ring {ringIndex + 1} - Wave {waveNumber + 1}";
         [JsonIgnore] public string Date => $"{date}";
         [JsonIgnore] public string TimeIn => $"{timeIn:#.00}s";
 
@@ -33,32 +33,31 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
         [Title("$Title", "$Date"), ShowInInspector, DisplayAsString]
         public float timeIn;
         
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public bool playerWasKilled;
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public int bumpersHit;
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public float totalDamageReceived;
 
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public int xpEarned;
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public int gearsCollected;
-        [DisplayAsString]
+        [DisplayAsString, HideIf("$isWreck")]
         public int silverEarned;
         
-        [HorizontalGroup("Row1"), ShowInInspector]
+        [HorizontalGroup("Row1"), HideIf("$isWreck"), ShowInInspector]
         public List<IBlockData> botAtStart;
-        [HorizontalGroup("Row1"), ShowInInspector]
+        [HorizontalGroup("Row1"), HideIf("$isWreck"), ShowInInspector]
         public List<IBlockData> botAtEnd;
 
-        [TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        [TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true), HideIf("$isWreck")]
         public List<BitSummaryData> BitSummaryData;
-        
-        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true)]
+        [TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true), HideIf("$isWreck")]
+        public List<ComboSummaryData> comboSummaryData;
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true), HideIf("$isWreck")]
         public List<EnemySummaryData> enemiesKilledData;
-        [JsonProperty, JsonConverter(typeof(ComboRecordDataConverter))]
-        public Dictionary<ComboRecordData, int> CombosMade;
 
         #endregion //Properties
 
@@ -66,14 +65,21 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
         //Wreck Properties
         //====================================================================================================================//
 
+        [HideInInspector]
         public bool isWreck;
+        [ShowIf("$isWreck"), DisplayAsString]
         public Vector2Int wreckCoordinates;
 
+        [ShowIf("$isWreck"), BoxGroup("SelectedPart"), HideLabel]
         public PartSelectionData SelectedPart;
+        [ShowIf("$isWreck"), BoxGroup("DiscardedPart"), HideLabel]
         public PartSelectionData DiscardedPart;
+        [SerializeField, TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true), ShowIf("$isWreck")]
         public List<PartData> purchasedPatches;
 
+        [ShowIf("$isWreck"), DisplayAsString]
         public int spentGears;
+        [ShowIf("$isWreck"), DisplayAsString]
         public int spentSilver;
         
         //Constructor
@@ -100,7 +106,7 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
             botAtEnd = new List<IBlockData>();
             BitSummaryData = new List<BitSummaryData>();
             enemiesKilledData = new List<EnemySummaryData>();
-            CombosMade = new Dictionary<ComboRecordData, int>();
+            comboSummaryData = new List<ComboSummaryData>();
 
             isWreck = false;
             wreckCoordinates = Vector2Int.zero;
@@ -117,10 +123,10 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
                 throw new ArgumentException();
             
             this.isWreck = isWreck;
-            this.wreckCoordinates = Vector2Int.zero;
+            this.wreckCoordinates = wreckCoordinates;
             SelectedPart = PartSelectionData.Empty;
             DiscardedPart = PartSelectionData.Empty;
-            purchasedPatches = default;
+            purchasedPatches = new List<PartData>();
             spentGears = 0;
             spentSilver = 0;
             
@@ -145,8 +151,8 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
             botAtEnd = new List<IBlockData>();
             BitSummaryData = new List<BitSummaryData>();
             enemiesKilledData = new List<EnemySummaryData>();
-            CombosMade = new Dictionary<ComboRecordData, int>();
-
+            comboSummaryData = new List<ComboSummaryData>();
+            purchasedPatches = new List<PartData>();
 
         }
 

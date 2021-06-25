@@ -79,6 +79,16 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking
 
 
         }
+        public void StartNewWreck(in Vector2Int coordinates)
+        {
+            if (_currentWave.HasValue)
+            {
+                //Need to end the existing wave
+                EndActiveWave();
+            }
+
+            _currentWave = new WaveData(true, coordinates);
+        }
 
         public void EndActiveWave()
         {
@@ -244,15 +254,22 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking
 
             var wave = _currentWave.Value;
             
-            if(wave.enemiesKilledData == null)
-                wave.enemiesKilledData = new List<EnemySummaryData>();
+            if(wave.comboSummaryData == null)
+                wave.comboSummaryData = new List<ComboSummaryData>();
+
+            var comboSummary = new ComboSummaryData(comboRecordData);
+
+            var index = wave.comboSummaryData
+                .FindIndex(x => x.Equals(comboSummary));
             
-            if (wave.CombosMade.ContainsKey(comboRecordData))
+            if (index >= 0)
             {
-                wave.CombosMade[comboRecordData]++;
+                var data = wave.comboSummaryData[index];
+                data.created++;
+                wave.comboSummaryData[index] = data;
             }
             else
-                wave.CombosMade.Add(comboRecordData, 1);
+                wave.comboSummaryData.Add(comboSummary);
 
             _currentWave = wave;
         }
@@ -289,6 +306,30 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking
             var wave = _currentWave.Value;
 
             wave.gearsCollected += gears;
+
+            _currentWave = wave;
+        }
+        
+        public void RecordSilverSpent(in int silver)
+        {
+            if (!_currentWave.HasValue)
+                return;
+
+            var wave = _currentWave.Value;
+
+            wave.spentSilver += silver;
+
+            _currentWave = wave;
+        }
+
+        public void RecordGearsSpent(in int gears)
+        {
+            if (!_currentWave.HasValue)
+                return;
+
+            var wave = _currentWave.Value;
+
+            wave.spentGears += gears;
 
             _currentWave = wave;
         }

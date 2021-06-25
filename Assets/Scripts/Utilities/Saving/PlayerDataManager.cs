@@ -405,6 +405,7 @@ namespace StarSalvager.Utilities.Saving
         {
             PlayerRunData.SubtractGears(amount);
 
+            SessionDataProcessor.Instance.RecordGearsSpent(amount);
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }
@@ -436,6 +437,9 @@ namespace StarSalvager.Utilities.Saving
         public static void SubtractSilver(int amount, bool updateValuesChanged = true)
         {
             PlayerRunData.SubtractSilver(amount);
+            
+            SessionDataProcessor.Instance.RecordSilverSpent(amount);
+            
             if (updateValuesChanged)
                 OnValuesChanged?.Invoke();
         }

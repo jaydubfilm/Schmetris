@@ -307,7 +307,7 @@ namespace StarSalvager.Utilities.FileIO
                 path,
                 CONVERTERS);
 
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
             //Sends file to master to review data
             SendSessionData(path, playerID);
 #endif

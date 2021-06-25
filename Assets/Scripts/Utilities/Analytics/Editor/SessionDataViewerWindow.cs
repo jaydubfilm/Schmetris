@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Sirenix.OdinInspector.Editor;
+using Sirenix.Utilities;
+using Sirenix.Utilities.Editor;
 using StarSalvager.ScriptableObjects.Analytics;
 using StarSalvager.ScriptableObjects.Analytics.StarSalvager.ScriptableObjects.Analytics.Editor;
 using StarSalvager.Utilities.Analytics.SessionTracking.Data;
@@ -80,8 +82,11 @@ namespace StarSalvager.Utilities.Analytics.Editor
                         /*tree.Add(
                             $"{playerSession.Key}/{sessionDateName}/Session {i + 1}/Sector {wave.sectorNumber + 1} Wave {wave.waveNumber + 1}[{index}]",
                             wave);*/
+                        
                         tree.Add(
-                            $"{playerSession.Key}/Session {i + 1}/Ring {wave.ringIndex + 1} Wave {wave.waveNumber + 1}[{index}]",
+                            wave.isWreck ?
+                                $"{playerSession.Key}/Session {i + 1}/Wreck {wave.wreckCoordinates}" :
+                                $"{playerSession.Key}/Session {i + 1}/Ring {wave.ringIndex + 1} Wave {wave.waveNumber + 1}[{index}]",
                             wave);
                     }
                 }
@@ -91,7 +96,27 @@ namespace StarSalvager.Utilities.Analytics.Editor
         }
     }
     
+    /*public class PART_TYPEDrawer : OdinValueDrawer<PART_TYPE>
+    {
+        protected override void DrawPropertyLayout(GUIContent label)
+        {
+            Rect rect = EditorGUILayout.GetControlRect();
 
+            if (label != null)
+            {
+                rect = EditorGUI.PrefixLabel(rect, label);
+            }
+
+            PART_TYPE value = this.ValueEntry.SmartValue;
+            GUIHelper.PushLabelWidth(20);
+            EditorGUI.DrawTextureTransparent(rect.AlignLeft(rect.width * 0.5f),
+                value.GetSprite().texture,
+                ScaleMode.ScaleToFit);
+            GUIHelper.PopLabelWidth();
+
+            this.ValueEntry.SmartValue = value;
+        }
+    }*/
     
     public class BlockDataListDrawer<T> : OdinValueDrawer<List<T>> where T: IBlockData
     {
