@@ -81,37 +81,31 @@ namespace StarSalvager.Editor.PatchTrees.Graph
             toolbar.Add(new Button(
                 () =>
             {
-                PatchTreeSaveUtility.SaveGraph(patchTreeContainerToLoad.PartType, _graphView); 
+                PatchTreeSaveUtility.SaveGraph(patchTreeContainerToLoad.PartType, _graphView);
+                ExportJson();
             })
             {
                 text = "Save Data"
             });
-            
-            toolbar.Add(new Button(
-                () =>
-                {
-                    var json = PatchTreeSaveUtility.ExportJson(_graphView);
-                    
-                    var partRemoteDataObject = FindObjectOfType<FactoryManager>().PartsRemoteData;
-                    var index = partRemoteDataObject.partRemoteData.FindIndex(x =>
-                        x.partType == patchTreeContainerToLoad.PartType);
-                    
-                    if(index < 0)
-                        return;
 
-                    partRemoteDataObject.partRemoteData[index].patchTreeData = json;
-                    
-                    EditorUtility.SetDirty(partRemoteDataObject);
-                    AssetDatabase.SaveAssets();
-
-                })
-            {
-                text = "Export Json"
-            });
-
-            //toolbar.Add(new Button(() => RequestDataOperation(false)) {text = "Load Data"});
-            // toolbar.Add(new Button(() => _graphView.CreateNewDialogueNode("Dialogue Node")) {text = "New Node",});
             rootVisualElement.Add(toolbar);
+        }
+
+        private void ExportJson()
+        {
+            var json = PatchTreeSaveUtility.ExportJson(_graphView);
+                    
+            var partRemoteDataObject = FindObjectOfType<FactoryManager>().PartsRemoteData;
+            var index = partRemoteDataObject.partRemoteData.FindIndex(x =>
+                x.partType == patchTreeContainerToLoad.PartType);
+                    
+            if(index < 0)
+                return;
+
+            partRemoteDataObject.partRemoteData[index].patchTreeData = json;
+                    
+            EditorUtility.SetDirty(partRemoteDataObject);
+            AssetDatabase.SaveAssets();
         }
         
         /*private void RequestDataOperation(bool save)
