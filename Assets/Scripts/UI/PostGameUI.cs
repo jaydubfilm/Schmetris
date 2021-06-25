@@ -9,6 +9,7 @@ using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
 using TMPro;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
@@ -73,14 +74,14 @@ namespace StarSalvager.UI
             xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel - 1);
             xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel);
             
-            
-
             xpSlider.value = startXP;
 
             xpSliderText.text = $"{startXP}/{xpSlider.maxValue}";
             starCountText.text = $"{startStars}{TMP_SpriteHelper.STAR_ICON}";
             
             postGameWindow.SetActive(true);
+            EventSystem.current?.SetSelectedGameObject(closeButton.gameObject);
+
             StartCoroutine(PostGameUICoroutine(startXP, startStars));
         }
 
