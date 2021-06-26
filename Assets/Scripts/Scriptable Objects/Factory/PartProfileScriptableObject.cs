@@ -12,15 +12,33 @@ namespace StarSalvager.ScriptableObjects
     public class PartProfileScriptableObject : AttachableProfileScriptableObject<PartProfile, PART_TYPE>
     {
         [Serializable]
-        private class PartBorder
+        public class PartBorder
         {
             public BIT_TYPE bitType;
             public Sprite sprite;
             public Color color = Color.white;
         }
+        [Serializable]
+        public class PartIcon
+        {
+            public PART_TYPE PartType;
+            public Sprite sprite;
+        }
         
         //Properties
         //====================================================================================================================//
+
+        [SerializeField, PropertyOrder(-1000), FoldoutGroup("Prototype")]
+        public Sprite partBackground;
+        [TableList, SerializeField, PropertyOrder(-1000), FoldoutGroup("Prototype")]
+        public PartIcon[] partIcons;
+        [TableList, SerializeField, PropertyOrder(-1000), FoldoutGroup("Prototype")]
+        public PartBorder[] borderPrototypes;
+
+        public bool HasNewSprite(PART_TYPE partType) => partIcons.Any(x => x.PartType == partType);
+        
+        //====================================================================================================================//
+        
         
         [SerializeField, PropertyOrder(-100), Space(10f)]
         private Sprite[] damagedSprites;
@@ -37,7 +55,7 @@ namespace StarSalvager.ScriptableObjects
 
         //====================================================================================================================//
 
-        [TableList, SerializeField, PropertyOrder(-1000)]
+        /*[TableList, SerializeField, PropertyOrder(-500)]
         private PartBorder[] partBorders;
 
         public (Sprite, Color) GetPartBorder(PART_TYPE partType)
@@ -50,7 +68,7 @@ namespace StarSalvager.ScriptableObjects
         {
             var data = partBorders.FirstOrDefault(x => x.bitType == bitType);
             return data is null ? (null, Color.clear) : (data.sprite, data.color);
-        }
+        }*/
         
         //====================================================================================================================//
         
@@ -64,5 +82,7 @@ namespace StarSalvager.ScriptableObjects
         {
             return profiles.ToList().FindIndex(x => x.partType == Type);
         }
+        
+        
     }
 }

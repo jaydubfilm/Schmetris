@@ -40,8 +40,6 @@ namespace StarSalvager.UI
             [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
             [Required, FoldoutGroup("$NAME")] public Image secondPartImage;
 
-            [HideInInspector] public Image partBorderSprite;
-
             [Required, FoldoutGroup("$NAME")] public Image triggerInputImage;
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
@@ -79,8 +77,6 @@ namespace StarSalvager.UI
                 backgroundImage.sprite = partSprite;
                 foregroundImage.sprite = partSprite;
 
-                if (partBorderSprite != null)
-                    partBorderSprite.enabled = partSprite != null;
             }
             public void SetSecondSprite(in Sprite partSprite)
             {
@@ -743,12 +739,6 @@ namespace StarSalvager.UI
             SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
 
             SliderPartUis[index].SetSprite(sprite);
-
-            //If the part icon needs a border, be sure to add it!
-            if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].foregroundImage != null)
-                SliderPartUis[index].partBorderSprite = PartAttachableFactory.CreateUIPartBorder(
-                        (RectTransform) SliderPartUis[index].foregroundImage.transform, 
-                        partType);
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }

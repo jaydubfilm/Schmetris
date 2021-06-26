@@ -33,7 +33,6 @@ namespace StarSalvager.UI.Wreckyard
             public Button optionButton;
             public PartChoiceButtonHover PartChoiceButtonHover;
             public Image optionImage;
-            [HideInInspector] public Image partBorderImage;
             public TMP_Text optionText;
             
             public Image categoryImage;
@@ -126,15 +125,12 @@ namespace StarSalvager.UI.Wreckyard
                 var category = partRemoteData.GetRemoteData(partType).category;
 
                 selectionUis[index].PartChoiceButtonHover.SetPartType(partType);
-                selectionUis[index].optionImage.sprite = partProfiles.GetProfile(partType).Sprite;
+                selectionUis[index].optionImage.sprite = partType.GetSprite();
                 selectionUis[index].optionImage.color = Globals.UsePartColors ? category.GetColor() : Color.white;
                 selectionUis[index].optionText.text = $"{partType}";
                 
                 selectionUis[index].categoryImage.color = category.GetColor();
                 selectionUis[index].categoryText.text = category.GetCategoryName();
-                var (sprite, color) = partType.GetBorderData();
-                selectionUis[index].partBorderImage.sprite = sprite;
-                selectionUis[index].partBorderImage.color = color;
             }
 
             Random.InitState(DateTime.Now.Millisecond);
@@ -270,17 +266,6 @@ namespace StarSalvager.UI.Wreckyard
                 RecordSelectedParts(-1);
                 PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, PART_TYPE.EMPTY);
             });
-            
-            for (var i = 0; i < selectionUis.Length; i++)
-            {
-                if (selectionUis[i].partBorderImage != null)
-                    continue;
-                
-                selectionUis[i].partBorderImage =
-                    PartAttachableFactory.CreateUIPartBorder(
-                        (RectTransform)selectionUis[i].optionButton.transform,
-                        BIT_TYPE.WHITE);
-            }
         }
 
         private void CloseWindow()
@@ -352,12 +337,9 @@ namespace StarSalvager.UI.Wreckyard
                 var partData = partDatas[i];
                 var partType = (PART_TYPE)partData.Type;
                 var category = partType.GetCategory();
-                var (sprite, color) = partProfileScriptableObject.GetPartBorder(category);
 
                 selectionUis[i].optionText.text = partType.GetRemoteData().name;
                 selectionUis[i].optionImage.sprite = partType.GetSprite();
-                selectionUis[i].partBorderImage.sprite = sprite;
-                selectionUis[i].partBorderImage.color = color;
 
                 selectionUis[i].PartChoiceButtonHover.SetPartType(partType);
                     

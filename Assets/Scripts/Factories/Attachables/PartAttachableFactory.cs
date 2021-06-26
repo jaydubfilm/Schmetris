@@ -81,9 +81,6 @@ namespace StarSalvager.Factories
                 case PART_OPTION_TYPE.InitialSelection:
                     partTypes = new List<PART_TYPE>(remotePartData.basicWeapons);
                     break;
-                //case PART_OPTION_TYPE.PowerWeapon:
-                //    partTypes = new List<PART_TYPE>(remotePartData.powerWeapons);
-                //    break;
                 case PART_OPTION_TYPE.Any:
                     partTypes = new List<PART_TYPE>(remotePartData.AnyParts)
                         .Where(x => PlayerDataManager.IsPartUnlocked(x))
@@ -91,11 +88,6 @@ namespace StarSalvager.Factories
                         .ToList();
                     break;
             }
-
-            /*foreach (var partType in currentParts)
-            {
-                partTypes.Remove(partType);
-            }*/
 
             if (partTypes.IsNullOrEmpty())
                 throw new IndexOutOfRangeException($"{nameof(partTypes)} is now empty, and cannot provide more part options");
@@ -111,50 +103,7 @@ namespace StarSalvager.Factories
                 options[i] = option;
             }
 
-            /*if (exclusionType.HasValue)
-            {
-                partType.Remove(exclusionType.Value);
-            }
-
-            if (partType.Count != 0) 
-                return partType[Random.Range(0, partType.Count)];
-            
-            throw new ArgumentException("No valid part types to return");*/
-            
-            /*Debug.LogError("No valid part types to return");
-            
-            return PART_TYPE.GUN;*/
         }
-
-        /*public static PART_TYPE GetWreckPartTypeOption(PART_TYPE? exclusionType = null)
-        {
-            var partType = new List<PART_TYPE>
-            {
-                PART_TYPE.GUN,
-                PART_TYPE.SNIPER,
-                PART_TYPE.RAILGUN,
-                PART_TYPE.BOMB,
-                PART_TYPE.FREEZE,
-                PART_TYPE.ARMOR,
-                PART_TYPE.SHIELD,
-                PART_TYPE.REPAIR
-            };
-
-
-            if (exclusionType.HasValue)
-            {
-                var index = partType.FindIndex(x => x == exclusionType.Value);
-                partType.RemoveAt(index);
-            }
-
-            if (partType.Count == 0)
-            {
-                throw new ArgumentException("No valid part types to return");
-                //return PART_TYPE.GUN;
-            }
-
-            return partType[Random.Range(0, partType.Count)];
-        }*/
 
         //============================================================================================================//
 
@@ -163,8 +112,7 @@ namespace StarSalvager.Factories
             var type = (PART_TYPE) partData.Type;
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(0);
-            var (bSprite, bColor) = type.GetBorderData();
+            var sprite = type.GetSprite();
             
             //--------------------------------------------------------------------------------------------------------//
 
@@ -199,12 +147,10 @@ namespace StarSalvager.Factories
                 ? Color.white
                 : remoteData.category.GetColor();
 
-            if (temp.BorderSpriteRenderer == null)
-                temp.BorderSpriteRenderer = CreatePartBorder(temp.transform);
+            /*if (temp.BorderSpriteRenderer == null)
+                temp.BorderSpriteRenderer = CreatePartBorder(temp.transform);*/
 
             temp.SetSprite(sprite);
-            temp.BorderSpriteRenderer.sprite = bSprite;
-            temp.BorderSpriteRenderer.color = bColor;
             if (Globals.UsePartColors)
             {
                 temp.SetColor(color);
@@ -253,8 +199,7 @@ namespace StarSalvager.Factories
         public GameObject CreateScrapyardGameObject(PartData partData)
         {
             var type = (PART_TYPE) partData.Type;
-            var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(0);
+            var sprite = type.GetSprite();
 
 
             if (!Recycler.TryGrab(out ScrapyardPart scrapyardPart))
@@ -286,18 +231,14 @@ namespace StarSalvager.Factories
                 ? Color.white
                 : remoteData.category.GetColor();
             
-            var profile = factoryProfile.GetProfile(overrideType);
-            var sprite = profile.GetSprite(0);
+           // var profile = factoryProfile.GetProfile(overrideType);
+            var sprite = overrideType.GetSprite();
 
             //TODO This should be the same function
             switch (toOverride)
             {
                 case Part part:
                     part.SetSprite(sprite);
-                    break;
-                case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite);
-                    scrapyardPart.SetColor(color);
                     break;
             }
 
@@ -308,7 +249,6 @@ namespace StarSalvager.Factories
 
         public GameObject CreateScrapyardGameObject(PART_TYPE partType)
         {
-            //var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
             var blockData = new PartData
             {
                 Type = (int)partType,
@@ -376,7 +316,7 @@ namespace StarSalvager.Factories
         
         //============================================================================================================//
 
-        public static SpriteRenderer CreatePartBorder(in Transform transform)
+        /*public static SpriteRenderer CreatePartBorder(in Transform transform)
         {
             var tempBorder = new GameObject("Border_SpriteRenderer");
             var borderSpriteRenderer = tempBorder.AddComponent<SpriteRenderer>();
@@ -417,20 +357,17 @@ namespace StarSalvager.Factories
             var tempBorderImage = tempBorder.AddComponent<Image>();
             tempBorderImage.transform.SetParent(targetTransform, false);
             var borderTransform = (RectTransform) tempBorder.transform;
-            var (sprite, color) = FactoryManager.Instance.PartsProfileData.GetPartBorder(bitType);
                 
                 
             tempBorderImage.raycastTarget = false;
             tempBorderImage.preserveAspect = true;
-            tempBorderImage.sprite = sprite;
-            tempBorderImage.color = color;
                 
             borderTransform.anchorMin = Vector2.zero;
             borderTransform.anchorMax = Vector2.one;
             borderTransform.sizeDelta = Vector2.zero;
 
             return tempBorderImage;
-        }
+        }*/
 
         //====================================================================================================================//
         

@@ -236,7 +236,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
                 //--------------------------------------------------------------------------------------------------------//
                 
-                PartAttachableFactory.CreateUIPartBorder(tempTransform, category);
+                //PartAttachableFactory.CreateUIPartBorder(tempTransform, category);
 
                 //--------------------------------------------------------------------------------------------------------//
 
@@ -375,7 +375,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 temp.Init(type);
                 //TODO Fill with patchData
 
-                PartAttachableFactory.CreateUIPartBorder(temp.transform, type);
+                //PartAttachableFactory.CreateUIPartBorder(temp.transform, type);
                 
                 return temp;
             }

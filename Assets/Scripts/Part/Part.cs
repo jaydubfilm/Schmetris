@@ -46,8 +46,6 @@ namespace StarSalvager
         }
         private bool _disabled;
 
-        public SpriteRenderer BorderSpriteRenderer { get; set; }
-
         //Unity Functions
         //====================================================================================================================//
         
@@ -158,14 +156,6 @@ namespace StarSalvager
 
             Disabled = false;
             SetColliderActive(true);
-        }
-
-        public override void SetSortingLayer(string sortingLayerName, int sortingOrder = 0)
-        {
-            base.SetSortingLayer(sortingLayerName, sortingOrder);
-            
-            BorderSpriteRenderer.sortingLayerName = sortingLayerName;
-            BorderSpriteRenderer.sortingOrder = sortingOrder + 1;
         }
 
         //IHasBounds Functions

@@ -114,27 +114,41 @@ MonoBehaviour:
     _sprite: {fileID: 3617087829443450394, guid: 73b7c16003b98714ca98a495da0d2bed,
       type: 3}
     _animation: {fileID: 0}
+  partBackground: {fileID: 21300000, guid: eae0465ee8b033342aeec66bc03bce47, type: 3}
+  partIcons:
+  - PartType: 15
+    sprite: {fileID: 21300000, guid: c19d3433e5cec6247bba92d80edc2a6c, type: 3}
+  - PartType: 0
+    sprite: {fileID: 21300000, guid: 727309994b18d974c8047e923aff5814, type: 3}
+  - PartType: 4
+    sprite: {fileID: 21300000, guid: c443380fbbce7b44ab48f86dd61136d4, type: 3}
+  - PartType: 36
+    sprite: {fileID: 21300000, guid: 4c1b6e9fbe2b73741840772ec566cbee, type: 3}
+  - PartType: 42
+    sprite: {fileID: 21300000, guid: 42d96ec2f02272b4c8797b048536c917, type: 3}
+  - PartType: 14
+    sprite: {fileID: 21300000, guid: bbd665c0e7a3a1c47b11285bf4ca18f6, type: 3}
+  borderPrototypes:
+  - bitType: 1
+    sprite: {fileID: 21300000, guid: 7d9aa0a97ed16684c9dfbe838f3fb9d1, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.6509804}
+  - bitType: 2
+    sprite: {fileID: 21300000, guid: a1e5e1f517954704e93f24110adf3af8, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.6509804}
+  - bitType: 3
+    sprite: {fileID: 21300000, guid: e0737b06e66110d409c103e1fc08e792, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.6509804}
+  - bitType: 4
+    sprite: {fileID: 21300000, guid: 5591932c762d5a44a9e26566b939678e, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.6509804}
+  - bitType: 7
+    sprite: {fileID: 21300000, guid: 047afa9e2f73ce74eb95fd55d250c158, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.9019608}
+  - bitType: 5
+    sprite: {fileID: 21300000, guid: 214d63d7bcd6c434bad39d9bd9bc1528, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 0.9019608}
   damagedSprites:
   - {fileID: 8564895758720257271, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: 6090780171333522907, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   - {fileID: -3178243908905154898, guid: f38c5b581e204e840a5e9d02bb4f66cb, type: 3}
   emptySprite: {fileID: 21300000, guid: 11dc16053ce4a3143907ee6e29149cf2, type: 3}
-  partBorders:
-  - bitType: 1
-    sprite: {fileID: 21300000, guid: bfc10dbf6f4c31e4a888ef74f5d75427, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 0.6509804}
-  - bitType: 2
-    sprite: {fileID: 21300000, guid: c5b32cbd1887e874c9cf92424ced3a84, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 0.6509804}
-  - bitType: 3
-    sprite: {fileID: 21300000, guid: 4e1de73aea810214e8393d9b1f99b261, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 0.6509804}
-  - bitType: 4
-    sprite: {fileID: 21300000, guid: 57ce93a385dce8d4e9eee6ce7086fc00, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 0.6509804}
-  - bitType: 5
-    sprite: {fileID: 21300000, guid: a965b73dcf7ec604791d0a45dbb62ab2, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - bitType: 7
-    sprite: {fileID: 21300000, guid: c93040f8085dc7944872d3a74b95cb31, type: 3}
-    color: {r: 1, g: 1, b: 1, a: 1}

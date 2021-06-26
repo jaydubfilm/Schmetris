@@ -18,11 +18,24 @@ namespace StarSalvager.Utilities.Extensions
         }
         public static BIT_TYPE GetCategory(this PART_TYPE partType) => partType.GetRemoteData().category;
         public static Vector2Int GetCoordinateForCategory(this PART_TYPE partType) => PlayerDataManager.GetCoordinateForCategory(partType.GetRemoteData().category);
-        
-        public static Sprite GetSprite(this PART_TYPE partType)=> partType.GetProfileData().GetSprite();
-        
-        public static (Sprite, Color) GetBorderData(this PART_TYPE partType)=> FactoryManager.Instance.PartsProfileData.GetPartBorder(partType);
 
+        public static Sprite GetSprite(this PART_TYPE partType)
+        {
+#if UNITY_EDITOR
+            var manager = FactoryManager.Instance == null
+                ? Object.FindObjectOfType<FactoryManager>()
+                : FactoryManager.Instance;
+
+#else
+            var manager = FactoryManager.Instance;
+
+#endif
+
+            //Check to see if we can use the new sprites or not, return respective sprite.
+            return manager.PartsProfileData.HasNewSprite(partType)
+                ? PartSpriteGenerator.TryGetSprite(partType)
+                : partType.GetProfileData().GetSprite();
+        }
 
         public static PartRemoteData GetRemoteData(this PART_TYPE partType)
         {

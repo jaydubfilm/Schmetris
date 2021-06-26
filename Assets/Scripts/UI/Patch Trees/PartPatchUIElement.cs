@@ -56,7 +56,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             });
             
             partButtonImage.sprite = partType.GetSprite();
-            PartAttachableFactory.CreateUIPartBorder((RectTransform)partButtonImage.transform, partType);
+            //PartAttachableFactory.CreateUIPartBorder((RectTransform)partButtonImage.transform, partType);
 
             foreach (var patchData in patches)
             {
