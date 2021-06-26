@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.Audio;
@@ -24,7 +25,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class MainMenuv2 : MonoBehaviour, IReset, IStartedUsingController
+    public class MainMenuv2 : MonoBehaviour, IReset, IStartedUsingController, ICustomNavigation
     {
         private enum WINDOW
         {
@@ -166,6 +167,28 @@ namespace StarSalvager.UI
         private WINDOW _previousWindow = WINDOW.NONE;
         private WindowData[] _windowData;
 
+        //ICustomNavigation Prototype
+        //====================================================================================================================//
+        
+        public Selectable[] currentSelectables { get; private set; }
+
+        public void SetupNavigation(Selectable[] selectables, SelectableExtensions.NavigationException[] exceptions = null)
+        {
+            IEnumerator WaitForFinish()
+            {
+                yield return new WaitForSeconds(1f);
+                
+                selectables.FillNavigationOptions(exceptions);
+            }
+            
+            currentSelectables?.CleanNavigationOptions();
+
+            //Want to copy the data 
+            currentSelectables = new List<Selectable>(selectables).ToArray();
+
+            StartCoroutine(WaitForFinish());
+        }
+
         //Unity Functions
         //====================================================================================================================//
 
@@ -180,6 +203,8 @@ namespace StarSalvager.UI
             Globals.Init();
             SetupWindows();
             SetupButtons();
+            
+            OpenWindow(WINDOW.MAIN_MENU);
         }
 
         private void OnDisable()
@@ -211,6 +236,13 @@ namespace StarSalvager.UI
                 case WINDOW.NONE:
                     break;
                 case WINDOW.MAIN_MENU:
+                    
+                    SetupNavigation(new Selectable[]
+                    {
+                        playButton,
+                        settingsButton,
+                        quitButton
+                    });
                     EventSystem.current?.SetSelectedGameObject(playButton.gameObject);
                     break;
                 case WINDOW.SETTINGS:
@@ -234,47 +266,11 @@ namespace StarSalvager.UI
                     SetupAccountMenuWindow();
                     break;
                 case WINDOW.STARS:
-                    continueRunButton.gameObject.SetActive(false);
-                    abandonRunButton.gameObject.SetActive(false);
-                    newRunButton.gameObject.SetActive(false);
-                    starsButton.gameObject.SetActive(false);
-                    settingsButton.gameObject.SetActive(false);
-                    quitButton.gameObject.SetActive(false);
-                    changeAccountButton.gameObject.SetActive(false);
                     SetupStarsWindow();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(window), window, null);
             }
-        }
-
-        private void SetSelectedElement(WINDOW window)
-        {
-            /*switch (window)
-            {
-                case WINDOW.NONE:
-                    break;
-                case WINDOW.MAIN_MENU:
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                    break;
-                case WINDOW.SETTINGS:
-                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
-                    break;
-                case WINDOW.ACCOUNT:
-                    EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
-                    break;
-                case WINDOW.ACCOUNT_MENU:
-                    bool hasActiveRun = PlayerDataManager.HasActiveRun();
-                    EventSystem.current.SetSelectedGameObject(hasActiveRun
-                        ? continueRunButton.gameObject
-                        : newRunButton.gameObject);
-                    break;
-                case WINDOW.STARS:
-                    EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(window), window, null);
-            }*/
         }
 
         #region Setup Windows
@@ -333,6 +329,23 @@ namespace StarSalvager.UI
                 //Check to see if the currently opened account is this button, disable if yes
                 accountButtons[i].interactable = interactable;
             }
+            
+            //Setup navigation, disallowing the use of back button as a left or right destination
+            SetupNavigation(
+                accountWindowObject.GetComponentsInChildren<Selectable>(),
+                new []
+                {
+                    new SelectableExtensions.NavigationException
+                    {
+                        Direction = DIRECTION.RIGHT,
+                        Selectable = accountBackButton
+                    },
+                    new SelectableExtensions.NavigationException
+                    {
+                        Direction = DIRECTION.LEFT,
+                        Selectable = accountBackButton
+                    }
+                });
             
         }
         
@@ -402,6 +415,17 @@ namespace StarSalvager.UI
             settingsButton.gameObject.SetActive(true);
             quitButton.gameObject.SetActive(true);
             changeAccountButton.gameObject.SetActive(true);
+            
+            SetupNavigation(new Selectable[]
+            {
+                newRunButton,
+                continueRunButton,
+                abandonRunButton,
+                starsButton,
+                settingsButton,
+                quitButton,
+                changeAccountButton,
+            });
 
             //FIXME This should wait until a EventSystem exists to be able to use
             EventSystem.current?.SetSelectedGameObject(hasActiveRun
@@ -417,8 +441,24 @@ namespace StarSalvager.UI
 
         private void SetupStarsWindow()
         {
-            
             persistentUpgradesUI.SetupUpgrades();
+            
+            //Setup navigation, disallowing the use of back button as a left or right destination
+            SetupNavigation(
+                starsMenuWindow.GetComponentsInChildren<Selectable>(),
+                new []
+                {
+                    new SelectableExtensions.NavigationException
+                    {
+                        Direction = DIRECTION.RIGHT,
+                        Selectable = starsBackButton
+                    },
+                    new SelectableExtensions.NavigationException
+                    {
+                        Direction = DIRECTION.LEFT,
+                        Selectable = starsBackButton
+                    }
+                });
         }
 
         //Setup Run Window
@@ -703,7 +743,7 @@ namespace StarSalvager.UI
                     {Type = WINDOW.STARS, WindowObject = starsMenuWindow, CloseOtherWindows = false},//SETTINGS
             };
 
-            OpenWindow(WINDOW.MAIN_MENU);
+            
         }
 
         private void OpenWindow(WINDOW openWindow)
@@ -725,8 +765,6 @@ namespace StarSalvager.UI
 
             _previousWindow = _currentWindow;
             _currentWindow = openWindow;
-
-            SetSelectedElement(openWindow);
         }
 
         private void CloseOpenWindow()
@@ -815,5 +853,7 @@ namespace StarSalvager.UI
                     throw new ArgumentOutOfRangeException(nameof(_currentWindow), _currentWindow, null);
             }
         }
+
+
     }
 }
