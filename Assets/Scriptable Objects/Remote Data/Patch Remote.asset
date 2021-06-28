@@ -219,7 +219,27 @@ MonoBehaviour:
     name: AREA OF EFFECT
     type: 10
     description: 
-    Levels: []
+    Levels:
+    - gears: 0
+      silver: 0
+      multiplier: 0
+      level: 1
+    - gears: 0
+      silver: 0
+      multiplier: 0
+      level: 2
+    - gears: 0
+      silver: 0
+      multiplier: 0
+      level: 3
+    - gears: 0
+      silver: 0
+      multiplier: 0
+      level: 4
+    - gears: 0
+      silver: 0
+      multiplier: 0
+      level: 5
   - isImplemented: 1
     name: FIRE RATE
     type: 3

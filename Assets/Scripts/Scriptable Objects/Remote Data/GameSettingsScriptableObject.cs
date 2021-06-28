@@ -84,9 +84,6 @@ namespace StarSalvager.ScriptableObjects
         [BoxGroup("Bot"), Range(0f,10f)]
         public float botHealWaitTime = 2f;
 
-        [BoxGroup("Bot")]
-        public float decoyDroneHealth = 20f;
-
         [BoxGroup("Bot"), Range(0f,1f)]
         public float bitDropCollectionMultiplier = 1f;
 
