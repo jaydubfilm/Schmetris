@@ -24,7 +24,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchTreeUI : MonoBehaviour
+    public class PatchTreeUI : MonoBehaviour, IHasHintElement
     {
         private const int PART_SCRAP_VALUE = 10;
         private const string NO_PART_TEXT = "No Part Selected";
@@ -191,6 +191,28 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         #endregion //Unity Functions
 
+        //IHasHintElement Functions
+        //====================================================================================================================//
+
+        #region IHasHintElement Functions
+
+        public object[] GetHintElements(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.LAYOUT:
+                    return new object[]
+                    {
+                       _primaryPartImages[BIT_TYPE.GREY].transform as RectTransform,
+                       _secondaryPartImages[BIT_TYPE.GREY].transform as RectTransform,
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
+
+        #endregion //IHasHintElement Functions
+
         //Setup Wreck Screen
         //====================================================================================================================//
 
@@ -332,6 +354,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             switch (optionType)
             {
                 case PartAttachableFactory.PART_OPTION_TYPE.InitialSelection:
+                    if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
                     PlayerDataManager.GeneratePartPatchOptions();
@@ -1255,6 +1278,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Unity Editor
 
         //====================================================================================================================//
-        
+
+
     }
 }
