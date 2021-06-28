@@ -156,10 +156,11 @@ namespace StarSalvager.Prototype
             
             SetupScene();
             gameObject.SetActive(false);
-            
+
             LevelManager.Instance.GameUi.ShowWaveSummaryWindow(true,
+                true,
                 "Game Over",
-                string.Empty/*PlayerDataManager.GetRunSummaryString()*/,
+                string.Empty,
                 () =>
                 {
                     Globals.CurrentWave = 0;
@@ -179,7 +180,6 @@ namespace StarSalvager.Prototype
                     
                 },
                 "Main Menu",
-                GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
         }
         

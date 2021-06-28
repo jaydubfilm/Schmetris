@@ -154,8 +154,7 @@ namespace StarSalvager.UI
             public enum TYPE
             {
                 DEFAULT,
-                ORANGE,
-                RED
+                ORANGE
             }
 
             [FoldoutGroup("$type")] public TYPE type;
@@ -266,6 +265,9 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
+        
+        [SerializeField, Required, FoldoutGroup("Summary Window")]
+        private RectTransform summaryWindowFrame;
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text waveSummaryTitle;
@@ -279,17 +281,23 @@ namespace StarSalvager.UI
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private TMP_Text confirmButtonText;
 
-        [Space(10f), SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Image backgroundImage;
-
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Image crossbarImage;
-
-        [SerializeField, Required, FoldoutGroup("Summary Window")]
-        private Image[] verticalBarImages;
-
         [SerializeField, FoldoutGroup("Summary Window")]
         private WindowSpriteSet[] spriteSets;
+
+        //Game Over Window
+        //====================================================================================================================//
+        
+        [SerializeField, Required, FoldoutGroup("Game Over Window")]
+        private RectTransform gameoverWindowFrame;
+        
+        [SerializeField, Required, FoldoutGroup("Game Over Window")]
+        private TMP_Text gameOverTitle;
+        
+        [SerializeField, Required, FoldoutGroup("Game Over Window")]
+        private Button gameoverButton;
+
+        [SerializeField, Required, FoldoutGroup("Game Over Window")]
+        private TMP_Text gameoverButtonText;
 
         //Health Cracks
         //====================================================================================================================//
@@ -394,7 +402,7 @@ namespace StarSalvager.UI
         private void Start()
         {
             InputManager.InputDeviceChanged += TryUpdateInputSprites;
-            ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
+            ShowWaveSummaryWindow(false, false, string.Empty, string.Empty, null, instantMove: true);
 
             InitValues();
         }
@@ -812,18 +820,34 @@ namespace StarSalvager.UI
         private bool _movingSummaryWindow;
 
         public void ShowWaveSummaryWindow(bool show,
+            in bool isGameOverScreen,
             in string title,
             in string text,
             Action onConfirmCallback,
             string buttonText = "Continue",
-            WindowSpriteSet.TYPE type = WindowSpriteSet.TYPE.DEFAULT,
             float moveTime = 1f,
             bool instantMove = false)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void CloseWindow()
+            {
+                ShowWaveSummaryWindow(false, false, string.Empty, string.Empty, null, instantMove: true);
+                onConfirmCallback?.Invoke();
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             if (_movingSummaryWindow)
                 return;
 
+            var type = isGameOverScreen ? WindowSpriteSet.TYPE.ORANGE : WindowSpriteSet.TYPE.DEFAULT;
+            
             InputManager.SwitchCurrentActionMap(show ? ACTION_MAP.MENU : ACTION_MAP.DEFAULT);
+
+            summaryWindowFrame.gameObject.SetActive(!isGameOverScreen);
+            gameoverWindowFrame.gameObject.SetActive(isGameOverScreen);
 
 
             float targetY;
@@ -831,38 +855,45 @@ namespace StarSalvager.UI
             {
                 targetY = -waveSummaryWindow.sizeDelta.y / 4f;
 
-                confirmButtonText.text = buttonText;
-
-                confirmButton.onClick.RemoveAllListeners();
-                confirmButton.onClick.AddListener(() =>
+                if (isGameOverScreen)
                 {
-                    ShowWaveSummaryWindow(false, string.Empty, string.Empty, null, instantMove: true);
-                    onConfirmCallback?.Invoke();
-                });
+                    gameoverButtonText.text = buttonText;
 
-                var spriteSet = spriteSets.FirstOrDefault(ss => ss.type == type);
+                    gameoverButton.onClick.RemoveAllListeners();
+                    gameoverButton.onClick.AddListener(CloseWindow);
 
-                backgroundImage.sprite = spriteSet.backgroundImage;
-                crossbarImage.sprite = spriteSet.crossbarImage;
+                    var spriteSet = spriteSets.FirstOrDefault(ss => ss.type == type);
 
-                foreach (var verticalBarImage in verticalBarImages)
-                {
-                    verticalBarImage.sprite = spriteSet.verticalBarImage;
+                    gameoverButtonText.color = spriteSet.titleColor;
                 }
+                else
+                {
+                    confirmButtonText.text = buttonText;
 
-                waveSummaryTitle.color = spriteSet.titleColor;
-                waveSummaryText.color = spriteSet.textColor;
+                    confirmButton.onClick.RemoveAllListeners();
+                    confirmButton.onClick.AddListener(CloseWindow);
 
+                    var spriteSet = spriteSets.FirstOrDefault(ss => ss.type == type);
 
-
+                    waveSummaryTitle.color = spriteSet.titleColor;
+                    waveSummaryText.color = spriteSet.textColor;
+                }
             }
             else
             {
                 targetY = waveSummaryWindow.sizeDelta.y * 1.5f;
             }
 
-            waveSummaryTitle.text = title;
-            waveSummaryText.text = text;
+            if (isGameOverScreen)
+            {
+                gameOverTitle.text = title;
+            }
+            else
+            {
+                waveSummaryTitle.text = title;
+                waveSummaryText.text = text;
+            }
+            
 
             if (instantMove)
             {
@@ -873,13 +904,19 @@ namespace StarSalvager.UI
                 return;
             }
 
-            StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, targetY, moveTime));
+            StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, 
+                targetY, 
+                moveTime, 
+                isGameOverScreen? 
+                    gameoverButton.gameObject : 
+                    confirmButton.gameObject));
 
         }
 
-        private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time)
+        private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time, GameObject focusTarget)
         {
             confirmButton.interactable = false;
+            gameoverButton.interactable = false;
             _movingSummaryWindow = true;
 
             var t = 0f;
@@ -898,8 +935,9 @@ namespace StarSalvager.UI
 
             _movingSummaryWindow = false;
             confirmButton.interactable = true;
+            gameoverButton.interactable = true;
 
-            EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(focusTarget);
 
         }
 
