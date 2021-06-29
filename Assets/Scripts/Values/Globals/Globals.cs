@@ -81,8 +81,6 @@ namespace StarSalvager.Values
         public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
 
         public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
-        public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
-        //public static int Magnetism => m_gameSettings.magnetAmount;
 
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 

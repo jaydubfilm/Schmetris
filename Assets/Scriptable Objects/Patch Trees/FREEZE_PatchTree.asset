@@ -54,7 +54,7 @@ MonoBehaviour:
       x: 750
       y: 170
       width: 214
-      height: 147
+      height: 150
     Type: 4
     Tier: 3
     Level: 2
@@ -64,7 +64,7 @@ MonoBehaviour:
       x: 500
       y: 168
       width: 214
-      height: 147
+      height: 150
     Type: 4
     Tier: 2
     Level: 1
@@ -74,7 +74,7 @@ MonoBehaviour:
       x: 500
       y: -15
       width: 214
-      height: 147
+      height: 150
     Type: 10
     Tier: 2
     Level: 2
@@ -84,7 +84,7 @@ MonoBehaviour:
       x: 250
       y: -13
       width: 214
-      height: 147
+      height: 150
     Type: 10
     Tier: 1
     Level: 1
@@ -94,7 +94,7 @@ MonoBehaviour:
       x: 500
       y: -198
       width: 214
-      height: 147
+      height: 150
     Type: 3
     Tier: 2
     Level: 1
@@ -104,7 +104,7 @@ MonoBehaviour:
       x: 750
       y: -201
       width: 214
-      height: 147
+      height: 150
     Type: 3
     Tier: 3
     Level: 1
@@ -114,7 +114,7 @@ MonoBehaviour:
       x: 750
       y: -14
       width: 214
-      height: 147
+      height: 150
     Type: 10
     Tier: 3
     Level: 3
@@ -124,7 +124,7 @@ MonoBehaviour:
       x: 1000
       y: -14
       width: 214
-      height: 147
+      height: 150
     Type: 10
     Tier: 4
     Level: 4

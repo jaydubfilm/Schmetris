@@ -1676,12 +1676,12 @@ namespace StarSalvager
                 bot.DecoyDrone = null;
             }
 
-            var decoyDroneHealth = Globals.DecoyDroneHealth;
+            TryGetPartProperty(PartProperties.KEYS.Health, part, partRemoteData, out var health);
 
             //FIXME This needs to be moved to a factory
             bot.DecoyDrone = Instantiate(bot._decoyDronePrefab, bot.transform.position, Quaternion.identity).GetComponent<DecoyDrone>();
             bot.DecoyDrone.Init(bot, 10f);
-            bot.DecoyDrone.SetupHealthValues(decoyDroneHealth,decoyDroneHealth);
+            bot.DecoyDrone.SetupHealthValues(health,health);
         }
 
         private void TriggerBitsplosion(in Part part)
@@ -1955,24 +1955,20 @@ namespace StarSalvager
                 return true;
             }
 
-            var armor = bot.AttachedBlocks
+            var armorPart = bot.AttachedBlocks
                 .OfType<Part>()
                 .FirstOrDefault(x => x.Type == PART_TYPE.ARMOR && x.Disabled == false);
 
-            if (armor == null) return false;
-
+            if (armorPart == null) return false;
             var partRemoteData = PART_TYPE.ARMOR.GetRemoteData();
 
             var temp = damage;
             //FIXME This is not a sustainable way of using ammo, need to find something better
-            if (!TryUseAmmo(armor, partRemoteData, temp < 1f ? Time.deltaTime : 1f)) return false;
+            if (!TryUseAmmo(armorPart, partRemoteData, temp < 1f ? Time.deltaTime : 1f)) return false;
 
-            if (!partRemoteData.TryGetValue<float>(PartProperties.KEYS.Multiplier, out var multiplier))
-            {
-                return false;
-            }
+            TryGetPartProperty(PartProperties.KEYS.Reduction, armorPart, partRemoteData, out var damageReduction);
             
-            damage *= 1.0f - multiplier;
+            damage *= 1.0f - damageReduction;
 
             return true;
         }
@@ -2265,6 +2261,16 @@ namespace StarSalvager
                 case PartProperties.KEYS.Time:
                 case PartProperties.KEYS.Cooldown:
                     value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.FIRE_RATE);
+                    break;
+                
+                case PartProperties.KEYS.Multiplier when part.Type == PART_TYPE.ARMOR:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
+                    break;
+                case PartProperties.KEYS.Health:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
+                    break;
+                case PartProperties.KEYS.Reduction:
+                    value *= part.Patches.GetPatchMultiplier(PATCH_TYPE.POWER);
                     break;
 
                 default:

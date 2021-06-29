@@ -112,3 +112,13 @@ MonoBehaviour:
       longDescription: 'Those wrecks have the parts we need. But our scanners are
         picking up  movement in the rocks. Could be insectoids. Choose your path
         carefully.  '
+  - type: 18
+    hintTexts:
+    - shortText: Primary
+      longDescription: 'Right now you have one active part:  a purple Main Weapon
+        attached to your drone''s core.  You can attach up to four active parts to
+        this core... one of each colour!'
+    - shortText: Secondary
+      longDescription: 'You can also collect one additional part of each colour in
+        the ''Secondary Parts'' section.  Swap these with your primary parts when
+        you want to activate them. '

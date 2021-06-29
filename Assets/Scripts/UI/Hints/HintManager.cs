@@ -5,6 +5,7 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
@@ -38,7 +39,8 @@ namespace StarSalvager.UI.Hints
         HEALTH,
         WRECK,
         STAR,
-        MAP
+        MAP,
+        LAYOUT
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -234,8 +236,8 @@ namespace StarSalvager.UI.Hints
                 case HINT.HEALTH:
                     objectsToHighlight = FindObjectOfType<GameUI>().GetHintElements(hint);
                     break;
-                
-                //These should just be ambient hints, with no explicit highlight
+                //--------------------------------------------------------------------------------------------------------//
+                    //These should just be ambient hints, with no explicit highlight
                 case HINT.MAP:
                     objectsToHighlight = new object[]
                     {
@@ -246,6 +248,8 @@ namespace StarSalvager.UI.Hints
                         }
                     };
                     break;
+
+                //--------------------------------------------------------------------------------------------------------//
                 case HINT.STAR:
                     objectsToHighlight = new object[]
                     {
@@ -255,6 +259,11 @@ namespace StarSalvager.UI.Hints
                             size = Vector3.zero
                         }
                     };
+                    break;
+
+                //--------------------------------------------------------------------------------------------------------//
+                case HINT.LAYOUT:
+                    objectsToHighlight = FindObjectOfType<PatchTreeUI>().GetHintElements(hint);
                     break;
                 //----------------------------------------------------------------------------------------------------//
                 default:

@@ -119,12 +119,12 @@ MonoBehaviour:
     description: 'These forge-hardened titanium plates are the building blocks of
       a great defense. '
     dataTest:
-    - key: Multiplier
+    - key: Reduction
       value: 0.2
     isManual: 0
     category: 1
     ammoUseCost: 2
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":4,"Level":0,"Tier":1,"PreReqs":[]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":4,"Level":1,"Tier":2,"PreReqs":[1]},{"Type":4,"Level":2,"Tier":3,"PreReqs":[3]},{"Type":4,"Level":3,"Tier":4,"PreReqs":[4]}]'
   - isImplemented: 1
     partType: 4
     name: Gun
@@ -353,10 +353,12 @@ MonoBehaviour:
     dataTest:
     - key: Cooldown
       value: 5
+    - key: Health
+      value: 20
     isManual: 1
     category: 1
     ammoUseCost: 5
-    patchTreeData: 
+    patchTreeData: '[{"Type":1,"Level":0,"Tier":1,"PreReqs":[]},{"Type":3,"Level":0,"Tier":2,"PreReqs":[0]},{"Type":1,"Level":1,"Tier":2,"PreReqs":[0]},{"Type":3,"Level":1,"Tier":3,"PreReqs":[1]},{"Type":1,"Level":2,"Tier":3,"PreReqs":[2]}]'
   - isImplemented: 1
     partType: 41
     name: Bitsplosion

@@ -24,7 +24,7 @@ using Input = StarSalvager.Utilities.Inputs.Input;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchTreeUI : MonoBehaviour
+    public class PatchTreeUI : MonoBehaviour, IHasHintElement
     {
         private const int PART_SCRAP_VALUE = 10;
         private const string NO_PART_TEXT = "No Part Selected";
@@ -85,6 +85,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         //====================================================================================================================//
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partNameText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private TMP_Text partDescriptionText;
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partDetailsText;
         
@@ -190,6 +192,28 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
 
         #endregion //Unity Functions
+
+        //IHasHintElement Functions
+        //====================================================================================================================//
+
+        #region IHasHintElement Functions
+
+        public object[] GetHintElements(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.LAYOUT:
+                    return new object[]
+                    {
+                       _primaryPartImages[BIT_TYPE.GREY].transform as RectTransform,
+                       _secondaryPartImages[BIT_TYPE.GREY].transform as RectTransform,
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
+
+        #endregion //IHasHintElement Functions
 
         //Setup Wreck Screen
         //====================================================================================================================//
@@ -332,6 +356,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             switch (optionType)
             {
                 case PartAttachableFactory.PART_OPTION_TYPE.InitialSelection:
+                    if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
                     PlayerDataManager.GeneratePartPatchOptions();
@@ -721,7 +746,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     CheckForPartPositionAvailability(false);
                 
                 SetSelectedPart(PART_TYPE.EMPTY, false);
-                SetPartText(NO_PART_TEXT, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
                 CleanPatchTree();
                 
                 //Check if there are any Patches available for the part just scrapped. Remove & Update the UI
@@ -844,7 +869,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (partType == PART_TYPE.EMPTY)
             {
                 SetSelectedPart(PART_TYPE.EMPTY, default);
-                SetPartText(NO_PART_TEXT, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty,string.Empty);
                 CleanPatchTree();
                 return;
             }
@@ -855,7 +880,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             SetSelectedPart(partType, inStorage);
             _scrapPartButtonText.text = $"Scrap Part {PART_SCRAP_VALUE}{TMP_SpriteHelper.GEAR_ICON}";
 
-            SetPartText(partType.GetRemoteData().name, partData.GetPartDetails());
+            SetPartText(partType.GetRemoteData().name, partType.GetRemoteData().description, partData.GetPartDetails());
         }
 
         private void OnPatchPressed(PART_TYPE partType, PatchData patchData)
@@ -875,6 +900,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             var partRemoteData = partType.GetRemoteData();
             
             SetPartText(partRemoteData.name,
+                partRemoteData.description,
                 partData.GetPartDetailsPatchPreview(partRemoteData, patchData));
         }
 
@@ -942,7 +968,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //Deselect Patch
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             //Clear Text
-            SetPartText(NO_PART_TEXT, string.Empty);
+            SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
             SetPatchText(string.Empty, string.Empty);
             //Clean Patch Tree
             CleanPatchTree();
@@ -964,9 +990,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             scrapPartButton.gameObject.SetActive(partType != PART_TYPE.CORE && !partIsEmpty);
         }
 
-        private void SetPartText(in string partName, in string partDetails)
+        private void SetPartText(in string partName, in string partDescription, in string partDetails)
         {
             partNameText.text = partName;
+            partDescriptionText.text = partDescription;
             partDetailsText.text = partDetails;
         }
 
@@ -1107,7 +1134,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 return;
 
             SetSelectedPart(PART_TYPE.EMPTY, default);
-            SetPartText(NO_PART_TEXT, string.Empty);
+            SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
             CleanPatchTree();
         }
 
@@ -1255,6 +1282,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Unity Editor
 
         //====================================================================================================================//
-        
+
+
     }
 }
