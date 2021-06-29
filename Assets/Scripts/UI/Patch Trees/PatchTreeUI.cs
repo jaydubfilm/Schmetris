@@ -10,6 +10,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -18,6 +19,7 @@ using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Input = StarSalvager.Utilities.Inputs.Input;
@@ -40,7 +42,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text currenciesText;
         [SerializeField, Required]
         private Slider healthSlider;
-
+        
+        [SerializeField, Required]
+        private Button menuButton;
+        [SerializeField, Required]
+        private Button repairButton;
         //Wreck Data
         //====================================================================================================================//
 
@@ -165,11 +171,15 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         #region Unity Functions
 
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) =>_showingHint = showingHint;
+
         private void OnEnable()
         {
-            Input.Actions.MenuControls.Cancel.performed += OnCancelPerformed;
+            InputManager.OnCancelPressed += OnCancelPerformed;
             PlayerDataManager.NewPartPicked += OnNewPartSelected;
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
+            HintManager.OnShowingHintAction += IsShowingHint;
             OnValuesChanged();
         }
 
@@ -184,9 +194,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnDisable()
         {
-            Input.Actions.MenuControls.Cancel.performed -= OnCancelPerformed;
+            InputManager.OnCancelPressed -= OnCancelPerformed;
             PlayerDataManager.NewPartPicked -= OnNewPartSelected;
             PlayerDataManager.OnValuesChanged -= OnValuesChanged;
+            HintManager.OnShowingHintAction -= IsShowingHint;
         }
         
 
@@ -242,6 +253,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
 
                 var temp = new GameObject($"{category}_Part_Icon");
+                temp.AddComponent<UIElementSelectEvents>();
                 var tempImage = temp.AddComponent<Image>();
                 var tempButton = temp.AddComponent<Button>();
                 tempImage.sprite = partType.GetSprite();
@@ -304,6 +316,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         {
             SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
             DrawDroneStorage();
+
+            UpdateSelectables();
         }
         
         public void InitWreck(in string wreckName, in Sprite wreckSprite/*, in IEnumerable<PartData> partPatchOptions*/)
@@ -551,6 +565,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             _activeElementLinks = activeLinks.ToArray();
 
             //--------------------------------------------------------------------------------------------------------//
+            
+            UpdateSelectables();
 
         }
 
@@ -692,8 +708,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         #region On Button Pressed Functions
 
-        private static void LaunchPressed()
+        private void LaunchPressed()
         {
+            if (_showingHint)
+                return;
+            
             ScreenFade.Fade(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
@@ -760,6 +779,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
                 //Update Values
                 SaveBlockData();
+                UpdateSelectables();
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -942,7 +962,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //Update the Datas
             SaveBlockData();
             
-           ;
+           UpdateSelectables();
         }
 
         #endregion //On Button Pressed Functions
@@ -1119,10 +1139,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             _patchDetailsWindowTransform.TryFitInScreenBounds(canvasRect, 20f);
         }
         
-        private void OnCancelPerformed(InputAction.CallbackContext ctx)
+        private void OnCancelPerformed()
         {
-            if (!ctx.ReadValueAsButton()) return;
-            
             //When patch window is open, close. return.
             if (_selectedPatch.partType != PART_TYPE.EMPTY)
             {
@@ -1214,6 +1232,32 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Data Functions
 
         public void OnConsolePartAdded() => CheckForPartPositionAvailability();
+
+        private void UpdateSelectables()
+        {
+            var selectables = GetCurrentSelectable();
+            UISelectHandler.SetupNavigation(launchButton,
+                selectables);
+        }
+        private IEnumerable<Selectable> GetCurrentSelectable()
+        {
+            var selectables = new List<Selectable>
+            {
+                swapPartButton,
+                purchasePatchButton,
+                launchButton,
+                menuButton,
+                scrapPartButton,
+                repairButton
+            };
+            selectables.AddRange(primaryPartsAreaTransform.GetComponentsInChildren<Selectable>());
+            selectables.AddRange(secondaryPartsAreaTransform.GetComponentsInChildren<Selectable>());
+            
+            selectables.AddRange(partPatchOptionsContainer.GetComponentsInChildren<Selectable>());
+            selectables.AddRange(patchTreeTierContainer.GetComponentsInChildren<Selectable>());
+
+            return selectables.ToArray();
+        }
         
         //Unity Editor
         //====================================================================================================================//
@@ -1282,7 +1326,6 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Unity Editor
 
         //====================================================================================================================//
-
 
     }
 }

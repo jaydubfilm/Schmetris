@@ -1,25 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.Extensions
 {
-    public interface ICustomNavigation
-    {
-        Selectable[] currentSelectables { get; }
-        void SetupNavigation(Selectable[] selectables, SelectableExtensions.NavigationException[] navigationExceptions);
-    }
-    
+   
     public static class SelectableExtensions
     {
-        public struct NavigationException
-        {
-            public DIRECTION Direction;
-            public Selectable Selectable;
-        }
-
         public static void FillNavigationOptions(this IEnumerable<Selectable> selectables)
         {
             selectables.FillNavigationOptions(null);
@@ -35,13 +26,13 @@ namespace StarSalvager.Utilities.Extensions
 
         public static void FillNavigationOptions(this Selectable selectable, in Selectable[] selectables, NavigationException[] navigationExceptions)
         {
-            Selectable[] GetTrimmedList(DIRECTION direction)
+            Selectable[] GetTrimmedList(NavigationException.DIRECTION navMode)
             {
                 if (navigationExceptions.IsNullOrEmpty()) 
                     return new Selectable[0];
                 
-                return navigationExceptions.Where(
-                        x => x.Direction == direction)
+                return navigationExceptions
+                    .Where(x => x.ContainsMode(navMode))
                     .Select(x => x.Selectable)
                     .ToArray();
             }
@@ -50,10 +41,10 @@ namespace StarSalvager.Utilities.Extensions
             selectable.navigation = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
-                selectOnUp = selectable.FindSelectable(selectables, rotation * Vector3.up, GetTrimmedList(DIRECTION.UP)),
-                selectOnDown = selectable.FindSelectable(selectables, rotation * Vector3.down, GetTrimmedList(DIRECTION.DOWN)),
-                selectOnLeft = selectable.FindSelectable(selectables, rotation * Vector3.left, GetTrimmedList(DIRECTION.LEFT)),
-                selectOnRight = selectable.FindSelectable(selectables, rotation * Vector3.right, GetTrimmedList(DIRECTION.RIGHT)),
+                selectOnUp = selectable.FindSelectable(selectables, rotation * Vector3.up, GetTrimmedList(NavigationException.DIRECTION.UP)),
+                selectOnDown = selectable.FindSelectable(selectables, rotation * Vector3.down, GetTrimmedList(NavigationException.DIRECTION.DOWN)),
+                selectOnLeft = selectable.FindSelectable(selectables, rotation * Vector3.left, GetTrimmedList(NavigationException.DIRECTION.LEFT)),
+                selectOnRight = selectable.FindSelectable(selectables, rotation * Vector3.right, GetTrimmedList(NavigationException.DIRECTION.RIGHT)),
 
             };
         }
@@ -115,13 +106,18 @@ namespace StarSalvager.Utilities.Extensions
             for (int i = 0; i < count; ++i)
             {
                 Selectable sel = selectables[i];
-
-                if (toIgnore.Contains(sel)) continue;
-
+                
+                if (sel == null) continue;
                 if (sel == selectable) continue;
 
-                if (!sel.IsInteractable() || sel.navigation.mode == Navigation.Mode.None)
-                    continue;
+                if(sel.gameObject.activeInHierarchy == false) continue;
+
+                if (toIgnore.Contains(sel)) continue;
+                
+
+                
+
+                if (!sel.IsInteractable() || sel.navigation.mode == Navigation.Mode.None) continue;
 
 #if UNITY_EDITOR
                 // Apart from runtime use, FindSelectable is used by custom editors to

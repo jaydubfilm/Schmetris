@@ -1685,6 +1685,8 @@ MonoBehaviour:
   launchButton: {fileID: 8655411242171071533}
   currenciesText: {fileID: 1009694645277646698}
   healthSlider: {fileID: 1092557628309656419}
+  menuButton: {fileID: 1868638649400723363}
+  repairButton: {fileID: 152962223832286648}
   wreckNameText: {fileID: 1092489166956354622}
   wreckImage: {fileID: 3332254783081450120}
   partPatchOptionPrefab: {fileID: 3050625527505738123, guid: 3c3da41e517d87646a0ccba6011ec230,

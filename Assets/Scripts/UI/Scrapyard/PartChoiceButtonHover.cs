@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         private static DroneDesignUI DroneDesignUI
         {
@@ -57,6 +57,16 @@ namespace StarSalvager.UI.Wreckyard
         }
 
         public void OnPointerExit(PointerEventData eventData)
+        {
+            PartDetailsUI.ShowPartDetails(false, new PartData(), null);
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            PartDetailsUI.ShowPartDetails(true, _partData, transform);
+        }
+
+        public void OnDeselect(BaseEventData eventData)
         {
             PartDetailsUI.ShowPartDetails(false, new PartData(), null);
         }

@@ -16,6 +16,7 @@ using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -25,7 +26,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class MainMenuv2 : MonoBehaviour, IReset, IStartedUsingController, ICustomNavigation
+    public class MainMenuv2 : MonoBehaviour, IReset
     {
         private enum WINDOW
         {
@@ -167,35 +168,12 @@ namespace StarSalvager.UI
         private WINDOW _previousWindow = WINDOW.NONE;
         private WindowData[] _windowData;
 
-        //ICustomNavigation Prototype
-        //====================================================================================================================//
-        
-        public Selectable[] currentSelectables { get; private set; }
-
-        public void SetupNavigation(Selectable[] selectables, SelectableExtensions.NavigationException[] exceptions = null)
-        {
-            IEnumerator WaitForFinish()
-            {
-                yield return new WaitForSeconds(1f);
-                
-                selectables.FillNavigationOptions(exceptions);
-            }
-            
-            currentSelectables?.CleanNavigationOptions();
-
-            //Want to copy the data 
-            currentSelectables = new List<Selectable>(selectables).ToArray();
-
-            StartCoroutine(WaitForFinish());
-        }
-
         //Unity Functions
         //====================================================================================================================//
 
         private void OnEnable()
         {
-            RefreshWindow(_currentWindow);
-            InputManager.AddStartedControllerListener(this);
+            InputManager.OnCancelPressed += OnCancelPressed;
         }
 
         private void Start()
@@ -206,10 +184,10 @@ namespace StarSalvager.UI
             
             OpenWindow(WINDOW.MAIN_MENU);
         }
-
+        
         private void OnDisable()
         {
-            InputManager.RemoveControllerListener(this);
+            InputManager.OnCancelPressed -= OnCancelPressed;
         }
 
         //IReset Functions
@@ -237,16 +215,25 @@ namespace StarSalvager.UI
                     break;
                 case WINDOW.MAIN_MENU:
                     
-                    SetupNavigation(new Selectable[]
+                    UISelectHandler.SetupNavigation(
+                        playButton, 
+                        new Selectable[]
                     {
                         playButton,
                         settingsButton,
                         quitButton
                     });
-                    EventSystem.current?.SetSelectedGameObject(playButton.gameObject);
                     break;
                 case WINDOW.SETTINGS:
-                    EventSystem.current?.SetSelectedGameObject(settingsBackButton.gameObject);
+                    UISelectHandler.SetupNavigation(
+                        settingsBackButton, 
+                        new Selectable[]
+                        {
+                            musicVolumeSlider,
+                            sfxVolumeSlider,
+                            testingFeaturesToggle,
+                            settingsBackButton
+                        });
                     break;
                 case WINDOW.ACCOUNT:
                     if (CheckVersionConflict())
@@ -329,23 +316,29 @@ namespace StarSalvager.UI
                 //Check to see if the currently opened account is this button, disable if yes
                 accountButtons[i].interactable = interactable;
             }
+
+            var exceptions = new List<NavigationException>
+            {
+                new NavigationException
+                {
+                    Direction = NavigationException.DIRECTION.RIGHT | NavigationException.DIRECTION.LEFT,
+                    Selectable = accountBackButton
+                }
+            };
+            foreach (var deleteAccountButton in deleteAccountButtons)
+            {
+                exceptions.Add(new NavigationException
+                {
+                    Direction = NavigationException.DIRECTION.UP,
+                    Selectable = deleteAccountButton
+                });
+            }
             
             //Setup navigation, disallowing the use of back button as a left or right destination
-            SetupNavigation(
+            UISelectHandler.SetupNavigation(
+                accountButtons[0],
                 accountWindowObject.GetComponentsInChildren<Selectable>(),
-                new []
-                {
-                    new SelectableExtensions.NavigationException
-                    {
-                        Direction = DIRECTION.RIGHT,
-                        Selectable = accountBackButton
-                    },
-                    new SelectableExtensions.NavigationException
-                    {
-                        Direction = DIRECTION.LEFT,
-                        Selectable = accountBackButton
-                    }
-                });
+                exceptions);
             
         }
         
@@ -365,27 +358,29 @@ namespace StarSalvager.UI
 
                         return data.Level <= currentLevel + 1;
                     }
+
                     bool HasPurchased()
                     {
                         var currentLevel = PlayerDataManager.GetCurrentUpgradeLevel(data.Type, data.BitType);
 
                         return data.Level <= currentLevel;
                     }
-            
-                    int GetCost() => FactoryManager.Instance.PersistentUpgrades.GetRemoteData(data.Type, data.BitType).Levels[data.Level].cost;
-            
+
+                    int GetCost() => FactoryManager.Instance.PersistentUpgrades.GetRemoteData(data.Type, data.BitType)
+                        .Levels[data.Level].cost;
+
                     bool CanAfford(in int stars) => PlayerDataManager.GetStars() >= stars;
-                
+
                     var cost = GetCost();
                     var hasPurchased = HasPurchased();
                     var isUnlocked = IsUnlocked();
-                    var canAfford = CanAfford(cost); 
-                    
+                    var canAfford = CanAfford(cost);
+
                     return isUnlocked && !hasPurchased && canAfford;
                 }
-                
 
-                
+
+
                 var upgrades = FactoryManager.Instance.PersistentUpgrades.Upgrades;
 
                 foreach (var upgradeRemoteData in upgrades)
@@ -403,35 +398,32 @@ namespace StarSalvager.UI
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             //TODO Get bool for current run
             bool hasActiveRun = PlayerDataManager.HasActiveRun();
 
             newRunButton.gameObject.SetActive(!hasActiveRun);
             continueRunButton.gameObject.SetActive(hasActiveRun);
             abandonRunButton.gameObject.SetActive(hasActiveRun);
-            
+
             starsButton.gameObject.SetActive(true);
             settingsButton.gameObject.SetActive(true);
             quitButton.gameObject.SetActive(true);
             changeAccountButton.gameObject.SetActive(true);
-            
-            SetupNavigation(new Selectable[]
-            {
-                newRunButton,
-                continueRunButton,
-                abandonRunButton,
-                starsButton,
-                settingsButton,
-                quitButton,
-                changeAccountButton,
-            });
 
-            //FIXME This should wait until a EventSystem exists to be able to use
-            EventSystem.current?.SetSelectedGameObject(hasActiveRun
-                ? continueRunButton.gameObject
-                : newRunButton.gameObject);
-            
+            UISelectHandler.SetupNavigation(
+                hasActiveRun ? continueRunButton : newRunButton,
+                new Selectable[]
+                {
+                    newRunButton,
+                    continueRunButton,
+                    abandonRunButton,
+                    starsButton,
+                    accountMenuSettingsButton,
+                    accountMenuQuitButton,
+                    changeAccountButton,
+                });
+
             starsButtonGlow.gameObject.SetActive(HasStarsToSpend());
 
         }
@@ -444,18 +436,14 @@ namespace StarSalvager.UI
             persistentUpgradesUI.SetupUpgrades();
             
             //Setup navigation, disallowing the use of back button as a left or right destination
-            SetupNavigation(
+            UISelectHandler.SetupNavigation(
+                starsBackButton,
                 starsMenuWindow.GetComponentsInChildren<Selectable>(),
                 new []
-                {
-                    new SelectableExtensions.NavigationException
+                { 
+                    new NavigationException
                     {
-                        Direction = DIRECTION.RIGHT,
-                        Selectable = starsBackButton
-                    },
-                    new SelectableExtensions.NavigationException
-                    {
-                        Direction = DIRECTION.LEFT,
+                        Direction = NavigationException.DIRECTION.RIGHT | NavigationException.DIRECTION.LEFT,
                         Selectable = starsBackButton
                     }
                 });
@@ -540,7 +528,6 @@ namespace StarSalvager.UI
                 {
                     //TODO Load account data
                     OpenWindow(WINDOW.ACCOUNT_MENU);
-                    //EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
                 });
             }
 
@@ -556,7 +543,10 @@ namespace StarSalvager.UI
                         response =>
                         {
                             if (!response)
+                            {
+                                SetupAccountWindow();
                                 return;
+                            }
                             
                             if (_selectedAccountIndex == index)
                             {
@@ -611,7 +601,10 @@ namespace StarSalvager.UI
                     response =>
                     {
                         if (!response)
+                        {
+                            SetupAccountMenuWindow();
                             return;
+                        }
                         
                         PlayerDataManager.CompleteCurrentRun();
                         PlayerDataManager.SavePlayerAccountData();
@@ -717,6 +710,21 @@ namespace StarSalvager.UI
         }
 
         #endregion //Buttons
+        
+        private void OnCancelPressed()
+        {
+            switch (_currentWindow)
+            {
+                case WINDOW.ACCOUNT:
+                case WINDOW.RUN:
+                case WINDOW.SETTINGS:
+                case WINDOW.STARS:
+                    CloseOpenWindow();
+                    break;
+                default:
+                    return;
+            }
+        }
 
         //====================================================================================================================//
 
@@ -819,41 +827,6 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-
-
-        public void StartedUsingController(bool usingController)
-        {
-            if (usingController == false)
-                return;
-            
-            switch (_currentWindow)
-            {
-                case WINDOW.NONE:
-                    EventSystem.current.SetSelectedGameObject(null);
-                    break;
-                case WINDOW.MAIN_MENU:
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                    break;
-                case WINDOW.SETTINGS:
-                    EventSystem.current.SetSelectedGameObject(settingsBackButton.gameObject);
-                    break;
-                case WINDOW.ACCOUNT:
-                    EventSystem.current.SetSelectedGameObject(accountButtons[0].gameObject);
-                    break;
-                case WINDOW.ACCOUNT_MENU:
-                    bool hasActiveRun = PlayerDataManager.HasActiveRun();
-                    EventSystem.current.SetSelectedGameObject(hasActiveRun
-                        ? continueRunButton.gameObject
-                        : newRunButton.gameObject);
-                    break;
-                case WINDOW.STARS:
-                    EventSystem.current.SetSelectedGameObject(starsBackButton.gameObject);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(_currentWindow), _currentWindow, null);
-            }
-        }
-
 
     }
 }

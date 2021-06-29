@@ -175,6 +175,14 @@ namespace StarSalvager.UI.Wreckyard
 
             SetActive(true);
             
+            UISelectHandler.SetupNavigation(selectionUis[0].optionButton,
+                new []
+                {
+                    selectionUis[0].optionButton,
+                    selectionUis[1].optionButton,
+                    noPartSelectedOptionButton
+                });
+            
         }
 
         private void InitButtons()
@@ -281,6 +289,8 @@ namespace StarSalvager.UI.Wreckyard
                         (RectTransform)selectionUis[i].optionButton.transform,
                         BIT_TYPE.WHITE);
             }
+
+            
         }
 
         private void CloseWindow()
@@ -375,6 +385,13 @@ namespace StarSalvager.UI.Wreckyard
                     CloseWindow();
                 });
             }
+            
+            UISelectHandler.SetupNavigation(selectionUis[0].optionButton,
+                new []
+                {
+                    selectionUis[0].optionButton,
+                    selectionUis[1].optionButton,
+                });
         }
 
         private bool HasOverage(out PartData[] partDatas)

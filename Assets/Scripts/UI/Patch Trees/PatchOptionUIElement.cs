@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchOptionUIElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class PatchOptionUIElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         private Action<RectTransform, PatchData, bool> _onPatchHovered;
         
@@ -40,6 +40,16 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
 
         public void OnPointerExit(PointerEventData eventData)
+        {
+            _onPatchHovered?.Invoke(null, default, false);
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            _onPatchHovered?.Invoke((RectTransform)patchButton.transform, _data, true);
+        }
+
+        public void OnDeselect(BaseEventData eventData)
         {
             _onPatchHovered?.Invoke(null, default, false);
         }

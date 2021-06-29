@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 8660561133952743169}
   - component: {fileID: 917375183560253574}
   - component: {fileID: 1037564645581120510}
+  - component: {fileID: 8168768800642046098}
   m_Layer: 5
   m_Name: ScrapPartButton
   m_TagString: Untagged
@@ -312,6 +313,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8168768800642046098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327198146570102936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &725410000576631223
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,7 +338,7 @@ GameObject:
   - component: {fileID: 5598214560844727571}
   - component: {fileID: 4321906215091542063}
   m_Layer: 5
-  m_Name: PatchArea
+  m_Name: PartPatchOptionsRect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2790,6 +2804,8 @@ MonoBehaviour:
   launchButton: {fileID: 7691275692621519197}
   currenciesText: {fileID: 2063197537793833498}
   healthSlider: {fileID: 2128900300654802451}
+  menuButton: {fileID: 814140153350234835}
+  repairButton: {fileID: 1206325340924403912}
   wreckNameText: {fileID: 2128964365342177614}
   wreckImage: {fileID: 4367463343458398200}
   partPatchOptionPrefab: {fileID: 3050625527505738123, guid: 3c3da41e517d87646a0ccba6011ec230,
@@ -3300,6 +3316,7 @@ GameObject:
   - component: {fileID: 1434287092399194926}
   - component: {fileID: 3370181788908446629}
   - component: {fileID: 814140153350234835}
+  - component: {fileID: 7692011288275333193}
   m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
@@ -3407,6 +3424,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7692011288275333193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6024252624868122864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &6071831955263595061
 GameObject:
   m_ObjectHideFlags: 0
@@ -3577,7 +3607,7 @@ GameObject:
   - component: {fileID: 1581443391084792697}
   - component: {fileID: 3198688763968023630}
   m_Layer: 5
-  m_Name: PatchTreeArea
+  m_Name: PatchTreeTierContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4418,6 +4448,7 @@ GameObject:
   - component: {fileID: 3524258176697993557}
   - component: {fileID: 8742789637477554705}
   - component: {fileID: 7691275692621519197}
+  - component: {fileID: 5611068107036999567}
   m_Layer: 5
   m_Name: LaunchButton
   m_TagString: Untagged
@@ -4525,6 +4556,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5611068107036999567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7826946678427793013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &8438813177517077755
 GameObject:
   m_ObjectHideFlags: 0
@@ -4537,6 +4581,7 @@ GameObject:
   - component: {fileID: 5593410830275838311}
   - component: {fileID: 1278927111857220776}
   - component: {fileID: 1206325340924403912}
+  - component: {fileID: 7260816182748351856}
   m_Layer: 5
   m_Name: RepairButton
   m_TagString: Untagged
@@ -4644,6 +4689,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7260816182748351856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8438813177517077755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &8489099964779680816
 GameObject:
   m_ObjectHideFlags: 0
@@ -4732,6 +4790,7 @@ GameObject:
   - component: {fileID: 3821557288354989395}
   - component: {fileID: 998840912931934191}
   - component: {fileID: 6387613384861062173}
+  - component: {fileID: 5649012330758218361}
   m_Layer: 5
   m_Name: SwapPartButton
   m_TagString: Untagged
@@ -4839,6 +4898,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5649012330758218361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8662973642318219744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &8773539653794370728
 GameObject:
   m_ObjectHideFlags: 0

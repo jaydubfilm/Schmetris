@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchNodeElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class PatchNodeElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         public new RectTransform transform => gameObject.transform as RectTransform;
 
@@ -69,6 +69,16 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
 
         public void OnPointerExit(PointerEventData eventData)
+        {
+            _onHovered?.Invoke(null, default, false);
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            _onHovered?.Invoke(transform, patchData, true);
+        }
+
+        public void OnDeselect(BaseEventData eventData)
         {
             _onHovered?.Invoke(null, default, false);
         }

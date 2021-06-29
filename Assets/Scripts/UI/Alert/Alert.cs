@@ -7,6 +7,7 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -145,6 +146,12 @@ namespace StarSalvager.UI
                 SetActive(false);
                 OnPressedCallback?.Invoke();
             });
+            
+            UISelectHandler.SetupNavigation(positiveButton,
+                new []
+                {
+                    positiveButton
+                });
         }
         
         private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback, string dontShowAgainCode)
@@ -190,6 +197,13 @@ namespace StarSalvager.UI
                 SetActive(false);
                 OnConfirmedCallback?.Invoke(false);
             });
+            
+            UISelectHandler.SetupNavigation(negativeButton,
+                new []
+                {
+                    positiveButton,
+                    negativeButton
+                });
         }
         
         private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode)
@@ -247,6 +261,14 @@ namespace StarSalvager.UI
                 SetActive(false);
                 OnNeutralCallback?.Invoke();
             });
+            
+            UISelectHandler.SetupNavigation(neutralButton,
+                new []
+                {
+                    positiveButton,
+                    negativeButton,
+                    neutralButton
+                });
         }
         
         //============================================================================================================//
