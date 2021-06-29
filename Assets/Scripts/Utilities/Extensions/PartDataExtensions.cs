@@ -58,6 +58,7 @@ namespace StarSalvager.Utilities.Extensions
                 PartProperties.KEYS.Health,
                 PartProperties.KEYS.Capacity,
                 PartProperties.KEYS.Magnet,
+                PartProperties.KEYS.Reduction
             };
             
             var outList = new List<PartDetail>();
@@ -80,6 +81,10 @@ namespace StarSalvager.Utilities.Extensions
                     case PartProperties.KEYS.Damage when value is float f:
                         total = f * multipliers[PATCH_TYPE.POWER];
                         break;
+                    case PartProperties.KEYS.Reduction when value is float f:
+                        total = $"{f * multipliers[PATCH_TYPE.POWER]:P0}";
+                        propertyName = "Damage Reduction";
+                        break;
                     case PartProperties.KEYS.Cooldown when value is float f:
                         total = f * multipliers[PATCH_TYPE.FIRE_RATE];
                         break;
@@ -97,6 +102,10 @@ namespace StarSalvager.Utilities.Extensions
                         propertyName = "Hull Strength";
                         total = value;
                         break;
+                    case PartProperties.KEYS.Health when value is float f:
+                        propertyName = "Hull Strength";
+                        total = f * multipliers[PATCH_TYPE.POWER];
+                        break;
                     case PartProperties.KEYS.Magnet:
                         propertyName = "Magnetism";
                         total = value;
@@ -112,7 +121,7 @@ namespace StarSalvager.Utilities.Extensions
                         throw new ArgumentOutOfRangeException(nameof(property), property, null);
                 }
 
-                var partDetail = new PartDetail(propertyName, total);
+                var partDetail = new PartDetail(propertyName, total, null);
                 outList.Add(partDetail);
             }
 
@@ -180,6 +189,7 @@ namespace StarSalvager.Utilities.Extensions
                 PartProperties.KEYS.Health,
                 PartProperties.KEYS.Capacity,
                 PartProperties.KEYS.Magnet,
+                PartProperties.KEYS.Reduction
             };
             
             var outList = new List<PartDetail>();
@@ -216,6 +226,12 @@ namespace StarSalvager.Utilities.Extensions
                         total = f * multipliers[PATCH_TYPE.POWER];
                         preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, typeToPreview, previewMultipliers);
                         break;
+                    case PartProperties.KEYS.Reduction when value is float f:
+                        propertyName = "Damage Reduction";
+                        total = $"{f * multipliers[PATCH_TYPE.POWER] :P0}";
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, typeToPreview, previewMultipliers);
+                        if(preview != null) preview = $"{preview:P0}";
+                        break;
                     case PartProperties.KEYS.Cooldown when value is float f:
                         total = f * multipliers[PATCH_TYPE.FIRE_RATE];
                         preview = GetPartDetailInfo(f, PATCH_TYPE.FIRE_RATE, typeToPreview, previewMultipliers);
@@ -231,10 +247,14 @@ namespace StarSalvager.Utilities.Extensions
                         total = projectileRange * multipliers[PATCH_TYPE.RANGE];
                         preview = GetPartDetailInfo(projectileRange, PATCH_TYPE.RANGE, typeToPreview, previewMultipliers);
                         break;
-                    
                     case PartProperties.KEYS.Health when partData.Type == (int)PART_TYPE.CORE:
                         propertyName = "Hull Strength";
                         total = value;
+                        break;
+                    case PartProperties.KEYS.Health when value is float f:
+                        propertyName = "Hull Strength";
+                        total = f * multipliers[PATCH_TYPE.POWER];
+                        preview = GetPartDetailInfo(f, PATCH_TYPE.POWER, typeToPreview, previewMultipliers);
                         break;
                     case PartProperties.KEYS.Magnet:
                         propertyName = "Magnetism";
