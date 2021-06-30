@@ -204,15 +204,15 @@ MonoBehaviour:
       multiplier: 0.5
       level: 1
     - gears: 250
-      silver: 1
+      silver: 0
       multiplier: 1
       level: 2
-    - gears: 250
+    - gears: 500
       silver: 1
       multiplier: 1
       level: 3
-    - gears: 250
-      silver: 1
+    - gears: 1000
+      silver: 2
       multiplier: 1
       level: 4
   - isImplemented: 0
@@ -253,12 +253,12 @@ MonoBehaviour:
       silver: 0
       multiplier: 0.5
       level: 2
-    - gears: 250
-      silver: 0
+    - gears: 500
+      silver: 1
       multiplier: 0.5
       level: 3
-    - gears: 250
-      silver: 0
+    - gears: 1000
+      silver: 2
       multiplier: 0.5
       level: 4
   - isImplemented: 1
@@ -274,12 +274,12 @@ MonoBehaviour:
       silver: 0
       multiplier: 0.5
       level: 2
-    - gears: 250
-      silver: 0
+    - gears: 500
+      silver: 1
       multiplier: 0.5
       level: 3
-    - gears: 250
-      silver: 0
+    - gears: 1000
+      silver: 2
       multiplier: 0.5
       level: 4
   - isImplemented: 1
@@ -295,12 +295,12 @@ MonoBehaviour:
       silver: 0
       multiplier: 1
       level: 2
-    - gears: 250
-      silver: 0
+    - gears: 500
+      silver: 1
       multiplier: 1
       level: 3
-    - gears: 250
-      silver: 0
+    - gears: 1000
+      silver: 2
       multiplier: 1
       level: 4
   - isImplemented: 0
