@@ -1082,6 +1082,7 @@ namespace StarSalvager.Utilities.Inputs
         //IMenuControlsActions Functions
         //============================================================================================================//
 
+        public static Action OnPausePressed;
         public static Action OnCancelPressed;
 
         public void OnNavigate(InputAction.CallbackContext context)
@@ -1107,8 +1108,8 @@ namespace StarSalvager.Utilities.Inputs
         public void OnCancel(InputAction.CallbackContext context)
         {
             CheckForInputDeviceChange(context);
-            
-            if(context.ReadValueAsButton())
+
+            if (context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
                 OnCancelPressed?.Invoke();
             
         }
@@ -1116,6 +1117,9 @@ namespace StarSalvager.Utilities.Inputs
         public void OnPause(InputAction.CallbackContext context)
         {
             CheckForInputDeviceChange(context);
+            
+            if(context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
+                OnPausePressed?.Invoke();
         }
 
         public void OnScroll(InputAction.CallbackContext context)

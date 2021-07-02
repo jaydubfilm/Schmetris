@@ -11,7 +11,10 @@ using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.UI
 {
-    public struct NavigationException
+    /// <summary>
+    /// Ignores navigation to Selectable from the specified directions
+    /// </summary>
+    public struct NavigationRestriction
     {
         [Flags]
         public enum DIRECTION: int
@@ -22,18 +25,34 @@ namespace StarSalvager.Utilities.UI
             DOWN = 1 << 2
         }
             
-        public DIRECTION Direction;
+        public DIRECTION FromDirection;
         public Selectable Selectable;
             
         public bool ContainsMode(in DIRECTION direction)
         {
-            return Direction.HasFlag(direction);
+            return FromDirection.HasFlag(direction);
         }
+    }
+    
+    public struct NavigationOverride
+    {
+        public Selectable FromSelectable;
+        
+        public Selectable UpTarget;
+        public Selectable DownTarget;
+        public Selectable LeftTarget;
+        public Selectable RightTarget;
+
     }
     
     [RequireComponent(typeof(EventSystem))]
     public class UISelectHandler : Singleton<UISelectHandler>, IStartedUsingController
     {
+        public static Selectable CurrentlySelected =>
+            Instance?.CurrentEventSystem?.currentSelectedGameObject.GetComponent<Selectable>();
+
+        //====================================================================================================================//
+        
         [SerializeField]
         private Image outlinePrefab;
 
@@ -57,9 +76,9 @@ namespace StarSalvager.Utilities.UI
         private EventSystem _currentEventSystem;
 
         //====================================================================================================================//
-        public static void SetupNavigation(in Selectable objectToSelect, in IEnumerable<Selectable> selectables, in IEnumerable<NavigationException> exceptions = null)
+        public static void SetupNavigation(in Selectable objectToSelect, in IEnumerable<Selectable> selectables, in IEnumerable<NavigationRestriction> exceptions = null, in IEnumerable<NavigationOverride> overrides = null)
         {
-            Instance.SetupNavigation(selectables.ToArray(), exceptions?.ToArray());
+            Instance.SetupNavigation(selectables.ToArray(), exceptions?.ToArray(), overrides?.ToArray());
             Instance._startingSelectable = Instance._currentSelectable = objectToSelect;
         }
 
@@ -97,16 +116,23 @@ namespace StarSalvager.Utilities.UI
         //====================================================================================================================//
         private Selectable[] _currentSelectables;
 
-        private void SetupNavigation(Selectable[] selectables, NavigationException[] exceptions)
+        private void SetupNavigation(IEnumerable<Selectable> selectables, IEnumerable<NavigationRestriction> exceptions, IEnumerable<NavigationOverride> overrides)
         {
             IEnumerator WaitForFinish()
             {
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForEndOfFrame();
                 
-                selectables.FillNavigationOptions(exceptions);
-                
-                if (Instance._usingController) TrySelectObject(_currentSelectable);
+                selectables.FillNavigationOptions(exceptions, overrides);
+
+                if (Instance._usingController)
+                {
+                    //In the event that the options are now null, find the first available selectable in the list provided
+                    if (_currentSelectable == null && _startingSelectable == null)
+                        TrySelectObject(selectables.FirstOrDefault(x => x.interactable && x.gameObject.activeInHierarchy));
+                    else
+                        TrySelectObject(_currentSelectable ? _currentSelectable : _startingSelectable);
+                }
             }
             
             //_currentSelectables?.CleanNavigationOptions();
@@ -145,6 +171,7 @@ namespace StarSalvager.Utilities.UI
             var siblingIndex = rectTransform.GetSiblingIndex();
 
             _outlineTransform.SetParent(rectTransform.parent, false);
+            _outlineTransform.localScale = Vector3.one;
             _outlineTransform.SetSiblingIndex(siblingIndex);
 
             _outlineTransform.position = rectTransform.position;
@@ -176,6 +203,7 @@ namespace StarSalvager.Utilities.UI
             }
 
             TrySelectObject(_startingSelectable);
+            SetActive(true);
             StartCoroutine(ActivateNavigation());
         }
 

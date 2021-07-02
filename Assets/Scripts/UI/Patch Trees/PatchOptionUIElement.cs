@@ -8,6 +8,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
     public class PatchOptionUIElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         private Action<RectTransform, PatchData, bool> _onPatchHovered;
+
+        public Button Button => patchButton;
         
         [SerializeField]
         private Button patchButton;

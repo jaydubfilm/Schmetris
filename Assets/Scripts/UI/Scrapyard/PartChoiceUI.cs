@@ -25,7 +25,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class PartChoiceUI : MonoBehaviour, IStartedUsingController
+    public class PartChoiceUI : MonoBehaviour
     {
         [Serializable]
         public struct PartSelectionUI
@@ -83,11 +83,6 @@ namespace StarSalvager.UI.Wreckyard
         //Unity Functions
         //====================================================================================================================//
 
-        private void OnEnable()
-        {
-            InputManager.AddStartedControllerListener(this);
-        }
-
         // Start is called before the first frame update
         private void Start()
         {
@@ -97,11 +92,6 @@ namespace StarSalvager.UI.Wreckyard
             InitButtons();
         }
         
-        private void OnDisable()
-        {
-            InputManager.RemoveControllerListener(this);
-        }
-
         //Init
         //============================================================================================================//
         
@@ -426,14 +416,6 @@ namespace StarSalvager.UI.Wreckyard
         }
 
         #endregion //Discard Parts
-
-        //IStartedUsingController Functions
-        //====================================================================================================================//
-        
-        public void StartedUsingController(bool usingController)
-        {
-            EventSystem.current?.SetSelectedGameObject(usingController ? selectionUis[0].optionButton.gameObject : null);
-        }
 
         //Extra Functions
         //====================================================================================================================//

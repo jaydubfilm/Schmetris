@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 0, g: 1, b: 0.65542626, a: 1}
 --- !u!1 &725410000576631223
 GameObject:
   m_ObjectHideFlags: 0
@@ -3864,6 +3864,7 @@ GameObject:
   - component: {fileID: 5954293611495122877}
   - component: {fileID: 6169464855013329993}
   - component: {fileID: 7790116898651253434}
+  - component: {fileID: 33410683380221013}
   m_Layer: 5
   m_Name: InstallPatchButton
   m_TagString: Untagged
@@ -3971,6 +3972,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &33410683380221013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6806259413808995045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &6889527806946898346
 GameObject:
   m_ObjectHideFlags: 0

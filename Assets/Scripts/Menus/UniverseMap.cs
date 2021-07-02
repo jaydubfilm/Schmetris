@@ -67,6 +67,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
         private void OnEnable()
         {
+            InputManager.OnCancelPressed += Back;
+            
             InputManager.AddStartedControllerListener(this);
             HintManager.OnShowingHintAction += LockMap;
         }
@@ -77,11 +79,11 @@ namespace StarSalvager.UI
         
         private void OnDisable()
         {
+            InputManager.OnCancelPressed -= Back;
+            
             InputManager.RemoveControllerListener(this);
             HintManager.OnShowingHintAction -= LockMap;
         }
-
-
 
         //====================================================================================================================//
 
@@ -457,10 +459,18 @@ namespace StarSalvager.UI
                     break;
 
                 case SceneLoader.MAIN_MENU:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.LoadPreviousScene();
+                        //TODO This coulg
+                        FindObjectOfType<MainMenuv2>().RefreshCurrentWindow();
+                    });
+                    break;
                 case SceneLoader.WRECKYARD:
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.LoadPreviousScene();
+                        FindObjectOfType<PatchTreeUI>().RefreshUI();
                     });
                     break;
                 default:

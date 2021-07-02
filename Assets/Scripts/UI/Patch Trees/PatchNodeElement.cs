@@ -42,9 +42,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //If the player has already purchased this patch, show it solid, but not interactable
             button.enabled = !hasPurchased;
-            if(!hasPurchased)
-                button.interactable = unlocked;
-            
+            button.interactable = unlocked && !hasPurchased;
+
             Unlocked = unlocked;
 
             _partType = partType;

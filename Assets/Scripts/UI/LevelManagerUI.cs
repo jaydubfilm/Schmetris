@@ -7,10 +7,12 @@ using StarSalvager.Utilities;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Console = StarSalvager.Utilities.Console;
 using Input = UnityEngine.Input;
@@ -40,28 +42,15 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Between Waves")]
         private Button betweenWavesContinueButton;
-        [SerializeField, Required, FoldoutGroup("Between Waves")]
-        private Button betweenWavesScrapyardButton;
-
-        //============================================================================================================//
-
-        [SerializeField, Required, FoldoutGroup("Death Window")]
-        private Button deathWindowRetryButton;
-        [SerializeField, Required, FoldoutGroup("Death Window")]
-        private Button deathWindowScrapyrdButton;
 
         //============================================================================================================//
 
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private GameObject pauseWindow;
-        [SerializeField, Required, FoldoutGroup("Pause Menu")]
-        private Button pauseWindowScrapyardButton;
-        [SerializeField, Required, FoldoutGroup("Pause Menu")]
-        private Button pauseWindowMainMenuButton;
+        [FormerlySerializedAs("pauseWindowMainMenuButton")] [SerializeField, Required, FoldoutGroup("Pause Menu")]
+        private Button giveupButton;
         [SerializeField, Required, FoldoutGroup("Pause Menu")]
         private Button resumeButton;
-        /*[SerializeField, Required, FoldoutGroup("Pause Menu")]
-        private TMP_Text pauseText;*/
 
         //============================================================================================================//
         //FIXME I'll want something a little better implemented based on feedback
@@ -121,7 +110,6 @@ namespace StarSalvager.UI
 
         private void OnEnable()
         {
-            pauseWindowScrapyardButton.gameObject.SetActive(Globals.TestingFeatures);
             InitScrollPositions();
         }
 
@@ -165,14 +153,22 @@ namespace StarSalvager.UI
                 });
             });
 
-            pauseWindowMainMenuButton.onClick.AddListener(() =>
+            giveupButton.onClick.AddListener(() =>
             {
                 Alert.ShowAlert("Are you sure?",
                     "Giving up will abandon your current run. Are you sure you want to do that?", "Yes", "No",
                     value =>
                     {
-                        if (!value) 
+                        if (!value)
+                        {
+                            UISelectHandler.SetupNavigation(resumeButton,
+                                new []
+                                {
+                                    resumeButton,
+                                    giveupButton
+                                });
                             return;
+                        }
                         
                         if (Globals.UsingTutorial)
                         {
@@ -356,6 +352,13 @@ namespace StarSalvager.UI
                 return;
             
             pauseWindow.SetActive(true);
+            UISelectHandler.SetupNavigation(resumeButton,
+                new []
+                {
+                    resumeButton,
+                    giveupButton
+                });
+            
         }
     }
 }

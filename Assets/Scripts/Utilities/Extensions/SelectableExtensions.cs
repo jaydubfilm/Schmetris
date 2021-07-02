@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Utilities.UI;
 using UnityEditor.SceneManagement;
@@ -8,43 +7,103 @@ using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.Extensions
 {
-   
+    //TODO Add missing comments
+    //TODO Consider the use of selection priorities in addition to the calculations below
     public static class SelectableExtensions
     {
         public static void FillNavigationOptions(this IEnumerable<Selectable> selectables)
         {
             selectables.FillNavigationOptions(null);
         }
-        public static void FillNavigationOptions(this IEnumerable<Selectable> selectables, in NavigationException[] navigationExceptions)
+
+        public static void FillNavigationOptions(this IEnumerable<Selectable> selectables,
+            in NavigationRestriction[] navigationExceptions)
         {
             var array = selectables.ToArray();
             foreach (var selectable in array)
             {
-                selectable.FillNavigationOptions(array, navigationExceptions);
+                if (selectable == null)
+                    continue;
+                
+                selectable.FillNavigationOptions(array, navigationExceptions, null);
             }
         }
 
-        public static void FillNavigationOptions(this Selectable selectable, in Selectable[] selectables, NavigationException[] navigationExceptions)
+        public static void FillNavigationOptions(this IEnumerable<Selectable> selectables,
+            in IEnumerable<NavigationRestriction> navigationExceptions, in IEnumerable<NavigationOverride> navigationOverrides)
         {
-            Selectable[] GetTrimmedList(NavigationException.DIRECTION navMode)
+            var array = selectables.ToArray();
+            foreach (var selectable in array)
             {
-                if (navigationExceptions.IsNullOrEmpty()) 
-                    return new Selectable[0];
+                if (selectable == null)
+                    continue;
                 
+                selectable.FillNavigationOptions(array, navigationExceptions?.ToArray(), navigationOverrides?.ToArray());
+            }
+        }
+
+        public static void FillNavigationOptions(this Selectable selectable, in Selectable[] selectables,
+            NavigationRestriction[] navigationExceptions, NavigationOverride[] navigationOverrides)
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+
+            Selectable[] GetIgnoredSelectables(NavigationRestriction.DIRECTION navMode)
+            {
+                if (navigationExceptions.IsNullOrEmpty()) return new Selectable[0];
+
                 return navigationExceptions
                     .Where(x => x.ContainsMode(navMode))
                     .Select(x => x.Selectable)
                     .ToArray();
             }
-            
+
+            void HasOverride(out NavigationOverride navigationOverride)
+            {
+                if (navigationOverrides.IsNullOrEmpty())
+                {
+                    navigationOverride = new NavigationOverride();
+                    return;
+                }
+
+                navigationOverride = navigationOverrides.FirstOrDefault(x => x.FromSelectable == selectable);
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
             var rotation = selectable.transform.rotation;
+
+            HasOverride(out var overrides);
+
+            //Using the overrides found (if any) assign the target to either the override, or find the best target
+            var selectOnUp = overrides.UpTarget
+                ? overrides.UpTarget
+                : selectable.FindSelectable(selectables, rotation * Vector3.up,
+                    GetIgnoredSelectables(NavigationRestriction.DIRECTION.UP));
+
+            var selectOnDown = overrides.DownTarget
+                ? overrides.DownTarget
+                : selectable.FindSelectable(selectables, rotation * Vector3.down,
+                    GetIgnoredSelectables(NavigationRestriction.DIRECTION.DOWN));
+
+            var selectOnLeft = overrides.LeftTarget
+                ? overrides.LeftTarget
+                : selectable.FindSelectable(selectables, rotation * Vector3.left,
+                    GetIgnoredSelectables(NavigationRestriction.DIRECTION.LEFT));
+
+            var selectOnRight = overrides.RightTarget
+                ? overrides.RightTarget
+                : selectable.FindSelectable(selectables, rotation * Vector3.right,
+                    GetIgnoredSelectables(NavigationRestriction.DIRECTION.RIGHT));
+
+            //--------------------------------------------------------------------------------------------------------//
+
             selectable.navigation = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
-                selectOnUp = selectable.FindSelectable(selectables, rotation * Vector3.up, GetTrimmedList(NavigationException.DIRECTION.UP)),
-                selectOnDown = selectable.FindSelectable(selectables, rotation * Vector3.down, GetTrimmedList(NavigationException.DIRECTION.DOWN)),
-                selectOnLeft = selectable.FindSelectable(selectables, rotation * Vector3.left, GetTrimmedList(NavigationException.DIRECTION.LEFT)),
-                selectOnRight = selectable.FindSelectable(selectables, rotation * Vector3.right, GetTrimmedList(NavigationException.DIRECTION.RIGHT)),
+                selectOnUp = selectOnUp,
+                selectOnDown = selectOnDown,
+                selectOnLeft = selectOnLeft,
+                selectOnRight = selectOnRight,
 
             };
         }
@@ -57,6 +116,7 @@ namespace StarSalvager.Utilities.Extensions
                 selectable.CleanNavigationOptions();
             }
         }
+
         public static void CleanNavigationOptions(this Selectable selectable)
         {
             selectable.navigation = new Navigation
@@ -70,7 +130,8 @@ namespace StarSalvager.Utilities.Extensions
             };
         }
 
-        public static Selectable FindSelectable(this Selectable selectable, 
+        //A functionality override for https://docs.unity3d.com/2019.1/Documentation/ScriptReference/UI.Selectable.FindSelectable.html
+        public static Selectable FindSelectable(this Selectable selectable,
             in Selectable[] selectables,
             Vector3 dir,
             in Selectable[] toIgnore)
@@ -82,10 +143,10 @@ namespace StarSalvager.Utilities.Extensions
             {
                 if (rectTransform == null)
                     return Vector3.zero;
-                
+
                 var rect = rectTransform.rect;
 
-                
+
                 if (direction != Vector2.zero)
                     direction /= Mathf.Max(Mathf.Abs(direction.x), Mathf.Abs(dir.y));
                 direction = rect.center + Vector2.Scale(rect.size, direction * 0.5f);
@@ -106,16 +167,17 @@ namespace StarSalvager.Utilities.Extensions
             for (int i = 0; i < count; ++i)
             {
                 Selectable sel = selectables[i];
-                
+
                 if (sel == null) continue;
                 if (sel == selectable) continue;
 
-                if(sel.gameObject.activeInHierarchy == false) continue;
+                if (sel.enabled == false) continue;
+                if (sel.gameObject.activeInHierarchy == false) continue;
 
                 if (toIgnore.Contains(sel)) continue;
-                
 
-                
+
+
 
                 if (!sel.IsInteractable() || sel.navigation.mode == Navigation.Mode.None) continue;
 
@@ -130,7 +192,7 @@ namespace StarSalvager.Utilities.Extensions
 #endif
 
                 var selRect = sel.transform as RectTransform;
-                Vector3 selCenter = selRect != null ? (Vector3)selRect.rect.center : Vector3.zero;
+                Vector3 selCenter = selRect != null ? (Vector3) selRect.rect.center : Vector3.zero;
                 Vector3 myVector = sel.transform.TransformPoint(selCenter) - pos;
 
                 // Value that is the distance out along the direction.

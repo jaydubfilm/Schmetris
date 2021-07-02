@@ -317,19 +317,19 @@ namespace StarSalvager.UI
                 accountButtons[i].interactable = interactable;
             }
 
-            var exceptions = new List<NavigationException>
+            var exceptions = new List<NavigationRestriction>
             {
-                new NavigationException
+                new NavigationRestriction
                 {
-                    Direction = NavigationException.DIRECTION.RIGHT | NavigationException.DIRECTION.LEFT,
+                    FromDirection = NavigationRestriction.DIRECTION.RIGHT | NavigationRestriction.DIRECTION.LEFT,
                     Selectable = accountBackButton
                 }
             };
             foreach (var deleteAccountButton in deleteAccountButtons)
             {
-                exceptions.Add(new NavigationException
+                exceptions.Add(new NavigationRestriction
                 {
-                    Direction = NavigationException.DIRECTION.UP,
+                    FromDirection = NavigationRestriction.DIRECTION.UP,
                     Selectable = deleteAccountButton
                 });
             }
@@ -441,9 +441,9 @@ namespace StarSalvager.UI
                 starsMenuWindow.GetComponentsInChildren<Selectable>(),
                 new []
                 { 
-                    new NavigationException
+                    new NavigationRestriction
                     {
-                        Direction = NavigationException.DIRECTION.RIGHT | NavigationException.DIRECTION.LEFT,
+                        FromDirection = NavigationRestriction.DIRECTION.RIGHT | NavigationRestriction.DIRECTION.LEFT,
                         Selectable = starsBackButton
                     }
                 });
@@ -792,6 +792,11 @@ namespace StarSalvager.UI
         }
 
         #endregion //Windows
+
+        public void RefreshCurrentWindow()
+        {
+            RefreshWindow(_currentWindow);
+        }
 
         //====================================================================================================================//
 

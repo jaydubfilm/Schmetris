@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using StarSalvager.Factories;
 using StarSalvager.Utilities.Extensions;
@@ -11,6 +12,25 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
     public class PartPatchUIElement : MonoBehaviour
     {
+
+        //====================================================================================================================//
+        
+        public readonly struct PatchPartSelectables
+        {
+            public readonly Selectable[] Selectables;
+            public readonly Selectable RightMostSelectable;
+
+            public PatchPartSelectables(in IEnumerable<Selectable> selectables, in Selectable rightMostSelectable)
+            {
+                Selectables = selectables.ToArray();
+                RightMostSelectable = rightMostSelectable;
+            }
+        }
+
+        public PatchPartSelectables Selectables { get; private set; }
+
+        //====================================================================================================================//
+        
         private PART_TYPE _partType;
 
         [SerializeField, Required]
@@ -24,6 +44,18 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private RectTransform patchOptionsContainer;
 
         private PART_TYPE _data;
+
+        public new RectTransform transform
+        {
+            get
+            {
+                if (_transform == null)
+                    _transform = gameObject.transform as RectTransform;
+
+                return _transform;
+            }
+        }
+        private RectTransform _transform;
 
         public void Init(in PartData partData, 
             Action<PART_TYPE> onPartSelected, 
@@ -40,10 +72,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
-            void CreatePatchOption(in PART_TYPE type, in PatchData patchData)
+            PatchOptionUIElement CreatePatchOption(in PART_TYPE type, in PatchData patchData)
             {
                 var temp = Instantiate(patchOptionPrefab, patchOptionsContainer, false);
                 temp.Init(type, patchData, onPatchSelected, onPatchHovered);
+                
+                return temp;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -57,11 +91,22 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             partButtonImage.sprite = partType.GetSprite();
             PartAttachableFactory.CreateUIPartBorder((RectTransform)partButtonImage.transform, partType);
+            
+            //Used to contain the navigational information for this UIElement
+            var outList = new List<Selectable>();
+            Selectable rightMost = null;
 
-            foreach (var patchData in patches)
+            for (var i = 0; i < patches.Count; i++)
             {
-                CreatePatchOption(partType, patchData);
+                var patchData = patches[i];
+                var patchOption = CreatePatchOption(partType, patchData);
+                
+                outList.Add(patchOption.Button);
+                if (i == patches.Count - 1) rightMost = patchOption.Button;
             }
+
+            //Set the current Selectables 
+            Selectables = new PatchPartSelectables(outList, rightMost);
             
             LayoutRebuilder.MarkLayoutForRebuild(patchOptionsContainer);
         }
