@@ -1,16 +1,20 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using StarSalvager.Audio;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class MenuUI : MonoBehaviour
+    public class MenuUI : MonoBehaviour, IBuildNavigationProfile
     {
+        public static Action<bool> OnMenuOpened;
         //Properties
         //====================================================================================================================//
         
@@ -43,63 +47,85 @@ namespace StarSalvager.UI.Wreckyard
 
         //Unity Functions
         //====================================================================================================================//
-        
+
+        private void OnEnable()
+        {
+            InputManager.OnCancelPressed += OnCancelPressed;
+            InputManager.OnPausePressed += OnPausePressed;
+        }
+
         private void Start()
         {
             SetMenuActive(false);
             SetSettingsMenuActive(false);
-            
+
             //Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
-            
-            menuButton.onClick.AddListener(() =>
-            {
-                SetMenuActive(true);
-                
-            });
-            
-            resumeGameButton.onClick.AddListener(() =>
-            {
-                SetMenuActive(false);
-                SetSettingsMenuActive(false);
-            });
+
+            menuButton.onClick.AddListener(OpenMenu);
+
+            resumeGameButton.onClick.AddListener(OnResumePressed);
 
             settingsButton.onClick.AddListener(() =>
             {
                 SetSettingsMenuActive(true);
+                UISelectHandler.RebuildNavigationProfile();
             });
 
             quitGameButton.onClick.AddListener(QuitPressed);
-            
+
             //Settings Menu Buttons
             //--------------------------------------------------------------------------------------------------------//
-            
+
             musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
             sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
-            
+
             musicVolumeSlider.onValueChanged.AddListener(AudioController.SetMusicVolume);
             sfxVolumeSlider.onValueChanged.AddListener(AudioController.SetSFXVolume);
 
-            testingFeaturesToggle.onValueChanged.AddListener(toggle =>
-            {
-                Globals.TestingFeatures = toggle;
-            });
+            testingFeaturesToggle.onValueChanged.AddListener(toggle => { Globals.TestingFeatures = toggle; });
 
-            settingsBackButton.onClick.AddListener(() =>
-            {
-                SetSettingsMenuActive(false);
-            });
+            settingsBackButton.onClick.AddListener(OnSettingsBackPressed);
+        }
+
+        private void OnDisable()
+        {
+            InputManager.OnCancelPressed -= OnCancelPressed;
+            InputManager.OnPausePressed -= OnPausePressed;
         }
 
         //====================================================================================================================//
 
+        public void OpenMenu()
+        {
+            SetMenuActive(true);
+            UISelectHandler.SetBuildTarget(this);
+        }
+        
+        //====================================================================================================================//
+        
         private void SetMenuActive(in bool state)
         {
             menuWindow.SetActive(state);
+            OnMenuOpened?.Invoke(state);
         }
         private void SetSettingsMenuActive(in bool state)
         {
             settingsWindowObject.SetActive(state);
+        }
+
+        //====================================================================================================================//
+
+        private void OnResumePressed()
+        {
+            SetMenuActive(false);
+            SetSettingsMenuActive(false);
+        }
+
+        private void OnSettingsBackPressed()
+        {
+            SetSettingsMenuActive(false);
+            UISelectHandler.RebuildNavigationProfile();
         }
         private void QuitPressed()
         {
@@ -135,5 +161,64 @@ namespace StarSalvager.UI.Wreckyard
                 },
                 null);
         }
+
+        //====================================================================================================================//
+
+        private void OnCancelPressed()
+        {
+            if (settingsWindowObject.activeInHierarchy)
+            {
+                OnSettingsBackPressed();
+                return;
+            }
+
+            OnPausePressed();
+        }
+        private void OnPausePressed()
+        {
+            if (!menuWindow.activeInHierarchy)
+                return;
+            
+            OnResumePressed();
+        }
+
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            if (settingsWindowObject.activeInHierarchy)
+            {
+                return new NavigationProfile(settingsBackButton,
+                    new Selectable[]
+                    {
+                        musicVolumeSlider,
+                        sfxVolumeSlider,
+                        testingFeaturesToggle,
+                        settingsBackButton,
+                    },
+                    new[]
+                    {
+                        new NavigationOverride {FromSelectable = settingsBackButton, UpTarget = testingFeaturesToggle},
+                        new NavigationOverride {FromSelectable = testingFeaturesToggle, DownTarget = settingsBackButton}
+                    }, null);
+            }
+            
+            if (menuWindow.activeInHierarchy)
+            {
+                return new NavigationProfile(resumeGameButton,
+                    new []
+                    {
+                        resumeGameButton,
+                        settingsButton,
+                        quitGameButton
+                    }, null, null);
+            }
+            
+            throw new Exception();
+        }
+
+        //====================================================================================================================//
+        
     }
 }

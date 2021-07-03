@@ -25,7 +25,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class PartChoiceUI : MonoBehaviour, IStartedUsingController
+    public class PartChoiceUI : MonoBehaviour, IBuildNavigationProfile
     {
         [Serializable]
         public struct PartSelectionUI
@@ -78,15 +78,12 @@ namespace StarSalvager.UI.Wreckyard
         }
         private PartDetailsUI _partDetailsUI;
 
+        private bool _discardingPart;
+
         #endregion //Properties
 
         //Unity Functions
         //====================================================================================================================//
-
-        private void OnEnable()
-        {
-            InputManager.AddStartedControllerListener(this);
-        }
 
         // Start is called before the first frame update
         private void Start()
@@ -97,11 +94,6 @@ namespace StarSalvager.UI.Wreckyard
             InitButtons();
         }
         
-        private void OnDisable()
-        {
-            InputManager.RemoveControllerListener(this);
-        }
-
         //Init
         //============================================================================================================//
         
@@ -175,6 +167,8 @@ namespace StarSalvager.UI.Wreckyard
 
             SetActive(true);
             
+            UISelectHandler.SetBuildTarget(this);
+            
         }
 
         private void InitButtons()
@@ -232,7 +226,7 @@ namespace StarSalvager.UI.Wreckyard
 
                 if (HasOverage(out var parts))
                 {
-                    
+                    _discardingPart = true;
                     PresentPartOverage(parts);
                     return;
                 }
@@ -281,6 +275,8 @@ namespace StarSalvager.UI.Wreckyard
                         (RectTransform)selectionUis[i].optionButton.transform,
                         BIT_TYPE.WHITE);
             }
+
+            
         }
 
         private void CloseWindow()
@@ -372,9 +368,12 @@ namespace StarSalvager.UI.Wreckyard
                     PlayerDataManager.OnValuesChanged?.Invoke();
                     PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, LastPicked);
 
+                    _discardingPart = false;
                     CloseWindow();
                 });
             }
+            
+            UISelectHandler.SetBuildTarget(this);
         }
 
         private bool HasOverage(out PartData[] partDatas)
@@ -409,14 +408,33 @@ namespace StarSalvager.UI.Wreckyard
         }
 
         #endregion //Discard Parts
-
-        //IStartedUsingController Functions
+        
+        //IBuildNavigationProfile Functions
         //====================================================================================================================//
         
-        public void StartedUsingController(bool usingController)
+        public NavigationProfile BuildNavigationProfile()
         {
-            EventSystem.current?.SetSelectedGameObject(usingController ? selectionUis[0].optionButton.gameObject : null);
+            if (_discardingPart)
+            {
+                return new NavigationProfile(selectionUis[0].optionButton,
+                    new []
+                    {
+                        selectionUis[0].optionButton,
+                        selectionUis[1].optionButton,
+                    }, null, null);
+            }
+            
+            return new NavigationProfile(selectionUis[0].optionButton,
+                new []
+                {
+                    selectionUis[0].optionButton,
+                    selectionUis[1].optionButton,
+                    noPartSelectedOptionButton
+                }, null, null);
+            
         }
+
+        //====================================================================================================================//
 
         //Extra Functions
         //====================================================================================================================//
@@ -437,5 +455,6 @@ namespace StarSalvager.UI.Wreckyard
 
 #endif
 
+        
     }
 }

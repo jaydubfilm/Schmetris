@@ -7,6 +7,7 @@ using StarSalvager.UI.Elements;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine.EventSystems;
@@ -14,7 +15,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PostGameUI : MonoBehaviour
+    public class PostGameUI : MonoBehaviour, IBuildNavigationProfile
     {
         //====================================================================================================================//
 
@@ -33,14 +34,6 @@ namespace StarSalvager.UI
         private Coroutine _postGameCoroutine;
 
         //====================================================================================================================//
-
-        private void OnEnable()
-        {
-            if (!PlayerDataManager.ShouldShownSummary())
-                return;
-
-            ShowPostGameUI();
-        }
 
         // Start is called before the first frame update
         private void Start()
@@ -61,12 +54,16 @@ namespace StarSalvager.UI
                     return;
                 StopCoroutine(_postGameCoroutine);
                 _postGameCoroutine = null;
+                
+                UISelectHandler.SetBuildTarget(FindObjectOfType<MainMenuv2>());
             });
         }
 
         [Button, DisableInEditorMode]
         public void ShowPostGameUI()
         {
+            UISelectHandler.SetBuildTarget(this);
+            
             xpElementScrollview.ClearElements();
             
             var startStars = PlayerDataManager.GetStars() - PlayerDataManager.GetStarsThisRun();
@@ -233,6 +230,10 @@ namespace StarSalvager.UI
 
             Debug.Log(outString);
         }
-        
+
+        public NavigationProfile BuildNavigationProfile()
+        {
+            return new NavigationProfile(closeButton, new[] {closeButton}, null, null);
+        }
     }
 }
