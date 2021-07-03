@@ -398,6 +398,7 @@ GameObject:
   - component: {fileID: 3452107687135883701}
   - component: {fileID: 3662402131670213798}
   - component: {fileID: 7308269216916802702}
+  - component: {fileID: 7403951066051021496}
   m_Layer: 5
   m_Name: UpgradeUIElementPrefab (1)
   m_TagString: Untagged
@@ -538,3 +539,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &7403951066051021496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7541936189267147088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffce4301360985c4bbb63ee05488b05b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

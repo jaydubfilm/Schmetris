@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class MenuUI : MonoBehaviour
+    public class MenuUI : MonoBehaviour, IBuildNavigationProfile
     {
         public static Action<bool> OnMenuOpened;
         //Properties
@@ -69,19 +69,7 @@ namespace StarSalvager.UI.Wreckyard
             settingsButton.onClick.AddListener(() =>
             {
                 SetSettingsMenuActive(true);
-                UISelectHandler.SetupNavigation(settingsBackButton,
-                    new Selectable[]
-                    {
-                        musicVolumeSlider,
-                        sfxVolumeSlider,
-                        testingFeaturesToggle,
-                        settingsBackButton,
-                    },
-                    overrides: new[]
-                    {
-                        new NavigationOverride {FromSelectable = settingsBackButton, UpTarget = testingFeaturesToggle},
-                        new NavigationOverride {FromSelectable = testingFeaturesToggle, DownTarget = settingsBackButton}
-                    });
+                UISelectHandler.RebuildNavigationProfile();
             });
 
             quitGameButton.onClick.AddListener(QuitPressed);
@@ -111,14 +99,7 @@ namespace StarSalvager.UI.Wreckyard
         public void OpenMenu()
         {
             SetMenuActive(true);
-            
-            UISelectHandler.SetupNavigation(resumeGameButton,
-                new []
-                {
-                    resumeGameButton,
-                    settingsButton,
-                    quitGameButton
-                });
+            UISelectHandler.SetBuildTarget(this);
         }
         
         //====================================================================================================================//
@@ -144,7 +125,7 @@ namespace StarSalvager.UI.Wreckyard
         private void OnSettingsBackPressed()
         {
             SetSettingsMenuActive(false);
-            OpenMenu();
+            UISelectHandler.RebuildNavigationProfile();
         }
         private void QuitPressed()
         {
@@ -168,7 +149,6 @@ namespace StarSalvager.UI.Wreckyard
                             //_windows[(int)Window.Settings].SetActive(false);
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.WRECKYARD, MUSIC.MAIN_MENU);
                             AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
-                            FindObjectOfType<MainMenuv2>().RefreshCurrentWindow();
                         });
 
                         return;
@@ -201,5 +181,44 @@ namespace StarSalvager.UI.Wreckyard
             
             OnResumePressed();
         }
+
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            if (settingsWindowObject.activeInHierarchy)
+            {
+                return new NavigationProfile(settingsBackButton,
+                    new Selectable[]
+                    {
+                        musicVolumeSlider,
+                        sfxVolumeSlider,
+                        testingFeaturesToggle,
+                        settingsBackButton,
+                    },
+                    new[]
+                    {
+                        new NavigationOverride {FromSelectable = settingsBackButton, UpTarget = testingFeaturesToggle},
+                        new NavigationOverride {FromSelectable = testingFeaturesToggle, DownTarget = settingsBackButton}
+                    }, null);
+            }
+            
+            if (menuWindow.activeInHierarchy)
+            {
+                return new NavigationProfile(resumeGameButton,
+                    new []
+                    {
+                        resumeGameButton,
+                        settingsButton,
+                        quitGameButton
+                    }, null, null);
+            }
+            
+            throw new Exception();
+        }
+
+        //====================================================================================================================//
+        
     }
 }

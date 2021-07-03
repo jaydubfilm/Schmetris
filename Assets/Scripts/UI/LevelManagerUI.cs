@@ -20,7 +20,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class LevelManagerUI : MonoBehaviour, IPausable
+    public class LevelManagerUI : MonoBehaviour, IPausable, IBuildNavigationProfile
     {
         private const float SCROLL_SPEED = 0.05f;
         
@@ -161,12 +161,7 @@ namespace StarSalvager.UI
                     {
                         if (!value)
                         {
-                            UISelectHandler.SetupNavigation(resumeButton,
-                                new []
-                                {
-                                    resumeButton,
-                                    giveupButton
-                                });
+                            UISelectHandler.SetBuildTarget(this);
                             return;
                         }
                         
@@ -352,13 +347,23 @@ namespace StarSalvager.UI
                 return;
             
             pauseWindow.SetActive(true);
-            UISelectHandler.SetupNavigation(resumeButton,
-                new []
+            UISelectHandler.SetBuildTarget(this);
+        }
+
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            return new NavigationProfile(resumeButton,
+                new[]
                 {
                     resumeButton,
                     giveupButton
-                });
-            
+                }, null, null);
         }
+
+        //====================================================================================================================//
+        
     }
 }

@@ -25,7 +25,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI.Wreckyard
 {
-    public class PartChoiceUI : MonoBehaviour
+    public class PartChoiceUI : MonoBehaviour, IBuildNavigationProfile
     {
         [Serializable]
         public struct PartSelectionUI
@@ -77,6 +77,8 @@ namespace StarSalvager.UI.Wreckyard
             }
         }
         private PartDetailsUI _partDetailsUI;
+
+        private bool _discardingPart;
 
         #endregion //Properties
 
@@ -165,13 +167,7 @@ namespace StarSalvager.UI.Wreckyard
 
             SetActive(true);
             
-            UISelectHandler.SetupNavigation(selectionUis[0].optionButton,
-                new []
-                {
-                    selectionUis[0].optionButton,
-                    selectionUis[1].optionButton,
-                    noPartSelectedOptionButton
-                });
+            UISelectHandler.SetBuildTarget(this);
             
         }
 
@@ -230,7 +226,7 @@ namespace StarSalvager.UI.Wreckyard
 
                 if (HasOverage(out var parts))
                 {
-                    
+                    _discardingPart = true;
                     PresentPartOverage(parts);
                     return;
                 }
@@ -372,16 +368,12 @@ namespace StarSalvager.UI.Wreckyard
                     PlayerDataManager.OnValuesChanged?.Invoke();
                     PlayerDataManager.NewPartPicked?.Invoke(_partOptionType, LastPicked);
 
+                    _discardingPart = false;
                     CloseWindow();
                 });
             }
             
-            UISelectHandler.SetupNavigation(selectionUis[0].optionButton,
-                new []
-                {
-                    selectionUis[0].optionButton,
-                    selectionUis[1].optionButton,
-                });
+            UISelectHandler.SetBuildTarget(this);
         }
 
         private bool HasOverage(out PartData[] partDatas)
@@ -416,6 +408,33 @@ namespace StarSalvager.UI.Wreckyard
         }
 
         #endregion //Discard Parts
+        
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            if (_discardingPart)
+            {
+                return new NavigationProfile(selectionUis[0].optionButton,
+                    new []
+                    {
+                        selectionUis[0].optionButton,
+                        selectionUis[1].optionButton,
+                    }, null, null);
+            }
+            
+            return new NavigationProfile(selectionUis[0].optionButton,
+                new []
+                {
+                    selectionUis[0].optionButton,
+                    selectionUis[1].optionButton,
+                    noPartSelectedOptionButton
+                }, null, null);
+            
+        }
+
+        //====================================================================================================================//
 
         //Extra Functions
         //====================================================================================================================//
@@ -436,5 +455,6 @@ namespace StarSalvager.UI.Wreckyard
 
 #endif
 
+        
     }
 }

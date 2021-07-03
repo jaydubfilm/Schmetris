@@ -34,6 +34,8 @@ namespace StarSalvager
     {
         //Properties
         //====================================================================================================================//
+
+        public Button Button => button;
         
         #region Properties
 
@@ -49,7 +51,7 @@ namespace StarSalvager
 
         [SerializeField, ReadOnly] private int nodeIndex;
 
-        [SerializeField] private Button Button;
+        [FormerlySerializedAs("Button")] [SerializeField] private Button button;
         [SerializeField] private Image foregroundImage;
 
         [SerializeField] private Image BotImage;

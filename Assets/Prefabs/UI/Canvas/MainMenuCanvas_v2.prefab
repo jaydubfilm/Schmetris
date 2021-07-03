@@ -17320,6 +17320,7 @@ MonoBehaviour:
   scrollContentRect: {fileID: 230390532304124394}
   progressSlider: {fileID: 1728954617875215292}
   starCountText: {fileID: 4149008210267872996}
+  backButton: {fileID: 3907085146388802892}
   upgradeDetailsContainerRectTransform: {fileID: 6065735308402831331}
   upgradeTitleText: {fileID: 7766333550492523418}
   upgradeDescriptionText: {fileID: 1796294940929216863}

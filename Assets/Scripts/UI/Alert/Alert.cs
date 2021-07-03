@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class Alert : Singleton<Alert>, IStartedUsingController
+    public class Alert : Singleton<Alert>, IStartedUsingController, IBuildNavigationProfile
     {
         public static bool Displayed => Instance.windowObject.activeInHierarchy;
 
@@ -147,11 +147,7 @@ namespace StarSalvager.UI
                 OnPressedCallback?.Invoke();
             });
             
-            UISelectHandler.SetupNavigation(positiveButton,
-                new []
-                {
-                    positiveButton
-                });
+            UISelectHandler.SetBuildTarget(this);
         }
         
         private void Show(string Title, string Body, string confirmText, string cancelText, Action<bool> OnConfirmedCallback, string dontShowAgainCode)
@@ -198,12 +194,7 @@ namespace StarSalvager.UI
                 OnConfirmedCallback?.Invoke(false);
             });
             
-            UISelectHandler.SetupNavigation(negativeButton,
-                new []
-                {
-                    positiveButton,
-                    negativeButton
-                });
+            UISelectHandler.SetBuildTarget(this);
         }
         
         private void Show(string Title, string Body, string confirmText, string cancelText, string neutralText, Action<bool> OnConfirmedCallback, Action OnNeutralCallback, string dontShowAgainCode)
@@ -262,13 +253,7 @@ namespace StarSalvager.UI
                 OnNeutralCallback?.Invoke();
             });
             
-            UISelectHandler.SetupNavigation(neutralButton,
-                new []
-                {
-                    positiveButton,
-                    negativeButton,
-                    neutralButton
-                });
+            UISelectHandler.SetBuildTarget(this);
         }
         
         //============================================================================================================//
@@ -371,6 +356,36 @@ namespace StarSalvager.UI
         
 #endif
 
+        public NavigationProfile BuildNavigationProfile()
+        {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            bool IsSelectable(in Selectable selectable) =>
+                selectable.gameObject.activeInHierarchy && selectable.interactable;
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            Selectable objectToSelect;
+            
+            if (IsSelectable(neutralButton))
+                objectToSelect = neutralButton;
+            else if (IsSelectable(positiveButton))
+                objectToSelect = positiveButton;
+            else if (IsSelectable(negativeButton))
+                objectToSelect = negativeButton;
+            else
+                throw new Exception();
+            
+            
+            return new NavigationProfile(objectToSelect,
+                new []
+                {
+                    positiveButton,
+                    negativeButton,
+                    neutralButton
+                }, null, null);
+        }
     }
 }
 

@@ -23,7 +23,7 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchTreeUI : MonoBehaviour, IHasHintElement
+    public class PatchTreeUI : MonoBehaviour, IHasHintElement, IBuildNavigationProfile, IReset
     {
         private const int PART_SCRAP_VALUE = 10;
         private const string NO_PART_TEXT = "No Part Selected";
@@ -172,10 +172,13 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
         private MenuUI _menuUI;
 
+        
+        //====================================================================================================================//
+
+        private Selectable _objectToSelect = null;
+
         //====================================================================================================================//
         
-        
-
         #endregion //Properties
 
         //Unity Functions
@@ -341,7 +344,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
             DrawDroneStorage();
 
-            UpdateSelectables(launchButton);
+            _objectToSelect = launchButton;
+            UISelectHandler.RebuildNavigationProfile();
         }
         
         public void InitWreck(in string wreckName, in Sprite wreckSprite/*, in IEnumerable<PartData> partPatchOptions*/)
@@ -386,6 +390,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (PlayerDataManager.CanChoosePart) 
                 return;
 
+            UISelectHandler.SetBuildTarget(this, false);
             GenerateUIElements();
         }
 
@@ -404,6 +409,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             }
 
             CheckForPartPositionAvailability();
+
+
+            UISelectHandler.SetBuildTarget(this, false);
             GenerateUIElements();
         }
 
@@ -590,8 +598,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
-            UpdateSelectables(UISelectHandler.CurrentlySelected);
-
+            _objectToSelect = UISelectHandler.CurrentlySelected;
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         private void CleanPatchTree()
@@ -803,7 +811,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
                 //Update Values
                 SaveBlockData();
-                UpdateSelectables(UISelectHandler.CurrentlySelected);
+                
+                _objectToSelect = UISelectHandler.CurrentlySelected;
+                UISelectHandler.RebuildNavigationProfile();
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -818,7 +828,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 {
                     if (!answer)
                     {
-                        UpdateSelectables(null);
+                        _objectToSelect = null;
+                        UISelectHandler.SetBuildTarget(this);
                         return;
                     }
 
@@ -950,7 +961,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 partRemoteData.description,
                 partData.GetPartDetailsPatchPreview(partRemoteData, patchData));
             
-            UpdateSelectables(purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected);
+            _objectToSelect = purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected;
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         private void OnPurchasePatchPressed()
@@ -991,10 +1003,131 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //Update the Datas
             SaveBlockData();
             
-            UpdateSelectables(null);
+            _objectToSelect = null;
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         #endregion //On Button Pressed Functions
+
+
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var overrides = new List<NavigationOverride>();
+            var exceptions = new List<NavigationRestriction>();
+            
+            //Base selectable Items
+            //--------------------------------------------------------------------------------------------------------//
+
+            var selectables = new List<Selectable>
+            {
+                launchButton,
+                menuButton,
+
+                swapPartButton,
+                purchasePatchButton,
+                
+                scrapPartButton,
+                repairButton
+            };
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var leftMostBitType = PlayerDataManager.GetCategoryAtCoordinate(Vector2Int.left);
+
+            var patchTreeSelectables = patchTreeTierContainer.GetComponentsInChildren<Selectable>();
+            var firstPatchTreeSelectable =
+                patchTreeSelectables.FirstOrDefault(x => x.enabled && x.interactable && x.gameObject.activeInHierarchy);
+            
+            //Part Patch Options
+            //--------------------------------------------------------------------------------------------------------//
+
+            //Get list of navigation options 
+            foreach (var partPatchUIElement in _partPatchOptionElements)
+            {
+                var temp = partPatchUIElement.Selectables;
+                selectables.AddRange(temp.Selectables);
+
+                //Force navigation from right most element to scrapPartButton
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = temp.RightMostSelectable,
+                    RightTarget = firstPatchTreeSelectable
+                        ? firstPatchTreeSelectable
+                        : _secondaryPartButtons[leftMostBitType]
+                });
+            }
+
+            //Drone Layout
+            //--------------------------------------------------------------------------------------------------------//
+            var firstPartPatchOption = _partPatchOptionElements.FirstOrDefault()?.Selectables.RightMostSelectable;
+
+            //FIXME I think I should be able to combine these to loops
+            foreach (var partButton in _primaryPartButtons)
+            {
+                selectables.Add(partButton.Value);
+                
+                if (partButton.Key != leftMostBitType)
+                    continue;
+
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = partButton.Value,
+                    LeftTarget = firstPatchTreeSelectable
+                        ? firstPatchTreeSelectable
+                        : firstPartPatchOption
+                });
+            }
+            
+            foreach (var partButton in _secondaryPartButtons)
+            {
+                selectables.Add(partButton.Value);
+                
+                if (partButton.Key != leftMostBitType)
+                    continue;
+
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = partButton.Value,
+                    LeftTarget = scrapPartButton.gameObject.activeInHierarchy
+                        ? scrapPartButton
+                        : firstPartPatchOption
+                });
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            selectables.AddRange(patchTreeSelectables);
+            
+            //PurchasePatch Button
+            //--------------------------------------------------------------------------------------------------------//
+            
+            overrides.Add(new NavigationOverride
+            {
+                FromSelectable = purchasePatchButton,
+                LeftTarget = purchasePatchButton,
+                UpTarget = purchasePatchButton,
+                RightTarget = firstPatchTreeSelectable ? firstPatchTreeSelectable : null
+            });
+
+            //Menu & Launch Button exceptions
+            //--------------------------------------------------------------------------------------------------------//
+            
+            exceptions.Add(new NavigationRestriction
+            {
+                Selectable = menuButton,
+                FromDirection = NavigationRestriction.DIRECTION.RIGHT
+            });
+            exceptions.Add(new NavigationRestriction
+            {
+                Selectable = launchButton,
+                FromDirection = NavigationRestriction.DIRECTION.RIGHT
+            });
+
+            return new NavigationProfile(_objectToSelect, selectables, overrides, exceptions);
+        }
 
         //Extra Functions
         //====================================================================================================================//
@@ -1176,6 +1309,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (_selectedPatch.partType != PART_TYPE.EMPTY)
             {
                 SetSelectedPatch(PART_TYPE.EMPTY, default);
+                
+                _objectToSelect = launchButton;
+                UISelectHandler.RebuildNavigationProfile();
                 return;
             }
             //When Part Window is open, close. return;
@@ -1186,7 +1322,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 CleanPatchTree();
                 OnPatchHovered(null, default, false);
                 
-                UpdateSelectables(UISelectHandler.CurrentlySelected);
+                _objectToSelect = launchButton;
+                UISelectHandler.RebuildNavigationProfile();
                 return;
             }
 
@@ -1210,7 +1347,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (opened || SceneLoader.CurrentScene != SceneLoader.WRECKYARD)
                 return;
             
-            UpdateSelectables(default);
+            _objectToSelect = launchButton;
+            UISelectHandler.SetBuildTarget(this);
         }
 
         #endregion //Extra Functions
@@ -1290,140 +1428,6 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         public void OnConsolePartAdded() => CheckForPartPositionAvailability();
 
-        public void RefreshUI() => UpdateSelectables(default);
-        private void UpdateSelectables(in Selectable selectable)
-        {
-            var temp = selectable && selectable.interactable && selectable.gameObject.activeInHierarchy ? selectable : launchButton;
-            
-            var (selectables, 
-                overrides, 
-                exceptions) = GetCurrentSelectable();
-            
-            UISelectHandler.SetupNavigation(
-                temp,
-                selectables,
-                exceptions,
-                overrides);
-        }
-
-        private (IEnumerable<Selectable> selectables, IEnumerable<NavigationOverride> overrides, IEnumerable<NavigationRestriction> exceptions)GetCurrentSelectable()
-        {
-            var overrides = new List<NavigationOverride>();
-            var exceptions = new List<NavigationRestriction>();
-            
-            //Base selectable Items
-            //--------------------------------------------------------------------------------------------------------//
-
-            var selectables = new List<Selectable>
-            {
-                launchButton,
-                menuButton,
-
-                swapPartButton,
-                purchasePatchButton,
-                
-                scrapPartButton,
-                repairButton
-            };
-
-            //--------------------------------------------------------------------------------------------------------//
-            
-            var leftMostBitType = PlayerDataManager.GetCategoryAtCoordinate(Vector2Int.left);
-
-            var patchTreeSelectables = patchTreeTierContainer.GetComponentsInChildren<Selectable>();
-            var firstPatchTreeSelectable =
-                patchTreeSelectables.FirstOrDefault(x => x.enabled && x.interactable && x.gameObject.activeInHierarchy);
-            
-            //Part Patch Options
-            //--------------------------------------------------------------------------------------------------------//
-
-            //Get list of navigation options 
-            foreach (var partPatchUIElement in _partPatchOptionElements)
-            {
-                var temp = partPatchUIElement.Selectables;
-                selectables.AddRange(temp.Selectables);
-
-                //Force navigation from right most element to scrapPartButton
-                overrides.Add(new NavigationOverride
-                {
-                    FromSelectable = temp.RightMostSelectable,
-                    RightTarget = firstPatchTreeSelectable
-                        ? firstPatchTreeSelectable
-                        : _secondaryPartButtons[leftMostBitType]
-                });
-            }
-
-            //Drone Layout
-            //--------------------------------------------------------------------------------------------------------//
-            var firstPartPatchOption = _partPatchOptionElements.FirstOrDefault()?.Selectables.RightMostSelectable;
-            //var selectedPatch = purchasePatchButton.interactable && purchasePatchButton.gameObject.activeInHierarchy;
-
-            //FIXME I think I should be able to combine these to loops
-            foreach (var partButton in _primaryPartButtons)
-            {
-                selectables.Add(partButton.Value);
-                
-                if (partButton.Key != leftMostBitType)
-                    continue;
-
-                overrides.Add(new NavigationOverride
-                {
-                    FromSelectable = partButton.Value,
-                    LeftTarget = firstPatchTreeSelectable
-                        ? firstPatchTreeSelectable
-                        : firstPartPatchOption
-                });
-            }
-            
-            foreach (var partButton in _secondaryPartButtons)
-            {
-                selectables.Add(partButton.Value);
-                
-                if (partButton.Key != leftMostBitType)
-                    continue;
-
-                overrides.Add(new NavigationOverride
-                {
-                    FromSelectable = partButton.Value,
-                    LeftTarget = scrapPartButton.gameObject.activeInHierarchy
-                        ? scrapPartButton
-                        : firstPartPatchOption
-                });
-            }
-
-            //--------------------------------------------------------------------------------------------------------//
-            
-            selectables.AddRange(patchTreeSelectables);
-            
-            //PurchasePatch Button
-            //--------------------------------------------------------------------------------------------------------//
-            
-            overrides.Add(new NavigationOverride
-            {
-                FromSelectable = purchasePatchButton,
-                LeftTarget = purchasePatchButton,
-                UpTarget = purchasePatchButton,
-                RightTarget = firstPatchTreeSelectable ? firstPatchTreeSelectable : null
-            });
-
-            //Menu & Launch Button exceptions
-            //--------------------------------------------------------------------------------------------------------//
-            
-            exceptions.Add(new NavigationRestriction
-            {
-                Selectable = menuButton,
-                FromDirection = NavigationRestriction.DIRECTION.RIGHT
-            });
-            exceptions.Add(new NavigationRestriction
-            {
-                Selectable = launchButton,
-                FromDirection = NavigationRestriction.DIRECTION.RIGHT
-            });
-            
-
-            return (selectables, overrides, exceptions);
-        }
-        
         //Unity Editor
         //====================================================================================================================//
 
@@ -1492,5 +1496,14 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         //====================================================================================================================//
 
+
+        public void Activate()
+        {
+            UISelectHandler.SetBuildTarget(this);
+        }
+
+        public void Reset()
+        {
+        }
     }
 }

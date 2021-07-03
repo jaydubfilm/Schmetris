@@ -24,7 +24,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IStartedUsingController
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IBuildNavigationProfile
     {
         //#3658df
         private static Color LINE_COLOR = new Color(0.2117f, 0.34509f, 0.874509f);
@@ -69,7 +69,6 @@ namespace StarSalvager.UI
         {
             InputManager.OnCancelPressed += Back;
             
-            InputManager.AddStartedControllerListener(this);
             HintManager.OnShowingHintAction += LockMap;
         }
         private void Start()
@@ -81,7 +80,6 @@ namespace StarSalvager.UI
         {
             InputManager.OnCancelPressed -= Back;
             
-            InputManager.RemoveControllerListener(this);
             HintManager.OnShowingHintAction -= LockMap;
         }
 
@@ -116,7 +114,7 @@ namespace StarSalvager.UI
             PlayerDataManager.GetBotBlockDatas().CreateBotPreview(botDisplayRectTransform);
 
             //Wait until the map is generated to try and highlight
-            StartedUsingController(InputManager.Instance.UsingController);
+            UISelectHandler.SetBuildTarget(this);
         }
 
         public void Reset()
@@ -462,15 +460,12 @@ namespace StarSalvager.UI
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.LoadPreviousScene();
-                        //TODO This coulg
-                        FindObjectOfType<MainMenuv2>().RefreshCurrentWindow();
                     });
                     break;
                 case SceneLoader.WRECKYARD:
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.LoadPreviousScene();
-                        FindObjectOfType<PatchTreeUI>().RefreshUI();
                     });
                     break;
                 default:
@@ -502,23 +497,17 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
-        public void StartedUsingController(bool usingController)
-        {
-            if (_universeMapButtons.IsNullOrEmpty())
-                return;
-            
-            if (usingController)
-            {
-                var playerCoordinateIndex = GetPlayerCoordinateIndex();
-                var buttonObject = _universeMapButtons[playerCoordinateIndex].gameObject;
 
-                EventSystem.current?.SetSelectedGameObject(buttonObject);
-                return;
-            }
-            
-            EventSystem.current?.SetSelectedGameObject(null);
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var playerCoordinateIndex = GetPlayerCoordinateIndex();
+            var buttonObject = _universeMapButtons[playerCoordinateIndex].Button;
+            var selectables = new List<Selectable>
+            {
+                backButton
+            };
+            selectables.AddRange(_universeMapButtons.Select(x => x.Button));
+            return new NavigationProfile(buttonObject, selectables, null, null);
         }
-        
     }
 }

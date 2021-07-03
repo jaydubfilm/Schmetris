@@ -11,6 +11,15 @@ using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.UI
 {
+
+    public interface IBuildNavigationProfile
+    {
+        NavigationProfile BuildNavigationProfile();
+    }
+
+    //Structs
+    //====================================================================================================================//
+    
     /// <summary>
     /// Ignores navigation to Selectable from the specified directions
     /// </summary>
@@ -44,6 +53,26 @@ namespace StarSalvager.Utilities.UI
         public Selectable RightTarget;
 
     }
+
+    public readonly struct NavigationProfile
+    {
+        public readonly Selectable ObjectToSelect;
+        public readonly IEnumerable<Selectable> Selectables;
+        public readonly IEnumerable<NavigationOverride> Overrides;
+        public readonly IEnumerable<NavigationRestriction> Exceptions;
+
+        public NavigationProfile(in Selectable objectToSelect, in IEnumerable<Selectable> selectables,
+            in IEnumerable<NavigationOverride> overrides, in IEnumerable<NavigationRestriction> exceptions)
+        {
+            ObjectToSelect = objectToSelect;
+            Selectables = selectables;
+            Overrides = overrides;
+            Exceptions = exceptions;
+        }
+    }
+
+    //====================================================================================================================//
+    
     
     [RequireComponent(typeof(EventSystem))]
     public class UISelectHandler : Singleton<UISelectHandler>, IStartedUsingController
@@ -51,8 +80,11 @@ namespace StarSalvager.Utilities.UI
         public static Selectable CurrentlySelected =>
             Instance?.CurrentEventSystem?.currentSelectedGameObject.GetComponent<Selectable>();
 
+        //Properties
         //====================================================================================================================//
-        
+
+        #region Properties
+
         [SerializeField]
         private Image outlinePrefab;
 
@@ -75,12 +107,37 @@ namespace StarSalvager.Utilities.UI
         }
         private EventSystem _currentEventSystem;
 
+        #endregion //Properties
+        
+        private Selectable[] _currentSelectables;
+
+        private static IBuildNavigationProfile _activeBuildTarget;
+        private static NavigationProfile _currentNavigationProfile;
+
         //====================================================================================================================//
-        public static void SetupNavigation(in Selectable objectToSelect, in IEnumerable<Selectable> selectables, in IEnumerable<NavigationRestriction> exceptions = null, in IEnumerable<NavigationOverride> overrides = null)
+        public static void SetBuildTarget(in IBuildNavigationProfile buildNavigationProfile, in bool buildNow = true)
         {
-            Instance.SetupNavigation(selectables.ToArray(), exceptions?.ToArray(), overrides?.ToArray());
-            Instance._startingSelectable = Instance._currentSelectable = objectToSelect;
+            _activeBuildTarget = buildNavigationProfile;
+
+            if (buildNow == false)
+                return;
+            
+            RebuildNavigationProfile();
         }
+
+        public static void RebuildNavigationProfile()
+        {
+            if (_activeBuildTarget == null) return;
+            
+            _currentNavigationProfile = _activeBuildTarget.BuildNavigationProfile();
+            
+            Instance.SetupNavigation(_currentNavigationProfile);
+        }
+
+        //Object Outlines
+        //====================================================================================================================//
+
+        #region Object Outlines
 
         public static void TrySelectObject(in Selectable selectable)
         {
@@ -97,10 +154,12 @@ namespace StarSalvager.Utilities.UI
             Instance.Outline(rectTransform, sizeMultiplier, color);
         }
 
-        
+        #endregion //Object Outlines
 
         //Unity Functions
         //====================================================================================================================//
+
+        #region Unity Functions
 
         private void OnEnable()
         {
@@ -113,32 +172,40 @@ namespace StarSalvager.Utilities.UI
             InputManager.RemoveControllerListener(this);
         }
 
-        //====================================================================================================================//
-        private Selectable[] _currentSelectables;
+        #endregion //Unity Functions
 
-        private void SetupNavigation(IEnumerable<Selectable> selectables, IEnumerable<NavigationRestriction> exceptions, IEnumerable<NavigationOverride> overrides)
+        //====================================================================================================================//
+       
+        private void SetupNavigation(NavigationProfile navigationProfile)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             IEnumerator WaitForFinish()
             {
-                yield return new WaitForEndOfFrame();
-                yield return new WaitForEndOfFrame();
+                //We allow the UI time to update in case layout changes are occuring when this is called
+                for (var i = 0; i < 2; i++)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
                 
-                selectables.FillNavigationOptions(exceptions, overrides);
+                navigationProfile.Selectables.FillNavigationOptions(navigationProfile.Exceptions, navigationProfile.Overrides);
 
                 if (Instance._usingController)
                 {
                     //In the event that the options are now null, find the first available selectable in the list provided
                     if (_currentSelectable == null && _startingSelectable == null)
-                        TrySelectObject(selectables.FirstOrDefault(x => x.interactable && x.gameObject.activeInHierarchy));
+                        TrySelectObject(navigationProfile.Selectables.FirstOrDefault(x =>
+                            x.interactable && x.gameObject.activeInHierarchy));
                     else
                         TrySelectObject(_currentSelectable ? _currentSelectable : _startingSelectable);
                 }
             }
-            
-            //_currentSelectables?.CleanNavigationOptions();
 
-            //Want to copy the data 
-            _currentSelectables = new List<Selectable>(selectables).ToArray();
+            //--------------------------------------------------------------------------------------------------------//
+            
+            
+            _startingSelectable = _currentSelectable = navigationProfile.ObjectToSelect;
 
             StartCoroutine(WaitForFinish());
         }
@@ -179,6 +246,7 @@ namespace StarSalvager.Utilities.UI
             _outline.color = color;
         }
 
+        //IStartedUsingController Functions
         //====================================================================================================================//
         
         public void StartedUsingController(bool usingController)
@@ -211,9 +279,7 @@ namespace StarSalvager.Utilities.UI
         
         private void SetActive(in bool state)
         {
-            if (_outline is null) return;
-
-            _outline.gameObject.SetActive(state);
+            _outline?.gameObject.SetActive(state);
         }
 
         //====================================================================================================================//
