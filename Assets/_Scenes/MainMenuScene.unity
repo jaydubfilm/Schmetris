@@ -121,6 +121,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &247680656 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8017945059100664150, guid: c4303a0e45d7b444aa039bfdb3d12d59,
+    type: 3}
+  m_PrefabInstance: {fileID: 321811387}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &321811387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1597,6 +1603,7 @@ GameObject:
   - component: {fileID: 598996321}
   - component: {fileID: 598996320}
   - component: {fileID: 598996319}
+  - component: {fileID: 598996322}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1667,6 +1674,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &598996322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598996318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9dd5891f8fc93b4296ae2bcf505de2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlinePrefab: {fileID: 90640943644198919, guid: e4b6de69d49c4914a88661e280d367a6,
+    type: 3}
 --- !u!1001 &978229222
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2228,6 +2249,30 @@ MonoBehaviour:
   Hash1_Fix2_0: []
   Hash2: []
   Hash3:
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 598996318}
+    ActiveGameObject: {fileID: 598996318}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 247680656}
+    ActiveGameObject: {fileID: 247680656}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
   - FavParams: 0
     FavString: []
     list:

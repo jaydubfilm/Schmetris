@@ -149,6 +149,7 @@ namespace StarSalvager.UI.Wreckyard
                             //_windows[(int)Window.Settings].SetActive(false);
                             SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.WRECKYARD, MUSIC.MAIN_MENU);
                             AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
+                            UISelectHandler.SetBuildTarget(FindObjectOfType<MainMenuv2>());
                         });
 
                         return;

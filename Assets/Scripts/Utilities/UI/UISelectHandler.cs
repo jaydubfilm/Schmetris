@@ -75,6 +75,7 @@ namespace StarSalvager.Utilities.UI
     
     
     [RequireComponent(typeof(EventSystem))]
+    [DefaultExecutionOrder(-20000)]
     public class UISelectHandler : Singleton<UISelectHandler>, IStartedUsingController
     {
         public static Selectable CurrentlySelected =>

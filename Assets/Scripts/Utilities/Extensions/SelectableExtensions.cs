@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Utilities.UI;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace StarSalvager.Utilities.Extensions
 {
