@@ -8,18 +8,6 @@ namespace StarSalvager.UI.Wreckyard
 {
     public class PartChoiceButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
-        private static DroneDesignUI DroneDesignUI
-        {
-            get
-            {
-                if(_droneDesignUI == null)
-                    _droneDesignUI = FindObjectOfType<DroneDesignUI>();
-
-                return _droneDesignUI;
-            }
-        }
-        private static DroneDesignUI _droneDesignUI;
-        
         private PartDetailsUI PartDetailsUI
         {
             get

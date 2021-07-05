@@ -422,7 +422,7 @@ namespace StarSalvager.UI
         private static int GetPlayerCoordinateIndex(in Ring ring)
         {
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
-            return ring.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            return ring.GetIndexFromCoordinate(playerCoordinate);
         }
         
         //Buttons Pressed Functions

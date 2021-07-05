@@ -35,32 +35,6 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
-        {
-            var remoteData = remotePartData.GetRemoteData(partType);
-            var profile = factoryProfile.GetProfile(partType);
-            var sprite = profile.GetSprite(level);
-
-            Color color;
-            if (remoteData.partType == PART_TYPE.EMPTY)
-            {
-                color = PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate).GetColor();
-            }
-            else
-            {
-                color = remoteData.category == BIT_TYPE.NONE
-                    ? Color.white
-                    : remoteData.category.GetColor();
-            }
-
-            part.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                part.SetColor(color);
-        }
-
-        //============================================================================================================//
-
         public PartRemoteData GetRemoteData(PART_TYPE partType)
         {
             return remotePartData.GetRemoteData(partType);
@@ -250,35 +224,6 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(PartData partData)
-        {
-            var type = (PART_TYPE) partData.Type;
-            var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(0);
-
-
-            if (!Recycler.TryGrab(out ScrapyardPart scrapyardPart))
-            {
-                scrapyardPart = CreateScrapyardObject<ScrapyardPart>();
-            }
-            
-            var remoteData = remotePartData.GetRemoteData(type);
-            var color = remoteData.category == BIT_TYPE.NONE
-                ? Color.white
-                :remoteData.category.GetColor();
-
-            scrapyardPart.LoadBlockData(partData);
-            scrapyardPart.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                scrapyardPart.SetColor(color);
-
-            var gameObject = scrapyardPart.gameObject;
-            gameObject.name = $"{scrapyardPart.Type}";
-
-            return gameObject;
-        }
-
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
             var remoteData = remotePartData.GetRemoteData(overrideType);
@@ -295,55 +240,7 @@ namespace StarSalvager.Factories
                 case Part part:
                     part.SetSprite(sprite);
                     break;
-                case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite);
-                    scrapyardPart.SetColor(color);
-                    break;
             }
-
-
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject(PART_TYPE partType)
-        {
-            //var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
-            var blockData = new PartData
-            {
-                Type = (int)partType,
-                Patches = new List<PatchData>()
-            };
-
-            return CreateScrapyardGameObject(blockData);
-        }
-
-        public T CreateScrapyardObject<T>(PART_TYPE partType)
-        {
-            var temp = CreateScrapyardGameObject(partType);
-
-            return temp.GetComponent<T>();
-        }
-
-        public T CreateScrapyardObject<T>(PartData partData)
-        {
-            var temp = CreateScrapyardGameObject(partData);
-
-            return temp.GetComponent<T>();
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject()
-        {
-            return Object.Instantiate(factoryProfile.ScrapyardPrefab);
-        }
-
-        public T CreateScrapyardObject<T>()
-        {
-            var temp = CreateScrapyardGameObject();
-
-            return temp.GetComponent<T>();
         }
 
         //============================================================================================================//

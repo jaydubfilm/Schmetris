@@ -243,8 +243,7 @@ namespace StarSalvager.UI
             
             UISelectHandler.SetBuildTarget(this);
             
-            if (!PlayerDataManager.ShouldShownSummary())
-                return;
+            if (!PlayerDataManager.ShouldShownSummary()) return;
 
             FindObjectOfType<PostGameUI>().ShowPostGameUI();
         }

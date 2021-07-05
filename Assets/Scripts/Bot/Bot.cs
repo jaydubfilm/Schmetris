@@ -66,7 +66,6 @@ namespace StarSalvager
 
         #endregion //Structs
 
-
         //Properties
         //====================================================================================================================//
 
@@ -1519,110 +1518,10 @@ namespace StarSalvager
             }
 
         }
-        
-
-        [Obsolete]
-        public void TryMineExplosionAt(Vector2 minePosition, MINE_TYPE mineType)
-        {
-            /*Debug.Log("MINE EXPLODE");
-
-
-            float maxDamage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
-            float maxDistance = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDistance();
-            for (int i = 0; i < attachedBlocks.Count; i++)
-            {
-                float distance = Vector2.Distance(minePosition, attachedBlocks[i].transform.position);
-                if (distance > maxDistance)
-                {
-                    continue;
-                }
-
-                TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
-            }*/
-        }
 
 
 
         #endregion //TryHitAt
-
-        #region Asteroid Collision
-
-        /*public bool TryAsteroidDamageAt(in Vector2 collisionPoint, in float damage)
-        {
-            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
-                return false;
-
-            var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
-
-            //------------------------------------------------------------------------------------------------//
-
-            /*switch (closestAttachable)
-            {
-                /*case Part part when part.Destroyed:
-                    return false;#2#
-                case Bit _:
-                    AsteroidDamageAt(closestAttachable);
-                    return false;
-            }#1#
-            
-            TryHitAt(closestAttachable, damage);
-            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
-
-            BIT_TYPE? type = null;
-            switch (closestAttachable)
-            {
-                case Part _ :
-                    FrameStop.Milliseconds(75);
-                    break;
-                case Bit bit:
-                    type = bit.Type;
-                    break;
-                case EnemyAttachable enemyAttachable:
-                    enemyAttachable.SetAttached(false);
-                    break;
-            }
-
-            return true;
-        }*/
-
-        /*/// <summary>
-        /// Applies pre-determine asteroid damage to the specified IAttachable
-        /// </summary>
-        /// <param name="attachable"></param>
-        private void AsteroidDamageAt(IAttachable attachable)
-        {
-
-            TryHitAt(attachable, 10000);
-            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
-
-            BIT_TYPE? type = null;
-            switch (attachable)
-            {
-                case Part _ :
-                    FrameStop.Milliseconds(75);
-                    break;
-                case Bit bit:
-                    type = bit.Type;
-                    break;
-                case EnemyAttachable enemyAttachable:
-                    enemyAttachable.SetAttached(false);
-                    break;
-            }
-
-            /#1#/FIXME This value should not be hardcoded
-            BotPartsLogic.AddCoreHeat(20f);
-
-            if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
-            {
-                Destroy("Core Destroyed by Asteroid");
-            }
-            else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
-            {
-                Destroy("Core Overheated");
-            }#1#
-        }*/
-
-        #endregion //Asteroid Collision
 
         public List<IAttachable> GetAttachablesInColumn(in Vector2 worldHitPoint)
         {
@@ -2887,16 +2786,6 @@ _isShifting = true;
             CreateBonusShapeParticleEffect(center);
 
         }
-        /*private void CreateBonusShapeEffect(Transform parent)
-        {
-            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
-                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
-
-            effect.transform.SetParent(parent, false);
-            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
-
-            Destroy(effect, time);
-        }*/
         private void CreateBonusShapeParticleEffect(Vector3 position)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2958,19 +2847,9 @@ _isShifting = true;
         public bool CheckAllForCombos()
         {
             bool bitCombos = CheckForCombosAround(AttachedBlocks.OfType<Bit>());
-            //bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
             return bitCombos;//|| crateCombos;
         }
-
-        //private bool CheckForCombosAround(IEnumerable<Bit> iAttachables)
-        //{
-        //    return CheckForCombosAround(iAttachables.OfType<ICanCombo<T>>());
-        //}
-        //private bool CheckForCombosAround(IEnumerable<ICanCombo> iCanCombos)
-        //{
-        //    return CheckForCombosAround(iCanCombos.OfType<ICanCombo<T>>());
-        //}
 
         private bool CheckForCombosAround(IEnumerable<Bit> bits)
         {
@@ -3325,76 +3204,6 @@ _isShifting = true;
             CheckForDisconnects();
             //--------------------------------------------------------------------------------------------------------//
         }
-
-        /*private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
-        {
-            IAttachable bestAttachableOption = null;
-
-            //Decide who gets to upgrade
-            //--------------------------------------------------------------------------------------------------------//
-
-            foreach (var bit in comboBits)
-            {
-                //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = attachedBlocks.HasPathToCore(bit as Bit,
-                    comboBits.Where(ab => ab != bit)
-                        .Select(b => b.Coordinate)
-                        .ToList());
-
-                //If there's no path, we cannot use this bit
-                if (!hasPath)
-                    continue;
-
-
-                bestAttachableOption = bit;
-            }
-
-            //Make sure that things are working
-            //--------------------------------------------------------------------------------------------------------//
-
-            //If no block was selected, then we've had a problem
-            if (bestAttachableOption == null)
-                throw new Exception("No Closest Core Found");
-
-            //See if anyone else needs to move
-            //--------------------------------------------------------------------------------------------------------//
-
-            //Get a list of Bits that will be moving (Blocks that are not the chosen closest to core)
-            var movingBits = comboBits
-                .Where(ab => ab != bestAttachableOption).ToArray();
-
-            //Get a list of orphans that may need move when we are moving our bits
-            var orphans = new List<OrphanMoveData>();
-            CheckForOrphans(movingBits, bestAttachableOption, ref orphans);
-
-            //Move everyone who we've determined need to move
-            //--------------------------------------------------------------------------------------------------------//
-
-            //if(orphans.Count > 0)
-            //    Debug.Break();
-
-            (bestAttachableOption as Bit)?.IncreaseLevel(comboData.addLevels);
-
-            //Move all of the components that need to be moved
-            StartCoroutine(MoveComboPiecesCoroutine(
-                movingBits,
-                bestAttachableOption,
-                orphans.ToArray(),
-                TEST_MergeSpeed,
-                () =>
-                {
-                    var bit = bestAttachableOption as Bit;
-
-                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
-
-                    //bit.IncreaseLevel();
-
-                    CheckForCombosAround(bit);
-                    CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
-                }));
-
-            //--------------------------------------------------------------------------------------------------------//
-        }*/
 
         #endregion //Combo Solvers
 
@@ -4239,9 +4048,6 @@ _isShifting = true;
                     case EnemyAttachable _:
                         Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
                         break;
-                    /*case Component _:
-                        Recycler.Recycle<Component>(attachable.gameObject);
-                        break;*/
                     case JunkBit _:
                         Recycler.Recycle<JunkBit>(attachable.gameObject);
                         break;
@@ -4256,7 +4062,6 @@ _isShifting = true;
 
             AttachedBlocks.Clear();
             BotPartsLogic.ClearList();
-            //_parts.Clear();
             
             if(DecoyDrone) Destroy(DecoyDrone.gameObject);
 
@@ -4427,34 +4232,6 @@ _isShifting = true;
         }
 
     }
-    [Obsolete]
-    public struct PendingCombo
-    {
-        public readonly ComboRemoteData ComboData;
-        public readonly List<ICanCombo> ToMove;
-
-        public PendingCombo(ComboRemoteData comboData, List<ICanCombo> toMove)
-        {
-            ComboData = comboData;
-            ToMove = toMove;
-        }
-        public PendingCombo((ComboRemoteData comboData, List<ICanCombo> toMove) data)
-        {
-            var (comboData, toMove) = data;
-            ComboData = comboData;
-            ToMove = toMove;
-        }
-
-        public bool Contains(ICanCombo canCombo)
-        {
-            if (ToMove == null || ToMove.Count == 0)
-                return false;
-
-            return ToMove.Contains(canCombo);
-        }
-
-    }
-
     public static class PendingComboListExtensions
     {
         public static bool Contains(this IEnumerable<PendingCombov2> list, ICanCombo canCombo)
@@ -4463,29 +4240,6 @@ _isShifting = true;
         }
 
         public static bool Contains(this List<PendingCombov2> list, ICanCombo canCombo, out int index)
-        {
-            index = -1;
-
-            var temp = list.ToArray();
-            for (var i = 0; i < temp.Length; i++)
-            {
-                if (!temp[i].Contains(canCombo))
-                    continue;
-
-                index = i;
-                return true;
-            }
-
-            return false;
-        }
-
-        [Obsolete]
-        public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
-        {
-            return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
-        }
-        [Obsolete]
-        public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo, out int index)
         {
             index = -1;
 

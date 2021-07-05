@@ -194,9 +194,6 @@ namespace StarSalvager
                     case JunkBit junkBit:
                         Recycler.Recycle<JunkBit>(junkBit);
                         break;
-                    case Mine mine:
-                        Recycler.Recycle<Mine>(mine);
-                        break;
                     case BlackHole blackHole:
                         Recycler.Recycle<BlackHole>(blackHole);
                         break;
@@ -283,9 +280,6 @@ namespace StarSalvager
                             break;
                         case JunkBit junkBit:
                             Recycler.Recycle<JunkBit>(junkBit);
-                            break;
-                        case Mine mine:
-                            Recycler.Recycle<Mine>(mine);
                             break;
                         case BlackHole blackHole:
                             Recycler.Recycle<BlackHole>(blackHole);
@@ -941,31 +935,30 @@ namespace StarSalvager
 
             for (int i = 0; i < rdsObjects.Count; i++)
             {
-                if (rdsObjects[i] is RDSValue<BlockData> rdsValueBlockData)
+                if (rdsObjects[i] is RDSValue<IBlockData> rdsValueBlockData)
                 {
                     int count = rdsValueBlockData.GetCount();
                     for (int k = 0; k < count; k++)
                     {
-                        switch (rdsValueBlockData.rdsValue.ClassType)
+                        switch (rdsValueBlockData.rdsValue)
                         {
-                            case nameof(Bit):
+                            case BitData bitData:
                                 Bit newBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>()
-                                    .CreateObject<Bit>((BIT_TYPE) rdsValueBlockData.rdsValue.Type,
-                                        rdsValueBlockData.rdsValue.Level);
+                                    .CreateObject<Bit>((BIT_TYPE) bitData.Type, bitData.Level);
                                 //AddObstacleToList(newBit);
                                 /*PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
                                 bitExplosionPositions.RemoveAt(0);*/
                                 newBit.toBeCollected = isFromEnemyLoot;
                                 _obstacles.Add(newBit);
                                 break;
-                            case nameof(Asteroid):
+                            /*case nameof(Asteroid):
                                 Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
                                     .CreateAsteroidRandom<Asteroid>();
                                 //AddObstacleToList(newAsteroid);
                                 /*PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
-                                bitExplosionPositions.RemoveAt(0);*/
+                                bitExplosionPositions.RemoveAt(0);#1#
                                 _obstacles.Add(newAsteroid);
-                                break;
+                                break;*/
                             default:
                                 Debug.LogError(rdsValueBlockData.rdsValue.ClassType +
                                                " in SpawnBitExplosion and not handled");

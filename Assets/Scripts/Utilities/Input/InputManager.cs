@@ -58,7 +58,6 @@ namespace StarSalvager.Utilities.Inputs
         private readonly bool[] _triggersPressed = new bool[5];
 
         private Bot[] _bots;
-        private ScrapyardBot[] _scrapyardBots;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -184,7 +183,6 @@ namespace StarSalvager.Utilities.Inputs
         private void OnEnable()
         {
             _bots = FindObjectsOfType<Bot>();
-            _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
         }
 
         private void OnDestroy()
@@ -311,9 +309,6 @@ namespace StarSalvager.Utilities.Inputs
 
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
-
-            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
-                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
 
             //Ensure that we clear any previously registered Inputs
             DeInitInput();

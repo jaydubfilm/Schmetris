@@ -61,20 +61,10 @@ namespace StarSalvager.UI.Wreckyard
         //====================================================================================================================//
         public void HidePartDetails()
         {
-            ShowPartDetails(false, null);
             HoveringStoragePartUIElement = false;
+            ShowPartDetails(false, default, null);
         }
-        public void ShowPartDetails(bool show, in ScrapyardPart scrapyardPart)
-        {
-            var screenPoint = show
-                ? CameraController.Camera.WorldToScreenPoint(scrapyardPart.transform.position + Vector3.right)
-                : Vector3.zero;
-            
-            var partData = show ? scrapyardPart.ToBlockData() : new PartData();
 
-            ShowPartDetails(show, partData, screenPoint);
-        }
-        
         public void ShowPartDetails(bool show, in PartData partData, in RectTransform rectTransform)
         {
             HoveringStoragePartUIElement = show;

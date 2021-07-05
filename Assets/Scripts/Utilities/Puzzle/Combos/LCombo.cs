@@ -9,7 +9,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
     public class LCombo : LineCombo
     {
         //FIXME I need to improve this functionality, as it feels very inefficient
-        public override bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
+        public bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
             out (ComboRemoteData comboData, List<ICanCombo> toMove) outData)
         {

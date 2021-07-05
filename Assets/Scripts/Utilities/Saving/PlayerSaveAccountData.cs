@@ -514,12 +514,6 @@ namespace StarSalvager.Values
             PlayerDataManager.SavePlayerAccountData();
         }
 
-        [Obsolete]
-        public void SaveData()
-        {
-            //PlayerRunData.SaveData();
-        }
-
         #endregion //Player Run Data
 
         //Data Validation

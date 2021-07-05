@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Recycling;
 using Sirenix.OdinInspector;
+using StarSalvager.Audio;
 using StarSalvager.Factories;
+using StarSalvager.UI;
+using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,6 +17,11 @@ namespace StarSalvager.Prototype
     [System.Obsolete]
     public class PROTO_BitSpawner : MonoBehaviour
     {
+        void test()
+        {
+
+
+        }
         /*public bool generateRandomSeed;
         [DisableIf("$generateRandomSeed")]
         public int seed = 1234567890;

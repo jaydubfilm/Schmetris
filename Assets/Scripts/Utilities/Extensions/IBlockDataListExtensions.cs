@@ -617,24 +617,10 @@ namespace StarSalvager.Utilities.Extensions
                 switch (blockData)
                 {
                     case BitData bitData:
-                        if (inScrapyardForm)
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateScrapyardObject<ScrapyardBit>(bitData));
-                        }
-                        else
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitData));
-                        }
+                        attachables.Add(FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateObject<Bit>(bitData));
                         break;
                     case PartData partData:
-                        if (inScrapyardForm)
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateScrapyardObject<ScrapyardPart>(partData));
-                        }
-                        else
-                        {
-                            attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(partData));
-                        }
+                        attachables.Add(FactoryManager.Instance.GetFactory<PartAttachableFactory>().CreateObject<Part>(partData));
                         break;
                     case JunkBitData _:
                         var junkBit = FactoryManager.Instance.GetFactory<BitAttachableFactory>().CreateJunkObject<JunkBit>();
