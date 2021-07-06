@@ -995,9 +995,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
             //Remove the PartPatchOption
             PlayerDataManager.RemovePartPatchOption(_selectedPatch.partType);
-            
+
             //Redraw everything
-            CleanPatchTreeUI();
+            //CleanPatchTreeUI();
+            var partData = FindSelectedPart(_selectedPart.type).partData;
+            GeneratePatchTree(partData);
+
             SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
 
             //Update the Datas
