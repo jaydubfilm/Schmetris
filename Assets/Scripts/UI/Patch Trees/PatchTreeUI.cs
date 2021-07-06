@@ -996,8 +996,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //Remove the PartPatchOption
             PlayerDataManager.RemovePartPatchOption(_selectedPatch.partType);
 
-            //Redraw everything
-            //CleanPatchTreeUI();
+            //Redraw the patch tree without the purchased patch
+            CleanPatchUI();
             var partData = FindSelectedPart(_selectedPart.type).partData;
             GeneratePatchTree(partData);
 
@@ -1146,14 +1146,35 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 _partsOnDrone.Any(x => ((PART_TYPE) x.Type).GetCategory() == category);
         }
 
+        /// <summary>
+        /// Clear both the selected patch and and part. 
+        /// </summary>
         private void CleanPatchTreeUI()
+        {
+            CleanPartUI();
+            CleanPatchUI();
+        }
+
+        /// <summary>
+        /// Clears specifically just the part data UI
+        /// </summary>
+        private void CleanPartUI()
         {
             //Deselect part
             SetSelectedPart(PART_TYPE.EMPTY, false);
+            //Clear Text
+            SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
+
+        }
+
+        /// <summary>
+        /// Clears specifically just the patch data
+        /// </summary>
+        private void CleanPatchUI()
+        {
             //Deselect Patch
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             //Clear Text
-            SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
             SetPatchText(string.Empty, string.Empty);
             //Clean Patch Tree
             CleanPatchTree();
