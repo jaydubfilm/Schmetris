@@ -20,6 +20,7 @@ using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using AudioController = StarSalvager.Audio.AudioController;
 using GameUI = StarSalvager.UI.GameUI;
@@ -69,7 +70,7 @@ namespace StarSalvager
         }
 
         //====================================================================================================================//
-
+        
         private static PART_TYPE[] TriggerPartTypes
         {
             get
@@ -210,7 +211,6 @@ namespace StarSalvager
         }
 
         #endregion //Properties
-
 
         //Unity Functions
         //==============================================================================================================//
@@ -984,7 +984,7 @@ namespace StarSalvager
                     CreateProjectile(part, partRemoteData, fireTarget, tag);
                     break;
                 case PART_TYPE.SNIPER:
-                    var direction = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) - bot.transform.position).normalized;
+                    var missedDirection = (fireTarget.transform.position + ((Vector3) Random.insideUnitCircle * 3) - bot.transform.position).normalized;
 
                     var lineShrink = FactoryManager.Instance
                         .GetFactory<EffectFactory>()
@@ -997,7 +997,7 @@ namespace StarSalvager
                     lineShrink.Init(part.transform.position,
                         didHitTarget
                             ? fireTarget.transform.position
-                            : bot.transform.position + direction * 100);
+                            : bot.transform.position + missedDirection * 100);
 
                     if (didHitTarget)
                     {
@@ -1856,7 +1856,8 @@ namespace StarSalvager
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Time} missing from {part.Type} remote data");
             }
-
+    
+            //FIXME Use TryGetPartProperty
             if (!partRemoteData.TryGetValue<int>(PartProperties.KEYS.Radius, out var minSize))
             {
                 throw new MissingFieldException($"{PartProperties.KEYS.Radius} missing from {part.Type} remote data");
@@ -1987,6 +1988,7 @@ namespace StarSalvager
             var radius = partRemoteData.GetDataValue<int>(PartProperties.KEYS.Radius);
             var health = partRemoteData.GetDataValue<float>(PartProperties.KEYS.Health);
 
+            //FIXME Put this into a factory
             _forceField = Instantiate(forceFieldPrefab, bot.transform.position, Quaternion.identity);
             _forceField.Init(this, 90,angle, radius);
             _forceField.SetupHealthValues(health, health);

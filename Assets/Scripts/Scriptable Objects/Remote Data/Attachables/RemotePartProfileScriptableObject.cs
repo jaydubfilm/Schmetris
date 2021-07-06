@@ -93,7 +93,9 @@ namespace StarSalvager.ScriptableObjects
         public PART_TYPE[] GetTriggerParts()
         {
             return partRemoteData
-                .Where(p => p.isManual).Select(p => p.partType).ToArray();
+                .Where(p => p.isManual && p.isImplemented)
+                .Select(p => p.partType)
+                .ToArray();
         }
 
         //UNITY EDITOR
