@@ -520,7 +520,8 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
+                //Do not need to set the colors when the sprites are already colored SS-312
+                //SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
                 SliderPartUis[i].slider.minValue = 0;
             }
@@ -606,7 +607,9 @@ namespace StarSalvager.UI
             }
 
 
-            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            //botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            //Since the green color is already on the sprite, we'll only fade between red and white SS-312
+            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.white, value);
             botHealthBarSlider.value = value;
 
         }
