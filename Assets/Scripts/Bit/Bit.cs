@@ -117,6 +117,7 @@ namespace StarSalvager
             {
                 PendingDetach = false;
                 SetRotating(false);
+                transform.rotation = Quaternion.identity;
             }
         }
 
