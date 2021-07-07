@@ -2560,6 +2560,7 @@ _isShifting = true;
         /// <summary>
         /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
         /// </summary>
+        [Obsolete("Bonus Shapes are not currently implemented")]
         private void CheckForBonusShapeMatches()
         {
             var obstacleManager = LevelManager.Instance.ObstacleManager;
@@ -2764,6 +2765,7 @@ _isShifting = true;
             Destroy(effect, newTime);
         }
 
+        [Obsolete("Bonus Shapes are not currently implemented")]
         private void CreateBonusShapeEffect(Vector3 worldPosition)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
