@@ -2661,6 +2661,7 @@ namespace StarSalvager
             }
 
             fireLineRenderer.gameObject.SetActive(true);
+            fireLineRenderer.transform.rotation = Quaternion.identity;
             fireLineRenderer.loop = loop;
             fireLineRenderer.useWorldSpace = worldSpace;
             fireLineRenderer.positionCount = points.Length;
@@ -2688,6 +2689,8 @@ namespace StarSalvager
         private void CleanFireLine()
         {
             fireLineRenderer.gameObject.SetActive(false);
+            //resesting the rotation of the fireLineRenderer to ensure no miss alignment is happening. 
+            fireLineRenderer.transform.rotation = Quaternion.identity;
         }
 
         //====================================================================================================================//
