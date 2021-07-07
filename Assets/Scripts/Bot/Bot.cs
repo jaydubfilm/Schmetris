@@ -1482,7 +1482,7 @@ namespace StarSalvager
             
             DestroyAttachable(closestAttachable);
             //After deleting see if there are new combds
-            CheckForBonusShapeMatches();
+            CheckAllForCombos();
 
             if (closestAttachable.CountTowardsMagnetism)
                 ForceCheckMagnets();
