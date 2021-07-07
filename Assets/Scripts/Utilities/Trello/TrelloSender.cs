@@ -183,6 +183,9 @@ namespace StarSalvager.Utilities.Trello
                 "====================",
                 $"Platform: {platform}",
                 $"Version: {Application.version}",
+                $"Game State: {GameManager.CurrentGameState.ToString()}",
+                $"Input Device: {InputManager.CurrentInputDeviceName}",
+                $"Input Action Map: {InputManager.CurrentActionMap}",
                 $"Scene: {SceneLoader.CurrentScene}"
             });
 
