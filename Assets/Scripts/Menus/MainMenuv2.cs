@@ -240,12 +240,16 @@ namespace StarSalvager.UI
             Globals.ScaleCamera(Globals.CameraScaleSize);
             musicVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.MUSIC_VOLUME, 1f);
             sfxVolumeSlider.value = PlayerPrefs.GetFloat(AudioController.SFX_VOLUME, 1f);
-            
+
+            RefreshWindow(_currentWindow);
+
             UISelectHandler.SetBuildTarget(this);
-            
+
             if (!PlayerDataManager.ShouldShownSummary()) return;
 
             FindObjectOfType<PostGameUI>().ShowPostGameUI();
+
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         public void Reset()

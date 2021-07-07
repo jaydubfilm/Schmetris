@@ -70,6 +70,7 @@ namespace StarSalvager.Utilities.Trello
                 ResetInput();
                 bugWindowObject.SetActive(false);
                 GameTimer.SetPaused(false);
+                InputManager.SetToExpectedActionMap();
                 _callBack?.Invoke();
             });
             bugWindowObject.SetActive(false);
