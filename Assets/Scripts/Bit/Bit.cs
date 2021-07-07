@@ -113,7 +113,11 @@ namespace StarSalvager
             Attached = isAttached;
             collider.usedByComposite = isAttached;
 
-            if (!isAttached) PendingDetach = false;
+            if (!isAttached)
+            {
+                PendingDetach = false;
+                SetRotating(false);
+            }
         }
 
         //IRotate Functions
