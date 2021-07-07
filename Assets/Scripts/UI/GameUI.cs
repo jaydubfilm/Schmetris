@@ -26,7 +26,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class GameUI : SceneSingleton<GameUI>, IHasHintElement
+    public class GameUI : SceneSingleton<GameUI>, IHasHintElement, IBuildNavigationProfile
     {
         //Structs
         //====================================================================================================================//
@@ -60,7 +60,7 @@ namespace StarSalvager.UI
                     return;
 
                 backgroundImage.gameObject.SetActive(isTrigger);
-                
+
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
 
                 //if (!isTrigger)
@@ -78,6 +78,7 @@ namespace StarSalvager.UI
                 foregroundImage.sprite = partSprite;
 
             }
+
             public void SetSecondSprite(in Sprite partSprite)
             {
                 //FIXME Need to determine when to actually start showing this stuff
@@ -261,7 +262,7 @@ namespace StarSalvager.UI
 
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform waveSummaryWindow;
-        
+
         [SerializeField, Required, FoldoutGroup("Summary Window")]
         private RectTransform summaryWindowFrame;
 
@@ -282,13 +283,13 @@ namespace StarSalvager.UI
 
         //Game Over Window
         //====================================================================================================================//
-        
+
         [SerializeField, Required, FoldoutGroup("Game Over Window")]
         private RectTransform gameoverWindowFrame;
-        
+
         [SerializeField, Required, FoldoutGroup("Game Over Window")]
         private TMP_Text gameOverTitle;
-        
+
         [SerializeField, Required, FoldoutGroup("Game Over Window")]
         private Button gameoverButton;
 
@@ -515,7 +516,8 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
-                SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
+                //Do not need to set the colors when the sprites are already colored SS-312
+                //SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
                 SliderPartUis[i].slider.minValue = 0;
             }
@@ -601,7 +603,9 @@ namespace StarSalvager.UI
             }
 
 
-            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            //botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.green, value);
+            //Since the green color is already on the sprite, we'll only fade between red and white SS-312
+            botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.white, value);
             botHealthBarSlider.value = value;
 
         }
@@ -615,6 +619,7 @@ namespace StarSalvager.UI
         {
             gearsText.text = $"{TMP_SpriteHelper.GEAR_ICON} {gears}";
         }
+
         public void SetPlayerSilver(in int silver)
         {
             silverText.text = $"{TMP_SpriteHelper.SILVER_ICON} {silver}";
@@ -750,6 +755,7 @@ namespace StarSalvager.UI
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
         }
+
         public void SetSecondIconImage(int index, in PART_TYPE partType)
         {
             //--------------------------------------------------------------------------------------------------------//
@@ -768,6 +774,7 @@ namespace StarSalvager.UI
             //     return false;
             // return SliderPartUis[index].isFilled;
         }
+
         public void SetFill(in BIT_TYPE bitType, in float fillValue)
         {
             switch (bitType)
@@ -820,7 +827,7 @@ namespace StarSalvager.UI
         {
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void CloseWindow()
             {
                 ShowWaveSummaryWindow(false, false, string.Empty, string.Empty, null, instantMove: true);
@@ -828,12 +835,13 @@ namespace StarSalvager.UI
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (_movingSummaryWindow)
                 return;
 
             var type = isGameOverScreen ? WindowSpriteSet.TYPE.ORANGE : WindowSpriteSet.TYPE.DEFAULT;
-            
+            _showingGameOver = isGameOverScreen;
+
             InputManager.SwitchCurrentActionMap(show ? ACTION_MAP.MENU : ACTION_MAP.DEFAULT);
 
             summaryWindowFrame.gameObject.SetActive(!isGameOverScreen);
@@ -883,7 +891,7 @@ namespace StarSalvager.UI
                 waveSummaryTitle.text = title;
                 waveSummaryText.text = text;
             }
-            
+
 
             if (instantMove)
             {
@@ -894,16 +902,15 @@ namespace StarSalvager.UI
                 return;
             }
 
-            StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow, 
-                targetY, 
-                moveTime, 
-                isGameOverScreen? 
-                    gameoverButton.gameObject : 
-                    confirmButton.gameObject));
+            StartCoroutine(PositionWaveSummaryWindow(waveSummaryWindow,
+                targetY,
+                moveTime,
+                isGameOverScreen ? gameoverButton.gameObject : confirmButton.gameObject));
 
         }
 
-        private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time, GameObject focusTarget)
+        private IEnumerator PositionWaveSummaryWindow(RectTransform rectTransform, float targetYPos, float time,
+            GameObject focusTarget)
         {
             confirmButton.interactable = false;
             gameoverButton.interactable = false;
@@ -928,7 +935,7 @@ namespace StarSalvager.UI
             gameoverButton.interactable = true;
 
             EventSystem.current.SetSelectedGameObject(focusTarget);
-
+            UISelectHandler.SetBuildTarget(this);
         }
 
         #endregion //Wave Summary Window
@@ -1116,7 +1123,8 @@ namespace StarSalvager.UI
 
         #region Ammo Effect
 
-        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, [CallerMemberName] string calledMemberName = "")
+        public void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition,
+            [CallerMemberName] string calledMemberName = "")
         {
             CreateAmmoEffect(bitType,
                 amount,
@@ -1125,10 +1133,13 @@ namespace StarSalvager.UI
                 moveTimeRange,
                 calledMemberName);
         }
-        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount, in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
+
+        private void CreateAmmoEffect(in BIT_TYPE bitType, in float amount, in Vector2 startPosition, in int minCount,
+            in int maxCount, in Vector2 moveTimeRange, string calledMemberName)
         {
             if (bitType == BIT_TYPE.WHITE)
-                throw new ArgumentException($"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
+                throw new ArgumentException(
+                    $"Trying to {nameof(CreateAmmoEffect)} for {BIT_TYPE.WHITE}. Called from {calledMemberName}");
 
             const float RADIUS = 50;
             Sprite sprite;
@@ -1136,12 +1147,13 @@ namespace StarSalvager.UI
 
             try
             {
-               sprite = bitEffectSprites[(int) bitType - 1];
-               targetTransform = sliderTargets[(int) bitType - 1];
+                sprite = bitEffectSprites[(int) bitType - 1];
+                targetTransform = sliderTargets[(int) bitType - 1];
             }
             catch (IndexOutOfRangeException)
             {
-                Debug.LogError($"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
+                Debug.LogError(
+                    $"{bitType}[{(int) bitType - 1}]\n{nameof(bitEffectSprites)}[{bitEffectSprites.Length}]");
                 throw;
             }
 
@@ -1300,5 +1312,13 @@ namespace StarSalvager.UI
 
         //====================================================================================================================//
 
+        private bool _showingGameOver;
+
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var toSelect = _showingGameOver ? gameoverButton : confirmButton;
+
+            return new NavigationProfile(toSelect, new[] {toSelect}, null, null);
+        }
     }
 }

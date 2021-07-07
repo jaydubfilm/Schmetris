@@ -23,7 +23,8 @@ namespace StarSalvager.Utilities.Inputs
         
         public static Action<int, bool> TriggerWeaponStateChange;
         public static Action<string> InputDeviceChanged;
-        public static Action<bool> OnStartedUsingController;
+        
+        private static Action<bool> _onStartedUsingController;
 
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
@@ -57,7 +58,6 @@ namespace StarSalvager.Utilities.Inputs
         private readonly bool[] _triggersPressed = new bool[5];
 
         private Bot[] _bots;
-        private ScrapyardBot[] _scrapyardBots;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -183,7 +183,6 @@ namespace StarSalvager.Utilities.Inputs
         private void OnEnable()
         {
             _bots = FindObjectsOfType<Bot>();
-            _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
         }
 
         private void OnDestroy()
@@ -311,9 +310,6 @@ namespace StarSalvager.Utilities.Inputs
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
 
-            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
-                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
-
             //Ensure that we clear any previously registered Inputs
             DeInitInput();
 
@@ -377,7 +373,7 @@ namespace StarSalvager.Utilities.Inputs
             InputDeviceChanged?.Invoke(deviceName);
             
             UsingController = deviceName != KEYBOARD;
-            OnStartedUsingController?.Invoke(UsingController);
+            _onStartedUsingController?.Invoke(UsingController);
         }
 
         private void SetupInputs()
@@ -1067,7 +1063,7 @@ namespace StarSalvager.Utilities.Inputs
 
         public static void AddStartedControllerListener(in IStartedUsingController listener)
         {
-            OnStartedUsingController += listener.StartedUsingController;
+            _onStartedUsingController += listener.StartedUsingController;
             
             if(Instance == null) return;
             
@@ -1076,10 +1072,13 @@ namespace StarSalvager.Utilities.Inputs
 
         public static void RemoveControllerListener(in IStartedUsingController listener)
         {
-            OnStartedUsingController -= listener.StartedUsingController;
+            _onStartedUsingController -= listener.StartedUsingController;
         }
         //IMenuControlsActions Functions
         //============================================================================================================//
+
+        public static Action OnPausePressed;
+        public static Action OnCancelPressed;
 
         public void OnNavigate(InputAction.CallbackContext context)
         {
@@ -1104,11 +1103,18 @@ namespace StarSalvager.Utilities.Inputs
         public void OnCancel(InputAction.CallbackContext context)
         {
             CheckForInputDeviceChange(context);
+
+            if (context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
+                OnCancelPressed?.Invoke();
+            
         }
 
         public void OnPause(InputAction.CallbackContext context)
         {
             CheckForInputDeviceChange(context);
+            
+            if(context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
+                OnPausePressed?.Invoke();
         }
 
         public void OnScroll(InputAction.CallbackContext context)

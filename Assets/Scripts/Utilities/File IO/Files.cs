@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
 using Newtonsoft.Json;
-using StarSalvager.Factories;
-using StarSalvager.Factories.Data;
-using StarSalvager.Utilities.Analytics.Data;
 using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Analytics.SessionTracking.Data;
 using StarSalvager.Utilities.Converters;
 using StarSalvager.Utilities.JSON.Converters;
-using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
@@ -222,21 +217,11 @@ namespace StarSalvager.Utilities.FileIO
                 PlayerAccountSavePaths[saveSlotIndex],
                 CONVERTERS);
 
-            /*if (loaded.PlayerRunData.PlaythroughID != "")
-            {
-                loaded.PlayerRunData.SetupMap();
-            }*/
-
             return loaded;
         }
 
         public static string ExportPlayerSaveAccountData(PlayerSaveAccountData playerSaveAccountData, int saveSlotIndex)
         {
-            playerSaveAccountData.SaveData();
-
-            /*var export = JsonConvert.SerializeObject(playerSaveAccountData, Formatting.None);
-            File.WriteAllText(PlayerAccountSavePaths[saveSlotIndex], export);*/
-
             var export = ExportJsonData(playerSaveAccountData,
                 PlayerAccountSavePaths[saveSlotIndex],
                 CONVERTERS);
@@ -256,29 +241,6 @@ namespace StarSalvager.Utilities.FileIO
         }
 
         #endregion //Player Data
-
-        //Drone Design Data
-        //====================================================================================================================//
-
-        #region Drone Data
-
-        public static string ExportLayoutData(List<ScrapyardLayout> editorData)
-        {
-            var export = JsonConvert.SerializeObject(editorData, JSON_FORMAT);
-
-            File.WriteAllText(Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE), export);
-
-            return export;
-        }
-
-        public static List<ScrapyardLayout> ImportLayoutData()
-        {
-            var path = Path.Combine(REMOTE_DIRECTORY, SCRAPYARD_LAYOUT_FILE);
-
-            return !File.Exists(path) ? new List<ScrapyardLayout>() : ImportJsonData<List<ScrapyardLayout>>(path, new IBlockDataArrayConverter());
-        }
-
-        #endregion //Drone Data
 
         //Session Summary Data
         //====================================================================================================================//

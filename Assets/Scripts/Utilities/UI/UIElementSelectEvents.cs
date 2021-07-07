@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace StarSalvager.Utilities.UI
 {
@@ -31,13 +29,11 @@ namespace StarSalvager.Utilities.UI
         
         public void OnSelect(BaseEventData eventData)
         {
-            //Debug.Log($"Select {gameObject.name}");
             UISelectHandler.OutlineObject(transform, SIZE, color);
         }
 
         public void OnDeselect(BaseEventData eventData)
         {
-            //Debug.Log($"Deselect {gameObject.name}");
             UISelectHandler.OutlineObject(null);
         }
 

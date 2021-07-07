@@ -79,6 +79,7 @@ namespace StarSalvager.Utilities
             string.Concat("set ", "ammo ", "[BIT_TYPE | all] ", "[float]").ToUpper(),
             string.Concat("set ", "bot ", "health ", "[0.0 - 1.0]").ToUpper(),
             string.Concat("set ", "columns ", "[uint]").ToUpper(),
+            string.Concat("set ", "currentwave ", "[uint]").ToUpper(),
             string.Concat("set ", "gears ", "[uint]").ToUpper(),
             //string.Concat("set ", "component ", "[COMPONENT_TYPE | all] ", "[uint]").ToUpper(),
             //string.Concat("set ", "currency ", "[BIT_TYPE | all] ", "[uint]").ToUpper(),
@@ -758,6 +759,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!float.TryParse(split[3], out var floatAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[3]);
@@ -796,6 +798,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     switch (split[2].ToLower())
                     {
                         case "health":
@@ -852,6 +855,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!int.TryParse(split[2], out var compAmount))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -862,7 +866,25 @@ namespace StarSalvager.Utilities
                     PlayerDataManager.OnValuesChanged?.Invoke();
 
                     break;
-            }
+                }
+                case "currentwave":
+                {
+                    if (!CheckForSplitLength(split, 3, out var print))
+                    {
+                        _consoleDisplay += print;
+                        break;
+                    }
+
+                    if (!int.TryParse(split[2], out var wave))
+                    {
+                        _consoleDisplay += UnrecognizeCommand(split[2]);
+                        break;
+                    }
+
+                    PlayerDataManager.SetCurrentWave(wave);
+                    PlayerDataManager.SavePlayerAccountData();
+                    break;
+                }
                 case "gears":
                 {
                     if (!CheckForSplitLength(split, 3, out var print))
@@ -915,6 +937,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     switch (split[2].ToLower())
                     {
                         case "v":
@@ -956,6 +979,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!int.TryParse(split[2], out var stars))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -975,6 +999,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!int.TryParse(split[2], out var silver))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -994,6 +1019,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!float.TryParse(split[2], out var timeLeft))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1010,6 +1036,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!TryParseBool(split[2], out state))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);
@@ -1058,6 +1085,7 @@ namespace StarSalvager.Utilities
                             _consoleDisplay += UnrecognizeCommand(split[3]);
                             break;
                         }
+
                         if (!int.TryParse(split[4], out var level))
                         {
                             _consoleDisplay += UnrecognizeCommand(split[4]);
@@ -1090,6 +1118,7 @@ namespace StarSalvager.Utilities
                         _consoleDisplay += print;
                         break;
                     }
+
                     if (!float.TryParse(split[2], out var volume))
                     {
                         _consoleDisplay += UnrecognizeCommand(split[2]);

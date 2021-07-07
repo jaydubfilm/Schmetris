@@ -45,11 +45,11 @@ namespace StarSalvager.Utilities.Converters
                 IBlockData iBlockData;
                 switch (classType)
                 {
-                    case nameof(ScrapyardBit):
+                    case "ScrapyardBit":
                     case nameof(Bit):
                         iBlockData = jObject.ToObject<BitData>();
                         break;
-                    case nameof(ScrapyardPart):
+                    case "ScrapyardPart":
                     case nameof(Part):
                         iBlockData = jObject.ToObject<PartData>();
                         break;

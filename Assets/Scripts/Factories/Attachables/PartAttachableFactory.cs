@@ -25,38 +25,12 @@ namespace StarSalvager.Factories
             //PowerWeapon,
             Any
         }
-        
+
         private RemotePartProfileScriptableObject remotePartData;
 
         public PartAttachableFactory(AttachableProfileScriptableObject factoryProfile, RemotePartProfileScriptableObject remotePartData) : base(factoryProfile)
         {
             this.remotePartData = remotePartData;
-        }
-
-        //============================================================================================================//
-
-        public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
-        {
-            var remoteData = remotePartData.GetRemoteData(partType);
-            var profile = factoryProfile.GetProfile(partType);
-            var sprite = profile.GetSprite(level);
-
-            Color color;
-            if (remoteData.partType == PART_TYPE.EMPTY)
-            {
-                color = PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate).GetColor();
-            }
-            else
-            {
-                color = remoteData.category == BIT_TYPE.NONE
-                    ? Color.white
-                    : remoteData.category.GetColor();
-            }
-
-            part.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                part.SetColor(color);
         }
 
         //============================================================================================================//
@@ -113,7 +87,7 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             var sprite = type.GetSprite();
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
             Part temp;
@@ -141,7 +115,7 @@ namespace StarSalvager.Factories
             }
 
             //--------------------------------------------------------------------------------------------------------//
-            
+
             var remoteData = remotePartData.GetRemoteData(type);
             var color = remoteData.category == BIT_TYPE.NONE
                 ? Color.white
@@ -161,7 +135,7 @@ namespace StarSalvager.Factories
             temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";
-            
+
             temp.SetSortingLayer(LayerHelper.ACTORS);
             return temp.gameObject;
         }
@@ -196,41 +170,13 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(PartData partData)
-        {
-            var type = (PART_TYPE) partData.Type;
-            var sprite = type.GetSprite();
-
-
-            if (!Recycler.TryGrab(out ScrapyardPart scrapyardPart))
-            {
-                scrapyardPart = CreateScrapyardObject<ScrapyardPart>();
-            }
-            
-            var remoteData = remotePartData.GetRemoteData(type);
-            var color = remoteData.category == BIT_TYPE.NONE
-                ? Color.white
-                :remoteData.category.GetColor();
-
-            scrapyardPart.LoadBlockData(partData);
-            scrapyardPart.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                scrapyardPart.SetColor(color);
-
-            var gameObject = scrapyardPart.gameObject;
-            gameObject.name = $"{scrapyardPart.Type}";
-
-            return gameObject;
-        }
-
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
             var remoteData = remotePartData.GetRemoteData(overrideType);
             var color = remoteData.category == BIT_TYPE.NONE
                 ? Color.white
                 : remoteData.category.GetColor();
-            
+
            // var profile = factoryProfile.GetProfile(overrideType);
             var sprite = overrideType.GetSprite();
 
@@ -241,49 +187,6 @@ namespace StarSalvager.Factories
                     part.SetSprite(sprite);
                     break;
             }
-
-
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject(PART_TYPE partType)
-        {
-            var blockData = new PartData
-            {
-                Type = (int)partType,
-                Patches = new List<PatchData>()
-            };
-
-            return CreateScrapyardGameObject(blockData);
-        }
-
-        public T CreateScrapyardObject<T>(PART_TYPE partType)
-        {
-            var temp = CreateScrapyardGameObject(partType);
-
-            return temp.GetComponent<T>();
-        }
-
-        public T CreateScrapyardObject<T>(PartData partData)
-        {
-            var temp = CreateScrapyardGameObject(partData);
-
-            return temp.GetComponent<T>();
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject()
-        {
-            return Object.Instantiate(factoryProfile.ScrapyardPrefab);
-        }
-
-        public T CreateScrapyardObject<T>()
-        {
-            var temp = CreateScrapyardGameObject();
-
-            return temp.GetComponent<T>();
         }
 
         //============================================================================================================//
@@ -312,8 +215,8 @@ namespace StarSalvager.Factories
             return temp.GetComponent<T>();
         }
 
-        
-        
+
+
         //============================================================================================================//
 
         /*public static SpriteRenderer CreatePartBorder(in Transform transform)
@@ -357,11 +260,11 @@ namespace StarSalvager.Factories
             var tempBorderImage = tempBorder.AddComponent<Image>();
             tempBorderImage.transform.SetParent(targetTransform, false);
             var borderTransform = (RectTransform) tempBorder.transform;
-                
-                
+
+
             tempBorderImage.raycastTarget = false;
             tempBorderImage.preserveAspect = true;
-                
+
             borderTransform.anchorMin = Vector2.zero;
             borderTransform.anchorMax = Vector2.one;
             borderTransform.sizeDelta = Vector2.zero;
@@ -370,6 +273,6 @@ namespace StarSalvager.Factories
         }*/
 
         //====================================================================================================================//
-        
+
     }
 }

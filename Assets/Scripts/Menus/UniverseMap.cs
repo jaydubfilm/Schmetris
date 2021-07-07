@@ -24,7 +24,7 @@ using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IStartedUsingController
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IBuildNavigationProfile
     {
         //#3658df
         private static Color LINE_COLOR = new Color(0.2117f, 0.34509f, 0.874509f);
@@ -67,7 +67,8 @@ namespace StarSalvager.UI
         //============================================================================================================//
         private void OnEnable()
         {
-            InputManager.AddStartedControllerListener(this);
+            InputManager.OnCancelPressed += Back;
+            
             HintManager.OnShowingHintAction += LockMap;
         }
         private void Start()
@@ -77,11 +78,10 @@ namespace StarSalvager.UI
         
         private void OnDisable()
         {
-            InputManager.RemoveControllerListener(this);
+            InputManager.OnCancelPressed -= Back;
+            
             HintManager.OnShowingHintAction -= LockMap;
         }
-
-
 
         //====================================================================================================================//
 
@@ -114,7 +114,7 @@ namespace StarSalvager.UI
             PlayerDataManager.GetBotBlockDatas().CreateBotPreview(botDisplayRectTransform);
 
             //Wait until the map is generated to try and highlight
-            StartedUsingController(InputManager.Instance.UsingController);
+            UISelectHandler.SetBuildTarget(this);
         }
 
         public void Reset()
@@ -422,7 +422,7 @@ namespace StarSalvager.UI
         private static int GetPlayerCoordinateIndex(in Ring ring)
         {
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
-            return ring.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            return ring.GetIndexFromCoordinate(playerCoordinate);
         }
         
         //Buttons Pressed Functions
@@ -457,6 +457,11 @@ namespace StarSalvager.UI
                     break;
 
                 case SceneLoader.MAIN_MENU:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.LoadPreviousScene();
+                    });
+                    break;
                 case SceneLoader.WRECKYARD:
                     ScreenFade.Fade(() =>
                     {
@@ -492,23 +497,17 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
-        public void StartedUsingController(bool usingController)
-        {
-            if (_universeMapButtons.IsNullOrEmpty())
-                return;
-            
-            if (usingController)
-            {
-                var playerCoordinateIndex = GetPlayerCoordinateIndex();
-                var buttonObject = _universeMapButtons[playerCoordinateIndex].gameObject;
 
-                EventSystem.current?.SetSelectedGameObject(buttonObject);
-                return;
-            }
-            
-            EventSystem.current?.SetSelectedGameObject(null);
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var playerCoordinateIndex = GetPlayerCoordinateIndex();
+            var buttonObject = _universeMapButtons[playerCoordinateIndex].Button;
+            var selectables = new List<Selectable>
+            {
+                backButton
+            };
+            selectables.AddRange(_universeMapButtons.Select(x => x.Button));
+            return new NavigationProfile(buttonObject, selectables, null, null);
         }
-        
     }
 }

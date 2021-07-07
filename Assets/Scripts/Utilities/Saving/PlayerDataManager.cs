@@ -450,13 +450,6 @@ namespace StarSalvager.Utilities.Saving
         //====================================================================================================================//
 
         #region Map Nodes
-        
-        [Obsolete]
-        public static bool CheckIfCompleted(in int nodeIndex)
-        {
-            throw new NotImplementedException();
-            //return PlayerRunData.CheckIfCompleted(nodeIndex);
-        }
 
         public static int GetCurrentWave()=>PlayerRunData.currentWave;
 
@@ -465,21 +458,6 @@ namespace StarSalvager.Utilities.Saving
         public static int GetCurrentRing() => HasRunData ? PlayerRunData.currentRing : default;
 
         public static void SetCurrentRing(in int ring) => PlayerRunData.currentRing = ring;
-        
-        /*public static void AddCompletedNode(int node)
-        {
-            PlayerRunData.playerPreviouslyCompletedNodes.Add(node);
-        }
-
-        public static IReadOnlyList<int> GetPlayerPreviouslyCompletedNodes()
-        {
-            return PlayerRunData.playerPreviouslyCompletedNodes;
-        }
-
-        public static IReadOnlyList<int> GetWreckNodes()
-        {
-            return PlayerRunData.wreckNodes;
-        }*/
 
         #endregion //Map Nodes
 

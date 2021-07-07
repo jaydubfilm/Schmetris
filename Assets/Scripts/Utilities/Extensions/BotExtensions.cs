@@ -134,40 +134,15 @@ namespace StarSalvager.Utilities.Extensions
             return blockDatas;
         }
 
-        public static List<IBlockData> GetBlockDatas(this ScrapyardBot bot)
-        {
-            var blockDatas = new List<IBlockData>();
-
-            var attachables = new List<IAttachable>(bot.AttachedBlocks);
-
-            foreach (var attachable in attachables)
-            {
-                if (attachable is ISaveable saveable)
-                {
-                    blockDatas.Add(saveable.ToBlockData());
-                }
-            }
-
-            return blockDatas;
-        }
-
-
         //============================================================================================================//
 
-        /// <summary>
-        /// Fill ref List with all Bits of similar level & type in specified direction.
-        /// </summary>
-        /// <param name="bot"></param>
-        /// <param name="target"></param>
-        /// <param name="direction"></param>
-        /// <param name="iCanCombos"></param>
-        [Obsolete]
+        /*[Obsolete]
         public static void ComboCount<T>(this Bot bot, ICanCombo<T> target, DIRECTION direction, ref List<ICanCombo> iCanCombos) where T: Enum
         {
             var combo = bot.AttachedBlocks.OfType<ICanCombo>();
             combo.ComboCountAlgorithm(target.Type, target.level, target.Coordinate, direction.ToVector2Int(),
                 ref iCanCombos);
-        }
+        }*/
         
         public static void ComboCount(this IEnumerable<Bot.DataTest> dataToCheck, Bit origin, DIRECTION direction, ref List<Bot.DataTest> outData)
         {

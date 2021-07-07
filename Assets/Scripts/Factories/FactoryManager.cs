@@ -13,9 +13,6 @@ namespace StarSalvager.Factories
     //Based on: https://www.dofactory.com/net/factory-method-design-pattern
     public class FactoryManager : Singleton<FactoryManager>
     {
-        /*[SerializeField, Required, BoxGroup("Temporary")]
-        private List<SectorModularData> m_sectorRemoteData;*/
-        
         public EditorBotShapeGeneratorData EditorBotShapeData => _editorBotShapeData ?? (_editorBotShapeData = Files.ImportBotShapeRemoteData());
         private EditorBotShapeGeneratorData _editorBotShapeData;
 
@@ -23,12 +20,9 @@ namespace StarSalvager.Factories
         [SerializeField, Required]
         private RingRemoteDataScriptableObject[] _ringRemoteDatas;
         
-        /*public List<SectorRemoteDataScriptableObject> SectorRemoteData => m_sectorRemoteData[currentModularDataIndex].SectorData;*/
 
         [SerializeField, Required, BoxGroup("Temporary")]
         public int currentModularDataIndex = 0;
-
-        /*public int ModularDataCount => m_sectorRemoteData.Count;*/
 
         [BoxGroup("Sprites")]
         public Sprite stardustSprite;
@@ -116,12 +110,6 @@ namespace StarSalvager.Factories
         
         [SerializeField, Required, BoxGroup("Bot")]
         private GameObject botPrefab;
-        /*[SerializeField, Required, BoxGroup("Bot")]
-        private GameObject shieldPrototypePrefab;
-        [SerializeField, Required, BoxGroup("Bot")]
-        private GameObject alertIconPrefab;*/
-        [SerializeField, Required, BoxGroup("Bot")]
-        private GameObject scrapyardBotPrefab;
         
         [SerializeField, Required, BoxGroup("Bot")]
         private Sabre sabrePrefab;
@@ -139,30 +127,6 @@ namespace StarSalvager.Factories
         private EffectProfileScriptableObject effectProfileScriptableObject;
         public EffectProfileScriptableObject EffectProfileScriptableObject => effectProfileScriptableObject;
         
-        /*//============================================================================================================//
-        
-        [SerializeField, Required, BoxGroup("Damage")]
-        private GameObject damageFactory;
-        
-        //============================================================================================================//
-        
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject explosionPrefab;
-        
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject labelPrefab;
-
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject floatingTextPrefab;
-        
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject connectedSpritePrefab;
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject fadeSpritePrefab;
-        
-        [SerializeField, Required, BoxGroup("Particles")]
-        private GameObject shrinkLinePrefab;*/
-
         //============================================================================================================//
 
         [SerializeField, Required, BoxGroup("Asteroid")]
@@ -296,7 +260,7 @@ namespace StarSalvager.Factories
                     return new ComboFactory(comboRemoteData) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(BotFactory):
-                    return new BotFactory(botPrefab, scrapyardBotPrefab, sabrePrefab) as T;
+                    return new BotFactory(botPrefab, sabrePrefab) as T;
                 //----------------------------------------------------------------------------------------------------//
                 case bool _ when type == typeof(EffectFactory):
                     return new EffectFactory(EffectProfileScriptableObject) as T;

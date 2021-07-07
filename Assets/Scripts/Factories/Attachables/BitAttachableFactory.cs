@@ -42,27 +42,6 @@ namespace StarSalvager.Factories
             }
         }
 
-        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<BlockData> blockDatas)
-        {
-            var resources = new Dictionary<BIT_TYPE, int>();
-
-            foreach (var blockData in blockDatas)
-            {
-                if (!blockData.ClassType.Equals(nameof(Bit)))
-                    continue;
-
-                var bitType = (BIT_TYPE) blockData.Type;
-                
-                
-                if(!resources.ContainsKey(bitType))
-                    resources.Add(bitType, 0);
-
-                resources[bitType] += GetTotalResource(bitType, blockData.Level);
-            }
-
-            return resources;
-        }
-        
         public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<Bit> bits)
         {
             var resources = new Dictionary<BIT_TYPE, int>();
@@ -78,21 +57,6 @@ namespace StarSalvager.Factories
             return resources;
         }
 
-        public Dictionary<BIT_TYPE, int> GetTotalResources(IEnumerable<ScrapyardBit> bits)
-        {
-            var resources = new Dictionary<BIT_TYPE, int>();
-
-            foreach (var bit in bits)
-            {
-                if (!resources.ContainsKey(bit.Type))
-                    resources.Add(bit.Type, 0);
-
-                resources[bit.Type] += _remoteData.GetRemoteData(bit.Type).levels[bit.level].resources;
-            }
-
-            return resources;
-        }
-        
         public int GetTotalResource(BIT_TYPE bitType, int level)
         {
             return _remoteData.GetRemoteData(bitType).levels[level].resources;
@@ -217,75 +181,6 @@ namespace StarSalvager.Factories
         {
             var temp = CreateGameObject(bitType, level);
                 
-            return temp.GetComponent<T>();
-        }
-
-        //============================================================================================================//
-
-        /// <summary>
-        /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
-        /// </summary>
-        /// <param name="bitData"></param>
-        /// <returns></returns>
-        public GameObject CreateScrapyardGameObject(BitData bitData)
-        {
-            var remote = _remoteData.GetRemoteData((BIT_TYPE)bitData.Type);
-            var profile = factoryProfile.GetProfile((BIT_TYPE)bitData.Type);
-            var sprite = profile.GetSprite(bitData.Level);
-
-
-            if (!Recycler.TryGrab(out ScrapyardBit temp))
-            {
-                temp = Object.Instantiate(factoryProfile.ScrapyardPrefab).GetComponent<ScrapyardBit>();
-            }
-            temp.SetSprite(sprite);
-            temp.LoadBlockData(bitData);
-
-            return temp.gameObject;
-        }
-
-
-        /// <summary>
-        /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
-        /// </summary>
-        /// <param name="bitData"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T CreateScrapyardObject<T>(BitData bitData)
-        {
-            var temp = CreateScrapyardGameObject(bitData);
-
-            return temp.GetComponent<T>();
-
-        }
-
-        //============================================================================================================//
-
-        /// <summary>
-        /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the GameObject
-        /// </summary>
-        /// <param name="blockData"></param>
-        /// <returns></returns>
-        public GameObject CreateScrapyardGameObject(BIT_TYPE bitType, int level = 0)
-        {
-            var bitData = new BitData
-            {
-                Level = level,
-                Type = (int)bitType
-            };
-
-            return CreateScrapyardGameObject(bitData);
-        }
-        /// <summary>
-        /// Sets the Bit data based on the BlockData passed. This includes Type, Sprite & level. Returns the T
-        /// </summary>
-        /// <param name="blockData"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T CreateScrapyardObject<T>(BIT_TYPE bitType, int level = 0)
-        {
-            var temp = CreateScrapyardGameObject(bitType, level);
-
             return temp.GetComponent<T>();
         }
 

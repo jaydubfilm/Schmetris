@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,33 +19,32 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.PersistentUpgrades
 {
-    public class PersistentUpgradesUI : MonoBehaviour, IStartedUsingController
+    public class PersistentUpgradesUI : MonoBehaviour, IBuildNavigationProfile
     {
         //Properties
         //====================================================================================================================//
 
         #region Properties
 
-        [SerializeField]
-        private RectTransform buttonContainerPrefab;
-        [SerializeField]
-        private UpgradeUIElement upgradeUIElementPrefab;
+        [SerializeField] private RectTransform buttonContainerPrefab;
+        [SerializeField] private UpgradeUIElement upgradeUIElementPrefab;
 
-        [SerializeField]
-        private RectTransform scrollContentRect;
+        [SerializeField] private RectTransform scrollContentRect;
 
-        [SerializeField]
-        private Slider progressSlider;
-        [SerializeField]
-        private TMP_Text starCountText;
+        [SerializeField] private Slider progressSlider;
+        [SerializeField] private TMP_Text starCountText;
+
+        [SerializeField] private Button backButton;
 
         private Dictionary<UPGRADE_TYPE, RectTransform> _uiElementContainers;
         private Dictionary<UpgradeData, UpgradeUIElement> _uiElements;
 
         [SerializeField, BoxGroup("Hover Window")]
         private RectTransform upgradeDetailsContainerRectTransform;
+
         [SerializeField, BoxGroup("Hover Window")]
         private TMP_Text upgradeTitleText;
+
         [SerializeField, BoxGroup("Hover Window")]
         private TMP_Text upgradeDescriptionText;
 
@@ -57,7 +57,6 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         private void OnEnable()
         {
-            InputManager.AddStartedControllerListener(this);
             PlayerDataManager.OnValuesChanged += OnValueChanged;
             OnValueChanged();
 
@@ -68,18 +67,17 @@ namespace StarSalvager.UI.PersistentUpgrades
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= OnValueChanged;
-            InputManager.RemoveControllerListener(this);
         }
 
         #endregion //Unity Functions
 
         //====================================================================================================================//
-        
-        public void SetupUpgrades()
+
+        public void SetupPersistentUpgradesUI()
         {
-            if(HintManager.CanShowHint(HINT.STAR))
+            if (HintManager.CanShowHint(HINT.STAR))
                 HintManager.TryShowHint(HINT.STAR);
-            
+
             //--------------------------------------------------------------------------------------------------------//
 
             UpgradeUIElement CreateElement(in RectTransform parent, in UpgradeData upgradeData, in int index)
@@ -91,15 +89,15 @@ namespace StarSalvager.UI.PersistentUpgrades
 
                 return temp;
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
             if (_uiElementContainers.IsNullOrEmpty())
                 _uiElementContainers = new Dictionary<UPGRADE_TYPE, RectTransform>();
-            
-            if(_uiElements.IsNullOrEmpty())
+
+            if (_uiElements.IsNullOrEmpty())
                 _uiElements = new Dictionary<UpgradeData, UpgradeUIElement>();
-            
+
             var upgrades = FactoryManager.Instance.PersistentUpgrades.Upgrades;
 
             foreach (var upgradeRemoteData in upgrades)
@@ -109,7 +107,7 @@ namespace StarSalvager.UI.PersistentUpgrades
                     container = Instantiate(buttonContainerPrefab, scrollContentRect, false);
                     _uiElementContainers.Add(upgradeRemoteData.upgradeType, container);
                 }
-                
+
                 for (var i = 1; i < upgradeRemoteData.Levels.Count; i++)
                 {
                     var data = new UpgradeData(upgradeRemoteData.upgradeType, upgradeRemoteData.bitType, i);
@@ -121,7 +119,7 @@ namespace StarSalvager.UI.PersistentUpgrades
                     }
                     else
                         element.TryUpdate();
-                    
+
                 }
             }
 
@@ -144,12 +142,12 @@ namespace StarSalvager.UI.PersistentUpgrades
         {
             var remoteData = FactoryManager.Instance.PersistentUpgrades
                 .GetRemoteData(upgradeData.Type, upgradeData.BitType);
-            
+
             var cost = remoteData.Levels[upgradeData.Level].cost;
 
-            if (PlayerDataManager.GetStars() < cost) 
+            if (PlayerDataManager.GetStars() < cost)
                 return;
-            
+
             Alert.ShowAlert("Purchase",
                 $"Are you sure you want to purchase {remoteData.name} Level {upgradeData.Level} for {cost}{TMP_SpriteHelper.STAR_ICON}?",
                 "Buy",
@@ -157,21 +155,25 @@ namespace StarSalvager.UI.PersistentUpgrades
                 answer =>
                 {
                     ShowUpgradeDetails(false, new UpgradeData(), null);
-                    
+
                     if (answer == false)
+                    {
+                        UISelectHandler.SetBuildTarget(GetComponent<MainMenuv2>());
                         return;
+                    }
 
                     if (!PlayerDataManager.TrySubtractStars(cost))
                         throw new Exception("Failed attempting to Purchase Upgrade");
-                    
+
                     PlayerDataManager.SetUpgradeLevel(
                         upgradeData.Type,
                         upgradeData.Level,
                         upgradeData.BitType);
-                    
+
                     PlayerDataManager.SavePlayerAccountData();
-                    
-                    SetupUpgrades();
+
+                    SetupPersistentUpgradesUI();
+                    UISelectHandler.SetBuildTarget(GetComponent<MainMenuv2>());
                 });
         }
 
@@ -182,12 +184,14 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         private void ShowUpgradeDetails(bool show, in UpgradeData upgradeData, in RectTransform rectTransform)
         {
-            var screenPoint = show ? RectTransformUtility.WorldToScreenPoint(null,
+            var screenPoint = show
+                ? RectTransformUtility.WorldToScreenPoint(null,
                     (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x)
                 : Vector2.zero;
 
             ShowUpgradeDetails(show, upgradeData, screenPoint);
         }
+
         private void ShowUpgradeDetails(in bool show, in UpgradeData upgradeData, in Vector2 screenPoint)
         {
 
@@ -199,7 +203,7 @@ namespace StarSalvager.UI.PersistentUpgrades
 
                 var lineCount = tmpText.GetTextInfo(tmpText.text).lineCount;
                 var lineSize = tmpText.fontSize * multiplier;
-                var rectTrans = (RectTransform)tmpText.transform;
+                var rectTrans = (RectTransform) tmpText.transform;
                 var sizeDelta = rectTrans.sizeDelta;
 
                 if (tmpText.GetComponent<LayoutElement>() is LayoutElement layoutElement)
@@ -211,18 +215,18 @@ namespace StarSalvager.UI.PersistentUpgrades
                 {
                     sizeDelta.y = lineSize * lineCount;
                 }
-                
-                
-                rectTrans.sizeDelta = sizeDelta;       
+
+
+                rectTrans.sizeDelta = sizeDelta;
             }
-            
+
             IEnumerator ResizeDelayedCoroutine(params TMP_Text[] args)
             {
                 foreach (var tmpText in args)
                 {
                     tmpText.ForceMeshUpdate();
                 }
-                
+
                 yield return new WaitForEndOfFrame();
 
                 foreach (var tmpText in args)
@@ -230,14 +234,14 @@ namespace StarSalvager.UI.PersistentUpgrades
                     SetRectSize(tmpText);
                 }
             }
-            
+
             //--------------------------------------------------------------------------------------------------------//
-            
+
             upgradeDetailsContainerRectTransform.gameObject.SetActive(show);
 
             if (!show)
                 return;
-            
+
             var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
@@ -249,31 +253,77 @@ namespace StarSalvager.UI.PersistentUpgrades
 
             upgradeTitleText.text = upgradeData.GetUpgradeTitleText();
             upgradeDescriptionText.text = upgradeData.GetUpgradeDetailText();
-            
+
             //====================================================================================================================//
 
             //Resize the details text to accomodate the text
             StartCoroutine(ResizeDelayedCoroutine(upgradeDescriptionText));
-            
+
             upgradeDetailsContainerRectTransform.TryFitInScreenBounds(canvasRect, 20f);
-            
+
         }
 
         #endregion //Callback Functions
-        
-        //IStartUsingController Functions
+
         //====================================================================================================================//
 
-        public void StartedUsingController(bool usingController)
+        public NavigationProfile BuildNavigationProfile()
         {
-            if (scrollContentRect.gameObject.activeInHierarchy == false) return;
+            var selectables = new List<Selectable>
+            {
+                backButton
+            };
+            var overrides = new List<NavigationOverride>();
 
-            EventSystem.current.SetSelectedGameObject(usingController
-                ? _uiElements.FirstOrDefault().Value.ButtonObject
-                : null);
+            Selectable last = null;
+            Selectable first = null;
+
+            var uiElements = _uiElementContainers.Values.ToList();
+            var lastSet = false;
+            for (int i = uiElements.Count - 1; i >= 0 ; i--)
+            {
+                var tempSelectables = uiElements[i].GetComponentsInChildren<Selectable>();
+
+                selectables.AddRange(tempSelectables);
+
+                if (i == 0)
+                    first = tempSelectables.FirstOrDefault(x => x.interactable && x.enabled);
+
+                if (lastSet == false && tempSelectables.Any(x => x.interactable && x.enabled))
+                    continue;
+
+                last = tempSelectables.LastOrDefault(x => x.interactable && x.enabled);
+
+                foreach (var selectable in tempSelectables)
+                {
+                    overrides.Add(new NavigationOverride
+                    {
+                        FromSelectable = selectable,
+                        DownTarget = backButton
+                    });
+                }
+
+                lastSet = true;
+            }
+
+            overrides.Add(new NavigationOverride
+            {
+                FromSelectable = backButton,
+                UpTarget = last
+            });
+
+            return new NavigationProfile(first,
+                selectables,
+                overrides,
+                new[]
+                {
+                    new NavigationRestriction
+                    {
+                        FromDirection = NavigationRestriction.DIRECTION.RIGHT |
+                                        NavigationRestriction.DIRECTION.LEFT,
+                        Selectable = backButton
+                    }
+                });
         }
-
-        //====================================================================================================================//
-        
     }
 }

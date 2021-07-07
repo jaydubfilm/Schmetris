@@ -18,9 +18,6 @@ namespace StarSalvager.ScriptableObjects
 
         [Required]
         public Sprite JunkSprite;
-
-        [Required]
-        public GameObject ScrapyardPrefab;
     }
     
     /// <summary>
