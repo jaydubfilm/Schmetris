@@ -81,6 +81,16 @@ namespace StarSalvager.Utilities.UI
         public static Selectable CurrentlySelected =>
             Instance?.CurrentEventSystem?.currentSelectedGameObject.GetComponent<Selectable>();
 
+        public static bool SendNavigationEvents
+        {
+            get => (bool) Instance?.CurrentEventSystem?.sendNavigationEvents;
+            set
+            {
+                if(Instance?.CurrentEventSystem != null)
+                    Instance.CurrentEventSystem.sendNavigationEvents = value;
+            }
+        }
+
         //Properties
         //====================================================================================================================//
 
@@ -257,7 +267,7 @@ namespace StarSalvager.Utilities.UI
             IEnumerator ActivateNavigation()
             {
                 yield return new WaitForSeconds(0.2f);
-                CurrentEventSystem.sendNavigationEvents = true;
+                SendNavigationEvents = true;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -266,7 +276,7 @@ namespace StarSalvager.Utilities.UI
 
             if (!_usingController)
             {
-                CurrentEventSystem.sendNavigationEvents = false;
+                SendNavigationEvents = false;
                 SetActive(false);
                 return;
             }
