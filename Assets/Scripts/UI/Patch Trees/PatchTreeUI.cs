@@ -1311,14 +1311,14 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             var patchType = (PATCH_TYPE) patchData.Type;
             var patchRemote = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
-            var cost = (patchRemote.Levels[patchData.Level].gears, patchRemote.Levels[patchData.Level].silver);
+            var (gears, silver) = patchData.GetPatchCost();
 
             //====================================================================================================================//
 
             patchHoverTitleText.text = $"{patchRemote.name} {Mathfx.ToRoman(patchData.Level + 1)}";
             patchHoverDetailsText.text = $"{patchRemote.description}\n" +
-                                         $"{cost.gears}{TMP_SpriteHelper.GEAR_ICON}" +
-                                         $"{(cost.silver > 0 ? $" {cost.silver}{TMP_SpriteHelper.SILVER_ICON}":string.Empty)}";
+                                         $"{gears}{TMP_SpriteHelper.GEAR_ICON}" +
+                                         $"{(silver > 0 ? $" {silver}{TMP_SpriteHelper.SILVER_ICON}":string.Empty)}";
             
             //====================================================================================================================//
 
