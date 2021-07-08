@@ -122,3 +122,29 @@ MonoBehaviour:
       longDescription: 'You can also collect one additional part of each colour in
         the ''Secondary Parts'' section.  Swap these with your primary parts when
         you want to activate them. '
+  - type: 19
+    hintTexts:
+    - shortText: 
+      longDescription: 'You can salvage ONE new part from the debris of every wreck.
+        Remember that you only have room for two parts of each type on your drone,
+        so choose carefully. '
+  - type: 20
+    hintTexts:
+    - shortText: 
+      longDescription: Welcome to the wreck screen!  Here you can use the gears you
+        have collected to repair your drone, or to upgrade the parts you have.  Also,
+        if you have two parts of the same colour you can swap them here.
+    - shortText: Available Patches
+      longDescription: As you can see there are (number of patches available) patches
+        available to be extracted from this wreck. Select one of them to find out
+        how this patch will improve your drone.
+  - type: 21
+    hintTexts:
+    - shortText: Patch Tree
+      longDescription: 'This patch tree shows the possible upgrades for this part
+        and what they cost.  Notice the higher level patches cost silver bits as
+        well as gears. '
+    - shortText: Part Summary
+      longDescription: "Below the tree you can see info about this part, and how
+        a selected patch will improve it.  If you like what you see, and can afford
+        it, click \u201CInstall Patch\u201D to install this one."

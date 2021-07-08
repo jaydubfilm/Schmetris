@@ -41,7 +41,10 @@ namespace StarSalvager.UI.Hints
         WRECK,
         STAR,
         MAP,
-        LAYOUT
+        LAYOUT,
+        PICK_PART,
+        ENTER_WRECK,
+        PATCH_TREE
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -251,6 +254,7 @@ namespace StarSalvager.UI.Hints
                     break;
 
                 //--------------------------------------------------------------------------------------------------------//
+                case HINT.PICK_PART:
                 case HINT.STAR:
                     objectsToHighlight = new object[]
                     {
@@ -264,8 +268,12 @@ namespace StarSalvager.UI.Hints
 
                 //--------------------------------------------------------------------------------------------------------//
                 case HINT.LAYOUT:
+                case HINT.ENTER_WRECK:
+                case HINT.PATCH_TREE:
                     objectsToHighlight = FindObjectOfType<PatchTreeUI>().GetHintElements(hint);
                     break;
+
+                
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);

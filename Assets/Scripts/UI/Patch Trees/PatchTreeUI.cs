@@ -246,6 +246,22 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                        _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                        _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                     };
+                //TODO: https://agamestudios.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=SS&modal=detail&selectedIssue=SS-324&assignee=70121%3A3b0fb239-d98e-4572-b3fb-abe2fd4351fc
+                case HINT.PATCH_TREE:
+                    return new object[]
+                    {
+
+                    };
+                case HINT.ENTER_WRECK:
+                    return new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.zero,
+                            size = Vector3.zero
+                        },
+                        patchTreeTierContainer,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -369,6 +385,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 else
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+
+                    if (HintManager.CanShowHint(HINT.PICK_PART)) HintManager.TryShowHint(HINT.PICK_PART, 1f);
                 }
             }
 
@@ -402,6 +420,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
+                    if (HintManager.CanShowHint(HINT.ENTER_WRECK)) HintManager.TryShowHint(HINT.ENTER_WRECK);
                     PlayerDataManager.GeneratePartPatchOptions();
                     break;
                 default:

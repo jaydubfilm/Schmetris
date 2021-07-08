@@ -124,6 +124,11 @@ namespace StarSalvager.Values
                 [HINT.STAR] = false,
                 [HINT.MAP] = false,
                 [HINT.LAYOUT] = false,
+
+
+                [HINT.PICK_PART] = false,
+                [HINT.ENTER_WRECK] = false,
+                [HINT.PATCH_TREE] = false,
             };
             _upgrades = new[]
             {
