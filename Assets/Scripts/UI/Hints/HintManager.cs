@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -317,6 +318,8 @@ namespace StarSalvager.UI.Hints
             Time.timeScale = 0f;
             OnShowingHintAction?.Invoke(true);
             ShowingHint = true;
+            //disable controller traversal
+            UISelectHandler.SendNavigationEvents = false;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
@@ -369,10 +372,13 @@ namespace StarSalvager.UI.Hints
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = ACTION_MAP.NULL;
+            
 
             OnShowingHintAction?.Invoke(false);
             Time.timeScale = 1f;
             ShowingHint = false;
+            //allow for controller traversal
+            UISelectHandler.SendNavigationEvents = true;
             highlightManager.SetActive(false);
             Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
         }
