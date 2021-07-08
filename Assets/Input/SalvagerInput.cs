@@ -1041,6 +1041,17 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""12d69dff-0d58-4b4e-aa94-8a620f4fa74c"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""160e9409-2c47-4c39-ace1-f90c28aefef9"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
