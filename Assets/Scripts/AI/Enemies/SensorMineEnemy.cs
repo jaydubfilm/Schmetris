@@ -8,6 +8,7 @@ using StarSalvager.Factories;
 using StarSalvager.Prototype;
 using StarSalvager.Utilities.Analytics;
 using StarSalvager.Utilities.Debugging;
+using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Values;
 using UnityEngine;
@@ -58,6 +59,16 @@ namespace StarSalvager.AI
         public override void SetFrozen(in float time)
         {
             Disabled = true;
+        }
+        
+        protected override void OnCollide(GameObject gameObject, Vector2 worldHitPoint)
+        {
+            if (!gameObject.CompareTag(TagsHelper.PLAYER))
+                return;
+
+            collider.enabled = false;
+            //Fixed issue where colliding with player had a delayed death SS-332
+            SetState(STATE.ATTACK);
         }
 
         //State Functions

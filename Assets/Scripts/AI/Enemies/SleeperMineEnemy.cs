@@ -262,7 +262,8 @@ namespace StarSalvager.AI
                 return;
 
             collider.enabled = false;
-            SetState(STATE.ANTICIPATION);
+            //Fixed issue where colliding with player had a delayed death SS-332
+            SetState(STATE.ATTACK);
         }
 
         //IHealth Override
