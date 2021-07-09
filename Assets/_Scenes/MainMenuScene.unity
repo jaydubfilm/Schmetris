@@ -1657,7 +1657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 1177841193}
+  m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &598996321
@@ -1961,12 +1961,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75571d36a9c63684cbe9b9e6ef8c0e6a, type: 3}
---- !u!1 &1177841193 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8017945057484899895, guid: c4303a0e45d7b444aa039bfdb3d12d59,
-    type: 3}
-  m_PrefabInstance: {fileID: 321811387}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1350056042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,6 +2243,18 @@ MonoBehaviour:
   Hash1_Fix2_0: []
   Hash2: []
   Hash3:
+  - FavParams: 0
+    FavString: []
+    list:
+    - {fileID: 598996318}
+    ActiveGameObject: {fileID: 598996318}
+    GUIDsList: []
+    GUIDsActiveGameObject: 
+    PATHsList: []
+    PATHsActiveGameObject: 
+    InstanceID: 0
+    wasInit: 0
+    CashedBool: 0
   - FavParams: 0
     FavString: []
     list:
