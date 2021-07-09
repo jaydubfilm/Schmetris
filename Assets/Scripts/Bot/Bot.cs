@@ -818,6 +818,8 @@ namespace StarSalvager
             }
 
             RotateAttachableSprites();
+            //ensure all the parts are updating properly when force complete rotation is applied
+            BotPartsLogic.PartsUpdateLoop();
         }
 
         private void RotateAttachableSprites()
