@@ -170,6 +170,16 @@ namespace StarSalvager.Utilities.Trello
             StartCoroutine(TakeScreenshotRoutine(null));
         }
 
+        private GameState _gameState;
+        private string _deviceName;
+        private ACTION_MAP _actionMap;
+        public void SaveStateInfo(in GameState gameState, in string deviceName, in ACTION_MAP actionMap)
+        {
+            _gameState = gameState;
+            _deviceName = deviceName;
+            _actionMap = actionMap;
+        }
+
         private void SendReport()
         {
             var platform = Application.isEditor ? "Editor" : Application.platform.ToString();
@@ -184,9 +194,9 @@ namespace StarSalvager.Utilities.Trello
                 "====================",
                 $"Platform: {platform}",
                 $"Version: {Application.version}",
-                $"Game State: {GameManager.CurrentGameState.ToString()}",
-                $"Input Device: {InputManager.CurrentInputDeviceName}",
-                $"Input Action Map: {InputManager.CurrentActionMap}",
+                $"Game State: {_gameState.ToString()}",
+                $"Input Device: {_deviceName}",
+                $"Input Action Map: {_actionMap}",
                 $"Scene: {SceneLoader.CurrentScene}"
             });
 
