@@ -8095,7 +8095,7 @@ MonoBehaviour:
     triggerInputImage: {fileID: 4062249533422245520}
     slider: {fileID: 1847234627506919358}
     fillImage: {fileID: 1416946799750667688}
-    NAME: UP [YELLOW]
+    NAME: LR [YELLOW]
   - backgroundImage: {fileID: 7342643545682775317}
     foregroundImage: {fileID: 7565618612073681340}
     secondPartImage: {fileID: 4724887726770228755}
@@ -8103,7 +8103,7 @@ MonoBehaviour:
     triggerInputImage: {fileID: 4724887726770228755}
     slider: {fileID: 99700352731938398}
     fillImage: {fileID: 166218794203415415}
-    NAME: DOWN [GREY]
+    NAME: RL [GREY]
   - backgroundImage: {fileID: 0}
     foregroundImage: {fileID: 0}
     secondPartImage: {fileID: 0}
@@ -8119,7 +8119,7 @@ MonoBehaviour:
     triggerInputImage: {fileID: 6793601072814814115}
     slider: {fileID: 5647413199682952836}
     fillImage: {fileID: 606840679958182004}
-    NAME: LEFT [BLUE]
+    NAME: LL [BLUE]
   - backgroundImage: {fileID: 6916574585216323674}
     foregroundImage: {fileID: 13232506991855823}
     secondPartImage: {fileID: 4249702566115244229}
@@ -8127,7 +8127,7 @@ MonoBehaviour:
     triggerInputImage: {fileID: 4249702566115244229}
     slider: {fileID: 3757709100253414771}
     fillImage: {fileID: 7747246944542671947}
-    NAME: RIGHT [RED]
+    NAME: RR [RED]
   inputIcons:
   - NAME: Up[0]
     keyboardSprite: {fileID: 21300000, guid: 57b994860e8a98c45ac30c8ec298ee15, type: 3}
