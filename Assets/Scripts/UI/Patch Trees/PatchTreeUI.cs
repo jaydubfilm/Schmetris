@@ -832,8 +832,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 //Update Values
                 SaveBlockData();
                 
-                _objectToSelect = UISelectHandler.CurrentlySelected;
-                UISelectHandler.RebuildNavigationProfile();
+                
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -854,6 +853,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     }
 
                     ScrapPart();
+                    _objectToSelect = default;
+                    UISelectHandler.SetBuildTarget(this);
                 });
         }
 
