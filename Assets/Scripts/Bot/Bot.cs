@@ -877,6 +877,32 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        /// <summary>
+        /// If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
+        /// </summary>
+        /// <param name="bit"></param>
+        private void TryAddCollectedAmmo(in Bit bit)
+        {
+            if (!bit.toBeCollected) 
+                return;
+
+            var temp = bit;
+            
+            //TODO Get the value and add
+            var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                .FirstOrDefault(x => x.level == temp.level)
+                .ammoEarned * Globals.BitDropCollectionMultiplier);
+
+            if (ammoEarned != 0)
+            {
+                //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
+                FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
+            }
+
+            bit.toBeCollected = false;
+        }
+
         #region TryAddNewAttachable
 
         public override bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
@@ -922,25 +948,7 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
-                            //If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
-                            //--------------------------------------------------------------------------------------------------------//
-                            
-                            if (bit.toBeCollected)
-                            {
-                                //TODO Get the value and add
-                                var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                                    .FirstOrDefault(x => x.level == bit.level)
-                                    .ammoEarned * Globals.BitDropCollectionMultiplier);
-
-                                if (ammoEarned != 0)
-                                {
-                                    //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
-                                    GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
-                                    FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
-                                }
-
-                                bit.toBeCollected = false;
-                            }
+                            TryAddCollectedAmmo(bit);
 
                             //--------------------------------------------------------------------------------------------------------//
                             
@@ -1606,8 +1614,10 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit _:
+                case Bit bit:
                     if(checkForCombo) CheckForCombosAround(coordinate);
+                    
+                    TryAddCollectedAmmo(bit);
                     break;
                 /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);

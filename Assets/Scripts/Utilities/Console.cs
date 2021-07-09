@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using StarSalvager.AI;
 using StarSalvager.Audio;
@@ -70,6 +71,7 @@ namespace StarSalvager.Utilities
             /*string.Concat("print ", "liquid").ToUpper(),*/
             string.Concat("print ", "parts").ToUpper(),
             string.Concat("print ", "patches").ToUpper(),
+            string.Concat("print ", "sessionpath").ToUpper(),
             string.Concat("print ", "upgrades").ToUpper(),
 
             "\n",
@@ -723,6 +725,9 @@ namespace StarSalvager.Utilities
                 case "bits":
                     _consoleDisplay += $"\n{GetEnumsAsString<BIT_TYPE>()}";
                     break;
+                case "enemies":
+                    _consoleDisplay += $"\n{GetEnemyNameList()}";
+                    break;
                 case "patches":
                     _consoleDisplay += $"\n{GetEnumsAsString<PATCH_TYPE>()}";
                     break;
@@ -733,8 +738,17 @@ namespace StarSalvager.Utilities
 
                     _consoleDisplay += $"\n{string.Join(", ", partTypes)}";
                     break;
-                case "enemies":
-                    _consoleDisplay += $"\n{GetEnemyNameList()}";
+                case "sessionpath":
+                    string WindowsPath() => Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData", "Sessions");
+                    string MacOSPath() => Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData", "Sessions");
+
+                    Files.TestSessionData();
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+                    _consoleDisplay += $"\n{string.Join(", ", WindowsPath())}";
+#elif UNITY_STANDALONE_OSX
+                    _consoleDisplay += $"\n{string.Join(", ", MacOSPath())}";
+#endif
+                    
                     break;
                 case "upgrades":
                     _consoleDisplay += $"\n{GetEnumsAsString<UPGRADE_TYPE>()}";
