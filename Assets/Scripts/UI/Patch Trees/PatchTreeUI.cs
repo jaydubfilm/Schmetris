@@ -246,6 +246,22 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                        _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                        _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                     };
+                case HINT.PATCH_TREE:
+                    return new object[]
+                    {
+                        patchTreeTierContainer,
+                        patchDetailsWindow.transform as RectTransform,
+                    };
+                case HINT.ENTER_WRECK:
+                    return new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.zero,
+                            size = Vector3.zero
+                        },
+                        patchTreeTierContainer,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -369,6 +385,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 else
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+
+                    if (HintManager.CanShowHint(HINT.PICK_PART)) HintManager.TryShowHint(HINT.PICK_PART, 1f);
                 }
             }
 
@@ -402,6 +420,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
+                    if (HintManager.CanShowHint(HINT.ENTER_WRECK)) HintManager.TryShowHint(HINT.ENTER_WRECK);
                     PlayerDataManager.GeneratePartPatchOptions();
                     break;
                 default:
@@ -932,6 +951,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 return;
             }
 
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
+
             //Show this part on the PatchTree
             GeneratePatchTree(partData);
 
@@ -963,6 +984,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             _objectToSelect = purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected;
             UISelectHandler.RebuildNavigationProfile();
+
+
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
         }
 
         private void OnPurchasePatchPressed()

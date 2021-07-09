@@ -11,6 +11,7 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
@@ -40,7 +41,10 @@ namespace StarSalvager.UI.Hints
         WRECK,
         STAR,
         MAP,
-        LAYOUT
+        LAYOUT,
+        PICK_PART,
+        ENTER_WRECK,
+        PATCH_TREE
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -250,6 +254,7 @@ namespace StarSalvager.UI.Hints
                     break;
 
                 //--------------------------------------------------------------------------------------------------------//
+                case HINT.PICK_PART:
                 case HINT.STAR:
                     objectsToHighlight = new object[]
                     {
@@ -263,8 +268,12 @@ namespace StarSalvager.UI.Hints
 
                 //--------------------------------------------------------------------------------------------------------//
                 case HINT.LAYOUT:
+                case HINT.ENTER_WRECK:
+                case HINT.PATCH_TREE:
                     objectsToHighlight = FindObjectOfType<PatchTreeUI>().GetHintElements(hint);
                     break;
+
+                
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -317,6 +326,8 @@ namespace StarSalvager.UI.Hints
             Time.timeScale = 0f;
             OnShowingHintAction?.Invoke(true);
             ShowingHint = true;
+            //disable controller traversal
+            UISelectHandler.SendNavigationEvents = false;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
@@ -369,10 +380,13 @@ namespace StarSalvager.UI.Hints
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = ACTION_MAP.NULL;
+            
 
             OnShowingHintAction?.Invoke(false);
             Time.timeScale = 1f;
             ShowingHint = false;
+            //allow for controller traversal
+            UISelectHandler.SendNavigationEvents = true;
             highlightManager.SetActive(false);
             Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
         }
