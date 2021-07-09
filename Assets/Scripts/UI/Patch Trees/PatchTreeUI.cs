@@ -246,11 +246,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                        _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                        _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                     };
-                //TODO: https://agamestudios.atlassian.net/secure/RapidBoard.jspa?rapidView=1&projectKey=SS&modal=detail&selectedIssue=SS-324&assignee=70121%3A3b0fb239-d98e-4572-b3fb-abe2fd4351fc
                 case HINT.PATCH_TREE:
                     return new object[]
                     {
-
+                        patchTreeTierContainer,
+                        patchDetailsWindow.transform as RectTransform,
                     };
                 case HINT.ENTER_WRECK:
                     return new object[]
@@ -951,6 +951,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 return;
             }
 
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
+
             //Show this part on the PatchTree
             GeneratePatchTree(partData);
 
@@ -982,6 +984,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             _objectToSelect = purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected;
             UISelectHandler.RebuildNavigationProfile();
+
+
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
         }
 
         private void OnPurchasePatchPressed()
