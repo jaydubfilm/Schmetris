@@ -66,6 +66,8 @@ namespace StarSalvager.UI.Hints
 
         [SerializeField, Required, Space(10f)]
         private Button confirmButton;
+        [SerializeField, Required]
+        private TMP_Text continueText;
         
         [SerializeField, Required]
         private HighlightManager highlightManager;
@@ -460,6 +462,7 @@ namespace StarSalvager.UI.Hints
         {
             this.hintText.text = hintText.shortText;
             infoText.text = hintText.longDescription;
+            continueText.text = String.IsNullOrWhiteSpace(hintText.continueText) ? "continue" : hintText.continueText;
         }
 
         private Bounds GetPositionAsBounds(in Vector2 worldPosition)
