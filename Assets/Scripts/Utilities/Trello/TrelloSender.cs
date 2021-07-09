@@ -15,6 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
+using StarSalvager.Utilities.UI;
 
 namespace StarSalvager.Utilities.Trello
 {
@@ -68,6 +69,7 @@ namespace StarSalvager.Utilities.Trello
             cancelButton.onClick.AddListener(()=>
             {
                 ResetInput();
+                UISelectHandler.SendNavigationEvents = true;
                 bugWindowObject.SetActive(false);
                 GameTimer.SetPaused(false);
                 InputManager.SetToExpectedActionMap();
@@ -128,7 +130,6 @@ namespace StarSalvager.Utilities.Trello
 
         public void OpenBugSubmissionWindow(Action callback, in bool takeScreenShot = true)
         {
-
             //--------------------------------------------------------------------------------------------------------//
             
             void Ready()
@@ -149,6 +150,8 @@ namespace StarSalvager.Utilities.Trello
             
             if (bugWindowObject.activeInHierarchy) 
                 return;
+
+            UISelectHandler.SendNavigationEvents = false;
 
             _callBack = callback;
             

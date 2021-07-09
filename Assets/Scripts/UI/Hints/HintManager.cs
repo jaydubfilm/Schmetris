@@ -380,15 +380,19 @@ namespace StarSalvager.UI.Hints
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = ACTION_MAP.NULL;
-            
 
-            OnShowingHintAction?.Invoke(false);
-            Time.timeScale = 1f;
-            ShowingHint = false;
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
             //allow for controller traversal
             UISelectHandler.SendNavigationEvents = true;
+
+            Time.timeScale = 1f;
+            ShowingHint = false;
             highlightManager.SetActive(false);
-            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
+            
+            //small delay to avoid pressing currently selected items while attempting to close the hint.
+            yield return new WaitForSeconds(0.1f);
+
+            OnShowingHintAction?.Invoke(false);
         }
 
         /// <summary>

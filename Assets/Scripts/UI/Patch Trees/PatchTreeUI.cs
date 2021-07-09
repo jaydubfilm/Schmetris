@@ -781,9 +781,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void ScrapPartPressed()
         {
-
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ScrapPart()
             {
                 var partTypeInt = (int) _selectedPart.type;
@@ -858,8 +859,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void SwapPartPressed()
         {
+
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ListShuffles(in int targetPartIndex, ref List<PartData> fromList, ref List<PartData> toList)
             {
                 var category = _selectedPart.type.GetCategory();
@@ -912,6 +916,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         /// <exception cref="Exception"></exception>
         private void OnPartPressed(PART_TYPE partType)
         {
+            if (_showingHint)
+                return;
+
             //Determine if the part is in storage or on the bot
             if (partType == PART_TYPE.EMPTY)
                 throw new Exception();
@@ -928,6 +935,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
         private void OnPartPressed(in BIT_TYPE category, in bool inStorage)
         {
+            if (_showingHint)
+                return;
+
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             
             var cat = category;
@@ -964,6 +974,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnPatchPressed(PART_TYPE partType, PatchData patchData)
         {
+            if (_showingHint)
+                return;
+            
             //Present the purchase option window to the player
             SetSelectedPatch(partType, patchData);
             //Ensure that when a loose patch is selected, that we change which part its selected for
@@ -991,6 +1004,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnPurchasePatchPressed()
         {
+            if (_showingHint)
+                return;
+
             //Get the price of Patch
             var (gears, silver) = _selectedPatch.patchData.GetPatchCost();
             //Check that the player can afford the patch
