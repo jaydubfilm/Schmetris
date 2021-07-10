@@ -419,6 +419,9 @@ namespace StarSalvager.UI
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += ValuesUpdated;
             PlayerDataManager.OnItemUnlocked += UnlockItem;
+
+            PlayerDataManager.OnHealthChanged += OnHealthChanged;
+            SetHealthCracks(1f);
         }
 
         private void OnDisable()
@@ -428,6 +431,8 @@ namespace StarSalvager.UI
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
             PlayerDataManager.OnItemUnlocked -= UnlockItem;
+            
+            PlayerDataManager.OnHealthChanged -= OnHealthChanged;
         }
 
         #endregion //Unity Functions
@@ -618,6 +623,19 @@ namespace StarSalvager.UI
             botHealthBarSlider.value = value;
 
         }*/
+        private void OnHealthChanged(float currentHealth, float currentMax) =>
+            SetHealthCracks(currentHealth / currentMax);
+        private void SetHealthCracks(in float value)
+        {
+            var inverse = 1f - value;
+
+            var crackIncrement = 1f / crackImages.Length;
+
+            for (int i = 0; i < crackImages.Length; i++)
+            {
+                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
+            }   
+        }
 
         public void SetPlayerXP(in int xp)
         {
