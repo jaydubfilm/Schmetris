@@ -114,7 +114,7 @@ MonoBehaviour:
     - shortText: Wrecks
       longDescription: Congratulations, you reached your first wreck! These are treasure
         troves of useful salvage! Each wreck type offers a different selection of
-        components. Use what you find here to upgrade or repair your drone.
+        components. Use what you find to upgrade or repair your drone.
       continueText: 
   - type: 16
     hintTexts:
@@ -147,7 +147,7 @@ MonoBehaviour:
       longDescription: 'You can salvage ONE new part from the debris of every wreck.
         Remember that you only have room for two parts of each type on your drone,
         so choose carefully. '
-      continueText: NO BRAINER, ACTUALLY
+      continueText: NO BRAINER
   - type: 20
     hintTexts:
     - shortText: 
