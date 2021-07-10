@@ -8,6 +8,15 @@ namespace StarSalvager.ScriptableObjects
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Star Salvager/Scriptable Objects/Game Settings")]
     public class GameSettingsScriptableObject : ScriptableObject
     {
+        [BoxGroup("Prototyping/Health")]
+        public float startingHealth;
+        [BoxGroup("Prototyping/Health"), Range(0f,1f)]
+        public float damageMaxReductionMultiplier;
+        [BoxGroup("Prototyping/Health"), Range(0f,1f)]
+        public float maxHealthIncreaseMultiplier = 1.0f;
+        [BoxGroup("Prototyping/Health")]
+        public Vector2 maxHealthBounds;
+        
         [BoxGroup("Prototyping")]
         public bool usePartColors = true;
         

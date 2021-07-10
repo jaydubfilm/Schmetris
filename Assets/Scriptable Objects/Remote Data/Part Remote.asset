@@ -397,8 +397,6 @@ MonoBehaviour:
       value: 24
     - key: Capacity
       value: 100
-    - key: Health
-      value: 100
     - key: Heal
       value: 5
     isManual: 0

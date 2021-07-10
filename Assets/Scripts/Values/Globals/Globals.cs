@@ -69,6 +69,11 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static Vector2 MaxHealthBounds => m_gameSettings.maxHealthBounds;
+        public static float StartingHealth => m_gameSettings.startingHealth;
+        public static float DamageMaxReductionMultiplier => m_gameSettings.damageMaxReductionMultiplier;
+        public static float MaxHealthHealthIncreaseMultiplier => m_gameSettings.maxHealthIncreaseMultiplier;
+
         public static bool UseRailgunFireLine => m_gameSettings.useRailgunFireLine;
         public static float PartSwapTime => m_gameSettings.partSwapTime;
         public static bool UsePartColors => m_gameSettings.usePartColors;

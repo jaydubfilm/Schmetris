@@ -24,6 +24,8 @@ namespace StarSalvager.Utilities.Saving
         public static Action OnCapacitiesChanged;
         public static Action<PartAttachableFactory.PART_OPTION_TYPE, PART_TYPE> NewPartPicked;
 
+        public static Action<float, float> OnHealthChanged;
+
         //Properties
         //====================================================================================================================//
 
@@ -261,14 +263,43 @@ namespace StarSalvager.Utilities.Saving
         #region Bot Health
 
         public static float GetBotHealth() => HasRunData ? PlayerRunData.currentBotHealth : 0;
+        public static float GetBotMaxHealth() => HasRunData ? PlayerRunData.maxHealth : 0;
 
         public static void SetBotHealth(in float health)
         {
-            PlayerRunData.currentBotHealth = health;
+            PlayerRunData.currentBotHealth = Mathf.Clamp(health, 0, GetBotMaxHealth()) ;
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
         }
 
-        #endregion //Bot Health
+        public static void AddBotHealth(in float addHealth)
+        {
+            var newValue = Mathf.Clamp(GetBotHealth() + addHealth, 0, GetBotMaxHealth());
+            SetBotHealth(newValue);
+        }
         
+        public static void ApplyDamage(in float damage)
+        {
+            var dmg = Mathf.Abs(damage);
+            PlayerRunData.maxHealth -= dmg * Globals.DamageMaxReductionMultiplier;
+            PlayerRunData.currentBotHealth -= dmg;
+            
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
+        }
+
+        public static void IncreaseMaxHealth(in float amount)
+        {
+            PlayerRunData.maxHealth += amount;
+            PlayerRunData.currentBotHealth += amount;
+         
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
+        }
+        
+        public static void RefillHealth()
+        {
+            SetBotHealth(GetBotMaxHealth());
+        }
+        #endregion //Bot Health
+
         //Storage Parts
         //====================================================================================================================//
 

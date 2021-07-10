@@ -87,8 +87,7 @@ namespace StarSalvager.Utilities.Saving
 
         [JsonProperty] private int _silver;
 
-        [JsonConverter(typeof(DecimalConverter))]
-        public float currentBotHealth;
+
         public List<IBlockData> DroneBlockData;
         public List<IBlockData> PartsInStorageBlockData;
 
@@ -106,8 +105,14 @@ namespace StarSalvager.Utilities.Saving
         public IReadOnlyList<PartData> CurrentPatchOptions => _currentPatchOptions;
         [JsonProperty]
         private List<PartData> _currentPatchOptions;
-        /*[JsonProperty]
-        private List<PartData> _wreckPatchOptions;*/
+
+
+        //Health Properties
+        //====================================================================================================================//
+        [JsonConverter(typeof(DecimalConverter))]
+        public float currentBotHealth;
+        [JsonConverter(typeof(DecimalConverter))]
+        public float maxHealth;
 
         #endregion //Properties
 
@@ -130,7 +135,7 @@ namespace StarSalvager.Utilities.Saving
             canChoosePart = true;
 
             _gears = startingGears;
-            currentBotHealth = botStartHealth;
+            currentBotHealth = maxHealth = botStartHealth;
 
             StarsAtRunBeginning = starsAtRunBeginning;
             XPAtRunBeginning = xpAtRunBeginning;
@@ -194,6 +199,7 @@ namespace StarSalvager.Utilities.Saving
             DroneBlockData = new List<IBlockData>(defaultDrone);
 
             //--------------------------------------------------------------------------------------------------------//
+
             
         }
 
@@ -403,6 +409,18 @@ namespace StarSalvager.Utilities.Saving
         }*/
 
         #endregion //Run Progress
+
+        //Health
+        //====================================================================================================================//
+
+        #region Health
+
+        public void ApplyDamage(in float damage)
+        {
+            
+        }
+
+        #endregion //Health
 
         //Misc Functions
         //====================================================================================================================//
