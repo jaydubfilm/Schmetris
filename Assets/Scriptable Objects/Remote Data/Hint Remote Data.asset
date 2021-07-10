@@ -98,7 +98,7 @@ MonoBehaviour:
     hintTexts:
     - shortText: Silver
       longDescription: You made a SILVER bit by matching three white ones!  This
-        gives you AMMO of every colour.  Silver bits are safely stored inside your
+        gives you ammo of EVERY colour.  Silver bits are safely stored inside your
         core and can be used to craft high level patches at wrecks.
       continueText: 
   - type: 14
@@ -114,8 +114,7 @@ MonoBehaviour:
     - shortText: Wrecks
       longDescription: Congratulations, you reached your first wreck! These are treasure
         troves of useful salvage! Each wreck type offers a different selection of
-        salvageable components. Use what you find here to upgrade or repair your
-        drone.
+        components. Use what you find here to upgrade or repair your drone.
       continueText: 
   - type: 16
     hintTexts:
