@@ -132,15 +132,10 @@ MonoBehaviour:
   - type: 18
     hintTexts:
     - shortText: Primary
-      longDescription: 'Right now you have one active part:  a purple Main Weapon
-        attached to your drone''s core.  You can attach up to four active parts to
-        this core... one of each colour!'
-      continueText: 
-    - shortText: Secondary
-      longDescription: 'You can also collect one additional part of each colour in
-        the ''Secondary Parts'' section.  Swap these with your primary parts when
-        you want to activate them. '
-      continueText: 
+      longDescription: 'This is your drone layout.  Right now you have only one active
+        part:  a purple Main Weapon attached to your drone''s core. Collect more
+        parts to enhance your drone''s performance.'
+      continueText: LAUNCH
   - type: 19
     hintTexts:
     - shortText: 
