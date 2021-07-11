@@ -61,8 +61,8 @@ MonoBehaviour:
     hintTexts:
     - shortText: Gears
       longDescription: Nice work! That insectoid dropped some useful mechanical parts
-        called GEARS. Gears are like money you can use to 'buy' repairs or upgrades
-        at wrecks. Collect as many as you can.
+        called GEARS. Gears are like money you can use to 'buy' upgrades at wrecks.
+        Collect as many as you can.
       continueText: 
   - type: 8
     hintTexts:
@@ -104,17 +104,16 @@ MonoBehaviour:
   - type: 14
     hintTexts:
     - shortText: Health
-      longDescription: 'Uh-oh: Your drone core has sustained a direct hit!  Fortunately,
-        you have enough greenium in storage to repair the damage. Repairs happen
-        automatically but they use up your greenium, so be sure to replenish it by
-        making more green combos!'
+      longDescription: 'Uh-oh: Your drone core has sustained a direct hit.  Don''t
+        worry, your drone will repair itself after a few seconds.  Make GREEN combos
+        to increase your max health.'
       continueText: 
   - type: 15
     hintTexts:
     - shortText: Wrecks
       longDescription: Congratulations, you reached your first wreck! These are treasure
         troves of useful salvage! Each wreck type offers a different selection of
-        components. Use what you find to upgrade or repair your drone.
+        components. Use what you find to upgrade your drone.
       continueText: 
   - type: 16
     hintTexts:
@@ -147,8 +146,8 @@ MonoBehaviour:
     hintTexts:
     - shortText: 
       longDescription: Welcome to the wreck screen!  Here you can use the gears you
-        have collected to repair your drone, or to upgrade the parts you have.  Also,
-        if you have two parts of the same colour you can swap them here.
+        have collected to upgrade the parts you have.  Also, if you have two parts
+        of the same colour you can swap them here.
       continueText: WOW
     - shortText: Available Patches
       longDescription: As you can see there are (number of patches available) patches
