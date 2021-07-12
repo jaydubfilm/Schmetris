@@ -6,7 +6,7 @@ using UnityEngine;
 namespace StarSalvager
 {
     [RequireComponent(typeof(SimpleAnimator))]
-    public class AnimatedComponent :  Component, ICustomRecycle, ISimpleAnimation
+    public class AnimatedGearCollectable :  GearCollectable, ICustomRecycle, ISimpleAnimation
     {
         public SimpleAnimator SimpleAnimator
         {
@@ -29,7 +29,7 @@ namespace StarSalvager
 
         public Type GetOverrideType()
         {
-            return typeof(AnimatedComponent);
+            return typeof(AnimatedGearCollectable);
         }
 
         //============================================================================================================//

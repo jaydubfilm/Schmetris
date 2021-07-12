@@ -18,6 +18,7 @@ using StarSalvager.Cameras;
 using StarSalvager.Prototype;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
 
 namespace StarSalvager
@@ -179,8 +180,8 @@ namespace StarSalvager
                     case Asteroid asteroid:
                         Recycler.Recycle<Asteroid>(asteroid);
                         break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
+                    case GearCollectable component:
+                        Recycler.Recycle<GearCollectable>(component);
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape, new
@@ -223,8 +224,8 @@ namespace StarSalvager
                     case Asteroid asteroid:
                         Recycler.Recycle<Asteroid>(asteroid);
                         break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
+                    case GearCollectable component:
+                        Recycler.Recycle<GearCollectable>(component);
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape, new
@@ -269,8 +270,8 @@ namespace StarSalvager
                         case Asteroid asteroid:
                             Recycler.Recycle<Asteroid>(asteroid);
                             break;
-                        case Component component:
-                            Recycler.Recycle<Component>(component);
+                        case GearCollectable component:
+                            Recycler.Recycle<GearCollectable>(component);
                             break;
                         case Shape shape:
                             Recycler.Recycle<Shape>(shape);
@@ -410,10 +411,10 @@ namespace StarSalvager
                             }
 
                             break;
-                        case Component component:
+                        case GearCollectable component:
                             if (m_offGridMovingObstacles[i].DespawnOnEnd)
                             {
-                                Recycler.Recycle<Component>(component);
+                                Recycler.Recycle<GearCollectable>(component);
                             }
                             else
                             {
@@ -548,9 +549,9 @@ namespace StarSalvager
                             Recycler.Recycle<Asteroid>(asteroid);
                             m_obstacles[i] = null;
                             break;
-                        case Component component:
+                        case GearCollectable component:
                             component.IsRegistered = false;
-                            Recycler.Recycle<Component>(component);
+                            Recycler.Recycle<GearCollectable>(component);
                             m_obstacles[i] = null;
 
                             break;
@@ -931,7 +932,7 @@ namespace StarSalvager
 
         public void SpawnObstacleExplosion(Vector2 startingLocation, List<IRDSObject> rdsObjects, bool isFromEnemyLoot)
         {
-            List<IObstacle> _obstacles = new List<IObstacle>();
+            var spawnedObstacles = new List<IObstacle>();
 
             for (int i = 0; i < rdsObjects.Count; i++)
             {
@@ -949,7 +950,7 @@ namespace StarSalvager
                                 /*PlaceMovableOffGrid(newBit, startingLocation, bitExplosionPositions[0], 0.5f);
                                 bitExplosionPositions.RemoveAt(0);*/
                                 newBit.toBeCollected = isFromEnemyLoot;
-                                _obstacles.Add(newBit);
+                                spawnedObstacles.Add(newBit);
                                 break;
                             /*case nameof(Asteroid):
                                 Asteroid newAsteroid = FactoryManager.Instance.GetFactory<AsteroidFactory>()
@@ -975,7 +976,7 @@ namespace StarSalvager
                             .CreateAsteroid<Asteroid>(rdsValueAsteroidSize.rdsValue);
                         /*PlaceMovableOffGrid(newAsteroid, startingLocation, bitExplosionPositions[0], 0.5f);
                         bitExplosionPositions.RemoveAt(0);*/
-                        _obstacles.Add(newAsteroid);
+                        spawnedObstacles.Add(newAsteroid);
                     }
                 }
                 else if (rdsObjects[i] is RDSValue<int> rdsValueGearsAmount)
@@ -986,17 +987,24 @@ namespace StarSalvager
                     {
                         var gears = Mathf.RoundToInt(rdsValueGearsAmount.rdsValue * multiplier);
                         var newComponent = FactoryManager.Instance.GetFactory<ComponentFactory>()
-                            .CreateObject<Component>(gears);
+                            .CreateObject<GearCollectable>(gears);
 
-                        _obstacles.Add(newComponent);
+                        spawnedObstacles.Add(newComponent);
                     }
 
                     if (count > 0 && HintManager.CanShowHint(HINT.GEARS))
                     {
-                        var rect = _obstacles
-                            .FirstOrDefault(x => x is Component);
+                        var gearBounds = spawnedObstacles.OfType<IHasBounds>().FirstOrDefault();
                         
-                        HintManager.TryShowHint(HINT.GEARS, 0.75f, rect);
+                        HintManager.TryShowHint(HINT. GEARS, 0.75f, () =>
+                        {
+                            var gears = m_obstacles.OfType<GearCollectable>().ToArray();
+
+                            foreach (var gearCollectable in gears)
+                            {
+                                gearCollectable.SimpleAnimator.RestartAnimation();
+                            }
+                        }, gearBounds);
                     }
                 }
                 else
@@ -1007,11 +1015,11 @@ namespace StarSalvager
 
 
             var explosionPositions =
-                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, _obstacles.Count, 15, 6);
+                LevelManager.Instance.WorldGrid.SelectBitExplosionPositions(startingLocation, spawnedObstacles.Count, 15, 6);
 
-            for (var i = _obstacles.Count - 1; i >= 0; i--)
+            for (var i = spawnedObstacles.Count - 1; i >= 0; i--)
             {
-                PlaceMovableOffGrid(_obstacles[i], startingLocation, explosionPositions[i], 0.5f);
+                PlaceMovableOffGrid(spawnedObstacles[i], startingLocation, explosionPositions[i], 0.5f);
             }
 
         }
@@ -1155,8 +1163,8 @@ namespace StarSalvager
                     case Asteroid asteroid:
                         Recycler.Recycle<Asteroid>(asteroid);
                         break;
-                    case Component component:
-                        Recycler.Recycle<Component>(component);
+                    case GearCollectable component:
+                        Recycler.Recycle<GearCollectable>(component);
                         break;
                     case Shape shape:
                         Recycler.Recycle<Shape>(shape);
@@ -1179,7 +1187,7 @@ namespace StarSalvager
             {
                 case Bit _:
                 case Asteroid _:
-                case Component _:
+                case GearCollectable _:
                 case SpaceJunk _:
                 case BlackHole _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
@@ -1214,7 +1222,7 @@ namespace StarSalvager
             {
                 case Bit _:
                 case Asteroid _:
-                case Component _:
+                case GearCollectable _:
                 case JunkBit _:
                     LevelManager.Instance.WorldGrid.SetObstacleInGridSquareAtLocalPosition(position, radius, true);
                     break;
