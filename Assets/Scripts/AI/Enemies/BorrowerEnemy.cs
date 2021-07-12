@@ -453,21 +453,7 @@ namespace StarSalvager.AI
             _carryingBit = null;
         }
         
-        private static bool IsOffScreen(in Vector2 pos)
-        {
-            const float dif = 3 * Constants.gridCellSize;
-            
-            var screenRect = CameraController.VisibleCameraRect;
-
-            if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
-                return true;
-                
-            if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
-                return true;
-                    
-                
-            return false;
-        }
+        
 
         public override void OnEnterCamera()
         {
