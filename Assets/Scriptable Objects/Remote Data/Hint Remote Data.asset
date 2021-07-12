@@ -98,7 +98,7 @@ MonoBehaviour:
     hintTexts:
     - shortText: Silver
       longDescription: You made a SILVER bit by matching three white ones!  This
-        gives you AMMO of every colour.  Silver bits are safely stored inside your
+        gives you ammo of EVERY colour.  Silver bits are safely stored inside your
         core and can be used to craft high level patches at wrecks.
       continueText: 
   - type: 14
@@ -114,8 +114,7 @@ MonoBehaviour:
     - shortText: Wrecks
       longDescription: Congratulations, you reached your first wreck! These are treasure
         troves of useful salvage! Each wreck type offers a different selection of
-        salvageable components. Use what you find here to upgrade or repair your
-        drone.
+        components. Use what you find to upgrade or repair your drone.
       continueText: 
   - type: 16
     hintTexts:
@@ -133,22 +132,17 @@ MonoBehaviour:
   - type: 18
     hintTexts:
     - shortText: Primary
-      longDescription: 'Right now you have one active part:  a purple Main Weapon
-        attached to your drone''s core.  You can attach up to four active parts to
-        this core... one of each colour!'
-      continueText: 
-    - shortText: Secondary
-      longDescription: 'You can also collect one additional part of each colour in
-        the ''Secondary Parts'' section.  Swap these with your primary parts when
-        you want to activate them. '
-      continueText: 
+      longDescription: 'This is your drone layout.  Right now you have only one active
+        part:  a purple Main Weapon attached to your drone''s core. Collect more
+        parts to enhance your drone''s performance.'
+      continueText: LAUNCH
   - type: 19
     hintTexts:
     - shortText: 
       longDescription: 'You can salvage ONE new part from the debris of every wreck.
         Remember that you only have room for two parts of each type on your drone,
         so choose carefully. '
-      continueText: NO BRAINER, ACTUALLY
+      continueText: NO BRAINER
   - type: 20
     hintTexts:
     - shortText: 
