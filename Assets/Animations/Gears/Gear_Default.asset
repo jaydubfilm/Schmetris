@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae94ebc07ea1de141874967c13a86044, type: 3}
-  m_Name: Component_Default
+  m_Name: Gear_Default
   m_EditorClassIdentifier: 
   sprites:
   - {fileID: -2232892330106914469, guid: 7dc358839dd853e4e94558a968dd764a, type: 3}
