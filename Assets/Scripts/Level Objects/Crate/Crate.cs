@@ -171,7 +171,7 @@ namespace StarSalvager
 
             if (CurrentHealth <= 0)
             {
-                Recycler.Recycle<Component>(this);
+                Recycler.Recycle<GearCollectable>(this);
                 return;
             }
 
