@@ -15,7 +15,7 @@ MonoBehaviour:
   startingHealth: 25
   damageMaxReductionMultiplier: 0.2
   maxHealthIncreaseMultiplier: 0.5
-  maxHealthBounds: {x: 0, y: 100}
+  maxHealthBounds: {x: 25, y: 100}
   usePartColors: 0
   useRailgunFireLine: 1
   useCenterFiring: 1

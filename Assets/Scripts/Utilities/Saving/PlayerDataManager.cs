@@ -280,16 +280,32 @@ namespace StarSalvager.Utilities.Saving
         public static void ApplyDamage(in float damage)
         {
             var dmg = Mathf.Abs(damage);
-            PlayerRunData.maxHealth -= dmg * Globals.DamageMaxReductionMultiplier;
-            PlayerRunData.currentBotHealth -= dmg;
+            var bounds = Globals.MaxHealthBounds;
+            var maxHealth = PlayerRunData.maxHealth;
+            var currentHealth = PlayerRunData.currentBotHealth;
+
+            maxHealth -= dmg * Globals.DamageMaxReductionMultiplier;
+            currentHealth -= dmg;
+            
+            PlayerRunData.maxHealth = Mathf.Clamp(maxHealth, bounds.x, bounds.y);
+            PlayerRunData.currentBotHealth = Mathf.Clamp(currentHealth, 0, bounds.y);
             
             OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
         }
 
         public static void IncreaseMaxHealth(in float amount)
         {
-            PlayerRunData.maxHealth += amount;
-            PlayerRunData.currentBotHealth += amount;
+            var amt = Mathf.Abs(amount);
+            
+            var bounds = Globals.MaxHealthBounds;
+            var maxHealth = PlayerRunData.maxHealth;
+            var currentHealth = PlayerRunData.currentBotHealth;
+
+            maxHealth += amt;
+            currentHealth += amt;
+            
+            PlayerRunData.maxHealth = Mathf.Clamp(maxHealth, bounds.x, bounds.y);
+            PlayerRunData.currentBotHealth = Mathf.Clamp(currentHealth, 0, bounds.y);
          
             OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
         }
