@@ -2663,7 +2663,7 @@ namespace StarSalvager
             }
         }
 
-        private void CleanFireLine()
+        public void CleanFireLine()
         {
             fireLineRenderer.gameObject.SetActive(false);
             //resesting the rotation of the fireLineRenderer to ensure no miss alignment is happening. 
