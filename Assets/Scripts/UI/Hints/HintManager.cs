@@ -392,7 +392,7 @@ namespace StarSalvager.UI.Hints
             highlightManager.SetActive(false);
             
             //small delay to avoid pressing currently selected items while attempting to close the hint.
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
 
             OnShowingHintAction?.Invoke(false);
         }

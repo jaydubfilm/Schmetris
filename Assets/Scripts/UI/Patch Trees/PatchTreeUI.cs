@@ -92,6 +92,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text partDescriptionText;
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partDetailsText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private RectTransform partWindowContainer;
         
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private Button scrapPartButton;
@@ -250,7 +252,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     return new object[]
                     {
                         patchTreeTierContainer,
-                        patchDetailsWindow.transform as RectTransform,
+                        partWindowContainer,
                     };
                 case HINT.ENTER_WRECK:
                     return new object[]
@@ -260,7 +262,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                             center = Vector3.zero,
                             size = Vector3.zero
                         },
-                        patchTreeTierContainer,
+                        partPatchOptionsContainer,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
