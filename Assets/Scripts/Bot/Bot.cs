@@ -3197,7 +3197,7 @@ _isShifting = true;
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
                                 
-                                HintManager.TryShowHint(HINT.WHITE, 0.5f, bit,null);
+                                HintManager.TryShowHint(HINT.WHITE, 0.5f, null, bit);
                                 break;
                         }
 
