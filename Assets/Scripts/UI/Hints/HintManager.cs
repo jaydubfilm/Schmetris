@@ -68,7 +68,12 @@ namespace StarSalvager.UI.Hints
         private Button confirmButton;
         [SerializeField, Required]
         private TMP_Text continueText;
-        
+
+        [SerializeField, Required, Space(10f)]
+        private GameObject mushroomCharacter;
+        [SerializeField, Required]
+        private GameObject mechanicCharacter;
+
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
@@ -465,6 +470,9 @@ namespace StarSalvager.UI.Hints
             this.hintText.text = hintText.shortText;
             infoText.text = hintText.longDescription;
             continueText.text = String.IsNullOrWhiteSpace(hintText.continueText) ? "continue" : hintText.continueText;
+            //setting up mechanic
+            mushroomCharacter.SetActive(!hintText.useMechanic);
+            mechanicCharacter.SetActive(hintText.useMechanic);
         }
 
         private Bounds GetPositionAsBounds(in Vector2 worldPosition)
