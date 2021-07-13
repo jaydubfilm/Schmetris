@@ -67,7 +67,7 @@ namespace StarSalvager.UI
                     return;
 
                 //backgroundImage.gameObject.SetActive(isTrigger);
-                SetupDoors(isTrigger);
+                AnimateDoors(isTrigger);
 
                 cooldownBackgroundImage.gameObject.SetActive(isTrigger);
 
@@ -77,33 +77,44 @@ namespace StarSalvager.UI
                 triggerInputImage.sprite = triggerSprite;
             }
 
-            private void SetupDoors(bool opened)
+            private void AnimateDoors(bool opened)
             {
                 if (leftDoorImage is null || rightDoorImage is null)
                     return;
 
-                leftDoorImage.transform.localPosition = new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
-                rightDoorImage.transform.localPosition = new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
+                //leftDoorImage.transform.localPosition = new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
+                //rightDoorImage.transform.localPosition = new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
                 //leftDoorImage.gameObject.SetActive(!opened);
                 //rightDoorImage.gameObject.SetActive(!opened);
 
-                GameUI.Instance.StartCoroutine(MoveDoors(opened));
+                Instance.StartCoroutine(AnimateDoorsCoroutine(opened));
             }
 
-            private IEnumerator MoveDoors(bool open)
+            private IEnumerator AnimateDoorsCoroutine(bool open, float animationTime = 1f)
             {
-                Vector3 rightStart = rightDoorImage.transform.localPosition;
-                Vector3 leftStart = leftDoorImage.transform.localPosition;
-                Vector3 leftEnd = open ? new Vector3(-leftDoorImage.rectTransform.rect.width - doorOffset, 0, 0) : new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
-                Vector3 rightEnd =  open ? new Vector3(rightDoorImage.rectTransform.rect.width + doorOffset, 0, 0): new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
-                float totalTime = 1f;
-                for (float time = 0; time < totalTime; time+=Time.deltaTime)
+                var leftDoorRectTransform = (RectTransform) leftDoorImage.transform;
+                var rightDoorRectTransform = (RectTransform) rightDoorImage.transform;
+
+                Vector3 leftStart = leftDoorRectTransform.localPosition;
+                Vector3 rightStart = rightDoorRectTransform.localPosition;
+
+                Vector3 leftEnd = Vector3.right *
+                                  (open
+                                      ? -leftDoorImage.rectTransform.rect.width - doorOffset
+                                      : -leftDoorRectTransform.rect.width / 2f + doorOffset);
+                Vector3 rightEnd = Vector3.right *
+                                   (open
+                                       ? rightDoorImage.rectTransform.rect.width + doorOffset
+                                       : rightDoorRectTransform.rect.width / 2f - doorOffset);
+                
+                for (float time = 0; time < animationTime; time += Time.deltaTime)
                 {
-                    rightDoorImage.transform.localPosition = Vector3.Lerp(rightStart, rightEnd, time/totalTime);
-                    leftDoorImage.transform.localPosition = Vector3.Lerp(leftStart, leftEnd, time/totalTime);
-                    yield return new WaitForEndOfFrame();
+                    var t = time / animationTime;
+                    rightDoorImage.transform.localPosition = Vector3.Lerp(rightStart, rightEnd, t);
+                    leftDoorImage.transform.localPosition = Vector3.Lerp(leftStart, leftEnd, t);
+                    
+                    yield return null;
                 }
-                yield return null;
             }
 
             public void SetSprite(in Sprite partSprite)
