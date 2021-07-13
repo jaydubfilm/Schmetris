@@ -452,7 +452,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 332, y: -27.07}
-  m_SizeDelta: {x: -1083.3013, y: -137.78757}
+  m_SizeDelta: {x: -1125, y: -137.78757}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &7850069401367885332
 GameObject:
@@ -506,6 +506,6 @@ MonoBehaviour:
   healthBarTransform: {fileID: 8815591149807555738}
   sliderTransform: {fileID: 5156601281968045012}
   fillAreaTransform: {fileID: 6538269489130653043}
-  minSizeDeltaX: -1050
+  minSizeDeltaX: -1125
   maxSizeDeltaX: -550
   healthText: {fileID: 2418550151523500239}

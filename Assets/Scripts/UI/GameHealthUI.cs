@@ -45,11 +45,8 @@ namespace StarSalvager.UI
         private void SetHealth(float currentHealth, float maxHealth)
         {
             _currentMaxHealth = Mathf.Clamp(maxHealth, _maxHealthBounds.x, _maxHealthBounds.y);
-            
 
-            var maxValue = Mathf.InverseLerp(_maxHealthBounds.x, _maxHealthBounds.y, _currentMaxHealth);
-            
-            
+            var maxValue = Mathf.InverseLerp(0, _maxHealthBounds.y, _currentMaxHealth);
             var sizeDelta = healthBarTransform.sizeDelta;
             sizeDelta.x = Mathf.Lerp(minSizeDeltaX, maxSizeDeltaX, maxValue);
             
