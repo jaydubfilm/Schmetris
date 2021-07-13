@@ -131,7 +131,7 @@ namespace StarSalvager.Factories
                 temp.partColor = color;
             }
             temp.LoadBlockData(partData);
-            temp.LockRotation = remote.lockRotation;
+            //temp.LockRotation = remote.lockRotation;
             temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";

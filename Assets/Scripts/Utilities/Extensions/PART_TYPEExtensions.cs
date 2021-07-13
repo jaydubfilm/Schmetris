@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using StarSalvager.Factories;
 using StarSalvager.Factories.Data;
@@ -18,6 +19,12 @@ namespace StarSalvager.Utilities.Extensions
         }
         public static BIT_TYPE GetCategory(this PART_TYPE partType) => partType.GetRemoteData().category;
         public static Vector2Int GetCoordinateForCategory(this PART_TYPE partType) => PlayerDataManager.GetCoordinateForCategory(partType.GetRemoteData().category);
+        
+        /*public static bool GetRotationLocked(this PART_TYPE partType) => partType.GetRemoteData().lockRotation;*/
+
+        public static Sprite GetPartIcon(this PART_TYPE partType) =>
+            FactoryManager.Instance.PartsProfileData.partIcons.FirstOrDefault(
+                x => x.PartType == partType)?.sprite;
 
         public static Sprite GetSprite(this PART_TYPE partType)
         {

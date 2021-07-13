@@ -30,7 +30,7 @@ namespace StarSalvager
         public PART_TYPE Type { get; set; }
 
         public List<PatchData> Patches { get; set; }
-        public bool LockRotation { get; set; }
+        /*public bool LockRotation { get; set; }*/
 
         public Color partColor = Color.white;
         public BIT_TYPE category;
@@ -112,8 +112,8 @@ namespace StarSalvager
         
         public void CustomRotate(Quaternion rotation)
         {
-            if (LockRotation)
-                return;
+            /*if (LockRotation)
+                return;*/
             
             transform.localRotation = rotation;
         }

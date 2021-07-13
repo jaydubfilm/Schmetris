@@ -18,8 +18,6 @@ MonoBehaviour:
   JunkPrefab: {fileID: 4611369530616709383, guid: d2f64aa72ef664b4398b303ad5b83bdc,
     type: 3}
   JunkSprite: {fileID: 21300000, guid: ecca842659426974d991054d97f7c479, type: 3}
-  ScrapyardPrefab: {fileID: 8065688321784250118, guid: a3c1fd961df5acc448ae3ac4504be34f,
-    type: 3}
   profiles:
   - partType: 1
     _sprite: {fileID: 21300000, guid: 11dc16053ce4a3143907ee6e29149cf2, type: 3}
@@ -128,6 +126,26 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 42d96ec2f02272b4c8797b048536c917, type: 3}
   - PartType: 14
     sprite: {fileID: 21300000, guid: bbd665c0e7a3a1c47b11285bf4ca18f6, type: 3}
+  - PartType: 35
+    sprite: {fileID: 21300000, guid: 0d1c3acda1a787a4e8cbbd882768b9a7, type: 3}
+  - PartType: 3
+    sprite: {fileID: 21300000, guid: e6b3da60579fef8468d65199c5622bba, type: 3}
+  - PartType: 43
+    sprite: {fileID: 21300000, guid: 89e181cf3d21b4946a92de91427b1c9d, type: 3}
+  - PartType: 29
+    sprite: {fileID: 21300000, guid: 731805cc176fa3a4281bd6bc49c242c1, type: 3}
+  - PartType: 44
+    sprite: {fileID: 21300000, guid: c98b0cdc233b92f40901a7dcdf31b357, type: 3}
+  - PartType: 6
+    sprite: {fileID: 21300000, guid: 6173501056bd01548b9e11e64f30e8a6, type: 3}
+  - PartType: 19
+    sprite: {fileID: 21300000, guid: e56d2f475ffdb3d4292619055d6657f3, type: 3}
+  - PartType: 5
+    sprite: {fileID: 21300000, guid: 62555206f0c298643a0ccfe50a5781be, type: 3}
+  - PartType: 38
+    sprite: {fileID: 21300000, guid: 9b4d4c3d7370a614dabaa85a14bd5f60, type: 3}
+  - PartType: 31
+    sprite: {fileID: 21300000, guid: 079dce0d9af114845abfa9a006027ba1, type: 3}
   borderPrototypes:
   - bitType: 1
     sprite: {fileID: 21300000, guid: 7d9aa0a97ed16684c9dfbe838f3fb9d1, type: 3}

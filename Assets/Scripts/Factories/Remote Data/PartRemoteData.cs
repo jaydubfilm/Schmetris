@@ -35,8 +35,8 @@ namespace StarSalvager.Factories.Data
 
 
 
-        [FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
-        public bool lockRotation;
+        /*[FoldoutGroup("$title"), VerticalGroup("$title/row2/right")]
+        public bool lockRotation;*/
 
         [TextArea, FoldoutGroup("$title")] public string description;
 
