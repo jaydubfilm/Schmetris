@@ -65,7 +65,7 @@ namespace StarSalvager.Utilities.Extensions
 
             //If the part uses ammo we'll check that first
             if (partRemoteData.ammoUseCost > 0 /*&& partData.Type != (int)PART_TYPE.CORE*/)
-                outList.Add(new PartDetail("Ammo", 
+                outList.Add(new PartDetail("Ammo Cost", 
                     partRemoteData.ammoUseCost * multipliers[PATCH_TYPE.EFFICIENCY] * PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.CATEGORY_EFFICIENCY, partRemoteData.category)));
             
             foreach (var property in partProperties)
