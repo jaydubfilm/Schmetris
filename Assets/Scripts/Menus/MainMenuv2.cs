@@ -403,8 +403,6 @@ namespace StarSalvager.UI
                     return isUnlocked && !hasPurchased && canAfford;
                 }
 
-
-
                 var upgrades = FactoryManager.Instance.PersistentUpgrades.Upgrades;
 
                 foreach (var upgradeRemoteData in upgrades)
@@ -437,7 +435,8 @@ namespace StarSalvager.UI
 
 
 
-            starsButtonGlow.gameObject.SetActive(HasStarsToSpend());
+            starsButtonGlow.gameObject.SetActive(HasStarsToSpend() && !hasActiveRun);
+            starsButton.interactable = !hasActiveRun;
 
         }
 
@@ -602,7 +601,14 @@ namespace StarSalvager.UI
                         PlayerDataManager.SavePlayerAccountData();
                         AnalyticsManager.AbandonRunEvent();
                         SetupAccountMenuWindow();
-                        UISelectHandler.SetBuildTarget(this);
+
+                        if (!PlayerDataManager.ShouldShownSummary())
+                        {
+                            UISelectHandler.SetBuildTarget(this);
+                            return;
+                        }
+
+                        FindObjectOfType<PostGameUI>().ShowPostGameUI();
                     });
             });
             tutorialButton.interactable = false;
