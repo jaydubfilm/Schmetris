@@ -71,6 +71,8 @@ namespace StarSalvager.UI
 
                 cooldownBackgroundImage.gameObject.SetActive(isTrigger);
 
+                partImage.gameObject.SetActive(isTrigger);
+
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
             }
