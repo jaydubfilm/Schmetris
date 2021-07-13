@@ -96,6 +96,13 @@ namespace StarSalvager.Utilities.Animations
             targetRenderer.sprite = null;
         }
 
+        public void RestartAnimation()
+        {
+            _t = 0f;
+            var frame = animation.PlayFrame(speed, ref _t);
+            targetRenderer.sprite = frame;
+        }
+
         public void SetAnimation(AnimationScriptableObject animation)
         {
             this.animation = animation;

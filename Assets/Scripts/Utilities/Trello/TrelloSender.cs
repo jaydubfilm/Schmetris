@@ -15,6 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
+using StarSalvager.Utilities.UI;
 
 namespace StarSalvager.Utilities.Trello
 {
@@ -68,6 +69,7 @@ namespace StarSalvager.Utilities.Trello
             cancelButton.onClick.AddListener(()=>
             {
                 ResetInput();
+                UISelectHandler.SendNavigationEvents = true;
                 bugWindowObject.SetActive(false);
                 GameTimer.SetPaused(false);
                 InputManager.SetToExpectedActionMap();
@@ -128,7 +130,6 @@ namespace StarSalvager.Utilities.Trello
 
         public void OpenBugSubmissionWindow(Action callback, in bool takeScreenShot = true)
         {
-
             //--------------------------------------------------------------------------------------------------------//
             
             void Ready()
@@ -150,6 +151,8 @@ namespace StarSalvager.Utilities.Trello
             if (bugWindowObject.activeInHierarchy) 
                 return;
 
+            UISelectHandler.SendNavigationEvents = false;
+
             _callBack = callback;
             
             //_previousInputMap = InputManager.CurrentActionMap;
@@ -170,6 +173,16 @@ namespace StarSalvager.Utilities.Trello
             StartCoroutine(TakeScreenshotRoutine(null));
         }
 
+        private GameState _gameState;
+        private string _deviceName;
+        private ACTION_MAP _actionMap;
+        public void SaveStateInfo(in GameState gameState, in string deviceName, in ACTION_MAP actionMap)
+        {
+            _gameState = gameState;
+            _deviceName = deviceName;
+            _actionMap = actionMap;
+        }
+
         private void SendReport()
         {
             var platform = Application.isEditor ? "Editor" : Application.platform.ToString();
@@ -184,9 +197,9 @@ namespace StarSalvager.Utilities.Trello
                 "====================",
                 $"Platform: {platform}",
                 $"Version: {Application.version}",
-                $"Game State: {GameManager.CurrentGameState.ToString()}",
-                $"Input Device: {InputManager.CurrentInputDeviceName}",
-                $"Input Action Map: {InputManager.CurrentActionMap}",
+                $"Game State: {_gameState.ToString()}",
+                $"Input Device: {_deviceName}",
+                $"Input Action Map: {_actionMap}",
                 $"Scene: {SceneLoader.CurrentScene}"
             });
 

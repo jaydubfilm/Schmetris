@@ -35,6 +35,7 @@ namespace StarSalvager.Prototype
         {
             Utilities.Inputs.Input.Actions.MenuControls.Submit.performed += OnSubmitPressed;
             Utilities.Inputs.Input.Actions.MenuControls.Pause.performed += OnSkipPressed;
+            Utilities.Inputs.Input.Actions.MenuControls.Cancel.performed += OnBackPressed;
         }
 
         private void Awake()
@@ -47,6 +48,7 @@ namespace StarSalvager.Prototype
         {
             Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPressed;
             Utilities.Inputs.Input.Actions.MenuControls.Pause.performed -= OnSkipPressed;
+            Utilities.Inputs.Input.Actions.MenuControls.Cancel.performed -= OnBackPressed;
         }
 
         //IntroScene Functions
@@ -77,6 +79,49 @@ namespace StarSalvager.Prototype
             if (!ctx.ReadValueAsButton()) return;
             
             Skip();
+        }
+
+        private void OnBackPressed(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.ReadValueAsButton()) return;
+
+            ReturnStep();
+        }
+
+        private void ReturnStep()
+        {
+            switch (_introSceneStage)
+            {
+                case 0:
+                    //do not increment the slides
+                    return;
+                case 1:
+                    panel1.SetActive(true);
+                    panelText1.SetActive(true);
+                    panel1Character.SetActive(true);
+                    panel2.SetActive(false);
+                    panel2Character.SetActive(false);
+                    break;
+                case 2:
+                    panel1.SetActive(false);
+                    panelText1.SetActive(false);
+                    panel2.SetActive(true);
+
+                    //Skip();
+                    tutorialSlideImage.gameObject.SetActive(false);
+                    tutorialSlideImage.sprite = tutorialSlides[0];
+                    break;
+                default:
+                    if (_introSceneStage - 1 >= tutorialSlides.Length)
+                    {
+                        Skip();
+                        return;
+                    }
+                    tutorialSlideImage.sprite = tutorialSlides[_introSceneStage - 1];
+                    break;
+            }
+
+            _introSceneStage--;
         }
         private void NextStep()
         {

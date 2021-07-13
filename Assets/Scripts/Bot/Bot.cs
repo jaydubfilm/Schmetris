@@ -203,6 +203,8 @@ namespace StarSalvager
         //IHealth Test
         //====================================================================================================================//
 
+        #region IHealth Functions
+
         public override void SetupHealthValues(float startingHealth, float currentHealth)
         {
             base.SetupHealthValues(startingHealth, currentHealth);
@@ -232,7 +234,7 @@ namespace StarSalvager
             if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
             {
                 if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
-                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f, null);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -247,6 +249,8 @@ namespace StarSalvager
 
             Destroy("Core Destroyed");
         }
+
+        #endregion //IHealth Functions
 
         //============================================================================================================//
 
@@ -814,6 +818,8 @@ namespace StarSalvager
             }
 
             RotateAttachableSprites();
+            //ensuring fire lines aren't visible after it ends the wave
+            BotPartsLogic.CleanFireLine();
         }
 
         private void RotateAttachableSprites()
@@ -877,6 +883,32 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        /// <summary>
+        /// If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
+        /// </summary>
+        /// <param name="bit"></param>
+        private void TryAddCollectedAmmo(in Bit bit)
+        {
+            if (!bit.toBeCollected) 
+                return;
+
+            var temp = bit;
+            
+            //TODO Get the value and add
+            var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                .FirstOrDefault(x => x.level == temp.level)
+                .ammoEarned * Globals.BitDropCollectionMultiplier);
+
+            if (ammoEarned != 0)
+            {
+                //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
+                FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
+            }
+
+            bit.toBeCollected = false;
+        }
+
         #region TryAddNewAttachable
 
         public override bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
@@ -922,25 +954,7 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
-                            //If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
-                            //--------------------------------------------------------------------------------------------------------//
-                            
-                            if (bit.toBeCollected)
-                            {
-                                //TODO Get the value and add
-                                var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                                    .FirstOrDefault(x => x.level == bit.level)
-                                    .ammoEarned * Globals.BitDropCollectionMultiplier);
-
-                                if (ammoEarned != 0)
-                                {
-                                    //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
-                                    GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
-                                    FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
-                                }
-
-                                bit.toBeCollected = false;
-                            }
+                            TryAddCollectedAmmo(bit);
 
                             //--------------------------------------------------------------------------------------------------------//
                             
@@ -1502,19 +1516,15 @@ namespace StarSalvager
             if (blocksToDamage.IsNullOrEmpty())
                 return;
 
-            if (partsOnly)
-            {
-                var parts = blocksToDamage.OfType<Part>();
-                foreach (var part in parts)
-                {
-                    TryHitAt(part, damage);
-                }
-
-                return;
-            }
-
             //Dont want to stack damage for parts, so just pick the first part
-            foreach (var attachable in blocksToDamage)
+            var part = blocksToDamage.OfType<Part>().FirstOrDefault();
+            if(part != null) TryHitAt(part, damage);
+            
+            if (partsOnly)
+                return;
+
+            //Now damage anything remaining that isn't a part
+            foreach (var attachable in blocksToDamage.Where(x => !(x is Part)))
             {
                 TryHitAt(attachable, damage);
             }
@@ -1606,8 +1616,10 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit _:
+                case Bit bit:
                     if(checkForCombo) CheckForCombosAround(coordinate);
+                    
+                    TryAddCollectedAmmo(bit);
                     break;
                 /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -3165,7 +3177,7 @@ _isShifting = true;
                             GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
                         }
 
-                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position);
+                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position, null);
                     }
                     else if (bit != null)
                     {
@@ -3185,7 +3197,7 @@ _isShifting = true;
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
                                 
-                                HintManager.TryShowHint(HINT.WHITE, 0.5f, bit);
+                                HintManager.TryShowHint(HINT.WHITE, 0.5f, null, bit);
                                 break;
                         }
 

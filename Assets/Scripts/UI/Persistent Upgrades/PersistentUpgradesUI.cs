@@ -267,6 +267,7 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         //====================================================================================================================//
 
+        //FIXME I will want to implement a full navigation for tiers and their elements
         public NavigationProfile BuildNavigationProfile()
         {
             var selectables = new List<Selectable>
@@ -286,10 +287,14 @@ namespace StarSalvager.UI.PersistentUpgrades
 
                 selectables.AddRange(tempSelectables);
 
-                if (i == 0)
-                    first = tempSelectables.FirstOrDefault(x => x.interactable && x.enabled);
+                //Get the first element selectable, moving up through each tier
+                first = tempSelectables.FirstOrDefault(x => x.interactable && x.enabled);
 
-                if (lastSet == false && tempSelectables.Any(x => x.interactable && x.enabled))
+                //Check to see if an element in the current row is selectable
+                if (lastSet)
+                    continue;
+                
+                if (!tempSelectables.Any(x => x.interactable && x.enabled))
                     continue;
 
                 last = tempSelectables.LastOrDefault(x => x.interactable && x.enabled);
@@ -320,7 +325,8 @@ namespace StarSalvager.UI.PersistentUpgrades
                     new NavigationRestriction
                     {
                         FromDirection = NavigationRestriction.DIRECTION.RIGHT |
-                                        NavigationRestriction.DIRECTION.LEFT,
+                                        NavigationRestriction.DIRECTION.LEFT |
+                                        NavigationRestriction.DIRECTION.DOWN,
                         Selectable = backButton
                     }
                 });

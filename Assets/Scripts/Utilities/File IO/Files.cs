@@ -245,6 +245,27 @@ namespace StarSalvager.Utilities.FileIO
         //Session Summary Data
         //====================================================================================================================//
 
+        public static void TestSessionData()
+        {
+            const string fileName = "Test";
+
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            var directory = Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "RemoteData",
+                "Sessions");
+#elif UNITY_STANDALONE_OSX
+            var directory = Path.Combine(new DirectoryInfo(Application.persistentDataPath).FullName, "RemoteData",
+                "Sessions");
+#endif
+
+            if (!Directory.Exists(directory)) 
+                Directory.CreateDirectory(directory);
+
+
+            var path = Path.Combine(directory, $"{fileName}");
+
+            File.WriteAllText(path, string.Empty);
+        }
+        
         //TODO Move this to the Files location
         public static void ExportSessionData(string playerID, SessionData sessionData)
         {

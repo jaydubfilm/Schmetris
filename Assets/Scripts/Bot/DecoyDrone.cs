@@ -111,7 +111,10 @@ namespace StarSalvager
         {
             ChangeHealth(-damage);
             
-            FloatingText.Create($"{-damage}", transform.position, Color.red);
+            //Here we check to make sure to not display tiny values of damage
+            var check = Mathf.Abs(damage);
+            if(!(check > 0 && check < 1f))
+                FloatingText.Create($"{damage}", transform.position, Color.red);
 
             
             if(withSound && CurrentHealth > 0) 

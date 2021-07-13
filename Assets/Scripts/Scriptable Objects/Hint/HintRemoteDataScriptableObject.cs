@@ -31,6 +31,8 @@ namespace StarSalvager.ScriptableObjects.Hints
             public string shortText;
             [FoldoutGroup("$shortText"), TextArea]
             public string longDescription;
+            [FoldoutGroup("$shortText")]
+            public string continueText;
         }
 
         [SerializeField, ListDrawerSettings(ShowPaging = false)]

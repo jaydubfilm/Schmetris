@@ -60,6 +60,11 @@ namespace StarSalvager.UI
         [SerializeField] private RectTransform botDisplayRectTransform;
 
         //private RectTransform _shipwreckButtonRectTransform;
+        
+        //====================================================================================================================//
+
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) => _showingHint = showingHint;
 
         #endregion //Properties
 
@@ -70,6 +75,7 @@ namespace StarSalvager.UI
             InputManager.OnCancelPressed += Back;
             
             HintManager.OnShowingHintAction += LockMap;
+            HintManager.OnShowingHintAction += IsShowingHint;
         }
         private void Start()
         {
@@ -81,6 +87,7 @@ namespace StarSalvager.UI
             InputManager.OnCancelPressed -= Back;
             
             HintManager.OnShowingHintAction -= LockMap;
+            HintManager.OnShowingHintAction -= IsShowingHint;
         }
 
         //====================================================================================================================//
@@ -240,6 +247,9 @@ namespace StarSalvager.UI
 
         private void OnNodePressed(int nodeIndex, NodeType nodeType)
         {
+            if (_showingHint)
+                return;
+
             //Prevent the selecting of a node while the fading is still occuring
             if (ScreenFade.Fading) return;
             
@@ -447,6 +457,9 @@ namespace StarSalvager.UI
         }
         private void Back()
         {
+            if (_showingHint)
+                return;
+
             switch (SceneLoader.PreviousScene)
             {
                 case SceneLoader.LEVEL:

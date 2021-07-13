@@ -1061,6 +1061,7 @@ MonoBehaviour:
   hintText: {fileID: 6586104082868023058}
   infoText: {fileID: 8760214988973554262}
   confirmButton: {fileID: 941714637734121329}
+  continueText: {fileID: 7676393571218920612}
   highlightManager: {fileID: 2153767571239093625}
 --- !u!114 &2153767571239093625
 MonoBehaviour:

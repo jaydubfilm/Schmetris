@@ -204,6 +204,10 @@ namespace StarSalvager.UI
         private WINDOW _previousWindow = WINDOW.NONE;
         private WindowData[] _windowData;
 
+
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) => _showingHint = showingHint;
+
         #endregion //Properties
 
         //Unity Functions
@@ -214,6 +218,7 @@ namespace StarSalvager.UI
         private void OnEnable()
         {
             InputManager.OnCancelPressed += OnCancelPressed;
+            Hints.HintManager.OnShowingHintAction += IsShowingHint;
         }
 
         private void Start()
@@ -228,6 +233,7 @@ namespace StarSalvager.UI
         private void OnDisable()
         {
             InputManager.OnCancelPressed -= OnCancelPressed;
+            Hints.HintManager.OnShowingHintAction -= IsShowingHint;
         }
 
         #endregion //Unity Functions
@@ -690,6 +696,9 @@ namespace StarSalvager.UI
 
         private void OnCancelPressed()
         {
+            if (_showingHint)
+                return;
+
             switch (_currentWindow)
             {
                 case WINDOW.ACCOUNT:
@@ -755,6 +764,9 @@ namespace StarSalvager.UI
 
         private void CloseOpenWindow()
         {
+            if (_showingHint)
+                return;
+
             CloseWindow(_currentWindow);
         }
 

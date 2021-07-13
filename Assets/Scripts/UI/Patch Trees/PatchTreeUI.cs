@@ -92,6 +92,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text partDescriptionText;
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partDetailsText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private RectTransform partWindowContainer;
         
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private Button scrapPartButton;
@@ -246,6 +248,22 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                        _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                        _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
                     };
+                case HINT.PATCH_TREE:
+                    return new object[]
+                    {
+                        patchTreeTierContainer,
+                        partWindowContainer,
+                    };
+                case HINT.ENTER_WRECK:
+                    return new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.zero,
+                            size = Vector3.zero
+                        },
+                        partPatchOptionsContainer,
+                    };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
             }
@@ -369,6 +387,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 else
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+
+                    if (HintManager.CanShowHint(HINT.PICK_PART))
+                        HintManager.TryShowHint(HINT.PICK_PART, 1f,null);
                 }
             }
 
@@ -402,6 +423,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
+                    if (HintManager.CanShowHint(HINT.ENTER_WRECK)) HintManager.TryShowHint(HINT.ENTER_WRECK);
                     PlayerDataManager.GeneratePartPatchOptions();
                     break;
                 default:
@@ -762,9 +784,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void ScrapPartPressed()
         {
-
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ScrapPart()
             {
                 var partTypeInt = (int) _selectedPart.type;
@@ -812,8 +835,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 //Update Values
                 SaveBlockData();
                 
-                _objectToSelect = UISelectHandler.CurrentlySelected;
-                UISelectHandler.RebuildNavigationProfile();
+                
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -834,13 +856,18 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     }
 
                     ScrapPart();
+                    _objectToSelect = default;
+                    UISelectHandler.SetBuildTarget(this);
                 });
         }
 
         private void SwapPartPressed()
         {
+
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ListShuffles(in int targetPartIndex, ref List<PartData> fromList, ref List<PartData> toList)
             {
                 var category = _selectedPart.type.GetCategory();
@@ -893,6 +920,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         /// <exception cref="Exception"></exception>
         private void OnPartPressed(PART_TYPE partType)
         {
+            if (_showingHint)
+                return;
+
             //Determine if the part is in storage or on the bot
             if (partType == PART_TYPE.EMPTY)
                 throw new Exception();
@@ -909,6 +939,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
         private void OnPartPressed(in BIT_TYPE category, in bool inStorage)
         {
+            if (_showingHint)
+                return;
+
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             
             var cat = category;
@@ -932,6 +965,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 return;
             }
 
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
+
             //Show this part on the PatchTree
             GeneratePatchTree(partData);
 
@@ -943,6 +978,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnPatchPressed(PART_TYPE partType, PatchData patchData)
         {
+            if (_showingHint)
+                return;
+            
             //Present the purchase option window to the player
             SetSelectedPatch(partType, patchData);
             //Ensure that when a loose patch is selected, that we change which part its selected for
@@ -963,10 +1001,16 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             
             _objectToSelect = purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected;
             UISelectHandler.RebuildNavigationProfile();
+
+
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
         }
 
         private void OnPurchasePatchPressed()
         {
+            if (_showingHint)
+                return;
+
             //Get the price of Patch
             var (gears, silver) = _selectedPatch.patchData.GetPatchCost();
             //Check that the player can afford the patch
