@@ -36,8 +36,8 @@ namespace StarSalvager.UI
         [Serializable]
         public struct SliderPartUI
         {
-            [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
-            [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
+            [FormerlySerializedAs("backgroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonBackImage;
+            [FormerlySerializedAs("foregroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonImage;
             [Required, FoldoutGroup("$NAME")] public Image partImage;
             [Required, FoldoutGroup("$NAME")] public Image leftDoorImage;
             [Required, FoldoutGroup("$NAME")] public Image rightDoorImage;
@@ -66,15 +66,13 @@ namespace StarSalvager.UI
                 if (triggerInputImage is null || cooldownBackgroundImage is null)
                     return;
 
-                //backgroundImage.gameObject.SetActive(isTrigger);
                 AnimateDoors(isTrigger);
+                buttonImage.enabled = isTrigger;
 
-                //cooldownBackgroundImage.gameObject.SetActive(isTrigger);
-
-                //partImage.gameObject.SetActive(isTrigger);
 
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
+                
             }
 
             private void AnimateDoors(bool opened)
@@ -87,10 +85,27 @@ namespace StarSalvager.UI
                 //leftDoorImage.gameObject.SetActive(!opened);
                 //rightDoorImage.gameObject.SetActive(!opened);
 
-                Instance.StartCoroutine(AnimateDoorsCoroutine(opened));
+                Instance.StartCoroutine(DisplayTriggerButtonCoroutine(opened));
             }
 
-            private IEnumerator AnimateDoorsCoroutine(bool open, float animationTime = 1f)
+            private IEnumerator DisplayTriggerButtonCoroutine(bool open)
+            {
+                if (buttonImage.enabled)
+                {
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(true));
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(false));
+                }
+
+                if (!open)
+                    yield break;
+
+                yield return new WaitForSeconds(0.2f);
+                
+                yield return Instance.StartCoroutine(AnimateDoorsCoroutine(true));
+                yield return Instance.StartCoroutine(ScaleButtonCoroutine(false));
+            }
+
+            private IEnumerator AnimateDoorsCoroutine(bool open, float animationTime = 0.5f)
             {
                 var leftDoorRectTransform = (RectTransform) leftDoorImage.transform;
                 var rightDoorRectTransform = (RectTransform) rightDoorImage.transform;
@@ -117,6 +132,24 @@ namespace StarSalvager.UI
                 }
             }
 
+            private IEnumerator ScaleButtonCoroutine(bool shrink, float animationTime = 0.5f)
+            {
+                var buttonRectTransform = (RectTransform)buttonImage.transform;
+                var defaultScale = Vector3.one;
+                var targetScale = shrink ? Vector3.one * 0.1f : defaultScale;
+                var startScale = shrink ? defaultScale : Vector3.one * 0.1f;
+
+                buttonRectTransform.localScale = startScale;
+                
+                for (var time = 0f; time <= animationTime; time += Time.deltaTime)
+                {
+                    var t = time / animationTime;
+                    buttonRectTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
+                    yield return null;
+                }
+
+            }
+
             public void SetSprite(in Sprite partSprite)
             {
                 if (partImage is null) return;
@@ -138,19 +171,19 @@ namespace StarSalvager.UI
 
             public void SetColor(in Color color)
             {
-                if (foregroundImage is null || secondPartImage is null)
+                if (buttonImage is null || secondPartImage is null)
                     return;
-                foregroundImage.color = color;
+                buttonImage.color = color;
                 secondPartImage.color = color;
             }
 
             public void SetBackgroundColor(in Color color)
             {
                 
-                if (backgroundImage is null)
+                if (buttonBackImage is null)
                     return;
 
-                backgroundImage.color = color;
+                buttonBackImage.color = color;
             }
 
             public void SetFill(float val)
@@ -784,29 +817,27 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             if (index < 0) return;
-
+            
+            var sprite = partType.GetSprite();
+            SliderPartUis[index].SetSprite(sprite);
+            
             if (partType == PART_TYPE.EMPTY)
             {
                 SliderPartUis[index].SetIsTrigger(false, null);
-                SliderPartUis[index].SetSprite(null);
-                SliderPartUis[index].SetColor(Color.clear);
+                //SliderPartUis[index].SetColor(Color.clear);
                 return;
             }
 
             var partRemoteData = partType.GetRemoteData();
 
             var isTrigger = partRemoteData.isManual;
-            var sprite = partType.GetSprite();
 
-            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
-            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
-
-            SliderPartUis[index].SetSprite(sprite);
+            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
 
             //If the part icon needs a border, be sure to add it!
-            if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].foregroundImage != null)
+            if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].buttonImage != null)
                 SliderPartUis[index].partBorderSprite = PartAttachableFactory.CreateUIPartBorder(
-                    (RectTransform) SliderPartUis[index].foregroundImage.transform,
+                    (RectTransform) SliderPartUis[index].buttonImage.transform,
                     partType);
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
