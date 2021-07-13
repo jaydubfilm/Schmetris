@@ -38,7 +38,12 @@ namespace StarSalvager.UI
         {
             [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
             [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image partImage;
+            [Required, FoldoutGroup("$NAME")] public Image leftDoorImage;
+            [Required, FoldoutGroup("$NAME")] public Image rightDoorImage;
             [Required, FoldoutGroup("$NAME")] public Image secondPartImage;
+            [Required, FoldoutGroup("$NAME")] public Image cooldownFillImage;
+            [Required, FoldoutGroup("$NAME")] public Image cooldownBackgroundImage;
 
             [HideInInspector] public Image partBorderSprite;
 
@@ -46,7 +51,7 @@ namespace StarSalvager.UI
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
-
+            
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
@@ -58,26 +63,52 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
-                if (triggerInputImage is null || backgroundImage is null)
+                if (triggerInputImage is null || cooldownBackgroundImage is null)
                     return;
 
-                backgroundImage.gameObject.SetActive(isTrigger);
+                //backgroundImage.gameObject.SetActive(isTrigger);
+                SetupDoors(isTrigger);
 
-                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
-
-                //if (!isTrigger)
-                //    return;
+                cooldownBackgroundImage.gameObject.SetActive(isTrigger);
 
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
             }
 
+            private void SetupDoors(bool opened)
+            {
+                if (leftDoorImage is null || rightDoorImage is null)
+                    return;
+
+                leftDoorImage.transform.localPosition = new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
+                rightDoorImage.transform.localPosition = new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
+                //leftDoorImage.gameObject.SetActive(!opened);
+                //rightDoorImage.gameObject.SetActive(!opened);
+
+                GameUI.Instance.StartCoroutine(MoveDoors(opened));
+            }
+
+            private IEnumerator MoveDoors(bool open)
+            {
+                Vector3 rightStart = rightDoorImage.transform.localPosition;
+                Vector3 leftStart = leftDoorImage.transform.localPosition;
+                Vector3 leftEnd = open ? new Vector3(-leftDoorImage.rectTransform.rect.width - doorOffset, 0, 0) : new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
+                Vector3 rightEnd =  open ? new Vector3(rightDoorImage.rectTransform.rect.width + doorOffset, 0, 0): new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
+                float totalTime = 1f;
+                for (float time = 0; time < totalTime; time+=Time.deltaTime)
+                {
+                    rightDoorImage.transform.localPosition = Vector3.Lerp(rightStart, rightEnd, time/totalTime);
+                    leftDoorImage.transform.localPosition = Vector3.Lerp(leftStart, leftEnd, time/totalTime);
+                    yield return new WaitForEndOfFrame();
+                }
+                yield return null;
+            }
+
             public void SetSprite(in Sprite partSprite)
             {
-                if (foregroundImage is null || backgroundImage is null) return;
+                if (partImage is null) return;
 
-                backgroundImage.sprite = partSprite;
-                foregroundImage.sprite = partSprite;
+                partImage.sprite = partSprite;
 
                 if (partBorderSprite != null)
                     partBorderSprite.enabled = partSprite != null;
@@ -94,7 +125,7 @@ namespace StarSalvager.UI
 
             public void SetColor(in Color color)
             {
-                if (foregroundImage is null)
+                if (foregroundImage is null || secondPartImage is null)
                     return;
                 foregroundImage.color = color;
                 secondPartImage.color = color;
@@ -102,6 +133,7 @@ namespace StarSalvager.UI
 
             public void SetBackgroundColor(in Color color)
             {
+                
                 if (backgroundImage is null)
                     return;
 
@@ -110,10 +142,10 @@ namespace StarSalvager.UI
 
             public void SetFill(float val)
             {
-                if (foregroundImage is null)
+                if (cooldownFillImage is null)
                     return;
 
-                foregroundImage.fillAmount = val;
+                cooldownFillImage.fillAmount = val;
             }
         }
 
@@ -174,6 +206,7 @@ namespace StarSalvager.UI
         private const float MAGNET_FILL_VALUE = 0.02875f;
 
         private static int[] _gameUIBitIndices;
+        private const float doorOffset = 5f;
 
         #region Properties
 
