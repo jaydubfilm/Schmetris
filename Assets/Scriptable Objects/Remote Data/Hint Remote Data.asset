@@ -18,75 +18,89 @@ MonoBehaviour:
     - shortText: Magnetism
       longDescription: 'Your magnetism is maxed!  To free some up, MATCH three identical
         bits, or TRIM unwanted bits with pulsars and asteroids. '
+      continueText: 
   - type: 2
     hintTexts:
     - shortText: Bonus Shapes
       longDescription: Keep an eye out for BONUS SHAPES travelling horizontally near
         the top of the screen. Match their colour pattern and rotation with bits
         on your drone for instant upgrades and bonus points!
+      continueText: 
   - type: 3
     hintTexts:
     - shortText: Gun
       longDescription: The gun is an excellent choice. This weapon will aim and fire
         automatically as soon as an enemy comes in range... as long as you have ammo
         in your cargo!
+      continueText: 
   - type: 4
     hintTexts:
     - shortText: Fuel
       longDescription: 'Darn, out of fuel!  You now have a CHOICE:  Sit tight and
         hope to make it through this wave alive...  OR press ''X'' to self-destruct
         and get on with the game.'
+      continueText: 
     - shortText: Fuel
       longDescription: You can still rotate, so try to catch some passing fuel bits
         if you see some
+      continueText: 
   - type: 5
     hintTexts:
     - shortText: Home
       longDescription: 'Congrats on picking up some salvage!  You now have a CHOICE:
         Either take your loot back to base and safely stash it - or select a new
         wave and try to collect more!'
+      continueText: 
   - type: 6
     hintTexts:
     - shortText: Stored Part
       longDescription: 'You built your first part!  Drag it from the storage area
         onto the grid to attach the part to your drone''s core. '
+      continueText: 
   - type: 7
     hintTexts:
     - shortText: Gears
       longDescription: Nice work! That insectoid dropped some useful mechanical parts
         called GEARS. Gears are like money you can use to 'buy' repairs or upgrades
         at wrecks. Collect as many as you can.
+      continueText: 
   - type: 8
     hintTexts:
     - shortText: Patch Points
       longDescription: Congratulations!  You earned your first PATCH POINT!  These
         can be used to upgrade your base.  But don't stop now.  Collect enough gears
         to earn another!
+      continueText: 
   - type: 11
     hintTexts:
     - shortText: Repairing
       longDescription: Looks like you had a run-in with some space junk.  Use plasma
         to REPAIR a part by dragging it onto the workbench icon.
+      continueText: 
     - shortText: Repairing
       longDescription: Your drone has been damaged.  Collect PLASMA to repair your
         parts.
+      continueText: 
   - type: 10
     hintTexts:
     - shortText: Parasite
       longDescription: Uh-oh.  Looks like we're not alone out here.  That parasite
         is hungry for drone parts.  It will eat its way to your core if you don't
         figure out a way to scrape it off.
+      continueText: 
   - type: 12
     hintTexts:
     - shortText: White Bit
       longDescription: 'You made a WHITE bit! These are made by upgrading level 2
         bits of any colour. Match three or more white bits to form a SILVER bit. '
+      continueText: 
   - type: 13
     hintTexts:
     - shortText: Silver
       longDescription: You made a SILVER bit by matching three white ones!  This
-        gives you AMMO of every colour.  Silver bits are safely stored inside your
+        gives you ammo of EVERY colour.  Silver bits are safely stored inside your
         core and can be used to craft high level patches at wrecks.
+      continueText: 
   - type: 14
     hintTexts:
     - shortText: Health
@@ -94,21 +108,62 @@ MonoBehaviour:
         you have enough greenium in storage to repair the damage. Repairs happen
         automatically but they use up your greenium, so be sure to replenish it by
         making more green combos!'
+      continueText: 
   - type: 15
     hintTexts:
     - shortText: Wrecks
       longDescription: Congratulations, you reached your first wreck! These are treasure
         troves of useful salvage! Each wreck type offers a different selection of
-        salvageable components. Use what you find here to upgrade or repair your
-        drone.
+        components. Use what you find to upgrade or repair your drone.
+      continueText: 
   - type: 16
     hintTexts:
     - shortText: 
       longDescription: "\u201CStars\u201D are earned by skillful salvaging. Spend
         them here to permanently improve your drone\u2019s performance. "
+      continueText: 
   - type: 17
     hintTexts:
     - shortText: 
       longDescription: 'Those wrecks have the parts we need. But our scanners are
         picking up  movement in the rocks. Could be insectoids. Choose your path
         carefully.  '
+      continueText: 
+  - type: 18
+    hintTexts:
+    - shortText: Primary
+      longDescription: 'This is your drone layout.  Right now you have only one active
+        part:  a purple Main Weapon attached to your drone''s core. Collect more
+        parts to enhance your drone''s performance.'
+      continueText: LAUNCH
+  - type: 19
+    hintTexts:
+    - shortText: 
+      longDescription: 'You can salvage ONE new part from the debris of every wreck.
+        Remember that you only have room for two parts of each type on your drone,
+        so choose carefully. '
+      continueText: NO BRAINER
+  - type: 20
+    hintTexts:
+    - shortText: 
+      longDescription: Welcome to the wreck screen!  Here you can use the gears you
+        have collected to repair your drone, or to upgrade the parts you have.  Also,
+        if you have two parts of the same colour you can swap them here.
+      continueText: WOW
+    - shortText: Available Patches
+      longDescription: As you can see there are (number of patches available) patches
+        available to be extracted from this wreck. Select one of them to find out
+        how this patch will improve your drone.
+      continueText: SURE, WATCH THIS...
+  - type: 21
+    hintTexts:
+    - shortText: Patch Tree
+      longDescription: 'This patch tree shows the possible upgrades for this part
+        and what they cost.  Notice the higher level patches cost silver bits as
+        well as gears. '
+      continueText: NEAT
+    - shortText: Part Summary
+      longDescription: "Below the tree you can see info about this part, and how
+        a selected patch will improve it.  If you like what you see, and can afford
+        it, click \u201CInstall Patch\u201D to install this one."
+      continueText: "FINE. MAYBE I WILL\u2026"

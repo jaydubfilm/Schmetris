@@ -21,6 +21,7 @@ using GameUI = StarSalvager.UI.GameUI;
 using StarSalvager.Utilities;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Math;
 using StarSalvager.Utilities.Particles;
 using AudioController = StarSalvager.Audio.AudioController;
@@ -64,7 +65,6 @@ namespace StarSalvager
         }
 
         #endregion //Structs
-
 
         //Properties
         //====================================================================================================================//
@@ -203,6 +203,8 @@ namespace StarSalvager
         //IHealth Test
         //====================================================================================================================//
 
+        #region IHealth Functions
+
         public override void SetupHealthValues(float startingHealth, float currentHealth)
         {
             base.SetupHealthValues(startingHealth, currentHealth);
@@ -232,7 +234,7 @@ namespace StarSalvager
             if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
             {
                 if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
-                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f, null);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -247,6 +249,8 @@ namespace StarSalvager
 
             Destroy("Core Destroyed");
         }
+
+        #endregion //IHealth Functions
 
         //============================================================================================================//
 
@@ -704,17 +708,33 @@ namespace StarSalvager
 
         public void ResetRotationToIdentity()
         {
-            PartAttachableFactory partAttachableFactory = FactoryManager.Instance.GetFactory<PartAttachableFactory>();
-
-            if (AttachedBlocks.Any(b => b is Part part && !(part.Type == PART_TYPE.EMPTY) &&  partAttachableFactory.GetRemoteData(part.Type).category != PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)))
+            var rotate = false;
+            foreach (var part in AttachedBlocks.OfType<Part>())
             {
-                foreach (var attachedBlock in AttachedBlocks)
-                {
-                    attachedBlock.RotateCoordinate(ROTATION.CW);
-                }
-
-                ResetRotationToIdentity();
+                if(part.Type == PART_TYPE.EMPTY)
+                    continue;
+                if (part.category == PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate)) 
+                    continue;
+                
+                rotate = true;
+                break;
             }
+            
+            if(rotate == false)
+                return;
+            
+            /*if (!AttachedBlocks.Any(b => b is Part part &&
+                                         part.Type != PART_TYPE.EMPTY &&
+                                         part.category !=
+                                         PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate))) 
+                return;*/
+            
+            foreach (var attachedBlock in AttachedBlocks)
+            {
+                attachedBlock.RotateCoordinate(ROTATION.CW);
+            }
+
+            ResetRotationToIdentity();
         }
 
         public void TrySelfDestruct()
@@ -798,6 +818,8 @@ namespace StarSalvager
             }
 
             RotateAttachableSprites();
+            //ensuring fire lines aren't visible after it ends the wave
+            BotPartsLogic.CleanFireLine();
         }
 
         private void RotateAttachableSprites()
@@ -861,6 +883,32 @@ namespace StarSalvager
 
         //============================================================================================================//
 
+        /// <summary>
+        /// If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
+        /// </summary>
+        /// <param name="bit"></param>
+        private void TryAddCollectedAmmo(in Bit bit)
+        {
+            if (!bit.toBeCollected) 
+                return;
+
+            var temp = bit;
+            
+            //TODO Get the value and add
+            var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
+                .FirstOrDefault(x => x.level == temp.level)
+                .ammoEarned * Globals.BitDropCollectionMultiplier);
+
+            if (ammoEarned != 0)
+            {
+                //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
+                GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
+                FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
+            }
+
+            bit.toBeCollected = false;
+        }
+
         #region TryAddNewAttachable
 
         public override bool TryAddNewAttachable(IAttachable attachable, DIRECTION connectionDirection, Vector2 collisionPoint)
@@ -906,25 +954,7 @@ namespace StarSalvager
                             //Add these to the block depending on its relative position
                             AttachAttachableToExisting(bit, closestAttachable, connectionDirection);
 
-                            //If this bit was dropped by an enemy, gain ammo (& points?) for having collected it 
-                            //--------------------------------------------------------------------------------------------------------//
-                            
-                            if (bit.toBeCollected)
-                            {
-                                //TODO Get the value and add
-                                var ammoEarned = Mathf.CeilToInt(FactoryManager.Instance.ComboRemoteData.ComboAmmos
-                                    .FirstOrDefault(x => x.level == bit.level)
-                                    .ammoEarned * Globals.BitDropCollectionMultiplier);
-
-                                if (ammoEarned != 0)
-                                {
-                                    //PlayerDataManager.GetResource(bit.Type).AddAmmo(ammoEarned);
-                                    GameUi.CreateAmmoEffect(bit.Type, ammoEarned, bit.Position);
-                                    FloatingText.Create($"+{ammoEarned}", bit.Position, bit.Type.GetColor());
-                                }
-
-                                bit.toBeCollected = false;
-                            }
+                            TryAddCollectedAmmo(bit);
 
                             //--------------------------------------------------------------------------------------------------------//
                             
@@ -932,7 +962,7 @@ namespace StarSalvager
 
                             AudioController.PlayBitConnectSound(bit.Type);
 
-                            SessionDataProcessor.Instance.BitCollected(bit.Type);
+                            SessionDataProcessor.Instance.RecordBitConnected(bit.ToBlockData());
                             PlayerDataManager.RecordBitConnection(bit.Type);
 
                             break;
@@ -1241,7 +1271,7 @@ namespace StarSalvager
                             }
 
                             AttachNewBlock(newBotCoordinate + differences[i], bitsToAdd[i], false, false);
-                            SessionDataProcessor.Instance.BitCollected(bitsToAdd[i].Type);
+                            SessionDataProcessor.Instance.RecordBitConnected(bitsToAdd[i].ToBlockData());
                         }
 
                         //Recycle the Shape, without also recycling the Bits since they were just attached to the bot
@@ -1464,9 +1494,11 @@ namespace StarSalvager
                     break;
             }
             
-            RemoveAttachable(closestAttachable);
+            DestroyAttachable(closestAttachable);
+            //After deleting see if there are new combds
+            CheckAllForCombos();
 
-            if(closestAttachable.CountTowardsMagnetism)
+            if (closestAttachable.CountTowardsMagnetism)
                 ForceCheckMagnets();
 
 
@@ -1484,128 +1516,24 @@ namespace StarSalvager
             if (blocksToDamage.IsNullOrEmpty())
                 return;
 
-            if (partsOnly)
-            {
-                var parts = blocksToDamage.OfType<Part>();
-                foreach (var part in parts)
-                {
-                    TryHitAt(part, damage);
-                }
-
-                return;
-            }
-
             //Dont want to stack damage for parts, so just pick the first part
-            foreach (var attachable in blocksToDamage)
+            var part = blocksToDamage.OfType<Part>().FirstOrDefault();
+            if(part != null) TryHitAt(part, damage);
+            
+            if (partsOnly)
+                return;
+
+            //Now damage anything remaining that isn't a part
+            foreach (var attachable in blocksToDamage.Where(x => !(x is Part)))
             {
                 TryHitAt(attachable, damage);
             }
 
         }
-        
-
-        [Obsolete]
-        public void TryMineExplosionAt(Vector2 minePosition, MINE_TYPE mineType)
-        {
-            /*Debug.Log("MINE EXPLODE");
-
-
-            float maxDamage = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDamage();
-            float maxDistance = FactoryManager.Instance.GetFactory<MineFactory>().GetMineMaxDistance();
-            for (int i = 0; i < attachedBlocks.Count; i++)
-            {
-                float distance = Vector2.Distance(minePosition, attachedBlocks[i].transform.position);
-                if (distance > maxDistance)
-                {
-                    continue;
-                }
-
-                TryHitAt(attachedBlocks[i], maxDamage * (1 - (distance / maxDistance)));
-            }*/
-        }
 
 
 
         #endregion //TryHitAt
-
-        #region Asteroid Collision
-
-        /*public bool TryAsteroidDamageAt(in Vector2 collisionPoint, in float damage)
-        {
-            if(!GameManager.IsState(GameState.LEVEL_ACTIVE))
-                return false;
-
-            var closestAttachable = attachedBlocks.GetClosestAttachable(collisionPoint);
-
-            //------------------------------------------------------------------------------------------------//
-
-            /*switch (closestAttachable)
-            {
-                /*case Part part when part.Destroyed:
-                    return false;#2#
-                case Bit _:
-                    AsteroidDamageAt(closestAttachable);
-                    return false;
-            }#1#
-            
-            TryHitAt(closestAttachable, damage);
-            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
-
-            BIT_TYPE? type = null;
-            switch (closestAttachable)
-            {
-                case Part _ :
-                    FrameStop.Milliseconds(75);
-                    break;
-                case Bit bit:
-                    type = bit.Type;
-                    break;
-                case EnemyAttachable enemyAttachable:
-                    enemyAttachable.SetAttached(false);
-                    break;
-            }
-
-            return true;
-        }*/
-
-        /*/// <summary>
-        /// Applies pre-determine asteroid damage to the specified IAttachable
-        /// </summary>
-        /// <param name="attachable"></param>
-        private void AsteroidDamageAt(IAttachable attachable)
-        {
-
-            TryHitAt(attachable, 10000);
-            AudioController.PlaySound(SOUND.ASTEROID_CRUSH);
-
-            BIT_TYPE? type = null;
-            switch (attachable)
-            {
-                case Part _ :
-                    FrameStop.Milliseconds(75);
-                    break;
-                case Bit bit:
-                    type = bit.Type;
-                    break;
-                case EnemyAttachable enemyAttachable:
-                    enemyAttachable.SetAttached(false);
-                    break;
-            }
-
-            /#1#/FIXME This value should not be hardcoded
-            BotPartsLogic.AddCoreHeat(20f);
-
-            if ((attachedBlocks.Count == 0 || ((IHealth) attachedBlocks[0])?.CurrentHealth <= 0) && CanBeDamaged)
-            {
-                Destroy("Core Destroyed by Asteroid");
-            }
-            else if (BotPartsLogic.coreHeat >= 100 && CanBeDamaged)
-            {
-                Destroy("Core Overheated");
-            }#1#
-        }*/
-
-        #endregion //Asteroid Collision
 
         public List<IAttachable> GetAttachablesInColumn(in Vector2 worldHitPoint)
         {
@@ -1688,8 +1616,10 @@ namespace StarSalvager
 
             switch (newAttachable)
             {
-                case Bit _:
+                case Bit bit:
                     if(checkForCombo) CheckForCombosAround(coordinate);
+                    
+                    TryAddCollectedAmmo(bit);
                     break;
                 /*case Component _ when checkForCombo:
                     CheckForCombosAround<COMPONENT_TYPE>(coordinate);
@@ -2322,7 +2252,7 @@ namespace StarSalvager
 
                 foreach (var attachedBit in detachables.OfType<Bit>())
                 {
-                    SessionDataProcessor.Instance.BitDetached(attachedBit.Type);
+                    SessionDataProcessor.Instance.RecordBitDetached(attachedBit.ToBlockData());
                 }
 
                 if (detachables.Count == 1)
@@ -2642,6 +2572,7 @@ _isShifting = true;
         /// <summary>
         /// Searches Bot for any matches to Active Bonus Shapes. Solves if any matches are found. Assumes that all matches are Bits.
         /// </summary>
+        [Obsolete("Bonus Shapes are not currently implemented")]
         private void CheckForBonusShapeMatches()
         {
             var obstacleManager = LevelManager.Instance.ObstacleManager;
@@ -2846,6 +2777,7 @@ _isShifting = true;
             Destroy(effect, newTime);
         }
 
+        [Obsolete("Bonus Shapes are not currently implemented")]
         private void CreateBonusShapeEffect(Vector3 worldPosition)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2870,16 +2802,6 @@ _isShifting = true;
             CreateBonusShapeParticleEffect(center);
 
         }
-        /*private void CreateBonusShapeEffect(Transform parent)
-        {
-            var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
-                .CreateEffect(EffectFactory.EFFECT.BONUS_SHAPE);
-
-            effect.transform.SetParent(parent, false);
-            var time = effect.GetComponent<ScaleColorSpriteAnimation>().AnimationTime;
-
-            Destroy(effect, time);
-        }*/
         private void CreateBonusShapeParticleEffect(Vector3 position)
         {
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>()
@@ -2941,19 +2863,9 @@ _isShifting = true;
         public bool CheckAllForCombos()
         {
             bool bitCombos = CheckForCombosAround(AttachedBlocks.OfType<Bit>());
-            //bool crateCombos = CheckForCombosAround<CRATE_TYPE>(attachedBlocks);
 
             return bitCombos;//|| crateCombos;
         }
-
-        //private bool CheckForCombosAround(IEnumerable<Bit> iAttachables)
-        //{
-        //    return CheckForCombosAround(iAttachables.OfType<ICanCombo<T>>());
-        //}
-        //private bool CheckForCombosAround(IEnumerable<ICanCombo> iCanCombos)
-        //{
-        //    return CheckForCombosAround(iCanCombos.OfType<ICanCombo<T>>());
-        //}
 
         private bool CheckForCombosAround(IEnumerable<Bit> bits)
         {
@@ -3265,7 +3177,7 @@ _isShifting = true;
                             GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
                         }
 
-                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position);
+                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position, null);
                     }
                     else if (bit != null)
                     {
@@ -3285,7 +3197,7 @@ _isShifting = true;
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
                                 
-                                HintManager.TryShowHint(HINT.WHITE, 0.5f, bit);
+                                HintManager.TryShowHint(HINT.WHITE, 0.5f, null, bit);
                                 break;
                         }
 
@@ -3308,76 +3220,6 @@ _isShifting = true;
             CheckForDisconnects();
             //--------------------------------------------------------------------------------------------------------//
         }
-
-        /*private void AdvancedComboSolver(ComboRemoteData comboData, IReadOnlyList<IAttachable> comboBits)
-        {
-            IAttachable bestAttachableOption = null;
-
-            //Decide who gets to upgrade
-            //--------------------------------------------------------------------------------------------------------//
-
-            foreach (var bit in comboBits)
-            {
-                //Need to make sure that if we choose this block, that it is connected to the core one way or another
-                var hasPath = attachedBlocks.HasPathToCore(bit as Bit,
-                    comboBits.Where(ab => ab != bit)
-                        .Select(b => b.Coordinate)
-                        .ToList());
-
-                //If there's no path, we cannot use this bit
-                if (!hasPath)
-                    continue;
-
-
-                bestAttachableOption = bit;
-            }
-
-            //Make sure that things are working
-            //--------------------------------------------------------------------------------------------------------//
-
-            //If no block was selected, then we've had a problem
-            if (bestAttachableOption == null)
-                throw new Exception("No Closest Core Found");
-
-            //See if anyone else needs to move
-            //--------------------------------------------------------------------------------------------------------//
-
-            //Get a list of Bits that will be moving (Blocks that are not the chosen closest to core)
-            var movingBits = comboBits
-                .Where(ab => ab != bestAttachableOption).ToArray();
-
-            //Get a list of orphans that may need move when we are moving our bits
-            var orphans = new List<OrphanMoveData>();
-            CheckForOrphans(movingBits, bestAttachableOption, ref orphans);
-
-            //Move everyone who we've determined need to move
-            //--------------------------------------------------------------------------------------------------------//
-
-            //if(orphans.Count > 0)
-            //    Debug.Break();
-
-            (bestAttachableOption as Bit)?.IncreaseLevel(comboData.addLevels);
-
-            //Move all of the components that need to be moved
-            StartCoroutine(MoveComboPiecesCoroutine(
-                movingBits,
-                bestAttachableOption,
-                orphans.ToArray(),
-                TEST_MergeSpeed,
-                () =>
-                {
-                    var bit = bestAttachableOption as Bit;
-
-                    //We need to update the positions and level before we move them in case we interact with bits while they're moving
-
-                    //bit.IncreaseLevel();
-
-                    CheckForCombosAround(bit);
-                    CheckForCombosAround(orphans.Select(x => x.attachableBase as Bit));
-                }));
-
-            //--------------------------------------------------------------------------------------------------------//
-        }*/
 
         #endregion //Combo Solvers
 
@@ -4222,9 +4064,6 @@ _isShifting = true;
                     case EnemyAttachable _:
                         Recycler.Recycle<EnemyAttachable>(attachable.gameObject);
                         break;
-                    /*case Component _:
-                        Recycler.Recycle<Component>(attachable.gameObject);
-                        break;*/
                     case JunkBit _:
                         Recycler.Recycle<JunkBit>(attachable.gameObject);
                         break;
@@ -4239,7 +4078,6 @@ _isShifting = true;
 
             AttachedBlocks.Clear();
             BotPartsLogic.ClearList();
-            //_parts.Clear();
             
             if(DecoyDrone) Destroy(DecoyDrone.gameObject);
 
@@ -4410,34 +4248,6 @@ _isShifting = true;
         }
 
     }
-    [Obsolete]
-    public struct PendingCombo
-    {
-        public readonly ComboRemoteData ComboData;
-        public readonly List<ICanCombo> ToMove;
-
-        public PendingCombo(ComboRemoteData comboData, List<ICanCombo> toMove)
-        {
-            ComboData = comboData;
-            ToMove = toMove;
-        }
-        public PendingCombo((ComboRemoteData comboData, List<ICanCombo> toMove) data)
-        {
-            var (comboData, toMove) = data;
-            ComboData = comboData;
-            ToMove = toMove;
-        }
-
-        public bool Contains(ICanCombo canCombo)
-        {
-            if (ToMove == null || ToMove.Count == 0)
-                return false;
-
-            return ToMove.Contains(canCombo);
-        }
-
-    }
-
     public static class PendingComboListExtensions
     {
         public static bool Contains(this IEnumerable<PendingCombov2> list, ICanCombo canCombo)
@@ -4446,29 +4256,6 @@ _isShifting = true;
         }
 
         public static bool Contains(this List<PendingCombov2> list, ICanCombo canCombo, out int index)
-        {
-            index = -1;
-
-            var temp = list.ToArray();
-            for (var i = 0; i < temp.Length; i++)
-            {
-                if (!temp[i].Contains(canCombo))
-                    continue;
-
-                index = i;
-                return true;
-            }
-
-            return false;
-        }
-
-        [Obsolete]
-        public static bool Contains(this IEnumerable<PendingCombo> list, ICanCombo canCombo)
-        {
-            return list.Any(pendingCombo => pendingCombo.Contains(canCombo));
-        }
-        [Obsolete]
-        public static bool Contains(this List<PendingCombo> list, ICanCombo canCombo, out int index)
         {
             index = -1;
 

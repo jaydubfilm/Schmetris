@@ -8,6 +8,7 @@ using StarSalvager.Utilities.SceneManagement;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace StarSalvager.Prototype
 {
@@ -32,6 +33,11 @@ namespace StarSalvager.Prototype
 
         //Unity Functions
         //====================================================================================================================//
+        private void OnEnable()
+        {
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed += OnSubmitPressed;
+            Utilities.Inputs.Input.Actions.MenuControls.Pause.performed += OnSkipPressed;
+        }
         
         private void Awake()
         {
@@ -43,30 +49,64 @@ namespace StarSalvager.Prototype
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _outroSceneSlide++;
-                if (_outroSceneSlide >= _dialogueLines.Count)
-                {
-                    ShowFinalScreen();
-                    return;
-                }
-
-                SetCurrentSlide(_outroSceneSlide);
-            }
+                NextStep();
 
             if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                gameObject.SetActive(false);
-                panel1.SetActive(true);
-                panel2.SetActive(false);
-                _outroSceneSlide = 0;
-                
-                //TODO Need to open the Game Summary Screen
-                ShowFinalScreen();
-                //SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.MAIN_MENU);
-            }
+                Skip();
+        }
+        
+        private void OnDisable()
+        {
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPressed;
+            Utilities.Inputs.Input.Actions.MenuControls.Pause.performed -= OnSkipPressed;
         }
 
+        //Inputs
+        //====================================================================================================================//
+        
+        private void OnSubmitPressed(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.ReadValueAsButton())
+                return;
+            
+            NextStep();
+        }
+
+
+
+        private void OnSkipPressed(InputAction.CallbackContext ctx)
+        {
+            if (!ctx.ReadValueAsButton())
+                return;
+            
+            Skip();
+        }
+
+        
+
+        private void NextStep()
+        {
+            _outroSceneSlide++;
+            if (_outroSceneSlide >= _dialogueLines.Count)
+            {
+                ShowFinalScreen();
+                return;
+            }
+
+            SetCurrentSlide(_outroSceneSlide);
+        }
+        
+        private void Skip()
+        {
+            gameObject.SetActive(false);
+            panel1.SetActive(true);
+            panel2.SetActive(false);
+            _outroSceneSlide = 0;
+                
+            //TODO Need to open the Game Summary Screen
+            ShowFinalScreen();
+        }
+        
         //OutroScene Functions
         //====================================================================================================================//
 
@@ -116,10 +156,11 @@ namespace StarSalvager.Prototype
             
             SetupScene();
             gameObject.SetActive(false);
-            
+
             LevelManager.Instance.GameUi.ShowWaveSummaryWindow(true,
+                true,
                 "Game Over",
-                string.Empty/*PlayerDataManager.GetRunSummaryString()*/,
+                string.Empty,
                 () =>
                 {
                     Globals.CurrentWave = 0;
@@ -139,7 +180,6 @@ namespace StarSalvager.Prototype
                     
                 },
                 "Main Menu",
-                GameUI.WindowSpriteSet.TYPE.ORANGE,
                 0.5f);
         }
         
@@ -156,5 +196,8 @@ namespace StarSalvager.Prototype
         {
             gameObject.SetActive(false);
         }
+
+        //====================================================================================================================//
+        
     }
 }

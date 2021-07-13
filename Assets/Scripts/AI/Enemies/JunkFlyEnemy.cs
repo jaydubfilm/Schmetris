@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Audio.Enemies;
 using StarSalvager.Audio.Interfaces;
+using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 
@@ -57,6 +58,7 @@ namespace StarSalvager.AI
         {
             _playerLocation = playerLocation;
             StateUpdate();
+            
         }
 
         protected override Vector2 GetMovementDirection(Vector2 playerLocation)

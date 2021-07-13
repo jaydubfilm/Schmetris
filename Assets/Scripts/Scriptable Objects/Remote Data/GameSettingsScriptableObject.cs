@@ -10,6 +10,9 @@ namespace StarSalvager.ScriptableObjects
     {
         [BoxGroup("Prototyping")]
         public bool usePartColors = true;
+        
+        [BoxGroup("Prototyping")]
+        public bool useRailgunFireLine = true;
 
         [BoxGroup("Prototyping")]
         public bool useCenterFiring = true;
@@ -80,9 +83,6 @@ namespace StarSalvager.ScriptableObjects
 
         [BoxGroup("Bot"), Range(0f,10f)]
         public float botHealWaitTime = 2f;
-
-        [BoxGroup("Bot")]
-        public float decoyDroneHealth = 20f;
 
         [BoxGroup("Bot"), Range(0f,1f)]
         public float bitDropCollectionMultiplier = 1f;

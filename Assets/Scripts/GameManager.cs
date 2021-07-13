@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using StarSalvager.Utilities.Analytics;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Saving;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace StarSalvager
     {
         MainMenu = 1 << 0,
         AccountMenu = 1 << 1,
-        Scrapyard = 1 << 2,
+        Wreckyard = 1 << 2,
         UniverseMap = 1 << 3,
         LevelActive = 1 << 4,
         LevelActiveEndSequence = 1 << 5, // After the timer is over, before the level properly ends
@@ -77,7 +78,7 @@ namespace StarSalvager
             {
                 AnalyticsManager.WaveEndEvent(AnalyticsManager.REASON.QUIT);
             }
-            else if (IsState(GameState.Scrapyard))
+            else if (IsState(GameState.Wreckyard))
             {
                 AnalyticsManager.WreckEndEvent(AnalyticsManager.REASON.QUIT);
             }

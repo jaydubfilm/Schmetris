@@ -1,4 +1,6 @@
 ﻿using StarSalvager.Factories;
+using StarSalvager.Utilities.Saving;
+using UnityEngine;
 
 namespace StarSalvager.Utilities.Extensions
 {
@@ -9,7 +11,11 @@ namespace StarSalvager.Utilities.Extensions
             var patchRemoteData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchData.Type);
             var patchLevelData = patchRemoteData.Levels[patchData.Level];
             
-            return (patchLevelData.gears, patchLevelData.silver);
+            var costReductionMultiplier = PlayerDataManager.GetCurrentUpgradeValue(UPGRADE_TYPE.PATCH_COST);
+            var gears = Mathf.CeilToInt(patchLevelData.gears * costReductionMultiplier);
+            var silver = Mathf.CeilToInt(patchLevelData.silver * costReductionMultiplier);
+            
+            return (gears, silver);
         }
     }
 }

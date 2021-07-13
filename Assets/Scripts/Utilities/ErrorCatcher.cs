@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using StarSalvager.UI;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Trello;
 using UnityEngine;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager.Utilities
 {
@@ -97,6 +99,10 @@ namespace StarSalvager.Utilities
                 case LogType.Exception:
                     _pauseRecording = true;
                     TrelloSender.Instance.TakeEarlyScreenShot();
+                    TrelloSender.Instance.SaveStateInfo(
+                        GameManager.CurrentGameState,
+                        InputManager.CurrentInputDeviceName, 
+                        InputManager.CurrentActionMap);
                     //FIXME May want to show something else depending on the debug condition
                     Alert.ShowAlert("Error Occured", $"<b>{condition}</b>\n{stackTrace}", "Okay", "Send Bug", 
                         answer =>

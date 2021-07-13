@@ -1008,6 +1008,17 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f9f07604-0f57-43d9-b2fa-13c7a2ada224"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5ca4f60e-ba11-4bdf-b080-e9d315691738"",
                     ""path"": ""*/{Cancel}"",
                     ""interactions"": """",
@@ -1024,6 +1035,17 @@ namespace StarSalvager.Utilities.Inputs
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""12d69dff-0d58-4b4e-aa94-8a620f4fa74c"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

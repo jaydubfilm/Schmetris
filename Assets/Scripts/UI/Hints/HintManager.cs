@@ -5,17 +5,19 @@ using System.Linq;
 using Recycling;
 using Sirenix.OdinInspector;
 using StarSalvager.ScriptableObjects.Hints;
+using StarSalvager.UI.Wreckyard.PatchTrees;
 using StarSalvager.Utilities;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Input = UnityEngine.Input;
-using Object = System.Object;
 
 namespace StarSalvager.UI.Hints
 {
@@ -38,7 +40,11 @@ namespace StarSalvager.UI.Hints
         HEALTH,
         WRECK,
         STAR,
-        MAP
+        MAP,
+        LAYOUT,
+        PICK_PART,
+        ENTER_WRECK,
+        PATCH_TREE
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -46,7 +52,9 @@ namespace StarSalvager.UI.Hints
     {
         public static bool USE_HINTS = true;
 
-        public bool ShowingHint { get; private set; }
+        public static Action<bool> OnShowingHintAction;
+
+        public static bool ShowingHint { get; private set; }
 
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
@@ -58,6 +66,8 @@ namespace StarSalvager.UI.Hints
 
         [SerializeField, Required, Space(10f)]
         private Button confirmButton;
+        [SerializeField, Required]
+        private TMP_Text continueText;
         
         [SerializeField, Required]
         private HighlightManager highlightManager;
@@ -100,7 +110,7 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return;
             
-            if (Instance.ShowingHint)
+            if (ShowingHint)
                 return;
 
             if (objectsToHighlight.IsNullOrEmpty())
@@ -119,7 +129,7 @@ namespace StarSalvager.UI.Hints
         /// <param name="hint"></param>
         /// <param name="delayTime"></param>
         /// <param name="objectsToHighlight"></param>
-        public static void TryShowHint(HINT hint, float delayTime, params object[] objectsToHighlight)
+        public static void TryShowHint(HINT hint, float delayTime, Action onShowCallback, params object[] objectsToHighlight)
         {
             if (!USE_HINTS)
                 return;
@@ -127,7 +137,7 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return;
             
-            if (Instance.ShowingHint)
+            if (ShowingHint)
                 return;
             
             if(!WaitingHints.Contains(hint))
@@ -137,6 +147,8 @@ namespace StarSalvager.UI.Hints
             
             Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
             {
+                onShowCallback?.Invoke();
+                
                 WaitingHints.Remove(hint);
                 
                 //If we have an empty list, assume we want to obtain in it other ways
@@ -232,8 +244,8 @@ namespace StarSalvager.UI.Hints
                 case HINT.HEALTH:
                     objectsToHighlight = FindObjectOfType<GameUI>().GetHintElements(hint);
                     break;
-                
-                //These should just be ambient hints, with no explicit highlight
+                //--------------------------------------------------------------------------------------------------------//
+                    //These should just be ambient hints, with no explicit highlight
                 case HINT.MAP:
                     objectsToHighlight = new object[]
                     {
@@ -244,6 +256,9 @@ namespace StarSalvager.UI.Hints
                         }
                     };
                     break;
+
+                //--------------------------------------------------------------------------------------------------------//
+                case HINT.PICK_PART:
                 case HINT.STAR:
                     objectsToHighlight = new object[]
                     {
@@ -254,6 +269,15 @@ namespace StarSalvager.UI.Hints
                         }
                     };
                     break;
+
+                //--------------------------------------------------------------------------------------------------------//
+                case HINT.LAYOUT:
+                case HINT.ENTER_WRECK:
+                case HINT.PATCH_TREE:
+                    objectsToHighlight = FindObjectOfType<PatchTreeUI>().GetHintElements(hint);
+                    break;
+
+                
                 //----------------------------------------------------------------------------------------------------//
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -286,20 +310,40 @@ namespace StarSalvager.UI.Hints
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private IEnumerator HintPagesCoroutine(HINT hint, IReadOnlyList<object> objectsToHighlight)
         {
+            var buttonPressed = false;
+            
+            //Menu Controls Input
+            //--------------------------------------------------------------------------------------------------------//
+            
+            void OnSubmitPerformed(InputAction.CallbackContext ctx)
+            {
+                if (ctx.ReadValueAsButton() == false)
+                    return;
+
+                buttonPressed = true;
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             var hintData = hintRemoteData.GetHintData(hint);
             
             Time.timeScale = 0f;
+            OnShowingHintAction?.Invoke(true);
             ShowingHint = true;
+            //disable controller traversal
+            UISelectHandler.SendNavigationEvents = false;
             
             _previousInputActionGroup = InputManager.CurrentActionMap;
             InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
 
-            var buttonPressed = false;
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.onClick.AddListener(() =>
             {
                 buttonPressed = true;
             });
+            
+            //FIXME I probably want all of these functionalities to occur in the Input Manager
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed += OnSubmitPerformed;
             
             for (var i = 0; i < hintData.hintTexts.Count; i++)
             {
@@ -329,7 +373,7 @@ namespace StarSalvager.UI.Hints
                 ShowHintText(hintData.hintTexts[i]);
 
                 //TODO Need to also include waiting for button Press
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || buttonPressed);
+                yield return new WaitUntil(() => buttonPressed);
                 
                 buttonPressed = false;
 
@@ -340,11 +384,19 @@ namespace StarSalvager.UI.Hints
             
             InputManager.SwitchCurrentActionMap(_previousInputActionGroup);
             _previousInputActionGroup = ACTION_MAP.NULL;
-            
+
+            Utilities.Inputs.Input.Actions.MenuControls.Submit.performed -= OnSubmitPerformed;
+            //allow for controller traversal
+            UISelectHandler.SendNavigationEvents = true;
+
             Time.timeScale = 1f;
             ShowingHint = false;
             highlightManager.SetActive(false);
+            
+            //small delay to avoid pressing currently selected items while attempting to close the hint.
+            yield return new WaitForSeconds(0.2f);
 
+            OnShowingHintAction?.Invoke(false);
         }
 
         /// <summary>
@@ -412,6 +464,7 @@ namespace StarSalvager.UI.Hints
         {
             this.hintText.text = hintText.shortText;
             infoText.text = hintText.longDescription;
+            continueText.text = String.IsNullOrWhiteSpace(hintText.continueText) ? "continue" : hintText.continueText;
         }
 
         private Bounds GetPositionAsBounds(in Vector2 worldPosition)

@@ -6,11 +6,13 @@ using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using System.Collections.Generic;
 using System.Linq;
+using StarSalvager.Utilities.Helpers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Values;
+using UnityEngine.UI;
 
 namespace StarSalvager.Factories
 {
@@ -29,32 +31,6 @@ namespace StarSalvager.Factories
         public PartAttachableFactory(AttachableProfileScriptableObject factoryProfile, RemotePartProfileScriptableObject remotePartData) : base(factoryProfile)
         {
             this.remotePartData = remotePartData;
-        }
-
-        //============================================================================================================//
-
-        public void UpdatePartData(PART_TYPE partType, int level, ref ScrapyardPart part)
-        {
-            var remoteData = remotePartData.GetRemoteData(partType);
-            var profile = factoryProfile.GetProfile(partType);
-            var sprite = profile.GetSprite(level);
-
-            Color color;
-            if (remoteData.partType == PART_TYPE.EMPTY)
-            {
-                color = PlayerDataManager.GetCategoryAtCoordinate(part.Coordinate).GetColor();
-            }
-            else
-            {
-                color = remoteData.category == BIT_TYPE.NONE
-                    ? Color.white
-                    : remoteData.category.GetColor();
-            }
-
-            part.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                part.SetColor(color);
         }
 
         //============================================================================================================//
@@ -162,9 +138,8 @@ namespace StarSalvager.Factories
             var remote = remotePartData.GetRemoteData(type);
             var profile = factoryProfile.GetProfile(type);
             var sprite = profile.GetSprite(0);
-            //var startingHealth = remote.levels[partData.Level].health;//.health[blockData.Level];
-
-
+            var (bSprite, bColor) = type.GetBorderData();
+            
             //--------------------------------------------------------------------------------------------------------//
 
             Part temp;
@@ -198,7 +173,12 @@ namespace StarSalvager.Factories
                 ? Color.white
                 : remoteData.category.GetColor();
 
+            if (temp.BorderSpriteRenderer == null)
+                temp.BorderSpriteRenderer = CreatePartBorder(temp.transform);
+
             temp.SetSprite(sprite);
+            temp.BorderSpriteRenderer.sprite = bSprite;
+            temp.BorderSpriteRenderer.color = bColor;
             if (Globals.UsePartColors)
             {
                 temp.SetColor(color);
@@ -209,6 +189,8 @@ namespace StarSalvager.Factories
             temp.category = remoteData.category;
 
             temp.gameObject.name = $"{temp.Type}";
+            
+            temp.SetSortingLayer(LayerHelper.ACTORS);
             return temp.gameObject;
         }
         public T CreateObject<T>(PartData partData)
@@ -242,35 +224,6 @@ namespace StarSalvager.Factories
 
         //============================================================================================================//
 
-        public GameObject CreateScrapyardGameObject(PartData partData)
-        {
-            var type = (PART_TYPE) partData.Type;
-            var profile = factoryProfile.GetProfile(type);
-            var sprite = profile.GetSprite(0);
-
-
-            if (!Recycler.TryGrab(out ScrapyardPart scrapyardPart))
-            {
-                scrapyardPart = CreateScrapyardObject<ScrapyardPart>();
-            }
-            
-            var remoteData = remotePartData.GetRemoteData(type);
-            var color = remoteData.category == BIT_TYPE.NONE
-                ? Color.white
-                :remoteData.category.GetColor();
-
-            scrapyardPart.LoadBlockData(partData);
-            scrapyardPart.SetSprite(sprite);
-            
-            if(Globals.UsePartColors)
-                scrapyardPart.SetColor(color);
-
-            var gameObject = scrapyardPart.gameObject;
-            gameObject.name = $"{scrapyardPart.Type}";
-
-            return gameObject;
-        }
-
         public void SetOverrideSprite(in IPart toOverride, PART_TYPE overrideType)
         {
             var remoteData = remotePartData.GetRemoteData(overrideType);
@@ -287,55 +240,7 @@ namespace StarSalvager.Factories
                 case Part part:
                     part.SetSprite(sprite);
                     break;
-                case ScrapyardPart scrapyardPart:
-                    scrapyardPart.SetSprite(sprite);
-                    scrapyardPart.SetColor(color);
-                    break;
             }
-
-
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject(PART_TYPE partType)
-        {
-            //var patchSockets = remotePartData.GetRemoteData(partType).PatchSockets;
-            var blockData = new PartData
-            {
-                Type = (int)partType,
-                Patches = new List<PatchData>()
-            };
-
-            return CreateScrapyardGameObject(blockData);
-        }
-
-        public T CreateScrapyardObject<T>(PART_TYPE partType)
-        {
-            var temp = CreateScrapyardGameObject(partType);
-
-            return temp.GetComponent<T>();
-        }
-
-        public T CreateScrapyardObject<T>(PartData partData)
-        {
-            var temp = CreateScrapyardGameObject(partData);
-
-            return temp.GetComponent<T>();
-        }
-
-        //============================================================================================================//
-
-        public GameObject CreateScrapyardGameObject()
-        {
-            return Object.Instantiate(factoryProfile.ScrapyardPrefab);
-        }
-
-        public T CreateScrapyardObject<T>()
-        {
-            var temp = CreateScrapyardGameObject();
-
-            return temp.GetComponent<T>();
         }
 
         //============================================================================================================//
@@ -364,6 +269,67 @@ namespace StarSalvager.Factories
             return temp.GetComponent<T>();
         }
 
+        
+        
         //============================================================================================================//
+
+        public static SpriteRenderer CreatePartBorder(in Transform transform)
+        {
+            var tempBorder = new GameObject("Border_SpriteRenderer");
+            var borderSpriteRenderer = tempBorder.AddComponent<SpriteRenderer>();
+            tempBorder.transform.SetParent(transform, false);
+
+            return borderSpriteRenderer;
+        }
+
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetGraphic"></param>
+        /// <param name="bitType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in Graphic targetGraphic, in BIT_TYPE bitType)
+        {
+            return CreateUIPartBorder((RectTransform)targetGraphic.transform, bitType);
+        }
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetTransform">Parent transform to attach new image</param>
+        /// <param name="partType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in RectTransform targetTransform, in PART_TYPE partType)
+        {
+            return CreateUIPartBorder(targetTransform, partType.GetCategory());
+        }
+        /// <summary>
+        /// Creates a new Image object as child of targetTransform, fitting to its size.
+        /// </summary>
+        /// <param name="targetTransform">Parent transform to attach new image</param>
+        /// <param name="bitType"></param>
+        /// <returns></returns>
+        public static Image CreateUIPartBorder(in RectTransform targetTransform, in BIT_TYPE bitType)
+        {
+            var tempBorder = new GameObject($"{bitType}_Border");
+            var tempBorderImage = tempBorder.AddComponent<Image>();
+            tempBorderImage.transform.SetParent(targetTransform, false);
+            var borderTransform = (RectTransform) tempBorder.transform;
+            var (sprite, color) = FactoryManager.Instance.PartsProfileData.GetPartBorder(bitType);
+                
+                
+            tempBorderImage.raycastTarget = false;
+            tempBorderImage.preserveAspect = true;
+            tempBorderImage.sprite = sprite;
+            tempBorderImage.color = color;
+                
+            borderTransform.anchorMin = Vector2.zero;
+            borderTransform.anchorMax = Vector2.one;
+            borderTransform.sizeDelta = Vector2.zero;
+
+            return tempBorderImage;
+        }
+
+        //====================================================================================================================//
+        
     }
 }

@@ -93,8 +93,7 @@ namespace StarSalvager
             if (other.collider != _waitCollider)
                 return;
 
-            if (IsRecycled)
-                return;
+            if (IsRecycled) return;
             
             //FIXME I'd like to find a better solution to this, as the coroutine seems cumbersome 
             //Only reset these properties x sec after exit. This prevents checking collisions again too early

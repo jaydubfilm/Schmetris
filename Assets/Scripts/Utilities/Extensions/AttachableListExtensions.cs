@@ -828,18 +828,7 @@ namespace StarSalvager.Utilities.Extensions
         //Combo Count
         //============================================================================================================//
 
-        /// <summary>
-        /// Algorithm function that fills the BitList with every Bit in the specified direction that matches the level
-        /// and type.
-        /// </summary>
-        /// <param name="canCombos"></param>
-        /// <param name="type"></param>
-        /// <param name="level"></param>
-        /// <param name="coordinate"></param>
-        /// <param name="direction"></param>
-        /// <param name="iCanCombos"></param>
-        /// <returns></returns>
-        [Obsolete]
+        /*[Obsolete]
         public static bool ComboCountAlgorithm<T>(this IEnumerable<ICanCombo> canCombos, T type, int level,
             Vector2Int coordinate, Vector2Int direction,
             ref List<ICanCombo> iCanCombos) where T : Enum
@@ -866,7 +855,7 @@ namespace StarSalvager.Utilities.Extensions
 
             //Keep checking in this direction
             return combos.ComboCountAlgorithm(type, level, nextCoords, direction, ref iCanCombos);
-        }
+        }*/
         
         public static bool ComboCountAlgorithm(this IEnumerable<Bot.DataTest> canCombos,
             BIT_TYPE type, 

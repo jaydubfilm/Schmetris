@@ -14,13 +14,17 @@ using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.UI.Hints;
 using StarSalvager.UI.Wreckyard.PatchTrees;
+using StarSalvager.Utilities.Analytics.SessionTracking;
+using StarSalvager.Utilities.Inputs;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Utilities.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace StarSalvager.UI
 {
-    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement
+    public class UniverseMap : MonoBehaviour, IReset, IHasHintElement, IBuildNavigationProfile
     {
         //#3658df
         private static Color LINE_COLOR = new Color(0.2117f, 0.34509f, 0.874509f);
@@ -56,15 +60,34 @@ namespace StarSalvager.UI
         [SerializeField] private RectTransform botDisplayRectTransform;
 
         //private RectTransform _shipwreckButtonRectTransform;
+        
+        //====================================================================================================================//
+
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) => _showingHint = showingHint;
 
         #endregion //Properties
 
         //Unity Functions
         //============================================================================================================//
-
+        private void OnEnable()
+        {
+            InputManager.OnCancelPressed += Back;
+            
+            HintManager.OnShowingHintAction += LockMap;
+            HintManager.OnShowingHintAction += IsShowingHint;
+        }
         private void Start()
         {
             backButton.onClick.AddListener(Back);
+        }
+        
+        private void OnDisable()
+        {
+            InputManager.OnCancelPressed -= Back;
+            
+            HintManager.OnShowingHintAction -= LockMap;
+            HintManager.OnShowingHintAction -= IsShowingHint;
         }
 
         //====================================================================================================================//
@@ -96,6 +119,9 @@ namespace StarSalvager.UI
             DrawMap();
 
             PlayerDataManager.GetBotBlockDatas().CreateBotPreview(botDisplayRectTransform);
+
+            //Wait until the map is generated to try and highlight
+            UISelectHandler.SetBuildTarget(this);
         }
 
         public void Reset()
@@ -221,6 +247,12 @@ namespace StarSalvager.UI
 
         private void OnNodePressed(int nodeIndex, NodeType nodeType)
         {
+            if (_showingHint)
+                return;
+
+            //Prevent the selecting of a node while the fading is still occuring
+            if (ScreenFade.Fading) return;
+            
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
 
             switch (nodeType)
@@ -233,13 +265,16 @@ namespace StarSalvager.UI
                     break;
                 case NodeType.Level:
                     PlayerDataManager.SetPlayerTargetCoordinate(currentRingMap.Nodes[nodeIndex].Coordinate);
-
                     //Globals.CurrentRingIndex = 0;
                     Globals.CurrentWave = PlayerDataManager.GetCurrentWave();
 
                     ScreenFade.Fade(() =>
                     {
                         SceneLoader.ActivateScene(SceneLoader.LEVEL, SceneLoader.UNIVERSE_MAP);
+                    }, () =>
+                    {
+                        SessionDataProcessor.Instance.StartNewWave(Globals.CurrentRingIndex, Globals.CurrentWave,
+                            PlayerDataManager.GetBotBlockDatas());
                     });
                     break;
                 case NodeType.Wreck:
@@ -250,6 +285,9 @@ namespace StarSalvager.UI
                         SceneLoader.ActivateScene(SceneLoader.WRECKYARD, SceneLoader.UNIVERSE_MAP, MUSIC.SCRAPYARD);
                         AnalyticsManager.WreckStartEvent();
                         FindObjectOfType<PatchTreeUI>().InitWreck("Wreck", null);
+                    }, () =>
+                    {
+                        SessionDataProcessor.Instance.StartNewWreck(currentRingMap.Nodes[nodeIndex].Coordinate);
                     });
                     break;
             }
@@ -257,12 +295,13 @@ namespace StarSalvager.UI
 
         //============================================================================================================//
 
+
         private void DrawMap()
         {
             var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
 
             var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
-            var playerCoordinateIndex = currentRingMap.GetIndexFromCoordinate(PlayerDataManager.GetPlayerCoordinate());
+            var playerCoordinateIndex = GetPlayerCoordinateIndex(currentRingMap);
 
             CenterToItem(_universeMapButtons[playerCoordinateIndex].transform);
 
@@ -324,7 +363,8 @@ namespace StarSalvager.UI
                 //Hide all the lines that weren't traversed behind the players coordinate
                 else if (endConnectionCoordinate.x <= playerCoordinate.x ||
                          //Hide any lines emanating from nodes adjacent to the player that are impossible to traverse from
-                         (startConnectionCoordinate.x == playerCoordinate.x && startConnectionCoordinate.y != playerCoordinate.y))
+                         (startConnectionCoordinate.x == playerCoordinate.x &&
+                          startConnectionCoordinate.y != playerCoordinate.y))
                 {
                     connectionColor = Color.clear;
                 }
@@ -332,7 +372,7 @@ namespace StarSalvager.UI
                 DrawConnection(connection.x, connection.y, drawDottedLine, connectionColor);
 
                 //If another iteration set this node to active, we don't want to cancel that out
-                if(_universeMapButtons[connection.y].IsButtonInteractable == false)
+                if (_universeMapButtons[connection.y].IsButtonInteractable == false)
                     _universeMapButtons[connection.y].SetButtonInteractable(canTravelToNext);
             }
 
@@ -343,18 +383,23 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             var unlockedWreck = _universeMapButtons
-                .FirstOrDefault(x => playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
+                .FirstOrDefault(x =>
+                    playerCoordinateIndex != 0 && x.IsButtonInteractable && x.NodeType == NodeType.Wreck);
 
             if (HintManager.CanShowHint(HINT.WRECK) && unlockedWreck != null)
             {
-                HintManager.TryShowHint(HINT.WRECK, ScreenFade.DEFAULT_TIME, unlockedWreck.transform);
+                ScreenFade.WaitForFade(() =>
+                {
+                    HintManager.TryShowHint(HINT.WRECK, unlockedWreck.transform);
+                });
+                
             }
 
             //--------------------------------------------------------------------------------------------------------//
 
         }
 
-        
+
         private void DrawConnection(int connectionStart, int connectionEnd, bool dottedLine, Color color)
         {
             if (_connectionImages == null)
@@ -379,6 +424,21 @@ namespace StarSalvager.UI
             _connectionImages.Add(connectionImage);
         }
 
+        private static int GetPlayerCoordinateIndex()
+        {
+            var currentRingMap = Rings.RingMaps[Globals.CurrentRingIndex];
+            return GetPlayerCoordinateIndex(currentRingMap);
+        }
+        private static int GetPlayerCoordinateIndex(in Ring ring)
+        {
+            var playerCoordinate = PlayerDataManager.GetPlayerCoordinate();
+            return ring.GetIndexFromCoordinate(playerCoordinate);
+        }
+        
+        //Buttons Pressed Functions
+        //====================================================================================================================//
+        
+
         private void InitBackButton()
         {
             switch (SceneLoader.PreviousScene)
@@ -397,6 +457,9 @@ namespace StarSalvager.UI
         }
         private void Back()
         {
+            if (_showingHint)
+                return;
+
             switch (SceneLoader.PreviousScene)
             {
                 case SceneLoader.LEVEL:
@@ -407,6 +470,11 @@ namespace StarSalvager.UI
                     break;
 
                 case SceneLoader.MAIN_MENU:
+                    ScreenFade.Fade(() =>
+                    {
+                        SceneLoader.LoadPreviousScene();
+                    });
+                    break;
                 case SceneLoader.WRECKYARD:
                     ScreenFade.Fade(() =>
                     {
@@ -420,6 +488,16 @@ namespace StarSalvager.UI
         }
 
         //============================================================================================================//
+        
+        /// <summary>
+        /// Prevents the scroll rect moving around when it is meant to be locked.
+        /// </summary>
+        /// <param name="lock"></param>
+        private void LockMap(bool @lock)
+        {
+            //Possible issue with Unity causing the stacked canvases  to not use the Graphics Raycaster correctly
+            m_scrollRect.enabled = !@lock;
+        }
 
         //TODO: ashulman, figure out if/why this works
         private void CenterToItem(RectTransform obj)
@@ -432,6 +510,17 @@ namespace StarSalvager.UI
         }
 
         //====================================================================================================================//
-        
+
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var playerCoordinateIndex = GetPlayerCoordinateIndex();
+            var buttonObject = _universeMapButtons[playerCoordinateIndex].Button;
+            var selectables = new List<Selectable>
+            {
+                backButton
+            };
+            selectables.AddRange(_universeMapButtons.Select(x => x.Button));
+            return new NavigationProfile(buttonObject, selectables, null, null);
+        }
     }
 }

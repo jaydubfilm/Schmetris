@@ -12,7 +12,7 @@ namespace StarSalvager.Utilities.Animations
         public void ChangeState(in string newStateName)
         {
             var animation = animationController.GetAnimation(newStateName);
-
+            //Comment
             SetAnimation(animation);
         }
         

@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: SHIELD_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 5
+  NodeLinks:
+  - BaseNodeGUID: 54881b9428e507d49b04ded5e3c40191
+    PortName: SHIELD -> EFFICIENCY 1
+    TargetNodeGUID: ec406050-4a8a-45db-b3d5-54719a2497e2
+  - BaseNodeGUID: 54881b9428e507d49b04ded5e3c40191
+    PortName: SHIELD -> FIRE_RATE 1
+    TargetNodeGUID: 86256e60-df81-433f-b918-1d0ecfb91445
+  - BaseNodeGUID: ec406050-4a8a-45db-b3d5-54719a2497e2
+    PortName: EFFICIENCY 1 -> EFFICIENCY 2
+    TargetNodeGUID: ebc97876-c6ed-4f98-b886-39150ccac080
+  - BaseNodeGUID: 86256e60-df81-433f-b918-1d0ecfb91445
+    PortName: FIRE_RATE 1 -> EMPTY 2
+    TargetNodeGUID: a007c970-7b83-45f5-8dc5-b18b65994583
+  - BaseNodeGUID: ebc97876-c6ed-4f98-b886-39150ccac080
+    PortName: EFFICIENCY 2 -> EFFICIENCY 3
+    TargetNodeGUID: 12238590-0934-4c95-86b2-2526c91d8ee9
+  - BaseNodeGUID: a007c970-7b83-45f5-8dc5-b18b65994583
+    PortName: EMPTY 2 -> EMPTY 3
+    TargetNodeGUID: 6d258bbd-f34d-4029-b295-4a4b2eec58e1
+  PartNodeData:
+    GUID: 54881b9428e507d49b04ded5e3c40191
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 92
+      height: 77
+    Type: 5
+  PatchNodeDatas:
+  - GUID: ec406050-4a8a-45db-b3d5-54719a2497e2
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -138
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 1
+    Level: 1
+  - GUID: 86256e60-df81-433f-b918-1d0ecfb91445
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: 54
+      width: 214
+      height: 147
+    Type: 3
+    Tier: 1
+    Level: 1
+  - GUID: a007c970-7b83-45f5-8dc5-b18b65994583
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 56
+      width: 214
+      height: 147
+    Type: 0
+    Tier: 2
+    Level: 2
+  - GUID: 6d258bbd-f34d-4029-b295-4a4b2eec58e1
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 54
+      width: 214
+      height: 147
+    Type: 0
+    Tier: 3
+    Level: 3
+  - GUID: ebc97876-c6ed-4f98-b886-39150ccac080
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -139
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 2
+    Level: 2
+  - GUID: 12238590-0934-4c95-86b2-2526c91d8ee9
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -139
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 3
+    Level: 3

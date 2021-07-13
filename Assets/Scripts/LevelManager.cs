@@ -20,9 +20,12 @@ using StarSalvager.Utilities.Analytics;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Saving;
 using System;
+using System.Linq;
 using StarSalvager.Parts.Data;
 using StarSalvager.Prototype;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Helpers;
+using Input = UnityEngine.Input;
 
 namespace StarSalvager
 {
@@ -30,13 +33,15 @@ namespace StarSalvager
     {
         //Properties
         //====================================================================================================================//
-        private float yTopPosition => Constants.gridCellSize * Globals.GridSizeY;
-        private bool BotIsInPosition => m_bots[0].transform.position.y >= yTopPosition;
+
         
         [SerializeField, Required, BoxGroup("Prototyping")]
         private OutroScene OutroScene;
 
         #region Properties
+        
+        private float yTopPosition => Constants.gridCellSize * Globals.GridSizeY;
+        private bool BotIsInPosition => m_bots[0].transform.position.y >= yTopPosition;
 
         private List<Bot> m_bots = new List<Bot>();
         public Bot BotInLevel => m_bots.Count > 0 ? m_bots[0] : null;
@@ -154,13 +159,12 @@ namespace StarSalvager
         public bool m_botEnterScreen { get; private set; } = false;
         public bool m_botZoomOffScreen { get; private set; } = false;
 
+        private bool _playerDataSaved;
+
         private float botMoveOffScreenSpeed = 1.0f;
 
         private bool m_endLevelOverride = false;
-
-        #endregion //Properties
-
-
+        
         [SerializeField] private AnimationCurve enterCurve;
 
         private GameObject _thrusterEffectObject;
@@ -174,7 +178,7 @@ namespace StarSalvager
         private float _t;
         private float _startY;
 
-
+        #endregion //Properties
 
         //Unity Functions
         //====================================================================================================================//
@@ -286,7 +290,7 @@ namespace StarSalvager
             InputManager.Instance.LockRotation = true;
 
             //FIXME
-            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentWave, BotInLevel.GetBlockDatas());
+            //SessionDataProcessor.Instance.StartNewWave(Globals.CurrentRingIndex, Globals.CurrentWave, BotInLevel.GetBlockDatas());
 
             CameraController.SetOrthographicSize(Constants.gridCellSize * Globals.ColumnsOnScreen,
                 BotInLevel.transform.position);
@@ -548,14 +552,13 @@ namespace StarSalvager
             SessionDataProcessor.Instance.EndActiveWave();
 
             GameUi.SetLevelProgressSlider(1f);
-            foreach (var bot in m_bots)
-            {
-                bot.ResetRotationToIdentity();
-            }
+            
 
             PlayerDataManager.ChangeXP(CurrentWaveData.WaveXP);
+           
+
             
-            SavePlayerData();
+            //SavePlayerData();
             GameTimer.SetPaused(true);
 
             //PlayerDataManager.GetResource(BIT_TYPE.RED).AddAmmo(10);
@@ -566,7 +569,6 @@ namespace StarSalvager
                 m_waveEndSummaryData.GetWaveEndSummaryDataString(),
                 () =>
                 {
-
                     GameManager.SetCurrentGameState(GameState.UniverseMap);
                     //ProcessScrapyardUsageBeginAnalytics();
                     PlayerDataManager.SetCanChoosePart(true);
@@ -739,6 +741,7 @@ namespace StarSalvager
             
             Globals.CurrentWave = 0;
 
+            InputManager.SwitchCurrentActionMap(ACTION_MAP.MENU);
             OutroScene.gameObject.SetActive(true);
             GameUI.Instance.FadeBackground(true);
         }
@@ -746,16 +749,25 @@ namespace StarSalvager
         //====================================================================================================================//
         private void SavePlayerData()
         {
+            //For some reason the function was being called MANY TIMES. Added this bool to prevent.
+            if (_playerDataSaved)
+                return;
+            
             if (Globals.UsingTutorial)
                 return;
 
             foreach (Bot bot in m_bots)
             {
-                var blockData = bot.GetBlockDatas();
-
+                bot.ResetRotationToIdentity();
+                
                 PlayerDataManager.SetBotHealth(bot.CurrentHealth);
-                PlayerDataManager.SetDroneBlockData(blockData);
+                PlayerDataManager.SetDroneBlockData(bot.GetBlockDatas());
+                PlayerDataManager.DowngradeAllBits(1, false);
             }
+            
+            PlayerDataManager.SavePlayerAccountData();
+
+            _playerDataSaved = true;
         }
 
         private void CleanLevel()
@@ -784,7 +796,7 @@ namespace StarSalvager
             ProjectileManager.Reset();
             m_endLevelOverride = false;
 
-
+            _playerDataSaved = false;
         }
 
         //UI Functions
@@ -814,10 +826,13 @@ namespace StarSalvager
                 bot.ForceCompleteRotation();
             }
 
-            var lowestCoordinate =
-                bot.AttachedBlocks.GetAttachableInDirection(Vector2Int.zero, DIRECTION.DOWN).Coordinate;
+            //Find the lowest world space positioned block on bot
+            var lowestPosition = bot.AttachedBlocks
+                .Select(x => (Vector2)x.transform.position)
+                .OrderBy(pos => pos.y)
+                .First();
 
-            var localPosition = bot.transform.position + (Vector3) (lowestCoordinate + DIRECTION.DOWN.ToVector2() / 2f);
+            var localPosition = lowestPosition + DIRECTION.DOWN.ToVector2() / 2f;
 
             var effect = FactoryManager.Instance.GetFactory<EffectFactory>().CreateEffect(EffectFactory.EFFECT.THRUST);
             var effectTransform = effect.transform;

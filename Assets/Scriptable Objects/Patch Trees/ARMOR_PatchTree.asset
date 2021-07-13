@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: ARMOR_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 3
+  NodeLinks:
+  - BaseNodeGUID: 5011828d221685744ab4d30abcdec012
+    PortName: ARMOR -> EFFICIENCY 1
+    TargetNodeGUID: 5ff938e5-9f92-4904-be19-da90e16849a8
+  - BaseNodeGUID: 5ff938e5-9f92-4904-be19-da90e16849a8
+    PortName: EFFICIENCY 1 -> EFFICIENCY 2
+    TargetNodeGUID: 9e17f298-2230-432c-b082-bcd8491e9383
+  - BaseNodeGUID: 9e17f298-2230-432c-b082-bcd8491e9383
+    PortName: EFFICIENCY 2 -> EFFICIENCY 3
+    TargetNodeGUID: 8dc321aa-07f9-457c-8efe-cd35bad71469
+  - BaseNodeGUID: 8dc321aa-07f9-457c-8efe-cd35bad71469
+    PortName: EFFICIENCY 3 -> EFFICIENCY 4
+    TargetNodeGUID: 96d824da-de47-476b-b5ae-3b49ba6e7cda
+  - BaseNodeGUID: 5011828d221685744ab4d30abcdec012
+    PortName: ARMOR -> POWER 1
+    TargetNodeGUID: ce29b717-678a-4799-b0c7-e5cfc226c3d1
+  - BaseNodeGUID: ce29b717-678a-4799-b0c7-e5cfc226c3d1
+    PortName: POWER 1 -> POWER 2
+    TargetNodeGUID: 2d066195-bebe-4b05-b198-6821e904b911
+  PartNodeData:
+    GUID: 5011828d221685744ab4d30abcdec012
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 89
+      height: 77
+    Type: 3
+  PatchNodeDatas:
+  - GUID: 5ff938e5-9f92-4904-be19-da90e16849a8
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: 5
+      width: 214
+      height: 150
+    Type: 4
+    Tier: 1
+    Level: 1
+  - GUID: 9e17f298-2230-432c-b082-bcd8491e9383
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 5
+      width: 214
+      height: 150
+    Type: 4
+    Tier: 2
+    Level: 2
+  - GUID: 8dc321aa-07f9-457c-8efe-cd35bad71469
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 5
+      width: 214
+      height: 150
+    Type: 4
+    Tier: 3
+    Level: 3
+  - GUID: 96d824da-de47-476b-b5ae-3b49ba6e7cda
+    Position:
+      serializedVersion: 2
+      x: 1000
+      y: 4
+      width: 214
+      height: 150
+    Type: 4
+    Tier: 4
+    Level: 4
+  - GUID: ce29b717-678a-4799-b0c7-e5cfc226c3d1
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: 200
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 1
+    Level: 1
+  - GUID: 2d066195-bebe-4b05-b198-6821e904b911
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 201
+      width: 214
+      height: 150
+    Type: 1
+    Tier: 2
+    Level: 2

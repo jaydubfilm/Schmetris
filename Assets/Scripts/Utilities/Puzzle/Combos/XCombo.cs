@@ -7,7 +7,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 {
     public class XCombo : LineCombo
     {
-        public override bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
+        public bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
             out (ComboRemoteData comboData, List<ICanCombo> toMove) outData)
         {

@@ -69,6 +69,7 @@ namespace StarSalvager.Values
 
         private static GameSettingsScriptableObject m_gameSettings = null;
 
+        public static bool UseRailgunFireLine => m_gameSettings.useRailgunFireLine;
         public static float PartSwapTime => m_gameSettings.partSwapTime;
         public static bool UsePartColors => m_gameSettings.usePartColors;
 
@@ -80,8 +81,6 @@ namespace StarSalvager.Values
         public static float BitDropCollectionMultiplier => m_gameSettings.bitDropCollectionMultiplier;
 
         public static bool UseCenterFiring => m_gameSettings.useCenterFiring;
-        public static float DecoyDroneHealth => m_gameSettings.decoyDroneHealth;
-        //public static int Magnetism => m_gameSettings.magnetAmount;
 
         public static float ShuffleTimeThreshold => m_gameSettings.shuffleTimeThreshold;
 

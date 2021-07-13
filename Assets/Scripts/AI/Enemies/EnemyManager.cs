@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
@@ -240,9 +241,9 @@ namespace StarSalvager
             }
         }
 
-        public Enemy SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
+        public Enemy SpawnEnemy(string enemyID, Vector2? spawnLocationOverride = null)
         {
-            Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
+            Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyID);
 
             if (!m_enemies.Contains(newEnemy))
             {
@@ -257,6 +258,7 @@ namespace StarSalvager
             newEnemy.OnSpawned();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
+            SessionDataProcessor.Instance.EnemySpawned(enemyID);
 
             return newEnemy;
         }
@@ -352,22 +354,23 @@ namespace StarSalvager
             }
         }
 
-        public void DamageAllEnemiesInRange(float damage, Vector2 damagePosition, float range)
+        public void DamageAllEnemiesInRadius(in float damage, in Vector2 worldPosition, in float radius)
         {
-            var existingEnemies = new List<Enemy>(m_enemies);
+            //Store a copy of the list in the event that one is removed due to a previous attack iteration
+            IReadOnlyList<Enemy> existingEnemies = new List<Enemy>(m_enemies);
             var damageAbs = Mathf.Abs(damage);
             foreach (var enemy in existingEnemies)
             {
                 if (enemy.IsRecycled)
                     continue;
 
-                if (!CameraController.IsPointInCameraRect(enemy.transform.position))
+                var position = enemy.Position;
+
+                if (!CameraController.IsPointInCameraRect(position))
                     continue;
 
-                if (Vector2.Distance(damagePosition, (Vector2) enemy.transform.position) > range)
-                {
+                if (Vector2.Distance(worldPosition, position) > radius)
                     continue;
-                }
 
                 if (enemy is ICanBeHit canBeHit)
                 {

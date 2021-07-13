@@ -7,8 +7,10 @@ using StarSalvager.Factories;
 using StarSalvager.PatchTrees.Data;
 using StarSalvager.UI.Hints;
 using StarSalvager.Utilities;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
+using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.Utilities.SceneManagement;
@@ -21,9 +23,10 @@ using UnityEngine.UI;
 
 namespace StarSalvager.UI.Wreckyard.PatchTrees
 {
-    public class PatchTreeUI : MonoBehaviour
+    public class PatchTreeUI : MonoBehaviour, IHasHintElement, IBuildNavigationProfile, IReset
     {
         private const int PART_SCRAP_VALUE = 10;
+        private const string NO_PART_TEXT = "No Part Selected";
         
         //Properties
         //====================================================================================================================//
@@ -36,7 +39,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text currenciesText;
         [SerializeField, Required]
         private Slider healthSlider;
-
+        
+        [SerializeField, Required]
+        private Button menuButton;
+        [SerializeField, Required]
+        private Button repairButton;
         //Wreck Data
         //====================================================================================================================//
 
@@ -51,7 +58,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
        [FormerlySerializedAs("patchOptionsContainer")] 
         private RectTransform partPatchOptionsContainer;
 
-        private RectTransform[] _partPatchOptionElements;
+        private PartPatchUIElement[] _partPatchOptionElements;
 
         //Purchase Patch Window
         //====================================================================================================================//
@@ -64,6 +71,17 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text patchNameText;
         [SerializeField, Required, FoldoutGroup("Patch Purchase Window")]
         private TMP_Text patchDetailsText;
+
+        //Patch Details Window
+        //====================================================================================================================//
+
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private GameObject patchDetailsWindow;
+        private RectTransform _patchDetailsWindowTransform;
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private TMP_Text patchHoverTitleText;
+        [SerializeField, Required, FoldoutGroup("Patch Hover Window")]
+        private TMP_Text patchHoverDetailsText;
         
 
         //Part Data
@@ -71,7 +89,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partNameText;
         [SerializeField, Required, FoldoutGroup("Part Window")]
+        private TMP_Text partDescriptionText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partDetailsText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private RectTransform partWindowContainer;
         
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private Button scrapPartButton;
@@ -110,8 +132,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         [SerializeField, Required, FoldoutGroup("Drone Window")]
         private Button swapPartButton;
 
-        private Dictionary<BIT_TYPE, Image> _primaryPartImages;
-        private Dictionary<BIT_TYPE, Image> _secondaryPartImages;
+        private Dictionary<BIT_TYPE, Button> _primaryPartButtons;
+        private Dictionary<BIT_TYPE, Button> _secondaryPartButtons;
 
         private List<BitData> _bitsOnDrone;
         private List<PartData> _partsOnDrone;
@@ -139,8 +161,26 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private PartChoiceUI _partChoice;
 
         //====================================================================================================================//
-        
 
+        private MenuUI MenuUI
+        {
+            get
+            {
+                if (_menuUI == null)
+                    _menuUI = FindObjectOfType<MenuUI>();
+
+                return _menuUI;
+            }
+        }
+        private MenuUI _menuUI;
+
+        
+        //====================================================================================================================//
+
+        private Selectable _objectToSelect = null;
+
+        //====================================================================================================================//
+        
         #endregion //Properties
 
         //Unity Functions
@@ -148,26 +188,88 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         #region Unity Functions
 
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) =>_showingHint = showingHint;
+
         private void OnEnable()
         {
+            InputManager.OnCancelPressed += OnCancelPerformed;
+            InputManager.OnPausePressed += OnPausePerformed;
+            
             PlayerDataManager.NewPartPicked += OnNewPartSelected;
             PlayerDataManager.OnValuesChanged += OnValuesChanged;
+            HintManager.OnShowingHintAction += IsShowingHint;
+
+            MenuUI.OnMenuOpened += OnPauseMenuOpened;
+            
             OnValuesChanged();
         }
+
+        
 
         private void Start()
         {
             SetupButtons();
             SetupDroneUI();
+            SetupPatchHoverUI();
+            
+            _partPatchOptionElements = new PartPatchUIElement[0];
         }
 
         private void OnDisable()
         {
+            InputManager.OnCancelPressed -= OnCancelPerformed;
+            InputManager.OnPausePressed -= OnPausePerformed;
+            
             PlayerDataManager.NewPartPicked -= OnNewPartSelected;
             PlayerDataManager.OnValuesChanged -= OnValuesChanged;
+            HintManager.OnShowingHintAction -= IsShowingHint;
+            
+            MenuUI.OnMenuOpened -= OnPauseMenuOpened;
         }
 
+        
+
+
         #endregion //Unity Functions
+
+        //IHasHintElement Functions
+        //====================================================================================================================//
+
+        #region IHasHintElement Functions
+
+        public object[] GetHintElements(HINT hint)
+        {
+            switch (hint)
+            {
+                case HINT.LAYOUT:
+                    return new object[]
+                    {
+                       _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
+                       _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
+                    };
+                case HINT.PATCH_TREE:
+                    return new object[]
+                    {
+                        patchTreeTierContainer,
+                        partWindowContainer,
+                    };
+                case HINT.ENTER_WRECK:
+                    return new object[]
+                    {
+                        new Bounds
+                        {
+                            center = Vector3.zero,
+                            size = Vector3.zero
+                        },
+                        partPatchOptionsContainer,
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
+            }
+        }
+
+        #endregion //IHasHintElement Functions
 
         //Setup Wreck Screen
         //====================================================================================================================//
@@ -191,14 +293,15 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
-            Image CreatePartImage(in RectTransform container, in Vector2Int coordinate, in PART_TYPE partType, in bool storage)
+            Button CreatePartButton(in RectTransform container, in Vector2Int coordinate, in PART_TYPE partType, in bool storage)
             {
-                var temp = new GameObject();
+                var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
+
+                var temp = new GameObject($"{category}_Part_Icon");
+                temp.AddComponent<UIElementSelectEvents>();
                 var tempImage = temp.AddComponent<Image>();
                 var tempButton = temp.AddComponent<Button>();
-                var category = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
                 tempImage.sprite = partType.GetSprite();
-                tempImage.color = category.GetColor();
 
                 var tempData = (partType.GetCategory(), storage);
                 tempButton.onClick.AddListener(() =>
@@ -212,27 +315,39 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 tempTransform.sizeDelta = Vector2.one * partImageSize;
                 tempTransform.anchoredPosition = (Vector2)coordinate * partImageSize;
 
-                return tempImage;
+                //--------------------------------------------------------------------------------------------------------//
+                
+                PartAttachableFactory.CreateUIPartBorder(tempTransform, category);
+
+                //--------------------------------------------------------------------------------------------------------//
+
+                return tempButton;
             }
 
             //--------------------------------------------------------------------------------------------------------//
 
             var botLayout = PlayerDataManager.GetBotLayout();
             
-            _primaryPartImages = new Dictionary<BIT_TYPE, Image>();
-            _secondaryPartImages = new Dictionary<BIT_TYPE, Image>();
+            _primaryPartButtons = new Dictionary<BIT_TYPE, Button>();
+            _secondaryPartButtons = new Dictionary<BIT_TYPE, Button>();
             
             //Setup 4 directions for Primary & Secondary
             foreach (var coordinate in botLayout)
             {
                 var bitType = PlayerDataManager.GetCategoryAtCoordinate(coordinate);
                 
-                _primaryPartImages.Add(bitType, CreatePartImage(primaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, false));
+                _primaryPartButtons.Add(bitType, CreatePartButton(primaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, false));
                 
                 if (coordinate == Vector2Int.zero) continue;
                 
-                _secondaryPartImages.Add(bitType, CreatePartImage(secondaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, true));
+                _secondaryPartButtons.Add(bitType, CreatePartButton(secondaryPartsAreaTransform, coordinate, PART_TYPE.EMPTY, true));
             }
+        }
+
+        private void SetupPatchHoverUI()
+        {
+            _patchDetailsWindowTransform = (RectTransform)patchDetailsWindow.transform;
+            OnPatchHovered(null, default, false);
         }
 
         #endregion //Setup Wreck Screen
@@ -246,6 +361,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         {
             SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
             DrawDroneStorage();
+
+            _objectToSelect = launchButton;
+            UISelectHandler.RebuildNavigationProfile();
         }
         
         public void InitWreck(in string wreckName, in Sprite wreckSprite/*, in IEnumerable<PartData> partPatchOptions*/)
@@ -269,8 +387,17 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 else
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
+
+                    if (HintManager.CanShowHint(HINT.PICK_PART))
+                        HintManager.TryShowHint(HINT.PICK_PART, 1f,null);
                 }
             }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            GameTimer.SetPaused(true);
+            GameManager.SetCurrentGameState(GameState.Wreckyard);
+            //PlayerDataManager.DowngradeAllBits(1, false);
 
             //--------------------------------------------------------------------------------------------------------//
             
@@ -280,10 +407,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             wreckNameText.text = wreckName;
             wreckImage.sprite = wreckSprite;
-            
+
             if (PlayerDataManager.CanChoosePart) 
                 return;
 
+            UISelectHandler.SetBuildTarget(this, false);
             GenerateUIElements();
         }
 
@@ -292,8 +420,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             switch (optionType)
             {
                 case PartAttachableFactory.PART_OPTION_TYPE.InitialSelection:
+                    if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
+                    if (HintManager.CanShowHint(HINT.ENTER_WRECK)) HintManager.TryShowHint(HINT.ENTER_WRECK);
                     PlayerDataManager.GeneratePartPatchOptions();
                     break;
                 default:
@@ -301,6 +431,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             }
 
             CheckForPartPositionAvailability();
+
+
+            UISelectHandler.SetBuildTarget(this, false);
             GenerateUIElements();
         }
 
@@ -335,6 +468,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 temp.Init(type);
                 //TODO Fill with patchData
 
+                PartAttachableFactory.CreateUIPartBorder(temp.transform, type);
+                
                 return temp;
             }
 
@@ -344,7 +479,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 in bool unlocked)
             {
                 var temp = Instantiate(patchNodeElementPrefab, container, false);
-                temp.Init(type, patchData, purchased, unlocked, OnPatchPressed);
+                temp.Init(type, patchData, purchased, unlocked, OnPatchPressed, OnPatchHovered);
 
                 return temp;
             }
@@ -484,7 +619,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             _activeElementLinks = activeLinks.ToArray();
 
             //--------------------------------------------------------------------------------------------------------//
-
+            
+            _objectToSelect = UISelectHandler.CurrentlySelected;
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         private void CleanPatchTree()
@@ -518,12 +655,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
             //--------------------------------------------------------------------------------------------------------//
             
-            RectTransform CreatePartNodeElement(in RectTransform container, in PartData partData)
+            PartPatchUIElement CreatePartNodeElement(in RectTransform container, in PartData partData)
             {
                 var temp = Instantiate(partPatchOptionPrefab, container, false);
-                temp.Init(partData, OnPartPressed, OnPatchPressed);
+                temp.Init(partData, OnPartPressed, OnPatchPressed, OnPatchHovered);
 
-                return (RectTransform) temp.transform;
+                return temp;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -532,7 +669,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 return;
             
             var optionsArray = partPatchOptions.ToArray();
-            _partPatchOptionElements = new RectTransform[optionsArray.Length];
+            _partPatchOptionElements = new PartPatchUIElement[optionsArray.Length];
             for (var i = 0; i < optionsArray.Length; i++)
             {
                 var partOption = optionsArray[i];
@@ -552,7 +689,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 Destroy(_partPatchOptionElements[i].gameObject);
             }
 
-            _partPatchOptionElements = new RectTransform[0];
+            _partPatchOptionElements = new PartPatchUIElement[0];
         }
 
         #endregion //Patch Purchase Functions
@@ -568,13 +705,13 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //--------------------------------------------------------------------------------------------------------//
             
             var emptyPartSprite = PART_TYPE.EMPTY.GetSprite();
-            foreach (var partImage in _primaryPartImages)
+            foreach (var partImage in _primaryPartButtons)
             {
-                partImage.Value.sprite = emptyPartSprite;
+                partImage.Value.image.sprite = emptyPartSprite;
             }
-            foreach (var partImage in _secondaryPartImages)
+            foreach (var partImage in _secondaryPartButtons)
             {
-                partImage.Value.sprite = emptyPartSprite;
+                partImage.Value.image.sprite = emptyPartSprite;
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -588,7 +725,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 if (partType == PART_TYPE.EMPTY) continue;
                 
                 var category = partType.GetCategory();
-                _primaryPartImages[category].sprite = partType.GetSprite();
+                _primaryPartButtons[category].image.sprite = partType.GetSprite();
             }
             
             //Get Parts in Storage
@@ -602,20 +739,20 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 var category = partType.GetCategory();
                 //We cannot currently swap out the core
                 if (category == BIT_TYPE.GREEN) continue;
-                _secondaryPartImages[category].sprite = partType.GetSprite();
+                _secondaryPartButtons[category].image.sprite = partType.GetSprite();
             }
 
 
         }
 
-        public void SetPrimaryPart(in PART_TYPE partType) => SetPartImage(_primaryPartImages, partType);
+        public void SetPrimaryPart(in PART_TYPE partType) => SetPartImage(_primaryPartButtons, partType);
 
-        public void SetSecondaryPart(in PART_TYPE partType) => SetPartImage(_secondaryPartImages, partType);
+        public void SetSecondaryPart(in PART_TYPE partType) => SetPartImage(_secondaryPartButtons, partType);
 
-        private static void SetPartImage(in Dictionary<BIT_TYPE, Image> partImages, in PART_TYPE partType)
+        private static void SetPartImage(in Dictionary<BIT_TYPE, Button> partImages, in PART_TYPE partType)
         {
             var category = partType.GetCategory();
-            partImages[category].sprite = partType.GetSprite();
+            partImages[category].image.sprite = partType.GetSprite();
         }
 
         #endregion //Drone Functions
@@ -625,8 +762,11 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         #region On Button Pressed Functions
 
-        private static void LaunchPressed()
+        private void LaunchPressed()
         {
+            if (_showingHint)
+                return;
+            
             ScreenFade.Fade(() =>
             {
                 SceneLoader.ActivateScene(SceneLoader.UNIVERSE_MAP, SceneLoader.WRECKYARD);
@@ -644,9 +784,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void ScrapPartPressed()
         {
-
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ScrapPart()
             {
                 var partTypeInt = (int) _selectedPart.type;
@@ -679,7 +820,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     CheckForPartPositionAvailability(false);
                 
                 SetSelectedPart(PART_TYPE.EMPTY, false);
-                SetPartText(string.Empty, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
                 CleanPatchTree();
                 
                 //Check if there are any Patches available for the part just scrapped. Remove & Update the UI
@@ -693,6 +834,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 
                 //Update Values
                 SaveBlockData();
+                
+                
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -706,16 +849,25 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 answer =>
                 {
                     if (!answer)
+                    {
+                        _objectToSelect = null;
+                        UISelectHandler.SetBuildTarget(this);
                         return;
+                    }
 
                     ScrapPart();
+                    _objectToSelect = default;
+                    UISelectHandler.SetBuildTarget(this);
                 });
         }
 
         private void SwapPartPressed()
         {
+
+            if (_showingHint)
+                return;
             //--------------------------------------------------------------------------------------------------------//
-            
+
             void ListShuffles(in int targetPartIndex, ref List<PartData> fromList, ref List<PartData> toList)
             {
                 var category = _selectedPart.type.GetCategory();
@@ -768,6 +920,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         /// <exception cref="Exception"></exception>
         private void OnPartPressed(PART_TYPE partType)
         {
+            if (_showingHint)
+                return;
+
             //Determine if the part is in storage or on the bot
             if (partType == PART_TYPE.EMPTY)
                 throw new Exception();
@@ -784,6 +939,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         }
         private void OnPartPressed(in BIT_TYPE category, in bool inStorage)
         {
+            if (_showingHint)
+                return;
+
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             
             var cat = category;
@@ -802,10 +960,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             if (partType == PART_TYPE.EMPTY)
             {
                 SetSelectedPart(PART_TYPE.EMPTY, default);
-                SetPartText(string.Empty, string.Empty);
+                SetPartText(NO_PART_TEXT, string.Empty,string.Empty);
                 CleanPatchTree();
                 return;
             }
+
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
 
             //Show this part on the PatchTree
             GeneratePatchTree(partData);
@@ -813,11 +973,14 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             SetSelectedPart(partType, inStorage);
             _scrapPartButtonText.text = $"Scrap Part {PART_SCRAP_VALUE}{TMP_SpriteHelper.GEAR_ICON}";
 
-            SetPartText(partType.GetRemoteData().name, partData.GetPartDetails());
+            SetPartText(partType.GetRemoteData().name, partType.GetRemoteData().description, partData.GetPartDetails());
         }
 
         private void OnPatchPressed(PART_TYPE partType, PatchData patchData)
         {
+            if (_showingHint)
+                return;
+            
             //Present the purchase option window to the player
             SetSelectedPatch(partType, patchData);
             //Ensure that when a loose patch is selected, that we change which part its selected for
@@ -833,11 +996,21 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             var partRemoteData = partType.GetRemoteData();
             
             SetPartText(partRemoteData.name,
+                partRemoteData.description,
                 partData.GetPartDetailsPatchPreview(partRemoteData, patchData));
+            
+            _objectToSelect = purchasePatchButton.interactable ? purchasePatchButton : UISelectHandler.CurrentlySelected;
+            UISelectHandler.RebuildNavigationProfile();
+
+
+            if (HintManager.CanShowHint(HINT.PATCH_TREE)) HintManager.TryShowHint(HINT.PATCH_TREE);
         }
 
         private void OnPurchasePatchPressed()
         {
+            if (_showingHint)
+                return;
+
             //Get the price of Patch
             var (gears, silver) = _selectedPatch.patchData.GetPatchCost();
             //Check that the player can afford the patch
@@ -854,19 +1027,154 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 _partsInStorage[index].Patches.Add(_selectedPatch.patchData);
             else
                 _partsOnDrone[index].Patches.Add(_selectedPatch.patchData);
-            
+
+            SessionDataProcessor.Instance.RecordPatchPurchase(new PartData
+            {
+                Type = (int)_selectedPatch.partType,
+                Patches = new List<PatchData>
+                {
+                    _selectedPatch.patchData
+                }
+            });
+                
             //Remove the PartPatchOption
             PlayerDataManager.RemovePartPatchOption(_selectedPatch.partType);
-            
-            //Redraw everything
-            CleanPatchTreeUI();
+
+            //Redraw the patch tree without the purchased patch
+            CleanPatchUI();
+            var partData = FindSelectedPart(_selectedPart.type).partData;
+            GeneratePatchTree(partData);
+
             SetupPurchaseOptions(PlayerDataManager.CurrentPatchOptions);
 
             //Update the Datas
             SaveBlockData();
+            
+            _objectToSelect = null;
+            UISelectHandler.RebuildNavigationProfile();
         }
 
         #endregion //On Button Pressed Functions
+
+
+        //IBuildNavigationProfile Functions
+        //====================================================================================================================//
+        
+        public NavigationProfile BuildNavigationProfile()
+        {
+            var overrides = new List<NavigationOverride>();
+            var exceptions = new List<NavigationRestriction>();
+            
+            //Base selectable Items
+            //--------------------------------------------------------------------------------------------------------//
+
+            var selectables = new List<Selectable>
+            {
+                launchButton,
+                menuButton,
+
+                swapPartButton,
+                purchasePatchButton,
+                
+                scrapPartButton,
+                repairButton
+            };
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            var leftMostBitType = PlayerDataManager.GetCategoryAtCoordinate(Vector2Int.left);
+
+            var patchTreeSelectables = patchTreeTierContainer.GetComponentsInChildren<Selectable>();
+            var firstPatchTreeSelectable =
+                patchTreeSelectables.FirstOrDefault(x => x.enabled && x.interactable && x.gameObject.activeInHierarchy);
+            
+            //Part Patch Options
+            //--------------------------------------------------------------------------------------------------------//
+
+            //Get list of navigation options 
+            foreach (var partPatchUIElement in _partPatchOptionElements)
+            {
+                var temp = partPatchUIElement.Selectables;
+                selectables.AddRange(temp.Selectables);
+
+                //Force navigation from right most element to scrapPartButton
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = temp.RightMostSelectable,
+                    RightTarget = firstPatchTreeSelectable
+                        ? firstPatchTreeSelectable
+                        : _secondaryPartButtons[leftMostBitType]
+                });
+            }
+
+            //Drone Layout
+            //--------------------------------------------------------------------------------------------------------//
+            var firstPartPatchOption = _partPatchOptionElements.FirstOrDefault()?.Selectables.RightMostSelectable;
+
+            //FIXME I think I should be able to combine these to loops
+            foreach (var partButton in _primaryPartButtons)
+            {
+                selectables.Add(partButton.Value);
+                
+                if (partButton.Key != leftMostBitType)
+                    continue;
+
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = partButton.Value,
+                    LeftTarget = firstPatchTreeSelectable
+                        ? firstPatchTreeSelectable
+                        : firstPartPatchOption
+                });
+            }
+            
+            foreach (var partButton in _secondaryPartButtons)
+            {
+                selectables.Add(partButton.Value);
+                
+                if (partButton.Key != leftMostBitType)
+                    continue;
+
+                overrides.Add(new NavigationOverride
+                {
+                    FromSelectable = partButton.Value,
+                    LeftTarget = scrapPartButton.gameObject.activeInHierarchy
+                        ? scrapPartButton
+                        : firstPartPatchOption
+                });
+            }
+
+            //--------------------------------------------------------------------------------------------------------//
+            
+            selectables.AddRange(patchTreeSelectables);
+            
+            //PurchasePatch Button
+            //--------------------------------------------------------------------------------------------------------//
+            
+            overrides.Add(new NavigationOverride
+            {
+                FromSelectable = purchasePatchButton,
+                LeftTarget = purchasePatchButton,
+                UpTarget = purchasePatchButton,
+                RightTarget = firstPatchTreeSelectable ? firstPatchTreeSelectable : null
+            });
+
+            //Menu & Launch Button exceptions
+            //--------------------------------------------------------------------------------------------------------//
+            
+            exceptions.Add(new NavigationRestriction
+            {
+                Selectable = menuButton,
+                FromDirection = NavigationRestriction.DIRECTION.RIGHT
+            });
+            exceptions.Add(new NavigationRestriction
+            {
+                Selectable = launchButton,
+                FromDirection = NavigationRestriction.DIRECTION.RIGHT
+            });
+
+            return new NavigationProfile(_objectToSelect, selectables, overrides, exceptions);
+        }
 
         //Extra Functions
         //====================================================================================================================//
@@ -882,19 +1190,41 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 _partsOnDrone.Any(x => ((PART_TYPE) x.Type).GetCategory() == category);
         }
 
+        /// <summary>
+        /// Clear both the selected patch and and part. 
+        /// </summary>
         private void CleanPatchTreeUI()
+        {
+            CleanPartUI();
+            CleanPatchUI();
+        }
+
+        /// <summary>
+        /// Clears specifically just the part data UI
+        /// </summary>
+        private void CleanPartUI()
         {
             //Deselect part
             SetSelectedPart(PART_TYPE.EMPTY, false);
+            //Clear Text
+            SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
+
+        }
+
+        /// <summary>
+        /// Clears specifically just the patch data
+        /// </summary>
+        private void CleanPatchUI()
+        {
             //Deselect Patch
             SetSelectedPatch(PART_TYPE.EMPTY, default);
             //Clear Text
-            SetPartText(string.Empty, string.Empty);
             SetPatchText(string.Empty, string.Empty);
             //Clean Patch Tree
             CleanPatchTree();
             //Clean the Patch Purchase Options
             CleanPurchaseOptions();
+            SetupPatchHoverUI();
         }
 
         private void SetSelectedPart(in PART_TYPE partType, in bool inStorage)
@@ -910,9 +1240,10 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             scrapPartButton.gameObject.SetActive(partType != PART_TYPE.CORE && !partIsEmpty);
         }
 
-        private void SetPartText(in string partName, in string partDetails)
+        private void SetPartText(in string partName, in string partDescription, in string partDetails)
         {
             partNameText.text = partName;
+            partDescriptionText.text = partDescription;
             partDetailsText.text = partDetails;
         }
 
@@ -1002,6 +1333,91 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             //If we couldn't find parts, something is wrong
             throw new Exception();
         }
+        private void OnPatchHovered(RectTransform rectTransform, PatchData patchData, bool hovering)
+        {
+            //If hovering false, close window, clean elements, return
+            //--------------------------------------------------------------------------------------------------------//
+            
+            patchDetailsWindow.gameObject.SetActive(hovering);
+
+            if (!hovering) return;
+            
+            var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
+            var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
+                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x);
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, null,
+                out var localPoint);
+
+            _patchDetailsWindowTransform.anchoredPosition = localPoint;
+
+            //====================================================================================================================//
+
+            var patchType = (PATCH_TYPE) patchData.Type;
+            var patchRemote = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchType);
+            var (gears, silver) = patchData.GetPatchCost();
+
+            //====================================================================================================================//
+
+            patchHoverTitleText.text = $"{patchRemote.name} {Mathfx.ToRoman(patchData.Level + 1)}";
+            patchHoverDetailsText.text = $"{patchRemote.description}\n" +
+                                         $"{gears}{TMP_SpriteHelper.GEAR_ICON}" +
+                                         $"{(silver > 0 ? $" {silver}{TMP_SpriteHelper.SILVER_ICON}":string.Empty)}";
+            
+            //====================================================================================================================//
+
+            _patchDetailsWindowTransform.TryFitInScreenBounds(canvasRect, 20f);
+        }
+
+        //====================================================================================================================//
+        
+        private void OnCancelPerformed()
+        {
+            //When patch window is open, close. return.
+            if (_selectedPatch.partType != PART_TYPE.EMPTY)
+            {
+                SetSelectedPatch(PART_TYPE.EMPTY, default);
+                
+                _objectToSelect = launchButton;
+                UISelectHandler.RebuildNavigationProfile();
+                return;
+            }
+            //When Part Window is open, close. return;
+            if (_selectedPart.type != PART_TYPE.EMPTY)
+            {
+                SetSelectedPart(PART_TYPE.EMPTY, default);
+                SetPartText(NO_PART_TEXT, string.Empty, string.Empty);
+                CleanPatchTree();
+                OnPatchHovered(null, default, false);
+                
+                _objectToSelect = launchButton;
+                UISelectHandler.RebuildNavigationProfile();
+                return;
+            }
+
+
+            if (InputManager.Instance.UsingController) 
+                return;
+
+            MenuUI.OpenMenu();
+        }
+
+        private void OnPausePerformed()
+        {
+            if (!InputManager.Instance.UsingController)
+                return;
+            
+            MenuUI.OpenMenu();
+        }
+        
+        private void OnPauseMenuOpened(bool opened)
+        {
+            if (opened || SceneLoader.CurrentScene != SceneLoader.WRECKYARD)
+                return;
+            
+            _objectToSelect = launchButton;
+            UISelectHandler.SetBuildTarget(this);
+        }
 
         #endregion //Extra Functions
 
@@ -1079,7 +1495,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Data Functions
 
         public void OnConsolePartAdded() => CheckForPartPositionAvailability();
-        
+
         //Unity Editor
         //====================================================================================================================//
 
@@ -1147,6 +1563,15 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         #endregion //Unity Editor
 
         //====================================================================================================================//
-        
+
+
+        public void Activate()
+        {
+            UISelectHandler.SetBuildTarget(this);
+        }
+
+        public void Reset()
+        {
+        }
     }
 }

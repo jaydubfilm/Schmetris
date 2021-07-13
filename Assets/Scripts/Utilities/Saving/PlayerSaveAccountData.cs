@@ -45,6 +45,9 @@ namespace StarSalvager.Values
 
         public Version Version = Constants.VERSION;
 
+        [JsonProperty]
+        public bool FinishedIntro;
+        
         //public bool HasStarted = false;
         [JsonProperty]
         public int TotalRuns { get; private set; }
@@ -120,6 +123,12 @@ namespace StarSalvager.Values
                 [HINT.WRECK] = false,
                 [HINT.STAR] = false,
                 [HINT.MAP] = false,
+                [HINT.LAYOUT] = false,
+
+
+                [HINT.PICK_PART] = false,
+                [HINT.ENTER_WRECK] = false,
+                [HINT.PATCH_TREE] = false,
             };
             _upgrades = new[]
             {
@@ -508,12 +517,6 @@ namespace StarSalvager.Values
 
             PlayerRunData = newPlayerRunData;
             PlayerDataManager.SavePlayerAccountData();
-        }
-
-        [Obsolete]
-        public void SaveData()
-        {
-            //PlayerRunData.SaveData();
         }
 
         #endregion //Player Run Data

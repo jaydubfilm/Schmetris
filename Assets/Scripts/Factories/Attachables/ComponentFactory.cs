@@ -28,7 +28,7 @@ namespace StarSalvager.Factories
 
         public override GameObject CreateGameObject()
         {
-            if (!Recycler.TryGrab<Component>(out GameObject gameObject))
+            if (!Recycler.TryGrab<GearCollectable>(out GameObject gameObject))
             {
                 gameObject = Object.Instantiate(_prefab);
             }
@@ -38,7 +38,7 @@ namespace StarSalvager.Factories
 
         public GameObject CreateGameObject(int gearNum)
         {
-            var component = CreateObject<Component>();
+            var component = CreateObject<GearCollectable>();
             
             component.GearNum = gearNum;
 

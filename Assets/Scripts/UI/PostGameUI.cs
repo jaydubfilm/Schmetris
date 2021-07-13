@@ -7,13 +7,15 @@ using StarSalvager.UI.Elements;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.Helpers;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.UI;
 using StarSalvager.Values;
 using TMPro;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StarSalvager.UI
 {
-    public class PostGameUI : MonoBehaviour
+    public class PostGameUI : MonoBehaviour, IBuildNavigationProfile
     {
         //====================================================================================================================//
 
@@ -28,16 +30,10 @@ namespace StarSalvager.UI
 
         [SerializeField]
         private Button closeButton;
+        
+        private Coroutine _postGameCoroutine;
 
         //====================================================================================================================//
-
-        private void OnEnable()
-        {
-            if (!PlayerDataManager.ShouldShownSummary())
-                return;
-
-            ShowPostGameUI();
-        }
 
         // Start is called before the first frame update
         private void Start()
@@ -53,12 +49,21 @@ namespace StarSalvager.UI
             closeButton.onClick.AddListener(() =>
             {
                 postGameWindow.SetActive(false);
+                
+                if (_postGameCoroutine == null) 
+                    return;
+                StopCoroutine(_postGameCoroutine);
+                _postGameCoroutine = null;
+                
+                UISelectHandler.SetBuildTarget(FindObjectOfType<MainMenuv2>());
             });
         }
 
         [Button, DisableInEditorMode]
         public void ShowPostGameUI()
         {
+            UISelectHandler.SetBuildTarget(this);
+            
             xpElementScrollview.ClearElements();
             
             var startStars = PlayerDataManager.GetStars() - PlayerDataManager.GetStarsThisRun();
@@ -73,20 +78,22 @@ namespace StarSalvager.UI
             xpSlider.minValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel - 1);
             xpSlider.maxValue = PlayerSaveAccountData.GetExperienceReqForLevel(startLevel);
             
-            
-
             xpSlider.value = startXP;
 
             xpSliderText.text = $"{startXP}/{xpSlider.maxValue}";
             starCountText.text = $"{startStars}{TMP_SpriteHelper.STAR_ICON}";
             
             postGameWindow.SetActive(true);
-            StartCoroutine(PostGameUICoroutine(startXP, startStars));
+            EventSystem.current?.SetSelectedGameObject(closeButton.gameObject);
+
+            _postGameCoroutine = StartCoroutine(PostGameUICoroutine(startXP, startStars));
         }
 
         private IEnumerator PostGameUICoroutine(int currentXP, int currentStars)
         {
-            
+            const float QUICK_PAUSE = 0.25f;
+            const float MED_PAUSE = 0.35f;
+            const float LONG_PAUSE = 0.4f;
             //--------------------------------------------------------------------------------------------------------//
             void SetupCurrencyElement(in Sprite iconSprite, in int count)
             {
@@ -122,12 +129,12 @@ namespace StarSalvager.UI
                 xpSlider.value = currentXP;
                 xpSliderText.text = $"{currentXP}/{xpSlider.maxValue}";
 
-                return levelPause ? 1f : 0.25f;
+                return levelPause ? MED_PAUSE : QUICK_PAUSE;
             }
 
             //--------------------------------------------------------------------------------------------------------//
             
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(MED_PAUSE);
             
             var combos = PlayerDataManager.GetCombosMadeThisRun();
             foreach (var i in combos)
@@ -186,11 +193,11 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             var factoryManager = FactoryManager.Instance;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(QUICK_PAUSE);
             SetupCurrencyElement(factoryManager.gearsSprite, PlayerDataManager.GetGearsThisRun());
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(QUICK_PAUSE);
             SetupCurrencyElement(factoryManager.silverSprite, PlayerDataManager.GetSilverThisRun());
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(QUICK_PAUSE);
             SetupCurrencyElement(factoryManager.stardustSprite, PlayerDataManager.GetXPThisRun());
         }
 
@@ -223,6 +230,10 @@ namespace StarSalvager.UI
 
             Debug.Log(outString);
         }
-        
+
+        public NavigationProfile BuildNavigationProfile()
+        {
+            return new NavigationProfile(closeButton, new[] {closeButton}, null, null);
+        }
     }
 }

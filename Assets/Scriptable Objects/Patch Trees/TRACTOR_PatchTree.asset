@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fb3ad6c8191eb45814e643021699e1, type: 3}
+  m_Name: TRACTOR_PatchTree
+  m_EditorClassIdentifier: 
+  PartType: 38
+  NodeLinks:
+  - BaseNodeGUID: 4eceb52fc5742064fb6e20535d590462
+    PortName: TRACTOR -> EFFICIENCY 1
+    TargetNodeGUID: c1a8c775-3eb5-4168-b286-311f63fbe351
+  - BaseNodeGUID: c1a8c775-3eb5-4168-b286-311f63fbe351
+    PortName: EFFICIENCY 1 -> EFFICIENCY 2
+    TargetNodeGUID: 60982843-4b7d-4210-9379-970488f942f6
+  - BaseNodeGUID: 60982843-4b7d-4210-9379-970488f942f6
+    PortName: EFFICIENCY 2 -> EFFICIENCY 3
+    TargetNodeGUID: 798569a6-efe2-4df8-9839-019283c4373f
+  - BaseNodeGUID: c1a8c775-3eb5-4168-b286-311f63fbe351
+    PortName: EFFICIENCY 1 -> FIRE_RATE 1
+    TargetNodeGUID: d2eb7dde-19b2-4d34-bf25-3a9880fd9749
+  - BaseNodeGUID: d2eb7dde-19b2-4d34-bf25-3a9880fd9749
+    PortName: FIRE_RATE 1 -> FIRE_RATE 2
+    TargetNodeGUID: 1bfd40db-a22a-43e8-b9ce-c35adb85f0d2
+  PartNodeData:
+    GUID: 4eceb52fc5742064fb6e20535d590462
+    Position:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 101
+      height: 77
+    Type: 38
+  PatchNodeDatas:
+  - GUID: c1a8c775-3eb5-4168-b286-311f63fbe351
+    Position:
+      serializedVersion: 2
+      x: 250
+      y: -20
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 1
+    Level: 1
+  - GUID: 60982843-4b7d-4210-9379-970488f942f6
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: -20
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 2
+    Level: 2
+  - GUID: d2eb7dde-19b2-4d34-bf25-3a9880fd9749
+    Position:
+      serializedVersion: 2
+      x: 500
+      y: 159
+      width: 214
+      height: 147
+    Type: 3
+    Tier: 2
+    Level: 1
+  - GUID: 798569a6-efe2-4df8-9839-019283c4373f
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: -20
+      width: 214
+      height: 147
+    Type: 4
+    Tier: 3
+    Level: 3
+  - GUID: 1bfd40db-a22a-43e8-b9ce-c35adb85f0d2
+    Position:
+      serializedVersion: 2
+      x: 750
+      y: 159
+      width: 214
+      height: 147
+    Type: 3
+    Tier: 3
+    Level: 2

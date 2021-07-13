@@ -3980,8 +3980,8 @@ RectTransform:
   m_Children:
   - {fileID: 5569929846237194607}
   - {fileID: 2003816439}
-  - {fileID: 5155301306414343038}
   - {fileID: 7624041606340377563}
+  - {fileID: 5155301306414343038}
   - {fileID: 5569929846452692473}
   - {fileID: 5796749370081442767}
   - {fileID: 3705612951128507503}
@@ -4129,6 +4129,7 @@ GameObject:
   - component: {fileID: 5569929846153243695}
   - component: {fileID: 5569929846153243692}
   - component: {fileID: 5569929846153243693}
+  - component: {fileID: 8468197579405747503}
   m_Layer: 5
   m_Name: NeutralButton
   m_TagString: Untagged
@@ -4206,11 +4207,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 5569929847353871087}
+    m_SelectOnRight: {fileID: 5569929847367231091}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -4236,6 +4237,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8468197579405747503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569929846153243691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5569929846237194604
 GameObject:
   m_ObjectHideFlags: 0
@@ -4992,6 +5006,7 @@ GameObject:
   - component: {fileID: 5569929847353871073}
   - component: {fileID: 5569929847353871086}
   - component: {fileID: 5569929847353871087}
+  - component: {fileID: 4923238295597056648}
   m_Layer: 5
   m_Name: PositiveButton
   m_TagString: Untagged
@@ -5069,11 +5084,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 5569929847367231091}
+    m_SelectOnRight: {fileID: 5569929846153243693}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -5099,6 +5114,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4923238295597056648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569929847353871085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5569929847367231089
 GameObject:
   m_ObjectHideFlags: 0
@@ -5111,6 +5139,7 @@ GameObject:
   - component: {fileID: 5569929847367231093}
   - component: {fileID: 5569929847367231090}
   - component: {fileID: 5569929847367231091}
+  - component: {fileID: 7044507938972268792}
   m_Layer: 5
   m_Name: NegativeButton
   m_TagString: Untagged
@@ -5188,11 +5217,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnLeft: {fileID: 5569929846153243693}
+    m_SelectOnRight: {fileID: 5569929847353871087}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -5218,6 +5247,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7044507938972268792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5569929847367231089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9b5c09b2833084791db9a0f27efed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5672941044739444214
 GameObject:
   m_ObjectHideFlags: 0
@@ -6294,7 +6336,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5569929846152231077}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6751,7 +6793,7 @@ PrefabInstance:
     - target: {fileID: 5336697384150564262, guid: ae4836a6567f6e34a9a1fdc9b55e3f5a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5336697384150564262, guid: ae4836a6567f6e34a9a1fdc9b55e3f5a,
         type: 3}

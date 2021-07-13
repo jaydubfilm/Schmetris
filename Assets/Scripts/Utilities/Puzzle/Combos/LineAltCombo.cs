@@ -19,7 +19,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
 
         }
 
-        [Obsolete]
+        /*[Obsolete]
         public virtual bool TryGetCombo(ICanCombo origin, List<ICanCombo>[] directions,
             (bool hasCombo, int horizontalCount, int verticalCount) lineData,
             out (ComboRemoteData comboData, List<ICanCombo> toMove) outData)
@@ -57,7 +57,7 @@ namespace StarSalvager.Utilities.Puzzle.Combos
             return true;
 
             //--------------------------------------------------------------------------------------------------------//
-        }
+        }*/
 
         public bool TryGetCombo(Bit origin, 
             List<Bot.DataTest>[] directions, 

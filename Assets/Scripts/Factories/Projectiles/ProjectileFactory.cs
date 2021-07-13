@@ -136,6 +136,7 @@ namespace StarSalvager.Factories
                 var projectileTransform = projectile.transform;
 
                 projectile.SetSprite(projectileProfile.Sprite);
+                
 
                 if (shouldFlipSprite && projectileProfile.RequiresRotation)
                     projectile.FlipSpriteY(true);
@@ -151,6 +152,7 @@ namespace StarSalvager.Factories
                     rangeBoost,
                     travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    projectileProfile.Scale,
                     vampirismCaster,
                     vampirismValue);
 
@@ -229,6 +231,7 @@ namespace StarSalvager.Factories
                     rangeBoost,
                     travelDirection.normalized,
                     projectileProfile.AddVelocityToProjectiles ? currentVelocity : Vector2.zero,
+                    projectileProfile.Scale,
                     vampirismCaster,
                     vampirismValue);
 

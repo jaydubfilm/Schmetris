@@ -21,16 +21,16 @@ MonoBehaviour:
     addLevels: 1
   - type: 2
     points: 100
-    addLevels: 2
+    addLevels: 1
   - type: 3
     points: 150
-    addLevels: 2
+    addLevels: 1
   - type: 4
     points: 125
-    addLevels: 2
+    addLevels: 1
   - type: 5
     points: 175
-    addLevels: 2
+    addLevels: 1
   SimultaneousComboData:
   - combos: 2
     bits: 3

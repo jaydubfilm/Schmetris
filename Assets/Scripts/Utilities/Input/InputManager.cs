@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using StarSalvager.Audio;
-using StarSalvager.Cameras;
 using StarSalvager.Cameras.Data;
-using StarSalvager.UI;
 using StarSalvager.Utilities.Extensions;
-using StarSalvager.Utilities.Saving;
+using StarSalvager.Utilities.Interfaces;
 using StarSalvager.Values;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,10 +16,15 @@ namespace StarSalvager.Utilities.Inputs
         DEFAULT,
         MENU
     }
-    public class InputManager : Singleton<InputManager>, IInput, IPausable
+    public class InputManager : Singleton<InputManager>, IInput, IPausable, SalvagerInput.IMenuControlsActions
     {
+        public const string KEYBOARD = "Keyboard";
+        public const string MOUSE = "Mouse";
+        
         public static Action<int, bool> TriggerWeaponStateChange;
         public static Action<string> InputDeviceChanged;
+        
+        private static Action<bool> _onStartedUsingController;
 
         [SerializeField, ReadOnly, BoxGroup("Debug", order: -1000)]
         private ACTION_MAP currentActionMap;
@@ -43,18 +44,20 @@ namespace StarSalvager.Utilities.Inputs
 
         private static List<IMoveOnInput> _moveOnInput;
 
+        //Properties
+        //====================================================================================================================//
+        public static ACTION_MAP CurrentActionMap { get; private set; }
+        
         [SerializeField, Required]
         private PlayerInput playerInput;
 
-        //Properties
-        //====================================================================================================================//
+        public bool UsingController { get; private set; }
 
         #region Properties
 
         private readonly bool[] _triggersPressed = new bool[5];
 
         private Bot[] _bots;
-        private ScrapyardBot[] _scrapyardBots;
 
         public bool isPaused => GameTimer.IsPaused;
 
@@ -158,6 +161,8 @@ namespace StarSalvager.Utilities.Inputs
         {
             Globals.OrientationChange += SetOrientation;
             RegisterPausable();
+            
+            Input.Actions.MenuControls.SetCallbacks(this);
 
         }
 
@@ -178,7 +183,6 @@ namespace StarSalvager.Utilities.Inputs
         private void OnEnable()
         {
             _bots = FindObjectsOfType<Bot>();
-            _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
         }
 
         private void OnDestroy()
@@ -189,10 +193,10 @@ namespace StarSalvager.Utilities.Inputs
 
         #endregion //Unity Functions
 
+        //Action Maps
         //============================================================================================================//
 
-        public static ACTION_MAP CurrentActionMap { get; private set; }
-
+        #region Action Maps
 
         public static void SwitchCurrentActionMap(in ACTION_MAP actionMap)
         {
@@ -230,7 +234,7 @@ namespace StarSalvager.Utilities.Inputs
                 {
                     case GameState.MainMenu:
                     case GameState.AccountMenu:
-                    case GameState.Scrapyard:
+                    case GameState.Wreckyard:
                     case GameState.UniverseMap:
                         actionMap = ACTION_MAP.MENU;
                         break;
@@ -250,7 +254,6 @@ namespace StarSalvager.Utilities.Inputs
             switch (actionMap)
             {
                 case ACTION_MAP.DEFAULT:
-
                     Input.Actions.MenuControls.Disable();
                     Input.Actions.Default.Enable();
                     break;
@@ -293,6 +296,8 @@ namespace StarSalvager.Utilities.Inputs
             _moveOnInput.Add(toAdd);
         }
 
+        #endregion //Action Maps
+
         //IInput Functions
         //============================================================================================================//
 
@@ -304,9 +309,6 @@ namespace StarSalvager.Utilities.Inputs
 
             if (_bots == null || _bots.Length == 0)
                 _bots = FindObjectsOfType<Bot>();
-
-            if (_scrapyardBots == null || _scrapyardBots.Length == 0)
-                _scrapyardBots = FindObjectsOfType<ScrapyardBot>();
 
             //Ensure that we clear any previously registered Inputs
             DeInitInput();
@@ -342,22 +344,20 @@ namespace StarSalvager.Utilities.Inputs
 
         #endregion //Input Setup
 
+        //Inputs
         //============================================================================================================//
 
         #region Inputs
 
         //FIXME This functions but could use reorganizing
         public static string CurrentInputDeviceName => Instance._currentInputDevice;
-        private string _currentInputDevice = "Keyboard";
+        private string _currentInputDevice = KEYBOARD;
         private void CheckForInputDeviceChange(in InputAction.CallbackContext callbackContext)
         {
             CheckForInputDeviceChange(callbackContext.control.device);
         }
         private void CheckForInputDeviceChange(in InputDevice inputDevice)
         {
-            const string KEYBOARD = "Keyboard";
-            const string MOUSE = "Mouse";
-
             var deviceName = inputDevice.name;
 
             if (deviceName.Equals(KEYBOARD) || deviceName.Equals(MOUSE))
@@ -371,9 +371,10 @@ namespace StarSalvager.Utilities.Inputs
             Debug.Log($"New Device Name: {deviceName}");
             //TODO Notify whoever that the
             InputDeviceChanged?.Invoke(deviceName);
+            
+            UsingController = deviceName != KEYBOARD;
+            _onStartedUsingController?.Invoke(UsingController);
         }
-
-
 
         private void SetupInputs()
         {
@@ -411,7 +412,17 @@ namespace StarSalvager.Utilities.Inputs
                 },
                 {
                     Input.Actions.Default.Dash, Dash
-                }
+                },
+                
+                /*
+                { Input.Actions.MenuControls.Cancel, OnCancel },
+                { Input.Actions.MenuControls.Navigate, OnNavigate },
+                { Input.Actions.MenuControls.Pause, OnPause },
+                { Input.Actions.MenuControls.Point, OnPoint },
+                { Input.Actions.MenuControls.Scroll, OnScroll },
+                { Input.Actions.MenuControls.Submit, OnSubmit },
+                { Input.Actions.MenuControls.LeftClick, OnLeftClick },
+                { Input.Actions.MenuControls.RightClick, OnRightClick },*/
             };
         }
 
@@ -963,7 +974,10 @@ namespace StarSalvager.Utilities.Inputs
             InitInput();
         }
 
+        //DAS Checks
         //============================================================================================================//
+
+        #region DAS Checks
 
         private void DasChecksMovement()
         {
@@ -1016,8 +1030,12 @@ namespace StarSalvager.Utilities.Inputs
                 TryApplyRotate(_currentRotateInput);
         }
 
+        #endregion //DAS Checks
+
         //IPausable Functions
         //============================================================================================================//
+
+        #region IPauseable Functions
 
         public void RegisterPausable()
         {
@@ -1038,8 +1056,78 @@ namespace StarSalvager.Utilities.Inputs
             Rotate(0);
         }
 
+        #endregion //IPauseable Functions
+
+        //Listener Functions
+        //====================================================================================================================//
+
+        public static void AddStartedControllerListener(in IStartedUsingController listener)
+        {
+            _onStartedUsingController += listener.StartedUsingController;
+            
+            if(Instance == null) return;
+            
+            listener.StartedUsingController(Instance.UsingController);
+        }
+
+        public static void RemoveControllerListener(in IStartedUsingController listener)
+        {
+            _onStartedUsingController -= listener.StartedUsingController;
+        }
+        //IMenuControlsActions Functions
         //============================================================================================================//
 
+        public static Action OnPausePressed;
+        public static Action OnCancelPressed;
 
+        public void OnNavigate(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+        }
+
+        public void OnLeftClick(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+        }
+
+        public void OnPoint(InputAction.CallbackContext context)
+        {
+            //CheckForInputDeviceChange(context);
+        }
+
+        public void OnSubmit(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+        }
+
+        public void OnCancel(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+
+            if (context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
+                OnCancelPressed?.Invoke();
+            
+        }
+
+        public void OnPause(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+            
+            if(context.ReadValueAsButton() && context.phase == InputActionPhase.Performed)
+                OnPausePressed?.Invoke();
+        }
+
+        public void OnScroll(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+        }
+
+        public void OnRightClick(InputAction.CallbackContext context)
+        {
+            CheckForInputDeviceChange(context);
+        }
+
+        //====================================================================================================================//
+        
     }
 }
