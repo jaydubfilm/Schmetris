@@ -70,7 +70,7 @@ namespace StarSalvager.UI.Wreckyard
             HoveringStoragePartUIElement = show;
             
             var screenPoint = show ? RectTransformUtility.WorldToScreenPoint(null,
-                (Vector2) rectTransform.position + Vector2.right * rectTransform.sizeDelta.x)
+                (Vector2) rectTransform.position + Vector2.down * rectTransform.sizeDelta.x)
                     : Vector2.zero;
 
             ShowPartDetails(show, partData, screenPoint);
