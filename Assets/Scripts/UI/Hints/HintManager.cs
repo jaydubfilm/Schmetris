@@ -44,7 +44,9 @@ namespace StarSalvager.UI.Hints
         LAYOUT,
         PICK_PART,
         ENTER_WRECK,
-        PATCH_TREE
+        PATCH_TREE,
+        ENEMY,
+        BUMPER
     }
     
     [RequireComponent(typeof(HighlightManager))]
