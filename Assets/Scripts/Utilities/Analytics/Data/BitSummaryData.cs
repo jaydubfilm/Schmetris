@@ -18,6 +18,7 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
         [HideInInspector, HideInTables] public BitData bitData;
 
         [DisplayAsString] public int collected;
+        [DisplayAsString] public int spawned;
         [DisplayAsString] public int disconnected;
 
 #if UNITY_EDITOR
