@@ -17,6 +17,7 @@ using StarSalvager.Utilities.Analytics.SessionTracking;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.UI.Hints;
 
 namespace StarSalvager.AI
 {
@@ -438,6 +439,8 @@ namespace StarSalvager.AI
         
         public virtual void OnEnterCamera()
         {
+            if (HintManager.CanShowHint(HINT.ENEMY))
+                HintManager.TryShowHint(HINT.ENEMY, 2f, () => { }, transform);
             //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 

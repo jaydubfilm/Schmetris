@@ -373,6 +373,9 @@ namespace StarSalvager.UI.Hints
                     case RectTransform rectTransform:
                         highlightManager.Highlight(rectTransform);
                         break;
+                    case Transform transform:
+                        highlightManager.Highlight(GetPositionAsBounds(transform.position));
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(objectToHighlight), objectToHighlight, "Type not supported by Highlight");
                 }
