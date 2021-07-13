@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 using Recycling;
 using StarSalvager.Audio;
 using StarSalvager.Cameras;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 
 namespace StarSalvager
@@ -240,9 +241,9 @@ namespace StarSalvager
             }
         }
 
-        public Enemy SpawnEnemy(string enemyType, Vector2? spawnLocationOverride = null)
+        public Enemy SpawnEnemy(string enemyID, Vector2? spawnLocationOverride = null)
         {
-            Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyType);
+            Enemy newEnemy = FactoryManager.Instance.GetFactory<EnemyFactory>().CreateObject<Enemy>(enemyID);
 
             if (!m_enemies.Contains(newEnemy))
             {
@@ -257,6 +258,7 @@ namespace StarSalvager
             newEnemy.OnSpawned();
 
             LevelManager.Instance.WaveEndSummaryData.AddEnemySpawned(newEnemy.EnemyName);
+            SessionDataProcessor.Instance.EnemySpawned(enemyID);
 
             return newEnemy;
         }
