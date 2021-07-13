@@ -145,7 +145,7 @@ MonoBehaviour:
   - isImplemented: 0
     partType: 12
     name: Triple Shot
-    lockRotation: 1
+    lockRotation: 0
     description: This gun rotates with your bot and fires three projectiles in an
       arc.  Very effective!
     dataTest:
@@ -230,7 +230,7 @@ MonoBehaviour:
   - isImplemented: 1
     partType: 15
     name: Blaster
-    lockRotation: 1
+    lockRotation: 0
     description: A short-range wide blast weapon, that changes direction with your
       drone.
     dataTest:
@@ -408,7 +408,7 @@ MonoBehaviour:
   - isImplemented: 1
     partType: 42
     name: Sabre
-    lockRotation: 1
+    lockRotation: 0
     description: A short-range melee weapon.  Extends when you spin!
     dataTest:
     - key: Cooldown
