@@ -403,6 +403,8 @@ namespace StarSalvager.UI
                     return isUnlocked && !hasPurchased && canAfford;
                 }
 
+
+
                 var upgrades = FactoryManager.Instance.PersistentUpgrades.Upgrades;
 
                 foreach (var upgradeRemoteData in upgrades)
@@ -601,7 +603,7 @@ namespace StarSalvager.UI
                         PlayerDataManager.SavePlayerAccountData();
                         AnalyticsManager.AbandonRunEvent();
                         SetupAccountMenuWindow();
-
+                        
                         if (!PlayerDataManager.ShouldShownSummary())
                         {
                             UISelectHandler.SetBuildTarget(this);
