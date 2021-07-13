@@ -69,9 +69,9 @@ namespace StarSalvager.UI
                 //backgroundImage.gameObject.SetActive(isTrigger);
                 AnimateDoors(isTrigger);
 
-                cooldownBackgroundImage.gameObject.SetActive(isTrigger);
+                //cooldownBackgroundImage.gameObject.SetActive(isTrigger);
 
-                partImage.gameObject.SetActive(isTrigger);
+                //partImage.gameObject.SetActive(isTrigger);
 
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
@@ -100,7 +100,7 @@ namespace StarSalvager.UI
 
                 Vector3 leftEnd = Vector3.right *
                                   (open
-                                      ? -leftDoorImage.rectTransform.rect.width - doorOffset
+                                      ? -leftDoorRectTransform.rect.width - doorOffset
                                       : -leftDoorRectTransform.rect.width / 2f + doorOffset);
                 Vector3 rightEnd = Vector3.right *
                                    (open
