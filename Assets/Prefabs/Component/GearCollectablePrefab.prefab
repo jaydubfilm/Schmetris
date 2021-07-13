@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5182901841678242745}
   - component: {fileID: 8737504642421490146}
   m_Layer: 9
-  m_Name: Component
+  m_Name: GearCollectablePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101,7 +101,7 @@ SpriteRenderer:
   m_SortingLayerID: 1579873703
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1898356965268507749, guid: 862bb916985978d4f88cee2b8cd29d02,
+  m_Sprite: {fileID: -2232892330106914469, guid: 7dc358839dd853e4e94558a968dd764a,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

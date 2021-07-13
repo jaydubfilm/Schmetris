@@ -386,7 +386,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
 
-                    if (HintManager.CanShowHint(HINT.PICK_PART)) HintManager.TryShowHint(HINT.PICK_PART, 1f);
+                    if (HintManager.CanShowHint(HINT.PICK_PART))
+                        HintManager.TryShowHint(HINT.PICK_PART, 1f,null);
                 }
             }
 
