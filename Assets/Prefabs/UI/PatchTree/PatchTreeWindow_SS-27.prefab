@@ -2821,6 +2821,7 @@ MonoBehaviour:
   partNameText: {fileID: 1013111563065197478}
   partDescriptionText: {fileID: 6853021282831959824}
   partDetailsText: {fileID: 6789112786912391170}
+  partWindowContainer: {fileID: 7678671425429196429}
   scrapPartButton: {fileID: 1037564645581120510}
   patchTreeTierContainer: {fileID: 7366117589697306977}
   dottedLinePrefab: {fileID: 4539940000029865943, guid: 852b872772c052441960237332547215,

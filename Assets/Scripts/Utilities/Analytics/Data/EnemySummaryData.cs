@@ -12,6 +12,7 @@ namespace StarSalvager.Utilities.Analytics.Data
     {
         [HideInTables] public string id;
         [DisplayAsString] public int killed;
+        [DisplayAsString] public int spawned;
 
 #if UNITY_EDITOR
 

@@ -184,6 +184,35 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking
             _currentWave = wave;
         }
         
+        public void RecordBitSpawned(in BitData bitData)
+        {
+            if (!_currentWave.HasValue) return;
+
+            var wave = _currentWave.Value;
+            var tempBitData = bitData;
+
+            if(wave.BitSummaryData == null) wave.BitSummaryData = new List<BitSummaryData>();
+
+            var index = wave.BitSummaryData
+                .FindIndex(x => x.bitData.Type == tempBitData.Type && x.bitData.Level == tempBitData.Level);
+            
+            if(index < 0)
+                wave.BitSummaryData.Add(new BitSummaryData
+                {
+                    bitData = bitData,
+                    spawned = 1
+                });
+            else
+            {
+                var tempData = wave.BitSummaryData[index];
+                tempData.spawned++;
+
+                wave.BitSummaryData[index] = tempData;
+            }
+
+            _currentWave = wave;
+        }
+        
         public void RecordBitDetached(in BitData bitData)
         {
             if (!_currentWave.HasValue)
@@ -217,6 +246,36 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking
 
         //PlayerDataManager Piggy-backing functions
         //====================================================================================================================//
+        public void EnemySpawned(in string enemyId)
+        {
+            if (!_currentWave.HasValue)
+                return;
+
+            var wave = _currentWave.Value;
+            
+            if(wave.enemiesKilledData == null)
+                wave.enemiesKilledData = new List<EnemySummaryData>();
+
+            //FIXME I hate the long string comparisons happening here
+            var id = enemyId;
+            var summaryIndex = wave.enemiesKilledData.FindIndex(x => x.id == id);
+            
+            if(summaryIndex < 0)
+                wave.enemiesKilledData.Add(new EnemySummaryData
+                {
+                    id = enemyId,
+                    spawned = 1
+                });
+            else
+            {
+                var tempData = wave.enemiesKilledData[summaryIndex];
+                tempData.spawned++;
+
+                wave.enemiesKilledData[summaryIndex] = tempData;
+            }
+            
+            _currentWave = wave;
+        }
         public void EnemyKilled(in string enemyId)
         {
             if (!_currentWave.HasValue)
