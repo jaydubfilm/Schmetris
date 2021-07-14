@@ -1341,6 +1341,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             patchDetailsWindow.gameObject.SetActive(hovering);
 
             if (!hovering) return;
+
+            if (patchData.PatchExists() == false)
+            {
+                patchDetailsWindow.gameObject.SetActive(false);
+                return;
+            }
             
             var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
             var screenPoint = RectTransformUtility.WorldToScreenPoint(null,
