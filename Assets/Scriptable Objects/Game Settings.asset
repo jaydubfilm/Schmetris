@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a9be2347e56e1c41ae0b415bc34e015, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
+  startingHealth: 25
+  damageMaxReductionMultiplier: 0.2
+  maxHealthIncreaseMultiplier: 0.5
+  maxHealthBounds: {x: 25, y: 100}
   usePartColors: 0
   useRailgunFireLine: 1
   useCenterFiring: 1

@@ -207,9 +207,7 @@ namespace StarSalvager
 
         public override void SetupHealthValues(float startingHealth, float currentHealth)
         {
-            base.SetupHealthValues(startingHealth, currentHealth);
-
-            GameUi.SetHealthValue(CurrentHealth / StartingHealth);
+            throw new NotImplementedException();
         }
 
         public override void ChangeHealth(float amount)
@@ -218,10 +216,14 @@ namespace StarSalvager
             
             var addsHealth = amount > 0;
             
-            CurrentHealth += amount;
+            //CurrentHealth += amount;
+            if (addsHealth)
+                PlayerDataManager.AddBotHealth(amount);
+            else
+            {
+                PlayerDataManager.ApplyDamage(amount);
+            }
 
-            //TODO Need to update UI
-            GameUi.SetHealthValue(CurrentHealth / StartingHealth);
 
             //Here we check to make sure to not display tiny values of damage
             var check = Mathf.Abs(amount);
@@ -239,7 +241,7 @@ namespace StarSalvager
 
             //--------------------------------------------------------------------------------------------------------//
             
-            if (CurrentHealth > 0)
+            if (PlayerDataManager.GetBotHealth() > 0)
                 return;
 
             CreateCoreDeathEffect();
@@ -587,7 +589,7 @@ namespace StarSalvager
 
             ObstacleManager.NewShapeOnScreen += CheckForBonusShapeMatches;
 
-            GameUi.SetHealthValue(1f);
+            //GameUi.SetHealthValue(1f);
             //GameUi.SetPartImages(BotPartsLogic.GetPartStates());
 
             var camera = CameraController.Camera.GetComponent<CameraController>();
@@ -1384,7 +1386,7 @@ namespace StarSalvager
 
             TryHitAt(closestAttachable, damage);
 
-            if (!(closestAttachable is IHealth iHealth) || iHealth.CurrentHealth > 0) 
+            if(PlayerDataManager.GetBotHealth() > 0)
                 return true;
             
             destroyed = true;

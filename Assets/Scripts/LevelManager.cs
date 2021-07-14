@@ -261,7 +261,7 @@ namespace StarSalvager
             //Setup Bot
             //--------------------------------------------------------------------------------------------------------//
 
-            var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
+            //var startingHealth = PART_TYPE.CORE.GetRemoteData().GetDataValue<float>(PartProperties.KEYS.Health);
 
             m_bots.Add(FactoryManager.Instance.GetFactory<BotFactory>().CreateObject<Bot>());
             BotInLevel.transform.position = new Vector2(0, Constants.gridCellSize * 5);
@@ -271,16 +271,17 @@ namespace StarSalvager
             if (botDataToLoad.Count == 0 || Globals.UsingTutorial)
             {
                 BotInLevel.InitBot();
-                BotInLevel.SetupHealthValues(startingHealth, startingHealth);
+                //BotInLevel.SetupHealthValues(startingHealth, startingHealth);
             }
             else
             {
                 BotInLevel.InitBot(botDataToLoad.ImportBlockDatas(false));
-                BotInLevel.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
+                //BotInLevel.SetupHealthValues(startingHealth, PlayerDataManager.GetBotHealth());
             }
 
             BotInLevel.transform.parent = null;
             SceneManager.MoveGameObjectToScene(BotInLevel.gameObject, gameObject.scene);
+            PlayerDataManager.RefillHealth();
 
 
             //Post Bot Setup
@@ -760,7 +761,7 @@ namespace StarSalvager
             {
                 bot.ResetRotationToIdentity();
                 
-                PlayerDataManager.SetBotHealth(bot.CurrentHealth);
+                //PlayerDataManager.SetBotHealth(bot.CurrentHealth);
                 PlayerDataManager.SetDroneBlockData(bot.GetBlockDatas());
                 PlayerDataManager.DowngradeAllBits(1, false);
             }

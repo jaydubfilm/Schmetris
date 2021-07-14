@@ -114,7 +114,9 @@ namespace StarSalvager.UI
         public void Activate()
         {
 
-            InitButtons();
+            if (!InitButtons())
+                return;
+            
             InitBackButton();
             DrawMap();
 
@@ -141,7 +143,7 @@ namespace StarSalvager.UI
         //UniverseMap Functions
         //====================================================================================================================//
 
-        private void InitButtons()
+        private bool InitButtons()
         {
             //--------------------------------------------------------------------------------------------------------//
 
@@ -219,6 +221,20 @@ namespace StarSalvager.UI
             if (currentNodeIndex == nodeCount - 1)
             {
                 var ringIndex = Globals.CurrentRingIndex + 1;
+
+                if (ringIndex >= Rings.RingMaps.Length)
+                {
+                    //Giveup game, since the player is done, no more maps remain
+                    PlayerDataManager.CompleteCurrentRun();
+                    PlayerDataManager.SavePlayerAccountData();
+                        
+                    GameManager.SetCurrentGameState(GameState.AccountMenu);
+                    SceneLoader.ActivateScene(SceneLoader.MAIN_MENU, SceneLoader.UNIVERSE_MAP,
+                        MUSIC.MAIN_MENU);
+                    
+                    return false;
+                }
+                
                 PlayerDataManager.SetCurrentRing(ringIndex);
 
                 //Want to set the players map position back to the beginning
@@ -231,8 +247,7 @@ namespace StarSalvager.UI
                 PlayerDataManager.ResetTraversedCoordinates();
 
                 //Once all new values are set, re-attempt to do this function
-                InitButtons();
-                return;
+                return InitButtons();
             }
 
 
@@ -243,6 +258,7 @@ namespace StarSalvager.UI
                 CreateButtonElement(i, nodeData.Coordinate, nodeData.NodeType);
             }
 
+            return true;
         }
 
         private void OnNodePressed(int nodeIndex, NodeType nodeType)

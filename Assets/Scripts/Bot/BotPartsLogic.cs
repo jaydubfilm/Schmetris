@@ -307,6 +307,15 @@ namespace StarSalvager
             var startScale = Vector3.one;
             var endScale = new Vector3(1, 0f, 1f);
 
+            var bitIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == part.category);
+
+            var isManual = part.Type.GetIsManual();
+            
+            //If the current part isManual, wew'll close the doors
+            //We dont need to reopen them from here, as InitPartData() will call that for us
+            if(isManual)
+                GameUI.StartAnimation(bitIndex, false, cooldown);
+            
             //--------------------------------------------------------------------------------------------------------//
 
             _partCooldownTimers[part] = new CooldownData(cooldown, true);
@@ -419,6 +428,11 @@ namespace StarSalvager
 
                 GameUI.SetIconImage(index, part is null ? PART_TYPE.EMPTY : part.Type);
 
+                if (part != null)
+                {
+                    var isManual = part.Type.GetIsManual();
+                    if (isManual) GameUI.StartAnimation(index, true, Globals.PartSwapTime / 2f);
+                }
 
                 var partsInStorage = PlayerDataManager.GetCurrentPartsInStorage();
                 var switchPart = partsInStorage
@@ -783,28 +797,27 @@ namespace StarSalvager
             }
 
 
-            var repairTarget = bot;
+            //var repairTarget = bot;
+            var isMaxHealth = PlayerDataManager.GetBotHealth() >= PlayerDataManager.GetBotMaxHealth();
 
-            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
-            {
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, !isMaxHealth);
+
+            
+            if (isMaxHealth)
                 return;
-            }
-
 
             //--------------------------------------------------------------------------------------------------------//
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            if (!TryUseAmmo(part, partRemoteData, deltaTime))
-                return;
+            //if (!TryUseAmmo(part, partRemoteData, deltaTime))
+            //    return;
 
             var heal = healAmount * deltaTime;
-            repairTarget.ChangeHealth(heal);
+            PlayerDataManager.AddBotHealth(heal);
+            //repairTarget.ChangeHealth(heal);
 
-
-
-            TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)

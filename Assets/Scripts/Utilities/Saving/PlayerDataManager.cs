@@ -24,6 +24,8 @@ namespace StarSalvager.Utilities.Saving
         public static Action OnCapacitiesChanged;
         public static Action<PartAttachableFactory.PART_OPTION_TYPE, PART_TYPE> NewPartPicked;
 
+        public static Action<float, float> OnHealthChanged;
+
         //Properties
         //====================================================================================================================//
 
@@ -261,14 +263,59 @@ namespace StarSalvager.Utilities.Saving
         #region Bot Health
 
         public static float GetBotHealth() => HasRunData ? PlayerRunData.currentBotHealth : 0;
+        public static float GetBotMaxHealth() => HasRunData ? PlayerRunData.maxHealth : 0;
 
         public static void SetBotHealth(in float health)
         {
-            PlayerRunData.currentBotHealth = health;
+            PlayerRunData.currentBotHealth = Mathf.Clamp(health, 0, GetBotMaxHealth()) ;
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
         }
 
-        #endregion //Bot Health
+        public static void AddBotHealth(in float addHealth)
+        {
+            var newValue = Mathf.Clamp(GetBotHealth() + addHealth, 0, GetBotMaxHealth());
+            SetBotHealth(newValue);
+        }
         
+        public static void ApplyDamage(in float damage)
+        {
+            var dmg = Mathf.Abs(damage);
+            var bounds = Globals.MaxHealthBounds;
+            var maxHealth = PlayerRunData.maxHealth;
+            var currentHealth = PlayerRunData.currentBotHealth;
+
+            maxHealth -= dmg * Globals.DamageMaxReductionMultiplier;
+            currentHealth -= dmg;
+            
+            PlayerRunData.maxHealth = Mathf.Clamp(maxHealth, bounds.x, bounds.y);
+            PlayerRunData.currentBotHealth = Mathf.Clamp(currentHealth, 0, bounds.y);
+            
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
+        }
+
+        public static void IncreaseMaxHealth(in float amount)
+        {
+            var amt = Mathf.Abs(amount);
+            
+            var bounds = Globals.MaxHealthBounds;
+            var maxHealth = PlayerRunData.maxHealth;
+            var currentHealth = PlayerRunData.currentBotHealth;
+
+            maxHealth += amt;
+            currentHealth += amt;
+            
+            PlayerRunData.maxHealth = Mathf.Clamp(maxHealth, bounds.x, bounds.y);
+            PlayerRunData.currentBotHealth = Mathf.Clamp(currentHealth, 0, bounds.y);
+         
+            OnHealthChanged?.Invoke(PlayerRunData.currentBotHealth, PlayerRunData.maxHealth);
+        }
+        
+        public static void RefillHealth()
+        {
+            SetBotHealth(GetBotMaxHealth());
+        }
+        #endregion //Bot Health
+
         //Storage Parts
         //====================================================================================================================//
 

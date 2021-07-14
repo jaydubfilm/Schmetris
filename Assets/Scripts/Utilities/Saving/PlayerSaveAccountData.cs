@@ -501,13 +501,10 @@ namespace StarSalvager.Values
         {
             var startingGears = (int)PlayerDataManager
                 .GetCurrentUpgradeValue(UPGRADE_TYPE.STARTING_CURRENCY);
-            var startingHealth =PART_TYPE.CORE
-                .GetRemoteData()
-                .GetDataValue<float>(PartProperties.KEYS.Health);
 
             var newPlayerRunData = new PlayerSaveRunData(
                 startingGears,
-                startingHealth,
+                Globals.StartingHealth,
                 Stars,
                 XP,
                 RepairsDone,

@@ -34,11 +34,20 @@ namespace StarSalvager.UI
         #region Structs
 
         [Serializable]
-        public struct SliderPartUI
+        public class SliderPartUI
         {
-            [Required, FoldoutGroup("$NAME")] public Image backgroundImage;
-            [Required, FoldoutGroup("$NAME")] public Image foregroundImage;
+            [Required, FoldoutGroup("$NAME")] public Image PartGlowImage;
+            [Required, FoldoutGroup("$NAME")] public Sprite pressedButtonSprite;
+            [Required, FoldoutGroup("$NAME")] public Sprite normalButtonSprite;
+            
+            [FormerlySerializedAs("backgroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonBackImage;
+            [FormerlySerializedAs("foregroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonImage;
+            [Required, FoldoutGroup("$NAME")] public Image partImage;
+            [Required, FoldoutGroup("$NAME")] public Image leftDoorImage;
+            [Required, FoldoutGroup("$NAME")] public Image rightDoorImage;
             [Required, FoldoutGroup("$NAME")] public Image secondPartImage;
+            [Required, FoldoutGroup("$NAME")] public Image cooldownFillImage;
+            [Required, FoldoutGroup("$NAME")] public Image cooldownBackgroundImage;
 
             [HideInInspector] public Image partBorderSprite;
 
@@ -46,6 +55,8 @@ namespace StarSalvager.UI
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
+
+            private bool _isOpen;
 
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
@@ -58,26 +69,123 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
-                if (triggerInputImage is null || backgroundImage is null)
+                if (triggerInputImage is null || cooldownBackgroundImage is null)
                     return;
 
-                backgroundImage.gameObject.SetActive(isTrigger);
+                //AnimateDoors(isTrigger);
+                buttonImage.enabled = isTrigger;
 
-                triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
-
-                //if (!isTrigger)
-                //    return;
 
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
+                
+            }
+
+            public void AnimateDoors(in bool open, in float animationTime)
+            {
+                if (_isOpen == open)
+                    return;
+                
+                Instance.StartCoroutine(TriggerCoroutine(open,animationTime));
+                _isOpen = open;
+            }
+
+            private IEnumerator TriggerCoroutine(bool open, float animationTime)
+            {
+                if (open)
+                {
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(true, animationTime / 2));
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(false, animationTime / 2));
+                    _isOpen = true;
+                }
+                else
+                {
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(true, animationTime / 2));
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(false, animationTime / 2));
+                    _isOpen = false;
+                }
+
+            }
+            /*private void AnimateDoors(bool opened)
+            {
+                if (leftDoorImage is null || rightDoorImage is null)
+                    return;
+
+                //leftDoorImage.transform.localPosition = new Vector3(-leftDoorImage.rectTransform.rect.width / 2f + doorOffset, 0, 0);
+                //rightDoorImage.transform.localPosition = new Vector3(rightDoorImage.rectTransform.rect.width / 2f - doorOffset, 0, 0);
+                //leftDoorImage.gameObject.SetActive(!opened);
+                //rightDoorImage.gameObject.SetActive(!opened);
+
+                Instance.StartCoroutine(DisplayTriggerButtonCoroutine(opened));
+            }
+
+            private IEnumerator DisplayTriggerButtonCoroutine(bool open)
+            {
+                if (buttonImage.enabled)
+                {
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(true));
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(false));
+                }
+
+                if (!open)
+                    yield break;
+
+                yield return new WaitForSeconds(0.2f);
+                
+                yield return Instance.StartCoroutine(AnimateDoorsCoroutine(true));
+                yield return Instance.StartCoroutine(ScaleButtonCoroutine(false));
+            }*/
+
+            private IEnumerator AnimateDoorsCoroutine(bool open, float animationTime = 0.5f)
+            {
+                var leftDoorRectTransform = (RectTransform) leftDoorImage.transform;
+                var rightDoorRectTransform = (RectTransform) rightDoorImage.transform;
+
+                Vector3 leftStart = leftDoorRectTransform.localPosition;
+                Vector3 rightStart = rightDoorRectTransform.localPosition;
+
+                Vector3 leftEnd = Vector3.right *
+                                  (open
+                                      ? -leftDoorRectTransform.rect.width - doorOffset
+                                      : -leftDoorRectTransform.rect.width / 2f + doorOffset);
+                Vector3 rightEnd = Vector3.right *
+                                   (open
+                                       ? rightDoorImage.rectTransform.rect.width + doorOffset
+                                       : rightDoorRectTransform.rect.width / 2f - doorOffset);
+                
+                for (float time = 0; time < animationTime; time += Time.deltaTime)
+                {
+                    var t = time / animationTime;
+                    rightDoorImage.transform.localPosition = Vector3.Lerp(rightStart, rightEnd, t);
+                    leftDoorImage.transform.localPosition = Vector3.Lerp(leftStart, leftEnd, t);
+                    
+                    yield return null;
+                }
+            }
+
+            private IEnumerator ScaleButtonCoroutine(bool shrink, float animationTime = 0.5f)
+            {
+                var buttonRectTransform = (RectTransform)buttonImage.transform;
+                var defaultScale = Vector3.one;
+                var targetScale = shrink ? Vector3.one * 0.1f : defaultScale;
+                var startScale = shrink ? defaultScale : Vector3.one * 0.1f;
+
+                buttonRectTransform.localScale = startScale;
+                
+                for (var time = 0f; time <= animationTime; time += Time.deltaTime)
+                {
+                    var t = time / animationTime;
+                    buttonRectTransform.localScale = Vector3.Lerp(startScale, targetScale, t);
+                    yield return null;
+                }
+
             }
 
             public void SetSprite(in Sprite partSprite)
             {
-                if (foregroundImage is null || backgroundImage is null) return;
+                if (partImage is null) return;
 
-                backgroundImage.sprite = partSprite;
-                foregroundImage.sprite = partSprite;
+                partImage.sprite = partSprite;
 
                 if (partBorderSprite != null)
                     partBorderSprite.enabled = partSprite != null;
@@ -94,26 +202,41 @@ namespace StarSalvager.UI
 
             public void SetColor(in Color color)
             {
-                if (foregroundImage is null)
+                if (buttonImage is null || secondPartImage is null)
                     return;
-                foregroundImage.color = color;
+                buttonImage.color = color;
                 secondPartImage.color = color;
             }
 
             public void SetBackgroundColor(in Color color)
             {
-                if (backgroundImage is null)
+                
+                if (buttonBackImage is null)
                     return;
 
-                backgroundImage.color = color;
+                buttonBackImage.color = color;
             }
 
             public void SetFill(float val)
             {
-                if (foregroundImage is null)
+                if (cooldownFillImage is null)
                     return;
 
-                foregroundImage.fillAmount = val;
+                cooldownFillImage.fillAmount = val;
+                SetIsReady(Math.Abs(val - 1f) < 0.01f);
+            }
+
+            public void SetPressed(in bool isPressed)
+            {
+                buttonImage.sprite = isPressed ? pressedButtonSprite : normalButtonSprite;
+            }
+
+            public void SetIsReady(in bool isReady)
+            {
+                if (PartGlowImage is null)
+                    return;
+                
+                PartGlowImage.gameObject.SetActive(isReady);
             }
         }
 
@@ -174,6 +297,7 @@ namespace StarSalvager.UI
         private const float MAGNET_FILL_VALUE = 0.02875f;
 
         private static int[] _gameUIBitIndices;
+        private const float doorOffset = 5f;
 
         #region Properties
 
@@ -240,11 +364,11 @@ namespace StarSalvager.UI
         //Bottom Right Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("BR Window")]
+        /*[SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider botHealthBarSlider;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        private Image botHealthBarSliderImage;
+        private Image botHealthBarSliderImage;*/
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
@@ -400,6 +524,11 @@ namespace StarSalvager.UI
 
         #region Unity Functions
 
+        private void TriggerPartStatusChanged(int index, bool pressed)
+        {
+            SliderPartUis[index].SetPressed(pressed);
+        }
+
         private void Start()
         {
             InputManager.InputDeviceChanged += TryUpdateInputSprites;
@@ -413,21 +542,28 @@ namespace StarSalvager.UI
             if (!PlayerDataManager.HasRunData)
                 return;
 
+            InputManager.TriggerWeaponStateChange += TriggerPartStatusChanged;
             Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += ValuesUpdated;
             PlayerDataManager.OnItemUnlocked += UnlockItem;
+
+            PlayerDataManager.OnHealthChanged += OnHealthChanged;
+            SetHealthCracks(1f);
         }
 
         private void OnDisable()
         {
             Toast.SetToastArea(transform as RectTransform);
 
+            InputManager.TriggerWeaponStateChange -= TriggerPartStatusChanged;
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
             PlayerDataManager.OnItemUnlocked -= UnlockItem;
+            
+            PlayerDataManager.OnHealthChanged -= OnHealthChanged;
         }
 
         #endregion //Unity Functions
@@ -452,7 +588,7 @@ namespace StarSalvager.UI
                 case HINT.HEALTH:
                     return new object[]
                     {
-                        botHealthBarSliderImage.transform as RectTransform,
+                        //botHealthBarSliderImage.transform as RectTransform,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -485,7 +621,7 @@ namespace StarSalvager.UI
 
             SetCarryCapacity(0f, 1);
 
-            SetHealthValue(1f);
+            //SetHealthValue(1f);
             SetLevelProgressSlider(0f);
 
 
@@ -520,6 +656,8 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
+                if (Constants.BIT_ORDER[i] == BIT_TYPE.GREEN)
+                    continue;
                 //Do not need to set the colors when the sprites are already colored SS-312
                 //SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
@@ -531,6 +669,9 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
+                if (Constants.BIT_ORDER[i] == BIT_TYPE.GREEN)
+                    continue;
+                
                 var resource = PlayerDataManager.GetResource(Constants.BIT_ORDER[i]);
 
                 SliderPartUis[i].slider.maxValue = resource.AmmoCapacity;
@@ -595,7 +736,7 @@ namespace StarSalvager.UI
             UpdateAmmoSliders();
         }
 
-        public void SetHealthValue(float value)
+        /*public void SetHealthValue(float value)
         {
             var inverse = 1f - value;
 
@@ -612,6 +753,19 @@ namespace StarSalvager.UI
             botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.white, value);
             botHealthBarSlider.value = value;
 
+        }*/
+        private void OnHealthChanged(float currentHealth, float currentMax) =>
+            SetHealthCracks(currentHealth / currentMax);
+        private void SetHealthCracks(in float value)
+        {
+            var inverse = 1f - value;
+
+            var crackIncrement = 1f / crackImages.Length;
+
+            for (int i = 0; i < crackImages.Length; i++)
+            {
+                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
+            }   
         }
 
         public void SetPlayerXP(in int xp)
@@ -738,32 +892,35 @@ namespace StarSalvager.UI
             //--------------------------------------------------------------------------------------------------------//
 
             if (index < 0) return;
-
+            
+            var sprite = partType.GetSprite();
+            SliderPartUis[index].SetSprite(sprite);
+            
             if (partType == PART_TYPE.EMPTY)
             {
                 SliderPartUis[index].SetIsTrigger(false, null);
-                SliderPartUis[index].SetSprite(null);
-                SliderPartUis[index].SetColor(Color.clear);
+                //SliderPartUis[index].SetColor(Color.clear);
                 return;
             }
 
             var partRemoteData = partType.GetRemoteData();
 
             var isTrigger = partRemoteData.isManual;
-            var sprite = partType.GetSprite();
 
-            //SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
-            SliderPartUis[index].SetIsTrigger(true, isTrigger ? GetInputSprite(index) : null);
-
-            SliderPartUis[index].SetSprite(sprite);
+            SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
 
             //If the part icon needs a border, be sure to add it!
-            if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].foregroundImage != null)
+            /*if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].buttonImage != null)
                 SliderPartUis[index].partBorderSprite = PartAttachableFactory.CreateUIPartBorder(
-                    (RectTransform) SliderPartUis[index].foregroundImage.transform,
-                    partType);
+                    (RectTransform) SliderPartUis[index].buttonImage.transform,
+                    partType);*/
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
+        }
+        
+        public void StartAnimation(int index, in bool openDoors, in float animationTime)
+        {
+            SliderPartUis[index].AnimateDoors(openDoors, animationTime);
         }
 
         public void SetSecondIconImage(int index, in PART_TYPE partType)
@@ -1286,8 +1443,17 @@ namespace StarSalvager.UI
                 yield return null;
             }
 
-            var resource = PlayerDataManager.GetResource(bitType);
-            resource.AddAmmo(dividedAmount);
+            if (bitType == BIT_TYPE.GREEN)
+            {
+                PlayerDataManager.IncreaseMaxHealth(dividedAmount * Globals.MaxHealthHealthIncreaseMultiplier);
+            }
+            else
+            {
+                var resource = PlayerDataManager.GetResource(bitType);
+                resource.AddAmmo(dividedAmount);
+            }
+
+            
 
 
             Destroy(movingTransform.gameObject);
