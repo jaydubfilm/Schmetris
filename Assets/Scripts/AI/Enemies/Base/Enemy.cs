@@ -18,12 +18,13 @@ using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
 using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Interfaces;
 
 namespace StarSalvager.AI
 {
     //Explore this as solution to removing the requirement: http://answers.unity.com/answers/874150/view.html
     //[RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds, IHasBounds
     {
         protected static EnemyManager EnemyManager
         {
@@ -440,7 +441,7 @@ namespace StarSalvager.AI
         public virtual void OnEnterCamera()
         {
             if (HintManager.CanShowHint(HINT.ENEMY))
-                HintManager.TryShowHint(HINT.ENEMY, 2f, () => { }, transform);
+                HintManager.TryShowHint(HINT.ENEMY, 2f, () => { }, this as IHasBounds);
             //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
@@ -482,6 +483,21 @@ namespace StarSalvager.AI
         }
 
         public abstract Type GetOverrideType();
+
+        //============================================================================================================//
+
+        //IHasBounds Functions
+        //====================================================================================================================//
+
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
 
         //============================================================================================================//
 
