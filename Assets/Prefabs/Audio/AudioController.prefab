@@ -335,16 +335,16 @@ MonoBehaviour:
   - _volume: 1
     _sound: 50
     _clip: {fileID: 0}
-  - _volume: 1
+  - _volume: 0.7
     _sound: 51
     _clip: {fileID: 8300000, guid: 0f03ec6e48f56f94e83b014ac4468ca1, type: 3}
-  - _volume: 1
+  - _volume: 0.7
     _sound: 52
     _clip: {fileID: 8300000, guid: 7d6b08a452e494c44b3849f8dcb81997, type: 3}
   - _volume: 1
     _sound: 53
     _clip: {fileID: 8300000, guid: 4f4b0251a672a5242adfb98d06c80fee, type: 3}
-  - _volume: 1
+  - _volume: 0.86
     _sound: 54
     _clip: {fileID: 8300000, guid: 93eb968010087d741b95fa8d51f8b2f1, type: 3}
   - _volume: 1

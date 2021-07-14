@@ -437,7 +437,8 @@ namespace StarSalvager.UI
 
 
 
-            starsButtonGlow.gameObject.SetActive(HasStarsToSpend());
+            starsButtonGlow.gameObject.SetActive(HasStarsToSpend() && !hasActiveRun);
+            starsButton.interactable = !hasActiveRun;
 
         }
 
@@ -602,7 +603,14 @@ namespace StarSalvager.UI
                         PlayerDataManager.SavePlayerAccountData();
                         AnalyticsManager.AbandonRunEvent();
                         SetupAccountMenuWindow();
-                        UISelectHandler.SetBuildTarget(this);
+                        
+                        if (!PlayerDataManager.ShouldShownSummary())
+                        {
+                            UISelectHandler.SetBuildTarget(this);
+                            return;
+                        }
+
+                        FindObjectOfType<PostGameUI>().ShowPostGameUI();
                     });
             });
             tutorialButton.interactable = false;
@@ -871,7 +879,14 @@ namespace StarSalvager.UI
                             accountMenuSettingsButton,
                             accountMenuQuitButton,
                             changeAccountButton,
-                        }, null, null);
+                        }, new []
+                        {
+                            new NavigationOverride
+                            {
+                                FromSelectable = changeAccountButton,
+                                DownTarget = PlayerDataManager.HasActiveRun() ? continueRunButton : newRunButton,
+                            }
+                        }, null);
                 case WINDOW.RUN:
                     break;
                 case WINDOW.SETTINGS:
