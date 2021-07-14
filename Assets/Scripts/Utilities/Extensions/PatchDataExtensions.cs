@@ -17,5 +17,19 @@ namespace StarSalvager.Utilities.Extensions
             
             return (gears, silver);
         }
+        
+        public static bool PatchExists(this PatchData patchData)
+        {
+            var patchRemoteData = FactoryManager.Instance.PatchRemoteData.GetRemoteData(patchData.Type);
+
+            if (patchRemoteData == null || !patchRemoteData.isImplemented)
+                return false;
+
+            if (patchRemoteData.Levels.Count < patchData.Level)
+                return false;
+
+            return true;
+
+        }
     }
 }
