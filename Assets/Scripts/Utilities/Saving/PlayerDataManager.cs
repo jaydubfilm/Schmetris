@@ -843,6 +843,10 @@ namespace StarSalvager.Utilities.Saving
                     Type = patchNodeJson.Type,
                     Level = patchNodeJson.Level
                 };
+                
+                //Ensure that we're not presenting options to the player which have not been implemented
+                if(patch.PatchExists() == false)
+                    continue;
 
                 //If the part already has the patch, don't display it again
                 if (partData.Patches.Contains(patch)) continue;

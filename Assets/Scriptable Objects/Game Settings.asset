@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   usePartColors: 0
+  useRailgunFireLine: 1
   useCenterFiring: 1
+  maxPartTypeCount: 2
   useShuffleDance: 0
   shuffleCanDisconnect: 0
   shuffleTimeThreshold: 0.133
@@ -92,8 +94,8 @@ MonoBehaviour:
     gearsValue: 1000
   asteroidSpawnDisableTimeBeforeWaveEnd: 1
   timeAfterWaveEndFlyOut: 8
+  partSwapTime: 1
   botHealWaitTime: 1.5
-  decoyDroneHealth: 20
   bitDropCollectionMultiplier: 0.5
   botEnterScreenMaxSize: 1.5
   botExitScreenMaxSize: 2
@@ -113,3 +115,5 @@ MonoBehaviour:
   columnsOnScreen: 61
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
+  windowsScrollSpeed: 30
+  macOsScrollSpeed: 10

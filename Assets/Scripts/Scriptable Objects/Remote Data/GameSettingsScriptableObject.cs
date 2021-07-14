@@ -132,8 +132,16 @@ namespace StarSalvager.ScriptableObjects
         [ShowIf("cameraUseInputMotion", true)][BoxGroup("Camera")]
         public float cameraOffsetBounds = 0.5f;
 
+        //UI Properties
         //====================================================================================================================//
 
+        [BoxGroup("UI")]
+        public float windowsScrollSpeed;
+        [BoxGroup("UI")]
+        public float macOsScrollSpeed;
+        
+        //====================================================================================================================//
+        
         [Button("Update"), HorizontalGroup("Camera/Row1"), DisableInEditorMode]
         private void UpdateCameraScale()
         {
