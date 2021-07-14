@@ -346,6 +346,19 @@ namespace StarSalvager
             return bits;
         }
         
+
+        public List<Bit> TryGetBumpersOnScreen()
+        {
+            var bits = m_obstacles
+                .OfType<Bit>()
+                .Where(x => x.IsRecycled == false)
+                .Where(x => x.Type == BIT_TYPE.BUMPER)
+                .Where(x => x.Attached == false)
+                .Where(x => CameraController.IsPointInCameraRect(x.transform.position))
+                .ToList();
+
+            return bits;
+        }
         //====================================================================================================================//
         
         private void HandleObstacleMovement()

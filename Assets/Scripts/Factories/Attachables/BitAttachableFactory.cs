@@ -131,6 +131,8 @@ namespace StarSalvager.Factories
             temp.SetColliderActive(true);
             temp.LoadBlockData(bitData);
 
+            temp.RegisterCanBeSeen();
+
             //Have to check for null, as the Asteroid/Energy does not have health
             if (remote != null)
             {

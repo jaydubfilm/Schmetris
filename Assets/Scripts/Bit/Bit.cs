@@ -12,10 +12,14 @@ using StarSalvager.Utilities.Inputs;
 using StarSalvager.Utilities.JsonDataTypes;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using StarSalvager.Cameras;
+using StarSalvager.UI.Hints;
+using System.Linq;
+using StarSalvager.Utilities.Interfaces;
 
 namespace StarSalvager
 {
-    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze
+    public class Bit : CollidableBase, IAttachable, IBit, ISaveable<BitData>, IHealth, IObstacle, ICanBeHit, IRotate, ICanCombo<BIT_TYPE>, ICanDetach, IAdditiveMove, ICanFreeze, ICanBeSeen
     {
         //IAttachable properties
         //============================================================================================================//
@@ -50,19 +54,19 @@ namespace StarSalvager
         //ICanCombo Properties
         //====================================================================================================================//
         public IAttachable iAttachable => this;
-        
+
         public bool IsBusy { get; set; }
 
         //IHealth Properties
         //============================================================================================================//
 
         public float StartingHealth { get; private set; }
-        [ShowInInspector, ReadOnly, ProgressBar(0,"StartingHealth")]
+        [ShowInInspector, ReadOnly, ProgressBar(0, "StartingHealth")]
         public float CurrentHealth { get; private set; }
 
         //IAdditiveMove Properties
         //====================================================================================================================//
-        
+
         public Vector2 AddMove { get; set; }
 
         //IObstacle Properties
@@ -85,6 +89,9 @@ namespace StarSalvager
         public BIT_TYPE Type { get; set; }
         [ShowInInspector, ReadOnly]
         public int level { get; private set; }
+        public bool IsSeen { get; set; }
+
+        public float CameraCheckArea => 0.6f;
 
         [SerializeField]
         private LayerMask collisionMask;
@@ -323,6 +330,8 @@ namespace StarSalvager
                 Recycler.Recycle<Damage>(_damage);
                 _damage = null;
             }
+
+            UnregisterCanBeSeen();
             
         }
 
@@ -346,5 +355,34 @@ namespace StarSalvager
             return ToBlockData();
         }
 
+        public void RegisterCanBeSeen()
+        {
+            CameraController.RegisterCanBeSeen(this);
+        }
+
+        public void UnregisterCanBeSeen()
+        {
+            CameraController.UnRegisterCanBeSeen(this);
+        }
+
+        public virtual void OnEnterCamera()
+        {
+            if(Type == BIT_TYPE.BUMPER && LevelManager.Instance.CurrentStage >= 1 && HintManager.CanShowHint(HINT.BUMPER))
+            {
+                var bumpers = LevelManager.Instance.ObstacleManager.TryGetBumpersOnScreen();
+                if (bumpers.Count < 2) return;
+
+                bumpers = bumpers
+                .OrderBy(x => Vector2.Distance(x.transform.position, transform.position))
+                .ToList();
+
+                HintManager.TryShowHint(HINT.BUMPER, 2f, () => { }, bumpers[0], bumpers[1]);
+            }
+        }
+
+        public virtual void OnExitCamera()
+        {
+            
+        }
     }
 }
