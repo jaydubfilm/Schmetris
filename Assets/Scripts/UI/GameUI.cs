@@ -36,6 +36,10 @@ namespace StarSalvager.UI
         [Serializable]
         public class SliderPartUI
         {
+            [Required, FoldoutGroup("$NAME")] public Image PartGlowImage;
+            [Required, FoldoutGroup("$NAME")] public Sprite pressedButtonSprite;
+            [Required, FoldoutGroup("$NAME")] public Sprite normalButtonSprite;
+            
             [FormerlySerializedAs("backgroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonBackImage;
             [FormerlySerializedAs("foregroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonImage;
             [Required, FoldoutGroup("$NAME")] public Image partImage;
@@ -219,6 +223,20 @@ namespace StarSalvager.UI
                     return;
 
                 cooldownFillImage.fillAmount = val;
+                SetIsReady(Math.Abs(val - 1f) < 0.01f);
+            }
+
+            public void SetPressed(in bool isPressed)
+            {
+                buttonImage.sprite = isPressed ? pressedButtonSprite : normalButtonSprite;
+            }
+
+            public void SetIsReady(in bool isReady)
+            {
+                if (PartGlowImage is null)
+                    return;
+                
+                PartGlowImage.gameObject.SetActive(isReady);
             }
         }
 
@@ -506,6 +524,11 @@ namespace StarSalvager.UI
 
         #region Unity Functions
 
+        private void TriggerPartStatusChanged(int index, bool pressed)
+        {
+            SliderPartUis[index].SetPressed(pressed);
+        }
+
         private void Start()
         {
             InputManager.InputDeviceChanged += TryUpdateInputSprites;
@@ -519,6 +542,7 @@ namespace StarSalvager.UI
             if (!PlayerDataManager.HasRunData)
                 return;
 
+            InputManager.TriggerWeaponStateChange += TriggerPartStatusChanged;
             Toast.SetToastArea(viewableAreaTransform);
             SetupPlayerValues();
 
@@ -531,6 +555,7 @@ namespace StarSalvager.UI
         {
             Toast.SetToastArea(transform as RectTransform);
 
+            InputManager.TriggerWeaponStateChange -= TriggerPartStatusChanged;
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
             PlayerDataManager.OnItemUnlocked -= UnlockItem;
