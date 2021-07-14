@@ -68,6 +68,9 @@ namespace StarSalvager.Values
         #region Game Settings Properties
 
         private static GameSettingsScriptableObject m_gameSettings = null;
+        
+        public static float WindowsScrollSpeed => m_gameSettings.windowsScrollSpeed;
+        public static float MacOSScrollSpeed => m_gameSettings.macOsScrollSpeed;
 
         public static bool UseRailgunFireLine => m_gameSettings.useRailgunFireLine;
         public static float PartSwapTime => m_gameSettings.partSwapTime;

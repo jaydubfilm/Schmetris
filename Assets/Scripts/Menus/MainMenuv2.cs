@@ -879,7 +879,14 @@ namespace StarSalvager.UI
                             accountMenuSettingsButton,
                             accountMenuQuitButton,
                             changeAccountButton,
-                        }, null, null);
+                        }, new []
+                        {
+                            new NavigationOverride
+                            {
+                                FromSelectable = changeAccountButton,
+                                DownTarget = PlayerDataManager.HasActiveRun() ? continueRunButton : newRunButton,
+                            }
+                        }, null);
                 case WINDOW.RUN:
                     break;
                 case WINDOW.SETTINGS:
