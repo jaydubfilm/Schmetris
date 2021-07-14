@@ -364,11 +364,11 @@ namespace StarSalvager.UI
         //Bottom Right Window
         //============================================================================================================//
 
-        [SerializeField, Required, FoldoutGroup("BR Window")]
+        /*[SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider botHealthBarSlider;
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
-        private Image botHealthBarSliderImage;
+        private Image botHealthBarSliderImage;*/
 
         [SerializeField, Required, FoldoutGroup("BR Window")]
         private Slider carryCapacitySlider;
@@ -549,6 +549,9 @@ namespace StarSalvager.UI
             PlayerDataManager.OnCapacitiesChanged += SetupPlayerValues;
             PlayerDataManager.OnValuesChanged += ValuesUpdated;
             PlayerDataManager.OnItemUnlocked += UnlockItem;
+
+            PlayerDataManager.OnHealthChanged += OnHealthChanged;
+            SetHealthCracks(1f);
         }
 
         private void OnDisable()
@@ -559,6 +562,8 @@ namespace StarSalvager.UI
             PlayerDataManager.OnCapacitiesChanged -= SetupPlayerValues;
             PlayerDataManager.OnValuesChanged -= ValuesUpdated;
             PlayerDataManager.OnItemUnlocked -= UnlockItem;
+            
+            PlayerDataManager.OnHealthChanged -= OnHealthChanged;
         }
 
         #endregion //Unity Functions
@@ -583,7 +588,7 @@ namespace StarSalvager.UI
                 case HINT.HEALTH:
                     return new object[]
                     {
-                        botHealthBarSliderImage.transform as RectTransform,
+                        //botHealthBarSliderImage.transform as RectTransform,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -616,7 +621,7 @@ namespace StarSalvager.UI
 
             SetCarryCapacity(0f, 1);
 
-            SetHealthValue(1f);
+            //SetHealthValue(1f);
             SetLevelProgressSlider(0f);
 
 
@@ -651,6 +656,8 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
+                if (Constants.BIT_ORDER[i] == BIT_TYPE.GREEN)
+                    continue;
                 //Do not need to set the colors when the sprites are already colored SS-312
                 //SliderPartUis[i].fillImage.color = Constants.BIT_ORDER[i].GetColor();
 
@@ -662,6 +669,9 @@ namespace StarSalvager.UI
         {
             for (var i = 0; i < Constants.BIT_ORDER.Length; i++)
             {
+                if (Constants.BIT_ORDER[i] == BIT_TYPE.GREEN)
+                    continue;
+                
                 var resource = PlayerDataManager.GetResource(Constants.BIT_ORDER[i]);
 
                 SliderPartUis[i].slider.maxValue = resource.AmmoCapacity;
@@ -726,7 +736,7 @@ namespace StarSalvager.UI
             UpdateAmmoSliders();
         }
 
-        public void SetHealthValue(float value)
+        /*public void SetHealthValue(float value)
         {
             var inverse = 1f - value;
 
@@ -743,6 +753,19 @@ namespace StarSalvager.UI
             botHealthBarSliderImage.color = Color.Lerp(Color.red, Color.white, value);
             botHealthBarSlider.value = value;
 
+        }*/
+        private void OnHealthChanged(float currentHealth, float currentMax) =>
+            SetHealthCracks(currentHealth / currentMax);
+        private void SetHealthCracks(in float value)
+        {
+            var inverse = 1f - value;
+
+            var crackIncrement = 1f / crackImages.Length;
+
+            for (int i = 0; i < crackImages.Length; i++)
+            {
+                crackImages[i].enabled = inverse >= crackIncrement * (i + 1);
+            }   
         }
 
         public void SetPlayerXP(in int xp)
@@ -1420,8 +1443,17 @@ namespace StarSalvager.UI
                 yield return null;
             }
 
-            var resource = PlayerDataManager.GetResource(bitType);
-            resource.AddAmmo(dividedAmount);
+            if (bitType == BIT_TYPE.GREEN)
+            {
+                PlayerDataManager.IncreaseMaxHealth(dividedAmount * Globals.MaxHealthHealthIncreaseMultiplier);
+            }
+            else
+            {
+                var resource = PlayerDataManager.GetResource(bitType);
+                resource.AddAmmo(dividedAmount);
+            }
+
+            
 
 
             Destroy(movingTransform.gameObject);

@@ -797,28 +797,27 @@ namespace StarSalvager
             }
 
 
-            var repairTarget = bot;
+            //var repairTarget = bot;
+            var isMaxHealth = PlayerDataManager.GetBotHealth() >= PlayerDataManager.GetBotMaxHealth();
 
-            if (repairTarget.CurrentHealth >= repairTarget.StartingHealth)
-            {
+            TryPlaySound(part, SOUND.REPAIRER_PULSE, !isMaxHealth);
+
+            
+            if (isMaxHealth)
                 return;
-            }
-
 
             //--------------------------------------------------------------------------------------------------------//
 
             if (!TryGetPartProperty(PartProperties.KEYS.Heal, part, partRemoteData, out var healAmount))
                 throw new ArgumentOutOfRangeException();
 
-            if (!TryUseAmmo(part, partRemoteData, deltaTime))
-                return;
+            //if (!TryUseAmmo(part, partRemoteData, deltaTime))
+            //    return;
 
             var heal = healAmount * deltaTime;
-            repairTarget.ChangeHealth(heal);
+            PlayerDataManager.AddBotHealth(heal);
+            //repairTarget.ChangeHealth(heal);
 
-
-
-            TryPlaySound(part, SOUND.REPAIRER_PULSE, repairTarget.CurrentHealth < repairTarget.StartingHealth);
         }
 
         private void ShieldUpdate(in Part part, in PartRemoteData partRemoteData, in float deltaTime)
