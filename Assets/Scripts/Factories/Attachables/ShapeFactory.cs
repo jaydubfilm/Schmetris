@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Recycling;
 using StarSalvager.Factories.Data;
+using StarSalvager.Utilities.Analytics.SessionTracking;
 using StarSalvager.Utilities.Extensions;
 using StarSalvager.Utilities.JsonDataTypes;
 using StarSalvager.Values;
@@ -159,6 +160,7 @@ namespace StarSalvager.Factories
                 if (totalBits == 1 && typeof(T) == typeof(IObstacle))
                 {
                     var bitData = (BitData) shapeData.BlockData[0];
+                    SessionDataProcessor.Instance.RecordBitSpawned(bitData);
                     return bitFactory.CreateObject<T>((BIT_TYPE)bitData.Type, bitData.Level);
                 }
 

@@ -17,6 +17,7 @@ namespace StarSalvager.Utilities.Extensions
             return JsonConvert.DeserializeObject<List<PatchNodeJson>>(rawData);
         }
         public static BIT_TYPE GetCategory(this PART_TYPE partType) => partType.GetRemoteData().category;
+        public static bool GetIsManual(this PART_TYPE partType) => partType.GetRemoteData().isManual;
         public static Vector2Int GetCoordinateForCategory(this PART_TYPE partType) => PlayerDataManager.GetCoordinateForCategory(partType.GetRemoteData().category);
         
         public static Sprite GetSprite(this PART_TYPE partType)=> partType.GetProfileData().GetSprite();

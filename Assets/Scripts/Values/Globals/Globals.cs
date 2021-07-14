@@ -68,6 +68,9 @@ namespace StarSalvager.Values
         #region Game Settings Properties
 
         private static GameSettingsScriptableObject m_gameSettings = null;
+        
+        public static float WindowsScrollSpeed => m_gameSettings.windowsScrollSpeed;
+        public static float MacOSScrollSpeed => m_gameSettings.macOsScrollSpeed;
 
         public static Vector2 MaxHealthBounds => m_gameSettings.maxHealthBounds;
         public static float StartingHealth => m_gameSettings.startingHealth;

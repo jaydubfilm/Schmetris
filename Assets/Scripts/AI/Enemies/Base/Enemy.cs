@@ -17,12 +17,14 @@ using StarSalvager.Utilities.Analytics.SessionTracking;
 using Random = UnityEngine.Random;
 using StarSalvager.Utilities.Particles;
 using StarSalvager.Utilities.Saving;
+using StarSalvager.UI.Hints;
+using StarSalvager.Utilities.Interfaces;
 
 namespace StarSalvager.AI
 {
     //Explore this as solution to removing the requirement: http://answers.unity.com/answers/874150/view.html
     //[RequireComponent(typeof(StateAnimator))]
-    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds
+    public abstract class Enemy : CollidableBase, ICanBeHit, IHealth, ICanFreeze, IStateAnimation, ICanBeSeen, IOverrideRecycleType, IPlayEnemySounds, IHasBounds
     {
         protected static EnemyManager EnemyManager
         {
@@ -140,6 +142,9 @@ namespace StarSalvager.AI
                 DestroyEnemy();
         }
         
+        /// <summary>
+        /// Move the enemy away from the player, at the specified move speed, then when IsOffScreen() returns true, destroy the enemy
+        /// </summary>
         protected virtual void ApplyFleeMotion()
         {
             var currentPosition = transform.position;
@@ -150,6 +155,7 @@ namespace StarSalvager.AI
                 
                 
             currentPosition -= dir * (EnemyMovementSpeed * Time.deltaTime);
+
             transform.position = currentPosition;
         }
 
@@ -259,6 +265,10 @@ namespace StarSalvager.AI
                     enemyAttachable.SetAttached(false);
 
                 ApplyFleeMotion();
+                
+                //If an enemy moves offscreen during the wave outro, we can clean them up
+                if(IsOffScreen(Position))
+                    DestroyEnemy();
 
                 return false;
             }
@@ -430,6 +440,8 @@ namespace StarSalvager.AI
         
         public virtual void OnEnterCamera()
         {
+            if (HintManager.CanShowHint(HINT.ENEMY))
+                HintManager.TryShowHint(HINT.ENEMY, 2f, () => { }, this as IHasBounds);
             //AudioController.PlayEnemyMoveSound(m_enemyData?.EnemyType);
         }
 
@@ -437,6 +449,23 @@ namespace StarSalvager.AI
         {
             //AudioController.StopEnemyMoveSound(m_enemyData.EnemyType);
         }
+        
+        protected static bool IsOffScreen(in Vector2 pos)
+        {
+            const float dif = 3 * Constants.gridCellSize;
+            
+            var screenRect = CameraController.VisibleCameraRect;
+
+            if (pos.y <= screenRect.yMin - dif || pos.y >= screenRect.yMax + dif)
+                return true;
+                
+            if (pos.x <= screenRect.xMin - dif || pos.x >= screenRect.xMax + dif)
+                return true;
+                    
+                
+            return false;
+        }
+        
         //============================================================================================================//
 
         public override void CustomRecycle(params object[] args)
@@ -454,6 +483,21 @@ namespace StarSalvager.AI
         }
 
         public abstract Type GetOverrideType();
+
+        //============================================================================================================//
+
+        //IHasBounds Functions
+        //====================================================================================================================//
+
+        public Bounds GetBounds()
+        {
+            return new Bounds
+            {
+                center = transform.position,
+                size = Vector2.one * Constants.gridCellSize
+            };
+        }
+
 
         //============================================================================================================//
 

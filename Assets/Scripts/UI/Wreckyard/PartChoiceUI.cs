@@ -21,7 +21,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Console = System.Console;
 using Random = UnityEngine.Random;
-
+using StarSalvager.UI.Hints;
 
 namespace StarSalvager.UI.Wreckyard
 {
@@ -80,6 +80,9 @@ namespace StarSalvager.UI.Wreckyard
 
         private bool _discardingPart;
 
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) => _showingHint = showingHint;
+
         #endregion //Properties
 
         //Unity Functions
@@ -93,10 +96,20 @@ namespace StarSalvager.UI.Wreckyard
             _partOptions = new PART_TYPE[2];
             InitButtons();
         }
-        
+
+        private void OnEnable()
+        {
+            HintManager.OnShowingHintAction += IsShowingHint;
+        }
+
+        private void OnDisable()
+        {
+            HintManager.OnShowingHintAction -= IsShowingHint;
+        }
+
         //Init
         //============================================================================================================//
-        
+
         #region Init
 
         public void Init(PartAttachableFactory.PART_OPTION_TYPE partOptionType)
@@ -247,6 +260,8 @@ namespace StarSalvager.UI.Wreckyard
                 selectionUis[i].optionButton.onClick.RemoveAllListeners();
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
+                    if (_showingHint) return;
+
                     var partType = GetPartType(index);
 
                     LastPicked = partType;
@@ -259,6 +274,8 @@ namespace StarSalvager.UI.Wreckyard
             noPartSelectedOptionButton.onClick.RemoveAllListeners();
             noPartSelectedOptionButton.onClick.AddListener(() =>
             {
+                if (_showingHint) return;
+
                 CloseWindow();
                 PlayerDataManager.AddGears(10);
                 RecordSelectedParts(-1);
@@ -363,6 +380,8 @@ namespace StarSalvager.UI.Wreckyard
                 selectionUis[i].optionButton.onClick.RemoveAllListeners();
                 selectionUis[i].optionButton.onClick.AddListener(() =>
                 {
+                    if (_showingHint) return;
+
                     FindAndDestroyPart(partType);
                     
                     PlayerDataManager.OnValuesChanged?.Invoke();

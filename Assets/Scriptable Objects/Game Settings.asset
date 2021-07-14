@@ -119,3 +119,5 @@ MonoBehaviour:
   columnsOnScreen: 61
   cameraSmoothing: 1
   cameraOffsetBounds: 0.2
+  windowsScrollSpeed: 30
+  macOsScrollSpeed: 10

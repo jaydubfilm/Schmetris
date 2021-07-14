@@ -92,6 +92,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private TMP_Text partDescriptionText;
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private TMP_Text partDetailsText;
+        [SerializeField, Required, FoldoutGroup("Part Window")]
+        private RectTransform partWindowContainer;
         
         [SerializeField, Required, FoldoutGroup("Part Window")]
         private Button scrapPartButton;
@@ -250,7 +252,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                     return new object[]
                     {
                         patchTreeTierContainer,
-                        patchDetailsWindow.transform as RectTransform,
+                        partWindowContainer,
                     };
                 case HINT.ENTER_WRECK:
                     return new object[]
@@ -260,7 +262,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                             center = Vector3.zero,
                             size = Vector3.zero
                         },
-                        patchTreeTierContainer,
+                        partPatchOptionsContainer,
                     };
                 default:
                     throw new ArgumentOutOfRangeException(nameof(hint), hint, null);
@@ -386,7 +388,8 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 {
                     PartChoice.Init(PartAttachableFactory.PART_OPTION_TYPE.Any);
 
-                    if (HintManager.CanShowHint(HINT.PICK_PART)) HintManager.TryShowHint(HINT.PICK_PART, 1f);
+                    if (HintManager.CanShowHint(HINT.PICK_PART))
+                        HintManager.TryShowHint(HINT.PICK_PART, 1f,null);
                 }
             }
 
@@ -1338,6 +1341,12 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
             patchDetailsWindow.gameObject.SetActive(hovering);
 
             if (!hovering) return;
+
+            if (patchData.PatchExists() == false)
+            {
+                patchDetailsWindow.gameObject.SetActive(false);
+                return;
+            }
             
             var canvasRect = GetComponentInParent<Canvas>().transform as RectTransform;
             var screenPoint = RectTransformUtility.WorldToScreenPoint(null,

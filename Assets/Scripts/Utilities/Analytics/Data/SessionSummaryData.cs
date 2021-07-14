@@ -43,8 +43,11 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
         public string Date => date.ToString("ddd, MMM d, yyyy");
         private DateTime date;
 
-        [Title("$Title",  "$Date")] [SerializeField, DisplayAsString]
+        [HideInInspector]
         public float totalTimeIn;
+
+        [Title("$Title", "$Date"), LabelText("Total Time In")] [ShowInInspector, DisplayAsString]
+        public string TimeString;
 
         [SerializeField, DisplayAsString] public int timesKilled;
 
@@ -93,12 +96,17 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
         
         public SessionSummaryData(string Title, SessionData sessionData)
         {
+
+            //--------------------------------------------------------------------------------------------------------//
+            
             this.Title = Title;
             date = sessionData.date;
             
             var waves = sessionData.waves;
 
             totalTimeIn = waves.Sum(x => x.timeIn);
+            var t = TimeSpan.FromSeconds( totalTimeIn );
+            TimeString = $"{t.Hours:D2}h:{t.Minutes:D2}m:{t.Seconds:D2}s";
             timesKilled = waves.Count(x => x.playerWasKilled);
 
             totalBumpersHit = waves.Sum(x => x.bumpersHit);
@@ -189,7 +197,8 @@ namespace StarSalvager.Utilities.Analytics.SessionTracking.Data
                         var temp = enemiesKilledData[index];
 
                         temp.killed += enemySummary.killed;
-
+                        temp.spawned += enemySummary.spawned;
+                        
                         enemiesKilledData[index] = temp;
                     }
                 }

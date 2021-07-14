@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StarSalvager.Utilities.Analytics.Data;
 
@@ -45,6 +46,7 @@ namespace StarSalvager.Utilities.Extensions
                     var temp = sessionSummaryData.bitSummaryData[index];
 
                     temp.collected += bitSummary.collected;
+                    temp.collected += bitSummary.spawned;
                     temp.disconnected += bitSummary.disconnected;
 
                     sessionSummaryData.bitSummaryData[index] = temp;
@@ -94,7 +96,8 @@ namespace StarSalvager.Utilities.Extensions
                     var temp = sessionSummaryData.enemiesKilledData[index];
 
                     temp.killed += enemySummary.killed;
-
+                    temp.spawned += enemySummary.spawned;
+                    
                     sessionSummaryData.enemiesKilledData[index] = temp;
                 }
             }
@@ -188,6 +191,9 @@ namespace StarSalvager.Utilities.Extensions
                     sessionSummaryData.PatchPurchaseSummaries[index] = data;
                 }
             }
+            
+            var t = TimeSpan.FromSeconds( sessionSummaryData.totalTimeIn );
+            sessionSummaryData.TimeString = $"{t.Hours:D2}h:{t.Minutes:D2}m:{t.Seconds:D2}s";
 
             return sessionSummaryData;
         }

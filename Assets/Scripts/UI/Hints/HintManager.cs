@@ -44,7 +44,9 @@ namespace StarSalvager.UI.Hints
         LAYOUT,
         PICK_PART,
         ENTER_WRECK,
-        PATCH_TREE
+        PATCH_TREE,
+        ENEMY,
+        BUMPER
     }
     
     [RequireComponent(typeof(HighlightManager))]
@@ -54,7 +56,7 @@ namespace StarSalvager.UI.Hints
 
         public static Action<bool> OnShowingHintAction;
 
-        public bool ShowingHint { get; private set; }
+        public static bool ShowingHint { get; private set; }
 
         [SerializeField, Required]
         private HintRemoteDataScriptableObject hintRemoteData;
@@ -68,7 +70,12 @@ namespace StarSalvager.UI.Hints
         private Button confirmButton;
         [SerializeField, Required]
         private TMP_Text continueText;
-        
+
+        [SerializeField, Required, Space(10f)]
+        private GameObject mushroomCharacter;
+        [SerializeField, Required]
+        private GameObject mechanicCharacter;
+
         [SerializeField, Required]
         private HighlightManager highlightManager;
 
@@ -110,7 +117,7 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return;
             
-            if (Instance.ShowingHint)
+            if (ShowingHint)
                 return;
 
             if (objectsToHighlight.IsNullOrEmpty())
@@ -129,7 +136,7 @@ namespace StarSalvager.UI.Hints
         /// <param name="hint"></param>
         /// <param name="delayTime"></param>
         /// <param name="objectsToHighlight"></param>
-        public static void TryShowHint(HINT hint, float delayTime, params object[] objectsToHighlight)
+        public static void TryShowHint(HINT hint, float delayTime, Action onShowCallback, params object[] objectsToHighlight)
         {
             if (!USE_HINTS)
                 return;
@@ -137,7 +144,7 @@ namespace StarSalvager.UI.Hints
             if (Instance == null)
                 return;
             
-            if (Instance.ShowingHint)
+            if (ShowingHint)
                 return;
             
             if(!WaitingHints.Contains(hint))
@@ -147,6 +154,8 @@ namespace StarSalvager.UI.Hints
             
             Instance.StartCoroutine(WaitCoroutine(delayTime, () =>
             {
+                onShowCallback?.Invoke();
+                
                 WaitingHints.Remove(hint);
                 
                 //If we have an empty list, assume we want to obtain in it other ways
@@ -392,7 +401,7 @@ namespace StarSalvager.UI.Hints
             highlightManager.SetActive(false);
             
             //small delay to avoid pressing currently selected items while attempting to close the hint.
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
 
             OnShowingHintAction?.Invoke(false);
         }
@@ -463,6 +472,9 @@ namespace StarSalvager.UI.Hints
             this.hintText.text = hintText.shortText;
             infoText.text = hintText.longDescription;
             continueText.text = String.IsNullOrWhiteSpace(hintText.continueText) ? "continue" : hintText.continueText;
+            //setting up mechanic
+            mushroomCharacter.SetActive(!hintText.useMechanic);
+            mechanicCharacter.SetActive(hintText.useMechanic);
         }
 
         private Bounds GetPositionAsBounds(in Vector2 worldPosition)

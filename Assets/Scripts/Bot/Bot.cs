@@ -236,7 +236,7 @@ namespace StarSalvager
             if (addsHealth == false && HintManager.CanShowHint(HINT.HEALTH))
             {
                 if (PlayerDataManager.GetResource(BIT_TYPE.GREEN).Ammo > 0)
-                    HintManager.TryShowHint(HINT.HEALTH, 0.5f);
+                    HintManager.TryShowHint(HINT.HEALTH, 0.5f, null);
             }
 
             //--------------------------------------------------------------------------------------------------------//
@@ -820,8 +820,8 @@ namespace StarSalvager
             }
 
             RotateAttachableSprites();
-            //ensure all the parts are updating properly when force complete rotation is applied
-            BotPartsLogic.PartsUpdateLoop();
+            //ensuring fire lines aren't visible after it ends the wave
+            BotPartsLogic.CleanFireLine();
         }
 
         private void RotateAttachableSprites()
@@ -3179,7 +3179,7 @@ _isShifting = true;
                             GameUi.CreateAmmoEffect(bitType, ammoEarned, position);
                         }
 
-                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position);
+                        HintManager.TryShowHint(HINT.SILVER, 0.25f, position, null);
                     }
                     else if (bit != null)
                     {
@@ -3199,7 +3199,7 @@ _isShifting = true;
                                 // reflective of the upgrade level 0 -> 1 -> white
                                 bitLevel = 2;
                                 
-                                HintManager.TryShowHint(HINT.WHITE, 0.5f, bit);
+                                HintManager.TryShowHint(HINT.WHITE, 0.5f, null, bit);
                                 break;
                         }
 

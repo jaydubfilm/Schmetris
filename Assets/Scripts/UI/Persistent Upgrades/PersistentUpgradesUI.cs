@@ -48,6 +48,9 @@ namespace StarSalvager.UI.PersistentUpgrades
         [SerializeField, BoxGroup("Hover Window")]
         private TMP_Text upgradeDescriptionText;
 
+
+        private bool _showingHint;
+        private void IsShowingHint(bool showingHint) => _showingHint = showingHint;
         #endregion //Properties
 
         //Unity Engine
@@ -58,6 +61,7 @@ namespace StarSalvager.UI.PersistentUpgrades
         private void OnEnable()
         {
             PlayerDataManager.OnValuesChanged += OnValueChanged;
+            HintManager.OnShowingHintAction += IsShowingHint;
             OnValueChanged();
 
             //Make sure that we hide the pop-up window when its not needed
@@ -67,6 +71,7 @@ namespace StarSalvager.UI.PersistentUpgrades
         private void OnDisable()
         {
             PlayerDataManager.OnValuesChanged -= OnValueChanged;
+            HintManager.OnShowingHintAction -= IsShowingHint;
         }
 
         #endregion //Unity Functions
@@ -140,6 +145,9 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         private void TryPurchaseUpgrade(UpgradeData upgradeData)
         {
+            if (_showingHint)
+                return;
+
             var remoteData = FactoryManager.Instance.PersistentUpgrades
                 .GetRemoteData(upgradeData.Type, upgradeData.BitType);
 
@@ -179,6 +187,9 @@ namespace StarSalvager.UI.PersistentUpgrades
 
         private void HoverUpgradeElement(UpgradeData upgradeData, RectTransform rectTransform)
         {
+            if (_showingHint)
+                return;
+            
             ShowUpgradeDetails(rectTransform != null, upgradeData, rectTransform);
         }
 
