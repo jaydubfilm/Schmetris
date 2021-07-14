@@ -307,6 +307,15 @@ namespace StarSalvager
             var startScale = Vector3.one;
             var endScale = new Vector3(1, 0f, 1f);
 
+            var bitIndex = Constants.BIT_ORDER.ToList().FindIndex(x => x == part.category);
+
+            var isManual = part.Type.GetIsManual();
+            
+            //If the current part isManual, wew'll close the doors
+            //We dont need to reopen them from here, as InitPartData() will call that for us
+            if(isManual)
+                GameUI.StartAnimation(bitIndex, false, cooldown);
+            
             //--------------------------------------------------------------------------------------------------------//
 
             _partCooldownTimers[part] = new CooldownData(cooldown, true);
@@ -419,6 +428,11 @@ namespace StarSalvager
 
                 GameUI.SetIconImage(index, part is null ? PART_TYPE.EMPTY : part.Type);
 
+                if (part != null)
+                {
+                    var isManual = part.Type.GetIsManual();
+                    if (isManual) GameUI.StartAnimation(index, true, Globals.PartSwapTime / 2f);
+                }
 
                 var partsInStorage = PlayerDataManager.GetCurrentPartsInStorage();
                 var switchPart = partsInStorage

@@ -34,7 +34,7 @@ namespace StarSalvager.UI
         #region Structs
 
         [Serializable]
-        public struct SliderPartUI
+        public class SliderPartUI
         {
             [FormerlySerializedAs("backgroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonBackImage;
             [FormerlySerializedAs("foregroundImage")] [Required, FoldoutGroup("$NAME")] public Image buttonImage;
@@ -51,7 +51,9 @@ namespace StarSalvager.UI
 
             [Required, FoldoutGroup("$NAME")] public Slider slider;
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
-            
+
+            private bool _isOpen;
+
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
             private string NAME;
@@ -66,7 +68,7 @@ namespace StarSalvager.UI
                 if (triggerInputImage is null || cooldownBackgroundImage is null)
                     return;
 
-                AnimateDoors(isTrigger);
+                //AnimateDoors(isTrigger);
                 buttonImage.enabled = isTrigger;
 
 
@@ -75,7 +77,32 @@ namespace StarSalvager.UI
                 
             }
 
-            private void AnimateDoors(bool opened)
+            public void AnimateDoors(in bool open, in float animationTime)
+            {
+                if (_isOpen == open)
+                    return;
+                
+                Instance.StartCoroutine(TriggerCoroutine(open,animationTime));
+                _isOpen = open;
+            }
+
+            private IEnumerator TriggerCoroutine(bool open, float animationTime)
+            {
+                if (open)
+                {
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(true, animationTime / 2));
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(false, animationTime / 2));
+                    _isOpen = true;
+                }
+                else
+                {
+                    yield return Instance.StartCoroutine(ScaleButtonCoroutine(true, animationTime / 2));
+                    yield return Instance.StartCoroutine(AnimateDoorsCoroutine(false, animationTime / 2));
+                    _isOpen = false;
+                }
+
+            }
+            /*private void AnimateDoors(bool opened)
             {
                 if (leftDoorImage is null || rightDoorImage is null)
                     return;
@@ -103,7 +130,7 @@ namespace StarSalvager.UI
                 
                 yield return Instance.StartCoroutine(AnimateDoorsCoroutine(true));
                 yield return Instance.StartCoroutine(ScaleButtonCoroutine(false));
-            }
+            }*/
 
             private IEnumerator AnimateDoorsCoroutine(bool open, float animationTime = 0.5f)
             {
@@ -835,12 +862,17 @@ namespace StarSalvager.UI
             SliderPartUis[index].SetIsTrigger(isTrigger, isTrigger ? GetInputSprite(index) : null);
 
             //If the part icon needs a border, be sure to add it!
-            if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].buttonImage != null)
+            /*if (SliderPartUis[index].partBorderSprite == null && SliderPartUis[index].buttonImage != null)
                 SliderPartUis[index].partBorderSprite = PartAttachableFactory.CreateUIPartBorder(
                     (RectTransform) SliderPartUis[index].buttonImage.transform,
-                    partType);
+                    partType);*/
 
             SliderPartUis[index].SetColor(Globals.UsePartColors ? partRemoteData.category.GetColor() : Color.white);
+        }
+        
+        public void StartAnimation(int index, in bool openDoors, in float animationTime)
+        {
+            SliderPartUis[index].AnimateDoors(openDoors, animationTime);
         }
 
         public void SetSecondIconImage(int index, in PART_TYPE partType)
