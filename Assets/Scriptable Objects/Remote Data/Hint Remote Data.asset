@@ -148,7 +148,7 @@ MonoBehaviour:
       useMechanic: 0
   - type: 18
     hintTexts:
-    - shortText: Primary
+    - shortText: 
       longDescription: 'This is your drone layout.  Right now you have only one active
         part:  a purple Main Weapon attached to your drone''s core. Collect more
         parts to enhance your drone''s performance.'
@@ -171,9 +171,9 @@ MonoBehaviour:
       continueText: WOW
       useMechanic: 0
     - shortText: Available Patches
-      longDescription: As you can see there are (number of patches available) patches
-        available to be extracted from this wreck. Select one of them to find out
-        how this patch will improve your drone.
+      longDescription: As you can see there are 1 patches available to be extracted
+        from this wreck. Select one of them to find out how this patch will improve
+        your drone.
       continueText: SURE, WATCH THIS...
       useMechanic: 0
   - type: 21

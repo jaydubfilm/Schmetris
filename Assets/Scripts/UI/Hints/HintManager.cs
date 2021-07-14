@@ -55,6 +55,7 @@ namespace StarSalvager.UI.Hints
         public static bool USE_HINTS = true;
 
         public static Action<bool> OnShowingHintAction;
+        public static Action onEndingHintAction;
 
         public static bool ShowingHint { get; private set; }
 
@@ -382,6 +383,7 @@ namespace StarSalvager.UI.Hints
                 //TODO Need to also include waiting for button Press
                 yield return new WaitUntil(() => buttonPressed);
                 
+                
                 buttonPressed = false;
 
                 yield return null;
@@ -404,6 +406,8 @@ namespace StarSalvager.UI.Hints
             yield return new WaitForSeconds(0.2f);
 
             OnShowingHintAction?.Invoke(false);
+
+            onEndingHintAction?.Invoke();
         }
 
         /// <summary>

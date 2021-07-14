@@ -44,6 +44,9 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
         private Button menuButton;
         [SerializeField, Required]
         private Button repairButton;
+
+        [SerializeField, Required]
+        private GameObject baseBackground;
         //Wreck Data
         //====================================================================================================================//
 
@@ -245,8 +248,7 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
                 case HINT.LAYOUT:
                     return new object[]
                     {
-                       _primaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
-                       _secondaryPartButtons[BIT_TYPE.GREY].transform as RectTransform,
+                       primaryPartsAreaTransform.parent as RectTransform
                     };
                 case HINT.PATCH_TREE:
                     return new object[]
@@ -417,14 +419,25 @@ namespace StarSalvager.UI.Wreckyard.PatchTrees
 
         private void OnNewPartSelected(PartAttachableFactory.PART_OPTION_TYPE optionType, PART_TYPE partType)
         {
+            void LaunchPressedHandler()
+            {
+                LaunchPressed();
+                HintManager.onEndingHintAction -= LaunchPressedHandler;
+            }
             switch (optionType)
             {
                 case PartAttachableFactory.PART_OPTION_TYPE.InitialSelection:
-                    if(HintManager.CanShowHint(HINT.LAYOUT)) HintManager.TryShowHint(HINT.LAYOUT);
+                    if (HintManager.CanShowHint(HINT.LAYOUT))
+                    {
+                        HintManager.onEndingHintAction += LaunchPressedHandler;
+                        HintManager.TryShowHint(HINT.LAYOUT);
+                    }
+                    baseBackground.SetActive(true);
                     break;
                 case PartAttachableFactory.PART_OPTION_TYPE.Any:
                     if (HintManager.CanShowHint(HINT.ENTER_WRECK)) HintManager.TryShowHint(HINT.ENTER_WRECK);
                     PlayerDataManager.GeneratePartPatchOptions();
+                    baseBackground.SetActive(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(optionType), optionType, null);
