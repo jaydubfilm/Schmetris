@@ -376,7 +376,7 @@ namespace StarSalvager
                 .OrderBy(x => Vector2.Distance(x.transform.position, transform.position))
                 .ToList();
 
-                HintManager.TryShowHint(HINT.BUMPER, 4f, () => { }, bumpers[0], bumpers[1]);
+                HintManager.TryShowHint(HINT.BUMPER, 2f, () => { }, bumpers[0], bumpers[1]);
             }
         }
 
