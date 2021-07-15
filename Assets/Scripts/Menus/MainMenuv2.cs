@@ -282,6 +282,7 @@ namespace StarSalvager.UI
                             "Ok", () =>
                             {
                                 Files.ClearRemoteData();
+                                RefreshWindow(_currentWindow);
                                 UISelectHandler.SetBuildTarget(this);
                             });
                     }
