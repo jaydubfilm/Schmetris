@@ -419,7 +419,16 @@ namespace StarSalvager.UI.Hints
                 ShowHintText(hintData.hintTexts[i]);
 
                 //TODO Need to also include waiting for button Press
-                yield return new WaitUntil(() => buttonPressed);
+                while(!buttonPressed)
+                {
+                    if (Input.anyKeyDown)
+                    {
+                        buttonPressed = true;
+                        break;
+                    }
+                    yield return null;
+                }
+                //yield return new WaitUntil(() => buttonPressed);
                 
                 
                 buttonPressed = false;
