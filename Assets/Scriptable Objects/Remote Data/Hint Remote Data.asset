@@ -171,7 +171,7 @@ MonoBehaviour:
       continueText: WOW
       useMechanic: 0
     - shortText: Available Patches
-      longDescription: As you can see there are 1 patches available to be extracted
+      longDescription: As you can see there are #0 patches available to be extracted
         from this wreck. Select one of them to find out how this patch will improve
         your drone.
       continueText: SURE, WATCH THIS...

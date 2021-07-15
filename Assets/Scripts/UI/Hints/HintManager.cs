@@ -48,6 +48,11 @@ namespace StarSalvager.UI.Hints
         ENEMY,
         BUMPER
     }
+
+    public enum HINT_KEY
+    {
+        AVAILABLE_PATCHES,
+    }
     
     [RequireComponent(typeof(HighlightManager))]
     public class HintManager : Singleton<HintManager>
@@ -79,6 +84,13 @@ namespace StarSalvager.UI.Hints
 
         [SerializeField, Required]
         private HighlightManager highlightManager;
+
+        [SerializeField]
+        private Dictionary<string, HINT_KEY> replacementKeys = new Dictionary<string, HINT_KEY>
+        {
+            ["#0"] = HINT_KEY.AVAILABLE_PATCHES,
+        };
+
 
         private ACTION_MAP _previousInputActionGroup;
 
@@ -306,6 +318,32 @@ namespace StarSalvager.UI.Hints
             StartCoroutine(HintPagesCoroutine(hint, objectsToHighlight));
         }
 
+
+        private string UpdateTextWithValues(string hintDescription)
+        {
+            string result = hintDescription;
+            foreach(var replacement in replacementKeys.Keys)
+            {
+                if(hintDescription.Contains(replacement))
+                {
+                    switch (replacementKeys[replacement])
+                    {
+                        case HINT_KEY.AVAILABLE_PATCHES:
+                            result = result.Replace(replacement, GetAvailablePatches());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private string GetAvailablePatches()
+        {
+            var totalPatches = PlayerDataManager.CurrentPatchOptions.SelectMany(p => p.Patches).ToList();
+            return totalPatches.Count.ToString();
+        }
         //====================================================================================================================//
 
         /// <summary>
@@ -474,7 +512,7 @@ namespace StarSalvager.UI.Hints
         private void ShowHintText(HintRemoteDataScriptableObject.HintText hintText)
         {
             this.hintText.text = hintText.shortText;
-            infoText.text = hintText.longDescription;
+            infoText.text = UpdateTextWithValues(hintText.longDescription);
             continueText.text = String.IsNullOrWhiteSpace(hintText.continueText) ? "continue" : hintText.continueText;
             //setting up mechanic
             mushroomCharacter.SetActive(!hintText.useMechanic);
@@ -509,11 +547,11 @@ namespace StarSalvager.UI.Hints
                 PlayerDataManager.SetHint(hint, false);
             }
         }
-        
+
 #endif
-        
+
     }
-    
+
     public interface IHasHintElement
     {
         object[] GetHintElements(HINT hint);
