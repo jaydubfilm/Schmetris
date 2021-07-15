@@ -367,7 +367,7 @@ namespace StarSalvager
 
         public virtual void OnEnterCamera()
         {
-            if(Type == BIT_TYPE.BUMPER && LevelManager.Instance.CurrentStage >= 1 && HintManager.CanShowHint(HINT.BUMPER))
+            if(Type == BIT_TYPE.BUMPER && LevelManager.Instance.CurrentStage >= 2 && HintManager.CanShowHint(HINT.BUMPER))
             {
                 var bumpers = LevelManager.Instance.ObstacleManager.TryGetBumpersOnScreen();
                 if (bumpers.Count < 2) return;
@@ -376,7 +376,7 @@ namespace StarSalvager
                 .OrderBy(x => Vector2.Distance(x.transform.position, transform.position))
                 .ToList();
 
-                HintManager.TryShowHint(HINT.BUMPER, 2f, () => { }, bumpers[0], bumpers[1]);
+                HintManager.TryShowHint(HINT.BUMPER, 4f, () => { }, bumpers[0], bumpers[1]);
             }
         }
 
