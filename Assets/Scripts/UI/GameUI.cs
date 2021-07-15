@@ -57,6 +57,7 @@ namespace StarSalvager.UI
             [Required, FoldoutGroup("$NAME")] public Image fillImage;
 
             private bool _isOpen;
+            private bool _hasPart = false;
 
 #if UNITY_EDITOR
             [SerializeField, PropertyOrder(-100), FoldoutGroup("$NAME")]
@@ -69,13 +70,13 @@ namespace StarSalvager.UI
 
             public void SetIsTrigger(in bool isTrigger, in Sprite triggerSprite)
             {
-                if (triggerInputImage is null || cooldownBackgroundImage is null)
+                if (triggerInputImage is null || buttonImage is null)
                     return;
 
                 //AnimateDoors(isTrigger);
                 buttonImage.enabled = isTrigger;
 
-
+                _hasPart = triggerSprite;
                 triggerInputImage.gameObject.SetActive(isTrigger && triggerSprite != null);
                 triggerInputImage.sprite = triggerSprite;
                 
@@ -236,7 +237,7 @@ namespace StarSalvager.UI
                 if (PartGlowImage is null)
                     return;
                 
-                PartGlowImage.gameObject.SetActive(isReady);
+                PartGlowImage.gameObject.SetActive(isReady && _hasPart);
             }
         }
 
